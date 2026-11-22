@@ -1,0 +1,67 @@
+---
+title: "AutoCAD DIMALIGNED（對齊式）標註指令"
+metaTitle: "CAD 對齊式標註（DIMALIGNED）用法與快捷鍵 DAL"
+description: "AutoCAD 的 DIMALIGNED（DAL）如何標註斜邊，依提示逐步說明：兩個原點或一個物件，再放置與其平行的標註線。可在瀏覽器中免費試用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD 對齊式標註的快捷鍵是什麼？","answer":"DAL 或 DIMALI，然後按 Enter 或空白鍵。也可以輸入完整名稱，在任何語言版本的 AutoCAD 中都可以輸入 _DIMALIGNED。"},{"question":"DIMLINEAR 與 DIMALIGNED 有何不同？","answer":"在斜邊上，DIMLINEAR 標註的是其寬度或高度，因為其標註線為水平或垂直；DIMALIGNED 標註的是斜邊長度，標註線與斜邊平行。在沿 X 或 Y 的邊上，兩者的數值相同。"},{"question":"AutoCAD 如何標註斜線？","answer":"使用 DIMALIGNED：在第一個提示下按 Enter，點選該線，再將標註放在想要的一側。或以「端點」物件鎖點點選線的兩個端點，讓原點準確無誤。"},{"question":"如何在標註上寫入自訂文字？","answer":"在放置標註之前選擇 Text 並輸入文字：<> 代表測量值，因此 「<> mm」 會寫出測量值並接著單位；不輸入任何內容直接按 Enter，則只保留測量值。放置後，可在「性質」選項板的「文字置換」中變更。"}]
+---
+
+DIMALIGNED（對齊式）指令測量兩點之間的實際距離：其標註線與通過兩點的直線平行，不論角度為何；[`DIMLINEAR`](/docs/commands/dimlinear) 則只沿 X 或 Y 測量。其提示與 [`DIMLINEAR`](/docs/commands/dimlinear) 相同：指定第一條與第二條延伸線原點，或按 Enter 並點選一條線、一個弧或聚合線的一段，以其兩個端點做為原點，再指定標註線位置，兩側皆可。若點選圓，則標註通過點選處的直徑。指令行會顯示測量值，指令隨即結束。
+
+- **指令：** `DIMALIGNED`
+- **快捷鍵：** `DIMALI`, `DAL`
+- **面板：** [註解](/docs/commands#annotate)
+- **試試看：** [開啟編輯器](/zh-tw/draw)，輸入 `DAL` 並按 Enter。
+
+## 在指令行中 [#session]
+
+引擎繪製它，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。
+
+<Session name="dimaligned" caption="沿三角形斜邊的長度標註：先指定其兩個端點，再指定標註線的位置。" />
+
+## 選項 [#options]
+
+### `Text` (`T`) [#text]
+
+要求輸入要寫入的文字以取代測量值，並以測量值做為預設值：按 Enter 即保留測量值。在輸入的文字中，`<>` 代表測量值。
+
+### `Angle` (`A`) [#angle]
+
+要求指定標註文字的角度，文字便以該角度繪製，而不沿著標註線。輸入 0 會讓文字回到沿標註線的方向。
+
+## 尚未支援的功能 [#missing]
+
+多行文字：標註的文字為單行，透過指令行的 `Text` 設定，不使用文字編輯器。以 `Angle` 設定角度時，AutoCAD 會讓文字置中於標註線上；這裡文字則與未設定角度時一樣，位於標註線上方。標註不是關聯式標註：不會隨著所測量的物件變動。
+
+[功能與尚缺項目的詳細說明（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimaligned--dal--es-acoalineada--acoali--pt-br-cotaalin--coa--dimali--fr-cotali--cota--it-dimallineata--dal--de-bemausg--bma--ru-рзмпарал--рпа--pl-wymnormalny--wn--wymno--cs-kótysrovnej--kso--kotyso--hu-méretilleszt--mil--mill)
+
+## 常見問題 [#questions]
+
+### AutoCAD 對齊式標註的快捷鍵是什麼？
+
+`DAL` 或 `DIMALI`，然後按 Enter 或空白鍵。也可以輸入完整名稱，在任何語言版本的 AutoCAD 中都可以輸入 `_DIMALIGNED`。
+
+### DIMLINEAR 與 DIMALIGNED 有何不同？
+
+在斜邊上，[`DIMLINEAR`](/docs/commands/dimlinear) 標註的是其寬度或高度，因為其標註線為水平或垂直；DIMALIGNED 標註的是斜邊長度，標註線與斜邊平行。在沿 X 或 Y 的邊上，兩者的數值相同。
+
+### AutoCAD 如何標註斜線？
+
+使用 DIMALIGNED：在第一個提示下按 Enter，點選該線，再將標註放在想要的一側。或以「端點」物件鎖點點選線的兩個端點，讓原點準確無誤。
+
+### 如何在標註上寫入自訂文字？
+
+在放置標註之前選擇 `Text` 並輸入文字：`<>` 代表測量值，因此 `<> mm` 會寫出測量值並接著單位；不輸入任何內容直接按 Enter，則只保留測量值。放置後，可在「性質」選項板的「文字置換」中變更。
+
+## 練習 [#practice]
+
+- [CAD 練習圖：土地邊界](/docs/exercises/plot-of-land)
+- [CAD 等角圖練習圖：階梯塊](/docs/exercises/isometric-block)
+
+## 相關指令 [#related]
+
+- [AutoCAD 尺寸標註：DIMLINEAR（線性）指令](/docs/commands/dimlinear)
+- [AutoCAD DIMANGULAR（角度）標註指令](/docs/commands/dimangular)
+- [AutoCAD DIMCONTINUE（連續式）標註指令](/docs/commands/dimcontinue)
+- [AutoCAD DIMSTYLE（標註型式）指令](/docs/commands/dimstyle)

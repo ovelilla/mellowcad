@@ -1,0 +1,85 @@
+---
+title: "AutoCAD ARRAYRECT（矩形陣列）指令"
+metaTitle: "CAD 矩形陣列指令（ARRAYRECT）用法"
+description: "AutoCAD 矩形陣列（ARRAYRECT）依提示逐步說明：行數、列數與層數，其間距，以及是否為關聯式。可在瀏覽器中免費試用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"如何開始矩形陣列？","answer":"輸入沒有指令別名的 ARRAYRECT，或輸入 AR 執行 ARRAY，並在其詢問時按 Enter，因為矩形是其預設值。選取物件並按 Enter：陣列會立即繪製，可以開始編輯。"},{"question":"如何設定行距與列距？","answer":"選擇 Spacing，輸入行間距，再輸入列間距；負值會向左或向下。使用 Unit 時，兩個角點可一次指定兩者。也可以拖曳第二行與第二列上的箭頭掣點。"},{"question":"如何讓複本成為個別的物件？","answer":"在按 Enter 之前，選擇 ASsociative 並回答 No：每個複本都是獨立的物件。關聯式陣列之後也可以用 EXPLODE 分解為各項目。"},{"question":"如何建立 3D 陣列？","answer":"選擇 Levels：各行各列會沿 UCS 的 Z 軸向上複製，層數與間距由您指定。Rows 也會要求增量高程，讓每一列比前一列升高。"}]
+---
+
+ARRAYRECT（矩形陣列）指令將選集複製成行與列，需要時還可分層，成為一個陣列物件。它先要求選取物件，說明類型與陣列是否為關聯式，並立即顯示陣列：沿 UCS 的 X 軸 4 行，沿其 Y 軸 3 列，間距為選集大小的 1.5 倍。接著，一個提示會即時編輯陣列，直到按 Enter 建立，可透過其選項或預覽的掣點，與 AutoCAD 相同：按一下其中一個箭頭掣點，再按一下要放置的位置或輸入數字，即可設定計數或間距。在此按 Esc 也會建立陣列。選取的物件會成為第一個項目。
+
+- **指令：** `ARRAYRECT`
+- **面板：** [修改](/docs/commands#modify)
+- **試試看：** [開啟編輯器](/zh-tw/draw)，輸入 `ARRAYRECT` 並按 Enter。
+
+## 在指令行中 [#session]
+
+引擎繪製它，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。
+
+<Session name="arrayrect" caption="一個正方形及其中的圓排成 5 行 3 列，間距為 16 與 14：先指定計數，再指定間距。" />
+
+## 選項 [#options]
+
+### `ASsociative` (`AS`) [#associative]
+
+預設值 `Yes` 會建立一個陣列物件：之後可透過其掣點與「性質」選項板修改，並可以 [`EXPLODE`](/docs/commands/explode) 將其分解為各項目。`No` 會在所選物件旁建立個別的複本。此回答在本次階段作業中保留，ARRAYPOLAR 與 ARRAYPATH 也會沿用。
+
+### `COUnt` (`COU`) [#count]
+
+先指定行數，再指定列數，各為 1 到 32767。
+
+### `Spacing` (`S`) [#spacing]
+
+先指定行間距，再指定列間距，負值表示向左或向下。或使用 `Unit`：一個矩形的兩個角點，其兩邊即為兩個間距。
+
+### `COLumns` (`COL`) [#columns]
+
+行數及行間距。
+
+### `Rows` (`R`) [#rows]
+
+列數、列間距，以及每一列比前一列升高的增量高程。
+
+### `Levels` (`L`) [#levels]
+
+沿 UCS 的 Z 軸堆疊的複本：先指定層數，再指定層間距，或以 `Total` 指定從第一層到最後一層的距離。
+
+### `eXit` (`X`) [#exit]
+
+建立陣列並結束指令，與按 Enter 相同。
+
+## 尚未支援的功能 [#missing]
+
+「基準點」；行間距與列間距的「總計」（「層數」有此選項）；「表示式」，將某個值與圖面的參數連結。ARRAYEDIT 與 ARRAYCLOSE，用於編輯陣列的來源或取代其項目。陣列掣點的功能表（行計數、總行間距、軸角度…）以及按 Ctrl 循環切換，因此無法從掣點設定總間距或軸角度；掣點也不會在指令行中顯示其提示。選項板中的「基準 X」與「基準 Y」無法重新輸入。
+
+[功能與尚缺項目的詳細說明（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#arrayrect--es-matrizrectang--pt-br-matrizretang--fr-reseaurect--it-serierettang--de-reiherechteck--ru-массивпрямоуг--pl-szykprost--cs-obdpole--hu-kiosztnégysz)
+
+## 常見問題 [#questions]
+
+### 如何開始矩形陣列？
+
+輸入沒有指令別名的 `ARRAYRECT`，或輸入 `AR` 執行 [`ARRAY`](/docs/commands/array)，並在其詢問時按 Enter，因為矩形是其預設值。選取物件並按 Enter：陣列會立即繪製，可以開始編輯。
+
+### 如何設定行距與列距？
+
+選擇 `Spacing`，輸入行間距，再輸入列間距；負值會向左或向下。使用 `Unit` 時，兩個角點可一次指定兩者。也可以拖曳第二行與第二列上的箭頭掣點。
+
+### 如何讓複本成為個別的物件？
+
+在按 Enter 之前，選擇 `ASsociative` 並回答 `No`：每個複本都是獨立的物件。關聯式陣列之後也可以用 [`EXPLODE`](/docs/commands/explode) 分解為各項目。
+
+### 如何建立 3D 陣列？
+
+選擇 `Levels`：各行各列會沿 UCS 的 Z 軸向上複製，層數與間距由您指定。`Rows` 也會要求增量高程，讓每一列比前一列升高。
+
+## 練習 [#practice]
+
+- [CAD 練習圖：樓梯平面圖](/docs/exercises/stairs)
+
+## 相關指令 [#related]
+
+- [AutoCAD ARRAY（陣列）指令](/docs/commands/array)
+- [AutoCAD ARRAYPOLAR（環形陣列）指令](/docs/commands/arraypolar)
+- [AutoCAD ARRAYPATH（路徑陣列）指令](/docs/commands/arraypath)
+- [AutoCAD COPY（複製）指令](/docs/commands/copy)

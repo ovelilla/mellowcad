@@ -1,0 +1,58 @@
+---
+title: "AutoCAD JOIN（接合）指令"
+metaTitle: "CAD 接合指令（JOIN）：線接合成聚合線與快捷鍵 J"
+description: "AutoCAD 接合指令 JOIN（J）的用法：相接的線與弧接合為聚合線，共線的線接合為一條線，弧接合為圓，曲線接合為雲形線。可免費線上試用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD 接合指令的快捷鍵是什麼？","answer":"輸入 J，再按 Enter 或空白鍵。輸入完整名稱也可以，而 _JOIN 在任何語言版本的 AutoCAD 中都適用。"},{"question":"如何在 AutoCAD 中將線接合成聚合線？","answer":"執行 JOIN，選取線（也可以用窗選），然後按 Enter：首尾相接的線會變成一條聚合線。"},{"question":"CAD 接合指令沒有作用怎麼辦？","answer":"物件必須在同一平面上、首尾準確相接：有間隙或交叉的物件會被略過，JOIN 會顯示捨棄了幾個物件。只有共線的線、同一個圓上的弧與同一個橢圓上的弧，才能跨越間隙接合。封閉的聚合線不接合任何物件。"},{"question":"如何將弧接合成圓？","answer":"選取同一個圓上、合起來涵蓋整個圓的弧，然後按 Enter：JOIN 會詢問是否將其轉換為圓，選擇預設的 Yes 即可轉換。"}]
+---
+
+JOIN（接合）指令將多個物件建立為一個物件。選取物件（數量不限）並按 Enter：首尾相接的線與弧會變成一條聚合線，若其中有聚合線，則接合到該聚合線；位於同一直線上的線會變成一條線，無論中間是否有間隙；同一個圓上的弧會變成一個弧，弧封閉時，JOIN 會詢問是否轉換為圓，預設為 `Yes`，或以 `No` 保留為弧。同一個橢圓上的橢圓弧會變成一個橢圓弧，相接的曲線中若有雲形線或橢圓弧，則會建立雲形線。接著顯示建立了什麼，以及略過了幾個物件。聚合線只能從端點接合，封閉的聚合線不接合任何物件。接合是一個步驟，退回一次即可復原。
+
+- **指令：** `JOIN`
+- **快捷鍵：** `J`
+- **面板：** [修改](/docs/commands#modify)
+- **試試看：** [開啟編輯器](/zh-tw/draw)，輸入 `J` 並按 Enter。
+
+## 在指令行中 [#session]
+
+引擎繪製它，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。
+
+<Session name="join" caption="三條線接合為一條聚合線，OFFSET 點選一次即可沿整條聚合線偏移。" />
+
+## 選項 [#options]
+
+### `cLose` (`L`) [#close]
+
+以單獨點選的橢圓弧作為來源時：將其封閉為完整的橢圓。
+
+## 尚未支援的功能 [#missing]
+
+AutoCAD 以單獨點選的一條線、一個弧或一條聚合線作為來源時的步驟（`Select lines to join to source:`）：此處不接合任何物件。單獨點選的封閉物件，AutoCAD 會再次詢問。螺旋線、位於傾斜平面或上下顛倒的物件，以及不在同一平面上的線，AutoCAD 會將其接合為 3D 聚合線，或展平為聚合線。
+
+[功能與尚缺項目的詳細說明（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#join--j--es-unir--u--pt-br-unir--une--fr-joindre--j--it-unisci--u--de-verbinden--vb--ru-соединить--со--pl-połącz--cs-spoj--hu-egybefűz)
+
+## 常見問題 [#questions]
+
+### AutoCAD 接合指令的快捷鍵是什麼？
+
+輸入 `J`，再按 Enter 或空白鍵。輸入完整名稱也可以，而 `_JOIN` 在任何語言版本的 AutoCAD 中都適用。
+
+### 如何在 AutoCAD 中將線接合成聚合線？
+
+執行 JOIN，選取線（也可以用窗選），然後按 Enter：首尾相接的線會變成一條聚合線。
+
+### CAD 接合指令沒有作用怎麼辦？
+
+物件必須在同一平面上、首尾準確相接：有間隙或交叉的物件會被略過，JOIN 會顯示捨棄了幾個物件。只有共線的線、同一個圓上的弧與同一個橢圓上的弧，才能跨越間隙接合。封閉的聚合線不接合任何物件。
+
+### 如何將弧接合成圓？
+
+選取同一個圓上、合起來涵蓋整個圓的弧，然後按 Enter：JOIN 會詢問是否將其轉換為圓，選擇預設的 `Yes` 即可轉換。
+
+## 相關指令 [#related]
+
+- [AutoCAD PEDIT（編輯聚合線）指令](/docs/commands/pedit)
+- [AutoCAD EXPLODE（分解）指令](/docs/commands/explode)
+- [AutoCAD BREAK（切斷）指令](/docs/commands/break)
+- [AutoCAD PLINE（聚合線）指令](/docs/commands/pline)

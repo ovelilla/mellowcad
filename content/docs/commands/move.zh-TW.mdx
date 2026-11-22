@@ -1,0 +1,58 @@
+---
+title: "AutoCAD MOVE（移動）指令"
+metaTitle: "CAD 移動指令（MOVE）用法與快捷鍵 M"
+description: "AutoCAD MOVE（移動，M）依提示逐步說明：選取物件，指定基準點與第二點，或以 X,Y,Z 輸入位移。可在瀏覽器中免費試用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"CAD 移動的快捷鍵是什麼？","answer":"輸入 M，再按 Enter 或空白鍵。也可以輸入完整的指令名稱，在任何語言版本的 AutoCAD 中都可以使用 _MOVE。"},{"question":"如何將物件移動指定的距離？","answer":"指定基準點，再將移動量輸入為第二點：50,0 會沿 X 移動 50。動態輸入在開始時即為開啟，第一點之後的點都相對於第一點，因此指令歷程會記為 @50,0。也可以在正交或極座標追蹤下，將游標指向要移動的方向，只輸入距離。"},{"question":"如何在 3D 中將物件向上移動？","answer":"為移動量加上 Z：在第二點或 Displacement 輸入 0,0,5，選集便會升高 5。未輸入 Z 的點位於目前的高程。"},{"question":"MOVE 和 STRETCH 有什麼不同？","answer":"MOVE 移動整個物件。STRETCH 只移動框選窗內的端點與頂點，並拉伸它們所屬的物件。"}]
+---
+
+MOVE（移動）指令將選取的物件從一處移到另一處：選取物件，指定基準點，再指定第二點，物件便依第一點到第二點的距離與方向移動。物件的其他部分都不會改變。如同 AutoCAD，在指令前選取的物件就是要移動的物件；點可以點選、鎖點或輸入；指定第二點時，選集會隨游標移動，並從基準點拉出一條線。整次移動為一個步驟，退回一次即可復原。
+
+- **指令：** `MOVE`
+- **快捷鍵：** `M`
+- **面板：** [修改](/docs/commands#modify)
+- **試試看：** [開啟編輯器](/zh-tw/draw)，輸入 `M` 並按 Enter。
+
+## 在指令行中 [#session]
+
+引擎繪製它，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。
+
+<Session name="move" caption="一個圓向右移動 50：點選圓，以其中心點為基準點，再輸入第二點。" />
+
+## 選項 [#options]
+
+### `Displacement` (`D`) [#displacement]
+
+在基準點的提示下選擇，或在該處按 Enter（其預設值）：以向量指定移動量，`10,5` 表示沿 X 移動 10、沿 Y 移動 5，預設值為該圖面中 MOVE 上一次使用的位移。在第二點的提示下按 Enter 也有相同作用，此時以基準點的座標作為位移。
+
+## 尚未支援的功能 [#missing]
+
+AutoCAD 在選取物件提示下的兩種選取模式：群組與多重；以及按住 Ctrl 點選實體的面、邊或頂點來改變其形狀。選集隨游標移動時顯示各物件的顏色，但不顯示線型和線粗；圖塊參考中的物件全部以該參考的顏色顯示。
+
+[功能與尚缺項目的詳細說明（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#move--m--es-desplaza--d--pt-br-mover--m--fr-deplacer--dp--it-sposta--s--de-schieben--s--ru-перенести--п--pl-przesuń--prs--cs-posun--pos--hu-mozgat--mo)
+
+## 常見問題 [#questions]
+
+### CAD 移動的快捷鍵是什麼？
+
+輸入 `M`，再按 Enter 或空白鍵。也可以輸入完整的指令名稱，在任何語言版本的 AutoCAD 中都可以使用 `_MOVE`。
+
+### 如何將物件移動指定的距離？
+
+指定基準點，再將移動量輸入為第二點：`50,0` 會沿 X 移動 50。動態輸入在開始時即為開啟，第一點之後的點都相對於第一點，因此指令歷程會記為 `@50,0`。也可以在正交或極座標追蹤下，將游標指向要移動的方向，只輸入距離。
+
+### 如何在 3D 中將物件向上移動？
+
+為移動量加上 Z：在第二點或 `Displacement` 輸入 `0,0,5`，選集便會升高 5。未輸入 Z 的點位於目前的高程。
+
+### MOVE 和 STRETCH 有什麼不同？
+
+MOVE 移動整個物件。[`STRETCH`](/docs/commands/stretch) 只移動框選窗內的端點與頂點，並拉伸它們所屬的物件。
+
+## 相關指令 [#related]
+
+- [AutoCAD COPY（複製）指令](/docs/commands/copy)
+- [AutoCAD ROTATE（旋轉）指令](/docs/commands/rotate)
+- [AutoCAD STRETCH（拉伸）指令](/docs/commands/stretch)
+- [AutoCAD SCALE（比例）指令](/docs/commands/scale)

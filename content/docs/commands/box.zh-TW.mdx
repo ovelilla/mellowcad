@@ -1,0 +1,71 @@
+---
+title: "AutoCAD BOX（方塊）指令"
+metaTitle: "CAD 3D 方塊指令（BOX）用法與選項"
+description: "AutoCAD 方塊（BOX）依提示逐步說明如何繪製 3D 實體方塊：兩個角點與高度、中心點、立方塊、長度與兩點。可在瀏覽器中免費試用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD 如何繪製 3D 方塊？","answer":"執行 BOX，指定一個角點，再指定對角點，然後指定高度：0,0、60,40 與 25 即繪製出範例中的方塊。以 Length 與寬度取代對角點，方塊可以轉向任意角度。"},{"question":"為什麼我的方塊看起來像矩形？","answer":"您正從上方以平面視圖檢視它。請旋轉視圖：按一下 ViewCube 的角點、執行 -VIEW 並選擇 SEIso，或使用 3DORBIT。VSCURRENT 搭配 Hidden 會隱藏後方的邊。"},{"question":"如何繪製立方體？","answer":"指定第一個角點，再選擇 Cube 並輸入邊長。"},{"question":"如何從中心點繪製方塊？","answer":"選擇 Center 並指定中心點，再指定角點、Cube 或 Length：方塊以該點為中心，高度方向也是。"}]
+---
+
+BOX（方塊）指令繪製各邊沿 UCS 軸向的 3D 實體方塊：指定第一個角點、另一個角點，再指定高度。高度沿 UCS 的 Z 軸向上，負值則向下，也可以點選一點，以其與角點的距離作為高度；另一個角點若與第一個角點的 Z 不同，會直接決定高度而不再詢問。上一次的高度，以及立方塊或「長度」上一次的長度與寬度，會作為預設值提供，按 Enter 即採用，並與其他基本元素及 [`EXTRUDE`](/docs/commands/extrude) 共用。方塊位於目前的圖層上，一個步驟即可「退回」。
+
+方塊會保留其尺寸：[`LIST`](/docs/commands/list) 會顯示其位置、長度、寬度、高度與旋轉，「性質」選項板可輸入前四項。其掣點可以移動、拉伸方塊，在非平面視圖中還可設定其高度。它是 3D 實體，可用於 [`UNION`](/docs/commands/union)、[`SUBTRACT`](/docs/commands/subtract) 與 MellowCAD 其餘的 3D 功能；MellowCAD 的 3D 只有實體，且仍不完整。
+
+- **指令：** `BOX`
+- **面板：** [繪製](/docs/commands#draw)
+- **試試看：** [開啟編輯器](/zh-tw/draw)，輸入 `BOX` 並按 Enter。
+
+## 在指令行中 [#session]
+
+引擎繪製它，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。
+
+<Session name="box" caption="一個 60 x 40 x 25 的方塊，以兩個角點與高度建立，以「隱藏」視覺型式從東南方檢視。" />
+
+## 選項 [#options]
+
+### `Center` (`C`) [#center]
+
+在第一個提示中：要求中心點，再要求角點、`Cube` 或 `Length`。方塊以該點為中心，高度方向也是。
+
+### `Cube` (`C`) [#cube]
+
+在另一個角點提示中：要求長度，可輸入或點選，並建立每邊都是該長度的立方塊。輸入的長度朝游標方向延伸，負值則朝反方向。
+
+### `Length` (`L`) [#length]
+
+在另一個角點提示中：要求長度，再要求寬度。長度朝游標方向延伸，因此方塊可以呈任意角度；寬度則朝游標所在的一側。
+
+### `2Point` (`2P`) [#2point]
+
+在高度提示中：要求兩點，高度即為兩點之間的距離。
+
+## 尚未支援的功能 [#missing]
+
+從作用中的掣點執行移動、旋轉、比例與鏡射，AutoCAD 以按 Enter 循環切換。專屬的 3D 指令（3DMOVE、3DROTATE、3DSCALE、MIRROR3D、ROTATE3D、ALIGN、3DALIGN）及其小控件，以及逐一移動其面、邊與頂點。動態 UCS。指定角點、長度與寬度時，AutoCAD 所繪製的點線標註。以 [`FILLET`](/docs/commands/fillet) 與 [`CHAMFER`](/docs/commands/chamfer) 處理其邊，此功能由 [`FILLETEDGE`](/docs/commands/filletedge) 與 [`CHAMFEREDGE`](/docs/commands/chamferedge) 提供。「實體歷程」的「歷程」（記錄）與「展示歷程」，以及「材料」列。[`VSCURRENT`](/docs/commands/vscurrent) 除「2D 線架構」、「隱藏」與「概念」以外所缺少的視覺型式。
+
+[功能與尚缺項目的詳細說明（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#box--es-prismarect--pt-br-caixa--fr-boite--it-parallelepipedo--de-quader--ru-ящик--pl-kostka--cs-kvádr--hu-ttest)
+
+## 常見問題 [#questions]
+
+### AutoCAD 如何繪製 3D 方塊？
+
+執行 BOX，指定一個角點，再指定對角點，然後指定高度：`0,0`、`60,40` 與 `25` 即繪製出範例中的方塊。以 `Length` 與寬度取代對角點，方塊可以轉向任意角度。
+
+### 為什麼我的方塊看起來像矩形？
+
+您正從上方以平面視圖檢視它。請旋轉視圖：按一下 ViewCube 的角點、執行 `-VIEW` 並選擇 `SEIso`，或使用 [`3DORBIT`](/docs/commands/3dorbit)。[`VSCURRENT`](/docs/commands/vscurrent) 搭配 `Hidden` 會隱藏後方的邊。
+
+### 如何繪製立方體？
+
+指定第一個角點，再選擇 `Cube` 並輸入邊長。
+
+### 如何從中心點繪製方塊？
+
+選擇 `Center` 並指定中心點，再指定角點、`Cube` 或 `Length`：方塊以該點為中心，高度方向也是。
+
+## 相關指令 [#related]
+
+- [AutoCAD WEDGE（楔形塊）指令](/docs/commands/wedge)
+- [AutoCAD CYLINDER（圓柱）指令](/docs/commands/cylinder)
+- [AutoCAD EXTRUDE（擠出）指令](/docs/commands/extrude)
+- [AutoCAD UNION（聯集）指令](/docs/commands/union)

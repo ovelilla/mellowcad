@@ -1,0 +1,61 @@
+---
+title: "AutoCAD DIMSPACE（標註空間）指令"
+metaTitle: "CAD 標註對齊與間距：標註空間（DIMSPACE）"
+description: "AutoCAD 的 DIMSPACE 如何平均調整標註之間的間距，或以 0 將標註對齊，以及「自動」如何依文字高度決定間距。可在瀏覽器中免費試用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD 如何對齊標註？","answer":"執行 DIMSPACE，點選要讓其他標註對齊的那一個，選取其他標註，按 Enter 並輸入 0：所有標註線都會移到基準標註的線上。"},{"question":"如何讓標註之間的間距相等？","answer":"執行 DIMSPACE，點選最靠近物件的標註做為基準，選取其餘標註並按兩次 Enter：Auto 會以文字高度的兩倍調整間距。也可以輸入想要的距離，例如 8。"},{"question":"AutoCAD 標註間距的預設值是多少？","answer":"DIMSPACE 的 Auto 為標註型式文字高度的兩倍。DIMBASELINE 則對每個新增的標註使用型式的基準線間距，ISO-25 為 3.75。"},{"question":"為什麼 DIMSPACE 沒有移動某個標註？","answer":"它只調整與基準標註平行的標註：角度不同的標註會被計入但保持原位。角度標註目前還無法調整間距。"}]
+---
+
+DIMSPACE（標註空間）指令調整平行的線性與對齊式標註之間的間距。先選取基準標註（保持不動），再選取要調整間距的標註；按 Enter 結束選取，並要求輸入間距。接著每個標註的標註線會依其排列順序遠離基準標註移動，與前一個標註相隔該距離。間距為 0 時，所有標註都會對齊到基準標註的線上：繪製時高低錯落的一串標註，便能排成一列。它只變更標註線的位置，且為一個步驟，可用 `U` 退回。
+
+基準標註可以點選、以輸入點選取，或以 `Last` 選取；若不是標註，會顯示 `Selected object is not a dimension.` 並再次詢問。在指令之前選取的選集，即為要調整間距的選集。與基準標註成某一角度的標註會被計入但保持原位，負的間距會被拒絕，並顯示 `Invalid spacing value, spacing value cannot be negative.`。
+
+- **指令：** `DIMSPACE`
+- **面板：** [註解](/docs/commands#annotate)
+- **試試看：** [開啟編輯器](/zh-tw/draw)，輸入 `DIMSPACE` 並按 Enter。
+
+## 在指令行中 [#session]
+
+引擎繪製它，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。
+
+<Session name="dimspaceBefore" caption="板件上緣以連續的三個標註標註，每個標註依繪製時的情形各在不同高度。" />
+
+<Session name="dimspace" caption="從第一個標註執行 DIMSPACE，選取另外兩個並輸入間距 0：這串標註對齊到同一條線上。" />
+
+## 選項 [#options]
+
+### `Auto` (`A`) [#auto]
+
+預設值，按 Enter 即採用：間距為基準標註之標註型式文字高度的兩倍，再乘以其整體比例，讓這疊標註容得下自己的文字。
+
+## 尚未支援的功能 [#missing]
+
+角度標註，DIMSPACE 目前還無法調整其間距。AutoCAD 只會移動需要移動的標註；這裡則會重新調整所有選取標註的間距。
+
+[功能與尚缺項目的詳細說明（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimspace--es-acoespac--pt-br-espacocota--fr-espacecotes--it-spazioquote--de-bemplatz--ru-рзмсмещ--pl-przestrzwym--cs-kótmezera--hu-méretköz)
+
+## 常見問題 [#questions]
+
+### AutoCAD 如何對齊標註？
+
+執行 DIMSPACE，點選要讓其他標註對齊的那一個，選取其他標註，按 Enter 並輸入 `0`：所有標註線都會移到基準標註的線上。
+
+### 如何讓標註之間的間距相等？
+
+執行 DIMSPACE，點選最靠近物件的標註做為基準，選取其餘標註並按兩次 Enter：`Auto` 會以文字高度的兩倍調整間距。也可以輸入想要的距離，例如 `8`。
+
+### AutoCAD 標註間距的預設值是多少？
+
+DIMSPACE 的 `Auto` 為標註型式文字高度的兩倍。[`DIMBASELINE`](/docs/commands/dimbaseline) 則對每個新增的標註使用型式的基準線間距，ISO-25 為 3.75。
+
+### 為什麼 DIMSPACE 沒有移動某個標註？
+
+它只調整與基準標註平行的標註：角度不同的標註會被計入但保持原位。角度標註目前還無法調整間距。
+
+## 相關指令 [#related]
+
+- [AutoCAD 尺寸標註：DIMLINEAR（線性）指令](/docs/commands/dimlinear)
+- [AutoCAD DIMCONTINUE（連續式）標註指令](/docs/commands/dimcontinue)
+- [AutoCAD DIMBASELINE（基線式）標註指令](/docs/commands/dimbaseline)
+- [AutoCAD DIMSTYLE（標註型式）指令](/docs/commands/dimstyle)

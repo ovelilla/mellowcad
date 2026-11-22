@@ -1,0 +1,78 @@
+---
+title: "AutoCAD EXTEND（延伸）指令"
+metaTitle: "CAD 延伸指令（EXTEND）用法與快捷鍵 EX"
+description: "AutoCAD 延伸指令 EXTEND（EX）逐一提示說明：快速與標準模式、邊界邊、籬選、框選、邊，以及按住 Shift 修剪。可在瀏覽器中免費線上試用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD 延伸指令的快捷鍵是什麼？","answer":"輸入 EX，再按 Enter 或空白鍵。輸入完整名稱也可以，而 _EXTEND 在任何語言版本的 AutoCAD 中都適用。"},{"question":"CAD 延伸不了，為什麼顯示沒有邊？","answer":"因為該端點要延伸的路徑上沒有任何物件橫跨。線的另一端可以到達某個邊時，會顯示 「No edge in that direction.」，否則線或弧會顯示 「Path does not intersect with the bounding edge.」；聚合線或雲形線則顯示 「Object does not intersect an edge.」。請在靠近另一端的地方點選，或在標準模式下選擇 Edge 與 Extend，讓未達路徑的邊界也能視為延長後的邊界。圓、封閉的聚合線、完整的橢圓、文字或填充線完全無法延伸：「Cannot EXTEND this object.」"},{"question":"如何一次延伸多條線？","answer":"在空白處點選，再點選第二點：籬選線所穿過的每個物件都會從較近的一端延伸，一次完成。也可以選擇 Crossing，在要延伸的端點上框出一個窗選。"},{"question":"如何用 EXTEND 修剪？","answer":"點選時按住 Shift 鍵：該段會修剪到最近的交點，與 TRIM 相同；沒有任何物件與其相交的物件會被刪除。下一次不按 Shift 點選，就恢復為延伸。"}]
+---
+
+EXTEND（延伸）指令將物件延長，直到與另一個物件相接：在要延長的端點附近點選物件，該端點就會延伸至路徑上最近的邊。可延伸的物件有線、弧、橢圓弧、開放的聚合線（沿其端點線段延伸，直線段直線延伸，弧線段沿弧延伸）、3D 聚合線與開放的雲形線。與 AutoCAD 一樣，指令以快速模式開始：所有物件都是邊界。點選時按住 Shift 鍵則改為修剪，與 [`TRIM`](/docs/commands/trim) 相同。每次點選是一個步驟，退回一次即可復原；按 Enter 結束指令。
+
+- **指令：** `EXTEND`
+- **快捷鍵：** `EX`
+- **面板：** [修改](/docs/commands#modify)
+- **試試看：** [開啟編輯器](/zh-tw/draw)，輸入 `EX` 並按 Enter。
+
+## 在指令行中 [#session]
+
+引擎繪製它，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。
+
+<Session name="extend" caption="兩條線延伸至橫跨其路徑的線：在快速模式下，各在要延伸的端點附近點選一次。" />
+
+## 選項 [#options]
+
+### `Boundary edges` (`B`) [#boundary]
+
+選擇作為邊界的物件：選取這些物件，或按 Enter 以所有物件為邊界。此後無論模式為何，只有這些物件是邊界，直到指令結束。
+
+### `Fence` (`F`) [#fence]
+
+要求指定一條線的各點，可指定任意多點，直到按 Enter：與籬選線相交的每個物件，都從較靠近交點的一端延伸，一次完成。標準模式會列出此選項；快速模式也接受此選項。
+
+### `Crossing` (`C`) [#crossing]
+
+要求指定窗選的兩個角點：外框所穿過的每個物件都會延伸，一次完成。
+
+### `mOde` (`O`) [#mode]
+
+在 `Quick` 與 `Standard` 之間切換。在標準模式下，EXTEND 會先要求選取邊界邊（按 Enter 選取全部），並列出籬選與邊選項。模式由 EXTEND 與 TRIM 共用，在整個階段作業中持續有效。
+
+### `Edge` (`E`) [#edge]
+
+僅限標準模式。選擇 `Extend` 時，物件也會停在邊界延長後所在的位置：線向兩端延長，弧沿其圓延長；因此線可以延伸至未達其路徑的另一條線。預設值為 `No extend`。
+
+### `Undo` (`U`) [#undo]
+
+提示收到回應後（點選、籬選或窗選）才會列出：退回最後一次延伸；沒有可退回的項目時會顯示訊息。
+
+## 尚未支援的功能 [#missing]
+
+投影：不提供 AutoCAD 的投影選項（無、UCS、視圖），所有計算都投影在 UCS 的 XY 平面上進行，即 AutoCAD 的預設值 UCS。籬選目前還無法用游標拖曳，只能逐點點選。模式與邊的選擇只在階段作業中有效，而 AutoCAD 會在階段作業之間保留。與 UCS 成角度的物件（雲形線除外）既不能作為邊界，也不會被延伸；以 [`PEDIT`](/docs/commands/pedit) 的 `Fit` 平滑化的聚合線會被拒絕，而 AutoCAD 會延長其最後一段弧。
+
+[功能與尚缺項目的詳細說明（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#trim--extend--es-recorta--rr--alarga--al--pt-br-aparar--ap--estender--est--fr-ajuster--aj--prolonger--pr--prolonge--it-taglia--ta--estendi--es--de-stutzen--su--dehnen--de--ru-обрезать--обр--удлинить--у--pl-utnij--ut--wydłuż--wyd--cs-ořež--or--prodluž--pd--hu-metsz--me--elér--el)
+
+## 常見問題 [#questions]
+
+### AutoCAD 延伸指令的快捷鍵是什麼？
+
+輸入 `EX`，再按 Enter 或空白鍵。輸入完整名稱也可以，而 `_EXTEND` 在任何語言版本的 AutoCAD 中都適用。
+
+### CAD 延伸不了，為什麼顯示沒有邊？
+
+因為該端點要延伸的路徑上沒有任何物件橫跨。線的另一端可以到達某個邊時，會顯示 `No edge in that direction.`，否則線或弧會顯示 `Path does not intersect with the bounding edge.`；聚合線或雲形線則顯示 `Object does not intersect an edge.`。請在靠近另一端的地方點選，或在標準模式下選擇 `Edge` 與 `Extend`，讓未達路徑的邊界也能視為延長後的邊界。圓、封閉的聚合線、完整的橢圓、文字或填充線完全無法延伸：`Cannot EXTEND this object.`
+
+### 如何一次延伸多條線？
+
+在空白處點選，再點選第二點：籬選線所穿過的每個物件都會從較近的一端延伸，一次完成。也可以選擇 `Crossing`，在要延伸的端點上框出一個窗選。
+
+### 如何用 EXTEND 修剪？
+
+點選時按住 Shift 鍵：該段會修剪到最近的交點，與 [`TRIM`](/docs/commands/trim) 相同；沒有任何物件與其相交的物件會被刪除。下一次不按 Shift 點選，就恢復為延伸。
+
+## 相關指令 [#related]
+
+- [AutoCAD TRIM（修剪）指令](/docs/commands/trim)
+- [AutoCAD OFFSET（偏移）指令](/docs/commands/offset)
+- [AutoCAD FILLET（圓角）指令](/docs/commands/fillet)
+- [AutoCAD JOIN（接合）指令](/docs/commands/join)

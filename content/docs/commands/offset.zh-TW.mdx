@@ -1,0 +1,78 @@
+---
+title: "AutoCAD OFFSET（偏移）指令"
+metaTitle: "CAD 偏移指令（OFFSET）用法與快捷鍵 O"
+description: "AutoCAD OFFSET（偏移，O）依提示逐步說明：距離或通過、刪除與圖層，一次一個物件、一側。偏移複製與無法偏移的原因。可在瀏覽器中免費試用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"CAD 偏移的快捷鍵是什麼？","answer":"輸入 O，再按 Enter 或空白鍵。也可以輸入完整的指令名稱，在任何語言版本的 AutoCAD 中都可以使用 _OFFSET。"},{"question":"為什麼物件無法偏移？","answer":"OFFSET 可以偏移線、弧、圓、2D 聚合線、橢圓和雲形線。文字、多行文字、圖塊參考、標註和填充線會以 「Cannot offset that object.」 拒絕；偏移距離會使圓、弧或聚合線縮小到消失時也一樣。鎖住的圖層上的物件無法點選，3D 聚合線則會略過。"},{"question":"如何將同一條線連續偏移複製多次？","answer":"點選該線，在指定那一側的提示下輸入 Multiple 的字母：在那一側每按一下就多一個複本，每個都比上一個再遠一個距離。也可以保留預設值，每次點選最新的複本。"},{"question":"如何將偏移的複本放在目前的圖層？","answer":"在第一個提示下選擇 Layer，再選擇 Current。之後每個複本都會放在目前的圖層，直到再次選擇 Source 為止。"}]
+---
+
+OFFSET（偏移）指令在與物件平行的位置繪製一個複本，距離可以輸入，或通過點選的點：線產生平行線，圓或弧產生同心的圓或弧，聚合線產生內側或外側的輪廓，橢圓或雲形線產生沿著它的雲形線。如同 AutoCAD，一次只處理一個物件：距離只需指定一次，之後可以重複點選物件以及要放置複本的那一側，次數不限。按 Enter 結束。
+
+- **指令：** `OFFSET`
+- **快捷鍵：** `O`
+- **面板：** [修改](/docs/commands#modify)
+- **試試看：** [開啟編輯器](/zh-tw/draw)，輸入 `O` 並按 Enter。
+
+## 在指令行中 [#session]
+
+引擎繪製它，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。
+
+<Session name="offset" caption="矩形向內偏移 6，圓向外偏移 6：各自先點選物件，再點選要偏移的那一側。" />
+
+## 選項 [#options]
+
+### `Through` (`T`) [#through]
+
+以點取代距離，每個複本都通過點選或輸入的點。這是第一個提示的預設值，因此在指定距離之前，按 Enter 就會選擇它；指定距離之後，在該圖面中按 Enter 會重複上一次的距離。
+
+### `Erase` (`E`) [#erase]
+
+詢問偏移後是否刪除來源物件，`Yes` 或 `No`（預設值）。選擇 `Yes` 時，複本會取代原物件。此設定在階段作業中保留，下一次 OFFSET 會在第一行顯示。
+
+### `Layer` (`L`) [#layer]
+
+詢問複本放在哪個圖層：`Current` 圖層，或 `Source` 物件的圖層（預設值）。此設定同樣在階段作業中保留。
+
+### `Exit` (`E`) [#exit]
+
+結束指令，與在選取物件的提示下按 Enter 相同。
+
+### `Multiple` (`M`) [#multiple]
+
+在指定那一側的提示下選擇：不需重新點選，即可持續偏移同一個物件，每個複本都比上一個再向外一個距離，直到按 Enter 或選擇 `Exit`。
+
+### `Undo` (`U`) [#undo]
+
+取消最後一個複本，無論它來自哪個物件，然後再次要求選取物件。沒有可以取消的複本時，會顯示訊息說明。
+
+## 尚未支援的功能 [#missing]
+
+OFFSETGAPTYPE 的 1 和 2：偏移後聚合線的轉角一律如 0 的方式封閉，延伸線段使其相交。雲形線或橢圓的偏移在 AutoCAD 的公差範圍內，但節點位置是 MellowCAD 決定的，與 AutoCAD 不同。在雲形線上使用「通過」時，工具提示顯示的是 X 和 Y，而不是距離。
+
+[功能與尚缺項目的詳細說明（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#offset--o--es-desfase--df--eq--pt-br-deslocamento--fr-decaler--dc--it-offset--of--de-versetz--vs--ru-подобие--под--pl-odsuń--od--cs-ekvid--e--hu-párh--p)
+
+## 常見問題 [#questions]
+
+### CAD 偏移的快捷鍵是什麼？
+
+輸入 `O`，再按 Enter 或空白鍵。也可以輸入完整的指令名稱，在任何語言版本的 AutoCAD 中都可以使用 `_OFFSET`。
+
+### 為什麼物件無法偏移？
+
+OFFSET 可以偏移線、弧、圓、2D 聚合線、橢圓和雲形線。文字、多行文字、圖塊參考、標註和填充線會以 `Cannot offset that object.` 拒絕；偏移距離會使圓、弧或聚合線縮小到消失時也一樣。鎖住的圖層上的物件無法點選，3D 聚合線則會略過。
+
+### 如何將同一條線連續偏移複製多次？
+
+點選該線，在指定那一側的提示下輸入 `Multiple` 的字母：在那一側每按一下就多一個複本，每個都比上一個再遠一個距離。也可以保留預設值，每次點選最新的複本。
+
+### 如何將偏移的複本放在目前的圖層？
+
+在第一個提示下選擇 `Layer`，再選擇 `Current`。之後每個複本都會放在目前的圖層，直到再次選擇 `Source` 為止。
+
+## 相關指令 [#related]
+
+- [AutoCAD TRIM（修剪）指令](/docs/commands/trim)
+- [AutoCAD EXTEND（延伸）指令](/docs/commands/extend)
+- [AutoCAD FILLET（圓角）指令](/docs/commands/fillet)
+- [AutoCAD COPY（複製）指令](/docs/commands/copy)

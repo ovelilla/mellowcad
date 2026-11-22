@@ -1,0 +1,166 @@
+---
+title: "AutoCAD 練習題"
+metaTitle: "CAD 練習圖與 AutoCAD 練習題，免費附解答"
+description: "適合初學者以上的 AutoCAD 練習圖：2D、等角與 3D，每題都有逐步解答，並可連同圖面在免費的線上編輯器中開啟。"
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"哪裡可以找到 AutoCAD 練習題？","answer":"就在這裡：每個練習題都有已標註的圖面、所練習的指令與逐步解答，並可在瀏覽器中、以操作方式與 AutoCAD 相同的免費編輯器開啟。請從初級練習題開始；其中用到的每個指令，都連結到其功能與所提示選項的說明。"},{"question":"可以免費在線上練習 AutoCAD 嗎？","answer":"可以。MellowCAD 在瀏覽器中執行，免費且無需帳戶：您以與繁體中文版 AutoCAD 相同的英文名稱輸入 AutoCAD 的指令與快捷鍵，並以相同的順序、相同的選項字母回應其提示。它不是 AutoCAD：它可以開啟與儲存 DXF 檔案，但尚不支援 DWG，其 3D 實體也仍為部分支援。"},{"question":"練習題有解答嗎？","answer":"每個練習題的圖面下方都有逐步解答。引擎繪製每個步驟並寫出指令行歷程，因此您可以逐行比對自己的歷程。"},{"question":"可以列印練習題或儲存為 PDF 嗎？","answer":"可以。練習題的頁面可以單獨列印，以白底深色線條呈現，先是圖面，再是步驟，並可透過瀏覽器的列印對話方塊儲存為 PDF。"}]
+---
+
+用來練習 AutoCAD 的圖面，從第一個墊片到 3D 實體，每題都附有尺寸、所練習的指令，以及逐步解答。引擎繪製每個步驟，並依您輸入的方式寫出其指令行歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。在編輯器中開啟一題，其圖面就位於您繪圖的空間旁邊，全部在您的瀏覽器中進行，無需安裝，也無需建立帳戶。
+
+## 初級 [#beginner]
+
+### CAD 練習圖：墊片 [#gasket]
+
+<Session name="exercises/gasket" caption="120 × 80 的墊片，含標註。" />
+
+AutoCAD 入門練習：繪製圓角板、中心孔、由一個孔複製出的 4 個孔，以及中心線與標註，附逐步解說。免費線上練習。
+
+- **練習題：** 初級 · 機械 · 2D
+- **指令：** [`RECTANG`](/docs/commands/rectang), [`CIRCLE`](/docs/commands/circle), [`COPY`](/docs/commands/copy), [`LINE`](/docs/commands/line), [`DIMLINEAR`](/docs/commands/dimlinear), [`DIMDIAMETER`](/docs/commands/dimdiameter)
+- [CAD 練習圖：墊片](/docs/exercises/gasket)
+
+### CAD 練習圖：L 型支架 [#l-bracket]
+
+<Session name="exercises/l-bracket" caption="100 × 80 的 L 型支架，自左下角點起標註。" />
+
+AutoCAD 入門練習：以相對座標繪製 L 型支架的輪廓、圓角、兩個孔與基線式標註，附逐步解說。免費線上練習。
+
+- **練習題：** 初級 · 機械 · 2D
+- **指令：** [`LINE`](/docs/commands/line), [`FILLET`](/docs/commands/fillet), [`CIRCLE`](/docs/commands/circle), [`DIMLINEAR`](/docs/commands/dimlinear), [`DIMBASELINE`](/docs/commands/dimbaseline), [`DIMRADIUS`](/docs/commands/dimradius), [`DIMDIAMETER`](/docs/commands/dimdiameter)
+- [CAD 練習圖：L 型支架](/docs/exercises/l-bracket)
+
+### CAD 練習圖：樓梯平面圖 [#stairs]
+
+<Session name="exercises/stairs" caption="直線樓梯的平面圖，280 × 100 公分，箭頭指向上樓方向。" />
+
+AutoCAD 建築練習：繪製直線樓梯平面圖，以一條線加矩形陣列排出 10 階踏面，並畫上樓箭頭與標註。免費線上練習，附逐步解說。
+
+- **練習題：** 初級 · 建築 · 2D
+- **指令：** [`RECTANG`](/docs/commands/rectang), [`LINE`](/docs/commands/line), [`ARRAYRECT`](/docs/commands/arrayrect), [`PLINE`](/docs/commands/pline), [`DIMLINEAR`](/docs/commands/dimlinear)
+- [CAD 練習圖：樓梯平面圖](/docs/exercises/stairs)
+
+### CAD 3D 練習圖：安裝板 [#mounting-plate]
+
+<Session name="exercises/mounting-plate" caption="板的輪廓，100 × 60，含 4 個孔，已標註。" />
+
+AutoCAD 3D 入門練習：建立面域、以差集挖出孔，再一次擠出即成安裝板實體，附逐步解說。免費線上練習 3D 實體。
+
+- **練習題：** 初級 · 機械 · 3D 實體
+- **指令：** [`RECTANG`](/docs/commands/rectang), [`CIRCLE`](/docs/commands/circle), [`COPY`](/docs/commands/copy), [`REGION`](/docs/commands/region), [`SUBTRACT`](/docs/commands/subtract), [`-VIEW`](/docs/commands#-view), [`VSCURRENT`](/docs/commands/vscurrent), [`EXTRUDE`](/docs/commands/extrude), [`ZOOM`](/docs/commands/zoom)
+- [CAD 3D 練習圖：安裝板](/docs/exercises/mounting-plate)
+
+## 中級 [#intermediate]
+
+### CAD 練習圖：法蘭 [#flange]
+
+<Session name="exercises/flange" caption="外徑 140 的法蘭，含鍵槽、8 個孔與直徑標註。" />
+
+AutoCAD 機械練習題：在軸孔上修剪出鍵槽，以環形陣列排列 8 個孔，並繪製中心線與直徑標註，附逐步解說。免費線上練習。
+
+- **練習題：** 中級 · 機械 · 2D
+- **指令：** [`CIRCLE`](/docs/commands/circle), [`RECTANG`](/docs/commands/rectang), [`TRIM`](/docs/commands/trim), [`ARRAYPOLAR`](/docs/commands/arraypolar), [`LINE`](/docs/commands/line), [`DIMDIAMETER`](/docs/commands/dimdiameter), [`DIMLINEAR`](/docs/commands/dimlinear)
+- [CAD 練習圖：法蘭](/docs/exercises/flange)
+
+### CAD 練習圖：圓桌與椅子 [#round-table]
+
+<Session name="exercises/round-table" caption="直徑 120 的圓桌與 6 張椅子的平面圖，以公分標註。" />
+
+AutoCAD 練習：繪製圓桌與 6 張椅子，先畫一張椅子，再繞桌子的中心點環形陣列，並加上標註，附逐步解說。免費線上練習。
+
+- **練習題：** 中級 · 建築 · 2D
+- **指令：** [`CIRCLE`](/docs/commands/circle), [`RECTANG`](/docs/commands/rectang), [`ARRAYPOLAR`](/docs/commands/arraypolar), [`DIMDIAMETER`](/docs/commands/dimdiameter), [`DIMLINEAR`](/docs/commands/dimlinear)
+- [CAD 練習圖：圓桌與椅子](/docs/exercises/round-table)
+
+### CAD 練習圖：土地邊界 [#plot-of-land]
+
+<Session name="exercises/plot-of-land" caption="五邊形的一塊土地，單位為公尺，各邊與一個角度皆已標註。" />
+
+AutoCAD 土木練習：依各邊的長度與角度以極座標繪製土地邊界，再量測面積並加上標註。免費線上練習，附逐步解說。
+
+- **練習題：** 中級 · 土木 · 2D
+- **指令：** [`PLINE`](/docs/commands/pline), [`AREA`](/docs/commands/area), [`DIMALIGNED`](/docs/commands/dimaligned), [`DIMANGULAR`](/docs/commands/dimangular)
+- [CAD 練習圖：土地邊界](/docs/exercises/plot-of-land)
+
+### CAD 練習圖：階梯軸 [#shaft]
+
+<Session name="exercises/shaft" caption="階梯軸的側視圖，全長 150，各段長度以連續式標註。" />
+
+AutoCAD 機械練習：以聚合線繪製階梯軸的一半輪廓，倒角後沿軸線鏡射，再以連續式標註長度。免費線上練習，附逐步解說。
+
+- **練習題：** 中級 · 機械 · 2D
+- **指令：** [`PLINE`](/docs/commands/pline), [`CHAMFER`](/docs/commands/chamfer), [`MIRROR`](/docs/commands/mirror), [`LINE`](/docs/commands/line), [`DIMLINEAR`](/docs/commands/dimlinear), [`DIMCONTINUE`](/docs/commands/dimcontinue)
+- [CAD 練習圖：階梯軸](/docs/exercises/shaft)
+
+### CAD 等角圖練習圖：階梯塊 [#isometric-block]
+
+<Session name="exercises/isometric-block" caption="等角圖中的階梯塊，長 60、深 40、高 40，尺寸沿各邊標註。" />
+
+在 AutoCAD 中以 LINE 指令與極座標沿 30°、90°、150° 軸畫出階梯塊的等角圖，並加上標註。免費線上練習，附逐步解說。
+
+- **練習題：** 中級 · 機械 · 等角
+- **指令：** [`LINE`](/docs/commands/line), [`DIMALIGNED`](/docs/commands/dimaligned)
+- [CAD 等角圖練習圖：階梯塊](/docs/exercises/isometric-block)
+
+### CAD 3D 練習圖：皮帶輪 [#pulley]
+
+<Session name="exercises/pulley" caption="皮帶輪的半剖面位於其軸線旁，與軸線的距離皆已標註。" />
+
+AutoCAD 3D 練習：以封閉聚合線繪製皮帶輪的半剖面，繞 Y 軸迴轉成實體，附逐步解說。免費線上練習 3D 實體。
+
+- **練習題：** 中級 · 機械 · 3D 實體
+- **指令：** [`PLINE`](/docs/commands/pline), [`-VIEW`](/docs/commands#-view), [`VSCURRENT`](/docs/commands/vscurrent), [`REVOLVE`](/docs/commands/revolve), [`ZOOM`](/docs/commands/zoom)
+- [CAD 3D 練習圖：皮帶輪](/docs/exercises/pulley)
+
+## 進階 [#advanced]
+
+### CAD 練習圖：以切線連接的連桿 [#link]
+
+<Session name="exercises/link" caption="兩個相距 90 的凸轂以切線連接的連桿，含標註。" />
+
+AutoCAD 進階練習：以「相切點」物件鎖點畫出與兩個凸轂都相切的線，修剪其間的弧並加上標註，附逐步解說。免費線上練習。
+
+- **練習題：** 進階 · 機械 · 2D
+- **指令：** [`CIRCLE`](/docs/commands/circle), [`LINE`](/docs/commands/line), [`TRIM`](/docs/commands/trim), [`DIMLINEAR`](/docs/commands/dimlinear), [`DIMRADIUS`](/docs/commands/dimradius), [`DIMDIAMETER`](/docs/commands/dimdiameter)
+- [CAD 練習圖：以切線連接的連桿](/docs/exercises/link)
+
+### CAD 3D 練習圖：軸承座 [#bearing-block]
+
+<Session name="exercises/bearing-block" caption="軸承座的平面圖，100 × 60，凸轂、軸孔與螺栓孔皆已標註。" />
+
+AutoCAD 3D 實體練習：擠出軸承座並聯集，再以圓柱差集出軸孔與兩個螺栓孔，附逐步解說。免費線上練習 3D 實體。
+
+- **練習題：** 進階 · 機械 · 3D 實體
+- **指令：** [`RECTANG`](/docs/commands/rectang), [`CIRCLE`](/docs/commands/circle), [`EXTRUDE`](/docs/commands/extrude), [`UNION`](/docs/commands/union), [`CYLINDER`](/docs/commands/cylinder), [`COPY`](/docs/commands/copy), [`SUBTRACT`](/docs/commands/subtract), [`-VIEW`](/docs/commands#-view), [`VSCURRENT`](/docs/commands/vscurrent), [`ZOOM`](/docs/commands/zoom)
+- [CAD 3D 練習圖：軸承座](/docs/exercises/bearing-block)
+
+## 逐步指南 [#guides]
+
+一次一項，說明練習題所用的技巧：輸入點、房屋的平面圖、將 2D 圖面轉為實體。每份指南都會顯示每個步驟的圖面及其歷程。
+
+- [AutoCAD 座標輸入](/docs/coordinates): CAD 座標輸入教學：在 AutoCAD 中以絕對座標、相對座標與極座標輸入點，依長度與角度畫線，以及使用極座標追蹤。可免費線上練習。
+- [用 AutoCAD 繪製平面圖](/docs/floor-plan): CAD 平面圖教學與範例：在 AutoCAD 中以 OFFSET（偏移）畫出外牆與內牆，以 TRIM（修剪）切出開口，再畫出含開啟弧線的門、窗與標註。
+- [AutoCAD 從 2D 到 3D](/docs/2d-to-3d): CAD 3D 建模與繪圖入門：在 AutoCAD 中擠出、按拉與迴轉封閉輪廓，再以聯集與差集，把 2D 圖面變成 3D 實體。免費線上 3D 實體，仍屬部分功能。
+
+## 練習題的使用方式 [#how]
+
+練習題會連同已標註的圖面在編輯器中開啟，圖面位於原點左側：請如同其解答，從 0,0 開始繪製您的圖面。您繪製的內容會儲存在此瀏覽器中，僅供該練習題使用。您原本正在處理的圖面維持原狀，單獨開啟編輯器時就會回來。若要重新開始練習題，請執行 NEW，再從其頁面開啟。每個頁面都可以單獨列印，先是圖面，再是步驟，並可透過瀏覽器的列印對話方塊儲存為 PDF。
+
+## 常見問題 [#questions]
+
+### 哪裡可以找到 AutoCAD 練習題？
+
+就在這裡：每個練習題都有已標註的圖面、所練習的指令與逐步解答，並可在瀏覽器中、以操作方式與 AutoCAD 相同的免費編輯器開啟。請從初級練習題開始；其中用到的每個指令，都連結到其功能與所提示選項的說明。
+
+### 可以免費在線上練習 AutoCAD 嗎？
+
+可以。MellowCAD 在瀏覽器中執行，免費且無需帳戶：您以與繁體中文版 AutoCAD 相同的英文名稱輸入 AutoCAD 的指令與快捷鍵，並以相同的順序、相同的選項字母回應其提示。它不是 AutoCAD：它可以開啟與儲存 DXF 檔案，但尚不支援 DWG，其 3D 實體也仍為部分支援。
+
+### 練習題有解答嗎？
+
+每個練習題的圖面下方都有逐步解答。引擎繪製每個步驟並寫出指令行歷程，因此您可以逐行比對自己的歷程。
+
+### 可以列印練習題或儲存為 PDF 嗎？
+
+可以。練習題的頁面可以單獨列印，以白底深色線條呈現，先是圖面，再是步驟，並可透過瀏覽器的列印對話方塊儲存為 PDF。

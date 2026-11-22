@@ -1,0 +1,66 @@
+---
+title: "AutoCAD MIRROR（鏡射）指令"
+metaTitle: "CAD 鏡射指令（MIRROR）用法與快捷鍵 MI"
+description: "AutoCAD MIRROR（鏡射，MI）依提示逐步說明：選取物件、鏡射線的兩點，再選擇保留或刪除來源物件。文字鏡射後仍可正常閱讀。可在瀏覽器中免費線上試用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"CAD 鏡射的快捷鍵是什麼？","answer":"輸入 MI，再按 Enter 或空白鍵。也可以輸入完整的指令名稱，在任何語言版本的 AutoCAD 中都可以使用 _MIRROR。"},{"question":"如何鏡射而不讓文字變成反字？","answer":"不需要做任何設定：如同 AutoCAD 的 MIRRTEXT 為 0 時，鏡射後的文字仍正常閱讀，位置落在其文字框鏡射後的地方。"},{"question":"如何鏡射並刪除原物件？","answer":"MIRROR 詢問是否刪除來源物件時，回答 Yes。"},{"question":"如何水平或垂直鏡射？","answer":"開啟正交（F8），沿著要作為鏡射軸的方向指定鏡射線的兩點：垂直線會左右翻轉，水平線會上下翻轉。"}]
+---
+
+MIRROR（鏡射）指令以一條直線為軸，鏡射選取的物件：選取物件，指定鏡射線的第一點和第二點，再回答是否刪除來源物件。鏡射的結果是一個複本，使用預設的「否」時會保留原物件，對稱的零件就是這樣畫一半再鏡射完成。兩點取自 UCS 的平面，因此在正交開啟時畫出的鏡射線，會沿水平或垂直方向直接翻轉。如同 AutoCAD 的 MIRRTEXT 為預設值 0 時，鏡射後的文字仍由左至右閱讀，填充線也保持其圖案的角度。整次執行為一個步驟，退回一次即可復原。
+
+- **指令：** `MIRROR`
+- **快捷鍵：** `MI`
+- **面板：** [修改](/docs/commands#modify)
+- **試試看：** [開啟編輯器](/zh-tw/draw)，輸入 `MI` 並按 Enter。
+
+## 在指令行中 [#session]
+
+引擎繪製它，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。
+
+<Session name="mirror" caption="一個封閉的外形以垂直的鏡射線鏡射，保留來源物件。" />
+
+## 選項 [#options]
+
+### `Yes` (`Y`) [#yes]
+
+刪除來源物件，只留下鏡射結果：等於原地翻轉。
+
+### `No` (`N`) [#no]
+
+預設值：保留來源物件，與鏡射結果並存。
+
+## 尚未支援的功能 [#missing]
+
+MIRRTEXT 和 MIRRHATCH 固定為 0：文字永遠不會鏡射成反字，填充線圖案也永遠不會鏡射。鏡射後的圖塊參考中的文字，會像單獨的文字一樣轉回正常閱讀方向，AutoCAD 則會讓它隨圖塊一起鏡射。鏡射後的橢圓保持原來的法線，因此同一條曲線的起始角度與終止角度，讀數與 AutoCAD 不同。鏡射結果隨游標移動時，顯示各物件的顏色，但不顯示線型和線粗。
+
+[功能與尚缺項目的詳細說明（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#mirror--mi--es-simetria--si--pt-br-espelhar--esp--fr-miroir--mi--it-specchio--sp--de-spiegeln--sp--ru-зеркало--з--pl-lustro--lus--cs-zrcadli--zi--hu-tükröz--tu)
+
+## 常見問題 [#questions]
+
+### CAD 鏡射的快捷鍵是什麼？
+
+輸入 `MI`，再按 Enter 或空白鍵。也可以輸入完整的指令名稱，在任何語言版本的 AutoCAD 中都可以使用 `_MIRROR`。
+
+### 如何鏡射而不讓文字變成反字？
+
+不需要做任何設定：如同 AutoCAD 的 MIRRTEXT 為 0 時，鏡射後的文字仍正常閱讀，位置落在其文字框鏡射後的地方。
+
+### 如何鏡射並刪除原物件？
+
+MIRROR 詢問是否刪除來源物件時，回答 `Yes`。
+
+### 如何水平或垂直鏡射？
+
+開啟正交（F8），沿著要作為鏡射軸的方向指定鏡射線的兩點：垂直線會左右翻轉，水平線會上下翻轉。
+
+## 練習 [#practice]
+
+- [CAD 練習圖：階梯軸](/docs/exercises/shaft)
+
+## 相關指令 [#related]
+
+- [AutoCAD COPY（複製）指令](/docs/commands/copy)
+- [AutoCAD ROTATE（旋轉）指令](/docs/commands/rotate)
+- [AutoCAD MOVE（移動）指令](/docs/commands/move)
+- [AutoCAD ARRAYPOLAR（環形陣列）指令](/docs/commands/arraypolar)

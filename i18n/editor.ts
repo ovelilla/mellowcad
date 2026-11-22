@@ -35,6 +35,8 @@ const EDITOR_LOCALES: Partial<Record<AppLocale, () => Promise<EditorLocale>>> =
       import("@mellowcad/editor/locales/ko").then((module) => module.ko),
     "zh-CN": () =>
       import("@mellowcad/editor/locales/zh-CN").then((module) => module.zhCN),
+    "zh-TW": () =>
+      import("@mellowcad/editor/locales/zh-TW").then((module) => module.zhTW),
   }
 
 export async function loadEditorLocale(

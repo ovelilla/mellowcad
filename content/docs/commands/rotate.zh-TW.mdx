@@ -1,0 +1,66 @@
+---
+title: "AutoCAD ROTATE（旋轉）指令"
+metaTitle: "CAD 旋轉指令（ROTATE）用法與快捷鍵 RO"
+description: "AutoCAD ROTATE（旋轉，RO）依提示逐步說明：基準點與角度、以複製保留原物件、以參考旋轉到指定角度。可在瀏覽器中免費試用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"CAD 旋轉的快捷鍵是什麼？","answer":"輸入 RO，再按 Enter 或空白鍵。也可以輸入完整的指令名稱，在任何語言版本的 AutoCAD 中都可以使用 _ROTATE。"},{"question":"如何旋轉物件使其與另一個物件對齊？","answer":"選擇 Reference，沿物件的邊點選兩點，再選擇 Points，沿要對齊的線點選兩點。"},{"question":"如何旋轉物件並保留原物件？","answer":"在指定角度之前選擇 Copy：複本會旋轉，原物件保留不動。"},{"question":"為什麼 ROTATE 旋轉的方向相反？","answer":"正值的角度依逆時鐘方向旋轉，如第一行的 ANGDIR 所示。輸入負值的角度（例如 -30），即可依順時鐘方向旋轉。"}]
+---
+
+ROTATE（旋轉）指令將選取的物件繞基準點旋轉：選取物件，指定基準點，再指定角度——可以輸入，或點選一點，以該點相對於基準點的方向作為角度。第一行顯示正向的方向（預設為逆時鐘方向，ANGDIR）以及 0 的位置（ANGBASE）。在角度提示下按 Enter 會重複上一次的旋轉，新圖面中為 0。物件繞一條通過基準點、與 UCS 的 Z 軸平行的軸旋轉，因此在 3D 中會保持其高度。整次旋轉為一個步驟，退回一次即可復原。
+
+- **指令：** `ROTATE`
+- **快捷鍵：** `RO`
+- **面板：** [修改](/docs/commands#modify)
+- **試試看：** [開啟編輯器](/zh-tw/draw)，輸入 `RO` 並按 Enter。
+
+## 在指令行中 [#session]
+
+引擎繪製它，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。
+
+<Session name="rotate" caption="一個矩形以「複製」繞其角點旋轉 30°，保留原物件。" />
+
+## 選項 [#options]
+
+### `Copy` (`C`) [#copy]
+
+旋轉一個複本，原物件保留在原處，並顯示 `Rotating a copy of the selected objects.`。之後提示會再次詢問角度。
+
+### `Reference` (`R`) [#reference]
+
+從已知的角度旋轉到想要的角度：詢問參考角度（輸入，或以兩點量取），再詢問新角度，並依兩者的差旋轉。若要將一條斜邊轉成水平，請點選其兩個端點作為參考，再輸入 0。
+
+### `Points` (`P`) [#points]
+
+在「參考」的新角度提示下選擇：新角度為點選的兩點之間連線的角度，使物件與已繪製的邊對齊。
+
+## 尚未支援的功能 [#missing]
+
+指定角度時，旋轉中的選集隨游標移動，顯示各物件的顏色，但不顯示線型和線粗。
+
+[功能與尚缺項目的詳細說明（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#rotate--ro--es-gira--gi--pt-br-rotac--ro--fr-rotation--ri--it-ruota--ru--de-drehen--dh--ru-повернуть--пов--pl-obróć--ob--cs-otoč--ot--hu-forgat--for)
+
+## 常見問題 [#questions]
+
+### CAD 旋轉的快捷鍵是什麼？
+
+輸入 `RO`，再按 Enter 或空白鍵。也可以輸入完整的指令名稱，在任何語言版本的 AutoCAD 中都可以使用 `_ROTATE`。
+
+### 如何旋轉物件使其與另一個物件對齊？
+
+選擇 `Reference`，沿物件的邊點選兩點，再選擇 `Points`，沿要對齊的線點選兩點。
+
+### 如何旋轉物件並保留原物件？
+
+在指定角度之前選擇 `Copy`：複本會旋轉，原物件保留不動。
+
+### 為什麼 ROTATE 旋轉的方向相反？
+
+正值的角度依逆時鐘方向旋轉，如第一行的 ANGDIR 所示。輸入負值的角度（例如 `-30`），即可依順時鐘方向旋轉。
+
+## 相關指令 [#related]
+
+- [AutoCAD MOVE（移動）指令](/docs/commands/move)
+- [AutoCAD COPY（複製）指令](/docs/commands/copy)
+- [AutoCAD MIRROR（鏡射）指令](/docs/commands/mirror)
+- [AutoCAD SCALE（比例）指令](/docs/commands/scale)

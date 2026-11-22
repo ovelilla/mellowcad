@@ -1,0 +1,59 @@
+---
+title: "AutoCAD UNION（聯集）指令"
+metaTitle: "CAD 聯集（UNION）：合併 3D 實體與面域"
+description: "AutoCAD UNION（聯集，UNI）的用法：將 3D 實體或同一平面上的面域合併為一個物件、會略過哪些物件，以及為何需要兩個。可以在瀏覽器中免費試用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD 聯集（UNION）的快捷鍵是什麼？","answer":"UNI，然後按 Enter 或空白鍵。也可以輸入完整名稱，在任何語言版本的 AutoCAD 中都可以使用 _UNION。"},{"question":"CAD 聯集為什麼沒有作用？","answer":"它需要兩個實體，或同一平面上的兩個面域：數量不足時會顯示 「At least 2 solids, surfaces, or coplanar regions must be selected.」，不做任何變更。線、弧與聚合線即使封閉也不是面域：請先以 REGION 將它們轉成面域。在 UNION 之前選取的物件會被捨棄，與 AutoCAD 2027 相同：請在其提示下選取。若顯示某個布林運算失敗，表示這些實體相接的方式 MellowCAD 目前還無法計算，實體保持原狀。"},{"question":"如何復原 UNION？","answer":"緊接著執行 U 或按 Ctrl+Z：整個指令一個步驟退回，物件恢復原狀。之後就無法再拆開，因為合併後的實體不會記錄其組成部分。相反的運算是 SUBTRACT，它是減去實體，而不是加入實體。"},{"question":"如何以 UNION 合併面域？","answer":"以 REGION 將每個封閉形狀轉成面域，再執行 UNION：每個平面上的面域合成一個面域，共用的邊會合併。圍成空隙的形狀會留下孔，彼此分開的面域則成為由分開部分組成的一個面域。在其平面上單獨存在的面域保持原狀。"}]
+---
+
+UNION 將兩個以上的 3D 實體合併為一個實體，或將位於同一平面的兩個以上面域合併為一個面域：重疊的部分只算一次，內部的邊也會消失。它要求選取物件，數量不限，按 Enter 即合併。與 AutoCAD 2027 相同，在指令之前選取的選集會被捨棄並重新詢問，既非實體也非面域的物件則會略過。實體與面域分開合併：所有實體合成一個，面域則逐一平面合併。
+
+先點選的物件成為結果，保留其圖層與顏色，其他物件則被刪除；以窗選、框選或 ALL 選取時，則是其中最新的物件。結果是複合實體：不再是方塊或圓柱，也沒有歷程記錄（[`LIST`](/docs/commands/list) 顯示 History = None）；選取時只顯示一個掣點，用來整個移動它。互不接觸的實體會成為由兩個部分組成的一個物件。整個指令是一個退回步驟。MellowCAD 的 3D 仍不完整：有實體，但沒有曲面與網面。
+
+- **指令：** `UNION`
+- **快捷鍵：** `UNI`
+- **面板：** [修改](/docs/commands#modify)
+- **試試看：** [開啟編輯器](/zh-tw/draw)，輸入 `UNI` 並按 Enter。
+
+## 在指令行中 [#session]
+
+引擎繪製它，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。
+
+<Session name="union" caption="兩個重疊的方塊，以 UNION 合併為一個實體：從東南方檢視，隱藏線已移除。" />
+
+## 尚未支援的功能 [#missing]
+
+曲面：此處沒有曲面。MellowCAD 尚無精確形式的曲線交線上相接的曲面：軸既不重合也不平行的圓柱、圓錐、圓球或圓環（兩個圓柱也可能交叉）；圓錐與不是平面、或不在其軸上之實體的組合；圓環或迴轉實體與既不垂直於其軸、也不通過其軸之平面的組合，或與偏離其軸之實體的組合；擠出實體與不是平面、或不是沿其擠出方向擠出之面的組合。這些情況會被拒絕，實體保持原狀；以相切方式碰到邊的切割、幾乎但不完全位於同一曲面上的面，以及切割與邊之間非常薄的狹條，也是如此。沿方塊的面放置的圓柱聯集後體積正確，但比 AutoCAD 的結果少一條邊與一個面。不保留實體歷程記錄（SOLIDHIST、SHOWHISTORY）。
+
+[功能與尚缺項目的詳細說明（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#union--uni--es-union--uni--pt-br-uniao--u--fr-union--uni--it-unione--uni--de-vereinig--vee--ru-объединение--pl-suma--sum--cs-sjednocení--sje--hu-egyesít--eg--egy)
+
+## 常見問題 [#questions]
+
+### AutoCAD 聯集（UNION）的快捷鍵是什麼？
+
+`UNI`，然後按 Enter 或空白鍵。也可以輸入完整名稱，在任何語言版本的 AutoCAD 中都可以使用 `_UNION`。
+
+### CAD 聯集為什麼沒有作用？
+
+它需要兩個實體，或同一平面上的兩個面域：數量不足時會顯示 `At least 2 solids, surfaces, or coplanar regions must be selected.`，不做任何變更。線、弧與聚合線即使封閉也不是面域：請先以 [`REGION`](/docs/commands/region) 將它們轉成面域。在 UNION 之前選取的物件會被捨棄，與 AutoCAD 2027 相同：請在其提示下選取。若顯示某個布林運算失敗，表示這些實體相接的方式 MellowCAD 目前還無法計算，實體保持原狀。
+
+### 如何復原 UNION？
+
+緊接著執行 `U` 或按 Ctrl+Z：整個指令一個步驟退回，物件恢復原狀。之後就無法再拆開，因為合併後的實體不會記錄其組成部分。相反的運算是 [`SUBTRACT`](/docs/commands/subtract)，它是減去實體，而不是加入實體。
+
+### 如何以 UNION 合併面域？
+
+以 [`REGION`](/docs/commands/region) 將每個封閉形狀轉成面域，再執行 UNION：每個平面上的面域合成一個面域，共用的邊會合併。圍成空隙的形狀會留下孔，彼此分開的面域則成為由分開部分組成的一個面域。在其平面上單獨存在的面域保持原狀。
+
+## 練習 [#practice]
+
+- [CAD 3D 練習圖：軸承座](/docs/exercises/bearing-block)
+
+## 相關指令 [#related]
+
+- [AutoCAD SUBTRACT（差集）指令](/docs/commands/subtract)
+- [AutoCAD INTERSECT（交集）指令](/docs/commands/intersect)
+- [AutoCAD REGION（面域）指令](/docs/commands/region)
+- [AutoCAD BOX（方塊）指令](/docs/commands/box)
+- [AutoCAD EXTRUDE（擠出）指令](/docs/commands/extrude)

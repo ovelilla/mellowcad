@@ -1,0 +1,95 @@
+---
+title: "AutoCAD UCS 指令"
+metaTitle: "CAD 座標系統 UCS 用法與回到世界座標"
+description: "AutoCAD UCS 依提示順序移動與旋轉使用者座標系統：原點與三點、物件、視圖、X、Y、Z、Z 軸、具名與世界。可以在瀏覽器中免費試用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"CAD 如何將 UCS 回到世界座標？","answer":"執行 UCS 並按 Enter：World 是預設值。若要再次從正上方俯視圖面，請執行 PLAN 並選擇 World。"},{"question":"如何旋轉 UCS？","answer":"執行 UCS，選擇 Z 並輸入角度：30 會將 X 與 Y 逆時針旋轉 30 度。X 與 Y 會將 XY 平面立起，預設為 90 度。"},{"question":"UCS 與 WCS 有什麼不同？","answer":"世界座標系統（WCS）永遠不會移動；使用者座標系統（UCS）則是您可以移動與旋轉的座標系統。一開始兩者相同，UCS 會說明目前的 UCS 為 *WORLD*。您輸入的座標在 UCS 中讀取，繪製的物件位於其 XY 平面上。"},{"question":"如何在 3D 實體的面上繪圖？","answer":"將 UCS 移到該面上。在方塊頂面上，只要指定原點即可：UCS，再點選頂面的一個角點，然後按 Enter，與範例相同。若是側面，請指定三點：角點作為原點，沿一條邊的一點作為 X，面上的另一點作為 Y。然後繪圖：繪製的物件就位於該面上。"}]
+---
+
+UCS 設定使用者座標系統：空間中任何位置的原點與 X、Y 軸，因此其 XY 平面可以傾斜。您輸入的座標在其中讀取，繪製的物件位於其 XY 平面上：原點移到方塊頂面後，中心點在 `30,20` 的圓就位於頂面上。它先說明目前 UCS 的名稱（`*WORLD*`、`*NO NAME*` 或儲存時的名稱），再要求新的原點或選項；在此按 Enter 會回到世界。一點即為原點，包含其 Z 值；沒有 Z 值的點位於目前的高程。接著要求正 X 軸上的一點與 XY 平面上的一點，以目前的 UCS 讀取：在任一提示按 Enter，軸都保持不變。一點會移動 UCS；三點則可以將它轉到任何方向。
+
+之後各指令都在 UCS 的 XY 平面上運作：[`LINE`](/docs/commands/line) 與 [`CIRCLE`](/docs/commands/circle) 在其上繪製，[`BOX`](/docs/commands/box) 與 [`EXTRUDE`](/docs/commands/extrude) 從其上沿其 Z 方向升起。UCS 變更時，每個物件都保留自己的平面，[`PLAN`](/docs/commands/plan) 則從正上方俯視目前的 UCS。UCS 儲存在圖面中，每次執行都是一個退回步驟。MellowCAD 的 3D 只有實體，而且仍不完整。
+
+- **指令：** `UCS`
+- **面板：** [查詢與視圖](/docs/commands#inquiry)
+- **試試看：** [開啟編輯器](/zh-tw/draw)，輸入 `UCS` 並按 Enter。
+
+## 在指令行中 [#session]
+
+引擎繪製它，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。
+
+<Session name="ucs" caption="從東南方檢視的方塊：UCS 將原點移到方塊頂面，之後在 30,20 繪製的圓位於頂面上，而不是地面上。" />
+
+## 選項 [#options]
+
+### `Face` (`F`) [#face]
+
+依 AutoCAD 2027 的方式列出，用來將 UCS 對齊實體的面。MellowCAD 會要求選取面，但尚未對齊到面：每次點選都找不到面。
+
+### `NAmed` (`NA`) [#named]
+
+依名稱儲存的 UCS。`Save` 儲存目前的 UCS，取代已儲存的名稱之前會詢問 `Yes` 或 `No`；`Restore` 將已儲存的 UCS 設為目前的，名稱不分大小寫；`Delete` 接受多個名稱，可以使用逗號與萬用字元；`?` 列出它們，並列出各自的原點與軸。名稱可以包含空格，但不能包含 `<>/\":;|,=*?` 或反引號：`Invalid UCS name.`。
+
+### `OBject` (`OB`) [#object]
+
+將 UCS 對齊您點選的物件：線、圓、弧、橢圓、聚合線、雲形線、文字、多行文字、屬性定義或圖塊參考。原點與 X 軸依物件類型放在 AutoCAD 放置的位置，Z 軸為物件本身的法線，因此 UCS 位於物件的平面上。鎖住圖層上的物件也可以點選。填充線會顯示 `This object does not define a coordinate system`，指令隨即結束，UCS 保持原狀。
+
+### `Previous` (`P`) [#previous]
+
+回到前一個 UCS，在一個階段作業中最多可以回溯十個，包括具名 UCS 與正投影 UCS。沒有可回溯的 UCS 時：`No previous coordinate system saved.`。
+
+### `View` (`V`) [#view]
+
+將 XY 平面轉為垂直於您的視線，X 沿螢幕的水平方向，原點保持不變：之後繪製的文字在 3D 視圖中平貼於螢幕。
+
+### `World` (`W`) [#world]
+
+回到世界座標系統，它永遠不會移動。這是第一個提示的預設值，因此在該處按 Enter 即選擇它，同時也將高程設回 0。
+
+### `X` [#x]
+
+繞 UCS 的 X 軸旋轉：預設為 90 度，可以輸入角度，或以一點指定。正值角度依右手定則旋轉，因此 90 會將 XY 平面沿原 X 軸立起來。
+
+### `Y` [#y]
+
+繞 UCS 的 Y 軸旋轉，方式與 `X` 繞 X 軸相同。
+
+### `Z` [#z]
+
+繞 UCS 的 Z 軸旋轉，方式與 `X` 繞 X 軸相同：30 會將 X 與 Y 從上方看逆時針旋轉 30 度。
+
+### `ZAxis` (`ZA`) [#zaxis]
+
+先指定新原點（按 Enter 保留目前的原點），再指定正 Z 軸上的一點：XY 平面與之垂直，其 X 軸與世界的 XY 平面保持水平。兩點重合時顯示 `Points are coincident`。其 `Object` 接受線、弧、開放的聚合線或雲形線：原點位於最靠近點選處的端點，Z 軸沿物件朝外。
+
+## 尚未支援的功能 [#missing]
+
+`Face`：將 UCS 對齊實體的面；它會要求選取面，但目前還找不到面。第一個提示列出的「套用」與「剖面」在此會被拒絕，因為只有一個視埠，也沒有剖面物件。UCS 對話方塊（UCSMAN）、圖示的掣點及其右鍵功能表，以及放置新 UCS 時圖示的即時顯示。十字游標隨 UCS 旋轉：在 [`PLAN`](/docs/commands/plan) 將視圖與 UCS 對齊之前，它在螢幕上保持直立。UCSFOLLOW、UCSVP 與動態 UCS。標註上的 `OBject`，以及其點選時的「群組」。正投影 UCS 保留的深度。長清單中的暫停「按 Enter 繼續」。
+
+[功能與尚缺項目的詳細說明（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/coordinate-systems.md#ucs--es-scp--pt-br-ucs--ucsdd--fr-scu--dducs--it-ucs--dducs--de-bks--dducs--ru-пск--диалпск--pl-luw--cs-uss--hu-fkr--dpfkr)
+
+## 常見問題 [#questions]
+
+### CAD 如何將 UCS 回到世界座標？
+
+執行 UCS 並按 Enter：`World` 是預設值。若要再次從正上方俯視圖面，請執行 [`PLAN`](/docs/commands/plan) 並選擇 `World`。
+
+### 如何旋轉 UCS？
+
+執行 UCS，選擇 `Z` 並輸入角度：`30` 會將 X 與 Y 逆時針旋轉 30 度。`X` 與 `Y` 會將 XY 平面立起，預設為 90 度。
+
+### UCS 與 WCS 有什麼不同？
+
+世界座標系統（WCS）永遠不會移動；使用者座標系統（UCS）則是您可以移動與旋轉的座標系統。一開始兩者相同，UCS 會說明目前的 UCS 為 `*WORLD*`。您輸入的座標在 UCS 中讀取，繪製的物件位於其 XY 平面上。
+
+### 如何在 3D 實體的面上繪圖？
+
+將 UCS 移到該面上。在方塊頂面上，只要指定原點即可：UCS，再點選頂面的一個角點，然後按 Enter，與範例相同。若是側面，請指定三點：角點作為原點，沿一條邊的一點作為 X，面上的另一點作為 Y。然後繪圖：繪製的物件就位於該面上。
+
+## 相關指令 [#related]
+
+- [AutoCAD PLAN（平面視圖）指令](/docs/commands/plan)
+- [AutoCAD 3DORBIT（3D 環轉）指令](/docs/commands/3dorbit)
+- [AutoCAD BOX（方塊）指令](/docs/commands/box)
+- [AutoCAD EXTRUDE（擠出）指令](/docs/commands/extrude)

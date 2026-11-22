@@ -1,0 +1,80 @@
+---
+title: "AutoCAD MTEXT（多行文字）指令"
+metaTitle: "CAD 多行文字指令（MTEXT）用法與快捷鍵 T"
+description: "AutoCAD MTEXT（多行文字，T）依提示逐步說明：兩個角點或寬度、高度、對正與行距，多個段落在一個物件中自動換行。可在瀏覽器中免費線上試用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"CAD 多行文字的快捷鍵是什麼？","answer":"輸入 T 或 MT，再按 Enter 或空白鍵；在任何語言版本的 AutoCAD 中都可以使用 _MTEXT。-MTEXT（-T）詢問相同的提示，並在指令行接收文字。"},{"question":"多行文字如何換行？","answer":"按 Enter：會開始新段落。段落內的各行會在方框寬度處自動換行。按 Ctrl+Enter 或在框外按一下，會關閉編輯器並保留文字。"},{"question":"如何變更多行文字的寬度？","answer":"選取文字，拖曳其側邊的掣點：寬度改變時，文字會以其對正點為準重新換行。「性質」選項板中的「定義的寬度」可以用數值設定，其行距相關的列則可變更行距。"},{"question":"如何將多行文字轉換成單行文字？","answer":"使用 EXPLODE：如同 AutoCAD，每一行都會成為一個 TEXT，在原來那一行的位置左對正。若要重新輸入內容，請在文字上按兩下，在編輯器中修改。"}]
+---
+
+MTEXT（多行文字）指令書寫多行文字：一個物件包含多個段落，依寬度自動換行。點選第一個角點與對角點，兩點之間的方框決定寬度；接著在圖面上就地開啟的編輯器中輸入文字，按 Enter 開始新段落，按 Ctrl+Enter 或在框外按一下則保留文字。已輸入內容時按 Esc，會詢問是否儲存，如同 AutoCAD 的「未儲存的變更」對話方塊。若要每一行都是獨立的物件，請使用 [`TEXT`](/docs/commands/text)。
+
+第一行顯示目前的文字型式與高度。所有選項都在對角點的提示下詢問，完成後回到該提示，因此可以在方框完成之前，先設定高度、對正和其他選項。一行超過寬度時，會在字詞之間換行；比寬度更長的字詞則會超出寬度。高度與 [`TEXT`](/docs/commands/text) 共用，並儲存在圖面中；對正、旋轉和行距每次執行時都從預設值開始。`-MTEXT` 詢問相同的提示，然後在指令行逐行接收文字。
+
+- **指令：** `MTEXT`
+- **快捷鍵：** `T`, `MT`
+- **面板：** [註解](/docs/commands#annotate)
+- **試試看：** [開啟編輯器](/zh-tw/draw)，輸入 `T` 並按 Enter。
+
+## 在指令行中 [#session]
+
+引擎繪製它，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。
+
+<Session name="mtext" caption="方框中的一段註記：先設定高度，再指定對角點，一個段落依兩點之間的寬度自動換行。" />
+
+## 選項 [#options]
+
+### `Height` (`H`) [#height]
+
+設定文字高度，可以輸入，或以第一個角點到某一點的距離指定；必須大於零。設定值會保留到下次執行，也用於 [`TEXT`](/docs/commands/text)。
+
+### `Justify` (`J`) [#justify]
+
+設定文字依附於方框九個點中的哪一點：預設為左上，或依提示所列，分別為上、中、下與左、中、右的組合。無論方框往哪個方向拖曳，文字都依附於方框的該點。
+
+### `Line spacing` (`L`) [#line-spacing]
+
+先詢問類型：「最小」（預設值）會為字母較高的行留出空間，或「精確」；接著詢問係數或距離，係數以 x 結尾，例如 `2x`。單行行距為 1x，係數範圍為 0.25x 到 4x。
+
+### `Rotation` (`R`) [#rotation]
+
+旋轉方框及其文字，角度可以輸入，或從第一個角點指向某一點。
+
+### `Style` (`S`) [#style]
+
+依名稱將某個文字型式設為目前的型式；`?` 列出圖面中的型式，圖面中沒有的名稱會被拒絕。文字型式在 [`STYLE`](/docs/commands/style) 開啟的選項板中建立。
+
+### `Width` (`W`) [#width]
+
+以寬度取代對角點，可以輸入，或以到某一點的距離指定，然後開啟編輯器。寬度為 0 或按 Enter 時不換行，每一行保持輸入時的長度。
+
+## 尚未支援的功能 [#missing]
+
+AutoCAD 2027 在對角點提示中列出的「欄」，在此不提供。文字內的格式（例如某個字的高度、字體或顏色、堆疊分數或底線）不會繪製或套用；編輯器沒有尺規、定位點、縮排、項目清單或「文字編輯器」功能區頁籤，圖面上也沒有插入點游標。沒有背景遮罩或文字框，沒有定義的高度，沒有可註解比例，角點上也沒有節點鎖點；在方框內按一下，即使沒有點到字母也會選取它，AutoCAD 則不會選取任何物件。
+
+[功能與尚缺項目的詳細說明（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#mtext--t--mt---mtext---t--es-textom--txm--mtext---textom---txm--pt-br-textom--t--txm---textom---t--fr-textmult--tt--tx---textmult---tx--it-testom--tsm--tstm--mtext---testom--de-mtext--mt--t---mtext---t--ru-мтекст--мт---мтекст---мт--pl-wtekst---wtekst---t---wt--cs-mtext--mt--t---mtext---t--hu-bszöveg--bs--sz---bszöveg---bs---sz)
+
+## 常見問題 [#questions]
+
+### CAD 多行文字的快捷鍵是什麼？
+
+輸入 `T` 或 `MT`，再按 Enter 或空白鍵；在任何語言版本的 AutoCAD 中都可以使用 `_MTEXT`。`-MTEXT`（`-T`）詢問相同的提示，並在指令行接收文字。
+
+### 多行文字如何換行？
+
+按 Enter：會開始新段落。段落內的各行會在方框寬度處自動換行。按 Ctrl+Enter 或在框外按一下，會關閉編輯器並保留文字。
+
+### 如何變更多行文字的寬度？
+
+選取文字，拖曳其側邊的掣點：寬度改變時，文字會以其對正點為準重新換行。「性質」選項板中的「定義的寬度」可以用數值設定，其行距相關的列則可變更行距。
+
+### 如何將多行文字轉換成單行文字？
+
+使用 [`EXPLODE`](/docs/commands/explode)：如同 AutoCAD，每一行都會成為一個 [`TEXT`](/docs/commands/text)，在原來那一行的位置左對正。若要重新輸入內容，請在文字上按兩下，在編輯器中修改。
+
+## 相關指令 [#related]
+
+- [AutoCAD TEXT（單行文字）指令](/docs/commands/text)
+- [AutoCAD TEXTEDIT（編輯文字）指令](/docs/commands/textedit)
+- [AutoCAD STYLE（文字型式）指令](/docs/commands/style)
+- [AutoCAD EXPLODE（分解）指令](/docs/commands/explode)

@@ -1,0 +1,64 @@
+---
+title: "AutoCAD BLOCK（建立圖塊）指令"
+metaTitle: "CAD 建立圖塊指令（BLOCK）：如何建立圖塊"
+description: "AutoCAD 建立圖塊（BLOCK、B）依提示逐步說明：名稱、基準點與物件；重新定義圖塊，以及屬性。可在瀏覽器中免費試用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD 建立圖塊的快捷鍵是什麼？","answer":"B，再按 Enter 或空白鍵。在 AutoCAD 中它會開啟「圖塊定義」對話方塊；此處則在指令行中詢問，與 -B（-BLOCK）相同。在任何語言版本的 AutoCAD 中都可輸入 _BLOCK。"},{"question":"AutoCAD 如何建立圖塊？","answer":"輸入 B 及名稱，再點選基準點（角點，或圖塊放置時所在邊的中點），然後選取物件。按 Enter 會定義圖塊，並將物件變成它的參考。在指令之前所做的選取也會被採用，在指定基準點之後。"},{"question":"如何重新定義圖塊？","answer":"以該圖塊的名稱執行 BLOCK，回答 Yes，然後指定基準點並選取新的物件：該圖塊的每個參考都會顯示新的定義。物件中不可包含該圖塊本身的參考；這樣的選集會被拒絕，指令也會結束。"},{"question":"如何建立帶屬性的圖塊？","answer":"先以 ATTDEF 定義屬性，再將它們與其他物件一起選取：它們會依點選的順序加入圖塊。取代它們的參考會開啟一個方塊，為每個屬性提供一個欄位，以其提示標示，並填入其預設值：按 Enter 套用各值，按 Esc 則保留預設值。"},{"question":"如何分解圖塊？","answer":"EXPLODE 會將參考還原為其顯示的物件，每次分解一層巢狀，每個物件保有自己的圖層與顏色。屬性會還原為其屬性定義；值則會捨棄。"}]
+---
+
+BLOCK（建立圖塊）指令將一組物件以一個名稱儲存在圖面中，讓 [`INSERT`](/docs/commands/insert) 可以隨意多次放置它，每個複本都是參考同一個定義的參考。它會要求名稱，再要求插入基準點（每個參考放置時所依據的點），然後要求物件。按 Enter 會結束選取並定義圖塊，所點選的物件會在原處變成該圖塊的參考。整個指令是一個步驟，可由「退回」還原。
+
+AutoCAD 的 BLOCK 會開啟「圖塊定義」對話方塊，MellowCAD 沒有這個對話方塊：此處 BLOCK 在指令行中詢問 `-BLOCK` 所詢問的內容，與 AutoCAD 的主控台相同。名稱可以包含空格，最多 255 個字元，但不可包含 `< > / \ " : ; ? * | , =` 或反引號：只按 Enter 或輸入此類名稱，會顯示 `Invalid block name.` 並再次詢問。若圖面中已有相同名稱（不分大小寫），會詢問是否重新定義該圖塊：`Yes` 或 `No`（預設值，會結束指令）。
+
+- **指令：** `BLOCK`
+- **快捷鍵：** `B`, `ACADBLOCKDIALOG`, `BMAKE`, `BMOD`
+- **面板：** [組織](/docs/commands#organize)
+- **試試看：** [開啟編輯器](/zh-tw/draw)，輸入 `B` 並按 Enter。
+
+## 在指令行中 [#session]
+
+引擎繪製它，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。
+
+<Session name="block" caption="一張椅子，由一個矩形與一條線組成，建立為圖塊 B1：其名稱、位於前緣中點的基準點，並選取這兩個物件。" />
+
+## 選項 [#options]
+
+### `?` [#list]
+
+列出圖面中的圖塊：詢問要列出哪些，預設為 `*` 代表全部，或輸入帶萬用字元的名稱，然後顯示符合的名稱及每一類的數量，並結束。匿名圖塊，例如陣列的圖塊，只計數，不列出名稱。
+
+## 尚未支援的功能 [#missing]
+
+AutoCAD 的「圖塊定義」對話方塊：BLOCK 在指令行中詢問。基準點提示中的「可註解」與「模式」選項（保留、刪除）：物件一律轉換為參考。ATTREQ 0，即略過屬性值方塊的設定，以及 ATTSYNC、ATTREDEF、BATTMAN 與 BATTORDER：重新定義的圖塊不會變更其參考的屬性，與 AutoCAD 相同。ByBlock：圖塊中的物件無法如 AutoCAD 中以 ByBlock 繪製的物件那樣，採用參考本身的顏色、線型或線粗。在旋轉過的 UCS 中，AutoCAD 2027 會移動它所轉換的物件；此處物件刻意留在原處。
+
+[功能與尚缺項目的詳細說明（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#block--b--bmake--bmod--acadblockdialog--block---b--es-bloque--bq--modblq--bmake--bmod--acadblockdialog--bloque---bq--pt-br-bloco--cb--acadblockdialog--criarb--defb--bloco---cb--fr-bloc--b--acadblockdialog--_bmake--bmod--bloc---b--it-blocco--b--acadblockdialog--bmod--blocco---b--de-block--bl--acadblockdialog--bmake--bmod--block---bl--ru-блок--б--acadblockdialog--bmod--сблок--блок---б--pl-blok--b--bmod--odtblok--tblok--blok---b--cs-blok--b--acadblockdialog--bvytvoř--vytvořb--bmod--blok---b--hu-blokk--b--acadblockdialog--bkészít--blokk---b)
+
+## 常見問題 [#questions]
+
+### AutoCAD 建立圖塊的快捷鍵是什麼？
+
+`B`，再按 Enter 或空白鍵。在 AutoCAD 中它會開啟「圖塊定義」對話方塊；此處則在指令行中詢問，與 `-B`（`-BLOCK`）相同。在任何語言版本的 AutoCAD 中都可輸入 `_BLOCK`。
+
+### AutoCAD 如何建立圖塊？
+
+輸入 `B` 及名稱，再點選基準點（角點，或圖塊放置時所在邊的中點），然後選取物件。按 Enter 會定義圖塊，並將物件變成它的參考。在指令之前所做的選取也會被採用，在指定基準點之後。
+
+### 如何重新定義圖塊？
+
+以該圖塊的名稱執行 BLOCK，回答 `Yes`，然後指定基準點並選取新的物件：該圖塊的每個參考都會顯示新的定義。物件中不可包含該圖塊本身的參考；這樣的選集會被拒絕，指令也會結束。
+
+### 如何建立帶屬性的圖塊？
+
+先以 [`ATTDEF`](/docs/commands/attdef) 定義屬性，再將它們與其他物件一起選取：它們會依點選的順序加入圖塊。取代它們的參考會開啟一個方塊，為每個屬性提供一個欄位，以其提示標示，並填入其預設值：按 Enter 套用各值，按 Esc 則保留預設值。
+
+### 如何分解圖塊？
+
+[`EXPLODE`](/docs/commands/explode) 會將參考還原為其顯示的物件，每次分解一層巢狀，每個物件保有自己的圖層與顏色。屬性會還原為其屬性定義；值則會捨棄。
+
+## 相關指令 [#related]
+
+- [AutoCAD INSERT（插入圖塊）指令](/docs/commands/insert)
+- [AutoCAD ATTDEF（定義屬性）指令](/docs/commands/attdef)
+- [AutoCAD EXPLODE（分解）指令](/docs/commands/explode)
+- [AutoCAD PURGE（清除）指令](/docs/commands/purge)

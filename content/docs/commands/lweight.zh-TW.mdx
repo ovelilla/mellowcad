@@ -1,0 +1,64 @@
+---
+title: "AutoCAD LWEIGHT（線粗）指令"
+metaTitle: "CAD 線粗指令（LWEIGHT）設定與快捷鍵 LW"
+description: "AutoCAD 線粗指令 LWEIGHT（LW）的用法：新物件的線粗（公釐）、24 個標準值、ByLayer，以及在螢幕上顯示線粗。可免費線上試用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD 線粗指令的快捷鍵是什麼？","answer":"輸入 LW，再按 Enter 或空白鍵；LINEWEIGHT 也是指令別名。輸入完整名稱也可以，而 _LWEIGHT 在任何語言版本的 AutoCAD 中都適用。"},{"question":"AutoCAD 線粗為什麼沒有顯示？","answer":"在 AutoCAD 中，只有狀態列的「顯示線粗」按鈕打開（LWDISPLAY 1）時，線粗才會顯示在螢幕上，而該按鈕預設為關閉。此處預設為打開。較細的線粗都以螢幕上最細的線繪製，因此差異顯示在較粗的線粗上；線粗為 ByLayer 的物件則採用其圖層的線粗。"},{"question":"如何變更既有物件的線粗？","answer":"選取物件，在「性質」選項板的「線粗」列中選擇線粗；物件為 ByLayer 時，則在「圖層性質管理員」中變更圖層本身的線粗。LWEIGHT 只設定之後繪製的物件的線粗。"},{"question":"AutoCAD 有哪些線粗？","answer":"24 個以公釐為單位的固定值：0.00、0.05、0.09、0.13、0.15、0.18、0.20、0.25、0.30、0.35、0.40、0.50、0.53、0.60、0.70、0.80、0.90、1.00、1.06、1.20、1.40、1.58、2.00 與 2.11。輸入其他值，例如 0.45，LWEIGHT 會採用最接近的值，兩者同樣接近時採用較細者。"}]
+---
+
+LWEIGHT（線粗）指令設定新物件繪製時所用的線粗，單位為公釐。AutoCAD 會開啟「線粗設定」對話方塊；MellowCAD 目前還沒有，因此 LWEIGHT 執行 AutoCAD 也有的指令行版本 `-LWEIGHT`。指令顯示目前的線粗（一開始為 `BYLAYER`），並要求輸入新的線粗：AutoCAD 的 24 個標準值之一，從 0.00 到 2.11 mm。其他值會設為最接近的標準值並顯示訊息告知，負值則以 `Invalid lweight number.` 拒絕。按 Enter 保留目前的線粗。每次變更都是 `U` 可以退回的一個步驟。
+
+此處一開始就在螢幕上顯示線粗：AutoCAD 只有在狀態列的「顯示線粗」按鈕（LWDISPLAY）打開後才顯示，但 MellowCAD 沒有配置也沒有出圖，螢幕是唯一能顯示線粗的地方。該按鈕可關閉與打開線粗顯示。有寬度的聚合線在平面中顯示其寬度，而非線粗。
+
+- **指令：** `LWEIGHT`
+- **快捷鍵：** `LW`, `LINEWEIGHT`
+- **面板：** [組織](/docs/commands#organize)
+- **試試看：** [開啟編輯器](/zh-tw/draw)，輸入 `LW` 並按 Enter。
+
+## 在指令行中 [#session]
+
+引擎繪製它，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。
+
+<Session name="lweight" caption="以 0.70 mm 繪製外框的板件，其孔輸入 0.1，捨入為 0.09 mm：螢幕上顯示的兩種線粗。" />
+
+## 選項 [#options]
+
+### `?` [#list]
+
+列出可接受的值：ByLayer 與 24 個標準線粗，然後再次詢問。
+
+### `BYLayer` (`BYL`) [#bylayer]
+
+新物件採用其圖層的線粗，與一開始相同。
+
+## 尚未支援的功能 [#missing]
+
+ByBlock 與「預設」（LWDEFAULT）、以英吋為單位的線粗、「線粗設定」對話方塊，以及下拉式清單中的「線粗設定…」項目。
+
+[功能與尚缺項目的詳細說明（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#lineweights--lwdisplay--lweight--lw--lineweight---lweight--es-grosorlin---grosorlin--pt-br-esplinha--esl---esplinha--fr-epaissligne--epl--epligne---epaissligne--it-spesslin--sli--spesslinea--lineweight---spesslin--de-lstärke--linienstärke--lst---lstärke--ru-веслин--вли---веслин--pl-szerlin--sl---szerlin--cs-tlčáry--tlč---tlčáry--hu-vvast--vonalvastagság--vv---vvast)
+
+## 常見問題 [#questions]
+
+### AutoCAD 線粗指令的快捷鍵是什麼？
+
+輸入 `LW`，再按 Enter 或空白鍵；`LINEWEIGHT` 也是指令別名。輸入完整名稱也可以，而 `_LWEIGHT` 在任何語言版本的 AutoCAD 中都適用。
+
+### AutoCAD 線粗為什麼沒有顯示？
+
+在 AutoCAD 中，只有狀態列的「顯示線粗」按鈕打開（LWDISPLAY 1）時，線粗才會顯示在螢幕上，而該按鈕預設為關閉。此處預設為打開。較細的線粗都以螢幕上最細的線繪製，因此差異顯示在較粗的線粗上；線粗為 ByLayer 的物件則採用其圖層的線粗。
+
+### 如何變更既有物件的線粗？
+
+選取物件，在「性質」選項板的「線粗」列中選擇線粗；物件為 ByLayer 時，則在「圖層性質管理員」中變更圖層本身的線粗。LWEIGHT 只設定之後繪製的物件的線粗。
+
+### AutoCAD 有哪些線粗？
+
+24 個以公釐為單位的固定值：0.00、0.05、0.09、0.13、0.15、0.18、0.20、0.25、0.30、0.35、0.40、0.50、0.53、0.60、0.70、0.80、0.90、1.00、1.06、1.20、1.40、1.58、2.00 與 2.11。輸入其他值，例如 0.45，LWEIGHT 會採用最接近的值，兩者同樣接近時採用較細者。
+
+## 相關指令 [#related]
+
+- [AutoCAD LINETYPE（線型）指令](/docs/commands/linetype)
+- [AutoCAD LAYER（圖層性質）指令](/docs/commands/layer)
+- [AutoCAD PROPERTIES（性質）指令](/docs/commands/properties)
+- [AutoCAD PLINE（聚合線）指令](/docs/commands/pline)

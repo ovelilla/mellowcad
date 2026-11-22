@@ -6,6 +6,7 @@ import { describe, expect, it } from "vitest"
 import ja from "@/messages/ja.json"
 import ko from "@/messages/ko.json"
 import zhCN from "@/messages/zh-CN.json"
+import zhTW from "@/messages/zh-TW.json"
 
 import { CJK_CARD_FONTS, cardSentences, visualPieces } from "./og"
 
@@ -68,6 +69,7 @@ describe.each([
   { script: "japanese", messages: ja },
   { script: "korean", messages: ko },
   { script: "simplified-chinese", messages: zhCN },
+  { script: "traditional-chinese", messages: zhTW },
 ] as const)("the $script card's face", ({ script, messages }) => {
   it("has every character its cards set beyond Inter's latin", async () => {
     const data = await readFile(

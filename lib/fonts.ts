@@ -94,6 +94,23 @@ export const SIMPLIFIED_CHINESE_SYSTEM_FACES = [
   '"Noto Sans SC"',
 ] as const
 
+/**
+ * Traditional Chinese's faces as each system names them: Apple's PingFang TC,
+ * Windows' Microsoft JhengHei, Android's and Linux's Noto CJK and Source Han
+ * Sans. WHY no Simplified Chinese or Japanese face among them: a Han
+ * character the three share is drawn in each region's own form (骨, 直, 角),
+ * and Taiwan's standard forms are Traditional's (docs/i18n/zh-TW.md, "Script
+ * and font").
+ */
+export const TRADITIONAL_CHINESE_SYSTEM_FACES = [
+  '"PingFang TC"',
+  '"Microsoft JhengHei UI"',
+  '"Microsoft JhengHei"',
+  '"Noto Sans CJK TC"',
+  '"Source Han Sans TC"',
+  '"Noto Sans TC"',
+] as const
+
 /** Each CJK script's system faces, in the order the systems are tried. */
 const SYSTEM_FACES: Record<
   (typeof SYSTEM_FACE_SCRIPTS)[number],
@@ -102,6 +119,7 @@ const SYSTEM_FACES: Record<
   japanese: JAPANESE_SYSTEM_FACES,
   korean: KOREAN_SYSTEM_FACES,
   "simplified-chinese": SIMPLIFIED_CHINESE_SYSTEM_FACES,
+  "traditional-chinese": TRADITIONAL_CHINESE_SYSTEM_FACES,
 }
 
 /**

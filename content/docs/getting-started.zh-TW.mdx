@@ -1,0 +1,61 @@
+---
+title: 入門
+metaTitle: "CAD 入門教學：用 AutoCAD 指令畫第一張圖"
+description: "CAD 入門教學：在 MellowCAD 畫出第一張圖，學會指令行、提示與選項、繪圖輔助工具、退回與儲存。"
+type: gettingStarted
+sourceHash: "527b2d24b274"
+---
+
+MellowCAD 的操作方式與 AutoCAD 相同：輸入指令，回應其提示，圖面便隨之完成。如果您已經在使用 AutoCAD，只需要看[指令](/docs/commands)與[差異](/docs/differences)兩頁；本頁是為最初的 10 分鐘而寫。
+
+## 開啟編輯器 [#open]
+
+在桌上型電腦的瀏覽器中[開啟編輯器](/zh-tw/draw)。不需要安裝任何程式，也不需要建立帳號。工作時圖面會保留在此瀏覽器中，下次開啟時仍會在那裡。
+
+## 輸入指令 [#command]
+
+不論游標位於何處，直接在圖面上輸入：字母會進入下方的指令行，指令行會建議以這些字母開頭的指令。按 Enter 或空白鍵即可執行指令。<Command id="LINE" />（線）指令會繪製線，輸入其較短的快捷鍵（指令別名）也一樣；所有快捷鍵都列在[指令頁面](/docs/commands)上。
+
+## 回應提示 [#prompts]
+
+指令一次只詢問一件事，顯示在指令行與游標旁。點可以在圖面上按一下指定，也可以用 `x,y` 的形式輸入兩個座標。指定第一點之後，輸入的座標會從上一點起算，與 AutoCAD 的動態輸入相同，指令歷程會在前面加上 `@` 記錄；`#x,y` 則改從原點起算。只輸入一個距離時，會沿游標的方向前進該距離。
+
+<Session name="firstLine" />
+
+## 選擇選項 [#options]
+
+提示提供的選項列在方括號中，每個選項都有其大寫字母：輸入這些字母，然後按 Enter。角括號中的值是預設值，按 Enter 即採用該值。
+
+<Session name="circleDiameter" />
+
+## 結束、重複、取消 [#end]
+
+按 Enter 或空白鍵會結束持續詢問的指令，例如 <Command id="LINE" />；沒有執行中的指令時，則會重複上一個指令。按一下右鍵會開啟提供相同選擇的功能表。按 Esc 可取消。所有按鍵都列在[鍵盤快捷鍵頁面](/docs/shortcuts)上。
+
+## 精確繪圖 [#precision]
+
+物件鎖點會將游標帶到已繪物件上的精確點：端點、中點、中心點。`F3` 可打開或關閉物件鎖點，`F8` 切換正交，`F10` 切換極座標追蹤，與狀態列上對應的按鈕相同。
+
+<Session name="endpointSnap" />
+
+## 修改圖面 [#modify]
+
+編輯指令會詢問要處理的物件，或像 <Command id="OFFSET" />（偏移）指令一樣先詢問一個值：距離、物件，然後是放置複本的那一側。
+
+<Session name="offsetRectangle" />
+
+## 退回與重做 [#undo]
+
+<Command id="U" /> 或 `Ctrl+Z` 會退回上一個指令的全部結果，`Ctrl+Y` 則會重做。在提供退回選項的指令中，該選項會退回一個步驟，例如 <Command id="LINE" /> 的一條線段。
+
+## 儲存 [#save]
+
+工作時圖面會保留在此瀏覽器中。<Command id="QSAVE" /> 或 `Ctrl+S` 會將圖面下載為 MellowCAD 自有的版本化格式檔案，<Command id="OPEN" /> 或 `Ctrl+O` 可開啟這種檔案或 [DXF 檔案](/docs/open-dxf)，再以 <Command id="SAVEAS" /> 重新[儲存為 DXF](/docs/edit-dxf)；[儲存方式與 AutoCAD 略有不同](/docs/differences#saving)。
+
+## 下一步 [#next]
+
+- [練習題](/docs/exercises)：可供練習的圖面，每一題都有逐步解答，並可連同圖面在編輯器中開啟。
+- [座標](/docs/coordinates)：輸入點的各種方式，以及有角度的線。
+- [指令](/docs/commands)：所有指令、其快捷鍵（指令別名），以及它詢問的第一件事。
+- [鍵盤快捷鍵](/docs/shortcuts)：編輯器回應的按鍵。
+- [與 AutoCAD 的差異](/docs/differences)：運作方式不同之處及其原因。

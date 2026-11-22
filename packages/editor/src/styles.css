@@ -181,8 +181,8 @@
 }
 
 /* Japanese (docs/i18n/ja.md): no italic to fake and no tracking to crowd
-   kana; a line keeps its punctuation off its start. Simplified Chinese's
-   (docs/i18n/zh-CN.md) are the same. */
+   kana; a line keeps its punctuation off its start. Chinese's, Simplified
+   and Traditional (docs/i18n/zh-CN.md, docs/i18n/zh-TW.md), are the same. */
 :where([data-mellowcad-editor], [data-mellowcad-editor] *):is(
   :lang(ja),
   :lang(zh)

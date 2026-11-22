@@ -1,0 +1,58 @@
+---
+title: "CAD 練習圖：法蘭"
+metaTitle: "AutoCAD 機械練習圖：附鍵槽的法蘭"
+description: "AutoCAD 機械練習題：在軸孔上修剪出鍵槽，以環形陣列排列 8 個孔，並繪製中心線與直徑標註，附逐步解說。免費線上練習。"
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+繪製此法蘭，單位為公釐：外徑 140，軸孔直徑 60，鍵槽寬 16，其頂邊距中心 36；8 個直徑 14 的孔位於直徑 110 的節圓上，並繪製中心線。鍵槽是修剪進軸孔的矩形；孔則是一個圓加上環形陣列。
+
+- **練習題：** 中級 · 機械 · 2D
+- **指令：** [`CIRCLE`](/docs/commands/circle), [`RECTANG`](/docs/commands/rectang), [`TRIM`](/docs/commands/trim), [`ARRAYPOLAR`](/docs/commands/arraypolar), [`LINE`](/docs/commands/line), [`DIMDIAMETER`](/docs/commands/dimdiameter), [`DIMLINEAR`](/docs/commands/dimlinear)
+- **在編輯器中：** [連同圖面開啟](/zh-tw/draw?drawing=flange)，已標註的圖面就在您繪圖處的旁邊
+
+## 圖面 [#drawing]
+
+<Session name="exercises/flange" caption="外徑 140 的法蘭，含鍵槽、8 個孔與直徑標註。" />
+
+## 逐步解答 [#steps]
+
+引擎繪製每個步驟，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。在指令的第一點之後，輸入的點會從上一點量起，如同動態輸入的量法，歷程中以 @ 寫出；\# 則從原點量起。
+
+### 1. 繪製圓 [#circles]
+
+在「輪廓線」圖層上，於 `0,0` 畫兩個圓，各以 `Diameter` 指定：`140` 與 `60`。
+
+<Session name="exercises/flange/circles" caption="1. 繪製圓" />
+
+### 2. 切出鍵槽 [#keyway]
+
+以 [`RECTANG`](/docs/commands/rectang)（矩形）指令從 `-8,20` 畫到相距 `16,16` 處：矩形與軸孔相交。[`TRIM`](/docs/commands/trim)（修剪）指令會在其他物件與某物件相交處將其剪斷：先點選矩形兩側邊之間的軸孔弧，再點選軸孔內的矩形底邊。剩下的就是鍵槽：其兩側邊與頂邊。
+
+<Session name="exercises/flange/keyway" caption="2. 切出鍵槽" />
+
+### 3. 陣列孔 [#holes]
+
+在節圓上畫一個孔：於 `55<22.5`（距原點 55、角度 22.5°）畫一個 `Diameter` 為 `14` 的圓。[`ARRAYPOLAR`](/docs/commands/arraypolar)（環形陣列）指令：選取該圓，按 Enter，指定中心點 `0,0`；`ASsociative` 選 `No`，會留下 8 個獨立的圓，標註時可以點選；`Items` 輸入 `8`，使其佈滿整圈。接著在「中心線」圖層上，於 `0,0` 畫節圓，直徑 `110`。
+
+<Session name="exercises/flange/holes" caption="3. 陣列孔" />
+
+### 4. 繪製中心線 [#centreLines]
+
+仍在「中心線」圖層上，以 [`LINE`](/docs/commands/line)（線）指令畫兩條通過中心、長 156 的線：橫線從 `-78,0` 向右 `156,0`；豎線從 `0,-78` 向上 `0,156`。
+
+<Session name="exercises/flange/centreLines" caption="4. 繪製中心線" />
+
+### 5. 標註 [#dimensions]
+
+在「標註」圖層上，以 [`DIMDIAMETER`](/docs/commands/dimdiameter)（直徑）指令標註軸孔、一個孔、節圓與外輪廓，各在尚無標註穿過的位置點選；再以 [`DIMLINEAR`](/docs/commands/dimlinear)（線性）指令標註鍵槽頂邊的寬度：16。
+
+<Session name="exercises/flange/dimensions" caption="5. 標註" />
+
+## 更多練習題 [#more]
+
+- [CAD 練習圖：圓桌與椅子](/docs/exercises/round-table): 中級 · 建築 · 2D
+- [CAD 練習圖：土地邊界](/docs/exercises/plot-of-land): 中級 · 土木 · 2D
+- [CAD 練習圖：階梯軸](/docs/exercises/shaft): 中級 · 機械 · 2D
+- [AutoCAD 練習題](/docs/exercises)

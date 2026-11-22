@@ -1,0 +1,72 @@
+---
+title: "AutoCAD COPY（複製）指令"
+metaTitle: "CAD 複製指令（COPY）：多重複製與快捷鍵 CO"
+description: "AutoCAD 複製（COPY、CO、CP）依提示逐步說明：一個基準點，再放置任意數量的複本，可退回與結束，或以位移複製一個。可免費試用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD 複製指令的快捷鍵是什麼？","answer":"CO 或 CP，再按 Enter 或空白鍵。也可以輸入完整名稱，在任何語言版本的 AutoCAD 中都可輸入 _COPY。"},{"question":"如何一次建立多個複本？","answer":"持續放置：指定的每一點都是從同一個基準點建立的另一個複本，直到按 Enter。若要排成列、行或繞著中心點的複本，ARRAY 可一次建立。"},{"question":"如何以指定的距離複製物件？","answer":"指定基準點，再以距離輸入第二點：30,0 會沿 X 複製到相距 30 處，因為動態輸入會將第一點之後的點視為相對於它。也可以在正交或極座標追蹤下，將游標指向要移動的方向，只輸入距離。"},{"question":"為什麼 COPY 沒有「陣列」選項？","answer":"MellowCAD 目前還不提供。若要一列等距的複本，以一列的 ARRAYRECT 可得到相同結果，並將它們保留為一個可編輯的陣列。"}]
+---
+
+COPY（複製）指令放置所選物件的複本：選取物件，指定基準點，再為每個複本指定第二點。與 AutoCAD 相同，其複製模式預設為「多重」，因此會持續要求下一個複本，直到按 Enter 或選擇「結束」，每個複本都從同一個基準點量取。複本保留物件的圖層、顏色及其他所有性質。在指令之前選取的物件即為要複製的物件，放置複本時，選集會跟隨游標。
+
+- **指令：** `COPY`
+- **快捷鍵：** `CO`, `CP`
+- **面板：** [修改](/docs/commands#modify)
+- **試試看：** [開啟編輯器](/zh-tw/draw)，輸入 `CO` 並按 Enter。
+
+## 在指令行中 [#session]
+
+引擎繪製它，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。
+
+<Session name="copy" caption="一個圓從同一個基準點沿 X 複製三次，再按 Enter。" />
+
+## 選項 [#options]
+
+### `Displacement` (`D`) [#displacement]
+
+在基準點提示中選擇，或在此按 Enter：要求以向量指定一次移動，`30,0` 會沿 X 放置一個相距 30 的複本，然後結束。其預設值為 COPY 在該圖面中上一次使用的位移。
+
+### `Exit` (`E`) [#exit]
+
+結束指令，與放置複本後按 Enter 相同。
+
+### `Undo` (`U`) [#undo]
+
+退回上一個放置的複本。退回第一個複本時會顯示 `Command has been completely undone.`，並再次要求第二點。
+
+## 尚未支援的功能 [#missing]
+
+不提供 COPYMODE 的「單一」（複製一次即結束）：COPY 永遠是「多重」，因此基準點提示只列出 `Displacement`。第二點的「陣列」，即 AutoCAD 中一列等距的複本，也不提供。
+
+[功能與尚缺項目的詳細說明（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#copy--co--es-copia--cp--dup--pt-br-copiar--co--cp--fr-copier--cp--it-copia--cp--de-kopieren--ko--cp--ru-копировать--кп--pl-kopiuj--k--cs-kopie--ko--hu-másol--m--má)
+
+## 常見問題 [#questions]
+
+### AutoCAD 複製指令的快捷鍵是什麼？
+
+`CO` 或 `CP`，再按 Enter 或空白鍵。也可以輸入完整名稱，在任何語言版本的 AutoCAD 中都可輸入 `_COPY`。
+
+### 如何一次建立多個複本？
+
+持續放置：指定的每一點都是從同一個基準點建立的另一個複本，直到按 Enter。若要排成列、行或繞著中心點的複本，[`ARRAY`](/docs/commands/array) 可一次建立。
+
+### 如何以指定的距離複製物件？
+
+指定基準點，再以距離輸入第二點：`30,0` 會沿 X 複製到相距 30 處，因為動態輸入會將第一點之後的點視為相對於它。也可以在正交或極座標追蹤下，將游標指向要移動的方向，只輸入距離。
+
+### 為什麼 COPY 沒有「陣列」選項？
+
+MellowCAD 目前還不提供。若要一列等距的複本，以一列的 [`ARRAYRECT`](/docs/commands/arrayrect) 可得到相同結果，並將它們保留為一個可編輯的陣列。
+
+## 練習 [#practice]
+
+- [CAD 練習圖：墊片](/docs/exercises/gasket)
+- [CAD 3D 練習圖：安裝板](/docs/exercises/mounting-plate)
+- [CAD 3D 練習圖：軸承座](/docs/exercises/bearing-block)
+
+## 相關指令 [#related]
+
+- [AutoCAD MOVE（移動）指令](/docs/commands/move)
+- [AutoCAD ARRAY（陣列）指令](/docs/commands/array)
+- [AutoCAD OFFSET（偏移）指令](/docs/commands/offset)
+- [AutoCAD MIRROR（鏡射）指令](/docs/commands/mirror)

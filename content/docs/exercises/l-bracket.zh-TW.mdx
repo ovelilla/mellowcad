@@ -1,0 +1,52 @@
+---
+title: "CAD 練習圖：L 型支架"
+metaTitle: "AutoCAD 入門練習題：L 型支架"
+description: "AutoCAD 入門練習：以相對座標繪製 L 型支架的輪廓、圓角、兩個孔與基線式標註，附逐步解說。免費線上練習。"
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+繪製此支架，單位為公釐：長 100，底腳高 20，立板寬 30、高 80，內角以半徑 10 倒圓角；底腳上有直徑 8 的孔，立板上有直徑 10 的孔，各位於所在部位的中央。輪廓以一次 [`LINE`](/docs/commands/line)（線）指令畫完，每一點都以與上一點的距離輸入，所有標註都從左下角點起算。
+
+- **練習題：** 初級 · 機械 · 2D
+- **指令：** [`LINE`](/docs/commands/line), [`FILLET`](/docs/commands/fillet), [`CIRCLE`](/docs/commands/circle), [`DIMLINEAR`](/docs/commands/dimlinear), [`DIMBASELINE`](/docs/commands/dimbaseline), [`DIMRADIUS`](/docs/commands/dimradius), [`DIMDIAMETER`](/docs/commands/dimdiameter)
+- **在編輯器中：** [連同圖面開啟](/zh-tw/draw?drawing=l-bracket)，已標註的圖面就在您繪圖處的旁邊
+
+## 圖面 [#drawing]
+
+<Session name="exercises/l-bracket" caption="100 × 80 的 L 型支架，自左下角點起標註。" />
+
+## 逐步解答 [#steps]
+
+引擎繪製每個步驟，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。在指令的第一點之後，輸入的點會從上一點量起，如同動態輸入的量法，歷程中以 @ 寫出；\# 則從原點量起。
+
+### 1. 繪製輪廓 [#outline]
+
+在「輪廓線」圖層上，以 [`LINE`](/docs/commands/line) 指令從 `0,0` 開始，之後每一點都以與上一點的相對距離輸入：`100,0`、`0,20`、`-70,0`、`0,60` 與 `-30,0`。`Close` 會畫出回到起點的最後一邊並結束指令。
+
+<Session name="exercises/l-bracket/outline" caption="1. 繪製輪廓" />
+
+### 2. 內角倒圓角 [#fillet]
+
+[`FILLET`](/docs/commands/fillet)（圓角）指令：選擇 `Radius`，輸入 `10`，再選取在內角相交的兩條線：底腳的頂邊與立板的側邊。
+
+<Session name="exercises/l-bracket/fillet" caption="2. 內角倒圓角" />
+
+### 3. 繪製孔 [#holes]
+
+以 [`CIRCLE`](/docs/commands/circle)（圓）指令畫兩個圓，各以 `Diameter` 指定：底腳上 `80,10` 處為 `8`，立板上 `15,65` 處為 `10`。
+
+<Session name="exercises/l-bracket/holes" caption="3. 繪製孔" />
+
+### 4. 標註 [#dimensions]
+
+在「標註」圖層上，以 [`DIMLINEAR`](/docs/commands/dimlinear)（線性）指令從 `0,0` 標到底腳的孔 `80,10`，置於下方：80。[`DIMBASELINE`](/docs/commands/dimbaseline)（基線式）指令從同一條第一延伸線繼續標註：輸入右端點 `#100,0`（# 表示從原點量起），再按兩次 Enter 結束。左側向上也同樣處理，先標到上方的孔，再標到頂端 `#0,80`。最後以 [`DIMRADIUS`](/docs/commands/dimradius)（半徑）指令標註圓角，以 [`DIMDIAMETER`](/docs/commands/dimdiameter)（直徑）指令標註各孔。
+
+<Session name="exercises/l-bracket/dimensions" caption="4. 標註" />
+
+## 更多練習題 [#more]
+
+- [CAD 練習圖：樓梯平面圖](/docs/exercises/stairs): 初級 · 建築 · 2D
+- [CAD 3D 練習圖：安裝板](/docs/exercises/mounting-plate): 初級 · 機械 · 3D 實體
+- [CAD 練習圖：法蘭](/docs/exercises/flange): 中級 · 機械 · 2D
+- [AutoCAD 練習題](/docs/exercises)

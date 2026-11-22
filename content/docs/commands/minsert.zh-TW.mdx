@@ -1,0 +1,67 @@
+---
+title: "AutoCAD MINSERT（插入圖塊陣列）指令"
+metaTitle: "CAD 插入圖塊陣列：MINSERT 指令用法"
+description: "AutoCAD MINSERT（插入圖塊陣列）如何將圖塊依列與行放置為一個物件、指令的提示，以及 EXPLODE 為何拒絕分解它。可在瀏覽器中免費線上試用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD 的 MINSERT 指令是什麼？","answer":"多重插入：將圖塊放置在由列與行組成的矩形格網中，成為一個物件。之後可在「性質」選項板中變更數目或間距。"},{"question":"如何分解 MINSERT 圖塊？","answer":"無法分解：EXPLODE 會顯示它是以 MINSERT 插入的並保持原狀，在 AutoCAD 中也一樣，即使將其列數與行數設為 1 也是如此。請以 -INSERT 重新插入圖塊，或以 ARRAYRECT 排列複本，其陣列可分解為各個項目。"},{"question":"MINSERT 有快捷鍵嗎？","answer":"沒有：AutoCAD 沒有為 MINSERT 提供指令別名，也沒有功能區按鈕，因此請完整輸入 MINSERT。_MINSERT 在任何語言版本的 AutoCAD 中都適用。"},{"question":"MINSERT 與 ARRAY 有什麼不同？","answer":"MINSERT 將一個圖塊重複為單一參考，無法分解。ARRAYRECT 將任何物件重複為關聯式陣列，有掣點可變更其數目與間距，並可以 EXPLODE 分解。"}]
+---
+
+MINSERT（插入圖塊陣列）指令將圖面中定義的圖塊依列與行插入多次，成為一個物件。它詢問 `-INSERT` 所詢問的內容：圖塊名稱（按 Enter 採用提供的名稱，即上次插入的圖塊）、插入點、X 與 Y 比例係數以及旋轉角度；接著是列數與行數（按 Enter 為 1），然後是列間距與行間距。只會詢問列數與行數所需的間距，一列一行即為一般的圖塊參考。含有屬性的圖塊最後只詢問一次屬性值，每個複本都顯示這些值。
+
+列沿圖塊的 Y 軸排列，行沿其 X 軸排列，兩者都隨旋轉角度轉動；間距以圖面單位表示，與比例無關，負的間距會將複本向下或向左排列。在列間距提示下，可以改以兩點指定儲存格單元：其寬度為行間距，高度為列間距。結果是 AutoCAD 的 MInsert 圖塊：作為一個整體移動、複製、旋轉、調整比例與鏡射，[`LIST`](/docs/commands/list) 會加列其列數與行數，「性質」選項板則以「行數」、「行間距」、「列數」與「列間距」顯示，各項都可輸入。[`EXPLODE`](/docs/commands/explode) 會將其計為以 MINSERT 插入的物件，並保持完整，與 AutoCAD 相同。DXF 會以 AutoCAD 自己的格式開啟與儲存。
+
+- **指令：** `MINSERT`
+- **面板：** [組織](/docs/commands#organize)
+- **試試看：** [開啟編輯器](/zh-tw/draw)，輸入 `MINSERT` 並按 Enter。
+
+## 在指令行中 [#session]
+
+引擎繪製它，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。
+
+<Session name="minsert" caption="將一個座椅建立為圖塊，再以 MINSERT 排成三列、每列五個：一個物件。" />
+
+## 選項 [#options]
+
+### `?` [#list]
+
+在圖塊名稱提示下：列出圖面中的圖塊，與 [`BLOCK`](/docs/commands/block) 相同，然後結束。
+
+### `Scale` (`S`) [#scale]
+
+在插入點提示下：要求輸入適用於兩個軸的一個比例係數，再次要求指定插入點。指定點之後不再詢問 X 與 Y 比例係數。
+
+### `Rotate` (`R`) [#rotate]
+
+在插入點提示下：要求輸入角度，該角度會旋轉每個複本與整個格網，然後再次要求指定插入點。指定點之後不再詢問旋轉角度。
+
+## 尚未支援的功能 [#missing]
+
+插入點提示下的基準點、X、Y 與 Z，以及 X 比例提示下的角點與 XYZ，因為 -INSERT 沒有這些選項；開啟圖檔的 `~`；可註解圖塊，此處不存在。線性標註會點選整個 MINSERT，而非其中某個複本內的物件。「性質」選項板的可註解、圖塊單位與單位係數。
+
+[功能與尚缺項目的詳細說明（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#minsert--es-insertm--pt-br-inserirm--fr-inserm--it-inserm--de-meinfüg--ru-мвставить--pl-wwstaw--cs-nvlož--hu-tbeill)
+
+## 常見問題 [#questions]
+
+### AutoCAD 的 MINSERT 指令是什麼？
+
+多重插入：將圖塊放置在由列與行組成的矩形格網中，成為一個物件。之後可在「性質」選項板中變更數目或間距。
+
+### 如何分解 MINSERT 圖塊？
+
+無法分解：[`EXPLODE`](/docs/commands/explode) 會顯示它是以 MINSERT 插入的並保持原狀，在 AutoCAD 中也一樣，即使將其列數與行數設為 1 也是如此。請以 `-INSERT` 重新插入圖塊，或以 [`ARRAYRECT`](/docs/commands/arrayrect) 排列複本，其陣列可分解為各個項目。
+
+### MINSERT 有快捷鍵嗎？
+
+沒有：AutoCAD 沒有為 MINSERT 提供指令別名，也沒有功能區按鈕，因此請完整輸入 `MINSERT`。`_MINSERT` 在任何語言版本的 AutoCAD 中都適用。
+
+### MINSERT 與 ARRAY 有什麼不同？
+
+MINSERT 將一個圖塊重複為單一參考，無法分解。[`ARRAYRECT`](/docs/commands/arrayrect) 將任何物件重複為關聯式陣列，有掣點可變更其數目與間距，並可以 [`EXPLODE`](/docs/commands/explode) 分解。
+
+## 相關指令 [#related]
+
+- [AutoCAD INSERT（插入圖塊）指令](/docs/commands/insert)
+- [AutoCAD ARRAYRECT（矩形陣列）指令](/docs/commands/arrayrect)
+- [AutoCAD BLOCK（建立圖塊）指令](/docs/commands/block)
+- [AutoCAD EXPLODE（分解）指令](/docs/commands/explode)

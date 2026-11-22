@@ -1,0 +1,67 @@
+---
+title: "AutoCAD DIMRADIUS（半徑）標註指令"
+metaTitle: "CAD 半徑標註（DIMRADIUS）用法與快捷鍵 DRA"
+description: "AutoCAD 的 DIMRADIUS（DRA）如何標註圓、弧或圓角：點選曲線，再將 R 文字放在內側或外側。可在瀏覽器中免費試用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD 半徑標註的快捷鍵是什麼？","answer":"DRA 或 DIMRAD，然後按 Enter 或空白鍵。也可以輸入完整名稱，在任何語言版本的 AutoCAD 中都可以輸入 _DIMRADIUS。"},{"question":"如何標註圓角？","answer":"點選圓角：圓角是一個弧，或聚合線的弧段，例如 RECTANG 以其 Fillet 選項倒圓的角，DIMRADIUS 兩者都接受。"},{"question":"為什麼無法選取要標註的物件？","answer":"DIMRADIUS 接受圓、弧或聚合線弧段，位於鎖住的圖層上也可以。其他物件（包括橢圓）會顯示 「Object selected is not a circle or arc.」 並再次詢問；目前還無法點選圖塊參考中的曲線。"},{"question":"如何在半徑標註中加上 TYP？","answer":"在放置標註之前選擇 Text 並輸入 「<> TYP」：<> 代表測量值及其 R，因此標註會顯示 「R10 TYP」。放置後，可在「性質」選項板的「文字置換」中變更。"}]
+---
+
+DIMRADIUS（半徑）指令標註圓、弧或聚合線弧段的半徑。點選曲線後，指令行會立即顯示測量值；接著放置標註，指令隨即結束。與 AutoCAD 相同，其文字為 R 後接半徑值，位於一條沿半徑方向、在曲線上以一個箭頭結束的線上，依放置位置在曲線內側或外側。放在外側時，該線會越過曲線延伸到中心點，與 ISO-25 的畫法相同。
+
+- **指令：** `DIMRADIUS`
+- **快捷鍵：** `DIMRAD`, `DRA`
+- **面板：** [註解](/docs/commands#annotate)
+- **試試看：** [開啟編輯器](/zh-tw/draw)，輸入 `DRA` 並按 Enter。
+
+## 在指令行中 [#session]
+
+引擎繪製它，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。
+
+<Session name="dimradius" caption="板件的圓角在外側標註、孔在內側標註：依序點選每條曲線，再放置文字。" />
+
+## 選項 [#options]
+
+### `Text` (`T`) [#text]
+
+要求輸入要寫入的文字以取代測量值，並以測量值做為預設值：按 Enter 即保留測量值。在輸入的文字中，`<>` 代表測量值及其 R，因此半徑為 10 時，`<> TYP` 會寫出 `R10 TYP`。
+
+### `Angle` (`A`) [#angle]
+
+要求指定標註文字的角度，文字便以該角度繪製，其中點位於線上，線在文字處中斷。輸入 0 會讓文字回到沿線的方向。
+
+## 尚未支援的功能 [#missing]
+
+多行文字：標註的文字為單行，透過指令行的 `Text` 設定，不使用文字編輯器。在弧上，箭頭保持在弧的兩端之間，而標註放在弧的兩端之外時，AutoCAD 會繪製弧延伸線。無法點選圖塊參考中的曲線。不會繪製型式的中心線（中心標記大小為負值時），也不提供文字位於曲線外時的設定：文字一律沿著線排列，沒有連字線，與 ISO-25 的畫法相同。標註不是關聯式標註：不會隨著所測量的曲線變動。
+
+[功能與尚缺項目的詳細說明（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimradius--dimrad--dra--es-acoradio--acorad--pt-br-cotaraios--cra--dimrad--fr-cotrayon--coty--it-dimraggio--dra--de-bemradius--bmrad--ru-рзмрадиус--рра--pl-wympromień--wr--wymr--cs-kótyrádius--kra--kotyra--hu-méretsugár--msu--msug)
+
+## 常見問題 [#questions]
+
+### AutoCAD 半徑標註的快捷鍵是什麼？
+
+`DRA` 或 `DIMRAD`，然後按 Enter 或空白鍵。也可以輸入完整名稱，在任何語言版本的 AutoCAD 中都可以輸入 `_DIMRADIUS`。
+
+### 如何標註圓角？
+
+點選圓角：圓角是一個弧，或聚合線的弧段，例如 [`RECTANG`](/docs/commands/rectang) 以其 `Fillet` 選項倒圓的角，DIMRADIUS 兩者都接受。
+
+### 為什麼無法選取要標註的物件？
+
+DIMRADIUS 接受圓、弧或聚合線弧段，位於鎖住的圖層上也可以。其他物件（包括橢圓）會顯示 `Object selected is not a circle or arc.` 並再次詢問；目前還無法點選圖塊參考中的曲線。
+
+### 如何在半徑標註中加上 TYP？
+
+在放置標註之前選擇 `Text` 並輸入 `<> TYP`：`<>` 代表測量值及其 R，因此標註會顯示 `R10 TYP`。放置後，可在「性質」選項板的「文字置換」中變更。
+
+## 練習 [#practice]
+
+- [CAD 練習圖：L 型支架](/docs/exercises/l-bracket)
+- [CAD 練習圖：以切線連接的連桿](/docs/exercises/link)
+
+## 相關指令 [#related]
+
+- [AutoCAD DIMDIAMETER（直徑）標註指令](/docs/commands/dimdiameter)
+- [AutoCAD DIMANGULAR（角度）標註指令](/docs/commands/dimangular)
+- [AutoCAD 尺寸標註：DIMLINEAR（線性）指令](/docs/commands/dimlinear)
+- [AutoCAD DIMSTYLE（標註型式）指令](/docs/commands/dimstyle)

@@ -1,0 +1,59 @@
+---
+title: "AutoCAD LIST（清單）指令"
+metaTitle: "CAD 查詢物件資訊：LIST（清單）與快捷鍵 LI"
+description: "AutoCAD LIST（清單）指令（LI、LS）的用法：選取物件，即可在指令行讀取每個物件的類型、圖層、顏色、點、長度與面積。可免費線上試用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD 清單指令的快捷鍵是什麼？","answer":"輸入 LI 或 LS，再按 Enter 或空白鍵。輸入完整名稱也可以，而 _LIST 在任何語言版本的 AutoCAD 中都適用。"},{"question":"LIST 指令會顯示什麼？","answer":"AutoCAD 的 LIST 對物件所顯示的一切：其類型、圖層、空間與不為 ByLayer 的性質，接著是其幾何資料，每個點與長度都以數值顯示。選取多個物件時，每個物件都有各自的報告。"},{"question":"如何查詢物件的長度或面積？","answer":"對物件執行 LIST：線的長度、圓的周長與面積、聚合線的長度或周長與面積。若要加總多個面積，請使用 AREA。"},{"question":"如何查看線端點的座標？","answer":"對線執行 LIST：「from point」 與 「to point」，以目前的 UCS 表示。若只要一點，請使用 ID 並搭配物件鎖點。"},{"question":"LIST 與 PROPERTIES 有什麼不同？","answer":"LIST 寫出一份報告，可從歷程記錄中閱讀與複製。PROPERTIES 則在選項板中顯示相同的值，並可在其中變更。"}]
+---
+
+LIST（清單）指令在指令行中為您選取的每個物件寫出一份報告，欄位與用詞和 AutoCAD 2027 相同。每份報告都以物件的類型、圖層與空間開始，接著是不為 ByLayer 或零時的顏色、線型、線粗與厚度，然後是該類型特有的資料：線的端點、長度、角度與增量；圓的中心點、半徑、周長與面積；弧的角度與長度；聚合線的頂點、寬度、面積與長度；雲形線的控制點與擬合點；文字的型式、高度與對正；標註的類型、點與型式；填充線的樣式、比例與面積；圖塊參考的名稱、插入點、比例與屬性；陣列的列與項目；面域的面積、周長與邊界框。
+
+點以目前的 UCS 表示，長度依圖面的精確度，角度則依 AUPREC。在 LIST 之前選取的物件會立即列出，不顯示提示；未選取任何物件就按 Enter，會不顯示任何訊息而結束。所有行會一次寫出：AutoCAD 的文字視窗每滿一頁就會在 `Press ENTER to continue:` 暫停，此處的歷程記錄則直接捲動。沒有 `Handle` 這一行：此處的物件沒有處理碼。
+
+- **指令：** `LIST`
+- **快捷鍵：** `LI`, `LS`
+- **面板：** [查詢與視圖](/docs/commands#inquiry)
+- **試試看：** [開啟編輯器](/zh-tw/draw)，輸入 `LI` 並按 Enter。
+
+## 在指令行中 [#session]
+
+引擎繪製它，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。
+
+<Session name="list" caption="對板件的孔執行 LIST：圓的圖層、中心點、半徑、周長與面積。" />
+
+## 尚未支援的功能 [#missing]
+
+開放的曲線擬合聚合線的面積：此處是以其弦封閉曲線後的面積，AutoCAD 的值較大。雲形線的長度在此處為精確值，AutoCAD 的則是近似值。由兩條線建立的 DIMANGULAR 以其三點列出，標註也從不會是 `associative: yes`。AutoCAD 的暫停與文字視窗。此處物件所沒有的性質：ByBlock、「預設」線粗、物件本身的線型比例、透明度與群組。
+
+[功能與尚缺項目的詳細說明（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/inquiry.md#list--li--ls--es-list--ls--lt--pt-br-lista--li--ls--mostrarmat--fr-liste--ls--lst--affmat--it-lista--li--ls--showmat--de-liste--ls--lis--zeigmat--ru-список--сп--покмат--pl-lista--li--ls--pokmat--cs-výpis--vy--ukažmat--hu-lista--li--ls--anyaglista)
+
+## 常見問題 [#questions]
+
+### AutoCAD 清單指令的快捷鍵是什麼？
+
+輸入 `LI` 或 `LS`，再按 Enter 或空白鍵。輸入完整名稱也可以，而 `_LIST` 在任何語言版本的 AutoCAD 中都適用。
+
+### LIST 指令會顯示什麼？
+
+AutoCAD 的 LIST 對物件所顯示的一切：其類型、圖層、空間與不為 ByLayer 的性質，接著是其幾何資料，每個點與長度都以數值顯示。選取多個物件時，每個物件都有各自的報告。
+
+### 如何查詢物件的長度或面積？
+
+對物件執行 LIST：線的長度、圓的周長與面積、聚合線的長度或周長與面積。若要加總多個面積，請使用 [`AREA`](/docs/commands/area)。
+
+### 如何查看線端點的座標？
+
+對線執行 LIST：`from point` 與 `to point`，以目前的 UCS 表示。若只要一點，請使用 [`ID`](/docs/commands/id) 並搭配物件鎖點。
+
+### LIST 與 PROPERTIES 有什麼不同？
+
+LIST 寫出一份報告，可從歷程記錄中閱讀與複製。[`PROPERTIES`](/docs/commands/properties) 則在選項板中顯示相同的值，並可在其中變更。
+
+## 相關指令 [#related]
+
+- [AutoCAD PROPERTIES（性質）指令](/docs/commands/properties)
+- [AutoCAD ID（點位置）指令](/docs/commands/id)
+- [AutoCAD DIST（距離）指令](/docs/commands/dist)
+- [AutoCAD AREA（面積）指令](/docs/commands/area)
+- [AutoCAD MASSPROP（面域/質量性質）指令](/docs/commands/massprop)

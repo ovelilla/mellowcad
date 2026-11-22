@@ -1,0 +1,52 @@
+---
+title: "CAD 等角圖練習圖：階梯塊"
+metaTitle: "AutoCAD 等角圖練習題：階梯塊"
+description: "在 AutoCAD 中以 LINE 指令與極座標沿 30°、90°、150° 軸畫出階梯塊的等角圖，並加上標註。免費線上練習，附逐步解說。"
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+以等角圖繪製此階梯塊，單位為公釐：長 60、深 40、高 40，前方有一個深 20、高 20 的階梯。每條邊都沿著某一條等角軸：長度為 30° 與 210°，深度為 150° 與 330°，高度為 90° 與 270°。MellowCAD 尚未提供 AutoCAD 的等角製圖，也就是等角鎖點與等角圓，因此各邊是以極座標（長度與角度）輸入的線。
+
+- **練習題：** 中級 · 機械 · 等角
+- **指令：** [`LINE`](/docs/commands/line), [`DIMALIGNED`](/docs/commands/dimaligned)
+- **在編輯器中：** [連同圖面開啟](/zh-tw/draw?drawing=isometric-block)，已標註的圖面就在您繪圖處的旁邊
+
+## 圖面 [#drawing]
+
+<Session name="exercises/isometric-block" caption="等角圖中的階梯塊，長 60、深 40、高 40，尺寸沿各邊標註。" />
+
+## 逐步解答 [#steps]
+
+引擎繪製每個步驟，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。在指令的第一點之後，輸入的點會從上一點量起，如同動態輸入的量法，歷程中以 @ 寫出；\# 則從原點量起。
+
+### 1. 繪製階梯的正面 [#front]
+
+在「輪廓線」圖層上，以 [`LINE`](/docs/commands/line)（線）指令從前方底角 `0,0` 開始：`60<30`、`20<90`、`60<210`，再選擇 `Close`。
+
+<Session name="exercises/isometric-block/front" caption="1. 繪製階梯的正面" />
+
+### 2. 繪製側面 [#side]
+
+再次從 `0,0` 畫左側面：`40<150`、`40<90`、`20<330`、`20<270` 與 `20<330`。按 Enter，線在階梯的前緣結束。
+
+<Session name="exercises/isometric-block/side" caption="2. 繪製側面" />
+
+### 3. 繪製頂面 [#top]
+
+其餘部分從已畫好的角點開始：輸入 `_END`，即僅作用於一點的「端點」物件鎖點，再點選該角點。從正面的右上角點：`20<150`、`20<90`、`20<150` 與 `60<210`。接著畫兩條 `60<210` 的線，分別從階梯立面的底端與頂端開始。
+
+<Session name="exercises/isometric-block/top" caption="3. 繪製頂面" />
+
+### 4. 標註 [#dimensions]
+
+在「標註」圖層上，以 [`DIMALIGNED`](/docs/commands/dimaligned)（對齊式）指令沿各邊標註，各置於所屬邊的旁邊：底部的 60 與 40、左側向上的 40、右側向上的 20。
+
+<Session name="exercises/isometric-block/dimensions" caption="4. 標註" />
+
+## 更多練習題 [#more]
+
+- [CAD 3D 練習圖：皮帶輪](/docs/exercises/pulley): 中級 · 機械 · 3D 實體
+- [CAD 練習圖：以切線連接的連桿](/docs/exercises/link): 進階 · 機械 · 2D
+- [CAD 3D 練習圖：軸承座](/docs/exercises/bearing-block): 進階 · 機械 · 3D 實體
+- [AutoCAD 練習題](/docs/exercises)

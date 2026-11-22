@@ -1,0 +1,93 @@
+---
+title: "AutoCAD COLOR（顏色）指令"
+metaTitle: "CAD 顏色指令（COLOR）：物件顏色、ByLayer"
+description: "AutoCAD 顏色（COLOR、COL）如何設定新物件的顏色：ByLayer、以名稱或號碼指定的索引顏色，或 RGB 全彩。可在瀏覽器中免費試用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD 顏色指令的快捷鍵是什麼？","answer":"COL，再按 Enter 或空白鍵；COLOUR 也可以。也可以輸入完整名稱，在任何語言版本的 AutoCAD 中都可輸入 _COLOR。"},{"question":"AutoCAD 如何變更物件的顏色？","answer":"選取物件，在頂端列的顏色清單或「性質」選項板的「顏色」列中選擇顏色：一個步驟即完成變更。也可以使用 MATCHPROP 複製其他物件的顏色。COLOR 只設定其後繪製之物件的顏色。"},{"question":"AutoCAD 的 ByLayer 是什麼意思？","answer":"表示物件採用其圖層的顏色，因此在「圖層性質管理員」中變更圖層的顏色，會變更該圖層上所有 ByLayer 的物件。這是預設值，可讓圖面的顏色依圖層整理：LAYER。"},{"question":"AutoCAD 如何使用 RGB 顏色？","answer":"選擇 Truecolor，並輸入以逗號分隔的三個值，例如 0,128,255。"}]
+---
+
+COLOR（顏色）指令設定新物件繪製時所用的顏色。AutoCAD 會開啟「選取顏色」對話方塊；MellowCAD 目前還沒有，因此 COLOR 會執行 AutoCAD 也有的指令行形式 `-COLOR`。它會要求預設物件顏色，並提供目前的顏色，新圖面中為 `BYLAYER`：ByLayer 表示每個物件採用其圖層的顏色，改選其他顏色則為物件本身的顏色。輸入 1 到 255 的索引顏色號碼，或前七種之一的名稱，或選擇 `Truecolor`。按 Enter 會保留目前的顏色，變更是一個步驟，可由 `U` 退回。
+
+無法辨識的字詞會顯示 `A color number or standard color name is required.`，0、負數或大於 255 的數字則顯示 `Invalid color number.`；兩者都會再次詢問。在指令中加上單引號輸入 `'COLOR` 時，其後繪製的每個物件都會採用新的顏色：[`LINE`](/docs/commands/line) 的每個線段採用其開始繪製時的目前顏色。COLOR 只設定之後繪製的物件；已繪製的物件以「性質」選項板或頂端列的顏色清單變更。
+
+- **指令：** `COLOR`
+- **快捷鍵：** `COL`, `COLOUR`
+- **面板：** [組織](/docs/commands#organize)
+- **試試看：** [開啟編輯器](/zh-tw/draw)，輸入 `COL` 並按 Enter。
+
+## 在指令行中 [#session]
+
+引擎繪製它，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。
+
+<Session name="color" caption="一塊以 ByLayer 繪製的板，其孔為紅色，其內孔為全彩 0,128,255，最後將 COLOR 設回 ByLayer。" />
+
+## 選項 [#options]
+
+### `Truecolor` (`T`) [#truecolor]
+
+要求以紅、綠、藍三個 0 到 255 的值指定顏色，以逗號分隔，不加空格：`0,128,255` 為中藍色。即使某個索引顏色有相同的 RGB，它仍保持為全彩：輸入 `255,0,0` 之後，COLOR 提供的是 `255,0,0`，而不是 red。
+
+### `BYLayer` (`BYL`) [#bylayer]
+
+新物件採用其圖層的顏色，與一開始相同。
+
+### `Red` (`R`) [#red]
+
+索引顏色 1，也可輸入 `1`。
+
+### `Yellow` (`Y`) [#yellow]
+
+索引顏色 2，也可輸入 `2`。
+
+### `Green` (`G`) [#green]
+
+索引顏色 3，也可輸入 `3`。
+
+### `Cyan` (`C`) [#cyan]
+
+索引顏色 4，也可輸入 `4`。
+
+### `Blue` (`B`) [#blue]
+
+索引顏色 5，也可輸入 `5`。
+
+### `Magenta` (`M`) [#magenta]
+
+索引顏色 6，也可輸入 `6`。
+
+### `White` (`W`) [#white]
+
+索引顏色 7，也可輸入 `7`：在深色背景上為白色，在淺色背景上為黑色。
+
+## 尚未支援的功能 [#missing]
+
+「選取顏色」對話方塊、顏色表與 HSL 形式。ByBlock。透明度（CETRANSPARENCY），以及各類型的預設值 HPCOLOR、HPLAYER、DIMLAYER 與 TEXTLAYER。
+
+[功能與尚缺項目的詳細說明（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#colour--color--col--colour---color--es-color--col---color--pt-br-cor--c--colour--cordiag---cor--fr-couleur--cl--coul--ddcolor---couleur--it-colore--co--ddcolor---colore--de-farbe--far--fe--ddcolor---farbe--ru-цвет--цв--диалцвет---цвет--pl-kolor--kol--odkolor---kolor--cs-barva--bar--ddcolor--diabarva---barva--hu-szín--s--szin--dpszín---szín)
+
+## 常見問題 [#questions]
+
+### AutoCAD 顏色指令的快捷鍵是什麼？
+
+`COL`，再按 Enter 或空白鍵；`COLOUR` 也可以。也可以輸入完整名稱，在任何語言版本的 AutoCAD 中都可輸入 `_COLOR`。
+
+### AutoCAD 如何變更物件的顏色？
+
+選取物件，在頂端列的顏色清單或「性質」選項板的「顏色」列中選擇顏色：一個步驟即完成變更。也可以使用 [`MATCHPROP`](/docs/commands/matchprop) 複製其他物件的顏色。COLOR 只設定其後繪製之物件的顏色。
+
+### AutoCAD 的 ByLayer 是什麼意思？
+
+表示物件採用其圖層的顏色，因此在「圖層性質管理員」中變更圖層的顏色，會變更該圖層上所有 ByLayer 的物件。這是預設值，可讓圖面的顏色依圖層整理：[`LAYER`](/docs/commands/layer)。
+
+### AutoCAD 如何使用 RGB 顏色？
+
+選擇 `Truecolor`，並輸入以逗號分隔的三個值，例如 `0,128,255`。
+
+## 相關指令 [#related]
+
+- [AutoCAD LAYER（圖層性質）指令](/docs/commands/layer)
+- [AutoCAD PROPERTIES（性質）指令](/docs/commands/properties)
+- [AutoCAD MATCHPROP（複製性質）指令](/docs/commands/matchprop)
+- [AutoCAD LINETYPE（線型）指令](/docs/commands/linetype)
+- [AutoCAD LWEIGHT（線粗）指令](/docs/commands/lweight)

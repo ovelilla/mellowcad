@@ -32,6 +32,7 @@
     "src/locales/hu.ts",
     "src/locales/ja.ts",
     "src/locales/ko.ts",
-    "src/locales/zh-CN.ts"
+    "src/locales/zh-CN.ts",
+    "src/locales/zh-TW.ts"
   ]
 }

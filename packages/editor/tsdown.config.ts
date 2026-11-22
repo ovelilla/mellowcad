@@ -20,6 +20,7 @@ export default defineConfig({
     "locales/ja": "src/locales/ja.ts",
     "locales/ko": "src/locales/ko.ts",
     "locales/zh-CN": "src/locales/zh-CN.ts",
+    "locales/zh-TW": "src/locales/zh-TW.ts",
   },
   format: "esm",
   platform: "neutral",

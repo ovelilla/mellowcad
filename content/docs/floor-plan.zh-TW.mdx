@@ -1,0 +1,55 @@
+---
+title: 用 AutoCAD 繪製平面圖
+metaTitle: "CAD 平面圖教學：一步步畫出住宅平面圖"
+description: "CAD 平面圖教學與範例：在 AutoCAD 中以 OFFSET（偏移）畫出外牆與內牆，以 TRIM（修剪）切出開口，再畫出含開啟弧線的門、窗與標註。"
+type: howTo
+sourceHash: "41b2bdb216d4"
+---
+
+平面圖是將房屋在約 1.5 公尺高處水平剖切後，由上往下看的圖：每道牆以兩條線表示，兩線之間是牆厚，再加上牆上的開口、以開啟狀態繪製並帶有開啟弧線的門、窗以及標註。本指南以公分為單位，繪製一棟 8 × 6 公尺、兩個房間的房屋：1 個單位是 1 公分，因此外牆厚 20，內牆厚 10。每個步驟都會顯示其圖面，以及您會輸入的指令行歷程。請在本頁旁[開啟編輯器](/zh-tw/draw)，跟著繪製。
+
+## 設定圖層 [#layers]
+
+每一種物件放在各自的圖層上，並有其顏色，以便關閉其中任何一種：「牆」、「門」、「窗」與「標註」。以 <Command id="LAYER" />（圖層性質）指令開啟圖層選項板，在其中建立這些圖層，並在每個步驟之前，於「圖層」控制中將對應的圖層設為目前的圖層。為了讓標註以房屋的尺度清楚易讀，請在 <Command id="DIMSTYLE" />（標註型式）指令中設定其型式的整體比例：此處為 12，因此標註文字高 30。
+
+## 繪製外牆 [#walls]
+
+在「牆」圖層上，以 <Command id="RECTANG" />（矩形）指令從 `0,0` 畫到 `800,600`：這是牆的外側面。<Command id="OFFSET" />（偏移）指令可得到內側面：輸入牆厚 `20`，選取矩形，然後在其內側按一下。
+
+<Session name="floorPlanWalls" caption="外牆：矩形及其向內 20 的偏移。" />
+
+## 繪製內牆 [#inner-wall]
+
+以 <Command id="LINE" />（線）指令從 `500,20` 畫一條線，輸入 `0,560` 向上畫到外牆的內側面，再以 <Command id="OFFSET" /> 向右偏移 `10`：這就是兩個房間之間的牆。
+
+<Session name="floorPlanInnerWall" caption="內牆：一條線及其向右 10 的偏移。" />
+
+## 切出開口 [#openings]
+
+開口是在橫越牆的兩條線（開口的兩側）之間切出的。先以 <Command id="LINE" /> 畫出這兩條線，再以 <Command id="TRIM" />（修剪）指令逐一點選，修剪兩線之間的牆線：入口寬 90，從 `100,0` 起；內門寬 80，從 `500,200` 起；窗寬 120，分別從上方牆的 `200,580` 與右方牆的 `780,250` 起。
+
+<Session name="floorPlanOpenings" caption="四個開口：每個開口各有兩條側線，兩線之間的牆線已修剪。" />
+
+## 繪製門 [#doors]
+
+在「門」圖層上，每扇門由門扇與開啟弧線構成：門扇以 <Command id="LINE" /> 畫成開啟狀態，開啟弧線則以 <Command id="ARC" />（弧）指令繪製：選擇其中心點選項，然後依序指定鉸鏈處為中心點、弧線的起點與終點。兩端都是已繪製的點，即開口側邊的角點與門扇的端點：輸入 `_END`（只用於一個點的端點物件鎖點），再逐一點選。
+
+<Session name="floorPlanDoors" caption="每扇門：開啟 90° 的門扇及其開啟弧線。" />
+
+## 繪製窗 [#windows]
+
+在「窗」圖層上，以 <Command id="RECTANG" /> 從開口側邊畫出填滿每個開口的矩形，並以一條穿過其中間的線代表玻璃。
+
+<Session name="floorPlanWindows" caption="窗：每個開口中的矩形，以及代表玻璃的線。" />
+
+## 標註平面圖 [#dimensions]
+
+在「標註」圖層上，以 <Command id="DIMLINEAR" />（線性）指令標註外部尺寸，再從內部標註各房間：第一個房間的寬度以 <Command id="DIMLINEAR" /> 標註，內牆與第二個房間則以 <Command id="DIMCONTINUE" />（連續式）指令標註，點以 `#` 從原點起算輸入。
+
+<Session name="floorPlanDimensions" caption="完成標註的平面圖：外部 800 × 600，內部為各房間。" />
+
+## 下一步 [#next]
+
+- 以 <Command id="TEXT" />（單行文字）指令標示各房間的名稱，並以 <Command id="HATCH" />（填充線）指令填充牆，點選牆的兩條線之間的一點。
+- 以[練習題](/docs/exercises)練習：[樓梯平面圖](/docs/exercises/stairs)與[圓桌與椅子](/docs/exercises/round-table)同樣以公分繪製。
+- [座標](/docs/coordinates)：輸入點的各種方式。

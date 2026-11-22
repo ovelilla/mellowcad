@@ -1,0 +1,73 @@
+---
+title: "AutoCAD SNAP（鎖點）指令"
+metaTitle: "CAD 鎖點（SNAP）用法：鎖點間距與 F9"
+description: "AutoCAD SNAP（鎖點，SN、F9）的用法：將游標鎖在您設定間距的格點上、以縱橫向間距分別設定 X 與 Y，以及極座標鎖點。可以在瀏覽器中免費試用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD 鎖點（SNAP）的快捷鍵是什麼？","answer":"F9 打開與關閉鎖點模式。設定間距的指令是 SN，然後按 Enter 或空白鍵；也可以輸入完整名稱，在任何語言版本的 AutoCAD 中都可以使用 _SNAP。"},{"question":"鎖點（SNAP）與物件鎖點（OSNAP）有什麼不同？","answer":"鎖點模式將游標取整到空間中的一組格點。物件鎖點（F3）則將游標鎖在物件上的點：端點、中點、中心點。兩者可以同時使用，兩者都找到點時，以物件鎖點為優先。"},{"question":"CAD 游標為什麼會一格一格跳動？","answer":"鎖點模式已打開：按 F9 或狀態列的鎖點按鈕即可關閉。若要讓每一格更小，請以 SNAP 設定較小的間距。"},{"question":"如何分別設定 X 與 Y 的鎖點間距？","answer":"執行 SNAP，選擇 Aspect，先指定水平間距，再指定垂直間距。"},{"question":"有等角鎖點嗎？","answer":"尚未提供：SNAP 的「型式」選項（將格點轉成等角製圖用）尚未提供。"}]
+---
+
+鎖點模式將游標鎖在一組格點上：每次點選都落在最近的格點，因此間距為 10 時，在 13,7 按一下會得到 10,10。格點屬於目前的 UCS，從其原點沿其軸排列。F9 打開與關閉鎖點模式，並寫出 `<Snap on>` 或 `<Snap off>`，狀態列上的鎖點按鈕也是如此。只有點選會被取整：輸入的座標照輸入的值使用，物件鎖點則優先於格點。格線（F7）繪製自己的一組格點，無論鎖點是否打開都會顯示。
+
+SNAP 指令設定間距：輸入間距，或指定相距該距離的兩點，鎖點模式隨即以此間距在 X 與 Y 方向打開。按 Enter 則以目前的間距打開。0 或小於 0 的間距會被拒絕，並顯示 `Value must be positive and nonzero.`。加上單引號輸入 `'SNAP`，可以在其他指令執行中使用。鎖點模式及其間距隨圖面儲存，U 可以退回一次 SNAP。
+
+狀態列的鎖點功能表可以改選「PolarSnap」（極座標鎖點）：沿極座標追蹤路徑，游標以 POLARDIST 為間距移動；POLARDIST 為 0 時，則以鎖點的 X 間距移動。
+
+- **指令：** `SNAP`
+- **快捷鍵：** `SN`
+- **面板：** [查詢與視圖](/docs/commands#inquiry)
+- **試試看：** [開啟編輯器](/zh-tw/draw)，輸入 `SN` 並按 Enter。
+
+## 在指令行中 [#session]
+
+引擎繪製它，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。
+
+<Session name="snap" caption="格線打開時執行 SNAP 10，再以 LINE 在格點之外點選：每一點都落在格點上，游標也是。" />
+
+## 選項 [#options]
+
+### `ON` [#on]
+
+以目前的間距打開鎖點模式，與按 Enter 相同。
+
+### `OFF` (`OF`) [#off]
+
+關閉鎖點模式；間距會保留。
+
+### `Aspect` (`A`) [#aspect]
+
+先要求水平間距，再要求垂直間距，並打開鎖點模式：格點呈長方形，而非正方形。提示的預設值隨後變為「縱橫向間距」，因此按 Enter 會再次要求這兩個間距。
+
+## 尚未支援的功能 [#missing]
+
+提示中的「型式」（等角鎖點）與「類型」（格線或極座標）：鎖點類型由狀態列的功能表選擇。「舊式」、隱藏的「旋轉」（SNAPANG）與 SNAPBASE。負值的 POLARDIST：AutoCAD 的 PolarSnap 將其絕對值當作間距，−10 即以 10 為間距。
+
+[功能與尚缺項目的詳細說明（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/drafting-aids.md#snap--sn--es-forzcursor--fc--pt-br-snap--sn--snap-mode-f9--fr-resol--rl--snap-mode-f9--it-snap--sn--snap-mode-f9--de-fang--f--snap-mode-f9--ru-шаг--snap-mode-f9--pl-skok--sko--snap-mode-f9--cs-krok--snap-mode-f9--hu-raszter--ra--snap-mode-f9)
+
+## 常見問題 [#questions]
+
+### AutoCAD 鎖點（SNAP）的快捷鍵是什麼？
+
+F9 打開與關閉鎖點模式。設定間距的指令是 `SN`，然後按 Enter 或空白鍵；也可以輸入完整名稱，在任何語言版本的 AutoCAD 中都可以使用 `_SNAP`。
+
+### 鎖點（SNAP）與物件鎖點（OSNAP）有什麼不同？
+
+鎖點模式將游標取整到空間中的一組格點。物件鎖點（F3）則將游標鎖在物件上的點：端點、中點、中心點。兩者可以同時使用，兩者都找到點時，以物件鎖點為優先。
+
+### CAD 游標為什麼會一格一格跳動？
+
+鎖點模式已打開：按 F9 或狀態列的鎖點按鈕即可關閉。若要讓每一格更小，請以 SNAP 設定較小的間距。
+
+### 如何分別設定 X 與 Y 的鎖點間距？
+
+執行 SNAP，選擇 `Aspect`，先指定水平間距，再指定垂直間距。
+
+### 有等角鎖點嗎？
+
+尚未提供：SNAP 的「型式」選項（將格點轉成等角製圖用）尚未提供。
+
+## 相關指令 [#related]
+
+- [AutoCAD UCS 指令](/docs/commands/ucs)
+- [AutoCAD LINE（線）指令](/docs/commands/line)
+- [FROM](/docs/commands#from): 於某個指令中指定一點時，指定一個做為偏移依據的參考點

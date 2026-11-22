@@ -6,6 +6,7 @@ import { defineRouting } from "next-intl/routing"
 const PREFIXES: Readonly<Record<string, `/${string}`>> = {
   "pt-BR": "/pt-br",
   "zh-CN": "/zh-cn",
+  "zh-TW": "/zh-tw",
 }
 
 /**
@@ -29,6 +30,7 @@ export const routing = defineRouting({
     "ja",
     "ko",
     "zh-CN",
+    "zh-TW",
   ],
   defaultLocale: "en",
   localePrefix: { mode: "as-needed", prefixes: PREFIXES },
@@ -91,6 +93,7 @@ export const DIRECTION: Readonly<Record<AppLocale, "ltr" | "rtl">> = {
   ja: "ltr",
   ko: "ltr",
   "zh-CN": "ltr",
+  "zh-TW": "ltr",
 }
 
 /**
@@ -113,6 +116,7 @@ export const LOCALE_STATUS: Readonly<Record<AppLocale, "live" | "draft">> = {
   ja: "live",
   ko: "live",
   "zh-CN": "live",
+  "zh-TW": "draft",
 }
 
 export const LIVE_LOCALES: readonly AppLocale[] = routing.locales.filter(
@@ -126,8 +130,9 @@ export const LIVE_LOCALES: readonly AppLocale[] = routing.locales.filter(
  * `global`: the global commands, for English, for a language Autodesk does
  * not ship (Arabic: docs/i18n/ar.md), and for one whose AutoCAD keeps the
  * global names, aliases and keyword letters and words only its prompts
- * (Japanese, Korean and Simplified Chinese, until their prompts are copied:
- * docs/i18n/ja.md, docs/i18n/ko.md, docs/i18n/zh-CN.md). Checked by
+ * (Japanese, Korean and Chinese, until their prompts are copied:
+ * docs/i18n/ja.md, docs/i18n/ko.md, docs/i18n/zh-CN.md, docs/i18n/zh-TW.md).
+ * Checked by
  * `languages.test.ts`.
  */
 export const COMMAND_LANGUAGE: Readonly<
@@ -147,6 +152,7 @@ export const COMMAND_LANGUAGE: Readonly<
   ja: "global",
   ko: "global",
   "zh-CN": "global",
+  "zh-TW": "global",
 }
 
 /**
@@ -156,8 +162,9 @@ export const COMMAND_LANGUAGE: Readonly<
  * letters of Latin Extended-A (Polish ą ł ń ś ż, Czech č ě ř š ů ž, Hungarian ő ű): Inter
  * has them, but in one file of every such letter, 85 KB such a page would fetch by its
  * `unicode-range`; a face of the language's letters alone goes before Inter
- * instead (docs/i18n/pl.md, "Script and font"). `japanese`, `korean` and
- * `simplified-chinese` take the system's faces, never a web font
+ * instead (docs/i18n/pl.md, "Script and font"). `japanese`, `korean`,
+ * `simplified-chinese` and `traditional-chinese` take the system's faces,
+ * never a web font
  * (docs/i18n/ja.md, "Script and font").
  */
 export const SCRIPT: Readonly<
@@ -170,6 +177,7 @@ export const SCRIPT: Readonly<
     | "japanese"
     | "korean"
     | "simplified-chinese"
+    | "traditional-chinese"
   >
 > = {
   en: "latin",
@@ -186,6 +194,7 @@ export const SCRIPT: Readonly<
   ja: "japanese",
   ko: "korean",
   "zh-CN": "simplified-chinese",
+  "zh-TW": "traditional-chinese",
 }
 
 /**
@@ -203,6 +212,7 @@ export const SYSTEM_FACE_SCRIPTS = [
   "japanese",
   "korean",
   "simplified-chinese",
+  "traditional-chinese",
 ] as const
 
 export type ScriptNeedingFace = Exclude<
@@ -230,6 +240,7 @@ export const LANGUAGE_NAMES: Readonly<Record<AppLocale, string>> = {
   ja: "日本語",
   ko: "한국어",
   "zh-CN": "简体中文",
+  "zh-TW": "繁體中文",
 }
 
 /** Open Graph wants language and territory. */
@@ -248,4 +259,5 @@ export const OG_LOCALE: Readonly<Record<AppLocale, string>> = {
   ja: "ja_JP",
   ko: "ko_KR",
   "zh-CN": "zh_CN",
+  "zh-TW": "zh_TW",
 }

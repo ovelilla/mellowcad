@@ -1,0 +1,42 @@
+---
+title: AutoCAD 從 2D 到 3D
+metaTitle: "CAD 3D 建模：從 2D 圖面建立 3D 實體"
+description: "CAD 3D 建模與繪圖入門：在 AutoCAD 中擠出、按拉與迴轉封閉輪廓，再以聯集與差集，把 2D 圖面變成 3D 實體。免費線上 3D 實體，仍屬部分功能。"
+type: howTo
+sourceHash: "6ead7769724f"
+---
+
+在 AutoCAD 中，實體通常從 2D 圖面開始：一個封閉輪廓，像任何平面圖一樣繪製，然後擠出至某個高度或繞軸迴轉，再與其他實體結合，或被其他實體切除。MellowCAD 的 3D 實體也以相同的方式、相同的指令建立。這些功能仍屬部分：目前還沒有掃掠、斷面混成、網面或彩現。每一節都會顯示一段由引擎繪製的過程，其指令歷程就是您會輸入的內容。
+
+## 繪製封閉輪廓 [#profile]
+
+實體需要封閉輪廓：封閉的聚合線、矩形、圓或面域。首尾相接的線仍是各自獨立的物件：<Command id="JOIN" />（接合）指令可將它們變成一條聚合線，<Command id="REGION" />（面域）指令則可變成一個面域。請在平面視圖中繪製輪廓，在此輸入其點最為容易。
+
+## 擠出 [#extrude]
+
+<Command id="EXTRUDE" />（擠出）指令：選取輪廓，按 Enter，然後輸入高度。從上方看，實體與其輪廓看起來完全相同：以 <Command id="VIEW" />（視圖管理員）指令或 ViewCube 轉動視圖即可看到實體，並以 <Command id="VSCURRENT" />（視覺型式）指令選擇其顯示方式。
+
+<Session name="solidExtrude" caption="由一條封閉聚合線構成的 L 形輪廓，擠出 30，從東南方檢視。" />
+
+## 按拉區域 [#presspull]
+
+<Command id="PRESSPULL" />（按拉）指令不需要輪廓：在任何封閉區域內按一下（即使該區域由各自獨立的線圍成也可以），然後輸入高度。在實體的面上按一下時，則會推入或拉出該面。
+
+<Session name="presspull" caption="從內部按拉一個封閉區域：它成為實體。" />
+
+## 迴轉 [#revolve]
+
+<Command id="REVOLVE" />（迴轉）指令會將輪廓繞軸旋轉：選取輪廓，以兩點、物件或 X、Y、Z 軸指定軸，再指定角度，預設為整圈。
+
+<Session name="revolve" caption="半剖面繞 Y 軸迴轉。" />
+
+## 實體的聯集與差集 [#booleans]
+
+<Command id="UNION" />（聯集）指令將多個實體合為一個，<Command id="SUBTRACT" />（差集）指令從一個實體中減去一個或多個實體，<Command id="INTERSECT" />（交集）指令則保留它們的共同部分。孔就是從其所貫穿的實體中減去的圓柱。
+
+<Session name="subtract" caption="從方塊中減去圓柱：一個貫穿的孔。" />
+
+## 下一步 [#next]
+
+- 3D [練習題](/docs/exercises)：以面域與一次擠出完成的[安裝板](/docs/exercises/mounting-plate)、由剖面迴轉而成的[皮帶輪](/docs/exercises/pulley)，以及經聯集與鑽孔完成的[軸承座](/docs/exercises/bearing-block)。
+- <Command id="3DORBIT" />（3D 環轉）指令以滑鼠轉動視圖，<Command id="VSCURRENT" /> 則為面加上描影。

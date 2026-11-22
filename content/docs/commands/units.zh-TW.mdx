@@ -1,0 +1,58 @@
+---
+title: "AutoCAD UNITS（單位）指令"
+metaTitle: "CAD 單位設定（UNITS）：精確度與快捷鍵 UN"
+description: "AutoCAD UNITS（單位，UN）的用法：「圖面單位」對話方塊、0 到 8 位小數的精確度、以公釐、公分或公尺為插入比例。可以在瀏覽器中免費試用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD 單位（UNITS）的快捷鍵是什麼？","answer":"UN，然後按 Enter 或空白鍵；也可以使用 DDUNITS。也可以輸入完整名稱，在任何語言版本的 AutoCAD 中都可以使用 _UNITS。"},{"question":"CAD 如何將圖面單位設為公釐或公尺？","answer":"開啟 UNITS，在「插入比例」下選擇「公釐」、「公分」或「公尺」。一個圖面單位仍然是一個單位：5 公尺的牆，以公尺為單位時畫成 5，以公釐為單位時畫成 5000。此選擇說明是哪一種，狀態列與動態輸入會顯示它。"},{"question":"如何變更小數位數？","answer":"在 UNITS 中選擇「精確度」，從 0 到 0.00000000。它只改變長度的書寫方式，從不改變幾何：畫成 10.125 長的線，在任何精確度下都仍是 10.125 長。"},{"question":"為什麼標註不依照 UNITS 設定的精確度？","answer":"標註以其標註型式本身的精確度書寫數值，而不是圖面的精確度。請在 DIMSTYLE 的「主要單位」下變更。"},{"question":"可以用英呎與英吋繪圖嗎？","answer":"尚未提供：長度為十進位，插入比例提供公釐、公分與公尺。建築與工程單位尚未提供。"}]
+---
+
+UNITS 開啟「圖面單位」對話方塊，設定圖面如何書寫長度，以及一個圖面單位代表什麼。與 AutoCAD 相同，此對話方塊為強制回應：指令持續到按「確定」或「取消」關閉對話方塊為止，「確定」所做的變更是一個步驟，`U` 可以將它退回；「取消」或按 Esc 則不做任何變更。加上單引號輸入 `'UNITS`，可以在執行中的指令內開啟，對話方塊關閉後該指令會繼續。狀態列的單位與應用程式功能表的「圖面單位」也會開啟它。
+
+「長度」的「類型」為「十進位」，其「精確度」（0 到 8 位小數）決定所有長度的書寫方式：座標、距離、面積，以及提示中提供的預設值。此處新圖面從兩位小數開始，AutoCAD 的公制樣板則從四位開始。「插入比例」說明一個圖面單位是什麼：公釐、公分或公尺；狀態列與動態輸入會顯示它。「示範輸出」以所選的精確度顯示一個點。
+
+- **指令：** `UNITS`
+- **快捷鍵：** `UN`, `DDUNITS`
+- **面板：** [查詢與視圖](/docs/commands#inquiry)
+- **試試看：** [開啟編輯器](/zh-tw/draw)，輸入 `UN` 並按 Enter。
+
+## 在指令行中 [#session]
+
+引擎繪製它，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。
+
+<Session name="units" caption="在一塊 100 × 60 的板上開啟 UNITS，再以 ID 點選其遠端角點：座標以圖面的精確度（兩位小數）顯示。" />
+
+## 尚未支援的功能 [#missing]
+
+其他長度類型（建築、工程、分數與科學），以及極大長度的科學記號。「角度」群組：角度為十進位度數，從東方起逆時針量測，精確度由輸入的 AUPREC 設定。其他插入單位，包括英吋與英呎；「照明」；「方向」；以及指令行形式的 -UNITS。
+
+[功能與尚缺項目的詳細說明（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/workspace.md#units--un--ddunits--es-unidades--uns--ddunits--pt-br-unidades--un--unidadesd--fr-unites--ui--ddunits--it-unita--ut--ddunits--de-einheit--ru-единицы--ед--диаледин--pl-jedn--jed--odjedn--cs-jednotky--jn--diajedn--hu-mértegys--mes--dpmértegys)
+
+## 常見問題 [#questions]
+
+### AutoCAD 單位（UNITS）的快捷鍵是什麼？
+
+`UN`，然後按 Enter 或空白鍵；也可以使用 `DDUNITS`。也可以輸入完整名稱，在任何語言版本的 AutoCAD 中都可以使用 `_UNITS`。
+
+### CAD 如何將圖面單位設為公釐或公尺？
+
+開啟 UNITS，在「插入比例」下選擇「公釐」、「公分」或「公尺」。一個圖面單位仍然是一個單位：5 公尺的牆，以公尺為單位時畫成 5，以公釐為單位時畫成 5000。此選擇說明是哪一種，狀態列與動態輸入會顯示它。
+
+### 如何變更小數位數？
+
+在 UNITS 中選擇「精確度」，從 `0` 到 `0.00000000`。它只改變長度的書寫方式，從不改變幾何：畫成 10.125 長的線，在任何精確度下都仍是 10.125 長。
+
+### 為什麼標註不依照 UNITS 設定的精確度？
+
+標註以其標註型式本身的精確度書寫數值，而不是圖面的精確度。請在 [`DIMSTYLE`](/docs/commands/dimstyle) 的「主要單位」下變更。
+
+### 可以用英呎與英吋繪圖嗎？
+
+尚未提供：長度為十進位，插入比例提供公釐、公分與公尺。建築與工程單位尚未提供。
+
+## 相關指令 [#related]
+
+- [AutoCAD DIST（距離）指令](/docs/commands/dist)
+- [AutoCAD AREA（面積）指令](/docs/commands/area)
+- [AutoCAD DIMSTYLE（標註型式）指令](/docs/commands/dimstyle)
+- [AutoCAD LTSCALE（線型比例）指令](/docs/commands/ltscale)

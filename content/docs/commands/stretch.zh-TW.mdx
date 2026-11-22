@@ -1,0 +1,58 @@
+---
+title: "AutoCAD STRETCH（拉伸）指令"
+metaTitle: "CAD 拉伸指令（STRETCH）用法與快捷鍵 S"
+description: "AutoCAD STRETCH（拉伸，S）的用法：以框選窗框住要移動的端點、基準點與第二點，以及為何有時只會移動。可以在瀏覽器中免費試用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD 拉伸（STRETCH）的快捷鍵是什麼？","answer":"S，然後按 Enter 或空白鍵。也可以輸入完整名稱，在任何語言版本的 AutoCAD 中都可以使用 _STRETCH。"},{"question":"CAD 拉伸為什麼只會移動物件？","answer":"因為整個物件都在框內，或是您點選了它：STRETCH 會將這些物件整個移動。請由右向左拖曳框選窗，只框住要移動的端點。"},{"question":"如何以精確的距離拉伸？","answer":"指定基準點，再輸入位移：40,0 沿 X 拉伸 40；動態輸入打開時，以相對於基準點的方式讀取。或以正交或極座標追蹤將游標指向要移動的方向，只輸入距離。"},{"question":"AutoCAD 可以拉伸圖塊嗎？","answer":"圖塊參考在其插入點位於框內時整個移動，不在框內時保持不動：圖塊內部不會被拉伸。請先以 EXPLODE 將它分解，再拉伸其中的物件。"}]
+---
+
+STRETCH 移動框選窗所框住的圖面部分，並拉伸將它與其餘部分相連的物件。以框選窗（由右向左拖曳）或多邊形框選框住要移動的端點與頂點；接著與 [`MOVE`](/docs/commands/move) 一樣，指定基準點與第二點。框住的部分會移動該距離：線的端點、聚合線的頂點、弧的端點、填充線的邊界、標註的原點。完全位於框內的物件整個移動；圓、文字或圖塊參考則在其中心點或插入點位於框內時移動。逐一點選的物件，或以窗選找到的物件，也會整個移動。拉伸是一個步驟，退回可以將它退回。
+
+- **指令：** `STRETCH`
+- **快捷鍵：** `S`
+- **面板：** [修改](/docs/commands#modify)
+- **試試看：** [開啟編輯器](/zh-tw/draw)，輸入 `S` 並按 Enter。
+
+## 在指令行中 [#session]
+
+引擎繪製它，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。
+
+<Session name="stretch" caption="以框選窗框住右側，將矩形與圓向右拉伸 40：框內的角點移動，圓也跟著移動。" />
+
+## 選項 [#options]
+
+### `Displacement` (`D`) [#displacement]
+
+在基準點提示選擇，或在該處按 Enter（其預設值）：以向量要求位移，`40,0` 沿 X 拉伸 40。在第二點提示按 Enter，則以基準點達到相同效果：其座標即為位移。
+
+## 尚未支援的功能 [#missing]
+
+一端位於框內的橢圓弧：AutoCAD 會改變其形狀，此處則在其中心點位於框內時整個移動，否則保持不動。部分被框住的非關聯式填充線：AutoCAD 會讓它留在原處。只有標註文字在預設位置被框住時，文字保持不動。
+
+[功能與尚缺項目的詳細說明（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#stretch--s--es-estira--ei--pt-br-esticar--e--fr-etirer--e--it-stira--sti--de-strecken--str--ru-растянуть--рас--pl-rozciągnij--rozc--cs-protáhni--pt--hu-nyújt--ny)
+
+## 常見問題 [#questions]
+
+### AutoCAD 拉伸（STRETCH）的快捷鍵是什麼？
+
+`S`，然後按 Enter 或空白鍵。也可以輸入完整名稱，在任何語言版本的 AutoCAD 中都可以使用 `_STRETCH`。
+
+### CAD 拉伸為什麼只會移動物件？
+
+因為整個物件都在框內，或是您點選了它：STRETCH 會將這些物件整個移動。請由右向左拖曳框選窗，只框住要移動的端點。
+
+### 如何以精確的距離拉伸？
+
+指定基準點，再輸入位移：`40,0` 沿 X 拉伸 40；動態輸入打開時，以相對於基準點的方式讀取。或以正交或極座標追蹤將游標指向要移動的方向，只輸入距離。
+
+### AutoCAD 可以拉伸圖塊嗎？
+
+圖塊參考在其插入點位於框內時整個移動，不在框內時保持不動：圖塊內部不會被拉伸。請先以 [`EXPLODE`](/docs/commands/explode) 將它分解，再拉伸其中的物件。
+
+## 相關指令 [#related]
+
+- [AutoCAD MOVE（移動）指令](/docs/commands/move)
+- [AutoCAD SCALE（比例）指令](/docs/commands/scale)
+- [AutoCAD EXTEND（延伸）指令](/docs/commands/extend)
+- [AutoCAD TRIM（修剪）指令](/docs/commands/trim)

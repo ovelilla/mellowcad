@@ -1,6 +1,6 @@
 # Languages
 
-The engine speaks English, Spanish, Arabic, Brazilian Portuguese, French, Italian, German, Russian, Polish, Czech, Hungarian, Japanese, Korean and Simplified Chinese, and a host can reword
+The engine speaks English, Spanish, Arabic, Brazilian Portuguese, French, Italian, German, Russian, Polish, Czech, Hungarian, Japanese, Korean, Simplified Chinese and Traditional Chinese, and a host can reword
 any of it or add a language of its own. A language is passed to the engine, never registered globally, so
 one page can run two engines in two languages.
 
@@ -29,6 +29,7 @@ As in AutoCAD's language packs, a language has two parts:
 | Japanese             | `ja`             | The global one, as Japanese AutoCAD keeps the English names and option letters            |
 | Korean               | `ko`             | The global one, as Korean AutoCAD keeps the English names and option letters              |
 | Simplified Chinese   | `zh-CN` (`zhCN`) | The global one, as Chinese AutoCAD keeps the English names and option letters             |
+| Traditional Chinese  | `zh-TW` (`zhTW`) | The global one, as Taiwanese AutoCAD keeps the English names and option letters           |
 
 In every language, `_` before a global name or keyword reaches the global vocabulary — `_LINE`,
 `_C` — as AutoCAD's scripts and macros rely on. A keyword whose global id has a space is typed as

@@ -1,0 +1,73 @@
+---
+title: "AutoCAD ARRAYPATH（路徑陣列）指令"
+metaTitle: "CAD 路徑陣列指令（ARRAYPATH）用法"
+description: "AutoCAD 路徑陣列（ARRAYPATH）依提示逐步說明：路徑曲線、等距或等分、項目數與對齊。可在瀏覽器中免費試用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"如何沿曲線陣列物件？","answer":"輸入 ARRAYPATH，選取物件並按 Enter，再於要作為起點的端點附近點選路徑；或輸入 AR 執行 ARRAY，在選取物件後選擇 PAth。接著設定間距或項目數，按 Enter 建立。"},{"question":"為什麼路徑陣列不會跟著路徑變動？","answer":"此處的陣列保留建立時的路徑：之後移動或拉伸路徑，陣列都維持原狀，而 AutoCAD 的關聯式路徑陣列會跟著改變。刪除路徑時陣列也會保留。若項目沒有隨路徑旋轉，請選擇 Align 並回答 Yes。"},{"question":"如何變更路徑陣列的方向？","answer":"在路徑的另一端附近點選：開放的路徑從較靠近點選處的端點開始。圓則一律從其 0 角度開始逆時鐘排列。"},{"question":"如何沿整條路徑平均分布項目？","answer":"選擇 Method，再選擇 Divide，然後選擇 Items 並輸入數量：各項目會平均分布，開放路徑的第一個與最後一個項目位於兩端。"}]
+---
+
+ARRAYPATH（路徑陣列）指令沿著路徑（線、弧、圓或聚合線）複製選集，成為一個陣列物件。它先要求選取物件，說明類型與陣列是否為關聯式，再要求路徑曲線，並立即顯示陣列：各項目的間距為選集大小的 1.5 倍，數量為路徑上所能容納的最多個數，每個項目隨路徑轉向而旋轉。開放的路徑從較靠近點選處的端點開始，圓則從其 0 角度開始逆時鐘排列。接著，一個提示會即時編輯陣列，直到按 Enter 建立，可透過其選項或預覽的掣點，與 AutoCAD 相同。選取的物件留在原處，成為第一個項目。
+
+- **指令：** `ARRAYPATH`
+- **面板：** [修改](/docs/commands#modify)
+- **試試看：** [開啟編輯器](/zh-tw/draw)，輸入 `ARRAYPATH` 並按 Enter。
+
+## 在指令行中 [#session]
+
+引擎繪製它，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。
+
+<Session name="arraypath" caption="弧起點上的一個小正方形沿弧陣列：等分，7 個項目，每個都隨弧旋轉。" />
+
+## 選項 [#options]
+
+### `ASsociative` (`AS`) [#associative]
+
+預設值 `Yes` 會建立一個陣列物件，之後可透過其掣點與「性質」選項板修改；`No` 會在所選物件旁建立個別的複本。此回答在本次階段作業中保留，ARRAYRECT 與 ARRAYPOLAR 也會沿用。
+
+### `Method` (`M`) [#method]
+
+預設值 `Measure` 以一個距離放置各項目，數量為所能容納的最多個數；`Divide` 將指定數量的項目平均分布在整條路徑上，開放路徑的兩端各有一個。
+
+### `Items` (`I`) [#items]
+
+使用等分時，為項目數。使用等距時，先指定項目之間的距離，再指定數量，最多為所能容納的個數，指令會顯示此數；`Fill` 則全部放入。
+
+### `Align items` (`A`) [#align-items]
+
+預設值 `Yes` 讓每個項目隨路徑從其起點轉向而旋轉；`No` 只沿路徑移動項目。
+
+### `eXit` (`X`) [#exit]
+
+建立陣列並結束指令，與按 Enter 相同。
+
+## 尚未支援的功能 [#missing]
+
+陣列不會跟隨其路徑：之後編輯路徑時，陣列仍保留建立時的路徑。雲形線、橢圓與 3D 聚合線目前還不能作為路徑，不在 UCS 平面上的路徑也不行。不提供「基準點」、「切線方向」、「列數」、「層數」、「z 方向」與「表示式」，路徑提示也不接受群組，陣列的掣點也沒有功能表。
+
+[功能與尚缺項目的詳細說明（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#arraypath--es-matrizcamino--pt-br-matrizcaminho--fr-trajectoirereseau--it-serietraiett--de-reihepfad--ru-массивтраект--pl-ścieżkaszyk--cs-křivpole--hu-kiosztútvonal)
+
+## 常見問題 [#questions]
+
+### 如何沿曲線陣列物件？
+
+輸入 `ARRAYPATH`，選取物件並按 Enter，再於要作為起點的端點附近點選路徑；或輸入 `AR` 執行 [`ARRAY`](/docs/commands/array)，在選取物件後選擇 `PAth`。接著設定間距或項目數，按 Enter 建立。
+
+### 為什麼路徑陣列不會跟著路徑變動？
+
+此處的陣列保留建立時的路徑：之後移動或拉伸路徑，陣列都維持原狀，而 AutoCAD 的關聯式路徑陣列會跟著改變。刪除路徑時陣列也會保留。若項目沒有隨路徑旋轉，請選擇 `Align` 並回答 `Yes`。
+
+### 如何變更路徑陣列的方向？
+
+在路徑的另一端附近點選：開放的路徑從較靠近點選處的端點開始。圓則一律從其 0 角度開始逆時鐘排列。
+
+### 如何沿整條路徑平均分布項目？
+
+選擇 `Method`，再選擇 `Divide`，然後選擇 `Items` 並輸入數量：各項目會平均分布，開放路徑的第一個與最後一個項目位於兩端。
+
+## 相關指令 [#related]
+
+- [AutoCAD ARRAY（陣列）指令](/docs/commands/array)
+- [AutoCAD ARRAYRECT（矩形陣列）指令](/docs/commands/arrayrect)
+- [AutoCAD ARRAYPOLAR（環形陣列）指令](/docs/commands/arraypolar)
+- [AutoCAD PLINE（聚合線）指令](/docs/commands/pline)

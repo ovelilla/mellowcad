@@ -1,0 +1,87 @@
+---
+title: "AutoCAD 尺寸標註：DIMLINEAR（線性）指令"
+metaTitle: "CAD 尺寸標註指令：線性標註（DIMLINEAR）與快捷鍵 DLI"
+description: "AutoCAD 的 DIMLINEAR（DLI）如何進行尺寸標註，依提示逐步說明：兩個原點或一個物件，再放置水平或垂直的標註線。可在瀏覽器中免費試用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD 線性標註的快捷鍵是什麼？","answer":"DLI 或 DIMLIN，然後按 Enter 或空白鍵。也可以輸入完整名稱，在任何語言版本的 AutoCAD 中都可以輸入 _DIMLINEAR。"},{"question":"AutoCAD 有哪些標註指令？","answer":"DIMLINEAR 用於水平與垂直距離，DIMALIGNED 用於沿斜邊的距離，DIMRADIUS 與 DIMDIAMETER 用於弧與圓，DIMANGULAR 用於角度，DIMCONTINUE 與 DIMBASELINE 用於成串的標註，DIMSPACE 用於平均調整其間距，DIMSTYLE 用於設定其外觀。AutoCAD 的 DIM（在一個提示下建立任何類型的標註）與 QDIM（一次標註多個物件），MellowCAD 目前還沒有。"},{"question":"為什麼修改物件時標註不會跟著變動？","answer":"MellowCAD 的標註目前還不是關聯式標註，正如 「Non-associative dimension created.」 所說：標註保留其指定時的點。請將兩者一起拉伸：以一個 STRETCH 框選窗同時框住要移動的端點與該處的標註原點，測量值便會重新計算；或將原點的掣點拖曳到新位置。"},{"question":"如何變更標註文字與箭頭的大小？","answer":"與 AutoCAD 相同，在標註型式中設定：DIMSTYLE（D）會開啟標註型式；AutoCAD 使用「標註型式管理員」，這裡則是「型式」選項板。目前型式的文字高度、箭頭大小、整體比例與小數位數都在那裡設定，使用該型式的所有標註都會隨之更新。"}]
+---
+
+DIMLINEAR（線性）指令沿 X 或 Y 測量兩點之間的距離，並繪製為標註：兩條延伸線、一條帶有箭頭的標註線，以及標註線上方的測量值。依序指定第一條與第二條延伸線原點，再指定標註線位置；與 AutoCAD 相同，放置的位置決定測量方向：放在兩點的上方或下方時水平測量，放在兩點旁邊時垂直測量。也可以在第一個提示下按 Enter，點選一條線、一個弧、聚合線的一段或一個圓：以其兩個端點，或圓的直徑，做為原點。指令行接著顯示測量值，指令隨即結束。
+
+標註以目前的標註型式繪製，新圖面中為 ISO-25：以逗點做為小數分隔符號，且不顯示結尾零，與 AutoCAD 公制圖面的寫法相同。`DIMHORIZONTAL`、`DIMVERTICAL` 與 `DIMROTATED` 只能以輸入方式執行，是固定於單一方向的 DIMLINEAR。
+
+- **指令：** `DIMLINEAR`
+- **快捷鍵：** `DIMLIN`, `DLI`
+- **面板：** [註解](/docs/commands#annotate)
+- **試試看：** [開啟編輯器](/zh-tw/draw)，輸入 `DLI` 並按 Enter。
+
+## 在指令行中 [#session]
+
+引擎繪製它，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。
+
+<Session name="dimlinear" caption="矩形標註兩次：上緣以兩個角點標註，右緣則按 Enter 後點選該邊標註。" />
+
+## 選項 [#options]
+
+### `Text` (`T`) [#text]
+
+要求輸入要寫入的文字以取代測量值，並以測量值做為預設值：按 Enter 即保留測量值。在輸入的文字中，`<>` 代表測量值，因此 `<> mm` 會寫出測量值並接著單位。
+
+### `Angle` (`A`) [#angle]
+
+要求指定標註文字的角度，文字便以該角度繪製，而不沿著標註線。輸入 0 會讓文字回到沿標註線的方向。
+
+### `Horizontal` (`H`) [#horizontal]
+
+無論標註線放在哪裡，都沿 X 測量，標註線保持水平；之後提示只提供 `Text` 與 `Angle`。
+
+### `Vertical` (`V`) [#vertical]
+
+無論標註線放在哪裡，都沿 Y 測量，標註線保持垂直。
+
+### `Rotated` (`R`) [#rotated]
+
+要求指定標註線的角度，預設為 `0`，並沿此角度測量兩個原點之間的距離。在斜邊上，輸入斜邊本身的角度即可得到其長度，與 [`DIMALIGNED`](/docs/commands/dimaligned) 相同。
+
+## 尚未支援的功能 [#missing]
+
+多行文字：標註的文字為單行，透過指令行的 `Text` 設定，不使用文字編輯器。以 `Angle` 設定角度時，AutoCAD 會讓文字置中於標註線上；這裡文字則與未設定角度時一樣，位於標註線上方。標註不是關聯式標註：不會隨著所測量的物件變動。
+
+[功能與尚缺項目的詳細說明（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimlinear--dimlin--dli--es-acolineal--acolin--dimlin--pt-br-cotalinear--cli--dimlin--fr-cotlin--li--cothor--cotrotation--cotvertical--it-dimlineare--dli--de-bemlinear--bmlin--ru-рзмлинейный--рли--pl-wymliniowy--wl--wymlin--cs-kótypřím--kpm--kotypm--hu-mérethossz--mho--mhosz)
+
+## 常見問題 [#questions]
+
+### AutoCAD 線性標註的快捷鍵是什麼？
+
+`DLI` 或 `DIMLIN`，然後按 Enter 或空白鍵。也可以輸入完整名稱，在任何語言版本的 AutoCAD 中都可以輸入 `_DIMLINEAR`。
+
+### AutoCAD 有哪些標註指令？
+
+`DIMLINEAR` 用於水平與垂直距離，[`DIMALIGNED`](/docs/commands/dimaligned) 用於沿斜邊的距離，[`DIMRADIUS`](/docs/commands/dimradius) 與 [`DIMDIAMETER`](/docs/commands/dimdiameter) 用於弧與圓，[`DIMANGULAR`](/docs/commands/dimangular) 用於角度，[`DIMCONTINUE`](/docs/commands/dimcontinue) 與 [`DIMBASELINE`](/docs/commands/dimbaseline) 用於成串的標註，[`DIMSPACE`](/docs/commands/dimspace) 用於平均調整其間距，[`DIMSTYLE`](/docs/commands/dimstyle) 用於設定其外觀。AutoCAD 的 DIM（在一個提示下建立任何類型的標註）與 QDIM（一次標註多個物件），MellowCAD 目前還沒有。
+
+### 為什麼修改物件時標註不會跟著變動？
+
+MellowCAD 的標註目前還不是關聯式標註，正如 `Non-associative dimension created.` 所說：標註保留其指定時的點。請將兩者一起拉伸：以一個 [`STRETCH`](/docs/commands/stretch) 框選窗同時框住要移動的端點與該處的標註原點，測量值便會重新計算；或將原點的掣點拖曳到新位置。
+
+### 如何變更標註文字與箭頭的大小？
+
+與 AutoCAD 相同，在標註型式中設定：[`DIMSTYLE`](/docs/commands/dimstyle)（`D`）會開啟標註型式；AutoCAD 使用「標註型式管理員」，這裡則是「型式」選項板。目前型式的文字高度、箭頭大小、整體比例與小數位數都在那裡設定，使用該型式的所有標註都會隨之更新。
+
+## 練習 [#practice]
+
+- [CAD 練習圖：墊片](/docs/exercises/gasket)
+- [CAD 練習圖：L 型支架](/docs/exercises/l-bracket)
+- [CAD 練習圖：樓梯平面圖](/docs/exercises/stairs)
+- [CAD 練習圖：法蘭](/docs/exercises/flange)
+- [CAD 練習圖：圓桌與椅子](/docs/exercises/round-table)
+- [CAD 練習圖：階梯軸](/docs/exercises/shaft)
+- [CAD 練習圖：以切線連接的連桿](/docs/exercises/link)
+
+## 相關指令 [#related]
+
+- [AutoCAD DIMALIGNED（對齊式）標註指令](/docs/commands/dimaligned)
+- [AutoCAD DIMCONTINUE（連續式）標註指令](/docs/commands/dimcontinue)
+- [AutoCAD DIMBASELINE（基線式）標註指令](/docs/commands/dimbaseline)
+- [AutoCAD DIMRADIUS（半徑）標註指令](/docs/commands/dimradius)
+- [AutoCAD DIMSTYLE（標註型式）指令](/docs/commands/dimstyle)

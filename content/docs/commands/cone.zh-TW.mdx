@@ -1,0 +1,87 @@
+---
+title: "AutoCAD CONE（圓錐）指令"
+metaTitle: "CAD 3D 圓錐指令（CONE）：圓錐、截錐與選項"
+description: "AutoCAD 圓錐（CONE）依提示逐步說明如何繪製 3D 實體圓錐或截錐：底部、半徑、高度、頂部半徑、橢圓與軸端點。可線上免費試用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD 如何繪製圓錐？","answer":"執行 CONE，指定底部的中心點、半徑與高度：0,0、20 與 40 即繪製出範例中的圓錐。請旋轉視圖才能看到它，可按一下 ViewCube 的角點，或執行 -VIEW 並選擇 SEIso。"},{"question":"如何繪製截頂圓錐？","answer":"在高度提示中選擇 Top，輸入頂部半徑，再輸入高度。圓錐會以該半徑的圓結束。"},{"question":"如何繪製倒立的圓錐？","answer":"輸入負的高度：圓錐會從底部朝下。或選擇 Axis，將頂點指定在任何位置。"},{"question":"圓錐的底部可以是橢圓嗎？","answer":"可以：在底部中心點提示中選擇 Elliptical，並指定其軸。頂部半徑會讓頂部成為同一個較小的橢圓。"}]
+---
+
+CONE（圓錐）指令繪製 3D 實體圓錐：指定其底部的中心點，再指定半徑與高度，圓錐會收窄成一點。它詢問的內容與 [`CYLINDER`](/docs/commands/cylinder) 相同，並在高度提示中多了 `Top`，用於截頂的圓錐。底部位於 UCS 的 XY 平面上，在中心點的 Z，高度沿其 Z 軸向上；負值會讓圓錐朝下，也可以點選一點，以其與底部的距離作為高度。半徑與高度會作為預設值提供，按 Enter 即採用，並與其他基本元素共用。圓錐位於目前的圖層上，一個步驟即可「退回」。
+
+[`LIST`](/docs/commands/list) 會顯示其位置、法線、底部半徑、頂部半徑與高度，「性質」選項板可輸入這些值。其掣點可以移動圓錐、設定其高度、在底部每個四分點設定底部半徑，以及設定頂部半徑。頂點可作為端點鎖點。它是 3D 實體，可用於 [`UNION`](/docs/commands/union)、[`SUBTRACT`](/docs/commands/subtract) 與 MellowCAD 其餘的 3D 功能；MellowCAD 的 3D 只有實體，且仍不完整。
+
+- **指令：** `CONE`
+- **面板：** [繪製](/docs/commands#draw)
+- **試試看：** [開啟編輯器](/zh-tw/draw)，輸入 `CONE` 並按 Enter。
+
+## 在指令行中 [#session]
+
+引擎繪製它，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。
+
+<Session name="cone" caption="一個半徑 20、高度 40 的圓錐，從其底部中心點繪製，以「隱藏」視覺型式從東南方檢視。" />
+
+## 選項 [#options]
+
+### `3P` [#3p]
+
+在底部中心點提示中：要求三點，底部即為通過這三點的圓，位於它們所在的平面上。
+
+### `2P` [#2p]
+
+在底部中心點提示中：要求底部直徑的兩個端點。
+
+### `Ttr` (`T`) [#ttr]
+
+在底部中心點提示中：以相切點鎖點點選兩條線、圓或弧，並指定半徑：底部會與兩者相切。
+
+### `Elliptical` (`E`) [#elliptical]
+
+在底部中心點提示中：底部為橢圓，以第一軸的兩個端點與第二軸的端點指定，或以 `Center` 從其中心點指定。頂部半徑會縮小同一個橢圓。
+
+### `Diameter` (`D`) [#diameter]
+
+在半徑提示中：改為要求直徑，並以上一個半徑的兩倍作為預設值。
+
+### `2Point` (`2P`) [#2point]
+
+在高度提示中：要求兩點，高度即為兩點之間的距離。
+
+### `Axis endpoint` (`A`) [#axis]
+
+在高度提示中：要求頂點。圓錐從底部中心點延伸到該點，可為任意方向，其底部與軸垂直。
+
+### `Top radius` (`T`) [#top]
+
+在高度提示中：要求頂部半徑，再次要求高度。圓錐以圓而非一點結束，成為截錐；頂部與底部同寬時為圓柱的側面，頂部更寬時則為向上擴大的圓錐。它會提供上一個圓錐的頂部半徑，一開始為 0。
+
+## 尚未支援的功能 [#missing]
+
+以 [`EXPLODE`](/docs/commands/explode) 分解圓錐，AutoCAD 會將它變成底部與一個曲面：MellowCAD 沒有曲面，因此會說明無法分解。在「性質」選項板中將圓形圓錐改為橢圓形圓錐。`ISOLINES` 為 0 時，AutoCAD 在頂點繪製的點。以及 [`CYLINDER`](/docs/commands/cylinder) 所缺少的：作用中掣點的移動、旋轉、比例與鏡射，指定半徑時的點線標註，以及 [`VSCURRENT`](/docs/commands/vscurrent) 所缺少的視覺型式。
+
+[功能與尚缺項目的詳細說明（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#cone--es-cono--pt-br-cone--fr-cone--it-cono--de-kegel--ru-конус--pl-stożek--cs-kužel--hu-kúp)
+
+## 常見問題 [#questions]
+
+### AutoCAD 如何繪製圓錐？
+
+執行 CONE，指定底部的中心點、半徑與高度：`0,0`、`20` 與 `40` 即繪製出範例中的圓錐。請旋轉視圖才能看到它，可按一下 ViewCube 的角點，或執行 `-VIEW` 並選擇 `SEIso`。
+
+### 如何繪製截頂圓錐？
+
+在高度提示中選擇 `Top`，輸入頂部半徑，再輸入高度。圓錐會以該半徑的圓結束。
+
+### 如何繪製倒立的圓錐？
+
+輸入負的高度：圓錐會從底部朝下。或選擇 `Axis`，將頂點指定在任何位置。
+
+### 圓錐的底部可以是橢圓嗎？
+
+可以：在底部中心點提示中選擇 `Elliptical`，並指定其軸。頂部半徑會讓頂部成為同一個較小的橢圓。
+
+## 相關指令 [#related]
+
+- [AutoCAD CYLINDER（圓柱）指令](/docs/commands/cylinder)
+- [AutoCAD PYRAMID（角錐）指令](/docs/commands/pyramid)
+- [AutoCAD REVOLVE（迴轉）指令](/docs/commands/revolve)
+- [AutoCAD SUBTRACT（差集）指令](/docs/commands/subtract)

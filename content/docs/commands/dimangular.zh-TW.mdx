@@ -1,0 +1,70 @@
+---
+title: "AutoCAD DIMANGULAR（角度）標註指令"
+metaTitle: "CAD 角度標註（DIMANGULAR）用法與快捷鍵 DAN"
+description: "AutoCAD 的 DIMANGULAR（DAN）如何標註角度：兩條線、一個弧、一個圓或三個點，再放置標註弧線。可在瀏覽器中免費試用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD 角度標註的快捷鍵是什麼？","answer":"DAN 或 DIMANG，然後按 Enter 或空白鍵。也可以輸入完整名稱，在任何語言版本的 AutoCAD 中都可以輸入 _DIMANGULAR。"},{"question":"如何標註大於 180 度的角度？","answer":"在第一個提示下按 Enter，指定頂點與兩個端點，再將弧線放在兩點之間的角度之外：測量的即是優角，也就是 360° 減去另一個角度。弧或圓也是同樣的做法。兩條線之間的角度一律小於 180°。"},{"question":"如何標註弧的角度？","answer":"在第一個提示下點選弧：其中心點即為頂點，兩端即為延伸線原點，因此接下來的提示便是放置標註的位置。"},{"question":"為什麼 DIMANGULAR 顯示兩條線平行？","answer":"兩條平行線，或同一條線點選兩次，無法構成角度：「Lines are parallel.」，指令隨即結束。"},{"question":"如何變更角度標註的小數位數？","answer":"在標註型式中設定：DIMSTYLE（D）會在「型式」選項板中開啟標註型式，由「主要單位」下的「角度精確度」設定，ISO-25 為 0。使用該型式的所有角度標註都會隨之更新。"}]
+---
+
+DIMANGULAR（角度）指令以弧做為標註線來標註角度。與 AutoCAD 相同，先點選的物件決定後續步驟：點選線時，會要求點選第二條線，同一條聚合線的兩段也可以；點選弧時，以其中心點測量兩端之間的角度；點選圓時，從圓上的點選處測量到另外指定的第二點；按 Enter 則改為要求指定角度的頂點，再指定兩個端點。接著放置標註弧線：放置的位置決定所測量的角度。在兩條線之間，測量的是兩線所夾四個扇區中包含放置位置的那一個；其他情況則為該角度，或放在其兩邊之外時，為大於 180° 的優角。指令行會以度顯示測量值，指令隨即結束。
+
+- **指令：** `DIMANGULAR`
+- **快捷鍵：** `DIMANG`, `DAN`
+- **面板：** [註解](/docs/commands#annotate)
+- **試試看：** [開啟編輯器](/zh-tw/draw)，輸入 `DAN` 並按 Enter。
+
+## 在指令行中 [#session]
+
+引擎繪製它，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。
+
+<Session name="dimangular" caption="兩條線以 30 度相交：依序點選兩條線，再將標註弧線放在兩線之間。" />
+
+## 選項 [#options]
+
+### `Text` (`T`) [#text]
+
+要求輸入要寫入的文字以取代測量值，並以測量值做為預設值：按 Enter 即保留測量值。在輸入的文字中，`<>` 代表測量值。
+
+### `Angle` (`A`) [#angle]
+
+要求指定標註文字的角度，文字便以該角度繪製，而不沿著標註弧線。輸入 0 會讓文字回到沿弧線的方向。
+
+## 尚未支援的功能 [#missing]
+
+多行文字：標註的文字為單行，透過指令行的 `Text` 設定。「象限」選項，可將標註鎖定在一個扇區，使文字能放在扇區之外。十進位度數以外的角度單位（DIMAUNIT）。角度標註無法連續或調整間距：[`DIMCONTINUE`](/docs/commands/dimcontinue)、[`DIMBASELINE`](/docs/commands/dimbaseline) 與 [`DIMSPACE`](/docs/commands/dimspace) 只接受線性與對齊式標註。無法點選圖塊參考中的線或弧。在兩條線之間，標註保留的是其弧線與兩線相交的點，而不是兩條線：之後移動標註時，其弧線仍從這些點引出延伸線，而 AutoCAD 會重新依兩條線測量。標註不是關聯式標註：不會隨著所測量的物件變動。
+
+[功能與尚缺項目的詳細說明（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimangular--dimang--dan--es-acoangular--acoang--pt-br-cotaang--cang--dimang--fr-cotang--can--it-dimangolo--dan--de-bemwinkel--bmwin--ru-рзмугловой--руг--pl-wymkątowy--wk--wymk--cs-kótyúhel--kuh--kotyuh--hu-méretszög--msz--mszog)
+
+## 常見問題 [#questions]
+
+### AutoCAD 角度標註的快捷鍵是什麼？
+
+`DAN` 或 `DIMANG`，然後按 Enter 或空白鍵。也可以輸入完整名稱，在任何語言版本的 AutoCAD 中都可以輸入 `_DIMANGULAR`。
+
+### 如何標註大於 180 度的角度？
+
+在第一個提示下按 Enter，指定頂點與兩個端點，再將弧線放在兩點之間的角度之外：測量的即是優角，也就是 360° 減去另一個角度。弧或圓也是同樣的做法。兩條線之間的角度一律小於 180°。
+
+### 如何標註弧的角度？
+
+在第一個提示下點選弧：其中心點即為頂點，兩端即為延伸線原點，因此接下來的提示便是放置標註的位置。
+
+### 為什麼 DIMANGULAR 顯示兩條線平行？
+
+兩條平行線，或同一條線點選兩次，無法構成角度：`Lines are parallel.`，指令隨即結束。
+
+### 如何變更角度標註的小數位數？
+
+在標註型式中設定：[`DIMSTYLE`](/docs/commands/dimstyle)（`D`）會在「型式」選項板中開啟標註型式，由「主要單位」下的「角度精確度」設定，ISO-25 為 0。使用該型式的所有角度標註都會隨之更新。
+
+## 練習 [#practice]
+
+- [CAD 練習圖：土地邊界](/docs/exercises/plot-of-land)
+
+## 相關指令 [#related]
+
+- [AutoCAD 尺寸標註：DIMLINEAR（線性）指令](/docs/commands/dimlinear)
+- [AutoCAD DIMALIGNED（對齊式）標註指令](/docs/commands/dimaligned)
+- [AutoCAD DIMRADIUS（半徑）標註指令](/docs/commands/dimradius)
+- [AutoCAD DIMSTYLE（標註型式）指令](/docs/commands/dimstyle)

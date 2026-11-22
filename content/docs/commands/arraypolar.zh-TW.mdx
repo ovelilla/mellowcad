@@ -1,0 +1,82 @@
+---
+title: "AutoCAD ARRAYPOLAR（環形陣列）指令"
+metaTitle: "CAD 環形陣列指令（ARRAYPOLAR）用法"
+description: "AutoCAD 環形陣列（ARRAYPOLAR）依提示逐步說明：中心點、項目數、項目夾角或填滿角度，以及項目是否旋轉。可在瀏覽器中免費試用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"如何建立環形陣列？","answer":"輸入 ARRAYPOLAR，選取物件並按 Enter，再點選中心點；或輸入 AR 執行 ARRAY，在選取物件後選擇 POlar。接著選擇 Items 設定數量，按 Enter 建立。"},{"question":"如何沿部分圓周陣列物件？","answer":"選擇 Fill 並輸入角度：180 會將項目逆時鐘排在半圓上，-180 則為順時鐘。項目數保持不變，第一個與最後一個項目位於角度的兩端。"},{"question":"如何讓陣列項目不旋轉？","answer":"選擇 ROTate 並回答 No：每個項目繞中心點移動，但不旋轉。"},{"question":"如何變更環形陣列的半徑？","answer":"選取陣列，將基準點上的方形掣點朝中心點拖近或拖遠：與中心點的距離即為新的半徑。也可以在「性質」選項板中重新輸入「半徑」。"}]
+---
+
+ARRAYPOLAR（環形陣列）指令繞著中心點複製選集，成為一個陣列物件。它先要求選取物件，說明類型與陣列是否為關聯式，再要求中心點，並立即顯示陣列：整圈 6 個項目，每個項目在繞行時隨之旋轉。接著，一個提示會即時編輯陣列，直到按 Enter 建立，可透過其選項或預覽的掣點，與 AutoCAD 相同。選取的物件會成為第一個項目。
+
+- **指令：** `ARRAYPOLAR`
+- **面板：** [修改](/docs/commands#modify)
+- **試試看：** [開啟編輯器](/zh-tw/draw)，輸入 `ARRAYPOLAR` 並按 Enter。
+
+## 在指令行中 [#session]
+
+引擎繪製它，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。
+
+<Session name="arraypolar" caption="凸緣上的一個孔繞凸緣的中心點陣列：整圈 8 個項目。" />
+
+## 選項 [#options]
+
+### `ASsociative` (`AS`) [#associative]
+
+預設值 `Yes` 會建立一個陣列物件，之後可透過其掣點與「性質」選項板修改；`No` 會在所選物件旁建立個別的複本。此回答在本次階段作業中保留，ARRAYRECT 與 ARRAYPATH 也會沿用。
+
+### `Items` (`I`) [#items]
+
+項目數，從 1 到 32767；保留其填滿的角度。
+
+### `Angle between` (`A`) [#angle-between]
+
+從一個項目到下一個項目的角度。填滿角度會變為該角度乘以間隔數，方向不變，達到 360° 時即為整圈。
+
+### `Fill angle` (`F`) [#fill-angle]
+
+各項目填滿的角度，正值為逆時鐘，負值為順時鐘；保留項目數。整圈時，項目間隔為一圈除以項目數；不足一圈時，最後一個項目位於角度的終點。
+
+### `ROTate items` (`ROT`) [#rotate-items]
+
+預設值 `Yes` 讓每個項目繞中心點時隨之旋轉；`No` 只移動項目，因此每個項目的方位都與第一個相同。
+
+### `eXit` (`X`) [#exit]
+
+建立陣列並結束指令，與按 Enter 相同。
+
+## 尚未支援的功能 [#missing]
+
+「基準點」；「旋轉軸」，用於繞空間中的軸建立陣列；「列數」與「層數」，用於多圈項目與沿 Z 堆疊的複本；「表示式」，將某個值與圖面的參數連結。陣列掣點的功能表（拉伸半徑、項目計數、填滿角度…）以及按 Ctrl 循環切換。
+
+[功能與尚缺項目的詳細說明（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#arraypolar--es-matrizpolar--pt-br-matrizpolar--fr-reseaupolaire--it-seriepolare--de-reihekreis--ru-массивкруг--pl-szykbiegun--cs-polárpole--hu-kiosztpoláris)
+
+## 常見問題 [#questions]
+
+### 如何建立環形陣列？
+
+輸入 `ARRAYPOLAR`，選取物件並按 Enter，再點選中心點；或輸入 `AR` 執行 [`ARRAY`](/docs/commands/array)，在選取物件後選擇 `POlar`。接著選擇 `Items` 設定數量，按 Enter 建立。
+
+### 如何沿部分圓周陣列物件？
+
+選擇 `Fill` 並輸入角度：180 會將項目逆時鐘排在半圓上，-180 則為順時鐘。項目數保持不變，第一個與最後一個項目位於角度的兩端。
+
+### 如何讓陣列項目不旋轉？
+
+選擇 `ROTate` 並回答 `No`：每個項目繞中心點移動，但不旋轉。
+
+### 如何變更環形陣列的半徑？
+
+選取陣列，將基準點上的方形掣點朝中心點拖近或拖遠：與中心點的距離即為新的半徑。也可以在「性質」選項板中重新輸入「半徑」。
+
+## 練習 [#practice]
+
+- [CAD 練習圖：法蘭](/docs/exercises/flange)
+- [CAD 練習圖：圓桌與椅子](/docs/exercises/round-table)
+
+## 相關指令 [#related]
+
+- [AutoCAD ARRAY（陣列）指令](/docs/commands/array)
+- [AutoCAD ARRAYRECT（矩形陣列）指令](/docs/commands/arrayrect)
+- [AutoCAD ARRAYPATH（路徑陣列）指令](/docs/commands/arraypath)
+- [AutoCAD ROTATE（旋轉）指令](/docs/commands/rotate)

@@ -91,6 +91,10 @@
       "types": "./dist/locales/zh-CN.d.ts",
       "default": "./dist/locales/zh-CN.js"
     },
+    "./locales/zh-TW": {
+      "types": "./dist/locales/zh-TW.d.ts",
+      "default": "./dist/locales/zh-TW.js"
+    },
     "./styles.css": "./dist/styles.css",
     "./package.json": "./package.json"
   },

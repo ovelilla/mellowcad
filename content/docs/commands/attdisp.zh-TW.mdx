@@ -1,0 +1,59 @@
+---
+title: "AutoCAD ATTDISP（顯示屬性）指令"
+metaTitle: "CAD 顯示屬性（ATTDISP）：顯示或隱藏屬性"
+description: "AutoCAD 顯示屬性（ATTDISP）如何顯示圖塊屬性：一般、ON 連不可見的屬性也顯示、OFF 全部隱藏。隨圖面儲存。可線上免費試用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD 如何顯示不可見的屬性？","answer":"輸入 ATTDISP 並選擇 ON：所有屬性都會顯示，包括不可見的屬性。Normal 會再將它們隱藏。"},{"question":"為什麼圖塊屬性沒有顯示？","answer":"ATTDISP 可能設為 OFf，會隱藏所有屬性；或設為 Normal，而屬性定義為不可見。選擇 ON 即可全部看到。若參考的圖塊沒有屬性，無論設定為何都不會顯示任何屬性。"},{"question":"AutoCAD 如何隱藏屬性值？","answer":"將屬性定義為不可見：在建立圖塊之前，使用 ATTDEF 的 Invisible 模式。ATTDISP OFf 會一次隱藏整個圖面中的所有屬性。"}]
+---
+
+ATTDISP（顯示屬性）指令設定圖面中的圖塊參考顯示哪些屬性。它會要求設定，並提供目前的設定，新圖面中為「一般」；其他任何字詞都會說明關鍵字無效並再次詢問，按 Enter 則保留目前設定。變更設定會重新繪製整個圖面，並如 AutoCAD 2027 一樣顯示 `Regenerating model.`，此設定以 ATTMODE 隨圖面儲存，是 `U` 可以退回的一個步驟。在指令中加上單引號輸入時，也可以在該指令中執行。
+
+它只改變顯示的內容：不可見的屬性保留其值，隱藏的屬性仍可以 [`ATTEDIT`](/docs/commands/attedit) 或 [`EATTEDIT`](/docs/commands/eattedit) 編輯。
+
+- **指令：** `ATTDISP`
+- **面板：** [組織](/docs/commands#organize)
+- **試試看：** [開啟編輯器](/zh-tw/draw)，輸入 `ATTDISP` 並按 Enter。
+
+## 在指令行中 [#session]
+
+引擎繪製它，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。
+
+<Session name="attdisp" caption="兩張書桌，其零件編號為不可見的屬性：ATTDISP ON 將它們顯示在每張書桌下方，在可見的編號旁。" />
+
+## 選項 [#options]
+
+### `Normal` (`N`) [#normal]
+
+依各屬性的定義顯示：顯示可見的屬性，不顯示以 [`ATTDEF`](/docs/commands/attdef) 的 `Invisible` 定義的屬性。
+
+### `ON` [#on]
+
+顯示所有屬性，包括不可見的屬性。
+
+### `OFF` (`OF`) [#off]
+
+隱藏所有屬性，包括可見的屬性。
+
+## 常見問題 [#questions]
+
+### AutoCAD 如何顯示不可見的屬性？
+
+輸入 `ATTDISP` 並選擇 `ON`：所有屬性都會顯示，包括不可見的屬性。`Normal` 會再將它們隱藏。
+
+### 為什麼圖塊屬性沒有顯示？
+
+`ATTDISP` 可能設為 `OFf`，會隱藏所有屬性；或設為 `Normal`，而屬性定義為不可見。選擇 `ON` 即可全部看到。若參考的圖塊沒有屬性，無論設定為何都不會顯示任何屬性。
+
+### AutoCAD 如何隱藏屬性值？
+
+將屬性定義為不可見：在建立圖塊之前，使用 [`ATTDEF`](/docs/commands/attdef) 的 `Invisible` 模式。ATTDISP `OFf` 會一次隱藏整個圖面中的所有屬性。
+
+## 相關指令 [#related]
+
+- [AutoCAD ATTDEF（定義屬性）指令](/docs/commands/attdef)
+- [AutoCAD ATTEDIT（編輯屬性）指令](/docs/commands/attedit)
+- [AutoCAD EATTEDIT（編輯屬性）指令](/docs/commands/eattedit)
+- [AutoCAD BLOCK（建立圖塊）指令](/docs/commands/block)
+
+[功能與尚缺項目的詳細說明（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#attdisp--es-atrvis--pt-br-visatrib--fr-attecran--it-visatt--de-attzeig--ru-атэкр--pl-atrwid--cs-atrdisp--hu-attláth)

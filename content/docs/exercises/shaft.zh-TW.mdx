@@ -1,0 +1,64 @@
+---
+title: "CAD 練習圖：階梯軸"
+metaTitle: "AutoCAD 機械練習題：階梯軸"
+description: "AutoCAD 機械練習：以聚合線繪製階梯軸的一半輪廓，倒角後沿軸線鏡射，再以連續式標註長度。免費線上練習，附逐步解說。"
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+以側視圖繪製此階梯軸，單位為公釐：全長 150，直徑 30、40、30 的各段長度分別為 40、60、50，兩端各倒角 2 × 2。將軸線上方的一半畫成一條聚合線，倒角後鏡射；接著繪製橫越軸身可見的邊線、軸線與長度標註。直徑即此處所列的數值。
+
+- **練習題：** 中級 · 機械 · 2D
+- **指令：** [`PLINE`](/docs/commands/pline), [`CHAMFER`](/docs/commands/chamfer), [`MIRROR`](/docs/commands/mirror), [`LINE`](/docs/commands/line), [`DIMLINEAR`](/docs/commands/dimlinear), [`DIMCONTINUE`](/docs/commands/dimcontinue)
+- **在編輯器中：** [連同圖面開啟](/zh-tw/draw?drawing=shaft)，已標註的圖面就在您繪圖處的旁邊
+
+## 圖面 [#drawing]
+
+<Session name="exercises/shaft" caption="階梯軸的側視圖，全長 150，各段長度以連續式標註。" />
+
+## 逐步解答 [#steps]
+
+引擎繪製每個步驟，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。在指令的第一點之後，輸入的點會從上一點量起，如同動態輸入的量法，歷程中以 @ 寫出；\# 則從原點量起。
+
+### 1. 繪製上半部 [#half]
+
+在「輪廓線」圖層上，以 [`PLINE`](/docs/commands/pline)（聚合線）指令從 `0,0` 畫一條聚合線：向上 `0,15`、沿軸向 `40,0`、向上 `0,5`、沿軸向 `60,0`、向下 `0,-5`、沿軸向 `50,0`，再向下 `0,-15` 回到軸線。按 Enter 結束。
+
+<Session name="exercises/shaft/half" caption="1. 繪製上半部" />
+
+### 2. 兩端倒角 [#chamfers]
+
+執行 [`CHAMFER`](/docs/commands/chamfer)（倒角）指令，選擇 `Distance`：輸入 `2`，第二個距離按 Enter 也接受 `2`。`Multiple` 可連續倒角多個角點，不必重新執行指令：在每一端的角點選取兩個線段。
+
+<Session name="exercises/shaft/chamfers" caption="2. 兩端倒角" />
+
+### 3. 鏡射 [#mirror]
+
+[`MIRROR`](/docs/commands/mirror)（鏡射）指令：選取聚合線，按 Enter，再指定鏡射線從 `0,0` 到 `150,0`（即軸線），按 Enter 保留原物件。
+
+<Session name="exercises/shaft/mirror" caption="3. 鏡射" />
+
+### 4. 繪製邊線 [#edges]
+
+以 [`LINE`](/docs/commands/line)（線）指令繪製橫越軸身可見的邊線，每條都從底部向上 `0,30`：倒角處從 `2,-15` 與 `148,-15` 開始，軸肩處從 `40,-15` 與 `100,-15` 開始。
+
+<Session name="exercises/shaft/edges" caption="4. 繪製邊線" />
+
+### 5. 繪製軸線 [#axis]
+
+在「中心線」圖層上繪製軸線：一條從 `-8,0` 到相距 `166,0` 處的線。
+
+<Session name="exercises/shaft/axis" caption="5. 繪製軸線" />
+
+### 6. 標註 [#dimensions]
+
+在「標註」圖層上，以 [`DIMLINEAR`](/docs/commands/dimlinear)（線性）指令標註第一段長度 40，置於下方。[`DIMCONTINUE`](/docs/commands/dimcontinue)（連續式）指令從其第二條延伸線接續標註：輸入 `#100,-20`，再輸入 `#150,-15`，以 # 從原點起算，按兩次 Enter 結束。最後再以一次 [`DIMLINEAR`](/docs/commands/dimlinear) 指令在更下方標註全長 150。
+
+<Session name="exercises/shaft/dimensions" caption="6. 標註" />
+
+## 更多練習題 [#more]
+
+- [CAD 等角圖練習圖：階梯塊](/docs/exercises/isometric-block): 中級 · 機械 · 等角
+- [CAD 3D 練習圖：皮帶輪](/docs/exercises/pulley): 中級 · 機械 · 3D 實體
+- [CAD 練習圖：以切線連接的連桿](/docs/exercises/link): 進階 · 機械 · 2D
+- [AutoCAD 練習題](/docs/exercises)

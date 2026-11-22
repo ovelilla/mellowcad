@@ -1,0 +1,72 @@
+---
+title: "AutoCAD LINE（線）指令"
+metaTitle: "CAD 畫線指令（LINE）用法與快捷鍵 L"
+description: "AutoCAD 畫線指令 LINE（L）逐一提示說明：點選或輸入點、退回與封閉，以及按 Enter 從最後一條線接續繪製。可在瀏覽器中免費線上試用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD 畫線指令的快捷鍵是什麼？","answer":"輸入 L，再按 Enter 或空白鍵。輸入完整名稱也可以，而 _LINE 在任何語言版本的 AutoCAD 中都適用。"},{"question":"如何以角度與長度畫線？","answer":"指定第一點，再以長度與角度輸入下一點：@100<30 會以 30° 繪製長 100 的線。也可以打開極座標追蹤，沿該角度的追蹤線只輸入長度。"},{"question":"如何從上一條線接續繪製？","answer":"執行 LINE，在第一點提示下按 Enter：會從最後一條線、聚合線或弧的端點開始。從弧接續時，線會與弧相切延伸，LINE 只詢問其長度。沒有可接續的物件時，會顯示 「No line or arc to continue.」。"},{"question":"為什麼畫出來的線是分開的線段？","answer":"與 AutoCAD 相同，LINE 繪製的每一段都是獨立的線。若要成為一個物件，請以 PLINE 繪製，或之後以 JOIN 將線接合。"}]
+---
+
+LINE（線）指令繪製直線段，每一段都是獨立的物件：指定第一點，再逐一指定下一點，直到按 Enter。點可以點選、以物件鎖點取得或輸入。與 AutoCAD 打開動態輸入時一樣，第一點之後輸入的點從上一點量測，因此 `80,0` 會沿 X 繪製 80，歷程記錄中寫為 `@80,0`；只輸入一個數字則是沿游標方向的距離，`<30` 會將下一點鎖定在 30°。在第一點提示下按 Enter 或按一下右鍵，會從最後一條線、聚合線或弧的端點接續繪製，從弧接續時與弧相切，並只詢問長度。無論繪製了多少線段，U 一次就能退回整個指令。
+
+- **指令：** `LINE`
+- **快捷鍵：** `L`
+- **面板：** [繪製](/docs/commands#draw)
+- **試試看：** [開啟編輯器](/zh-tw/draw)，輸入 `L` 並按 Enter。
+
+## 在指令行中 [#session]
+
+引擎繪製它，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。
+
+<Session name="line" caption="一個三角形：輸入第一點，接下來兩點從上一點指定，最後封閉。" />
+
+## 選項 [#options]
+
+### `Undo` (`U`) [#undo]
+
+退回最後一段線段，並從前一點再次詢問。沒有剩餘的線段時，會顯示 `All segments already undone.`，並再次要求指定第一點。
+
+### `Close` (`C`) [#close]
+
+從第二段線段起提供：繪製回到第一點的最後一段線段並結束指令，使形狀封閉。
+
+## 尚未支援的功能 [#missing]
+
+在第一點提示下輸入的相切點或互垂點會等待下一點（延遲鎖點），與 AutoCAD 相同，但只適用於線、圓與弧，不適用於聚合線線段、橢圓或雲形線，也無法求解兩個延遲的互垂點。
+
+[功能與尚缺項目的詳細說明（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#line--l--es-linea--l--pt-br-linha--l--fr-ligne--l--it-linea--l--de-linie--l--ru-отрезок--от--pl-linia--l--cs-úsečka--u--hu-vonal--vo)
+
+## 常見問題 [#questions]
+
+### AutoCAD 畫線指令的快捷鍵是什麼？
+
+輸入 `L`，再按 Enter 或空白鍵。輸入完整名稱也可以，而 `_LINE` 在任何語言版本的 AutoCAD 中都適用。
+
+### 如何以角度與長度畫線？
+
+指定第一點，再以長度與角度輸入下一點：`@100<30` 會以 30° 繪製長 100 的線。也可以打開極座標追蹤，沿該角度的追蹤線只輸入長度。
+
+### 如何從上一條線接續繪製？
+
+執行 LINE，在第一點提示下按 Enter：會從最後一條線、聚合線或弧的端點開始。從弧接續時，線會與弧相切延伸，LINE 只詢問其長度。沒有可接續的物件時，會顯示 `No line or arc to continue.`。
+
+### 為什麼畫出來的線是分開的線段？
+
+與 AutoCAD 相同，LINE 繪製的每一段都是獨立的線。若要成為一個物件，請以 [`PLINE`](/docs/commands/pline) 繪製，或之後以 [`JOIN`](/docs/commands/join) 將線接合。
+
+## 練習 [#practice]
+
+- [CAD 練習圖：墊片](/docs/exercises/gasket)
+- [CAD 練習圖：L 型支架](/docs/exercises/l-bracket)
+- [CAD 練習圖：樓梯平面圖](/docs/exercises/stairs)
+- [CAD 練習圖：法蘭](/docs/exercises/flange)
+- [CAD 練習圖：階梯軸](/docs/exercises/shaft)
+- [CAD 等角圖練習圖：階梯塊](/docs/exercises/isometric-block)
+- [CAD 練習圖：以切線連接的連桿](/docs/exercises/link)
+
+## 相關指令 [#related]
+
+- [AutoCAD PLINE（聚合線）指令](/docs/commands/pline)
+- [AutoCAD OFFSET（偏移）指令](/docs/commands/offset)
+- [AutoCAD TRIM（修剪）指令](/docs/commands/trim)
+- [AutoCAD JOIN（接合）指令](/docs/commands/join)

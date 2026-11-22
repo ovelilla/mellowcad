@@ -1,0 +1,78 @@
+---
+title: "AutoCAD CHAMFER（倒角）指令"
+metaTitle: "CAD 倒角指令（CHAMFER）：距離與快捷鍵 CHA"
+description: "AutoCAD 倒角（CHAMFER、CHA）依提示逐步說明：兩個距離、兩條線或聚合線的角點、多重與 Shift。可在瀏覽器中免費試用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD 倒角指令的快捷鍵是什麼？","answer":"CHA，再按 Enter 或空白鍵。也可以輸入完整名稱，在任何語言版本的 AutoCAD 中都可輸入 _CHAMFER。"},{"question":"AutoCAD 如何做 45 度倒角？","answer":"選擇 Distance，輸入距離，並在第二個距離提示按 Enter：在直角上，兩個相等的距離會形成 45 度的斜邊。"},{"question":"CHAMFER 和 FILLET 有什麼差別？","answer":"CHAMFER 以直線斜邊連接兩條線；FILLET 則以與兩者相切的弧連接。兩者都會將線修剪或延伸到該處，且在設為 0 或點選第二條線時按住 Shift，都會形成尖角。"},{"question":"CAD 倒角指令沒有作用怎麼辦？","answer":"它會說明原因：距離超出線的端點時顯示 「Chamfer distance is too large」，平行線顯示 「Lines are parallel」，弧或圓則顯示 「Chamfer requires 2 lines (not arc segments).」。兩個距離皆為 0 時，會形成尖角，而不是斜邊。"},{"question":"如何將矩形的每個角點倒角？","answer":"矩形是聚合線：選擇 Polyline 並點選它，每個角點都會以目前的距離倒角。"}]
+---
+
+CHAMFER（倒角）指令以一條直線斜邊切去兩條線之間的角。點選第一條線，再點選第二條線：兩條線各自修剪或延伸到斜邊，第一條依第一個距離，第二條依第二個距離，再以斜邊連接。可用於兩條線、聚合線的兩個直線段，或一條線與一條聚合線，後者會接合成一條聚合線。與 AutoCAD 相同，第一行會顯示目前的距離，這些距離儲存在圖面中；兩者皆為 0（預設值）時會形成尖角，兩條線相交。點選第二條線時，將形成的角會顯示在線上。
+
+- **指令：** `CHAMFER`
+- **快捷鍵：** `CHA`
+- **面板：** [修改](/docs/commands#modify)
+- **試試看：** [開啟編輯器](/zh-tw/draw)，輸入 `CHA` 並按 Enter。
+
+## 在指令行中 [#session]
+
+引擎繪製它，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。
+
+<Session name="chamfer" caption="四條線，接著將兩個距離都設為 10 並使用「多重」：兩個角點被切成倒角，另兩個保持尖角。" />
+
+## 選項 [#options]
+
+### `Undo` (`U`) [#undo]
+
+退回本次執行中的最後一個倒角，以及隨之所做的距離變更。
+
+### `Polyline` (`P`) [#polyline]
+
+要求一條 2D 聚合線，並將其每個角點倒角，然後顯示已倒角的線段數，以及未倒角的原因。
+
+### `Distance` (`D`) [#distance]
+
+要求第一個與第二個倒角距離。第二個距離會提供第一個距離作為預設值，因此在此按 Enter 會讓斜邊等距，在直角上為 45 度。
+
+### `Multiple` (`M`) [#multiple]
+
+每次倒角後持續要求第一條線，直到按 Enter 或 Esc。
+
+## 尚未支援的功能 [#missing]
+
+「角度」，以一個距離與一個角度設定斜邊；「方式」與「修剪」：CHAMFER 一律以兩個距離作業，且一律修剪線。在 AutoCAD 中斜邊會採用第二條線的線型比例，此處則不會。
+
+[功能與尚缺項目的詳細說明（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#chamfer--cha--es-chaflan--ch--pt-br-chanfro--cha--fr-chanfrein--cf--it-cima--cm--de-fase--fa--ru-фаска--фас--pl-fazuj--fa--cs-zkos--zk--hu-letör--lt)
+
+## 常見問題 [#questions]
+
+### AutoCAD 倒角指令的快捷鍵是什麼？
+
+`CHA`，再按 Enter 或空白鍵。也可以輸入完整名稱，在任何語言版本的 AutoCAD 中都可輸入 `_CHAMFER`。
+
+### AutoCAD 如何做 45 度倒角？
+
+選擇 `Distance`，輸入距離，並在第二個距離提示按 Enter：在直角上，兩個相等的距離會形成 45 度的斜邊。
+
+### CHAMFER 和 FILLET 有什麼差別？
+
+CHAMFER 以直線斜邊連接兩條線；[`FILLET`](/docs/commands/fillet) 則以與兩者相切的弧連接。兩者都會將線修剪或延伸到該處，且在設為 0 或點選第二條線時按住 Shift，都會形成尖角。
+
+### CAD 倒角指令沒有作用怎麼辦？
+
+它會說明原因：距離超出線的端點時顯示 `Chamfer distance is too large`，平行線顯示 `Lines are parallel`，弧或圓則顯示 `Chamfer requires 2 lines (not arc segments).`。兩個距離皆為 0 時，會形成尖角，而不是斜邊。
+
+### 如何將矩形的每個角點倒角？
+
+矩形是聚合線：選擇 `Polyline` 並點選它，每個角點都會以目前的距離倒角。
+
+## 練習 [#practice]
+
+- [CAD 練習圖：階梯軸](/docs/exercises/shaft)
+
+## 相關指令 [#related]
+
+- [AutoCAD FILLET（圓角）指令](/docs/commands/fillet)
+- [AutoCAD TRIM（修剪）指令](/docs/commands/trim)
+- [AutoCAD EXTEND（延伸）指令](/docs/commands/extend)
+- [AutoCAD CHAMFEREDGE（倒角邊）指令](/docs/commands/chamferedge)

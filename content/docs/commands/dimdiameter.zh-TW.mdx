@@ -1,0 +1,70 @@
+---
+title: "AutoCAD DIMDIAMETER（直徑）標註指令"
+metaTitle: "CAD 直徑標註（DIMDIAMETER）用法與快捷鍵 DDI"
+description: "AutoCAD 的 DIMDIAMETER（DDI）如何標註圓或弧，依提示逐步說明：點選後，將直徑標註放在內側或外側。可在瀏覽器中免費試用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD 直徑標註的快捷鍵是什麼？","answer":"DDI 或 DIMDIA，然後按 Enter 或空白鍵。也可以輸入完整名稱，在任何語言版本的 AutoCAD 中都可以輸入 _DIMDIAMETER。"},{"question":"如何標註小孔？","answer":"將文字放在圓外：標註線會穿過孔，兩側各有一個箭頭，文字也不會與孔重疊。放在圓內時，文字需要在圓內有足夠的空間。"},{"question":"DIMDIAMETER 可以標註弧嗎？","answer":"可以：弧或聚合線弧段與圓一樣可以標註，並顯示弧所在之圓的直徑。點選其他物件時會顯示 「Object selected is not a circle or arc.」，並再次詢問。"},{"question":"如何在直徑標註中加上 THRU 或註記？","answer":"在放置標註之前選擇 Text 並輸入 「<> THRU」：<> 代表測量值及其符號。放置後，可在「性質」選項板的「文字置換」中變更。"}]
+---
+
+DIMDIAMETER（直徑）指令標註圓、弧或聚合線弧段的直徑，提示與 [`DIMRADIUS`](/docs/commands/dimradius) 相同：點選曲線後，指令行會立即顯示測量值；接著放置標註，指令隨即結束。其文字為直徑符號後接直徑值。放在圓內時，一條線從文字延伸到圓周上的箭頭；放在圓外時，該線從圓周一側穿過圓到另一側，遠端的箭頭由一小段短線指回圓內，與 ISO-25 的畫法相同。
+
+- **指令：** `DIMDIAMETER`
+- **快捷鍵：** `DIMDIA`, `DDI`
+- **面板：** [註解](/docs/commands#annotate)
+- **試試看：** [開啟編輯器](/zh-tw/draw)，輸入 `DDI` 並按 Enter。
+
+## 在指令行中 [#session]
+
+引擎繪製它，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。
+
+<Session name="dimdiameter" caption="大圓在內側標註、小圓在外側標註：依序點選每個圓，再放置文字。" />
+
+## 選項 [#options]
+
+### `Text` (`T`) [#text]
+
+要求輸入要寫入的文字以取代測量值，並以測量值做為預設值：按 Enter 即保留測量值。在輸入的文字中，`<>` 代表測量值及其符號，因此 `<> THRU` 會寫出直徑值並接著 THRU。
+
+### `Angle` (`A`) [#angle]
+
+要求指定標註文字的角度，文字便以該角度繪製，其中點位於線上，線在文字處中斷。輸入 0 會讓文字回到沿線的方向。
+
+## 尚未支援的功能 [#missing]
+
+多行文字：標註的文字為單行，透過指令行的 `Text` 設定，不使用文字編輯器。符號繪製為 Ø，而 AutoCAD 寫的是 ∅：繪圖字體沒有 ∅。在弧上，箭頭保持在弧的兩端之間，而 AutoCAD 會繪製弧延伸線。與 [`DIMRADIUS`](/docs/commands/dimradius) 相同，無法點選圖塊參考中的曲線，不會繪製型式的中心線，也不提供文字位於曲線外時的設定。標註不是關聯式標註：不會隨著所測量的曲線變動。
+
+[功能與尚缺項目的詳細說明（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimdiameter--dimdia--ddi--es-acodiametro--acodia--pt-br-cotadiametro--cdi--dimdia--fr-cotdia--cm--it-dimdiametro--ddi--de-bemdurchm--bmd--ru-рзмдиаметр--рди--pl-wymśrednica--wd--wymd--cs-kótyprům--kpr--kotypr--hu-méretátmérő--mat--matm)
+
+## 常見問題 [#questions]
+
+### AutoCAD 直徑標註的快捷鍵是什麼？
+
+`DDI` 或 `DIMDIA`，然後按 Enter 或空白鍵。也可以輸入完整名稱，在任何語言版本的 AutoCAD 中都可以輸入 `_DIMDIAMETER`。
+
+### 如何標註小孔？
+
+將文字放在圓外：標註線會穿過孔，兩側各有一個箭頭，文字也不會與孔重疊。放在圓內時，文字需要在圓內有足夠的空間。
+
+### DIMDIAMETER 可以標註弧嗎？
+
+可以：弧或聚合線弧段與圓一樣可以標註，並顯示弧所在之圓的直徑。點選其他物件時會顯示 `Object selected is not a circle or arc.`，並再次詢問。
+
+### 如何在直徑標註中加上 THRU 或註記？
+
+在放置標註之前選擇 `Text` 並輸入 `<> THRU`：`<>` 代表測量值及其符號。放置後，可在「性質」選項板的「文字置換」中變更。
+
+## 練習 [#practice]
+
+- [CAD 練習圖：墊片](/docs/exercises/gasket)
+- [CAD 練習圖：L 型支架](/docs/exercises/l-bracket)
+- [CAD 練習圖：法蘭](/docs/exercises/flange)
+- [CAD 練習圖：圓桌與椅子](/docs/exercises/round-table)
+- [CAD 練習圖：以切線連接的連桿](/docs/exercises/link)
+
+## 相關指令 [#related]
+
+- [AutoCAD DIMRADIUS（半徑）標註指令](/docs/commands/dimradius)
+- [AutoCAD 尺寸標註：DIMLINEAR（線性）指令](/docs/commands/dimlinear)
+- [AutoCAD DIMANGULAR（角度）標註指令](/docs/commands/dimangular)
+- [AutoCAD DIMSTYLE（標註型式）指令](/docs/commands/dimstyle)

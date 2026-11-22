@@ -1,0 +1,90 @@
+---
+title: "AutoCAD SPLINE（雲形線）指令"
+metaTitle: "CAD 雲形線（SPLINE）用法與快捷鍵 SPL"
+description: "AutoCAD SPLINE（雲形線，SPL）依提示順序說明：通過擬合點的曲線或由控制頂點牽引的曲線、節點、次數、切向與封閉。可以在瀏覽器中免費試用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD 雲形線（SPLINE）的快捷鍵是什麼？","answer":"SPL，然後按 Enter 或空白鍵。也可以輸入完整名稱，在任何語言版本的 AutoCAD 中都可以使用 _SPLINE。"},{"question":"擬合與 CV 有什麼不同？","answer":"擬合雲形線通過您點選的點，適合必須經過這些點的曲線。CV 雲形線由控制頂點塑形，只會接近這些頂點，適合順暢平滑的形狀。在第一個提示以 Method 選擇。"},{"question":"如何將雲形線轉換成聚合線？","answer":"執行 PEDIT 並點選雲形線：它會顯示 「Object selected is not a polyline」，並提議將它轉換成聚合線，然後要求 0 到 99 的精確度，預設值為 10。聚合線以短直線段沿著雲形線，線段數比 AutoCAD 產生的多。"},{"question":"如何將聚合線轉換成雲形線？","answer":"以 PEDIT 的「雲形線」選項擬合聚合線，再執行 SPLINE 並選擇 Object：聚合線即成為相同曲線的雲形線。"},{"question":"AutoCAD 可以分解雲形線嗎？","answer":"不行：EXPLODE 會拒絕雲形線，與 AutoCAD 相同。若要將它拆成多段，請先以 PEDIT 將它轉換成聚合線，再將聚合線分解成線。"}]
+---
+
+SPLINE 繪製平滑曲線，有兩種方式：通過您指定的點（擬合，預設值），或被您放置的控制頂點牽引（CV）。它先說明其設定 `Method=Fit   Knots=Chord`，再要求第一點；在此按 Enter 會被拒絕，與 AutoCAD 相同。之後的每一點都會彎曲曲線，預覽隨游標移動，按 Enter 結束。點可以點選、鎖點或輸入，輸入的長度沿游標方向計算，點會保留其 Z 值，因此雲形線可以在空間中升高。按 Esc 會捨棄曲線；整條雲形線是一個步驟，`U` 可以將它退回。功能區的「雲形線擬合」與「雲形線 CV」按鈕會執行 SPLINE，並已預先回答方式。
+
+- **指令：** `SPLINE`
+- **快捷鍵：** `SPL`
+- **面板：** [繪製](/docs/commands#draw)
+- **試試看：** [開啟編輯器](/zh-tw/draw)，輸入 `SPL` 並按 Enter。
+
+## 在指令行中 [#session]
+
+引擎繪製它，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。
+
+<Session name="spline" caption="通過五個點的擬合雲形線，下方是以同樣方式放置五個頂點的 CV 雲形線：前者通過這些點，後者被這些點牽引。" />
+
+## 選項 [#options]
+
+### `Method` (`M`) [#method]
+
+`Fit` 或 `CV`。擬合雲形線通過您指定的每一點；CV 雲形線只通過第一個與最後一個頂點，其他頂點將曲線牽引向自己，因此曲線較平滑，離頂點也較遠。方式與節點、次數一樣，會在此階段作業的其餘時間保留。
+
+### `Knots` (`K`) [#knots]
+
+擬合雲形線沿曲線分配其點的方式：`Chord`（預設值，依點之間的距離）、該距離的 `Square`，或 `Uniform`（全部相等）。通過相同的點，每種方式產生的曲線略有不同。
+
+### `Degree` (`D`) [#degree]
+
+CV 雲形線的次數，從 1（頂點之間為直線）到 10；預設值 3 為三次曲線。頂點數少於該次數所需時，曲線採用可能的最高次數。
+
+### `Object` (`O`) [#object]
+
+將以 PEDIT 的「雲形線」選項擬合的聚合線（2D 或 3D）轉換成相同曲線的 CV 雲形線，並刪除聚合線，一個步驟完成。其他物件會被拒絕，並顯示 `Only spline fitted polylines can be converted to splines.`。
+
+### `start Tangency` (`T`) [#start-tangency]
+
+在第一點之後提供：曲線離開該點的方向，從該點點選或輸入。
+
+### `end Tangency` (`T`) [#end-tangency]
+
+曲線到達最後一點的方向，然後雲形線結束。
+
+### `Undo` (`U`) [#undo]
+
+退回上一點，最多退到第一點。
+
+### `Close` (`C`) [#close]
+
+從第三點起提供：以一個平滑的封閉迴圈將終點接回起點，沒有尖角，並結束指令。
+
+## 尚未支援的功能 [#missing]
+
+擬合公差：擬合雲形線一定正好通過其點，不提供「公差」選項。繪製中的雲形線還不是可以鎖點或追蹤的物件，AutoCAD 則可以。「物件」一律刪除聚合線（DELOBJ）。完成的雲形線沒有 CVSHOW 或 CVHIDE，也沒有用來加入或移除點的掣點功能表；「性質」選項板可以編輯其點，但不能編輯其方式、次數、節點、權值或封閉；幾何中心點、互垂點與相切點不會鎖點到它。HATCH 不會將雲形線當作邊界，BLEND 也尚未提供。
+
+[功能與尚缺項目的詳細說明（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#spline--spl--es-spline--spl--pt-br-spline--spl--fr-spline--spl--it-spline--spl--de-spline--spl--ru-сплайн--спл--pl-splajn--spl--cs-spline--spl--hu-spline--spl)
+
+## 常見問題 [#questions]
+
+### AutoCAD 雲形線（SPLINE）的快捷鍵是什麼？
+
+`SPL`，然後按 Enter 或空白鍵。也可以輸入完整名稱，在任何語言版本的 AutoCAD 中都可以使用 `_SPLINE`。
+
+### 擬合與 CV 有什麼不同？
+
+擬合雲形線通過您點選的點，適合必須經過這些點的曲線。CV 雲形線由控制頂點塑形，只會接近這些頂點，適合順暢平滑的形狀。在第一個提示以 `Method` 選擇。
+
+### 如何將雲形線轉換成聚合線？
+
+執行 [`PEDIT`](/docs/commands/pedit) 並點選雲形線：它會顯示 `Object selected is not a polyline`，並提議將它轉換成聚合線，然後要求 0 到 99 的精確度，預設值為 10。聚合線以短直線段沿著雲形線，線段數比 AutoCAD 產生的多。
+
+### 如何將聚合線轉換成雲形線？
+
+以 [`PEDIT`](/docs/commands/pedit) 的「雲形線」選項擬合聚合線，再執行 SPLINE 並選擇 `Object`：聚合線即成為相同曲線的雲形線。
+
+### AutoCAD 可以分解雲形線嗎？
+
+不行：[`EXPLODE`](/docs/commands/explode) 會拒絕雲形線，與 AutoCAD 相同。若要將它拆成多段，請先以 [`PEDIT`](/docs/commands/pedit) 將它轉換成聚合線，再將聚合線分解成線。
+
+## 相關指令 [#related]
+
+- [AutoCAD PLINE（聚合線）指令](/docs/commands/pline)
+- [AutoCAD PEDIT（編輯聚合線）指令](/docs/commands/pedit)
+- [AutoCAD SPLINEDIT（編輯雲形線）指令](/docs/commands/splinedit)
+- [AutoCAD ELLIPSE（橢圓）指令](/docs/commands/ellipse)

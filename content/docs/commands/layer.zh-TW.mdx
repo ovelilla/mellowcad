@@ -1,0 +1,59 @@
+---
+title: "AutoCAD LAYER（圖層性質）指令"
+metaTitle: "CAD 圖層管理員：LAYER（圖層性質）與快捷鍵 LA"
+description: "AutoCAD 圖層指令 LAYER（LA）的用法：「圖層性質管理員」的各欄、新圖層、刪除與設為目前的，以及打開與鎖住對物件的作用。可免費線上試用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD 圖層指令的快捷鍵是什麼？","answer":"輸入 LA，再按 Enter 或空白鍵；DDLMODES 也可以，而 _LAYER 在任何語言版本的 AutoCAD 中都適用。指令會開啟「圖層性質管理員」，LAYERCLOSE 則將其關閉。"},{"question":"如何變更物件的圖層？","answer":"選取物件，然後在頂端列的「圖層」下拉式清單中選擇圖層：物件會移到該圖層，只算一個退回步驟，目前的圖層則維持不變。「性質」選項板的「圖層」列也有相同作用。沒有選取任何物件時，下拉式清單會將所選圖層設為目前的圖層。"},{"question":"如何在 AutoCAD 中刪除圖層？","answer":"在「圖層性質管理員」中選取圖層，然後按 Delete。圖層 0、目前的圖層，以及含有物件的圖層（包括圖塊定義中的物件）無法刪除：請先刪除或移動其物件，並將另一個圖層設為目前的圖層。"},{"question":"關閉圖層與鎖住圖層有什麼不同？","answer":"關閉的圖層會隱藏其物件：無法點選或鎖點，並會從選集中移除。鎖住圖層上的物件仍然可見但呈淡化，可以鎖點與選取，但任何指令都無法編輯：對其執行的指令會計算其數目並將其略過。關閉目前的圖層時會先詢問，與 AutoCAD 相同。"},{"question":"如何建立新圖層？","answer":"在「圖層性質管理員」中按「新圖層」並輸入名稱：圖層會採用所選圖層的顏色、線型與線粗，之後可在其列中變更。將其設為目前的圖層，即可在其上繪製。"}]
+---
+
+LAYER（圖層性質）指令開啟「圖層性質管理員」，可在其中建立、命名與設定圖面的圖層。與 AutoCAD 一樣，它是選項板而非對話方塊：繪圖時保持開啟（此處為選項板面板中的一個頁籤），直到 `LAYERCLOSE` 將其關閉；在另一個指令中加上撇號輸入時，會開啟而不結束該指令。每個物件都位於一個圖層上，其顏色、線型與線粗為 ByLayer 時，即採用圖層的設定。新物件會放在目前的圖層上。
+
+每個圖層是一列，欄的順序與 AutoCAD 相同：「狀態」（目前的圖層有勾選標記），接著是「名稱」、「打開」、「鎖住」、「顏色」、「線型」與「線粗」，以及圖層所含物件的數目；各列依名稱排序。「新圖層」會加入一個圖層，採用所選圖層的顏色、線型與線粗，其名稱可立即輸入，目前的圖層則維持不變。「設為目前的」或在某列上按兩下，可將圖層設為目前的圖層。在所選圖層的名稱上按一下，或按 F2，可更名圖層；已使用的名稱或含有 AutoCAD 禁用字元的名稱會被拒絕，圖層 0 也無法更名。「刪除圖層」會移除圖層，但圖層 0、目前的圖層或含有物件的圖層永遠無法刪除：AutoCAD 的「圖層 - 未刪除」對話方塊會說明原因。在管理員中的每項變更都是 U 可退回的一個步驟，連續的變更會合併為一步。在指令行中，-LAYER 不使用選項板即可完成相同的操作，提示與 AutoCAD 相同，在腳本中也適用。
+
+- **指令：** `LAYER`
+- **快捷鍵：** `LA`, `DDLMODES`
+- **面板：** [組織](/docs/commands#organize)
+- **試試看：** [開啟編輯器](/zh-tw/draw)，輸入 `LA` 並按 Enter。
+
+## 在指令行中 [#session]
+
+引擎繪製它，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。
+
+<Session name="layer" caption="三個圖層，各在繪製前設為目前的圖層：牆為白色，門為黃色，軸線為紅色並使用 Center 線型。" />
+
+## 尚未支援的功能 [#missing]
+
+LAYDEL 與「圖層」面板的其他工具：「設為目前的」（LAYMCUR）、「符合圖層」、「前一個圖層」等，以及其下拉式清單中的打開、凍結與鎖住圖示。圖層無法凍結，管理員中沒有「凍結」、「出圖」、「透明度」、「出圖型式」、「新視埠凍結」或「描述」欄，無法重新排列欄的順序，沒有圖層篩選或篩選樹，也沒有設定對話方塊。執行 LAYER 本身不是一個退回步驟。新圖層會立即排序，而 AutoCAD 在更名之前會將其顯示在所選圖層下方；圖層 0 的線粗為 0.25 mm，而非「預設」。無法輸入 LAYLOCKFADECTL：鎖住圖層上的物件一律淡化一半。
+
+[功能與尚缺項目的詳細說明（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#layers--layer--la--ddlmodes--layerclose---layer---la--es-capa--ca--layer--ddlmodes--cerrarcapa---capa---ca--pt-br-camada--ca--layer--ddlmodes--fecharcamada---camada---ca--fr-calque--layer--pl--ddlmodes--fermercalque---calque---pl--it-layer--la--ddlmodes--chiudilayer---layer---la--de-layer--la--ddlmodes--ddlmodi--layerschl---layer---la--ru-слой--сл--диалслой--слойзакрыть---слой---сл--pl-warstwa--wa--odwarstwa--warstwazamknij---warstwa---wa--cs-hladina--hl--ddlmodes--diahlad--hladzavři---hladina---hl--hu-fólia--fo--dpfmód--fóliabezár---fólia---fo)
+
+## 常見問題 [#questions]
+
+### AutoCAD 圖層指令的快捷鍵是什麼？
+
+輸入 `LA`，再按 Enter 或空白鍵；`DDLMODES` 也可以，而 `_LAYER` 在任何語言版本的 AutoCAD 中都適用。指令會開啟「圖層性質管理員」，`LAYERCLOSE` 則將其關閉。
+
+### 如何變更物件的圖層？
+
+選取物件，然後在頂端列的「圖層」下拉式清單中選擇圖層：物件會移到該圖層，只算一個退回步驟，目前的圖層則維持不變。「性質」選項板的「圖層」列也有相同作用。沒有選取任何物件時，下拉式清單會將所選圖層設為目前的圖層。
+
+### 如何在 AutoCAD 中刪除圖層？
+
+在「圖層性質管理員」中選取圖層，然後按 Delete。圖層 0、目前的圖層，以及含有物件的圖層（包括圖塊定義中的物件）無法刪除：請先刪除或移動其物件，並將另一個圖層設為目前的圖層。
+
+### 關閉圖層與鎖住圖層有什麼不同？
+
+關閉的圖層會隱藏其物件：無法點選或鎖點，並會從選集中移除。鎖住圖層上的物件仍然可見但呈淡化，可以鎖點與選取，但任何指令都無法編輯：對其執行的指令會計算其數目並將其略過。關閉目前的圖層時會先詢問，與 AutoCAD 相同。
+
+### 如何建立新圖層？
+
+在「圖層性質管理員」中按「新圖層」並輸入名稱：圖層會採用所選圖層的顏色、線型與線粗，之後可在其列中變更。將其設為目前的圖層，即可在其上繪製。
+
+## 相關指令 [#related]
+
+- [AutoCAD PROPERTIES（性質）指令](/docs/commands/properties)
+- [AutoCAD MATCHPROP（複製性質）指令](/docs/commands/matchprop)
+- [AutoCAD COLOR（顏色）指令](/docs/commands/color)
+- [AutoCAD LINETYPE（線型）指令](/docs/commands/linetype)
+- [AutoCAD LWEIGHT（線粗）指令](/docs/commands/lweight)

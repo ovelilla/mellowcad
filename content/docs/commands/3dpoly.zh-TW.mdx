@@ -1,0 +1,64 @@
+---
+title: "AutoCAD 3DPOLY（3D 聚合線）指令"
+metaTitle: "CAD 3D 聚合線（3DPOLY）用法與快捷鍵 3P"
+description: "AutoCAD 3D 聚合線（3DPOLY、3P）用法：由直線段組成，每一點有各自的 Z，可封閉與退回，以及與 PLINE 的差異。可在瀏覽器中免費試用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD 3DPOLY 的快捷鍵是什麼？","answer":"3P，再按 Enter 或空白鍵。也可以輸入完整名稱，在任何語言版本的 AutoCAD 中都可輸入 _3DPOLY。"},{"question":"PLINE 和 3DPOLY 有什麼差別？","answer":"PLINE 位於一個平面上，可以有弧與寬度。3D 聚合線只有直線段，但每個頂點可以在不同的高度：例如管線、道路中心線、纜線。"},{"question":"如何繪製不同高度的 3D 聚合線？","answer":"輸入每一點時帶上其 Z，即 x,y,z，或鎖點到位於所需高度的物件。在動態輸入下，第一點之後的點為相對座標：60,0,15 表示從上一點沿 X 移動 60 並升高 15。"},{"question":"如何讓 3D 聚合線變得平滑？","answer":"以 PEDIT 編輯它並選擇「雲形曲線」：由各頂點框定的平滑曲線。「直線化」會再將它拉直。"}]
+---
+
+3DPOLY（3D 聚合線）指令繪製 3D 聚合線：通過各點的直線段，每一點都有自己的 Z，構成單一物件。先指定起點，再指定每個線段的終點，直到按 Enter 結束；即使只有起點也會保留，成為只有一個頂點的聚合線。在起點提示按 Enter 會以 `Invalid point.` 拒絕：它沒有 LINE 指令的「連續」選項。輸入時帶有 Z 的點會保留其 Z，例如 `30,0,15`；未帶 Z 輸入或以滑鼠按一下的點，位於工作平面的高程上；鎖點到物件上的點則取得物件在該處的 Z。各點以目前的 UCS 解讀。
+
+與 [`PLINE`](/docs/commands/pline) 不同，它沒有平面、弧、寬度與厚度，且無論其線型為何都以連續線顯示，但會保留該線型。整條聚合線是一個步驟，可由 `U` 退回；按 Esc 會保留已繪製的部分。PEDIT 可以較短的選項清單編輯它，其「雲形曲線」選項會為它擬合一條平滑曲線。
+
+- **指令：** `3DPOLY`
+- **快捷鍵：** `3P`
+- **面板：** [繪製](/docs/commands#draw)
+- **試試看：** [開啟編輯器](/zh-tw/draw)，輸入 `3P` 並按 Enter。
+
+## 在指令行中 [#session]
+
+引擎繪製它，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。
+
+<Session name="3dpoly" caption="一條 3D 聚合線，在地面上 60 x 40 矩形的每個角點升高 15，從東南方檢視。" />
+
+## 選項 [#options]
+
+### `Close` (`C`) [#close]
+
+從第二個線段起：繪製一條回到起點的線段並結束。
+
+### `Undo` (`U`) [#undo]
+
+退回最後一個頂點，並從前一個頂點繼續。沒有剩下任何線段時：`All segments already undone.`。
+
+## 尚未支援的功能 [#missing]
+
+經曲線擬合的 3D 聚合線，在「性質」選項板的「擬合/平滑化」中顯示為「無」，而 AutoCAD 顯示為「二次」或「三次」，且無法在此變更。它不能作為填充線的邊界或 ARRAYPATH 的路徑，選項板也沒有「材料」列。動態輸入在一個方塊中要求起點，Z 要在第二個逗號之後輸入，而 AutoCAD 會顯示 X、Y 與 Z 欄位。掣點的停留功能表，「拉伸」、「加入頂點」、「移除頂點」等。
+
+[功能與尚缺項目的詳細說明（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#3dpoly--3p--es-3dpol--3p--pt-br-poli3d--p3--fr-poly3d--3p--it-3dpoli--3p--de-3dpoly--3dp--ru-3dплиния--3п--3-плиния--pl-3wplinia--3p--cs-3dkřivka--3k--hu-3dvlánc--3v)
+
+## 常見問題 [#questions]
+
+### AutoCAD 3DPOLY 的快捷鍵是什麼？
+
+`3P`，再按 Enter 或空白鍵。也可以輸入完整名稱，在任何語言版本的 AutoCAD 中都可輸入 `_3DPOLY`。
+
+### PLINE 和 3DPOLY 有什麼差別？
+
+[`PLINE`](/docs/commands/pline) 位於一個平面上，可以有弧與寬度。3D 聚合線只有直線段，但每個頂點可以在不同的高度：例如管線、道路中心線、纜線。
+
+### 如何繪製不同高度的 3D 聚合線？
+
+輸入每一點時帶上其 Z，即 `x,y,z`，或鎖點到位於所需高度的物件。在動態輸入下，第一點之後的點為相對座標：`60,0,15` 表示從上一點沿 X 移動 60 並升高 15。
+
+### 如何讓 3D 聚合線變得平滑？
+
+以 [`PEDIT`](/docs/commands/pedit) 編輯它並選擇「雲形曲線」：由各頂點框定的平滑曲線。「直線化」會再將它拉直。
+
+## 相關指令 [#related]
+
+- [AutoCAD PLINE（聚合線）指令](/docs/commands/pline)
+- [AutoCAD PEDIT（編輯聚合線）指令](/docs/commands/pedit)
+- [AutoCAD SPLINE（雲形線）指令](/docs/commands/spline)
+- [AutoCAD UCS 指令](/docs/commands/ucs)

@@ -1,0 +1,88 @@
+---
+title: "AutoCAD CYLINDER（圓柱）指令"
+metaTitle: "CAD 圓柱指令（CYLINDER）用法與快捷鍵 CYL"
+description: "AutoCAD 的 CYLINDER（CYL）如何建立 3D 實體圓柱，依提示逐步說明：底部、半徑、高度、三點、兩點、相切相切半徑、橢圓與軸端點。可在瀏覽器中免費試用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD 圓柱的快捷鍵是什麼？","answer":"CYL。輸入後按 Enter 或空白鍵，再指定底部的中心點、半徑與高度：輸入 0,0、20 與 40，即可建立本頁示範中的圓柱。"},{"question":"如何繪製橫放的圓柱？","answer":"在高度的提示下選擇 Axis，並指定軸的另一個端點：底部位於 0,0,0 時，點 60,0,0 會讓圓柱沿 X 軸橫放。"},{"question":"如何建立空心圓柱或管子？","answer":"從同一個中心點繪製兩個圓柱，內側的較細，然後執行 SUBTRACT：點選外側的圓柱，按 Enter，再點選內側的圓柱，按 Enter。"},{"question":"為什麼圓柱看起來像一個圓？","answer":"因為正從上方以平面視圖檢視。請轉動視圖：使用 ViewCube 的角點、-VIEW 與 SEIso，或 3DORBIT。"}]
+---
+
+CYLINDER（圓柱）指令會建立 3D 實體圓柱：依序指定底部的中心點、半徑與高度。底部位於 UCS 的 XY 平面上，在中心點的 Z 高度，高度沿 UCS 的 Z 軸向上；負值則向下，若以點指定，則與 [`BOX`](/docs/commands/box) 相同，以該點與底部的距離做為高度。半徑與高度會提供為預設值，按 Enter 即可採用，並與其他實體基本物件及 [`EXTRUDE`](/docs/commands/extrude) 共用。圓柱建立在目前的圖層上，退回一次即可復原。
+
+圓柱會保留其尺寸：[`LIST`](/docs/commands/list) 會顯示其位置、法線、半徑與高度，在「性質」選項板中可以輸入半徑與高度。透過其掣點可以移動圓柱、設定高度，並在底部的各四分點設定半徑。它是 3D 實體，可用於 [`UNION`](/docs/commands/union)、[`SUBTRACT`](/docs/commands/subtract) 以及 MellowCAD 其他的 3D 功能；MellowCAD 的 3D 僅限 3D 實體，仍屬部分支援。
+
+- **指令：** `CYLINDER`
+- **快捷鍵：** `CYL`
+- **面板：** [繪製](/docs/commands#draw)
+- **試試看：** [開啟編輯器](/zh-tw/draw)，輸入 `CYL` 並按 Enter。
+
+## 在指令行中 [#session]
+
+引擎繪製它，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。
+
+<Session name="cylinder" caption="從底部中心點建立半徑 20、高度 40 的圓柱，從東南方以「隱藏」視覺型式檢視。" />
+
+## 選項 [#options]
+
+### `3P` [#3p]
+
+在底部中心點的提示下：要求指定三個點，底部即為通過這三點、位於其平面上的圓。三點若位於 UCS 的 XY 平面上，圓柱仍沿 Z 軸向上。
+
+### `2P` [#2p]
+
+在底部中心點的提示下：要求指定底部直徑的兩個端點；第二點會在第一點所在的平面上讀取。
+
+### `Ttr` (`T`) [#ttr]
+
+在底部中心點的提示下：以「相切點」物件鎖點點選兩條線、圓或弧，再指定半徑：底部會與兩者相切，位置最接近點選處，並位於其高度上。
+
+### `Elliptical` (`E`) [#elliptical]
+
+在底部中心點的提示下：底部為橢圓。指定第一軸的兩個端點，再指定第二軸的端點；或選擇 `Center`，指定其中心點、第一軸的一半長度，再指定第二軸的端點。
+
+### `Diameter` (`D`) [#diameter]
+
+在半徑的提示下：改為要求指定直徑，並以上次半徑的兩倍做為預設值。
+
+### `2Point` (`2P`) [#2point]
+
+在高度的提示下：要求指定兩個點，以兩點之間的距離做為高度。
+
+### `Axis endpoint` (`A`) [#axis]
+
+在高度的提示下：要求指定軸的另一個端點。圓柱從底部的中心點延伸到該點，可為任意方向，底部與軸垂直。
+
+## 尚未支援的功能 [#missing]
+
+圓柱的 [`EXPLODE`](/docs/commands/explode)：AutoCAD 會將其分解為兩個端面與一個曲面；MellowCAD 沒有曲面，因此會顯示無法分解。從熱掣點執行移動、旋轉、比例與鏡射，以及將高度拖曳越過底部。指定半徑、橢圓的點與軸時，AutoCAD 所繪製的虛線標註。在「性質」選項板中將圓形圓柱改為橢圓圓柱。AutoCAD 的 `DISPSILH` 所繪製的輪廓線。在平面視圖中，頂部的圓遮住底部的圓時，「最近點」物件鎖點找到的是底部的圓，而 AutoCAD 找到的是頂部的圓。[`VSCURRENT`](/docs/commands/vscurrent) 除了 2D 線架構、隱藏與概念以外缺少的視覺型式。
+
+[功能與尚缺項目的詳細說明（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#cylinder--cyl--es-cilindro--cil--pt-br-cilindro--cil--fr-cylindre--cyl--it-cilindro--cil--de-zylinder--zyl--ru-цилиндр--ци--pl-walec--wal--cs-válec--val--hu-henger--hen)
+
+## 常見問題 [#questions]
+
+### AutoCAD 圓柱的快捷鍵是什麼？
+
+`CYL`。輸入後按 Enter 或空白鍵，再指定底部的中心點、半徑與高度：輸入 `0,0`、`20` 與 `40`，即可建立本頁示範中的圓柱。
+
+### 如何繪製橫放的圓柱？
+
+在高度的提示下選擇 `Axis`，並指定軸的另一個端點：底部位於 `0,0,0` 時，點 `60,0,0` 會讓圓柱沿 X 軸橫放。
+
+### 如何建立空心圓柱或管子？
+
+從同一個中心點繪製兩個圓柱，內側的較細，然後執行 [`SUBTRACT`](/docs/commands/subtract)：點選外側的圓柱，按 Enter，再點選內側的圓柱，按 Enter。
+
+### 為什麼圓柱看起來像一個圓？
+
+因為正從上方以平面視圖檢視。請轉動視圖：使用 ViewCube 的角點、`-VIEW` 與 `SEIso`，或 [`3DORBIT`](/docs/commands/3dorbit)。
+
+## 練習 [#practice]
+
+- [CAD 3D 練習圖：軸承座](/docs/exercises/bearing-block)
+
+## 相關指令 [#related]
+
+- [AutoCAD CONE（圓錐）指令](/docs/commands/cone)
+- [AutoCAD BOX（方塊）指令](/docs/commands/box)
+- [AutoCAD SUBTRACT（差集）指令](/docs/commands/subtract)
+- [AutoCAD EXTRUDE（擠出）指令](/docs/commands/extrude)

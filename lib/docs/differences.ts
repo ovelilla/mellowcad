@@ -167,6 +167,16 @@ export const DIFFERENCES: readonly {
       },
     ],
   },
+  {
+    id: "traditional-chinese",
+    sources: [
+      {
+        file: "docs/i18n/zh-TW.md",
+        quote:
+          "**The prompts are English** where Taiwanese AutoCAD words them in Traditional Chinese",
+      },
+    ],
+  },
 ]
 
 /** The page whose sections these are. */

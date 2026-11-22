@@ -1,0 +1,59 @@
+---
+title: "AutoCAD PRESSPULL（按拉）指令"
+metaTitle: "CAD 按拉指令（PRESSPULL）：面、區域與選項"
+description: "AutoCAD PRESSPULL（按拉）依提示逐步說明如何按壓或拉伸點選的部分：封閉的物件、物件圍成的區域、實體的面。可在瀏覽器中免費試用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"PRESSPULL 和 EXTRUDE 有什麼不同？","answer":"EXTRUDE 處理選取的封閉物件，依 DELOBJ 的設定刪除它們，並提供方向、推拔角度和表示式。PRESSPULL 以點選操作——封閉的物件、多個物件圍成的區域，或實體的面（加入該實體或從中切除）——並保留原物件。從物件建立時，兩者建立的實體相同。"},{"question":"如何擠出實體的面？","answer":"執行 PRESSPULL，點選面並指定距離：正值將面向外拉，實體變大；負值將面向內壓。點選時按住 Ctrl，則改為偏移該面。目前只支援平坦的面。"},{"question":"為什麼 PRESSPULL 沒有作用？","answer":"它需要點選封閉的部分。在第一個提示下輸入數值或點，或點選開放的物件或彎曲的面時，PRESSPULL 會以 「Click a face, curve, or inside a bounded area」 回應，並再次詢問。請點選封閉的物件、在平面上由物件圍成的區域內部，或實體的平坦面。"},{"question":"PRESSPULL 有快捷鍵嗎？","answer":"沒有指令別名：請輸入 PRESSPULL，或在任何語言版本的 AutoCAD 中輸入 _PRESSPULL。AutoCAD 為它指定的按鍵 Ctrl+Shift+E 目前尚未提供。"}]
+---
+
+PRESSPULL（按拉）指令擠出點選的部分：封閉的物件、物件在點選處四周圍成的區域，或 3D 實體的平坦面。按一下，再輸入高度，或移動游標並按一下：高度為正值時拉伸，為負值時按壓。封閉的物件或區域會成為一個新的實體，與 [`EXTRUDE`](/docs/commands/extrude) 所建立的相同，原物件則保留；區域中的孤島會成為實體中的孔，如範例所示。面則會將其稜柱加入其實體，或從中移除：拉伸方塊的頂面會使方塊變高。之後會再次顯示提示，供下一次點選，直到按 Enter；整次執行為一個步驟，退回一次即可復原。
+
+按住 Ctrl 時，點選將會選到的面會亮顯；按住 Ctrl 並按一下，則會偏移該面，相鄰的面隨之延伸與它相交，因此斜面會保持其斜度。如同 AutoCAD，PRESSPULL 以點選操作：在第一個提示下輸入數值或點，會以 `Click a face, curve, or inside a bounded area` 回應，並再次詢問。
+
+- **指令：** `PRESSPULL`
+- **面板：** [繪製](/docs/commands#draw)
+- **試試看：** [開啟編輯器](/zh-tw/draw)，輸入 `PRESSPULL` 並按 Enter。
+
+## 在指令行中 [#session]
+
+引擎繪製它，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。
+
+<Session name="presspull" caption="矩形與圓之間的區域向下按壓 8：一塊有孔的板件，以視覺型式「隱藏」從東南方向檢視。" />
+
+## 選項 [#options]
+
+### `Multiple` (`M`) [#multiple]
+
+在高度的提示下，或偏移距離的提示下選擇：繼續點選以加入更多項目——封閉的物件和區域，或同一個實體的面——再按 Enter，所有項目都使用同一個高度。在物件或區域之後點選的面會被篩選掉。
+
+## 尚未支援的功能 [#missing]
+
+彎曲的面，AutoCAD 也能偏移：在此點選找不到面。相鄰面為圓錐、圓球或圓環，或同時有平面與彎曲的面，或會將面推過對面的偏移：實體保持原狀。IMPRINT 和 IMPLIEDFACE 在面上建立的區域，以及 Ctrl+Shift+E。開放的物件，AutoCAD 會將其擠出成曲面：目前還沒有曲面。拖曳時，預覽顯示的是面的稜柱或新的實體，而不是完成後的實體；面只有在按住 Ctrl 時才會亮顯。在 UCS 平面以外圍成的區域尚未經過測試。
+
+[功能與尚缺項目的詳細說明（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#presspull--es-presionartirar--pulsartirar--pt-br-pressionarpuxar--fr-apptirer--it-premtrasc--de-klickziehen--ru-выдавгрань--pl-naciśnijciąg--cs-tlačtáhni--hu-tolhúz)
+
+## 常見問題 [#questions]
+
+### PRESSPULL 和 EXTRUDE 有什麼不同？
+
+[`EXTRUDE`](/docs/commands/extrude) 處理選取的封閉物件，依 DELOBJ 的設定刪除它們，並提供方向、推拔角度和表示式。PRESSPULL 以點選操作——封閉的物件、多個物件圍成的區域，或實體的面（加入該實體或從中切除）——並保留原物件。從物件建立時，兩者建立的實體相同。
+
+### 如何擠出實體的面？
+
+執行 PRESSPULL，點選面並指定距離：正值將面向外拉，實體變大；負值將面向內壓。點選時按住 Ctrl，則改為偏移該面。目前只支援平坦的面。
+
+### 為什麼 PRESSPULL 沒有作用？
+
+它需要點選封閉的部分。在第一個提示下輸入數值或點，或點選開放的物件或彎曲的面時，PRESSPULL 會以 `Click a face, curve, or inside a bounded area` 回應，並再次詢問。請點選封閉的物件、在平面上由物件圍成的區域內部，或實體的平坦面。
+
+### PRESSPULL 有快捷鍵嗎？
+
+沒有指令別名：請輸入 PRESSPULL，或在任何語言版本的 AutoCAD 中輸入 `_PRESSPULL`。AutoCAD 為它指定的按鍵 Ctrl+Shift+E 目前尚未提供。
+
+## 相關指令 [#related]
+
+- [AutoCAD EXTRUDE（擠出）指令](/docs/commands/extrude)
+- [AutoCAD SOLIDEDIT（實體編輯）指令](/docs/commands/solidedit)
+- [AutoCAD REGION（面域）指令](/docs/commands/region)
+- [AutoCAD BOX（方塊）指令](/docs/commands/box)

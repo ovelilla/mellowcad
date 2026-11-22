@@ -331,6 +331,8 @@ const LABEL_END: Record<AppLocale, string> = {
   ko: ":",
   // Chinese ends a label with a full-width colon (docs/i18n/zh-CN.md).
   "zh-CN": "\uff1a",
+  // So does Traditional Chinese (docs/i18n/zh-TW.md).
+  "zh-TW": "\uff1a",
 }
 
 /** A list item's bold label, ended as its language ends one. */
@@ -364,6 +366,9 @@ const QUOTES: Record<AppLocale, readonly [string, string]> = {
   // Simplified Chinese quotes in curly double quotes, full-width in its
   // faces: “…” (docs/i18n/zh-CN.md).
   "zh-CN": ["\u201c", "\u201d"],
+  // Traditional Chinese quotes as Taiwan does, in corner brackets:
+  // 「…」 (docs/i18n/zh-TW.md).
+  "zh-TW": ["\u300c", "\u300d"],
 }
 
 /**

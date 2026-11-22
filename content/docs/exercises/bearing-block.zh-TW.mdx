@@ -1,0 +1,66 @@
+---
+title: "CAD 3D 練習圖：軸承座"
+metaTitle: "AutoCAD 3D 建模練習題（進階）：軸承座"
+description: "AutoCAD 3D 實體練習：擠出軸承座並聯集，再以圓柱差集出軸孔與兩個螺栓孔，附逐步解說。免費線上練習 3D 實體。"
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+建立此軸承座的模型，單位為公釐：底座 100 × 60，四角圓角半徑 10，厚 12；中央立著直徑 40、高 40 的凸轂；直徑 20 的軸孔貫穿凸轂，兩個直徑 10 的螺栓孔貫穿底座，間距 76。底座與凸轂由各自的輪廓擠出，再聯集為一個實體；軸孔與螺栓孔則是從中差集掉的圓柱。
+
+- **練習題：** 進階 · 機械 · 3D 實體
+- **指令：** [`RECTANG`](/docs/commands/rectang), [`CIRCLE`](/docs/commands/circle), [`EXTRUDE`](/docs/commands/extrude), [`UNION`](/docs/commands/union), [`CYLINDER`](/docs/commands/cylinder), [`COPY`](/docs/commands/copy), [`SUBTRACT`](/docs/commands/subtract), [`-VIEW`](/docs/commands#-view), [`VSCURRENT`](/docs/commands/vscurrent), [`ZOOM`](/docs/commands/zoom)
+- **在編輯器中：** [連同圖面開啟](/zh-tw/draw?drawing=bearing-block)，已標註的圖面就在您繪圖處的旁邊
+
+## 圖面 [#drawing]
+
+<Session name="exercises/bearing-block" caption="軸承座的平面圖，100 × 60，凸轂、軸孔與螺栓孔皆已標註。" />
+
+<Session name="exercises/bearing-block/model" caption="軸承座實體，從東南方以「概念」視覺型式檢視。" />
+
+## 逐步解答 [#steps]
+
+引擎繪製每個步驟，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。在指令的第一點之後，輸入的點會從上一點量起，如同動態輸入的量法，歷程中以 @ 寫出；\# 則從原點量起。
+
+### 1. 繪製平面圖 [#plan]
+
+在「輪廓線」圖層上，以 [`RECTANG`](/docs/commands/rectang)（矩形）指令，`Fillet` 為 `10`，從 `0,0` 畫到 `100,60`；再於其中心點 `50,30` 畫一個 `Diameter` 為 `40` 的圓。
+
+<Session name="exercises/bearing-block/plan" caption="1. 繪製平面圖" />
+
+### 2. 擠出底座與凸轂 [#extrude]
+
+以 [`EXTRUDE`](/docs/commands/extrude)（擠出）指令將輪廓擠出 `12` 高，再將圓擠出 `40` 高：得到兩個實體。
+
+<Session name="exercises/bearing-block/extrude" caption="2. 擠出底座與凸轂" />
+
+### 3. 聯集 [#union]
+
+[`UNION`](/docs/commands/union)（聯集）指令：選取兩者後按 Enter。兩者成為一個實體。
+
+<Session name="exercises/bearing-block/union" caption="3. 聯集" />
+
+### 4. 繪製圓柱 [#holes]
+
+以 [`CYLINDER`](/docs/commands/cylinder)（圓柱）指令將軸孔與一個螺栓孔畫成圓柱：軸孔位於 `50,30`，`Diameter` `20`，高 `40`；螺栓孔位於 `12,30`，直徑 `10`，高 `12`。再以 [`COPY`](/docs/commands/copy)（複製）指令將螺栓孔從 `12,30` 複製到相距 `76,0` 處。
+
+<Session name="exercises/bearing-block/holes" caption="4. 繪製圓柱" />
+
+### 5. 差集 [#subtract]
+
+[`SUBTRACT`](/docs/commands/subtract)（差集）指令：選取塊體並按 Enter，再選取三個圓柱並按 Enter。軸孔與螺栓孔即貫穿實體。
+
+<Session name="exercises/bearing-block/subtract" caption="5. 差集" />
+
+### 6. 轉動視圖 [#view]
+
+使用 `-VIEW` 指令的 `SEIso`、[`VSCURRENT`](/docs/commands/vscurrent)（視覺型式）指令的 `Conceptual`，再以 [`ZOOM`](/docs/commands/zoom)（縮放）指令的 `Extents` 與 `0.8x` 將實體置於畫面中。
+
+<Session name="exercises/bearing-block/view" caption="6. 轉動視圖" />
+
+## 更多練習題 [#more]
+
+- [CAD 練習圖：墊片](/docs/exercises/gasket): 初級 · 機械 · 2D
+- [CAD 練習圖：L 型支架](/docs/exercises/l-bracket): 初級 · 機械 · 2D
+- [CAD 練習圖：樓梯平面圖](/docs/exercises/stairs): 初級 · 建築 · 2D
+- [AutoCAD 練習題](/docs/exercises)

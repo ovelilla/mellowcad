@@ -1,0 +1,66 @@
+---
+title: "AutoCAD POLYGON（多邊形）指令"
+metaTitle: "CAD 多邊形指令（POLYGON）：內接與外切"
+description: "AutoCAD POLYGON（多邊形，POL）依提示逐步繪製正多邊形：邊的數目、中心點、內接或外切，或以邊繪製。可在瀏覽器中免費試用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"CAD 多邊形的快捷鍵是什麼？","answer":"輸入 POL，再按 Enter 或空白鍵。也可以輸入完整的指令名稱，在任何語言版本的 AutoCAD 中都可以使用 _POLYGON。"},{"question":"AutoCAD 如何畫六邊形？","answer":"執行 POLYGON，輸入邊的數目 6，指定中心點，選擇 Inscribed 或 Circumscribed，再輸入半徑。外切的六邊形，其對邊距離是輸入半徑的兩倍。"},{"question":"內接和外切有什麼不同？","answer":"使用 Inscribed 時，多邊形的角點接觸圓，因此多邊形在圓內。使用 Circumscribed 時，多邊形的邊接觸圓，因此圓在多邊形內。半徑相同時，外切的多邊形較大。"},{"question":"如何依指定的邊長繪製多邊形？","answer":"選擇 Edge，指定其中一邊的兩個端點：0,0，再輸入相對於它的長度，例如 40,0。其他各邊會以逆時鐘方向依序建立。"}]
+---
+
+POLYGON（多邊形）指令繪製正多邊形，各邊與各角都相等，為一條封閉的聚合線。指令先詢問邊的數目（3 到 1024），接著詢問中心點，以及多邊形內接於圓或外切於圓，再詢問該圓的半徑。也可以使用「邊」，以其中一邊為基礎繪製。邊的數目以及內接或外切的選擇，會成為該圖面中下一次 POLYGON 的預設值。以數值輸入半徑時，底邊保持水平；以點指定半徑時（點選或輸入），則同時決定多邊形的大小和旋轉角度。指定半徑時，多邊形會隨游標移動，並從中心點拉出一條琥珀色虛線。
+
+- **指令：** `POLYGON`
+- **快捷鍵：** `POL`
+- **面板：** [繪製](/docs/commands#draw)
+- **試試看：** [開啟編輯器](/zh-tw/draw)，輸入 `POL` 並按 Enter。
+
+## 在指令行中 [#session]
+
+引擎繪製它，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。
+
+<Session name="polygon" caption="兩個半徑 30 的圓，一個六邊形內接於其中一個，另一個外切於另一個，還有一個以邊繪製的五邊形。" />
+
+## 選項 [#options]
+
+### `Edge` (`E`) [#edge]
+
+取代中心點：指定其中一邊的兩個端點，多邊形會從這一邊以逆時鐘方向建立。
+
+### `Inscribed in circle` (`I`) [#inscribed]
+
+頂點位於圓上：半徑從中心點量到頂點。為預設值。
+
+### `Circumscribed about circle` (`C`) [#circumscribed]
+
+各邊在其中點與圓相切：半徑從中心點量到邊的中點。
+
+## 尚未支援的功能 [#missing]
+
+旋轉的鎖點：以數值輸入半徑時，底邊一律與 UCS 保持水平，AutoCAD 則會依鎖點角度 SNAPANG 旋轉。
+
+[功能與尚缺項目的詳細說明（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#polygon--pol--es-poligono--pg--pt-br-poligono--pol--fr-polygone--pg--it-poligono--pg--de-polygon--pg--ru-мн-угол--мн--pl-wielobok--wbo--cs-polygon--pol--hu-poligon--pol)
+
+## 常見問題 [#questions]
+
+### CAD 多邊形的快捷鍵是什麼？
+
+輸入 `POL`，再按 Enter 或空白鍵。也可以輸入完整的指令名稱，在任何語言版本的 AutoCAD 中都可以使用 `_POLYGON`。
+
+### AutoCAD 如何畫六邊形？
+
+執行 POLYGON，輸入邊的數目 `6`，指定中心點，選擇 `Inscribed` 或 `Circumscribed`，再輸入半徑。外切的六邊形，其對邊距離是輸入半徑的兩倍。
+
+### 內接和外切有什麼不同？
+
+使用 `Inscribed` 時，多邊形的角點接觸圓，因此多邊形在圓內。使用 `Circumscribed` 時，多邊形的邊接觸圓，因此圓在多邊形內。半徑相同時，外切的多邊形較大。
+
+### 如何依指定的邊長繪製多邊形？
+
+選擇 `Edge`，指定其中一邊的兩個端點：`0,0`，再輸入相對於它的長度，例如 `40,0`。其他各邊會以逆時鐘方向依序建立。
+
+## 相關指令 [#related]
+
+- [AutoCAD RECTANG（矩形）指令](/docs/commands/rectang)
+- [AutoCAD CIRCLE（圓）指令](/docs/commands/circle)
+- [AutoCAD PLINE（聚合線）指令](/docs/commands/pline)
+- [AutoCAD EXPLODE（分解）指令](/docs/commands/explode)

@@ -1,0 +1,58 @@
+---
+title: "CAD 練習圖：墊片"
+metaTitle: "AutoCAD 入門練習題：墊片"
+description: "AutoCAD 入門練習：繪製圓角板、中心孔、由一個孔複製出的 4 個孔，以及中心線與標註，附逐步解說。免費線上練習。"
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+繪製此墊片，單位為公釐：一塊 120 × 80 的板，四角以半徑 10 倒圓角，中央有直徑 40 的中心孔，另有 4 個直徑 10 的孔，其中心距邊緣 12，並繪製中心孔的中心線與標註。全部以鍵盤輸入：指令的第一點就是您輸入的位置，之後的每一點都從上一點量起。輪廓、中心線與標註各放在各自的圖層上。
+
+- **練習題：** 初級 · 機械 · 2D
+- **指令：** [`RECTANG`](/docs/commands/rectang), [`CIRCLE`](/docs/commands/circle), [`COPY`](/docs/commands/copy), [`LINE`](/docs/commands/line), [`DIMLINEAR`](/docs/commands/dimlinear), [`DIMDIAMETER`](/docs/commands/dimdiameter)
+- **在編輯器中：** [連同圖面開啟](/zh-tw/draw?drawing=gasket)，已標註的圖面就在您繪圖處的旁邊
+
+## 圖面 [#drawing]
+
+<Session name="exercises/gasket" caption="120 × 80 的墊片，含標註。" />
+
+## 逐步解答 [#steps]
+
+引擎繪製每個步驟，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。在指令的第一點之後，輸入的點會從上一點量起，如同動態輸入的量法，歷程中以 @ 寫出；\# 則從原點量起。
+
+### 1. 繪製輪廓 [#outline]
+
+在「圖層控制」中將「輪廓線」設為目前圖層。[`RECTANG`](/docs/commands/rectang)（矩形）指令可一次畫出整塊板：選擇 `Fillet`，輸入半徑 `10`，再輸入第一個角點 `0,0`，以及從第一點量起的另一個角點 `120,80`。
+
+<Session name="exercises/gasket/outline" caption="1. 繪製輪廓" />
+
+### 2. 繪製中心孔 [#bore]
+
+以 [`CIRCLE`](/docs/commands/circle)（圓）指令於板的中央 `60,40`：選擇 `Diameter`，輸入 `40`。
+
+<Session name="exercises/gasket/bore" caption="2. 繪製中心孔" />
+
+### 3. 複製孔 [#holes]
+
+先畫一個孔，即位於 `12,12`、`Diameter` 為 `10` 的圓，再以 [`COPY`](/docs/commands/copy)（複製）指令複製：選取該圓，按 Enter，以其中心點 `12,12` 作為基準點，再輸入每個複本從該點起的位置：`96,0`，接著 `96,56`，再來 `0,56`。按 Enter 結束複製。
+
+<Session name="exercises/gasket/holes" caption="3. 複製孔" />
+
+### 4. 繪製中心線 [#centreLines]
+
+將「中心線」設為目前圖層。以 [`LINE`](/docs/commands/line)（線）指令畫兩條線，交於中心孔的中心點，並超出孔緣 6：豎線從 `60,14` 向上 `0,52`；橫線從 `34,40` 向右 `52,0`。每條線都按 Enter 結束。
+
+<Session name="exercises/gasket/centreLines" caption="4. 繪製中心線" />
+
+### 5. 標註 [#dimensions]
+
+將「標註」設為目前圖層。[`DIMLINEAR`](/docs/commands/dimlinear)（線性）指令先取兩點，再指定標註線的位置：長度從 `0,10` 到相距 `120,0` 處，置於下方；高度標在右側；孔的間距 96 與 56。在其提示下輸入的點不會碰到任何物件，因此這些標註都建立為非關聯式，指令行也會如此說明。[`DIMDIAMETER`](/docs/commands/dimdiameter)（直徑）指令選取一個圓並放置其直徑：先是中心孔的，再是一個孔的。
+
+<Session name="exercises/gasket/dimensions" caption="5. 標註" />
+
+## 更多練習題 [#more]
+
+- [CAD 練習圖：L 型支架](/docs/exercises/l-bracket): 初級 · 機械 · 2D
+- [CAD 練習圖：樓梯平面圖](/docs/exercises/stairs): 初級 · 建築 · 2D
+- [CAD 3D 練習圖：安裝板](/docs/exercises/mounting-plate): 初級 · 機械 · 3D 實體
+- [AutoCAD 練習題](/docs/exercises)

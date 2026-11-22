@@ -142,7 +142,7 @@ const MONO_FAMILY = "Geist Mono, Geist Mono Cyrillic, Geist Mono Letters"
 
 /**
  * A CJK card's characters, behind Inter and Geist Mono: Satori draws no
- * system face, so Noto Sans JP, KR or SC 600 cut to that language's cards'
+ * system face, so Noto Sans JP, KR, SC or TC 600 cut to that language's cards'
  * characters (assets/fonts/README.md; `lib/og.test.ts` holds each cut to its
  * copy).
  */
@@ -152,6 +152,10 @@ export const CJK_CARD_FONTS = {
   "simplified-chinese": {
     file: "noto-sans-sc-card-600.woff",
     family: "Noto Sans SC",
+  },
+  "traditional-chinese": {
+    file: "noto-sans-tc-card-600.woff",
+    family: "Noto Sans TC",
   },
 } as const
 

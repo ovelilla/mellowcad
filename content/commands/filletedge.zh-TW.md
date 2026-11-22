@@ -1,0 +1,47 @@
+---
+title: "AutoCAD FILLETEDGE（圓角邊）指令"
+metaTitle: "CAD 圓角邊（FILLETEDGE）：3D 實體邊倒圓角"
+description: "AutoCAD 圓角邊指令 FILLETEDGE 如何將 3D 實體的邊倒圓角，逐一提示說明：邊、鏈、迴路、半徑與箭頭掣點。可在瀏覽器中免費線上試用。"
+figure: "從東南方檢視的方塊：以半徑 8 的 FILLETEDGE 將右側兩條垂直邊倒成圓角。"
+sourceHash: "403a055efb24"
+---
+
+FILLETEDGE（圓角邊）指令將 3D 實體的邊倒成圓角。指令先顯示目前的半徑，再要求選取邊，直到按 Enter：按一下可選取游標下的邊，游標經過時邊會亮顯；輸入一點則選取通過該點的邊。選取邊的同時，實體會以完成後的樣子繪製，圓角已在其位置上。按 Enter 會計算邊的數目，並要求再按一次 Enter 接受，或變更半徑；這次按 Enter 就會建立圓角。只能選取同一個實體的邊：另一個實體的邊會顯示 <Message id="filletMultipleBodies" />，同一條邊選取兩次則顯示 <Message id="edgeAlreadyPicked" />。
+
+兩個平面之間的直邊會變成四分之一個圓柱，孔或邊緣的圓形邊會變成四分之一個圓環；在角點相接的圓角會接合，三個圓角相接時以一部分圓球連接。半徑會儲存在圖面中，下次再提供。實體保留其圖層與性質，但不再保留其建立方式：方塊不再是方塊。整個指令是一個退回步驟。MellowCAD 的 3D 僅有實體，而且仍不完整。
+
+## Options
+
+### Chain
+
+選取所點選的邊，以及與其相切、一條接一條的每條邊：例如垂直邊已倒圓角的塊體頂部周圍的八條邊。沒有相切的邊時，會顯示 <Message id="noTangentChainEdges" />，並只選取所點選的邊。<Keyword id="Edge" /> 可回到逐一選取邊。
+
+### Loop
+
+選取一個面周圍的所有邊：點選一條邊，然後以 <Keyword id="Accept" /> 接受顯示的迴路，或以 <Keyword id="Next" /> 改選該邊所屬另一個面的迴路。
+
+### Radius
+
+要求輸入半徑，可直接輸入或以兩點之間的距離指定；0 或更小的值會顯示 <Message id="radiusTooSmall" />。<Keyword id="Expression" /> 以公式指定半徑。在接受提示下，此選項會變更所顯示圓角的半徑。第一個圓角中間的箭頭掣點可拖曳設定半徑：按一下掣點，移動，再按一下；<Keyword id="eXit" /> 或 Esc 則保持原狀。
+
+## Missing
+
+兩個不同半徑相接的圓角，以及結束於曲面上的圓角。比旁邊的面還寬的圓角，AutoCAD 會使其越過下一條邊，此處則因塑型錯誤而失敗。曲面旁的直邊、偏離其圓柱軸的圓形邊，以及圓球、圓環、擠出實體或迴轉實體的任何邊，也同樣失敗。某些圓角在不同斜度的邊上相接的角點。第一個圓角以外的邊上的箭頭掣點，以及從掣點到游標的線。以 <Command id="FILLET" /> 點選實體的邊，AutoCAD 也允許這樣做。選取時以網面繪製圓角，以及曲面。
+
+## Questions
+
+### 如何在 AutoCAD 中將 3D 實體的邊倒圓角？
+
+執行 FILLETEDGE，選擇 <Keyword id="Radius" /> 並輸入半徑，點選邊，然後按兩次 Enter：一次結束選取，一次接受。範例中的 `8` 將方塊的兩條邊倒成圓角。
+
+### 如何將一個面的所有邊倒圓角？
+
+選擇 <Keyword id="Loop" /> 並點選該面的一條邊，然後選擇 <Keyword id="Accept" />；如果顯示的迴路屬於另一個面，請選擇 <Keyword id="Next" />。若是已相互平順連接的邊，例如已倒圓角的塊體頂部，<Keyword id="Chain" /> 會將其全部選取。
+
+### 為什麼 FILLET 對 3D 實體沒有作用？
+
+AutoCAD 的 <Command id="FILLET" /> 也能將實體的邊倒圓角，但 MellowCAD 的 FILLET 目前還不行：請使用 FILLETEDGE，倒角則使用 <Command id="CHAMFEREDGE" />。
+
+### 如何變更圓角半徑？
+
+在點選之前或在接受提示下選擇 <Keyword id="Radius" />，或拖曳第一個圓角中間的箭頭掣點。上次的半徑會在下次提供。

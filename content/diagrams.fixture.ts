@@ -12,6 +12,7 @@ import hu from "@/messages/hu.json"
 import ja from "@/messages/ja.json"
 import ko from "@/messages/ko.json"
 import zhCN from "@/messages/zh-CN.json"
+import zhTW from "@/messages/zh-TW.json"
 import ptBR from "@/messages/pt-BR.json"
 
 import { DIAGRAMS, type FigureSpec } from "./figures"
@@ -34,6 +35,7 @@ const CATALOGS: Readonly<Record<AppLocale, Catalog>> = {
   ja,
   ko,
   "zh-CN": zhCN,
+  "zh-TW": zhTW,
 }
 
 /** The diagrams as a language's messages word them, keyed `name.locale`. */

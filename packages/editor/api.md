@@ -342,6 +342,13 @@ export { zhCN }
 export declare const zhCN: EditorLocale;
 ```
 
+## ./locales/zh-TW
+
+```ts
+export { zhTW }
+export declare const zhTW: EditorLocale;
+```
+
 ## ./styles.css
 
 Scoped to `[data-mellowcad-editor]`: its rules match the editor's root and what is inside it, or an element by one of its classes.

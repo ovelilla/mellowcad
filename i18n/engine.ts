@@ -46,6 +46,10 @@ const ENGINE_LOCALES: Partial<Record<AppLocale, () => Promise<EngineLocale>>> =
     // (docs/i18n/zh-CN.md).
     "zh-CN": () =>
       import("@mellowcad/engine/locales/zh-CN").then((module) => module.zhCN),
+    // WHY interface only: Japanese's reason, Taiwanese AutoCAD's too
+    // (docs/i18n/zh-TW.md).
+    "zh-TW": () =>
+      import("@mellowcad/engine/locales/zh-TW").then((module) => module.zhTW),
   }
 
 export async function loadEngineLocale(

@@ -227,9 +227,9 @@ html:not(:lang(pl)) .font-mono:lang(pl) {
    start (strict) and its headlines whole by phrase where Chrome can. Korean
    (docs/i18n/ko.md) takes Japanese's but breaks between words, as it spaces
    them: a browser would break Hangul between any two syllables (keep-all).
-   Simplified Chinese (docs/i18n/zh-CN.md) takes Japanese's, breaking between
-   any two characters as Chinese does, but no phrase rule: Chrome's
-   `auto-phrase` segments Japanese only. */
+   Chinese, Simplified and Traditional (docs/i18n/zh-CN.md, zh-TW.md), takes
+   Japanese's, breaking between any two characters as Chinese does, but no
+   phrase rule: Chrome's `auto-phrase` segments Japanese only. */
 :lang(ar),
 :lang(ja),
 :lang(ko),

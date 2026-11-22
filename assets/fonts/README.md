@@ -43,3 +43,12 @@ Noto Sans SC (Google Fonts' `ofl/notosanssc/NotoSansSC[wght].ttf`, SIL OFL 1.1,
 `Og.tagline`, `Og.drawTitle` and `Hero.tagline`, the weight axis pinned at 600, as WOFF: 5,156
 bytes for 18 characters, the full-width full stop among them. `lib/og.test.ts` fails when that
 copy gains one the cut lacks.
+
+**The Traditional Chinese cards' characters** (`noto-sans-tc-card-600.woff`): as Simplified
+Chinese's, the pages take the system's Traditional Chinese face (docs/i18n/zh-TW.md) and the card
+alone has one: Noto Sans TC (Google Fonts' `ofl/notosanstc/NotoSansTC[wght].ttf`, SHA-256
+`864727d210d54f2537bbe23b3a839436c3992af72de9322af5270897246bd44f`, SIL OFL 1.1,
+`OFL-NotoSansTC.txt`) cut with `subset-font` 2.9.0 to every character above U+024F of the
+Traditional Chinese `Og.tagline`, `Og.drawTitle` and `Hero.tagline`, the weight axis pinned at
+600, as WOFF: 5,176 bytes for 18 characters. Never Simplified Chinese's face: it draws a shared
+character in the mainland's form. `lib/og.test.ts` fails when that copy gains one the cut lacks.

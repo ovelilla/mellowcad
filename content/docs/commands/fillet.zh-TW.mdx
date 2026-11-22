@@ -1,0 +1,78 @@
+---
+title: "AutoCAD FILLET（圓角）指令"
+metaTitle: "CAD 圓角指令（FILLET）用法與快捷鍵 F"
+description: "AutoCAD 圓角指令 FILLET（F）逐一提示說明：半徑、兩條線、聚合線的角、半徑 0 與多重。可在瀏覽器中免費線上試用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD 圓角指令的快捷鍵是什麼？","answer":"輸入 F，再按 Enter 或空白鍵。輸入完整名稱也可以，而 _FILLET 在任何語言版本的 AutoCAD 中都適用。"},{"question":"如何將兩條線倒圓角？","answer":"選擇 Radius 並輸入半徑，再在要保留的一側點選每條線。不相交的線會延伸至弧，相交的線則修剪至弧。兩條平行線無論半徑為何，都以半圓連接。線與聚合線的線段會接合為一條聚合線。"},{"question":"圓角半徑設為 0 有什麼作用？","answer":"產生尖角：每條線修剪或延伸到彼此相交為止，不繪製弧。若要產生一個尖角而不變更半徑，請在點選第二個物件時按住 Shift 鍵。"},{"question":"CAD 圓角指令沒有作用怎麼辦？","answer":"指令行會顯示原因。「Fillet radius is too large」 表示弧在兩線之間放不下；「Lines belonging to polylines must be consecutive or separated by one segment」 表示同一條聚合線的兩個線段相隔太遠；文字、圖塊、標註與填充線會被拒絕，位於不同高度的物件會顯示不共平面，鎖住圖層上的物件則不會被選取。"},{"question":"如何將 3D 實體的邊倒圓角？","answer":"執行 FILLETEDGE：如果半徑不是所顯示的值，請選擇 Radius，點選實體的邊，然後按 Enter，再按一次 Enter 接受圓角。此指令適用於 3D 實體，而此處的 3D 實體仍不完整。"}]
+---
+
+FILLET（圓角）指令以您指定半徑的弧將兩個物件之間的角倒圓，並將每個物件修剪或延伸至該弧。第一行顯示模式與目前的半徑；接著依序點選第一個物件與第二個物件，每次都點在要保留的一側，指令隨即結束。可處理的物件有線、弧、圓、橢圓、雲形線與 2D 聚合線的線段。兩條線不必相交：與 AutoCAD 一樣，會延伸至弧。半徑為 0，或點選第二個物件時按住 Shift 鍵，則改為產生尖角。
+
+- **指令：** `FILLET`
+- **快捷鍵：** `F`
+- **面板：** [修改](/docs/commands#modify)
+- **試試看：** [開啟編輯器](/zh-tw/draw)，輸入 `F` 並按 Enter。
+
+## 在指令行中 [#session]
+
+引擎繪製它，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。
+
+<Session name="fillet" caption="四條線，再以半徑 15 與多重選項：兩個角倒成圓角，兩個角保持尖角。" />
+
+## 選項 [#options]
+
+### `Undo` (`U`) [#undo]
+
+退回此次 FILLET 中最後一個圓角、`Polyline` 或指定的半徑，一次一個。沒有可退回的項目時，會顯示 `Command has been completely undone.`
+
+### `Polyline` (`P`) [#polyline]
+
+要求選取一條 2D 聚合線，並將其兩線段相接的每個角都倒成圓角，一次完成，然後顯示倒了幾個圓角，以及略過了幾個（平行或太短而容不下該半徑）。以 [`RECTANG`](/docs/commands/rectang) 繪製的矩形就是這種聚合線。
+
+### `Radius` (`R`) [#radius]
+
+要求輸入半徑，第二個提示也提供此選項。半徑屬於圖面（FILLETRAD）：下次執行 FILLET 時沿用，並隨圖面儲存。0 會產生尖角；負的半徑會被拒絕。
+
+### `Multiple` (`M`) [#multiple]
+
+每次倒圓角後再次要求選取第一個物件，因此不必重新啟動指令就能一個接一個倒圓角，直到按 Enter。
+
+## 尚未支援的功能 [#missing]
+
+修剪：物件一律修剪或延伸至弧，與 AutoCAD 的預設值 TRIMMODE 1 相同；不提供不修剪。弧不會採用第二個物件的線型比例，因為此處沒有物件擁有自己的線型比例。點選之前，工具提示顯示的是提示，而非一組物件為何無法倒圓角，鎖住圖層上的物件也不會以鎖頭圖示標示。少數罕見的橢圓或雲形線組合結果不同：半徑 0 時封閉的雲形線與線、只與橢圓偏移相切的弧，以及位於傾斜平面上的這類組合。
+
+[功能與尚缺項目的詳細說明（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#fillet--f--es-empalme--mp--pt-br-concord--cnc--fr-raccord--rd--it-raccordo--ra--de-abrunden--ar--ru-сопряжение--соп--pl-zaokrągl--za--cs-zaobli--za--hu-lekerekít--lk)
+
+## 常見問題 [#questions]
+
+### AutoCAD 圓角指令的快捷鍵是什麼？
+
+輸入 `F`，再按 Enter 或空白鍵。輸入完整名稱也可以，而 `_FILLET` 在任何語言版本的 AutoCAD 中都適用。
+
+### 如何將兩條線倒圓角？
+
+選擇 `Radius` 並輸入半徑，再在要保留的一側點選每條線。不相交的線會延伸至弧，相交的線則修剪至弧。兩條平行線無論半徑為何，都以半圓連接。線與聚合線的線段會接合為一條聚合線。
+
+### 圓角半徑設為 0 有什麼作用？
+
+產生尖角：每條線修剪或延伸到彼此相交為止，不繪製弧。若要產生一個尖角而不變更半徑，請在點選第二個物件時按住 Shift 鍵。
+
+### CAD 圓角指令沒有作用怎麼辦？
+
+指令行會顯示原因。`Fillet radius is too large` 表示弧在兩線之間放不下；`Lines belonging to polylines must be consecutive or separated by one segment` 表示同一條聚合線的兩個線段相隔太遠；文字、圖塊、標註與填充線會被拒絕，位於不同高度的物件會顯示不共平面，鎖住圖層上的物件則不會被選取。
+
+### 如何將 3D 實體的邊倒圓角？
+
+執行 [`FILLETEDGE`](/docs/commands/filletedge)：如果半徑不是所顯示的值，請選擇 `Radius`，點選實體的邊，然後按 Enter，再按一次 Enter 接受圓角。此指令適用於 3D 實體，而此處的 3D 實體仍不完整。
+
+## 練習 [#practice]
+
+- [CAD 練習圖：L 型支架](/docs/exercises/l-bracket)
+
+## 相關指令 [#related]
+
+- [AutoCAD CHAMFER（倒角）指令](/docs/commands/chamfer)
+- [AutoCAD FILLETEDGE（圓角邊）指令](/docs/commands/filletedge)
+- [AutoCAD TRIM（修剪）指令](/docs/commands/trim)
+- [AutoCAD OFFSET（偏移）指令](/docs/commands/offset)

@@ -1,0 +1,58 @@
+---
+title: "CAD 練習圖：以切線連接的連桿"
+metaTitle: "AutoCAD 進階練習題：連桿與切線"
+description: "AutoCAD 進階練習：以「相切點」物件鎖點畫出與兩個凸轂都相切的線，修剪其間的弧並加上標註，附逐步解說。免費線上練習。"
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+繪製此連桿，單位為公釐：兩個相距 90 的凸轂，半徑 20 與 12，內孔半徑 10 與 6，以同時與兩者相切的線連接，並修剪掉兩線之間的弧。切線的兩端都使用「相切點」物件鎖點；接著 [`TRIM`](/docs/commands/trim)（修剪）指令將各凸轂的圓變成弧。
+
+- **練習題：** 進階 · 機械 · 2D
+- **指令：** [`CIRCLE`](/docs/commands/circle), [`LINE`](/docs/commands/line), [`TRIM`](/docs/commands/trim), [`DIMLINEAR`](/docs/commands/dimlinear), [`DIMRADIUS`](/docs/commands/dimradius), [`DIMDIAMETER`](/docs/commands/dimdiameter)
+- **在編輯器中：** [連同圖面開啟](/zh-tw/draw?drawing=link)，已標註的圖面就在您繪圖處的旁邊
+
+## 圖面 [#drawing]
+
+<Session name="exercises/link" caption="兩個相距 90 的凸轂以切線連接的連桿，含標註。" />
+
+## 逐步解答 [#steps]
+
+引擎繪製每個步驟，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。在指令的第一點之後，輸入的點會從上一點量起，如同動態輸入的量法，歷程中以 @ 寫出；\# 則從原點量起。
+
+### 1. 繪製凸轂 [#bosses]
+
+在「輪廓線」圖層上，以 [`CIRCLE`](/docs/commands/circle)（圓）指令畫四個圓，各以半徑指定：`0,0` 處為 `20` 與 `10`，`90,0` 處為 `12` 與 `6`。
+
+<Session name="exercises/link/bosses" caption="1. 繪製凸轂" />
+
+### 2. 繪製切線 [#tangents]
+
+執行 [`LINE`](/docs/commands/line)（線）指令，輸入 `_TAN`，即僅作用於一點的「相切點」物件鎖點，再點選大圓靠近頂部處；再次輸入 `_TAN`，點選小圓靠近頂部處。這條線與兩圓都相切。底部也同樣處理。
+
+<Session name="exercises/link/tangents" caption="2. 繪製切線" />
+
+### 3. 修剪弧 [#trim]
+
+[`TRIM`](/docs/commands/trim) 指令：在兩條線之間、面向另一凸轂的一側點選各凸轂。內側的弧即被移除，每個圓都變成弧。
+
+<Session name="exercises/link/trim" caption="3. 修剪弧" />
+
+### 4. 繪製中心線 [#centreLines]
+
+在「中心線」圖層上，畫出通過兩個中心點的軸線，以及橫越各凸轂的線。
+
+<Session name="exercises/link/centreLines" caption="4. 繪製中心線" />
+
+### 5. 標註 [#dimensions]
+
+在「標註」圖層上，以 [`DIMLINEAR`](/docs/commands/dimlinear)（線性）指令標註中心點之間的距離，以 [`DIMRADIUS`](/docs/commands/dimradius)（半徑）指令標註凸轂的半徑，以 [`DIMDIAMETER`](/docs/commands/dimdiameter)（直徑）指令標註其內孔。
+
+<Session name="exercises/link/dimensions" caption="5. 標註" />
+
+## 更多練習題 [#more]
+
+- [CAD 3D 練習圖：軸承座](/docs/exercises/bearing-block): 進階 · 機械 · 3D 實體
+- [CAD 練習圖：墊片](/docs/exercises/gasket): 初級 · 機械 · 2D
+- [CAD 練習圖：L 型支架](/docs/exercises/l-bracket): 初級 · 機械 · 2D
+- [AutoCAD 練習題](/docs/exercises)

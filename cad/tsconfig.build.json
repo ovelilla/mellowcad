@@ -31,6 +31,7 @@
     "locales/hu.ts",
     "locales/ja.ts",
     "locales/ko.ts",
-    "locales/zh-CN.ts"
+    "locales/zh-CN.ts",
+    "locales/zh-TW.ts"
   ]
 }

@@ -1,0 +1,56 @@
+---
+title: "AutoCAD PTYPE（點型式）指令"
+metaTitle: "CAD 點型式指令（PTYPE）：DDPTYPE、PDMODE"
+description: "AutoCAD PTYPE（點型式，DDPTYPE）用法：「點型式」對話方塊、20 種圖形、點大小、PDMODE 和 PDSIZE，以及點看不見的原因。可免費線上試用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD 的 DDPTYPE 是什麼？","answer":"PTYPE 的指令別名：在任何語言版本的 AutoCAD 中，兩者都會開啟「點型式」對話方塊。"},{"question":"為什麼我的點看不見？","answer":"預設的點型式是一個像素寬的點，通過它的線會將它遮住；PDMODE 為 1 時則完全不顯示。開啟 PTYPE，選擇叉號或圓內的圖形，或輸入 PDMODE 再輸入 3。大小相對於螢幕時，點在任何縮放下都看得見。"},{"question":"如何變更點的大小？","answer":"在 PTYPE 中輸入「點大小」：使用「設定大小相對於螢幕」時為螢幕的百分比，點在縮放時保持大小；使用「設定大小用絕對單位」時為圖面單位，點隨圖面放大縮小。也可以輸入 PDSIZE：負值即為百分比。"},{"question":"可以為單一個點設定專屬的型式嗎？","answer":"不行：在 AutoCAD 中與在此處，點型式都屬於圖面，所有點物件都依循它。若要以不同方式標示位置，請在這些位置插入圖塊；DIVIDE 和 MEASURE 可以放置圖塊，取代點。"}]
+---
+
+PTYPE（點型式）指令開啟「點型式」對話方塊，設定圖面中所有點物件的顯示方式：包括 `POINT` 繪製的點，以及 [`DIVIDE`](/docs/commands/divide) 和 [`MEASURE`](/docs/commands/measure) 留下的點。如同 AutoCAD，`DDPTYPE` 是它的指令別名。點型式屬於圖面，而不屬於某一個點：變更後，所有點會同時改變，並隨圖面一起儲存。按鈕位於「公用程式」工具中的「點位置」旁；加上單引號輸入 `'PTYPE`，可在執行中的指令內開啟。
+
+對話方塊顯示 20 種圖形，排成四列、每列五個，目前的圖形為選取狀態：點、無、加號、叉號和短豎線，接著是將它們分別放在圓內、正方形內，以及同時放在兩者內。其下是「點大小」及其解讀方式：「設定大小相對於螢幕」為視圖高度的百分比，「設定大小用絕對單位」則為圖面單位。預設值為相對於螢幕的 5 %。按「確定」會將選擇寫入，為一個步驟，`U` 即可復原；按「取消」或 Esc 則不做任何變更。大小不是數值或小於 0 時會被拒絕（無效的輸入。），對話方塊保持開啟。
+
+對話方塊寫入的是兩個系統變數，也可以在指令行輸入：PDMODE 為圖形（0 到 4，加 32 為圓，加 64 為正方形，加 96 為兩者：35 是圓內的叉號），PDSIZE 為大小（正值為圖面單位，負值為螢幕的百分比，0 為 5 %）。
+
+- **指令：** `PTYPE`
+- **快捷鍵：** `DDPTYPE`
+- **面板：** [查詢與視圖](/docs/commands#inquiry)
+- **試試看：** [開啟編輯器](/zh-tw/draw)，輸入 `PTYPE` 並按 Enter。
+
+## 在指令行中 [#session]
+
+引擎繪製它，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。
+
+<Session name="ptype" caption="PTYPE 開啟「點型式」對話方塊；按「確定」會寫入 PDMODE 和 PDSIZE，此處輸入 35 和 8，再在板件內繪製三個點。" />
+
+## 尚未支援的功能 [#missing]
+
+對話方塊的「說明」按鈕。相對於螢幕設定大小的點，在縮放時會在螢幕上保持該大小，AutoCAD 則只會保持到下次重生圖面為止。
+
+[功能與尚缺項目的詳細說明（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#ptype--ddptype-pdmode-pdsize--es-tipopunto--ddptype--pt-br-tipop--tip--ddptype--tipopd--fr-typept--ddptype--it-tipop--ddptype--de-ptyp--ru-типточки--диалтточ--pl-ptype--cs-btyp--hu-ptípus--dpptípus)
+
+## 常見問題 [#questions]
+
+### AutoCAD 的 DDPTYPE 是什麼？
+
+PTYPE 的指令別名：在任何語言版本的 AutoCAD 中，兩者都會開啟「點型式」對話方塊。
+
+### 為什麼我的點看不見？
+
+預設的點型式是一個像素寬的點，通過它的線會將它遮住；PDMODE 為 1 時則完全不顯示。開啟 PTYPE，選擇叉號或圓內的圖形，或輸入 PDMODE 再輸入 `3`。大小相對於螢幕時，點在任何縮放下都看得見。
+
+### 如何變更點的大小？
+
+在 PTYPE 中輸入「點大小」：使用「設定大小相對於螢幕」時為螢幕的百分比，點在縮放時保持大小；使用「設定大小用絕對單位」時為圖面單位，點隨圖面放大縮小。也可以輸入 PDSIZE：負值即為百分比。
+
+### 可以為單一個點設定專屬的型式嗎？
+
+不行：在 AutoCAD 中與在此處，點型式都屬於圖面，所有點物件都依循它。若要以不同方式標示位置，請在這些位置插入圖塊；[`DIVIDE`](/docs/commands/divide) 和 [`MEASURE`](/docs/commands/measure) 可以放置圖塊，取代點。
+
+## 相關指令 [#related]
+
+- [POINT](/docs/commands#point): 多個點
+- [AutoCAD DIVIDE（等分）指令](/docs/commands/divide)
+- [AutoCAD MEASURE（等距）指令](/docs/commands/measure)
+- [AutoCAD -OSNAP（物件鎖點）指令](/docs/commands/-osnap)

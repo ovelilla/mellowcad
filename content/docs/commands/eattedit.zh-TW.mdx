@@ -1,0 +1,53 @@
+---
+title: "AutoCAD EATTEDIT（編輯屬性）指令"
+metaTitle: "CAD 圖塊屬性編輯：EATTEDIT 增強型屬性編輯器"
+description: "AutoCAD 的 EATTEDIT 如何在「增強型屬性編輯器」中編輯圖塊的屬性值，以及為什麼按兩下圖塊會執行它。可在瀏覽器中免費試用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD 如何開啟增強型屬性編輯器？","answer":"在含有屬性的圖塊參考上按兩下，或輸入 EATTEDIT 並點選該參考。在任何語言版本的 AutoCAD 中都可以輸入 _EATTEDIT。"},{"question":"AutoCAD 如何變更屬性值？","answer":"在圖塊上按兩下，在屬性的欄位中輸入新值，然後按 Enter。每個參考都保留自己的值：變更其中一個，其他參考保持不變。"},{"question":"為什麼按兩下無法編輯圖塊的屬性？","answer":"EATTEDIT 只為圖塊含有屬性的參考開啟，而建立時沒有屬性的圖塊就沒有屬性：請以 ATTDEF 定義屬性，並在建立圖塊時與其他物件一起選取。若屬性值沒有顯示，請檢查 ATTDISP，它可以隱藏不可見的屬性或所有屬性。"},{"question":"EATTEDIT 與 ATTEDIT 有何不同？","answer":"兩者編輯相同的值。EATTEDIT 以標籤標示每個欄位，如同「增強型屬性編輯器」的「屬性」頁籤；ATTEDIT 則以提示標示，如同「編輯屬性」對話方塊。在 AutoCAD 中，EATTEDIT 還能編輯每個屬性的文字選項與性質。"}]
+---
+
+EATTEDIT（編輯屬性）指令為單一圖塊參考開啟 AutoCAD 的「增強型屬性編輯器」：它會要求選取圖塊，接著為其每個屬性顯示一個欄位，以標籤標示並填入其值，如同編輯器的「屬性」頁籤所列。重新輸入值，按 Tab 鍵在欄位之間移動，按 Enter 即套用，為一個步驟，可用 `U` 退回；按 Esc 則不做任何變更。
+
+與 AutoCAD 相同，在含有屬性的參考上按兩下會執行 EATTEDIT：指令行會寫出該指令，並以按兩下的點做為回應，對話方塊隨即開啟。點選會選取點選框下的物件：圖塊參考以外的物件會被拒絕，沒有屬性的圖塊也是，然後再次詢問。只有點選的參考會變更；圖塊的定義與其他參考保留各自的值。
+
+- **指令：** `EATTEDIT`
+- **面板：** [組織](/docs/commands#organize)
+- **試試看：** [開啟編輯器](/zh-tw/draw)，輸入 `EATTEDIT` 並按 Enter。
+
+## 在指令行中 [#session]
+
+引擎繪製它，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。
+
+<Session name="eattedit" caption="兩張書桌，是含有屬性 NUM 與 PART 之圖塊的參考：EATTEDIT 點選第二張，其 PART 欄位變為 B-200。" />
+
+## 尚未支援的功能 [#missing]
+
+編輯器的「文字選項」頁籤（各屬性文字的文字型式、對正方式、高度、旋轉、寬度係數等）與「性質」頁籤（圖層、線型、顏色、線粗），以及其「選取圖塊」按鈕。ATTIPEDIT（在原處編輯單一屬性）及其 Ctrl+按兩下。參考上位置未鎖住之屬性本身的掣點，以及「性質」選項板中的屬性列。`-ATTEDIT`。
+
+[功能與尚缺項目的詳細說明（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#attedit--ate--ddatte--eattedit--es-atredit--atr--ddatte--editatr--pt-br-editaratrib--eat--eatribd--editaratriba--fr-attedit--ate--ddatte--eattedit--it-editatt--ea--ddatte--eattedit--modifattbl--de-attedit--ae--ddatte--eattedit--ru-атред--атр--диалатр--атредакт--pl-atrred--ate--odatr--ratrred--cs-atredit--ate--diatr--eatredit--hu-attedit--ate--battedit)
+
+## 常見問題 [#questions]
+
+### AutoCAD 如何開啟增強型屬性編輯器？
+
+在含有屬性的圖塊參考上按兩下，或輸入 `EATTEDIT` 並點選該參考。在任何語言版本的 AutoCAD 中都可以輸入 `_EATTEDIT`。
+
+### AutoCAD 如何變更屬性值？
+
+在圖塊上按兩下，在屬性的欄位中輸入新值，然後按 Enter。每個參考都保留自己的值：變更其中一個，其他參考保持不變。
+
+### 為什麼按兩下無法編輯圖塊的屬性？
+
+EATTEDIT 只為圖塊含有屬性的參考開啟，而建立時沒有屬性的圖塊就沒有屬性：請以 [`ATTDEF`](/docs/commands/attdef) 定義屬性，並在建立圖塊時與其他物件一起選取。若屬性值沒有顯示，請檢查 [`ATTDISP`](/docs/commands/attdisp)，它可以隱藏不可見的屬性或所有屬性。
+
+### EATTEDIT 與 ATTEDIT 有何不同？
+
+兩者編輯相同的值。EATTEDIT 以標籤標示每個欄位，如同「增強型屬性編輯器」的「屬性」頁籤；[`ATTEDIT`](/docs/commands/attedit) 則以提示標示，如同「編輯屬性」對話方塊。在 AutoCAD 中，EATTEDIT 還能編輯每個屬性的文字選項與性質。
+
+## 相關指令 [#related]
+
+- [AutoCAD ATTEDIT（編輯屬性）指令](/docs/commands/attedit)
+- [AutoCAD ATTDEF（定義屬性）指令](/docs/commands/attdef)
+- [AutoCAD ATTDISP（顯示屬性）指令](/docs/commands/attdisp)
+- [AutoCAD INSERT（插入圖塊）指令](/docs/commands/insert)

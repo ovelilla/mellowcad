@@ -1,0 +1,76 @@
+---
+title: "AutoCAD TORUS（圓環）指令"
+metaTitle: "CAD 圓環（TORUS）用法與快捷鍵 TOR"
+description: "AutoCAD TORUS（圓環，TOR）依提示順序繪製 3D 實體圓環：中心點、圓環半徑、細管半徑、直徑、三點、兩點與相切、相切、半徑。可以在瀏覽器中免費試用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD 圓環（TORUS）的快捷鍵是什麼？","answer":"TOR。輸入後按 Enter 或空白鍵，再指定中心點、圓環半徑與細管半徑：0,0,0、30 與 8 即可繪製範例中的圓環。"},{"question":"半徑與細管半徑有什麼不同？","answer":"半徑是從圓環的中心點到細管中央的距離；細管半徑則是細管本身的半徑。外徑 76、細管粗 16 的圓環，半徑為 30，細管半徑為 8。"},{"question":"如何繪製橄欖球形的圓環？","answer":"指定負值的半徑，再指定比其絕對值大的細管半徑：-5 與 8 會產生兩端呈尖形的封閉形狀。細管半徑不大於該值時會被拒絕並再次詢問。"},{"question":"為什麼圓環看起來像兩個圓？","answer":"您正從上方的平面視圖觀看。請轉動視圖：按一下 ViewCube 的角、使用 -VIEW 與 SEIso，或使用 3DORBIT。VSCURRENT 搭配 Conceptual 可以為它描影。"}]
+---
+
+TORUS 繪製 3D 實體圓環，也就是甜甜圈形：指定中心點，再指定圓環的半徑（從中心點到細管中央），然後指定細管的半徑。圓環位於 UCS 的 XY 平面上，Z 值與中心點相同。在細管提示指定的點，從指定半徑時的圓環點量起。圓環半徑使用基本型實體共用的預設值，細管半徑則有自己的預設值，按 Enter 即可使用。圓環位於目前的圖層，退回可以一次將它退回。
+
+圓環半徑為負值、細管較寬時，會產生像橄欖球的球體，兩端呈尖形；圓環比細管窄時，則像蘋果。在「2D 線架構」與「隱藏」中，圓環以繞細管與繞圓環的線條繪製，數量由 `ISOLINES` 決定。[`LIST`](/docs/commands/list) 顯示其位置、法線、圓環半徑與細管半徑，「性質」選項板可以輸入這兩個半徑。其掣點可以移動圓環、設定圓環半徑與細管半徑。它是 3D 實體，可以用於 [`UNION`](/docs/commands/union)、[`SUBTRACT`](/docs/commands/subtract) 及 MellowCAD 的其他 3D 指令；MellowCAD 的 3D 只有實體，而且仍不完整。
+
+- **指令：** `TORUS`
+- **快捷鍵：** `TOR`
+- **面板：** [繪製](/docs/commands#draw)
+- **試試看：** [開啟編輯器](/zh-tw/draw)，輸入 `TOR` 並按 Enter。
+
+## 在指令行中 [#session]
+
+引擎繪製它，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。
+
+<Session name="torus" caption="半徑 30、細管半徑 8 的圓環，從東南方以「概念」視覺型式檢視。" />
+
+## 選項 [#options]
+
+### `3P` [#3p]
+
+在中心點提示：要求三點，圓環即為通過這三點、位於其平面上的圓。
+
+### `2P` [#2p]
+
+在中心點提示：要求圓環直徑的兩個端點。
+
+### `Ttr` (`T`) [#ttr]
+
+在中心點提示：在相切點鎖點下點選兩條線、圓或弧，再指定半徑：圓環與兩者相切，高度與它們相同。
+
+### `Diameter` (`D`) [#diameter]
+
+在圓環半徑提示：改為要求圓環的直徑。在細管半徑提示：要求細管的直徑。各自以其預設值的兩倍作為預設值。
+
+### `2Point` (`2P`) [#2point]
+
+在細管半徑提示：要求兩點，細管半徑即為兩點間的距離。
+
+## 尚未支援的功能 [#missing]
+
+圓環的 [`EXPLODE`](/docs/commands/explode)：AutoCAD 會將它轉換成曲面，MellowCAD 沒有曲面，因此會說明無法分解。從熱掣點進行的移動、旋轉、比例與鏡射，以及 AutoCAD 的 `DISPSILH` 所繪製的輪廓線。
+
+[功能與尚缺項目的詳細說明（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#torus--tor--es-toroide--tor--pt-br-toroide--toro--fr-tore--tor--it-toro--tor--de-torus--tor--ru-тор--pl-torus--tor--cs-anuloid--anu--hu-tórusz--tor)
+
+## 常見問題 [#questions]
+
+### AutoCAD 圓環（TORUS）的快捷鍵是什麼？
+
+`TOR`。輸入後按 Enter 或空白鍵，再指定中心點、圓環半徑與細管半徑：`0,0,0`、`30` 與 `8` 即可繪製範例中的圓環。
+
+### 半徑與細管半徑有什麼不同？
+
+半徑是從圓環的中心點到細管中央的距離；細管半徑則是細管本身的半徑。外徑 76、細管粗 16 的圓環，半徑為 30，細管半徑為 8。
+
+### 如何繪製橄欖球形的圓環？
+
+指定負值的半徑，再指定比其絕對值大的細管半徑：`-5` 與 `8` 會產生兩端呈尖形的封閉形狀。細管半徑不大於該值時會被拒絕並再次詢問。
+
+### 為什麼圓環看起來像兩個圓？
+
+您正從上方的平面視圖觀看。請轉動視圖：按一下 ViewCube 的角、使用 `-VIEW` 與 `SEIso`，或使用 [`3DORBIT`](/docs/commands/3dorbit)。[`VSCURRENT`](/docs/commands/vscurrent) 搭配 `Conceptual` 可以為它描影。
+
+## 相關指令 [#related]
+
+- [AutoCAD SPHERE（圓球）指令](/docs/commands/sphere)
+- [AutoCAD CYLINDER（圓柱）指令](/docs/commands/cylinder)
+- [AutoCAD REVOLVE（迴轉）指令](/docs/commands/revolve)
+- [AutoCAD SUBTRACT（差集）指令](/docs/commands/subtract)

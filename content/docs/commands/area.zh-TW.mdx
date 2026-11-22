@@ -1,0 +1,82 @@
+---
+title: "AutoCAD AREA（面積）指令"
+metaTitle: "CAD 面積指令（AREA）：計算、加上與減去面積"
+description: "AutoCAD 面積（AREA、AA）用法：計算所點選各點或物件的面積與周長，並以「加上面積」與「減去面積」累計總和。可在瀏覽器中免費試用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD 面積指令的快捷鍵是什麼？","answer":"AA，再按 Enter 或空白鍵。也可以輸入完整名稱，在任何語言版本的 AutoCAD 中都可輸入 _AREA。"},{"question":"如何計算聚合線或填充線的面積？","answer":"執行 AREA，按 Enter 選擇 Object，再點選封閉的聚合線或填充線：其面積與周長會顯示在指令提示中。填充線的面積不包含其孤立區域。"},{"question":"AutoCAD 如何扣除面積？","answer":"選擇 Add，再選擇 Object，點選外側的形狀並按 Enter；然後選擇 Subtract、Object，並點選每個孔。每點選一個，AREA 就會顯示剩下的總和；按兩次 Enter 結束。"},{"question":"如何得到以平方公尺計的面積？","answer":"AREA 顯示的是平方圖面單位。若以公釐繪圖，請除以 1,000,000：6,000,000 即 6 m²。若以公分繪圖，則除以 10,000。"},{"question":"為什麼 AREA 說物件沒有面積？","answer":"只有封閉的形狀與曲線才有面積：線、單獨的弧、文字與標註都沒有。請點選封閉的聚合線、圓或填充線，或先以 JOIN 將各條線接合成聚合線；也可以依角點描出形狀。"}]
+---
+
+AREA（面積）指令計算封閉形狀的面積與周長，可以依角點描出形狀，也可以點選物件。先指定第一個角點，再指定其餘角點：從第二點起，經由游標封閉的形狀會以半透明綠色填滿，如同 AutoCAD 的著色方式。按 Enter 或選擇 `Total`，會在指令提示中顯示 `Area = …, Perimeter = …` 並結束；在第三個角點之前按 Enter 會被拒絕。使用「加上面積」與「減去面積」可累計多個形狀的總和。數值以圖面的精確度顯示，輸入 `'AREA` 可讀回最後一次計算的面積。
+
+- **指令：** `AREA`
+- **快捷鍵：** `AA`
+- **面板：** [查詢與視圖](/docs/commands#inquiry)
+- **試試看：** [開啟編輯器](/zh-tw/draw)，輸入 `AA` 並按 Enter。
+
+## 在指令行中 [#session]
+
+引擎繪製它，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。
+
+<Session name="area" caption="一塊 100 x 60 的板，有一個半徑 18 的孔：AREA 加上板的面積，減去孔的面積，並顯示剩下的總和。" />
+
+## 選項 [#options]
+
+### `Object` (`O`) [#object]
+
+第一個提示的預設值，因此按 Enter 即選擇它：點選圓、橢圓、封閉的聚合線或雲形線、填充線或面域，AREA 會顯示其面積及周長，若是圓則顯示圓周。開放的聚合線、雲形線或橢圓弧會以一條從一端到另一端的直線封閉，AREA 並會顯示其長度。線或文字沒有面積：顯示 `Selected object does not have an area`，並再次詢問。
+
+### `Add area` (`A`) [#add]
+
+開始累計總和：其後以角點或 `Object` 計算的每個面積都會加入，AREA 會顯示該面積與總和。按 Enter 會結束選取物件或角點，並再次詢問，直到在第一個提示按 Enter 才結束。
+
+### `Subtract area` (`S`) [#subtract]
+
+與上一個選項相同，但從總和中減去每個面積：先算板，再算其上的孔。
+
+### `Undo` (`U`) [#undo]
+
+退回上一個指定的角點。
+
+### `Total` (`T`) [#total]
+
+顯示已指定角點的面積與周長，並結束。
+
+## 尚未支援的功能 [#missing]
+
+MEASUREGEOM，即功能區的「測量」工具，及其半徑、角度、體積與快速：此處功能區的「距離」與「面積」按鈕執行 DIST 與 AREA。AREA 下一點提示中的「弧」與「長度」選項。不在目前 UCS 平面上的角點會以平面方式計算，而 AutoCAD 會以 3D 計算；與 UCS 呈角度的物件，也不會顯示 AutoCAD 的 `Object not parallel with UCS.`。
+
+[功能與尚缺項目的詳細說明（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/inquiry.md#dist--es-dist--di--area--aa--pt-br-dist--di--fr-dist--di--it-dist--di--de-abstand--ab--ru-дист--ди--pl-odleg--odl--cs-vzd--vz--hu-távs--tá)
+
+## 常見問題 [#questions]
+
+### AutoCAD 面積指令的快捷鍵是什麼？
+
+`AA`，再按 Enter 或空白鍵。也可以輸入完整名稱，在任何語言版本的 AutoCAD 中都可輸入 `_AREA`。
+
+### 如何計算聚合線或填充線的面積？
+
+執行 AREA，按 Enter 選擇 `Object`，再點選封閉的聚合線或填充線：其面積與周長會顯示在指令提示中。填充線的面積不包含其孤立區域。
+
+### AutoCAD 如何扣除面積？
+
+選擇 `Add`，再選擇 `Object`，點選外側的形狀並按 Enter；然後選擇 `Subtract`、`Object`，並點選每個孔。每點選一個，AREA 就會顯示剩下的總和；按兩次 Enter 結束。
+
+### 如何得到以平方公尺計的面積？
+
+AREA 顯示的是平方圖面單位。若以公釐繪圖，請除以 1,000,000：6,000,000 即 6 m²。若以公分繪圖，則除以 10,000。
+
+### 為什麼 AREA 說物件沒有面積？
+
+只有封閉的形狀與曲線才有面積：線、單獨的弧、文字與標註都沒有。請點選封閉的聚合線、圓或填充線，或先以 [`JOIN`](/docs/commands/join) 將各條線接合成聚合線；也可以依角點描出形狀。
+
+## 練習 [#practice]
+
+- [CAD 練習圖：土地邊界](/docs/exercises/plot-of-land)
+
+## 相關指令 [#related]
+
+- [AutoCAD DIST（距離）指令](/docs/commands/dist)
+- [AutoCAD LIST（清單）指令](/docs/commands/list)
+- [AutoCAD HATCH（填充線）指令](/docs/commands/hatch)
+- [AutoCAD UNITS（單位）指令](/docs/commands/units)

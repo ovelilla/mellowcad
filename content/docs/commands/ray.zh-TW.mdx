@@ -1,0 +1,53 @@
+---
+title: "AutoCAD RAY（射線）指令"
+metaTitle: "CAD 射線指令（RAY）：繪製無限延伸的線"
+description: "AutoCAD RAY（射線）指令如何繪製從一點開始、朝一個方向無限延伸的建構線，以及如何將它修剪成線。可免費線上試用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD 的 RAY 指令是什麼？","answer":"有起點的建構線：從一點開始，朝一個方向無限延伸。可作為繪圖時的參考，之後修剪成線或刪除。"},{"question":"RAY 有快捷鍵嗎？","answer":"沒有：AutoCAD 沒有為 RAY 定義指令別名，因此請輸入完整的 RAY。在 AutoCAD 中，它位於功能區「繪製」面板的展開部分；在此則位於「繪製」工具中的「作圖線」旁。"},{"question":"如何讓射線停在一條線上？","answer":"修剪它：執行 TRIM，點選超出該線的部分。從起點到該線之間剩下的部分是一個線物件。"},{"question":"射線和線有什麼不同？","answer":"線有兩個端點；射線只有一個端點，即其起點，並無限延伸。在 DXF 檔案中，射線儲存為 RAY，開啟時也仍是射線。"}]
+---
+
+RAY（射線）指令繪製射線：從一點開始、朝一個方向無限延伸的建構線。點選起點，再點選通過點：射線從第一點開始，通過第二點。之後每指定一點，就從同一個起點再畫一條射線，直到按 Enter 結束指令。通過點與起點重合時，會以 `*Invalid*` 拒絕。每條射線都位於目前的圖層，使用目前的顏色、線型和線粗。
+
+無論如何平移或縮放，射線都會橫越整個視圖；如同 AutoCAD，圖面的實際範圍不包括射線。端點鎖點可找到其起點，最近點、互垂點和交點鎖點可沿射線使用。[`TRIM`](/docs/commands/trim) 和 [`BREAK`](/docs/commands/break) 會將含有起點的那一段變成線，[`EXTEND`](/docs/commands/extend) 則可將起點往回延伸到其後方的邊界。[`XLINE`](/docs/commands/xline) 繪製朝兩個方向延伸的線。
+
+- **指令：** `RAY`
+- **面板：** [繪製](/docs/commands#draw)
+- **試試看：** [開啟編輯器](/zh-tw/draw)，輸入 `RAY` 並按 Enter。
+
+## 在指令行中 [#session]
+
+引擎繪製它，並依您輸入的方式寫出其歷程：提示依 AutoCAD 2027 的順序，選項字母也相同。
+
+<Session name="ray" caption="從同一個起點通過三點的射線，每一條都延伸超出視圖的邊緣。" />
+
+## 尚未支援的功能 [#missing]
+
+射線的 LENGTHEN 和 JOIN 尚未與 AutoCAD 比對，其掣點的功能表也是。
+
+[功能與尚缺項目的詳細說明（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#ray--es-rayo--pt-br-raio--fr-demidroite--it-raggio--de-strahl--ru-луч--pl-półprosta--cs-polopřímka--hu-sugár)
+
+## 常見問題 [#questions]
+
+### AutoCAD 的 RAY 指令是什麼？
+
+有起點的建構線：從一點開始，朝一個方向無限延伸。可作為繪圖時的參考，之後修剪成線或刪除。
+
+### RAY 有快捷鍵嗎？
+
+沒有：AutoCAD 沒有為 RAY 定義指令別名，因此請輸入完整的 `RAY`。在 AutoCAD 中，它位於功能區「繪製」面板的展開部分；在此則位於「繪製」工具中的「作圖線」旁。
+
+### 如何讓射線停在一條線上？
+
+修剪它：執行 [`TRIM`](/docs/commands/trim)，點選超出該線的部分。從起點到該線之間剩下的部分是一個線物件。
+
+### 射線和線有什麼不同？
+
+線有兩個端點；射線只有一個端點，即其起點，並無限延伸。在 DXF 檔案中，射線儲存為 RAY，開啟時也仍是射線。
+
+## 相關指令 [#related]
+
+- [AutoCAD XLINE（作圖線）指令](/docs/commands/xline)
+- [AutoCAD LINE（線）指令](/docs/commands/line)
+- [AutoCAD TRIM（修剪）指令](/docs/commands/trim)
+- [AutoCAD EXTEND（延伸）指令](/docs/commands/extend)
