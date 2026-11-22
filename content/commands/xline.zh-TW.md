@@ -22,7 +22,7 @@ XLINE 繪製作圖線：無限長的線，無論平移或縮放多遠，都會�
 
 ### Ang
 
-具有角度的作圖線：輸入角度，或指定兩點，再指定通過點。在角度提示按 Enter 會使用 0。<Keyword id="Reference" /> 從您選取的線（線、作圖線或射線）逆時針量測角度：其他物件會被拒絕，並顯示 <Message id="noUsableObjectSelected" />。
+具有角度的作圖線：輸入角度，或指定兩點，再指定通過點。在角度提示按 Enter 會使用 0。<Keyword id="Reference" /> 從您選取的線（線、作圖線或射線）逆時針測量角度：其他物件會被拒絕，並顯示 <Message id="noUsableObjectSelected" />。
 
 ### Bisect
 

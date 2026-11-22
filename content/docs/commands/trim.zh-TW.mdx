@@ -4,10 +4,10 @@ metaTitle: "CAD 修剪指令（TRIM）用法與快捷鍵 TR"
 description: "AutoCAD TRIM（修剪，TR）依提示順序說明：快速與標準模式、切割邊、籬選與框選，以及按住 Shift 改為延伸。可以在瀏覽器中免費試用。"
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"AutoCAD 修剪（TRIM）的快捷鍵是什麼？","answer":"TR，然後按 Enter 或空白鍵。也可以輸入完整名稱，在任何語言版本的 AutoCAD 中都可以使用 _TRIM。"},{"question":"CAD 修剪為什麼會把整條線刪掉？","answer":"因為 TRIM 處於快速模式，這是 AutoCAD 從 2021 版起的預設值：點選沒有任何邊與之相交的物件會將它刪除。選擇 mOde，再選擇 Standard，TRIM 就會保留該物件並加以說明。"},{"question":"CAD 如何框選一次修剪多條線？","answer":"在空白處點選，再點選第二點：與這道籬選相交的所有物件都會一個步驟修剪完成。或選擇 Crossing，在要去除的部分上方繪製一個窗。"},{"question":"如何用 TRIM 延伸線？","answer":"按住 Shift 鍵，在要延伸的端點附近點選線：它會延伸到最近的邊，與 EXTEND 相同；下一次不按 Shift 點選時，又會恢復修剪。"}]
+faq: [{"question":"AutoCAD 修剪（TRIM）的快捷鍵是什麼？","answer":"TR，然後按 Enter 或空白鍵。也可以輸入完整名稱，在任何語言版本的 AutoCAD 中都可以使用 _TRIM。"},{"question":"CAD 修剪為什麼會把整條線刪掉？","answer":"因為 TRIM 處於快速模式，這是 AutoCAD 從 2021 版起的預設值：點選沒有任何邊與之相交的物件會將它刪除。選擇 mOde，再選擇 Standard，TRIM 就會保留該物件並加以說明。"},{"question":"CAD 如何一次修剪多條線（籬選或框選）？","answer":"在空白處點選，再點選第二點：與這道籬選相交的所有物件都會一個步驟修剪完成。或選擇 Crossing，在要去除的部分上方繪製一個窗。"},{"question":"如何用 TRIM 延伸線？","answer":"按住 Shift 鍵，在要延伸的端點附近點選線：它會延伸到最近的邊，與 EXTEND 相同；下一次不按 Shift 點選時，又會恢復修剪。"}]
 ---
 
-TRIM 將物件修剪到與其他物件相交的位置：點選要去除的部分，它會一直去除到兩側最近的交點。與 AutoCAD 相同，它以快速模式開始：所有物件都是切割邊，沒有任何物件與之相交的物件會整個被刪除。點選時按住 Shift 鍵，則改為將物件延伸到最近的邊，與 [`EXTEND`](/docs/commands/extend) 相同。每次點選都是一個步驟，退回可以將它退回；按 Enter 結束指令。
+TRIM 將物件修剪到與其他物件相交的位置：點選要去除的部分，它會一直去除到兩側最近的交點。與 AutoCAD 相同，它以快速模式開始：所有物件都是切割邊，沒有與任何物件相交的物件會整個刪除。點選時按住 Shift 鍵，則改為將物件延伸到最近的邊，與 [`EXTEND`](/docs/commands/extend) 相同。每次點選各為一個步驟，可用 U 逐一退回；按 Enter 結束指令。
 
 - **指令：** `TRIM`
 - **快捷鍵：** `TR`
@@ -44,15 +44,15 @@ TRIM 將物件修剪到與其他物件相交的位置：點選要去除的部分
 
 ### `eRase` (`R`) [#erase]
 
-不離開指令即可刪除物件：選取物件，按 Enter 即刪除，這是 TRIM 的一個步驟，退回可以將它退回。
+不離開指令即可刪除物件：選取物件，按 Enter 即刪除，這是 TRIM 的一個步驟，可用 U 退回。
 
 ### `Undo` (`U`) [#undo]
 
-在提示得到回答之後列出（點選、籬選、窗）：退回上一次修剪；沒有可退回的修剪時會加以說明。
+在提示下已點選、籬選或框選過之後才會列出：退回上一次修剪；沒有可退回的修剪時會加以說明。
 
 ## 尚未支援的功能 [#missing]
 
-投影：不提供 AutoCAD 的投影選項（無、UCS、視圖），所有計算都投影到 UCS 的 XY 平面上，也就是 AutoCAD 的預設值 UCS。籬選還不能以游標拖曳，只能逐點點選。修剪模式與「邊」的選擇只在此階段作業中保留，AutoCAD 則會保留到下一個階段作業。與 UCS 傾斜的物件（雲形線除外）既不能切割，也不能被修剪。
+投影：不提供 AutoCAD 的投影選項（無、UCS、視圖），所有計算都投影到 UCS 的 XY 平面上，也就是 AutoCAD 的預設值 UCS。籬選還不能以游標拖曳，只能逐點點選。修剪模式與「邊」的選擇只在此階段作業中保留，AutoCAD 則會保留到下一個階段作業。與 UCS 的 XY 平面不平行的物件（雲形線除外）既不能切割，也不能被修剪。
 
 [功能與尚缺項目的詳細說明（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#trim--extend--es-recorta--rr--alarga--al--pt-br-aparar--ap--estender--est--fr-ajuster--aj--prolonger--pr--prolonge--it-taglia--ta--estendi--es--de-stutzen--su--dehnen--de--ru-обрезать--обр--удлинить--у--pl-utnij--ut--wydłuż--wyd--cs-ořež--or--prodluž--pd--hu-metsz--me--elér--el)
 
@@ -66,7 +66,7 @@ TRIM 將物件修剪到與其他物件相交的位置：點選要去除的部分
 
 因為 TRIM 處於快速模式，這是 AutoCAD 從 2021 版起的預設值：點選沒有任何邊與之相交的物件會將它刪除。選擇 `mOde`，再選擇 `Standard`，TRIM 就會保留該物件並加以說明。
 
-### CAD 如何框選一次修剪多條線？
+### CAD 如何一次修剪多條線（籬選或框選）？
 
 在空白處點選，再點選第二點：與這道籬選相交的所有物件都會一個步驟修剪完成。或選擇 `Crossing`，在要去除的部分上方繪製一個窗。
 

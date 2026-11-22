@@ -20,7 +20,8 @@
 > 20/11, los tres publicados el 21/11 con el export estático (el push de las 09:20, hasta
 > `0f86c6ad`; después el push estuvo congelado otra vez: `docs/next-vercel-usage.md` §4),
 > y el chino simplificado (`live` en `/zh-cn`, L8, `global`) hecho y publicado el 22/11 (el push
-> de las 09:30, hasta `43bb8b9b`);
+> de las 09:30, hasta `43bb8b9b`), y el chino tradicional (`live` en `/zh-tw`, L8, `global`) hecho el
+> 22/11, sin publicar;
 > por decisión del dueño la
 > visibilidad va antes que cualquier funcionalidad; siguiente, por orden del dueño (12/11/2026), una
 > sesión cada vez, nunca en paralelo: lo que quede de la fase 4 del DXF (`docs/next-dxf.md`: las
@@ -30,9 +31,9 @@
 > 21/11 con el export estático; MINSERT, con su página, hecho el 21/11, y los colores índice y
 > las sustituciones DSTYLE, del punto 7, hechos el 22/11, publicados el 22/11, y la malla de
 > VBA_Tower (una malla poligonal, con 3DMESH), hecha el 22/11, sin publicar, que cierra el punto 7;
-> siguiente, la fase 5) y otro idioma (los diez de AutoCAD con
-> criterio de L8 están hechos: queda el chino tradicional, `zh-TW`, o ampliar el criterio, decisión
-> del dueño), alternando, además de lo que queda de §7.
+> siguiente, la fase 5) y otro idioma (los once de AutoCAD con
+> criterio de L8 están hechos, el chino tradicional el último: ampliar el criterio es decisión del
+> dueño), alternando, además de lo que queda de §7.
 > Esperan detrás
 > `docs/next-solids.md`, `docs/next-integrations.md`, `docs/next-mcp.md` y la revisión 32 del roadmap. Se borra cuando §6
 > se cumpla a seis meses y cada línea esté hecha o descartada.
@@ -305,8 +306,10 @@ el japonés, comprobado en el paquete coreano; Corea, 61 en el índice de la aud
 como mitad de sus búsquedas; hecho el 20/11, `docs/plans/ko-language.md`) y **chino simplificado**
 (`global`, como el japonés, comprobado en el paquete chino; `zh-CN` en `/zh-cn`: China continental,
 con Baidu y Bing, y Singapur y Malasia con Google; hecho el 22/11, `docs/plans/zh-CN-language.md`).
-Queda el chino tradicional (`zh-TW`: Taiwán y Hong Kong, con Google), el último idioma de AutoCAD,
-un idioma aparte con sus propias palabras. Fuera del criterio pero con más demanda que varios de esos:
+Y **chino tradicional** (`global`, comprobado en el paquete taiwanés: `zh-TW` en `/zh-tw`, Taiwán
+y Hong Kong con Google, con las palabras del AutoCAD taiwanés y nunca las del simplificado
+convertidas; hecho el 22/11, `docs/plans/zh-TW-language.md`), el último idioma de AutoCAD. Fuera
+del criterio pero con más demanda que varios de esos:
 persa (el mayor término de AutoCAD en una escritura no latina; antes, comprobar el acceso desde Irán
 y las sanciones), vietnamita e indonesio, sin AutoCAD en su idioma (`languages.md` §B.6): decisión
 del dueño si quiere ampliar el criterio. Cada idioma nuevo, después de L3 y L4, para nacer con
@@ -471,6 +474,13 @@ el dueño dio a las sesiones el 6/11).
    chino, sin publicar, entra cuando el sitemap publicado lo traiga: `gsc-prioritize.mjs` reconoce
    `/zh-cn` y lo pesa a 0,14 (China, 40 en el índice de la auditoría, solo Google: 0,4 × 40/113;
    Baidu y Bing, que se reparten casi todo, no entran en esta cola).
+   **22/11, 21:14 UTC (sesión del chino tradicional):** la tanda del día, 11 pedidas (`/zh-cn`, sus
+   `/docs/commands`, `/docs`, `/docs/floor-plan`, `/docs/open-dxf` y `/docs/exercises`, y guías en
+   japonés y coreano) hasta la cuota, en la duodécima: 1.675 en la cola, el chino simplificado ya
+   dentro. El chino tradicional, sin publicar, entra **al final de la cola** cuando el sitemap
+   publicado lo traiga, por decisión del dueño (22/11): `gsc-prioritize.mjs` reconoce `/zh-tw`, lo
+   pesa a 0,14 (Taiwán, unos 38 en el índice de la auditoría, y Hong Kong encima: 0,4 × 38/113) y
+   pone sus URLs detrás de todas las demás (`LAST`), en ese orden entre ellas.
 3. **Bing Webmaster Tools**: la clave responde ya en producción
    (`https://mellowcad.com/1eb5d0fec5dc99d5695b010f04667a07.txt`, 5/11); enviar el sitemap a IndexNow:
    `npm run indexnow` lista lo que enviaría y `npm run indexnow -- --send` lo envía (se niega si la
@@ -1150,4 +1160,20 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   dueño: lo que queda del punto 7 del DXF (los colores índice, las sustituciones DSTYLE, la malla),
   y después otro idioma (el chino tradicional, o ampliar el criterio de L8: decisión del dueño),
   alternando.
+- Chino tradicional (L8): hecho el 22/11/2026, sin publicar (`docs/plans/zh-TW-language.md`,
+  `docs/i18n/zh-TW.md`). `zh-TW` en `/zh-tw`: Taiwán y Hong Kong, con Google. `global`, comprobado
+  antes en el paquete taiwanés de AutoCAD 2027 (abierto con 7zz, sin ejecutar nada): conserva los
+  nombres de comando, los alias y las letras de opción ingleses y escribe sus solicitudes en el
+  chino de Taiwán (`[退回(U)]`), que `/zh-tw/draw` muestra en inglés: la página de diferencias lo
+  dice en los quince idiomas. La interfaz con las palabras del propio paquete por id (ax26res,
+  acappres, acad.cuix, los diálogos de tareas), nunca las del simplificado convertidas: 物件, 性質,
+  掣點, 鏡射, 填充線, 聚合線, 指令; y Taiwán separa lo que el continente junta (STRETCH 拉伸 y EXTRUDE
+  擠出, SCALE 比例 y ZOOM 縮放, ROTATE 旋轉 y REVOLVE 迴轉). El sitio, las páginas «Use», las 104
+  notas y los 12 ejercicios escritos desde lo que se busca en Taiwán y Hong Kong («線上cad», «cad
+  指令大全», «cad 偏移指令», «cad 練習圖», «dxf 線上 檢視»). Las fuentes del sistema en chino
+  tradicional, la tarjeta con Noto Sans TC recortada. Una segunda lectura por un modelo, con sus
+  correcciones; la de un hablante nativo, pendiente. Sin recorte: `/fr` queda en 254.407 bytes,
+  1.593 bajo sus 250 KiB. Unas 129 URL nuevas entran al final de la cola de §7 cuando el dueño
+  publique. **Siguiente**, por orden del dueño: la fase 5 del DXF, y otro idioma solo si el dueño
+  amplía el criterio de L8 (persa, vietnamita, indonesio), alternando.
 - 10 Medición: la primera, un mes después del push de 01–02.

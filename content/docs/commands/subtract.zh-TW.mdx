@@ -4,7 +4,7 @@ metaTitle: "CAD 差集（SUBTRACT）：挖除實體與面域"
 description: "AutoCAD SUBTRACT（差集，SU）的用法：要保留的實體或面域、按 Enter，再選取要從中減去的物件，包括挖孔與減去面積。可以在瀏覽器中免費試用。"
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"AutoCAD 差集（SUBTRACT）的快捷鍵是什麼？","answer":"SU，然後按 Enter 或空白鍵。也可以輸入完整名稱，在任何語言版本的 AutoCAD 中都可以使用 _SUBTRACT。"},{"question":"如何從一個實體中減去另一個實體？","answer":"在要減去的實體與另一個實體重疊的位置繪製它：例如要挖孔，就繪製貫穿方塊的圓柱。執行 SUBTRACT，點選方塊並按 Enter，再點選圓柱並按 Enter：方塊上留下孔，圓柱則消失。順序很重要，因為先點選的就是保留下來的物件。"},{"question":"CAD 差集為什麼沒有作用？","answer":"通常是順序的問題：要保留的物件放在第一個選集，要減去的物件放在第二個選集。第一個選集沒有實體或面域，或第二個選集沒有不在第一個選集中的實體或面域時，會顯示 「No solids, surfaces, or regions selected.」 並結束；第二個選集沒有任何物件可以從第一個選集中減去時（例如從面域中減去實體，或另一個平面上的面域），會顯示 「At least two solids, surfaces, or coplanar regions must be selected.」，不做任何變更。線與聚合線必須先轉成面域。若顯示某個布林運算失敗，表示這些實體相接的方式 MellowCAD 目前還無法計算，實體保持原狀。"},{"question":"CAD 如何減去面積？","answer":"若要從一個 2D 形狀中挖除另一個，請以 REGION 將兩者都轉成面域，再以 SUBTRACT 從外側的面域中減去內側的面域：正方形減去圓後，成為一個有孔的面域。若只要量測面積而不變更圖面，AREA 可以用 Subtract 從累計總數中減去區域。"},{"question":"可以減去而不刪除物件嗎？","answer":"SUBTRACT 會刪除被減去的物件，與 AutoCAD 相同。若要保留它，請先在原處複製一份：COPY，選取物件並按 Enter，基準點為 0,0，再按 Enter，以 0,0 的位移複製到原處。SUBTRACT 之後只會用掉其中一份。"}]
+faq: [{"question":"AutoCAD 差集（SUBTRACT）的快捷鍵是什麼？","answer":"SU，然後按 Enter 或空白鍵。也可以輸入完整名稱，在任何語言版本的 AutoCAD 中都可以使用 _SUBTRACT。"},{"question":"如何從一個實體中減去另一個實體？","answer":"在要減去的實體與另一個實體重疊的位置繪製它：例如要挖孔，就繪製貫穿方塊的圓柱。執行 SUBTRACT，點選方塊並按 Enter，再點選圓柱並按 Enter：方塊上留下孔，圓柱則消失。順序很重要，因為先點選的就是保留下來的物件。"},{"question":"CAD 差集為什麼沒有作用？","answer":"通常是順序的問題：要保留的物件放在第一個選集，要減去的物件放在第二個選集。第一個選集沒有實體或面域，或第二個選集沒有不在第一個選集中的實體或面域時，會顯示 「No solids, surfaces, or regions selected.」 並結束；第二個選集沒有任何物件可以從第一個選集中減去時（例如從面域中減去實體，或另一個平面上的面域），會顯示 「At least two solids, surfaces, or coplanar regions must be selected.」，不做任何變更。線與聚合線必須先轉成面域。若顯示某個布林運算失敗，表示這些實體相接的方式 MellowCAD 目前還無法計算，實體保持原狀。"},{"question":"CAD 如何減去面積？","answer":"若要從一個 2D 形狀中挖除另一個，請以 REGION 將兩者都轉成面域，再以 SUBTRACT 從外側的面域中減去內側的面域：正方形減去圓後，成為一個有孔的面域。若只要測量面積而不變更圖面，AREA 可以用 Subtract 從累計總數中減去區域。"},{"question":"可以減去而不刪除物件嗎？","answer":"SUBTRACT 會刪除被減去的物件，與 AutoCAD 相同。若要保留它，請先在原處複製一份：COPY，選取物件並按 Enter，基準點為 0,0，再按 Enter，以 0,0 的位移複製到原處。SUBTRACT 之後只會用掉其中一份。"}]
 ---
 
 SUBTRACT 從其他實體中減去 3D 實體，或從同一平面的面域中減去面域：從方塊中減去圓柱，會留下貫穿方塊的孔；從正方形中減去圓，會得到有孔的正方形。它詢問兩次。先顯示 `Select solids, surfaces, and regions to subtract from ..`，要求選取要保留的物件，直到按 Enter；再顯示 `Select solids, surfaces, and regions to subtract ..`，要求選取要減去的物件，直到再次按 Enter。與 AutoCAD 2027 相同，在指令之前選取的選集會被捨棄並重新詢問。
@@ -44,7 +44,7 @@ SUBTRACT 從其他實體中減去 3D 實體，或從同一平面的面域中減�
 
 ### CAD 如何減去面積？
 
-若要從一個 2D 形狀中挖除另一個，請以 [`REGION`](/docs/commands/region) 將兩者都轉成面域，再以 SUBTRACT 從外側的面域中減去內側的面域：正方形減去圓後，成為一個有孔的面域。若只要量測面積而不變更圖面，[`AREA`](/docs/commands/area) 可以用 `Subtract` 從累計總數中減去區域。
+若要從一個 2D 形狀中挖除另一個，請以 [`REGION`](/docs/commands/region) 將兩者都轉成面域，再以 SUBTRACT 從外側的面域中減去內側的面域：正方形減去圓後，成為一個有孔的面域。若只要測量面積而不變更圖面，[`AREA`](/docs/commands/area) 可以用 `Subtract` 從累計總數中減去區域。
 
 ### 可以減去而不刪除物件嗎？
 

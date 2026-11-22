@@ -30,7 +30,7 @@ SUBTRACT 從其他實體中減去 3D 實體，或從同一平面的面域中減�
 
 ### CAD 如何減去面積？
 
-若要從一個 2D 形狀中挖除另一個，請以 <Command id="REGION" /> 將兩者都轉成面域，再以 SUBTRACT 從外側的面域中減去內側的面域：正方形減去圓後，成為一個有孔的面域。若只要量測面積而不變更圖面，<Command id="AREA" /> 可以用 <Keyword command="AREA" id="Subtract" /> 從累計總數中減去區域。
+若要從一個 2D 形狀中挖除另一個，請以 <Command id="REGION" /> 將兩者都轉成面域，再以 SUBTRACT 從外側的面域中減去內側的面域：正方形減去圓後，成為一個有孔的面域。若只要測量面積而不變更圖面，<Command id="AREA" /> 可以用 <Keyword command="AREA" id="Subtract" /> 從累計總數中減去區域。
 
 ### 可以減去而不刪除物件嗎？
 

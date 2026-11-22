@@ -32,7 +32,7 @@ sourceHash: "41b2bdb216d4"
 
 ## 繪製門 [#doors]
 
-在「門」圖層上，每扇門由門扇與開啟弧線構成：門扇以 <Command id="LINE" /> 畫成開啟狀態，開啟弧線則以 <Command id="ARC" />（弧）指令繪製：選擇其中心點選項，然後依序指定鉸鏈處為中心點、弧線的起點與終點。兩端都是已繪製的點，即開口側邊的角點與門扇的端點：輸入 `_END`（只用於一個點的端點物件鎖點），再逐一點選。
+在「門」圖層上，每扇門由門扇與開啟弧線構成：門扇以 <Command id="LINE" /> 畫成開啟狀態，開啟弧線則以 <Command id="ARC" />（弧）指令繪製：選擇其中心點選項，然後依序指定鉸鏈處為中心點、弧線的起點與終點。兩端都是已繪製的點，即開口側邊的角點與門扇的端點：輸入 `_END`（僅對下一點有效的端點物件鎖點），再逐一點選。
 
 <Session name="floorPlanDoors" caption="每扇門：開啟 90° 的門扇及其開啟弧線。" />
 
@@ -44,7 +44,7 @@ sourceHash: "41b2bdb216d4"
 
 ## 標註平面圖 [#dimensions]
 
-在「標註」圖層上，以 <Command id="DIMLINEAR" />（線性）指令標註外部尺寸，再從內部標註各房間：第一個房間的寬度以 <Command id="DIMLINEAR" /> 標註，內牆與第二個房間則以 <Command id="DIMCONTINUE" />（連續式）指令標註，點以 `#` 從原點起算輸入。
+在「標註」圖層上，以 <Command id="DIMLINEAR" />（線性）指令標註外部尺寸，再從內部標註各房間：第一個房間的寬度以 <Command id="DIMLINEAR" /> 標註，內牆與第二個房間則以 <Command id="DIMCONTINUE" />（連續式）指令標註，各點以 `#` 從原點起算輸入。
 
 <Session name="floorPlanDimensions" caption="完成標註的平面圖：外部 800 × 600，內部為各房間。" />
 

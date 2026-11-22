@@ -1,7 +1,7 @@
 # Traditional Chinese (`zh-TW`)
 
-> **Command language:** `global`, English AutoCAD's. **Status:** `draft` since 22/11/2026.
-> **Review:** none by a native speaker yet.
+> **Command language:** `global`, English AutoCAD's. **Status:** `live` since 22/11/2026.
+> **Review:** none by a native speaker yet; a model's second reading (see "Review").
 
 `/zh-tw/draw` is AutoCAD with its interface in Traditional Chinese as Taiwanese AutoCAD words it —
 the palettes, the ribbon's words, the menus, the tooltips, the status bar and the dialogs — and a
@@ -354,6 +354,51 @@ input or a field that commits on Enter. A command is typed in the IME's English 
 in AutoCAD. On the drawing no IME composes (no editable target), so a command typed there is
 latin as typed.
 
+## Going live
+
+On 22/11/2026, from production builds (`vercel build`, offline; every page `○` or `●` but `/mcp`):
+
+- **The landing's first load**, Brotli q11 of every response until the network is idle, in bytes,
+  Traditional Chinese a draft (`b3a9756c` and the review's fixes) and live: `/` 252,100 → 252,093,
+  `/es` 253,500 → 253,454, `/pt-br` 253,684 → 253,763, `/ar` 277,021 → 277,050, `/fr` 254,310 →
+  254,407 (1,593 under 250 KiB), `/it` 253,503 → 253,492, `/de` 253,837 → 253,837, `/ru` 287,352 →
+  287,311, `/pl` 268,160 → 268,213, `/cs` 267,998 → 268,101, `/hu` 268,409 → 268,471, `/ja`
+  254,278 → 254,230, `/ko` 254,073 → 253,973, `/zh-cn` 253,239 → 253,327; `/zh-tw` 253,494 →
+  253,590, under the 250 KiB of a page with no script font. No cut was needed: going live added
+  some 100 bytes to every landing, within a build's own drift.
+- **The rest**: the search index `/zh-tw/search-index.json` 5.9 MB (Russian's 7.6 is the largest),
+  the export 14,097 files; the editor's and the engine's catalogs reach `/zh-tw/draw` only (the
+  one shared chunk with a Traditional Chinese word holds `LANGUAGE_NAMES`, every language's name).
+- **The checks in Chrome**: `/zh-tw` at 360 px, nothing wider than the viewport, the H1 in the
+  system's Traditional Chinese face behind Inter, `line-break: strict`, the hreflang set with
+  `zh-TW` and «繁體中文» in every landing's language links; `/zh-tw/draw` at 1280×720, no text
+  clipped in the bars or the palettes, the ViewCube's 上 and 北 東 南 西, the placeholder
+  «鍵入指令（LINE、TR、CO…）». **The IME**: with `LINE` in the command line, a composing Enter
+  (`keyCode` 229) left it there, a character composed through Chrome's IME
+  (`Input.imeSetComposition`) went into the field, and a plain Enter ran LINE.
+
 ## Review
 
-**No native reader yet.**
+**No native reader yet**: pending, as Simplified Chinese's, Japanese's and Korean's. Instead, on
+22/11/2026, **a model's second reading**: an agent given the task and a sample, not this file's
+reasoning — the site's, the editor's and the engine's catalogs, six command notes (OFFSET, TRIM,
+HATCH, LINE, LAYER, DIMLINEAR), three "Use" pages and two exercises, each beside its English — read
+as a Taiwanese technical editor who uses Taiwanese AutoCAD, checking option words against the
+zh-TW tables and the CHT help. It found no Simplified character and no mainland usage, the
+typography clean and the claims the English's, and: a claim the rules forbid (LAYER's «提示與
+AutoCAD 相同», now the prompts' order and option letters), a «目前» the FAQ added that promised the
+Chinese prompts, TRIM's question naming one selection mode where its answer gives two, the space
+bar called 空格鍵 where Autodesk's tables and the notes say 空白鍵 (63424), a 2D solid called 2D 實體
+beside the tool's 2D 實面, 帳戶 and 帳號 for one account, a bare 基本型 for primitives, 量測 beside
+Autodesk's 測量 (now 測量 everywhere), and a dozen calques (退回可以將它退回, 與 UCS 傾斜的物件), all
+fixed. Its reading of the shortcut menu's Copy Selection as Autodesk's 複製選項 was checked against
+the pack and is wrong: XLS_1005 says 複本選取, which stays. Before that, one pass over every file for
+what the eight writers had settled apart: 階段作業 for a session (the CHT help's, HPBOUNDRETAIN),
+never 工作階段; 截頭角錐; 擬合/平滑化 (ax26res 60); the exercises' names in the guides' links as
+their own titles.
+
+Where a native reader should look first: the terms marked † above, the search titles and
+descriptions (written from Google's suggestions, never tested against a Taiwanese searcher), the
+dialog and palette labels the tables do not hold (marked unverified above), the exercises' CNS
+drafting words, Hong Kong's own usage, and the ViewCube's faces and compass, never seen on the
+desktop.
