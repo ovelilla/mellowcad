@@ -164,7 +164,14 @@ export {
   INVALID_LAYER_NAME_CHARACTERS,
 } from "./domain/layers"
 export type { Layer, LayerId, LayerNameRefusal } from "./domain/layers"
-export { STANDARD_COLORS, COLOR_BYLAYER, normalizeColor } from "./domain/colors"
+export {
+  STANDARD_COLORS,
+  COLOR_BYLAYER,
+  colorRgb,
+  normalizeColor,
+} from "./domain/colors"
+export { colorLabel } from "./application/colorLabels"
+export type { ColorLabelPlace } from "./application/colorLabels"
 export type { EntityColor, ColorDef } from "./domain/colors"
 export { LINETYPES, LINETYPE_BYLAYER, linetypeDashes } from "./domain/linetypes"
 export type {

@@ -62,12 +62,11 @@ export function describeGeometry(entity: Entity): string {
   }
 }
 
-/** A layer's colour by AutoCAD's name where it has one (`red`), else its hex. */
-export function colorName(hex: string): string {
+/** A layer's colour by AutoCAD's name where it has one (`red`), else its index or its hex. */
+export function colorName(color: string): string {
   return (
-    STANDARD_COLORS.find(
-      (color) => color.value.toLowerCase() === hex.toLowerCase()
-    )?.id ?? hex
+    STANDARD_COLORS.find((each) => each.value === color.toLowerCase())?.id ??
+    color
   )
 }
 

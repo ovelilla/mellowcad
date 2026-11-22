@@ -9,9 +9,9 @@ import { demo, type DemoScript } from "@mellowcad/engine"
 
 export const FLOOR_PLAN_LAYERS = [
   { name: "Walls", lineweight: 0.5 },
-  { name: "Doors", color: "#ffff00" },
-  { name: "Windows", color: "#00ff00" },
-  { name: "Dimensions", color: "#00ffff" },
+  { name: "Doors", color: "2" },
+  { name: "Windows", color: "3" },
+  { name: "Dimensions", color: "4" },
 ] as const
 
 const start = () =>

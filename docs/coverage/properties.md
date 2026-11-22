@@ -68,9 +68,11 @@ Unlock take a comma list with wildcards, any case, and OFF, LOck and Unlock the 
 `Select objects:` at Enter, a locked layer's too (p391, p397, p410), turning the current layer off
 asking `Really want layer "0" (the CURRENT layer) off? <N>` once the others are off (`Yes or No,
 please.`, p310–p312); Color asks `New color [Truecolor] :` (a space before the colon in every
-language: `promptTails`), an index colour by number or name, a negative one turning the layers off
-too (`for color -5 (blue)`), Truecolor's three values, `Invalid color number.` and `Invalid color.`
-asking again (p301, p392, p398); Ltype asks `Enter loaded linetype name or [?] <Continuous>:`, one
+language: `promptTails`), an index colour by number (1–255: `for color 30`, colors/c02) or name, a
+negative one turning the layers off too (`for color -5 (blue)`), Truecolor's three values, kept a
+true colour (`for color 10,20,30`), `Invalid color number.` and `Invalid color.` asking again (p301,
+p392, p398); its `?` writes an index colour's number right-aligned in three places, `  7 (white)`,
+` 30`, `255`, a true colour `10,20,30` (c02); Ltype asks `Enter loaded linetype name or [?] <Continuous>:`, one
 the drawing lacks loaded from acad.lin as CHPROP's, any other `Linetype "FOO" not found.  Use
 LINETYPE command to load it.`, its `?` listing the loaded ones (p393); LWeight asks `Enter
 lineweight (0.0mm - 2.11mm):`, rounded to a valid one and said so (p394, p399); each then asks
@@ -81,7 +83,7 @@ own with Layer No, p315; parted by any command, p329), a lock or an unlock regen
 
 **Missing:** -LAYER's TRansparency, MATerial, Plot, Freeze, Thaw, stAte, Description, rEconcile
 and Xref (none is modelled; typed, `Invalid option keyword.`), so its list leaves them out, Color's
-COlorbook and index colours 8 to 255 (asked again, as -COLOR's), Group at `Select object:`, the
+COlorbook, Group at `Select object:`, the
 listing's Default lineweight (here a layer's 0.25 mm) and its pages (`Press ENTER to continue:`);
 **unverified** for -LAYER: whether a -LAYER run joins the manager's edits (here they join each
 other as two layer steps), Make's answer to an invalid name (here New's words), Enter at Rename's
@@ -99,8 +101,8 @@ layer 0's lineweight Default (p300: 370 -3; here 0.25 mm, Default is not modelle
 **unverified**: the manager's Set Current named `'.-LAYER` (only an edit's name was seen), es
 `'.-CAPA` and `'CLAYER` (the Spanish desktop pass ran without the mouse), the Spanish title
 `Capa` of the invalid-characters dialog and `Capa` in `Capa - El nombre ya existe` (the table's
-`%ObjectName%`), what a colour that is not an index colour writes beside its swatch (AutoCAD writes
-its RGB; here the swatch alone), the Arabic words (worded by the project, `docs/i18n/ar.md`),
+`%ObjectName%`), what the manager writes beside the swatch of an index colour past 7 and of a true
+colour (here `30` and `10,20,30`, the ribbon's words: colors/d05 did not open it), the Arabic words (worded by the project, `docs/i18n/ar.md`),
 the drop-downs' answer to a set holding locked objects (only the palette's was probed, d03-5: the
 same here, PROPS-D61), the padlock and the faded look at `Select objects:` (seen only at
 `Command:`; here neither the padlock nor any fade but ERASE's)
@@ -262,13 +264,15 @@ nothing here keeps a regenerated display apart)
 properties/p128–p130, also a run that changed nothing): -COLOR, which COLOR runs too (WHY: the
 Select Color dialog does not exist), asks `Enter default object color [Truecolor] <BYLAYER>:`
 offering the current one as AutoCAD 2027's console does (`BYLAYER`, `1 (red)`, es `1 (rojo)`,
-`210,155,95`; p101, p117, p119) and takes an index colour's number (1–7) or name by its keyword
+`30`, `210,155,95`; p101, p117, p119, colors/c01) and takes an index colour's number (1–255) or
+name (1–7) by its keyword
 (`Red` / `R` … `White`, `BYLayer`; es `Rojo`, `Amarillo`, `Verde`, `cIán`, `aZul`, `Magenta`,
 `bLanco`, `porCapa`: table 26289, whose words are its hidden keywords, so es `C` is porCapa, p113c,
 and `BY` asks `BYBlock or BYLayer?`, p139t), in Spanish also the English names whole (`RED`,
 `BYLAYER`, p107b, p113b; `BYL` refused, p139t), or with Truecolor `Red,Green,Blue:` three values
 from 0 to 255 separated by commas, no space (Space is Enter there, p139s; the box keeps one and
-refuses it) (es `Indique el color de objeto por defecto [COlorverdadero]`, `Rojo,Verde,Azul`); a
+refuses it), a true colour kept apart from the index colour of its RGB (`Truecolor` 255,0,0 offers
+`<255,0,0>` after, and LIST writes `Color: 255,0,0`, where index 1 is `1 (red)`; c01) (es `Indique el color de objeto por defecto [COlorverdadero]`, `Rojo,Verde,Azul`); a
 word it cannot read or a fraction says `A color number or standard color name is required.` (es `Se
 necesita un número o nombre de color normalizado.`; p116, p135), 0, a negative number or one past
 255 `Invalid color number.` (es `Número de color no válido.`; p100, p105, p106), a bad true colour
@@ -278,12 +282,8 @@ and asks again; Enter keeps it; es offers `<PORCAPA>` (line/p200); transparent (
 gives each segment the colour current as it starts, p126), and `'ZOOM` runs at its prompt and
 resumes it (p134); COL is an alias in both languages (p136), COLOUR in English only (p137, p137b)
 
-**Missing:** the index colours 8–255 (their RGB values are not in the help, p103: asked again),
-ByBlock (not modelled: `BYBlock`, es `porBloque`, `BYBLOCK` asked again, p114, p115), a true
-colour apart from the index colour of its RGB (`Truecolor` 255,0,0 reads back as `1 (red)`, where
-AutoCAD keeps `255,0,0` on the object and in -COLOR's `<255,0,0>`, line/p200: an object stores one
-RGB here),
-Colorbook, CECOLOR's `RGB:` and HSL forms, the Select Color dialog, the per-type defaults HPLAYER and HPCOLOR, DIMLAYER,
+**Missing:** ByBlock (not modelled: `BYBlock`, es `porBloque`, `BYBLOCK` asked again, p114, p115),
+Colorbook (the 2027 console lists `[Truecolor/COlorbook]`, c01; not offered here), CECOLOR's `RGB:` and HSL forms, the Select Color dialog, the per-type defaults HPLAYER and HPCOLOR, DIMLAYER,
 TEXTLAYER (all "use current" initially, which is what everything does here), CETRANSPARENCY
 
 ### Object properties (top bar)
@@ -295,7 +295,10 @@ U and REDO name `CHPROP` (es `CAMBPROP`, table 52586; desktop d05-2 for the Laye
 for Object Color; the Linetype and Lineweight drop-downs' unprobed, the same); with nothing selected
 they show the current settings, CECOLOR, CELWEIGHT and CELTYPE ("If no objects are selected, the
 drop-down lists … display the current settings for the drawing"), and a choice sets it, one undo
-step U names nothing (d05-3)
+step U names nothing (d05-3). A colour is named as AutoCAD names it there and in the Properties
+palette (colors/d01–d04): a standard one by name, `Red`, another index colour `30` on the bar and
+`Color 30` in the palette (acadres 45903, `Szín: 30` in Hungarian), a true colour `255,127,0`
+in both
 
 **Missing:** Select Colors (the swatch beside the colour opens the browser's picker instead), the
 linetype list's Other… and the lineweight list's Lineweight Settings…, ByBlock and Default in the
@@ -319,7 +322,7 @@ cancels it and `entget` never saw the change); the whole run one undo step U and
 nothing (p01); not transparent (`** That command may not be invoked transparently **`), `'ZOOM`
 running at its value prompts and the property prompt (p15); Color asks `New color [Truecolor]
 <BYLAYER>:` (es `Nuevo color [COlorverdadero] <PORCAPA>`, pt-BR `Nova cor [Truecolor]
-<PORCAMADA>`, 20409), offering `1 (red)` or `R,G,B` as -COLOR does, and takes and refuses what
+<PORCAMADA>`, 20409), offering `1 (red)`, `30` or `R,G,B` as -COLOR does, and takes and refuses what
 -COLOR takes and refuses, the same messages, `BY`'s question and Truecolor's `Red,Green,Blue:`
 asked again until valid (p03, p04, p04s, p05); LAyer asks `Enter new layer name <0>:` (20390) and
 takes a layer by its name in any case (`l1` is L1), a name with `<>/\":;?*|,=` or a backquote

@@ -197,6 +197,12 @@ export const cs: EngineLocale = {
       "white": "Bílá"
     },
     "byLayer": "DleHlad",
+    "colorNumber": [
+      "Barva ",
+      [
+        "index"
+      ]
+    ],
     "view": {
       "Top": "Horní",
       "Bottom": "Dolní",
@@ -5372,6 +5378,12 @@ export const cs: EngineLocale = {
         ],
         "   Poznámky: Ne"
       ],
+      "dimStyleOfDimension": [
+        "Kótovací styl: ",
+        [
+          "name"
+        ]
+      ],
       "unknownDimStyle": "Neznámý kótovací styl:",
       "namedDimStyles": "Pojmenované kótovací styly:",
       "noMatchingDimStyles": "  Nebyly nalezeny odpovídající kótovací styly.",
@@ -7540,7 +7552,7 @@ export const cs: EngineLocale = {
         ],
         "\""
       ],
-      "listDimensionOverrides": "přenastavení kótovacího stylu:\n DIMUPT      Ano",
+      "listDimensionOverrides": "přenastavení kótovacího stylu:",
       "listDimensionAnnotative": "Poznámka: Ne",
       "listHatchPattern": [
         "                 Šrafovací vzor ",

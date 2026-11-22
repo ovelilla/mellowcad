@@ -127,7 +127,8 @@ preselection newest first (p421). Each object's report is written at the command
 2027's columns, word for word in English and Spanish (acdb26res.dll's tables; the console,
 QAFLAGS 2, p400–p446): its type and `Layer: "0"` (es `Capa`), `Space: Model space` (es
 `Espacio: Espacio modelo`), `Color: 1 (red)    Linetype: "DASHED"` when either is not ByLayer (an
-index colour by number and name, any other `255,128,0`; a linetype as acadiso.lin names it,
+index colour 1–7 by number and name, any other index colour by number, `30`, a true colour
+`255,128,0`, even one whose RGB is an index colour's, colors/c01; a linetype as acadiso.lin names it,
 `BYLAYER` / es `PORCAPA` for the other, p401, p427), `LineWeight: 0.30 mm` and `Thickness =`
 (es `GrosorLínea`, `Alt-objeto`) when set; every point and direction in the current UCS (p424),
 `Extrusion direction relative to UCS:` and the normal when it is not the UCS's Z (p424, p436,

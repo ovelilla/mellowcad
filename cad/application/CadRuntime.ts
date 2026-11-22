@@ -934,6 +934,8 @@ export class CadRuntime extends Observable {
         hatchPatternListing: (id) => this.text.hatchPatternListing(id),
         dimVariableListing: (name, value) =>
           this.text.dimVariableListing(name, value),
+        dimOverrideLine: (name, value) =>
+          this.text.dimOverrideLine(name, value),
         resolveKeyword: (input, ids) =>
           resolveKeyword(
             input,

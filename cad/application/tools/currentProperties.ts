@@ -7,7 +7,7 @@ import {
   withLinetypeScale,
   withThickness,
 } from "../../domain/entities"
-import { COLOR_BYLAYER } from "../../domain/colors"
+import { COLOR_BYLAYER, colorRgb } from "../../domain/colors"
 import { DEFAULT_LAYER_COLOR } from "../../domain/layers"
 import { drawnColor } from "../../scene/theme"
 import { LINETYPE_BYLAYER } from "../../domain/linetypes"
@@ -130,9 +130,11 @@ export function currentColor(
 ): string {
   const { currentColor, layerId } = properties
   return drawnColor(
-    currentColor !== COLOR_BYLAYER
-      ? currentColor
-      : (ctx.document.getLayer(layerId)?.color ?? DEFAULT_LAYER_COLOR)
+    colorRgb(
+      currentColor !== COLOR_BYLAYER
+        ? currentColor
+        : (ctx.document.getLayer(layerId)?.color ?? DEFAULT_LAYER_COLOR)
+    )
   )
 }
 

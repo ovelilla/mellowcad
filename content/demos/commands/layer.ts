@@ -12,8 +12,8 @@ export const sessions = {
         height: 200,
         layers: [
           { name: "WALLS" },
-          { name: "DOORS", color: "#ffff00" },
-          { name: "AXES", color: "#ff0000", linetype: "CENTER" },
+          { name: "DOORS", color: "2" },
+          { name: "AXES", color: "1", linetype: "CENTER" },
         ],
       })
         .command("_LAYER")

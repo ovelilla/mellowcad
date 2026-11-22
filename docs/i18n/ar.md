@@ -95,6 +95,7 @@ marks a choice between competing terms that a native review should settle first 
 | Properties | General, Geometry | عام، الهندسة (M) |
 |  | Color, Layer, Linetype, Lineweight, Dim style | اللون، الطبقة، نوع الخط، وزن الخط، نمط البُعد (C) |
 |  | ByLayer, ByBlock | بالطبقة، بالكتلة (L) † — حسب الطبقة is the usual phrase, too wide for the palette's colour picker |
+|  | Color 30 (an index colour past 7, acadres 45903) | اللون 30 (L) — the palette's Color row's word with the number |
 |  | \*VARIES\* | متنوع (L) |
 |  | Start X, End X, Closed, Vertex X, Current Vertex | بداية X، نهاية X، مغلق، الرأس X، الرأس الحالي (M) |
 |  | Center X | المركز X (M) |

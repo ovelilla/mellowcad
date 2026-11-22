@@ -120,7 +120,7 @@ describe("the other commands AutoCAD runs transparently", () => {
     expect(cad.activeToolId()).toBe("line")
     cad.click(p(10, 0))
     expect(cad.entities()[0]).toMatchObject({
-      color: "#ff0000",
+      color: "1",
       lineweight: 0.3,
     })
   })

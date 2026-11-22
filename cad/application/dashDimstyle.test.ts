@@ -228,6 +228,22 @@ describe("-DIMSTYLE's Apply (p11, p16)", () => {
     expect(written(cad, "_U")).toEqual(["U", "-DIMSTYLE"])
     expect(cad.byId<DimensionEntity>("D1").styleId).toBe("B")
   })
+
+  it("drops what a dimension overrides of its style, already current too; Variables lists them", () => {
+    const cad = dimensioned()
+    cad.runtime.document.update({
+      ...createDimension("linear", p(0, 0), p(10, 0), p(5, 5), { id: "D1" }),
+      overrides: { textHeight: 5 },
+    })
+    answer(cad, "-DIMSTYLE", "V", "")
+    cad.click(p(5, 5))
+    // colors/s03: its overrides alone, at LUPREC.
+    expect(cad.commandLog().at(-1)).toBe(
+      "Dimension style: ISO-25\n DIMTXT      5.00"
+    )
+    answer(cad, "-DIMSTYLE", "A", "L", "")
+    expect(cad.byId<DimensionEntity>("D1").overrides).toBeUndefined()
+  })
 })
 
 describe("-DIMSTYLE's listings (p06, p07, p10)", () => {
@@ -280,13 +296,11 @@ describe("-DIMSTYLE's listings (p06, p07, p10)", () => {
     expect(cad.activeToolId()).toBe("select")
   })
 
-  it("Variables at Enter lists the selected dimension's style (p07, p16)", () => {
+  it("Variables at Enter names the selected dimension's style, and nothing it does not override (colors/s04)", () => {
     const cad = dimensioned()
     answer(cad, "-DIMSTYLE", "V", "")
     cad.click(p(5, 5))
-    expect(cad.commandLog().at(-1)).toContain(
-      "DIMTXT      2.5000               Text height"
-    )
+    expect(cad.commandLog().at(-1)).toBe("Dimension style: ISO-25")
   })
 
   it("STatus lists the current style first, then its variables (p06)", () => {

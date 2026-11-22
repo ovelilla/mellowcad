@@ -115,7 +115,8 @@ knots and weights (a closed one, which AutoCAD writes on open knots, as that cur
 ATTDEF, INSERT with its attributes taken into the block's coordinates and a MINSERT's rows and
 columns (70, 71, 44, 45: minsert/m09, AutoCAD's own file; none in the corpus), the linear, aligned,
 angular (three points, two lines), radius and diameter DIMENSION from their definition points,
-text and moved text, HATCH with its loops and HPORIGIN (the ACAD xdata), its pattern's name read
+text and moved text, and what it overrides of its style of the variables a style holds here (its
+DSTYLE xdata, by the DIMSTYLE table's groups: colors/s01, AutoCAD's DIMOVERRIDE), HATCH with its loops and HPORIGIN (the ACAD xdata), its pattern's name read
 without the style code AutoCAD may write after it (`ANSI31,_O`), an unknown one in capitals as
 AutoCAD reads it (hatchpat/p06l), its type (76: Predefined, User-defined, Custom) and its pattern
 lines (78, 53, 43–46, 79, 49) taken back to pattern units and drawn wherever they are not the
@@ -267,8 +268,9 @@ tolerant where AutoCAD's reader is strict: an unknown group code or entity, a mi
 marker, an EOF missing after the last section or a malformed object discard the whole drawing
 there (`Undefined group code 77 for object on line 22.`, t-*), and RECOVER does not take them
 either (r-*), WHY: they are what other programs write, and the rest opens; a frozen layer opens off
-(no FREEZE here); an index colour opens as its RGB (AutoCAD 2027's palette, read from its
-AcCmColor) and ByBlock as ByLayer (the model has neither); the six linetypes every drawing holds
+(no FREEZE here); an index colour (62) opens as that index colour and a true colour (420) as
+itself, even one whose RGB is an index colour's (colors/c02); ByBlock opens as ByLayer (not
+modelled); the six linetypes every drawing holds
 here join the file's when it lacks them (WHY at `LINETYPES`), and a linetype an object names that
 the table lacks is added without dashes, drawn continuous; LWDISPLAY stays on, WHY: as every
 drawing here starts, the screen being the only place a lineweight shows; TEXT's Align and Fit open left-justified
@@ -334,8 +336,9 @@ background, its annotative scales, TRIM taking it (unprobed), and one nested in 
 as itself (it snaps as the pieces it draws, Nearest along its leaders included); a complex linetype's shapes (BATTING, ZIGZAG:
 the gaps they stand in are drawn, the shapes need their SHX: 3 of the 154 samples); a 2000
 DXF's gradient colours (AutoCAD writes them as `GradientColor1ACI` and `GradientColor2ACI` xdata
-and reads the hatch back as a SOLID, g15: here a SOLID too); the index colours as such,
-each dimension's style overrides (xdata DSTYLE), a text style's font, width and obliquing (text is
+and reads the hatch back as a SOLID, g15: here a SOLID too); a dimension's overrides of the
+variables a style does not hold here (DIMCLRD 176, DIMUPT 288… in its DSTYLE: dropped), a text
+style's font, width and obliquing (text is
 measured with Arial's metrics), TEXT's `%%c`, `%%d` and `%%p` drawn as their characters (as TEXT
 lacks them typed); named UCSs and views, the drawing opened at its saved view; DXFIN's FILEDIA 0
 prompt. **Unverified:** a hatch's clockwise arc edge (73 = 0), read as measured round from −X
@@ -363,7 +366,9 @@ the header's settings the reader takes back (`$CELTSCALE` among them), an object
 scale (48), the active viewport framing the drawing, and every
 object the model has, as AutoCAD writes it: a fitted polyline as a POLYLINE with its fit or curve
 vertices, a spline with its fit data or its knots, weights and control points (a closed one
-clamped, f004), a dimension with its `*D` block drawn as the model draws it, an array as a
+clamped, f004), a dimension with its `*D` block drawn as the model draws it and its overrides as
+DSTYLE xdata, by group, as AutoCAD's (colors/s01), an index colour as its 62 alone and a true
+colour as its nearest index (62) beside itself (420), as AutoCAD's DXFOUT (c02), an array as a
 reference to an anonymous block of its items, a MINSERT as AutoCAD's INSERT of class
 AcDbMInsertBlock, 70 and 71 always, 44 and 45 when not 0 (minsert/m09: the console opens its 12
 files with no AUDIT error and reads the six references as it reads its own file), a hatch with its pattern lines and HPORIGIN (its
@@ -441,9 +446,8 @@ type; NEW's is dated again
 **Deviations:** a page reloaded offers a dated name again, WHY: the autosave keeps the drawing, not
 the file it came from; what a DXF of ours cannot hold is left out and counted at the command line by its
 DXF type (`1 object not saved: 1 3DSOLID.`), WHY words of our own: AutoCAD writes everything it
-has, and the ACIS objects (3DSOLID, REGION) need their SAT, not written here; a dimension's style
-overrides and an array's parameters are not written, so AutoCAD opens the array as a block of its
-items and a dimension at its style; Save thumbnail preview image shows greyed and off, WHY: no
+has, and the ACIS objects (3DSOLID, REGION) need their SAT, not written here; an array's
+parameters are not written, so AutoCAD opens the array as a block of its items; Save thumbnail preview image shows greyed and off, WHY: no
 preview is written yet (AutoCAD greyed it too in the owner's profile, d01)
 
 **Missing:** «AutoCAD R12/LT2 DXF (*.dxf)» and the Version prompt's R12, which converts what R12

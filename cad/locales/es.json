@@ -193,6 +193,7 @@
       "white": "Blanco"
     },
     "byLayer": "PorCapa",
+    "colorNumber": "Color {index}",
     "view": {
       "Top": "Superior",
       "Bottom": "Inferior",
@@ -2658,6 +2659,7 @@
       "invalid": "*No válido*",
       "styleNameInUse": "Ya existe un {table, select, dimension {estilo de cota} other {estilo de texto}} con el nombre \"{name}\".",
       "currentDimStyle": "Estilo de cota actual: {name}   Anotativo: No",
+      "dimStyleOfDimension": "Estilo de cota: {name}",
       "unknownDimStyle": "Estilo de cota desconocido.",
       "namedDimStyles": "Estilos de cota guardados:",
       "noMatchingDimStyles": "  Estilo de cota no encontrado.",
@@ -2936,7 +2938,7 @@
       "listDimensionDefaultText": "texto por defecto",
       "listDimensionTextModifier": "modif. del texto de cota: {text}",
       "listDimensionStyle": "estilo de cota: \"{style}\"",
-      "listDimensionOverrides": "modificaciones de estilos de cota:\n DIMUPT      ACT",
+      "listDimensionOverrides": "modificaciones de estilos de cota:",
       "listDimensionAnnotative": "Anotativo: No",
       "listHatchPattern": "                 Patrón de sombreado {pattern}",
       "listHatchAnnotative": "                 Anotativo: no",

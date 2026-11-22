@@ -197,6 +197,12 @@ export const zhCN: EngineLocale = {
       "white": "白"
     },
     "byLayer": "ByLayer",
+    "colorNumber": [
+      "颜色 ",
+      [
+        "index"
+      ]
+    ],
     "view": {
       "Top": "俯视",
       "Bottom": "仰视",

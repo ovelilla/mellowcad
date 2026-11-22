@@ -1007,7 +1007,7 @@ describe("Spanish AutoCAD's command language", () => {
     cad.command("-COLOR").type("rosa").enter()
     expect(last()).toBe("Se necesita un número o nombre de color normalizado.")
     cad.type("r").enter()
-    expect(cad.state().currentColor).toBe("#ff0000")
+    expect(cad.state().currentColor).toBe("1")
 
     cad.command("-GROSORLIN").type("fino").enter()
     expect(last()).toBe("Se precisa un grosor en unidades de grosor de línea.")

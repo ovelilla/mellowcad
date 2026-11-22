@@ -193,6 +193,7 @@
       "white": "Белый"
     },
     "byLayer": "ПоСлою",
+    "colorNumber": "Цвет {index}",
     "view": {
       "Top": "Сверху",
       "Bottom": "Снизу",
@@ -2755,6 +2756,7 @@
       "invalid": "*Неверно*",
       "styleNameInUse": "{table, select, dimension {размерный стиль} other {стиль текста}} с именем \"{name}\" уже существует.",
       "currentDimStyle": "Текущий размерный стиль:  {name}  Аннотативный: Нет",
+      "dimStyleOfDimension": "Размерный стиль: {name}",
       "unknownDimStyle": "Неизвестный размерный стиль.",
       "namedDimStyles": "Именованные размерные стили:",
       "noMatchingDimStyles": "  Соответствующие размерные стили не найдены.",
@@ -3033,7 +3035,7 @@
       "listDimensionDefaultText": "текст по умолчанию",
       "listDimensionTextModifier": "модификатор размерного текста: {text}",
       "listDimensionStyle": "размерный стиль: \"{style}\"",
-      "listDimensionOverrides": "переопределения размерного стиля:\n DIMUPT      Вкл",
+      "listDimensionOverrides": "переопределения размерного стиля:",
       "listDimensionAnnotative": "Аннотативный: Нет",
       "listHatchPattern": "                 Образец штриховки {pattern}",
       "listHatchAnnotative": "                 Аннотативный: Нет",

@@ -128,7 +128,7 @@ HPORIGIN, DYNMODE, SHORTCUTMENU, PICKBOX, APERTURE, AUTOSNAP, POLARMODE, MBUTTON
 ZOOMFACTOR, LAYLOCKFADECTL); the DIMxxx variables (typed, AutoCAD makes a style override, which is
 not modelled: dimensions.md); `_.SETVAR` (the `.` prefix, command-line.md); values with no
 representation here, refused with `Cannot set` where AutoCAD takes them — CECOLOR's and CELTYPE's
-ByBlock, CECOLOR 0 and 8–255, CELWEIGHT −2 and −3, INSUNITS but 4, 5 and 6, HPNAME's `USER`,
+ByBlock, CECOLOR 0, CELWEIGHT −2 and −3, INSUNITS but 4, 5 and 6, HPNAME's `USER`,
 POLARANG 0 (polar tracking here needs an increment, p223), AFLAGS' Multiple lines bit 32 (-ATTDEF
 then asks a multiline attribute's lines, p224);
 NAVVCUBEDISPLAY keeps only bit 2, reading back 3 or 1 (WORKSPACE-D39 needs a file-format change),

@@ -35,7 +35,7 @@ describe("a new layer and layer 0 (LAY-06)", () => {
     const cad = createHarness()
     const id = cad.runtime.createLayer()
     for (const entry of [layer(cad, DEFAULT_LAYER_ID), layer(cad, id)]) {
-      expect(entry.color).toBe("#ffffff")
+      expect(entry.color).toBe("7")
       expect(entry.linetype).toBe("Continuous")
     }
   })
@@ -51,9 +51,9 @@ describe("a new layer and layer 0 (LAY-06)", () => {
 describe("U takes back a layer edit (LAY-01)", () => {
   it("a colour, naming the manager's step (p301; d04-2's '.-LAYER)", () => {
     const cad = createHarness()
-    cad.runtime.updateLayer(DEFAULT_LAYER_ID, { color: "#ff0000" })
+    cad.runtime.updateLayer(DEFAULT_LAYER_ID, { color: "1" })
     expect(written(cad, "U")).toEqual(["U", "'.-LAYER"])
-    expect(layer(cad, DEFAULT_LAYER_ID).color).toBe("#ffffff")
+    expect(layer(cad, DEFAULT_LAYER_ID).color).toBe("7")
   })
 
   it("a lock, which regenerates (p302; desktop d04-2)", () => {
@@ -88,12 +88,12 @@ describe("U takes back a layer edit (LAY-01)", () => {
 
   it("a deleted layer, back with its properties", () => {
     const cad = createHarness()
-    const id = cad.runtime.createLayer("L1", "#ff0000", false)
+    const id = cad.runtime.createLayer("L1", "1", false)
     answer(cad, "LINE", "0,0", "10,0", "")
     expect(cad.runtime.removeLayer(id)).toBe(true)
     expect(names(cad)).toEqual(["0"])
     answer(cad, "U")
-    expect(layer(cad, id)).toMatchObject({ name: "L1", color: "#ff0000" })
+    expect(layer(cad, id)).toMatchObject({ name: "L1", color: "1" })
   })
 
   it("the manager's current layer (p306: -LAYER Set)", () => {
@@ -107,7 +107,7 @@ describe("U takes back a layer edit (LAY-01)", () => {
 
   it("the drop-down's current layer with nothing selected, 'CLAYER (desktop d05-1; p308)", () => {
     const cad = createHarness()
-    const id = cad.runtime.createLayer("Walls", "#ff0000", false)
+    const id = cad.runtime.createLayer("Walls", "1", false)
     cad.runtime.applyLayerControl(id)
     expect(cad.state().currentLayerId).toBe(id)
     expect(written(cad, "U")).toEqual(["U", "'CLAYER"])
@@ -137,11 +137,11 @@ describe("U takes back a layer edit (LAY-01)", () => {
 describe("UNDO's Layer folds the manager's edits (LAY-07)", () => {
   it("consecutive edits are one step, every one named (desktop d04-3)", () => {
     const cad = createHarness()
-    const id = cad.runtime.createLayer("Off", "#0000ff", false)
+    const id = cad.runtime.createLayer("Off", "5", false)
     answer(cad, "LINE", "0,0", "10,0", "")
     cad.runtime.updateLayer(id, { visible: false })
     cad.runtime.updateLayer(id, { locked: true })
-    cad.runtime.updateLayer(id, { color: "#ff0000" })
+    cad.runtime.updateLayer(id, { color: "1" })
     expect(written(cad, "U")).toEqual([
       "U",
       "'.-LAYER '.-LAYER '.-LAYER Regenerating model.",
@@ -149,7 +149,7 @@ describe("UNDO's Layer folds the manager's edits (LAY-07)", () => {
     expect(layer(cad, id)).toMatchObject({
       visible: true,
       locked: false,
-      color: "#0000ff",
+      color: "5",
     })
     expect(cad.entityCount).toBe(1)
   })
@@ -178,7 +178,7 @@ describe("UNDO's Layer folds the manager's edits (LAY-07)", () => {
     const cad = createHarness()
     const id = cad.runtime.createLayer("L1", undefined, false)
     answer(cad, "LINE", "0,0", "10,0", "")
-    cad.runtime.updateLayer(id, { color: "#ff0000" })
+    cad.runtime.updateLayer(id, { color: "1" })
     expect(written(cad, "U")).toEqual(["U", "'.-LAYER"])
     expect(names(cad)).toEqual(["0", "L1"])
   })
@@ -194,10 +194,10 @@ describe("UNDO's Layer folds the manager's edits (LAY-07)", () => {
   it("an edit while a command runs joins its step", () => {
     const cad = createHarness()
     answer(cad, "LINE", "0,0", "10,0")
-    cad.runtime.updateLayer(DEFAULT_LAYER_ID, { color: "#ff0000" })
+    cad.runtime.updateLayer(DEFAULT_LAYER_ID, { color: "1" })
     answer(cad, "")
     expect(written(cad, "U")).toEqual(["U", "LINE"])
-    expect(layer(cad, DEFAULT_LAYER_ID).color).toBe("#ffffff")
+    expect(layer(cad, DEFAULT_LAYER_ID).color).toBe("7")
     expect(cad.entityCount).toBe(0)
   })
 })
@@ -267,12 +267,12 @@ describe("deleting a layer (LAY-02)", () => {
 describe("the manager's New Layer (LAY-05, desktop d04-4)", () => {
   it("copies the selected layer's colour, linetype and lineweight; the current layer stays", () => {
     const cad = createHarness()
-    const walls = cad.runtime.createLayer("Walls", "#ff0000", false)
+    const walls = cad.runtime.createLayer("Walls", "1", false)
     cad.runtime.updateLayer(walls, { linetype: "DASHED", lineweight: 0.5 })
     const id = cad.runtime.newLayer(walls)
     expect(layer(cad, id)).toMatchObject({
       name: "Layer1",
-      color: "#ff0000",
+      color: "1",
       linetype: "DASHED",
       lineweight: 0.5,
     })
@@ -281,9 +281,9 @@ describe("the manager's New Layer (LAY-05, desktop d04-4)", () => {
 
   it("with none selected takes the defaults", () => {
     const cad = createHarness()
-    cad.runtime.updateLayer(DEFAULT_LAYER_ID, { color: "#ff0000" })
+    cad.runtime.updateLayer(DEFAULT_LAYER_ID, { color: "1" })
     const id = cad.runtime.newLayer()
-    expect(layer(cad, id).color).toBe("#ffffff")
+    expect(layer(cad, id).color).toBe("7")
     expect(cad.state().currentLayerId).toBe(DEFAULT_LAYER_ID)
   })
 })

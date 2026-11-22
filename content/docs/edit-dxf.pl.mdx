@@ -3,7 +3,7 @@ title: Edytor DXF online
 metaTitle: "Edytor DXF online: edycja i zapis plików DXF"
 description: "Edytuj plik DXF za darmo w przeglądarce poleceniami AutoCADa i zapisz go ponownie jako DXF, AutoCAD 2000 do 2018. Bez instalacji, nic nie jest wysyłane."
 type: howTo
-sourceHash: "3b96ee37d43c"
+sourceHash: "74f66409765f"
 faq:
   - question: "Jak edytować plik DXF online?"
     answer: "Wybierz go lub upuść u góry tej strony: otworzy się w edytorze MellowCAD, w przeglądarce. Zmień go poleceniami AutoCADa, a potem polecenie NZAPISZ (Ctrl+Shift+S) lub DXFWY zapisze go ponownie jako plik DXF."
@@ -45,13 +45,13 @@ Plik jest pobierany, jak wszystko, co się tu zapisuje ([zapisywanie nie działa
 
 ## Co zawiera DXF [#holds]
 
-Każdy obiekt, jaki ma MellowCAD, zapisany tak, jak zapisuje go AutoCAD: linie, łuki, okręgi, elipsy, polilinie z ich szerokościami i wygładzeniem, polilinie 3D, splajny, tekst jednowierszowy i wielowierszowy, bloki z atrybutami, wymiary, kreskowania z ich wzorem, punkty, bryły 2D, a szyki jako blok ich elementów. Razem z nimi warstwy (włączone, wyłączone, zablokowane) z ich kolorem, rodzajem linii i szerokością linii, rodzaje linii rysunku, także złożone, i skala rodzaju linii każdego obiektu, style tekstu i wymiarowania, bloki oraz jednostki i ustawienia rysunku. Tekst zachowuje swoje znaki: do wersji 2004 w stronie kodowej Windows, której używa AutoCAD, z sekwencjami sterującymi dla pozostałych, a od 2007 w UTF-8.
+Każdy obiekt, jaki ma MellowCAD, zapisany tak, jak zapisuje go AutoCAD: linie, łuki, okręgi, elipsy, polilinie z ich szerokościami i wygładzeniem, polilinie 3D, splajny, tekst jednowierszowy i wielowierszowy, bloki z atrybutami, wymiary z tym, co każdy nadpisuje w swoim stylu, kreskowania z ich wzorem, punkty, bryły 2D, a szyki jako blok ich elementów. Razem z nimi każdy kolor taki, jaki był, indeksowany lub Truecolor, warstwy (włączone, wyłączone, zablokowane) z ich kolorem, rodzajem linii i szerokością linii, rodzaje linii rysunku, także złożone, i skala rodzaju linii każdego obiektu, style tekstu i wymiarowania, bloki oraz jednostki i ustawienia rysunku. Tekst zachowuje swoje znaki: do wersji 2004 w stronie kodowej Windows, której używa AutoCAD, z sekwencjami sterującymi dla pozostałych, a od 2007 w UTF-8.
 
 ## Czego nie ma w zapisanym pliku [#lost]
 
 - **To, co się nie otworzyło, nie jest zapisywane.** To, dla czego MellowCAD nie ma jeszcze obiektu – multilinie, tolerancje i [reszta tej listy](/docs/open-dxf#left-out) – jest liczone w wierszu polecenia przy otwieraniu pliku i nie trafia do zapisywanego pliku. Zachowaj oryginał.
 - **Bryły 3D i regiony nie są zapisywane**: wiersz polecenia podaje, ile ich pominięto.
-- Własne nadpisania stylu wymiaru i parametry szyku nie są zapisywane: AutoCAD otwiera wymiar z ustawieniami jego stylu, a szyk jako blok jego elementów.
+- Parametry szyku nie są zapisywane: AutoCAD otwiera szyk jako blok jego elementów. Nie jest zapisywane również to, co wymiar nadpisuje w swoim stylu bez odpowiednika w ustawieniach MellowCAD, na przykład jego kolory.
 - Nie ma miniatury podglądu, nie ma jeszcze typu DXF AutoCAD R12/LT2 i nie ma DWG.
 
 ## Utwórz DXF od zera [#new]

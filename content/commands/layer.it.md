@@ -2,7 +2,7 @@
 title: "Comando LAYER in AutoCAD"
 description: "Come funziona LAYER (LA) di AutoCAD in italiano: le colonne del Gestore proprietà layer, Nuovo, Elimina e Imposta corrente, e come agiscono On e Bloccato."
 figure: "Tre layer, ciascuno reso corrente prima di disegnarvi: muri in bianco, una porta in giallo, un asse in rosso con il tipo di linea Center."
-sourceHash: "85620b673df6"
+sourceHash: "429f8c52c2fa"
 ---
 
 LAYER apre il Gestore proprietà layer, dove i layer di un disegno vengono creati, nominati e impostati. Come in AutoCAD è una tavolozza, non una finestra di dialogo: resta aperta mentre disegni, qui come scheda del pannello delle tavolozze, finché <Command id="LAYERCLOSE" /> la chiude, e digitato con un apostrofo davanti dentro un altro comando, si apre senza terminare quel comando. Ogni oggetto sta su un layer, e il suo colore, il tipo di linea e lo spessore di linea, quando sono DaLayer, sono quelli del layer. I nuovi oggetti vanno sul layer corrente.

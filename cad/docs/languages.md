@@ -161,14 +161,15 @@ const fr: EngineLocale = {
 What the engine names, a host reads from its state and never copies. `state.names`
 (`EngineNames`) holds, in the interface language:
 
-| Field           | Keyed by                   | Where a host shows it                      |
-| --------------- | -------------------------- | ------------------------------------------ |
-| `snaps`         | `SnapType`                 | Snap menus, the status bar                 |
-| `colors`        | `STANDARD_COLORS[].id`     | Colour pickers                             |
-| `byLayer`       | —                          | Colour, linetype and lineweight pickers    |
-| `views`         | `ViewPreset`, and `custom` | The view menu (`state.view.preset`)        |
-| `viewCubeFaces` | `ViewCubeFace`             | The ViewCube (`state.viewCube`)            |
-| `compass`       | `CompassLetter`            | The ViewCube's compass                     |
+| Field           | Keyed by                          | Where a host shows it                   |
+| --------------- | --------------------------------- | --------------------------------------- |
+| `snaps`         | `SnapType`                        | Snap menus, the status bar              |
+| `colors`        | `STANDARD_COLORS[].id`            | Colour pickers                          |
+| `byLayer`       | —                                 | Colour, linetype and lineweight pickers |
+| `colorNumbers`  | An index colour, `"1"` to `"255"` | The palette's `Color 30` (`colorLabel`) |
+| `views`         | `ViewPreset`, and `custom`        | The view menu (`state.view.preset`)     |
+| `viewCubeFaces` | `ViewCubeFace`                    | The ViewCube (`state.viewCube`)         |
+| `compass`       | `CompassLetter`                   | The ViewCube's compass                  |
 
 Tool labels and aliases are `state.tools`, command descriptions `commandCatalog()`, and property
 rows come worded in `state.properties.info`. A shortcut menu (`state.shortcutMenu`) brings the

@@ -107,12 +107,23 @@ import {
   Layer,
   LayerId,
 } from "../domain/layers"
-import { EntityColor, STANDARD_COLORS } from "../domain/colors"
+import {
+  COLOR_BYLAYER,
+  EntityColor,
+  colorRgb,
+  legacyColor,
+} from "../domain/colors"
+import { colorLabel } from "./colorLabels"
 import type { HatchGradientName } from "../domain/hatchGradients"
 import { Linetype, LinetypeId } from "../domain/linetypes"
 import { Lineweight } from "../domain/lineweights"
 import { TextStyle, TextStyleId } from "../domain/textStyles"
-import { DEFAULT_DIM_STYLE, DimStyle, DimStyleId } from "../domain/dimStyles"
+import {
+  DEFAULT_DIM_STYLE,
+  DimStyle,
+  DimStyleId,
+  overriddenDimStyle,
+} from "../domain/dimStyles"
 
 /** Which of the two style tables the manager is showing. */
 export type StylesPanelTab = "dimension" | "text"
@@ -858,18 +869,14 @@ export function buildRolloverUi(
 ): RolloverUi {
   const names = text.names()
   const layer = layers.find((candidate) => candidate.id === entity.layerId)
-  const standard = STANDARD_COLORS.find((color) => color.value === entity.color)
   return {
     id: entity.id,
     at,
     title: text.entityName(entity),
-    color:
-      entity.color === undefined
-        ? names.byLayer
-        : standard
-          ? names.colors[standard.id]
-          : entity.color,
-    swatch: entity.color ?? layer?.color ?? DEFAULT_LAYER_COLOR,
+    // WHY the palette's words: the tooltip's for a numbered or true colour
+    // is unverified (desktop colors/d01 saw the palette's).
+    color: colorLabel(entity.color ?? COLOR_BYLAYER, names, "palette"),
+    swatch: colorRgb(entity.color ?? layer?.color ?? DEFAULT_LAYER_COLOR),
     layer: layer?.name ?? "",
     linetype: entity.linetype ?? names.byLayer,
   }
@@ -1795,10 +1802,14 @@ function singleEntityInfo(
     case "dimension": {
       // AutoCAD's title per kind and its groups, with the rows the model has
       // (desktop d04-1 to d04-7); no definition point is a row there. The
-      // style's values are read-only: an edit there is an override AutoCAD
-      // keeps on the object, and overrides are not modelled (DIMS-D3). The Dim
-      // style row is the General section's picker, as the text's style is.
-      const style = dimStyles?.(entity.styleId) ?? DEFAULT_DIM_STYLE
+      // style's values, with what the dimension overrides of it (a DXF's
+      // DSTYLE), are read-only: an edit there is an override AutoCAD keeps
+      // on the object, which nothing here makes (DIMS-D3). The Dim style row
+      // is the General section's picker, as the text's style is.
+      const style = overriddenDimStyle(
+        dimStyles?.(entity.styleId) ?? DEFAULT_DIM_STYLE,
+        entity.overrides
+      )
       const g = dimensionGeometry(entity, style)
       const textAt = at(g.textPoint)
       const plain = (value: number) => String(Number(value.toFixed(8)))
@@ -1868,13 +1879,8 @@ function singleEntityInfo(
         // unverified (no desktop pass), as is how it shows a colour that is
         // no named one (here `r,g,b`).
         const names = text.names()
-        const colorText = (color: string) => {
-          const standard = STANDARD_COLORS.find((each) => each.value === color)
-          if (standard) return names.colors[standard.id]
-          return [1, 3, 5]
-            .map((i) => parseInt(color.slice(i, i + 2), 16))
-            .join(",")
-        }
+        const colorText = (color: string) =>
+          colorLabel(legacyColor(color) ?? color, names, "palette")
         return {
           title: title("hatch"),
           count: 1,

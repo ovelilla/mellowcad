@@ -193,6 +193,7 @@
       "white": "Branco"
     },
     "byLayer": "PorCamada",
+    "colorNumber": "Cor {index}",
     "view": {
       "Top": "Superior",
       "Bottom": "Inferior",
@@ -2748,6 +2749,7 @@
       "invalid": "*Inválido*",
       "styleNameInUse": "Já existe um {table, select, dimension {estilo de cota} other {estilo de texto}} nomeado como \"{name}\".",
       "currentDimStyle": "Estilo de cota atual:  {name}  Anotativo: Não",
+      "dimStyleOfDimension": "Estilo de cota: {name}",
       "unknownDimStyle": "Estilo de cota desconhecido.",
       "namedDimStyles": "Estilos de cota nomeados:",
       "noMatchingDimStyles": "  Não foram encontrados estilos de cota coincidentes.",
@@ -3026,7 +3028,7 @@
       "listDimensionDefaultText": "texto padrão",
       "listDimensionTextModifier": "modificador do texto de cota: {text}",
       "listDimensionStyle": "estilo de cota: \"{style}\"",
-      "listDimensionOverrides": "sobreposições de estilo de cota:\n DIMUPT      Ativado",
+      "listDimensionOverrides": "sobreposições de estilo de cota:",
       "listDimensionAnnotative": "Anotativo: Não",
       "listHatchPattern": "                 Padrão de hachura {pattern}",
       "listHatchAnnotative": "                 Anotativo: Não",

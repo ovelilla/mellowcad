@@ -2,7 +2,7 @@
 title: "Warstwy w AutoCADzie: polecenie WARSTWA (LAYER)"
 description: "Jak pracować z warstwami w AutoCADzie: polecenie WARSTWA (LAYER, skrót WA), Menedżer właściwości warstw, tworzenie, usuwanie, wyłączanie i blokowanie."
 figure: "Trzy warstwy, każda ustawiona jako bieżąca przed rysowaniem na niej: ściany na biało, drzwi na żółto, oś na czerwono z rodzajem linii Center."
-sourceHash: "85620b673df6"
+sourceHash: "429f8c52c2fa"
 ---
 
 Polecenie WARSTWA (LAYER) otwiera Menedżer właściwości warstw, w którym tworzy się warstwy rysunku, nadaje im nazwy i ustawia ich właściwości. Jak w AutoCADzie jest to paleta, a nie okno dialogowe: zostaje otwarta, gdy rysujesz, tutaj jako karta panelu palet, dopóki nie zamknie jej polecenie <Command id="LAYERCLOSE" />, a wpisane z apostrofem wewnątrz innego polecenia otwiera się, nie przerywając go. Każdy obiekt leży na jakiejś warstwie, a jego kolor, rodzaj linii i szerokość linii, gdy są ustawione na JakWarstwa, są przejmowane z warstwy. Nowe obiekty trafiają na warstwę bieżącą.

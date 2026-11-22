@@ -2,10 +2,10 @@
 title: "Commande COULEUR (COLOR) dans AutoCAD"
 description: "COULEUR (COLOR, alias CL) d'AutoCAD en français règle la couleur des nouveaux objets : DuCalque, couleur d'index par nom ou numéro, ou RVB. Essayez-le."
 figure: "Une plaque dessinée DuCalque, son trou en rouge, son alésage en couleur vraie 0,128,255, puis COULEUR remise à DuCalque."
-sourceHash: "93793c2915da"
+sourceHash: "f0bfb2cf8fe7"
 ---
 
-COULEUR (COLOR en anglais) définit la couleur avec laquelle les nouveaux objets sont dessinés. AutoCAD ouvre la boîte de dialogue Sélectionner une couleur ; MellowCAD n'en a pas encore, donc COULEUR lance la forme ligne de commande qu'AutoCAD a aussi, <Command id="-COLOR" />. Elle demande la couleur par défaut de l'objet, en proposant la couleur courante, `DUCALQUE` dans un nouveau dessin : DuCalque signifie que chaque objet prend la couleur de son calque, et une couleur choisie à la place est celle de l'objet lui-même. Tapez le numéro ou le nom d'une couleur d'index, ou choisissez <Keyword id="Truecolor" />. Entrée conserve la couleur courante, et le changement est une étape que <Command id="U" /> annule.
+COULEUR (COLOR en anglais) définit la couleur avec laquelle les nouveaux objets sont dessinés. AutoCAD ouvre la boîte de dialogue Sélectionner une couleur ; MellowCAD n'en a pas encore, donc COULEUR lance la forme ligne de commande qu'AutoCAD a aussi, <Command id="-COLOR" />. Elle demande la couleur par défaut de l'objet, en proposant la couleur courante, `DUCALQUE` dans un nouveau dessin : DuCalque signifie que chaque objet prend la couleur de son calque, et une couleur choisie à la place est celle de l'objet lui-même. Tapez le numéro d'une couleur d'index, de 1 à 255, ou le nom de l'une des sept premières, ou choisissez <Keyword id="Truecolor" />. Entrée conserve la couleur courante, et le changement est une étape que <Command id="U" /> annule.
 
 Un mot qu'elle ne sait pas lire affiche <Message id="colorRequired" />, et 0, un nombre négatif ou un nombre supérieur à 255 <Message id="invalidColorNumber" /> ; la question revient. Tapée avec une apostrophe à l'intérieur d'une commande, `'COULEUR`, elle donne la nouvelle couleur à chaque objet dessiné ensuite : chaque segment de <Command id="LINE" /> prend la couleur courante au moment où il commence. COULEUR ne règle que ce qui suit ; la palette Propriétés ou la liste des couleurs de la barre supérieure modifie les objets déjà dessinés.
 
@@ -13,7 +13,7 @@ Un mot qu'elle ne sait pas lire affiche <Message id="colorRequired" />, et 0, un
 
 ### Truecolor
 
-Demande une couleur sous forme de trois valeurs de 0 à 255, rouge, vert et bleu, séparées par des virgules sans espace : `0,128,255` est un bleu moyen. Une couleur qui est aussi une couleur d'index, `255,0,0`, est enregistrée comme cette couleur d'index.
+Demande une couleur sous forme de trois valeurs de 0 à 255, rouge, vert et bleu, séparées par des virgules sans espace : `0,128,255` est un bleu moyen. Elle reste une couleur vraie même quand une couleur d'index a les mêmes valeurs RVB : après `255,0,0`, COULEUR propose `255,0,0`, et non rouge.
 
 ### BYLAYER
 
@@ -49,7 +49,7 @@ La couleur d'index 7, que l'on tape aussi `7` : blanche sur un fond sombre et n
 
 ## Missing
 
-La boîte de dialogue Sélectionner une couleur, les carnets de couleurs et la forme TSL. Les couleurs d'index 8 à 255 : seules les couleurs 1 à 7 sont acceptées. DuBloc. Une couleur vraie qui correspond à une couleur d'index est enregistrée comme cette couleur d'index, là où AutoCAD conserve les valeurs RVB. La transparence (CETRANSPARENCY), et les valeurs par défaut propres à chaque type, HPCOLOR, HPLAYER, DIMLAYER et TEXTLAYER.
+La boîte de dialogue Sélectionner une couleur, les carnets de couleurs et la forme TSL. DuBloc. La transparence (CETRANSPARENCY), et les valeurs par défaut propres à chaque type, HPCOLOR, HPLAYER, DIMLAYER et TEXTLAYER.
 
 ## Questions
 

@@ -2,7 +2,7 @@
 title: "Befehl LAYER (DDLMODI) in AutoCAD"
 description: "Wie LAYER (Alias LA) in AutoCAD funktioniert: die Spalten des Layer-Eigenschaften-Managers, Neu, Löschen, Aktuell und wie Ein und Sperren auf Objekte wirken."
 figure: "Drei Layer, jeder vor dem Zeichnen darauf aktuell gesetzt: Wände in Weiß, eine Tür in Gelb, eine Achse in Rot mit dem Linientyp Center."
-sourceHash: "85620b673df6"
+sourceHash: "429f8c52c2fa"
 ---
 
 LAYER öffnet den Layer-Eigenschaften-Manager, in dem die Layer einer Zeichnung angelegt, benannt und eingestellt werden. Wie in AutoCAD ist er eine Palette, kein Dialogfeld: Er bleibt beim Zeichnen geöffnet, hier als Registerkarte des Palettenbereichs, bis <Command id="LAYERCLOSE" /> ihn schließt, und mit vorangestelltem Apostroph innerhalb eines anderen Befehls eingegeben, öffnet er sich, ohne diesen Befehl zu beenden. Jedes Objekt liegt auf einem Layer, und seine Farbe, sein Linientyp und seine Linienstärke sind, wenn sie VonLayer sind, die des Layers. Neue Objekte kommen auf den aktuellen Layer.

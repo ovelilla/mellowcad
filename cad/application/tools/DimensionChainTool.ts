@@ -1,5 +1,10 @@
 import { Vec2, V } from "../../geometry/Vec2"
-import { DEFAULT_DIM_STYLE, DimStyle, DimStyleId } from "../../domain/dimStyles"
+import {
+  DEFAULT_DIM_STYLE,
+  DimStyle,
+  DimStyleId,
+  overriddenDimStyle,
+} from "../../domain/dimStyles"
 import {
   createDimension,
   DimensionEntity,
@@ -303,7 +308,10 @@ export class DimensionChainTool implements Tool {
     const current =
       ctx.document.getDimStyle(ctx.document.getCurrentDimStyleId()) ??
       DEFAULT_DIM_STYLE
-    const scale = this.styleOf(base, ctx).scale
+    const scale = overriddenDimStyle(
+      this.styleOf(base, ctx),
+      base.overrides
+    ).scale
     const spacing = current.baselineSpacing * (scale > 0 ? scale : 1)
     const step = V.scale(normal, side * spacing)
 

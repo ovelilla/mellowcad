@@ -3,7 +3,7 @@ title: DXF-fájl megnyitása online
 metaTitle: "DXF-fájl megnyitása online, ingyen"
 description: "Nyisson meg DXF-fájlt ingyen, online, feltöltés nélkül: AutoCAD R12–2018, ASCII vagy bináris, fóliákkal, szövegekkel, méretekkel, sraffozásokkal, blokkokkal."
 type: howTo
-sourceHash: "dc6533c55826"
+sourceHash: "9ec1ebd84955"
 faq:
   - question: "Hogyan nyithatok meg DXF-fájlt AutoCAD nélkül?"
     answer: "Válassza ki, vagy húzza az oldal tetejére: a MellowCAD megnyitja a szerkesztőjében, a böngészőben, telepítés és fiók nélkül. A szerkesztőben a MEGNYIT (Ctrl+O) és a DXFBE parancs is megnyitja."
@@ -25,8 +25,8 @@ A MellowCAD a böngészőben nyitja meg a DXF-fájlokat, és a szerkesztőjében
 
 - **DXF az AutoCAD R12-től 2018-ig** – a 2018-as az AutoCAD által írt legújabb DXF-formátum –, szöveges (ASCII) vagy bináris, akár az AutoCAD, akár más program készítette. A szöveg megtartja a karaktereit: 2004-ig a fájlban megnevezett kódlap szerint, 2007-től UTF-8-ban.
 - **Vonalak, ívek, körök, ellipszisek és vonalláncok** a szélességükkel, ív- és spline-illesztett formájukkal, 3D vonalláncok és spline-ok, valamint pontok a rajz [pontstílusával](/docs/commands/ptype) megrajzolva, 2D tömör objektumok a FILLMODE szerint kitöltve, 3D lapok, kitakarások, valamint szerkesztővonalak és sugarak.
-- **Egysoros és bekezdéses szöveg**, mutatók a szövegükkel, blokkok az attribútumaikkal, lineáris, illesztett, szög-, sugár- és átmérőméretek, valamint sraffozások, mindegyik a benne tárolt mintázatvonalakkal, ahogy az AutoCAD rajzolja: felhasználói minta vagy más program mintája is.
-- **Minden objektum fóliája**, színe, vonaltípusa és annak léptéke, vonalvastagsága, vastagsága és szintje, valamint a be-, kikapcsolt vagy zárolt fóliák; a fagyasztott fólia kikapcsolva nyílik meg.
+- **Egysoros és bekezdéses szöveg**, mutatók a szövegükkel, blokkok az attribútumaikkal, lineáris, illesztett, szög-, sugár- és átmérőméretek azzal, amit mindegyik felülír a stílusából, valamint sraffozások, mindegyik a benne tárolt mintázatvonalakkal, ahogy az AutoCAD rajzolja: felhasználói minta vagy más program mintája is.
+- **Minden objektum fóliája**, színe, indexszínként vagy True Color színként, vonaltípusa és annak léptéke, vonalvastagsága, vastagsága és szintje, valamint a be-, kikapcsolt vagy zárolt fóliák; a fagyasztott fólia kikapcsolva nyílik meg.
 - **A rajz vonaltípusai** a vonalkáikkal, pontjaikkal és hézagaikkal, a rajz vonaltípus-léptékében, és az összetett vonaltípusok szövege, például a GAS_LINE vonaltípusé.
 - **A rajz szöveg- és méretstílusai**, és a mértékegysége, ha az milliméter, centiméter vagy méter.
 
@@ -45,7 +45,7 @@ Az elrendezésekben lévő objektumokat külön számolja, mert elrendezések m�
 Néhány dolog megnyílik, de nem egészen olyan, mint volt:
 
 - Az összetett vonaltípusok, például a BATTING vagy a ZIGZAG alakzatai nem jelennek meg, csak a körülöttük lévő vonalkák és hézagok.
-- Az indexszel megadott szín RGB-színként nyílik meg, a Blokk szerint beállítás pedig Fólia szerint beállításként.
+- A Blokk szerint beállítás Fólia szerint beállításként nyílik meg, az pedig, amit egy méret felülír a stílusából, és amire a MellowCAD-ben nincs beállítás, például a színei, elvész.
 - A hüvelykben vagy lábban készült rajz megtartja a számait, amelyeket a program milliméterként értelmez.
 - A szöveg az Arial betűtípus méreteivel jelenik meg, bármilyen betűtípust nevez is meg a stílusa, szélességi tényező és dőlésszög nélkül.
 - A külső referencia megtartja a helyét és az elérési útját, és úgy jelenik meg, ahogy az AutoCAD rajzolja azt a referenciát, amelynek a rajzát nem találja: `Xref` és az elérési út a beszúrási pontjában. Egy weboldal csak a neki átadott fájlt olvashatja be, a mellette lévő rajzokat soha; ha újra DXF-ként menti, a referencia megmarad.

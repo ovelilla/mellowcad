@@ -193,6 +193,7 @@
       "white": "Bílá"
     },
     "byLayer": "DleHlad",
+    "colorNumber": "Barva {index}",
     "view": {
       "Top": "Horní",
       "Bottom": "Dolní",
@@ -2757,6 +2758,7 @@
       "invalid": "*Neplatné*",
       "styleNameInUse": "{table, select, dimension {kótovací styl} other {styl písma}} s názvem \"{name}\" již existuje.",
       "currentDimStyle": "Aktuální kótovací styl:  {name}   Poznámky: Ne",
+      "dimStyleOfDimension": "Kótovací styl: {name}",
       "unknownDimStyle": "Neznámý kótovací styl:",
       "namedDimStyles": "Pojmenované kótovací styly:",
       "noMatchingDimStyles": "  Nebyly nalezeny odpovídající kótovací styly.",
@@ -3035,7 +3037,7 @@
       "listDimensionDefaultText": "výchozí text",
       "listDimensionTextModifier": "modifikátor textu kóty: {text}",
       "listDimensionStyle": "kótovací styl: \"{style}\"",
-      "listDimensionOverrides": "přenastavení kótovacího stylu:\n DIMUPT      Ano",
+      "listDimensionOverrides": "přenastavení kótovacího stylu:",
       "listDimensionAnnotative": "Poznámka: Ne",
       "listHatchPattern": "                 Šrafovací vzor {pattern}",
       "listHatchAnnotative": "                 Poznámky: Ne",

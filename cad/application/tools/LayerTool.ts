@@ -1,5 +1,5 @@
 import { Vec2 } from "../../geometry/Vec2"
-import { EntityColor, STANDARD_COLORS } from "../../domain/colors"
+import { EntityColor, STANDARD_COLORS, indexColor } from "../../domain/colors"
 import { Entity } from "../../domain/entities"
 import {
   compareLayerNames,
@@ -1031,20 +1031,16 @@ function names(typed: string): string[] {
 }
 
 /**
- * The colour typed at `New color`: an index colour by number, its negative
- * turning the layers off, or an English name whole; `"refused"`, the refusal
- * said, to ask again. WHY nothing said for 8 to 255: AutoCAD takes them, and
- * only their RGB values are missing here (as -COLOR's).
+ * The colour typed at `New color`: an index colour by number, 1 to 255
+ * (colors/c02: `for color 30`), its negative turning the layers off, or an
+ * English name whole; `"refused"`, the refusal said, to ask again.
  */
 function readLayerColor(typed: string, ctx: ToolContext): Change | "refused" {
   if (/^[-+]?\d+$/.test(typed)) {
     const number = Number(typed)
-    const standard = STANDARD_COLORS[Math.abs(number) - 1]
-    if (standard)
-      return { kind: "color", color: standard.value, off: number < 0 }
-    if (number === 0 || Math.abs(number) > 255) {
-      ctx.report(ctx.text.message("invalidColorNumber"), "error")
-    }
+    const color = indexColor(Math.abs(number))
+    if (color) return { kind: "color", color, off: number < 0 }
+    ctx.report(ctx.text.message("invalidColorNumber"), "error")
     return "refused"
   }
   const at = COLOR_NAMES.indexOf(typed.toUpperCase())

@@ -32,6 +32,16 @@
 - **The shortcut menu** over dimensions alone (d07-1): Dimension Style ▸ lists the table's styles,
   theirs checked, and puts them on the one chosen in one step (U names it as the drop-downs'
   `CHPROP`, unverified for this entry).
+- **Its overrides of its style**, as AutoCAD keeps them on the object (DIMOVERRIDE, a palette
+  edit; a DXF's DSTYLE xdata, colors/s01), of the variables a style holds here (DIMTXT, DIMASZ,
+  DIMEXO, DIMEXE, DIMGAP, DIMDLI, DIMCEN, DIMDEC, DIMADEC, DIMDSEP, DIMZIN's 8, DIMTOFL,
+  DIMSCALE): drawn, measured and written with them, shown in the palette's rows, kept by every
+  transform and copy, and listed by LIST under `dimension style overrides:` alphabetically, a
+  distance at LUPREC, a switch in -DIMSTYLE's words (`DIMTOFL     Off`, es `DES`), with the DIMUPT
+  On a radial one has (colors/s01, s02 in the ten console languages; the Italian line was missing
+  until then); DIMSPACE's Auto reads the base dimension's DIMDLI with them. AutoCAD's console opens
+  the DXF written from AutoCAD's own file (2000 and 2018, text and binary) without an AUDIT error
+  and lists the same overrides (colors/v01), but the radial one's DIMUPT, which is not written.
 
 **Missing:**
 
@@ -40,8 +50,12 @@
   end's Stretch, Continue Dimension, Baseline Dimension, Flip Arrow (d02-2); an origin has none
   (d02-3). The plain drag is each one's default (Move with Dim Line, Stretch). Ctrl-cycling the
   grip modes is not built either.
-- **The shortcut menu's** Precision ▸ and Remove Style Overrides (dimension style overrides are not
-  modelled), Annotative Object Scale ▸ (greyed there; no annotative scaling); what Dimension Style
+- **Making an override**: DIMOVERRIDE and an edit of a style's row in the palette, which make one
+  on the object; a dimension holds only those a DXF brings, and none of a variable no style holds
+  here (DIMCLRD, DIMUPT…: dropped on opening). MATCHPROP's Dimension gives the style alone;
+  whether AutoCAD's carries the overrides too is **unverified**.
+- **The shortcut menu's** Precision ▸ and Remove Style Overrides (nothing here makes or removes
+  an override: only a DXF brings one), Annotative Object Scale ▸ (greyed there; no annotative scaling); what Dimension Style
   ▸ lists beyond the styles was not seen.
 - **The palette's** rows for what is not modelled: Associative, Arrow 1 and 2, the dimension and
   extension lines' lineweights, colours, linetypes and suppression, Ext line fixed, Fill color,
@@ -385,8 +399,10 @@ take says `Invalid option keyword.` and asks again (p11).
   current style's variables; **Variables** asks for a style the way Restore does and lists its
   variables (p06, p07). Both list only the variables modelled (DIMADEC, DIMASZ, DIMCEN, DIMDEC,
   DIMDLI, DIMDSEP, DIMEXE, DIMEXO, DIMGAP, DIMSCALE, DIMTXT, DIMZIN), in AutoCAD's columns and
-  words, both languages.
-- **Apply**: `Select objects:`; the dimensions selected take the current style (p16).
+  words, both languages. Variables at a selected dimension says `Dimension style: ISO-25`
+  (AcDimRes 5316) and only what it overrides, at LUPREC (` DIMTXT      5.00`; colors/s03, s04).
+- **Apply**: `Select objects:`; the dimensions selected take the current style (p16), losing their
+  own overrides (colors/s03: LIST lists none after it), one already on it too.
 - **`?`**: `Enter dimension style(s) to list <*>:`, then `Named dimension styles:` (es `Estilos de
   cota guardados:`) and the styles matching, in the table's order (p07, p10), or `No matching
   dimension styles found.` (table AcDimRes 5300). The blank line under the heading is the table's;

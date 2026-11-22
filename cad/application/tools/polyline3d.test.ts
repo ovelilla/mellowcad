@@ -449,7 +449,7 @@ describe("3DPOLY in the session", () => {
     ])
     expect(layerName(cad, poly)).toBe("L1")
     expect(poly).toMatchObject({
-      color: "#ff0000",
+      color: "1",
       linetype: "DASHED",
       lineweight: 0.5,
     })

@@ -5,8 +5,9 @@
 > hace push (se sigue desarrollando y haciendo commit) hasta que §4 se cumpla. El proxy de
 > Cloudflare (§5) funciona desde el 18/11 a las 00:40. El 20/11 las lecturas de ISR pasaron del
 > millón (§3). Desde el 21/11 a las 09:40 el sitio es un export estático en producción, que deja
-> las lecturas de ISR de las páginas en cero: la lectura del 22/11 lo confirma (§4), y entonces se
-> aplica la zona de Cloudflare, que reabre el sitio a los rastreadores (§5).
+> las lecturas de ISR de las páginas en cero: la lectura del 22/11 a las 00:45 lo confirmó (cero en
+> 12 h, §3), así que §4 se cumple; el push y la zona de Cloudflare, que reabre el sitio a los
+> rastreadores (§5), esperan la palabra del dueño.
 
 ## 1. El problema
 
@@ -45,6 +46,7 @@ Traffic. La CLI no sirve: en Hobby sus métricas solo cubren 30 minutos.
 | 19/11 11:10 | 789.877 | 18/11: ~76K | 6,05 GB | ventana hasta las 03:00: +10,8K en 11 h |
 | 20/11 10:40 | **1.005.030** | 19/11: ~50K | 7,9 GB | límite pasado; ventana hasta el 20/11 a las 02:00 |
 | 21/11 09:00 | 1M (el proyecto, 864K) | — | **8,14 GB** (el proyecto, 6,63) | ventana hasta el 21/11 a las 00:00; el mismo día, el export estático a producción |
+| 22/11 00:45 | el proyecto, 865K | — | el proyecto, 6,63 GB | ventana hasta el 21/11 a las 16:00; Observability, 12 h ya estáticas: **0 lecturas de ISR** |
 
 El 19/11 el panel de uso aún cerraba su ventana el 18/11 a las 16:00, así que el ritmo de después
 se leyó en Observability (últimas 12 h, todas ya con Cloudflare): **28K unidades de lectura de ISR
@@ -80,6 +82,15 @@ Cloudflare, pero no es la fuga: los fallos de Cloudflare cuadran con lo que ve V
 se mandó el lote de indexación de Google (§7 de `docs/next-seo.md`): cada URL pedida es otro
 rastreo que falla la caché.
 
+El 22/11 a las 00:45 el panel de uso aún cerraba su ventana el 21/11 a las 16:00, seis horas
+después del export, y sus totales del proyecto eran los de la víspera (865K lecturas, 6,63 GB).
+Observability, en las últimas 12 h (del 21/11 a las 12:45 en adelante, todas con el sitio
+estático): ISR **sin datos, cero unidades de lectura y de escritura**, y 5,3K peticiones al CDN de
+Vercel (unas 10,6K al día: la ingesta de Web Analytics 740, `/en/404` 331, servido de caché al 99 %,
+la de Speed Insights 281, `/api/mcp` 51, y el resto ficheros de `_next/static` servidos de caché
+al 77–87 %). La función de `/mcp` da un 65 % de «Timeout» en 4,4 s de CPU y 0 % de errores: sin
+mirar; quizá sus GET de streaming, que esperan hasta vencer. §4 se cumple por su tercera condición.
+
 Pro (20 $/mes, con 20 $ de crédito de uso al mes) no tiene límite de lecturas de ISR, sino precio:
 0,40–0,64 $ por millón de unidades, y Fast Origin Transfer a 0,06–0,43 $ el GB; el uso de este mes
 cabría en el crédito. Pasarse a Pro es decisión del dueño (gasto), pendiente el 20/11.
@@ -98,7 +109,8 @@ que esperaba en `main`: el húngaro, el japonés y el coreano (las 381 URL de `/
 están en el sitemap de producción), WIPEOUT, IMAGE, la tabla, MULTILEADER, XLINE y RAY, la
 búsqueda de la documentación y la función del MCP. Desde entonces el congelado sigue: esperan
 `2348a4df` y `217fe33e` (MINSERT y su página) y el chino, hasta que la lectura del 22/11 confirme
-las lecturas de ISR en cero y el dueño dé su palabra.
+las lecturas de ISR en cero y el dueño dé su palabra. La lectura del 22/11 (00:45) las confirmó en
+cero: falta solo la palabra del dueño.
 
 ## 5. La caché de Cloudflare delante de Vercel
 

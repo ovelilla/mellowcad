@@ -197,6 +197,12 @@ export const ja: EngineLocale = {
       "white": "白"
     },
     "byLayer": "ByLayer",
+    "colorNumber": [
+      "色 ",
+      [
+        "index"
+      ]
+    ],
     "view": {
       "Top": "平面図",
       "Bottom": "下面図",

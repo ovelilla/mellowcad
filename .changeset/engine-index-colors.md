@@ -1,0 +1,5 @@
+---
+"@mellowcad/engine": minor
+---
+
+Index colours as AutoCAD keeps them: an `EntityColor` is an index colour, 1 to 255, written as its number (`"30"`), or a true colour, `"#rrggbb"`, the two kept apart even where their RGB agrees (a true 255,0,0 is not index 1). `STANDARD_COLORS` now holds `"1"` to `"7"`, and layer 0 and a new layer are `"7"`; `colorRgb` gives any colour's RGB and `colorLabel` names it as the Properties palette (`Color 30`), the ribbon's list (`30`) or the layer manager does, a true colour `255,127,0`. -COLOR, CECOLOR, CHPROP and -LAYER's Color take every index colour, 8 to 255 too, and keep a true colour one; LIST and -LAYER's `?` write `Color: 30` and `255,0,0`. A DXF opens an index colour (62) as that index and a true colour (420) as itself, and saves them as AutoCAD's DXFOUT does: the index alone, or the nearest index beside the true colour. Drawing file version 64; an older file's colour that is an index colour's RGB opens as that index. New: `EngineNames.colorNumbers` and the catalog key `interface.colorNumber`.

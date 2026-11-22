@@ -541,6 +541,8 @@ export interface ToolText {
   hatchPatternListing(id: string): string
   /** One line of -DIMSTYLE's STatus and Variables listings. */
   dimVariableListing(name: string, value: string | boolean): string
+  /** One of a dimension's overrides as LIST writes it. */
+  dimOverrideLine(name: string, value: string | boolean): string
   /**
    * The keyword `input` names among `ids`, for a prompt whose keywords the
    * tool reads from a free-text field itself (TEXT's Justify).

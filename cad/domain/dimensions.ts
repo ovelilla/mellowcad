@@ -11,6 +11,7 @@ import {
   DimStyle,
   DimStyleId,
   angleDecimalsOf,
+  overriddenDimStyle,
   scaledDimStyle,
 } from "./dimStyles"
 import { EntityId, DimensionKind, DimensionEntity } from "./entityTypes"
@@ -194,9 +195,10 @@ export function dimensionText(
  */
 export function dimensionMeasurementText(
   dim: DimensionEntity,
-  style: DimStyle = DEFAULT_DIM_STYLE,
+  base: DimStyle = DEFAULT_DIM_STYLE,
   form: "drawn" | "reported" = "drawn"
 ): string {
+  const style = overriddenDimStyle(base, dim.overrides)
   const measured = dimensionMeasurement(dim)
   const drawn = form === "drawn"
   const separator = drawn ? style.decimalSeparator : "."
@@ -300,7 +302,9 @@ export function dimensionGeometry(
   dim: DimensionEntity,
   style: DimStyle = DEFAULT_DIM_STYLE
 ): DimensionGeometry {
-  const sized = scaledDimStyle(style)
+  // Every caller hands the style by its id: what the dimension overrides of
+  // it (DSTYLE) is laid over here, once for all of them.
+  const sized = scaledDimStyle(overriddenDimStyle(style, dim.overrides))
   if (dim.kind === "angular") return angularGeometry(dim, sized)
   if (dim.kind === "radius" || dim.kind === "diameter")
     return radialGeometry(dim, sized)

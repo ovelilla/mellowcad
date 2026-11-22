@@ -1,5 +1,5 @@
 import { Vec2 } from "../geometry/Vec2"
-import { EntityColor } from "./colors"
+import { EntityColor, colorChannels } from "./colors"
 
 /**
  * AutoCAD's nine gradient fills, by the name a drawing stores (DXF 470), in
@@ -241,17 +241,11 @@ export function mixColors(
   to: EntityColor,
   t: number
 ): EntityColor {
-  const a = rgb(from)
-  const b = rgb(to)
+  const a = colorChannels(from)
+  const b = colorChannels(to)
   const k = Math.min(Math.max(t, 0), 1)
   return `#${a
     .map((c, i) => Math.round(c + (b[i] - c) * k))
     .map((c) => c.toString(16).padStart(2, "0"))
     .join("")}`
-}
-
-function rgb(color: EntityColor): [number, number, number] {
-  const hex = /^#([0-9a-f]{6})$/i.exec(color)?.[1] ?? "000000"
-  const value = parseInt(hex, 16)
-  return [(value >> 16) & 255, (value >> 8) & 255, value & 255]
 }

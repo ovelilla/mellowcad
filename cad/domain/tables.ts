@@ -50,7 +50,7 @@ export type TableRowKind = "data" | "title" | "header"
  * its insertion point, index colour 8 and lineweight 0, which EXPLODE
  * leaves as it is (table/t03, t06, t06b).
  */
-const MARKER_COLOR = "#808080"
+const MARKER_COLOR = "8"
 
 export function tableRowCount(table: TableEntity): number {
   return table.rowHeights.length

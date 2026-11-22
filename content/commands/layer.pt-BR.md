@@ -3,7 +3,7 @@ title: "Comando LAYER (CAMADA) no AutoCAD"
 metaTitle: "Layers no AutoCAD: comando LAYER (CAMADA)"
 description: "O LAYER do AutoCAD em português, CAMADA (alias CA): Gerenciador de propriedades de camadas, criar, excluir, desativar e bloquear layers. Experimente grátis."
 figure: "Três camadas, cada uma tornada atual antes de desenhar nela: as paredes em branco, uma porta em amarelo e um eixo em vermelho, traço e ponto."
-sourceHash: "85620b673df6"
+sourceHash: "429f8c52c2fa"
 ---
 
 O LAYER, CAMADA no AutoCAD em português, abre o Gerenciador de propriedades de camadas, onde as camadas do desenho são criadas, nomeadas e configuradas. Como no AutoCAD, é uma paleta e não uma caixa de diálogo: fica aberta enquanto você desenha, aqui como uma guia do painel de paletas, até o <Command id="LAYERCLOSE" /> fechá-la, e digitado com um apóstrofo na frente dentro de outro comando, ele se abre sem encerrar esse comando. Todo objeto está numa camada, e a cor, o tipo de linha e a espessura de linha dele, quando são PorCamada, são os da camada. Os objetos novos vão para a camada atual.

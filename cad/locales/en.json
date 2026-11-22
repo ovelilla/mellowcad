@@ -193,6 +193,7 @@
       "white": "White"
     },
     "byLayer": "ByLayer",
+    "colorNumber": "Color {index}",
     "view": {
       "Top": "Top",
       "Bottom": "Bottom",
@@ -2627,6 +2628,7 @@
       "invalid": "*Invalid*",
       "styleNameInUse": "A {table, select, dimension {dimension style} other {text style}} named \"{name}\" already exists.",
       "currentDimStyle": "Current dimension style: {name}   Annotative: No",
+      "dimStyleOfDimension": "Dimension style: {name}",
       "unknownDimStyle": "Unknown dimension style.",
       "namedDimStyles": "Named dimension styles:",
       "noMatchingDimStyles": "  No matching dimension styles found.",
@@ -2905,7 +2907,7 @@
       "listDimensionDefaultText": "default text",
       "listDimensionTextModifier": "dimension text modifier: {text}",
       "listDimensionStyle": "dimension style: \"{style}\"",
-      "listDimensionOverrides": "dimension style overrides:\n DIMUPT      On",
+      "listDimensionOverrides": "dimension style overrides:",
       "listDimensionAnnotative": "Annotative: No",
       "listHatchPattern": "                 Hatch pattern {pattern}",
       "listHatchAnnotative": "                 Annotative: No",

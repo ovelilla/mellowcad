@@ -2,7 +2,7 @@
 title: "Commande CALQUE (LAYER) dans AutoCAD"
 description: "CALQUE (LAYER, alias PL) d'AutoCAD en français : le Gestionnaire des propriétés des calques, créer, supprimer, désactiver et verrouiller. Essayez-le en ligne."
 figure: "Trois calques, chacun rendu courant avant de dessiner dessus : les murs en blanc, une porte en jaune, un axe en rouge avec le type de ligne CENTER."
-sourceHash: "85620b673df6"
+sourceHash: "429f8c52c2fa"
 ---
 
 CALQUE (LAYER) ouvre le Gestionnaire des propriétés des calques, où les calques d'un dessin sont créés, nommés et réglés. Comme dans AutoCAD, c'est une palette, pas une boîte de dialogue : elle reste ouverte pendant que vous dessinez, ici comme un onglet du panneau des palettes, jusqu'à ce que <Command id="LAYERCLOSE" /> la ferme, et tapée avec une apostrophe devant à l'intérieur d'une autre commande, elle s'ouvre sans terminer cette commande. Chaque objet est sur un calque, et sa couleur, son type de ligne et son épaisseur de ligne, quand ils sont DuCalque, sont ceux du calque. Les nouveaux objets vont sur le calque courant.

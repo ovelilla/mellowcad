@@ -202,11 +202,11 @@ describe("REGION", () => {
 
   it("wears the current layer and properties, not the objects' (p07, p10)", () => {
     const cad = createHarness({
-      entities: [{ ...circleOf(p(0, 0), 5), color: "#ff0000" }],
+      entities: [{ ...circleOf(p(0, 0), 5), color: "1" }],
     })
     answer(cad, "CECOLOR", "3", "REGION", "ALL", "")
     const [region] = regions(cad)
-    expect(region.color).toBe("#00ff00")
+    expect(region.color).toBe("3")
     expect(region.layerId).toBe(cad.runtime.document.getCurrentLayerId())
   })
 
@@ -1534,7 +1534,7 @@ describe("a region in the other commands", () => {
     // Their order and directions are REGION's Missing (REGIONS-D21).
     expect(cad.typeCounts()).toEqual({ spline: 1, line: 5, ellipse: 1, arc: 1 })
     for (const piece of cad.entities()) {
-      expect([piece.layerId, piece.color]).toEqual([l1, "#ff0000"])
+      expect([piece.layerId, piece.color]).toEqual([l1, "1"])
     }
   })
 
@@ -1602,11 +1602,11 @@ describe("a region in the other commands", () => {
     const l1 = cad.runtime.createLayer("L1")
     cad.select(before.id)
     cad.runtime.setSelectionLayer(l1)
-    cad.runtime.setSelectionColor("#ff0000")
+    cad.runtime.setSelectionColor("1")
     expect(regions(cad)[0]).toEqual({
       ...before,
       layerId: l1,
-      color: "#ff0000",
+      color: "1",
     })
     cad.escape()
     expect(written(cad, "U")).toEqual(["U", "CHPROP"])

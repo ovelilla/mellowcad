@@ -167,7 +167,9 @@ runs. Escape on the drawing closes whichever menu is open.
   `applyLinetypeControl` and `applyLineweightControl`, showing `selectionColor` and its
   siblings, or the current values with nothing selected. Their lists are `STANDARD_COLORS` and
   `LINEWEIGHTS`, named in `state.names`, and the drawing's own linetypes, `state.linetypes`, each
-  shown by its name (`linetypeDashes` draws its sample).
+  shown by its name (`linetypeDashes` draws its sample). A colour is AutoCAD's index colour, its
+  number (`"30"`), or a true colour, `"#rrggbb"`: `colorLabel` names either as the palette, the
+  ribbon's list or the layer manager does, and `colorRgb` gives the RGB to paint a swatch with.
 - **The Properties palette** is `state.properties`: a type filter (`filters`,
   `setPropertiesFilter`) and `info`, the rows to show in groups. A row with `edit` can be retyped:
   `setSelectionProperty(row.edit.property, text)`.

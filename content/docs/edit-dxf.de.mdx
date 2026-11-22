@@ -3,7 +3,7 @@ title: DXF-Datei online bearbeiten
 metaTitle: "DXF-Datei bearbeiten (online, kostenlos)"
 description: "DXF-Datei kostenlos im Browser mit den Befehlen von AutoCAD bearbeiten und wieder als DXF speichern, AutoCAD 2000 bis 2018. Ohne Installation, ohne Upload."
 type: howTo
-sourceHash: "3b96ee37d43c"
+sourceHash: "74f66409765f"
 faq:
   - question: "Wie bearbeite ich eine DXF-Datei online?"
     answer: "Wählen Sie sie oben auf dieser Seite aus oder ziehen Sie sie dorthin: Sie öffnet sich im Editor von MellowCAD, in Ihrem Browser. Ändern Sie sie mit den Befehlen von AutoCAD, dann speichert SICHALS (Strg+Umschalt+S) oder DXFOUT sie wieder als DXF-Datei."
@@ -45,13 +45,13 @@ Die Datei wird heruntergeladen, wie alles, was hier gespeichert wird ([das Speic
 
 ## Was das DXF enthält [#holds]
 
-MellowCAD schreibt jedes seiner Objekte so, wie AutoCAD es schreibt: Linien, Bögen, Kreise, Ellipsen, Polylinien mit ihren Breiten und Kurvenanpassungen, 3D-Polylinien, Splines, einzeiliger und mehrzeiliger Text, Blöcke mit ihren Attributen, Bemaßungen, Schraffuren mit ihrem Muster, Punkte, 2D-Volumenkörper und Reihen als Block ihrer Elemente. Dazu die Layer (ein, aus, gesperrt) mit Farbe, Linientyp und Linienstärke, die Linientypen der Zeichnung, auch komplexe, und der Linientypfaktor jedes Objekts, die Text- und Bemaßungsstile, die Blöcke sowie die Einheiten und Einstellungen der Zeichnung. Text behält seine Zeichen: bis 2004 in der Windows-Codepage, die AutoCAD verwendet, mit einer Escape-Folge für den Rest, und ab 2007 in UTF-8.
+MellowCAD schreibt jedes seiner Objekte so, wie AutoCAD es schreibt: Linien, Bögen, Kreise, Ellipsen, Polylinien mit ihren Breiten und Kurvenanpassungen, 3D-Polylinien, Splines, einzeiliger und mehrzeiliger Text, Blöcke mit ihren Attributen, Bemaßungen mit dem, was jede an ihrem Stil überschreibt, Schraffuren mit ihrem Muster, Punkte, 2D-Volumenkörper und Reihen als Block ihrer Elemente. Dazu jede Farbe, wie sie war, als Indexfarbe oder True Color, die Layer (ein, aus, gesperrt) mit Farbe, Linientyp und Linienstärke, die Linientypen der Zeichnung, auch komplexe, und der Linientypfaktor jedes Objekts, die Text- und Bemaßungsstile, die Blöcke sowie die Einheiten und Einstellungen der Zeichnung. Text behält seine Zeichen: bis 2004 in der Windows-Codepage, die AutoCAD verwendet, mit einer Escape-Folge für den Rest, und ab 2007 in UTF-8.
 
 ## Was nicht zurückkommt [#lost]
 
 - **Was sich nicht geöffnet hat, wird nicht gespeichert.** Wofür MellowCAD noch kein Objekt hat — Mehrfachlinien, Toleranzen und [der Rest dieser Liste](/docs/open-dxf#left-out) — wird beim Öffnen der Datei in der Befehlszeile gezählt und steht nicht in der Datei, die Sie speichern. Behalten Sie das Original.
 - **3D-Volumenkörper und Regionen werden nicht geschrieben**: Die Befehlszeile nennt, wie viele ausgelassen wurden.
-- Die eigenen Stilüberschreibungen einer Bemaßung und die Parameter einer Reihe werden nicht geschrieben: AutoCAD öffnet die Bemaßung mit den Einstellungen ihres Stils und die Reihe als Block ihrer Elemente.
+- Die Parameter einer Reihe werden nicht geschrieben: AutoCAD öffnet die Reihe als Block ihrer Elemente. Ebenso wenig, was eine Bemaßung an ihrem Stil überschreibt, wofür MellowCAD keine Einstellung hat, etwa ihre Farben.
 - Es gibt keine Miniaturvorschau, noch keinen DXF-Typ AutoCAD R12/LT2 und keine DWG-Dateien.
 
 ## Ein DXF von Grund auf neu erstellen [#new]

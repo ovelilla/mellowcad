@@ -2,6 +2,7 @@ import { Vec2, V } from "../../geometry/Vec2"
 import { normalizeAngle } from "../../geometry/primitives"
 import {
   DEFAULT_DIM_STYLE,
+  overriddenDimStyle,
   DimStyle,
   scaledDimStyle,
 } from "../../domain/dimStyles"
@@ -344,7 +345,10 @@ export class DimSpaceTool implements Tool {
   }
 
   private styleOf(dim: DimensionEntity, ctx: ToolContext): DimStyle {
-    return ctx.document.getDimStyle(dim.styleId) ?? DEFAULT_DIM_STYLE
+    return overriddenDimStyle(
+      ctx.document.getDimStyle(dim.styleId) ?? DEFAULT_DIM_STYLE,
+      dim.overrides
+    )
   }
 
   private enterBase(ctx: ToolContext): void {

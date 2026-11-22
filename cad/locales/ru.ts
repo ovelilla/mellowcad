@@ -197,6 +197,12 @@ export const ru: EngineLocale = {
       "white": "Белый"
     },
     "byLayer": "ПоСлою",
+    "colorNumber": [
+      "Цвет ",
+      [
+        "index"
+      ]
+    ],
     "view": {
       "Top": "Сверху",
       "Bottom": "Снизу",
@@ -5494,6 +5500,12 @@ export const ru: EngineLocale = {
         ],
         "  Аннотативный: Нет"
       ],
+      "dimStyleOfDimension": [
+        "Размерный стиль: ",
+        [
+          "name"
+        ]
+      ],
       "unknownDimStyle": "Неизвестный размерный стиль.",
       "namedDimStyles": "Именованные размерные стили:",
       "noMatchingDimStyles": "  Соответствующие размерные стили не найдены.",
@@ -7907,7 +7919,7 @@ export const ru: EngineLocale = {
         ],
         "\""
       ],
-      "listDimensionOverrides": "переопределения размерного стиля:\n DIMUPT      Вкл",
+      "listDimensionOverrides": "переопределения размерного стиля:",
       "listDimensionAnnotative": "Аннотативный: Нет",
       "listHatchPattern": [
         "                 Образец штриховки ",

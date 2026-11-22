@@ -596,7 +596,7 @@ describe("rollover tooltip", () => {
       entities: [
         {
           ...lineOf(p(0, 0), p(100, 0), { id: "L1" }),
-          color: "#ff0000",
+          color: "1",
           linetype: "DASHED",
         },
       ],
@@ -610,6 +610,32 @@ describe("rollover tooltip", () => {
     })
     cad.command("LINE").moveTo(p(50, 1))
     expect(cad.state().rollover).toBeNull()
+  })
+
+  it("draws and names an index colour past 7 in AutoCAD's RGB, a true colour in its own", () => {
+    const cad = createHarness({
+      entities: [
+        { ...lineOf(p(0, 0), p(100, 0), { id: "L1" }), color: "30" },
+        { ...lineOf(p(0, 50), p(100, 50), { id: "L2" }), color: "#0a141e" },
+      ],
+    })
+    cad.moveTo(p(40, 1))
+    expect(cad.state().rollover).toMatchObject({
+      color: "Color 30",
+      swatch: "#ff7f00",
+    })
+    cad.moveTo(p(40, 51))
+    expect(cad.state().rollover).toMatchObject({
+      color: "10,20,30",
+      swatch: "#0a141e",
+    })
+    cad.moveTo(p(500, 300))
+    const strokes = cad
+      .scene()
+      .primitives.flatMap((q) =>
+        q.kind === "segment" && q.stroke ? [q.stroke.color] : []
+      )
+    expect(strokes).toEqual(expect.arrayContaining(["#ff7f00", "#0a141e"]))
   })
 
   it("describes a locked object too, beside the padlock and with no glow (desktop properties/d01-1, d01-3)", () => {

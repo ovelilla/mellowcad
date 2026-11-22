@@ -36,7 +36,7 @@ export const DEFAULT_LAYER_ID: LayerId = "0"
  * Layer 0's colour and a new layer's: AutoCAD's index colour 7, white (p300:
  * group 62 is 7), drawn in the screen's foreground (`drawnColor`).
  */
-export const DEFAULT_LAYER_COLOR = "#ffffff"
+export const DEFAULT_LAYER_COLOR = "7"
 
 /**
  * What a layer name may not hold, as AutoCAD's Layer Properties Manager lists

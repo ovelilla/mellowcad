@@ -42,9 +42,9 @@ export const FIGURE_LAYERS: LayerNames = {
 /** How each layer looks: the colours and linetypes of a common drafting template. */
 const LAYER_STYLES: Record<LayerRole, Omit<DemoLayer, "name">> = {
   outline: { lineweight: 0.5 },
-  centre: { color: "#ff0000", linetype: "CENTER", lineweight: 0.25 },
-  hidden: { color: "#ffff00", linetype: "HIDDEN", lineweight: 0.25 },
-  dimensions: { color: "#00ffff", lineweight: 0.25 },
+  centre: { color: "1", linetype: "CENTER", lineweight: 0.25 },
+  hidden: { color: "2", linetype: "HIDDEN", lineweight: 0.25 },
+  dimensions: { color: "4", lineweight: 0.25 },
 }
 
 export interface ExerciseStep {

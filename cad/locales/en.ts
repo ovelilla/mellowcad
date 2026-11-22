@@ -197,6 +197,12 @@ export const en: EngineCatalog = {
       "white": "White"
     },
     "byLayer": "ByLayer",
+    "colorNumber": [
+      "Color ",
+      [
+        "index"
+      ]
+    ],
     "view": {
       "Top": "Top",
       "Bottom": "Bottom",
@@ -4539,6 +4545,12 @@ export const en: EngineCatalog = {
         ],
         "   Annotative: No"
       ],
+      "dimStyleOfDimension": [
+        "Dimension style: ",
+        [
+          "name"
+        ]
+      ],
       "unknownDimStyle": "Unknown dimension style.",
       "namedDimStyles": "Named dimension styles:",
       "noMatchingDimStyles": "  No matching dimension styles found.",
@@ -6687,7 +6699,7 @@ export const en: EngineCatalog = {
         ],
         "\""
       ],
-      "listDimensionOverrides": "dimension style overrides:\n DIMUPT      On",
+      "listDimensionOverrides": "dimension style overrides:",
       "listDimensionAnnotative": "Annotative: No",
       "listHatchPattern": [
         "                 Hatch pattern ",

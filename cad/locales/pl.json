@@ -193,6 +193,7 @@
       "white": "Biały"
     },
     "byLayer": "JakWarstwa",
+    "colorNumber": "Kolor {index}",
     "view": {
       "Top": "Góra",
       "Bottom": "Dół",
@@ -2757,6 +2758,7 @@
       "invalid": "*Błąd*",
       "styleNameInUse": "{table, select, dimension {Styl wymiarowania} other {Styl tekstu}} o nazwie \"{name}\" już istnieje.",
       "currentDimStyle": "Bieżący styl wymiarowania: {name}   Opisowy: Nie",
+      "dimStyleOfDimension": "Styl wymiarowania: {name}",
       "unknownDimStyle": "Nieznany styl wymiarowania.",
       "namedDimStyles": "Nazwane style wymiarowania:",
       "noMatchingDimStyles": "  Nie znaleziono odpowiednich stylów wymiarowania.",
@@ -3035,7 +3037,7 @@
       "listDimensionDefaultText": "tekst wymiarowy zgodny z rysunkiem",
       "listDimensionTextModifier": "modyfikator tekstu wymiarowego: {text}",
       "listDimensionStyle": "styl wymiarowania: \"{style}\"",
-      "listDimensionOverrides": "zmiany stylu wymiarowania:\n DIMUPT      Tak",
+      "listDimensionOverrides": "zmiany stylu wymiarowania:",
       "listDimensionAnnotative": "Opisowy: Nie",
       "listHatchPattern": "                 Wzór kreskowania {pattern}",
       "listHatchAnnotative": "                 Opisowy: Nie",

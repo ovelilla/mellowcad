@@ -461,7 +461,7 @@ describe("each object's groups", () => {
       expect.objectContaining({
         tag: "A",
         invisible: true,
-        color: "#ff0000",
+        color: "1",
         linetype: "HIDDEN",
         lineweight: 0.5,
         position: { x: 2, y: 2 },
@@ -864,7 +864,7 @@ describe("the tables and the header", () => {
       snapUnit: { x: 5, y: 5 },
       gridMode: false,
       ucsName: "Turned",
-      currentColor: "#ff0000",
+      currentColor: "1",
       currentLinetype: "DASHED",
       currentLineweight: 0.5,
       textSize: 2.5,

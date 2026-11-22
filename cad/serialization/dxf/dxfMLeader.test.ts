@@ -272,7 +272,7 @@ describe("parseDxf: a multileader as others write it", () => {
     expect(mleaderColor(-1073741824)).toBeUndefined()
     expect(mleaderColor(-1056964608)).toBe("ByBlock")
     expect(mleaderColor(-1040122112)).toBe("#00ff00")
-    expect(mleaderColor(-1023410175)).toBe("#ff0000")
+    expect(mleaderColor(-1023410175)).toBe("1")
     expect(mleaderColor(0)).toBeUndefined()
   })
 })

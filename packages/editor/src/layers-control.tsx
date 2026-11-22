@@ -34,7 +34,8 @@ import {
   INVALID_LAYER_NAME_CHARACTERS,
   LayerInfo,
   LayerNameRefusal,
-  STANDARD_COLORS,
+  colorLabel,
+  colorRgb,
 } from "@mellowcad/engine"
 import { type EditorState, isImeKey } from "@mellowcad/react"
 import { LinetypeSelect } from "./linetype-select"
@@ -518,19 +519,21 @@ function LayerRow({
       </td>
 
       <td className="px-1.5">
-        {/* The colour's name beside its swatch for an index colour, as
-            AutoCAD's manager writes it (`white`, `red`; desktop d04-1, es
-            e02-1); another colour shows its swatch alone. */}
+        {/* The colour's name beside its swatch, as AutoCAD's manager writes
+            it (`white`, `red`; desktop d04-1, es e02-1); a numbered or a true
+            colour by its number or its RGB (`colorLabel`). */}
         <label
           className="relative flex cursor-pointer items-center gap-1.5"
           aria-label={t("colorLabel", { name: layer.name })}
           title={t("color")}
         >
           <LayerSwatch color={layer.color} />
-          <span className="truncate">{colorName(layer.color, names)}</span>
+          <span className="truncate">
+            {colorLabel(layer.color, names, "layer")}
+          </span>
           <input
             type="color"
-            value={normalizeHex(layer.color)}
+            value={colorRgb(layer.color)}
             onChange={(event) =>
               engine.updateLayer(layer.id, { color: event.target.value })
             }
@@ -699,12 +702,6 @@ function NameField({
       {name}
     </button>
   )
-}
-
-/** An index colour's name as AutoCAD's manager writes it, in lower case. */
-function colorName(color: string, names: EngineNames): string | null {
-  const standard = STANDARD_COLORS.find((entry) => entry.value === color)
-  return standard ? names.colors[standard.id].toLowerCase() : null
 }
 
 /** What the manager refuses or asks, each one of AutoCAD's task dialogs. */
@@ -899,12 +896,9 @@ export function LayerSwatch({ color }: { color: string }): ReactElement {
   return (
     <span
       className="inline-block size-4 shrink-0 rounded-sm border border-white/25 shadow-inner"
-      style={{ backgroundColor: color }}
+      style={{ backgroundColor: color ? colorRgb(color) : undefined }}
     />
   )
 }
 
 /** Coerces arbitrary colour strings to a `#rrggbb` value the picker accepts. */
-function normalizeHex(color: string): string {
-  return /^#[0-9a-fA-F]{6}$/.test(color) ? color : "#ffffff"
-}

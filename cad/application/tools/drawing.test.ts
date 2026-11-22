@@ -17,7 +17,7 @@ import {
   splineEndPoint,
   splineStartPoint,
 } from "../../domain/entities"
-import { COLOR_BYLAYER } from "../../domain/colors"
+import { COLOR_BYLAYER, colorRgb } from "../../domain/colors"
 import { type Vec2, V } from "../../geometry/Vec2"
 import { type CadHarness, createHarness } from "../../../test/harness"
 import { circleOf, deg, lineOf, p } from "../../../test/builders"
@@ -52,10 +52,10 @@ function jig(cad: CadHarness): string[] {
   })
 }
 
-/** CECOLOR 1, the colour a jig should wear. */
+/** CECOLOR 1, the colour a jig should wear, its RGB. */
 function red(cad: CadHarness): string {
   answer(cad, "-COLOR", "1")
-  return cad.runtime.document.getSettings().currentColor as string
+  return colorRgb(cad.runtime.document.getSettings().currentColor)
 }
 
 /** A jig's rubber line, amber and dashed (desktop arc/d02, ellipse/d01). */

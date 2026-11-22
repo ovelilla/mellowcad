@@ -211,7 +211,7 @@ describe("a table, as AutoCAD 2027 draws it from its cells", () => {
     expect(lines.slice(0, 20).every((l) => l.color === "#ff0000")).toBe(true)
     const marker = lines[20]
     expect(marker.start).toEqual(marker.end)
-    expect(marker.color).toBe("#808080")
+    expect(marker.color).toBe("8")
     expect(marker.lineweight).toBe(0)
   })
 

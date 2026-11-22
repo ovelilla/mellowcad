@@ -12,7 +12,7 @@ import { es } from "../../locales/es"
  * whose "layer affects object properties including color and linetype".
  */
 
-const RED = "#ff0000"
+const RED = "1"
 
 /** Each answer typed at the command line and confirmed, as the console types it. */
 function answer(cad: CadHarness, ...texts: string[]): CadHarness {
@@ -158,7 +158,7 @@ describe("the Properties panel's drop-downs", () => {
       canUndo: false,
     })
     cad.runtime.setCurrentColor("#F00")
-    expect(cad.state().currentColor).toBe(RED)
+    expect(cad.state().currentColor).toBe("#ff0000")
   })
 
   it("give a selection no linetype that is not loaded, as with nothing selected", () => {
@@ -218,13 +218,13 @@ describe("-COLOR", () => {
   })
 
   it.each([
-    ["1", "#ff0000"],
-    ["5", "#0000ff"],
-    ["Magenta", "#ff00ff"],
+    ["1", "1"],
+    ["5", "5"],
+    ["Magenta", "6"],
     ["bylayer", "ByLayer"],
   ])("takes %s", (typed, color) => {
     const cad = createHarness()
-    cad.runtime.setCurrentColor("#00ff00")
+    cad.runtime.setCurrentColor("3")
 
     cad.command("COL").type(typed).enter()
 
@@ -298,9 +298,27 @@ describe("-COLOR", () => {
     ])
   })
 
-  // WHY asked again: AutoCAD takes 8 (p103) and ByBlock (p114, p115); this
-  // build has no RGB for 8–255 and does not model ByBlock.
-  it.each(["8", "byblock", "_BYBLOCK"])(
+  it("takes an index colour past 7 by its number, and offers it so (colors/c01)", () => {
+    const cad = createHarness()
+    answer(cad, "-COLOR", "30")
+    expect(cad.state().currentColor).toBe("30")
+    expect(written(cad, "-COLOR", "255")).toEqual([
+      "-COLOR",
+      "Enter default object color [Truecolor] <30>: 255",
+    ])
+    expect(cad.state().currentColor).toBe("255")
+    expect(written(cad, "-COLOR", "_T", "255,0,0", "-COLOR", "")).toEqual([
+      "-COLOR",
+      "Enter default object color [Truecolor] <255>: _T",
+      "Red,Green,Blue: 255,0,0",
+      "-COLOR",
+      "Enter default object color [Truecolor] <255,0,0>:",
+    ])
+    expect(cad.state().currentColor).toBe("#ff0000")
+  })
+
+  // WHY asked again: AutoCAD takes ByBlock (p114, p115), not modelled here.
+  it.each(["byblock", "_BYBLOCK"])(
     "asks again for %s, which AutoCAD takes and this build cannot draw",
     (typed) => {
       const cad = createHarness()
@@ -348,7 +366,7 @@ describe("-COLOR", () => {
       "-COLOR -COLOR",
       "Everything has been redone",
     ])
-    expect(cad.state().currentColor).toBe("#ffff00")
+    expect(cad.state().currentColor).toBe("2")
   })
 
   it("runs 'ZOOM at its prompt and resumes, at the command line and in the box (probe properties/p134)", () => {
@@ -387,7 +405,7 @@ describe("-COLOR", () => {
       "Specify next point or [Undo]: @0,10",
       "Specify next point or [Close/Undo]:",
     ])
-    expect(cad.entities().map((e) => e.color)).toEqual([RED, "#ffff00"])
+    expect(cad.entities().map((e) => e.color)).toEqual([RED, "2"])
   })
 
   it("runs as COLOUR in English, not in Spanish (probes properties/p137, p137b)", () => {
@@ -412,6 +430,7 @@ describe("-COLOR", () => {
     cad.type("rojo").enter()
     expect(cad.state().currentColor).toBe(RED)
 
+    // A true colour stays one, though its RGB is blue's (colors/c01).
     cad.command(name).type("co").enter().type("0,0,255").enter()
     expect(cad.state().currentColor).toBe("#0000ff")
   })
@@ -426,11 +445,11 @@ describe("-COLOR", () => {
 
   it("takes porCapa's C in Spanish, at the command line and in the box (probe properties/p113c)", () => {
     const cad = createHarness({ locale: es })
-    cad.runtime.setCurrentColor("#00ff00")
+    cad.runtime.setCurrentColor("3")
     answer(cad, "-COLOR", "C")
     expect(cad.state().currentColor).toBe("ByLayer")
 
-    cad.runtime.setCurrentColor("#00ff00")
+    cad.runtime.setCurrentColor("3")
     cad.command("-COLOR").type("C").enter()
     expect(cad.state().currentColor).toBe("ByLayer")
   })
@@ -441,7 +460,7 @@ describe("-COLOR", () => {
     ["PORC", "ByLayer", "p113d"],
   ])("takes %s in Spanish as %s (probe properties/%s)", (typed, color) => {
     const cad = createHarness({ locale: es })
-    cad.runtime.setCurrentColor("#00ff00")
+    cad.runtime.setCurrentColor("3")
 
     answer(cad, "-COLOR", typed)
 

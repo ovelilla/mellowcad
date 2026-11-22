@@ -82,6 +82,21 @@ export interface DimStyle {
   readonly scale: number
 }
 
+/**
+ * The dimension variables one dimension overrides of its style, as AutoCAD
+ * keeps them on the object (DIMOVERRIDE, a palette edit; DXF's `DSTYLE`
+ * xdata, colors/s01): any the style holds. Absent, the style's.
+ */
+export type DimStyleOverrides = Partial<Omit<DimStyle, "id" | "name">>
+
+/** The style a dimension is drawn and measured with: `style` with its `overrides`. */
+export function overriddenDimStyle(
+  style: DimStyle,
+  overrides: DimStyleOverrides | undefined
+): DimStyle {
+  return overrides ? clampDimStyle({ ...style, ...overrides }) : style
+}
+
 /** The always-present style AutoCAD's metric templates ship with. */
 export const DEFAULT_DIM_STYLE_ID: DimStyleId = "ISO-25"
 
@@ -226,29 +241,56 @@ export interface DimVariable {
   readonly value: string | boolean
 }
 
+/** The variables a style holds, by AutoCAD's names, in their alphabetical order. */
+const DIM_VARIABLE_NAMES: readonly (readonly [
+  string,
+  keyof DimStyleOverrides,
+])[] = [
+  ["DIMADEC", "angleDecimals"],
+  ["DIMASZ", "arrowSize"],
+  ["DIMCEN", "centerMark"],
+  ["DIMDEC", "decimals"],
+  ["DIMDLI", "baselineSpacing"],
+  ["DIMDSEP", "decimalSeparator"],
+  ["DIMEXE", "extensionBeyond"],
+  ["DIMEXO", "extensionOffset"],
+  ["DIMGAP", "textGap"],
+  ["DIMSCALE", "scale"],
+  ["DIMTOFL", "forceLineInside"],
+  ["DIMTXT", "textHeight"],
+  ["DIMZIN", "suppressTrailingZeros"],
+]
+
+/**
+ * The variables `values` holds, alphabetically, as AutoCAD lists them: a
+ * distance or a factor through `real`, a count and DIMZIN as integers (its 8
+ * the only bit modelled), DIMDSEP its character, DIMTOFL a switch.
+ */
+export function dimVariables(
+  values: DimStyleOverrides,
+  real: (value: number) => string
+): DimVariable[] {
+  return DIM_VARIABLE_NAMES.flatMap(([name, field]) => {
+    const value = values[field]
+    if (value === undefined) return []
+    if (field === "suppressTrailingZeros") {
+      return [{ name, value: value ? "8" : "0" }]
+    }
+    if (typeof value === "boolean" || typeof value === "string") {
+      return [{ name, value }]
+    }
+    const integer = field === "decimals" || field === "angleDecimals"
+    return [{ name, value: integer ? String(value) : real(value) }]
+  })
+}
+
 /**
  * The style's variables this model holds, in the alphabetical order and the
  * formats AutoCAD's listing writes them (`2.5000`, `2`, `,`; probes
  * dimensions/p06, p07): a distance or a factor with four places whatever
- * DIMDEC or LUPREC, a count and DIMZIN as integers. WHY only these: a variable
- * not modelled has no value of its own here to list (DIMS-D7).
+ * DIMDEC or LUPREC. WHY only these: a variable not modelled has no value of
+ * its own here to list (DIMS-D7).
  */
 export function dimStyleVariables(style: DimStyle): readonly DimVariable[] {
-  const real = (value: number) => value.toFixed(4)
-  return [
-    { name: "DIMADEC", value: String(style.angleDecimals) },
-    { name: "DIMASZ", value: real(style.arrowSize) },
-    { name: "DIMCEN", value: real(style.centerMark) },
-    { name: "DIMDEC", value: String(style.decimals) },
-    { name: "DIMDLI", value: real(style.baselineSpacing) },
-    { name: "DIMDSEP", value: style.decimalSeparator },
-    { name: "DIMEXE", value: real(style.extensionBeyond) },
-    { name: "DIMEXO", value: real(style.extensionOffset) },
-    { name: "DIMGAP", value: real(style.textGap) },
-    { name: "DIMSCALE", value: real(style.scale) },
-    { name: "DIMTOFL", value: style.forceLineInside },
-    { name: "DIMTXT", value: real(style.textHeight) },
-    // DIMZIN's 8 is the only bit modelled (`suppressTrailingZeros`).
-    { name: "DIMZIN", value: style.suppressTrailingZeros ? "8" : "0" },
-  ]
+  return dimVariables(style, (value) => value.toFixed(4))
 }

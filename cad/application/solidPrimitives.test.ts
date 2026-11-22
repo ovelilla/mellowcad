@@ -1197,7 +1197,7 @@ describe("PYRAMID, answer by answer", () => {
     answer(cad, "_PYRAMID", "0,0", "5", "8")
     expect(last(cad)).toMatchObject({
       layerId: l1,
-      color: "#ff0000",
+      color: "1",
       lineweight: 0.5,
     })
     expect(last(cad).primitive?.position.z).toBe(3)
@@ -1205,7 +1205,7 @@ describe("PYRAMID, answer by answer", () => {
     const l2 = later.runtime.createLayer("L2", undefined, false)
     answer(later, "_PYRAMID", "'CECOLOR", "3", "0,0", "'ELEVATION", "5", "5")
     answer(later, "'CECOLOR", "5", "'CLAYER", "L2", "8")
-    expect(last(later)).toMatchObject({ layerId: l2, color: "#0000ff" })
+    expect(last(later)).toMatchObject({ layerId: l2, color: "5" })
     expect(last(later).primitive?.position.z).toBe(0)
   })
 })
@@ -2781,7 +2781,7 @@ describe("CYLINDER and CONE, answer by answer", () => {
     for (const solid of solids(cad)) {
       expect(solid).toMatchObject({
         layerId: l1,
-        color: "#00ff00",
+        color: "3",
         linetype: "DASHED",
         lineweight: 0.5,
       })
@@ -2802,9 +2802,9 @@ describe("CYLINDER and CONE, answer by answer", () => {
     )
     answer(later, "_TORUS", "50,0", "'_CLAYER", "0", "5", "'_-COLOR", "4", "1")
     const [cylinder, torus] = solids(later)
-    expect(cylinder).toMatchObject({ layerId: l2, color: "#ff0000" })
+    expect(cylinder).toMatchObject({ layerId: l2, color: "1" })
     expect(cylinder.primitive?.position.z).toBe(0)
-    expect(torus).toMatchObject({ layerId: "0", color: "#00ffff" })
+    expect(torus).toMatchObject({ layerId: "0", color: "4" })
     expect(torus.primitive?.position.z).toBe(7)
   })
 

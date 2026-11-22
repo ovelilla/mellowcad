@@ -4,7 +4,7 @@ metaTitle: "LAYER in AutoCAD: Layer Properties Manager"
 description: "How AutoCAD's LAYER (LA) works: the Layer Properties Manager's columns, New, Delete and Set Current, and how On and Lock act on objects. Try it free online."
 figure: "Three layers, each made current before drawing on it: walls in white, a door in yellow, an axis in red with the Center linetype."
 related: ["PROPERTIES", "MATCHPROP", "COLOR", "LINETYPE", "LWEIGHT"]
-coverage: "a0dc4921345b"
+coverage: "86fecfe80083"
 ---
 
 LAYER opens the Layer Properties Manager, where a drawing's layers are made, named and set. As in AutoCAD it is a palette, not a dialog: it stays open while you draw, here as a tab of the palette panel, until <Command id="LAYERCLOSE" /> closes it, and typed with an apostrophe in front inside another command, it opens without ending that command. Every object is on a layer, and its colour, linetype and lineweight, when they are ByLayer, are the layer's. New objects go on the current layer.

@@ -197,6 +197,12 @@ export const ptBR: EngineLocale = {
       "white": "Branco"
     },
     "byLayer": "PorCamada",
+    "colorNumber": [
+      "Cor ",
+      [
+        "index"
+      ]
+    ],
     "view": {
       "Top": "Superior",
       "Bottom": "Inferior",
@@ -5262,6 +5268,12 @@ export const ptBR: EngineLocale = {
         ],
         "  Anotativo: Não"
       ],
+      "dimStyleOfDimension": [
+        "Estilo de cota: ",
+        [
+          "name"
+        ]
+      ],
       "unknownDimStyle": "Estilo de cota desconhecido.",
       "namedDimStyles": "Estilos de cota nomeados:",
       "noMatchingDimStyles": "  Não foram encontrados estilos de cota coincidentes.",
@@ -7414,7 +7426,7 @@ export const ptBR: EngineLocale = {
         ],
         "\""
       ],
-      "listDimensionOverrides": "sobreposições de estilo de cota:\n DIMUPT      Ativado",
+      "listDimensionOverrides": "sobreposições de estilo de cota:",
       "listDimensionAnnotative": "Anotativo: Não",
       "listHatchPattern": [
         "                 Padrão de hachura ",

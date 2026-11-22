@@ -3,10 +3,10 @@ title: "Comando COLOR (COR) no AutoCAD"
 metaTitle: "Cor no AutoCAD: COLOR (COR), PorCamada e RGB"
 description: "Como o COLOR do AutoCAD em português, COR (alias C), define a cor de novos objetos: PorCamada, uma cor de índice por nome ou número ou RGB. Experimente grátis."
 figure: "Uma placa desenhada PorCamada, o furo em vermelho, o furo menor dentro dele na true color 0,128,255, e depois a COR de volta a PorCamada."
-sourceHash: "93793c2915da"
+sourceHash: "f0bfb2cf8fe7"
 ---
 
-O COLOR, COR no AutoCAD em português, define a cor com que os novos objetos são desenhados. O AutoCAD abre a caixa de diálogo Selecionar cor; o MellowCAD ainda não a tem, então o COR executa a forma de linha de comando que o AutoCAD também tem, <Command id="-COLOR" />. Ele pede a cor padrão dos objetos, oferecendo a atual, `PORCAMADA` num desenho novo: PorCamada quer dizer que cada objeto usa a cor da sua camada, e uma cor escolhida no lugar é a do próprio objeto. Digite o número ou o nome de uma cor de índice, ou escolha <Keyword id="Truecolor" />. Enter mantém a cor atual, e a mudança é um passo que o <Command id="U" /> desfaz.
+O COLOR, COR no AutoCAD em português, define a cor com que os novos objetos são desenhados. O AutoCAD abre a caixa de diálogo Selecionar cor; o MellowCAD ainda não a tem, então o COR executa a forma de linha de comando que o AutoCAD também tem, <Command id="-COLOR" />. Ele pede a cor padrão dos objetos, oferecendo a atual, `PORCAMADA` num desenho novo: PorCamada quer dizer que cada objeto usa a cor da sua camada, e uma cor escolhida no lugar é a do próprio objeto. Digite o número de uma cor de índice, de 1 a 255, ou o nome de uma das sete primeiras, ou escolha <Keyword id="Truecolor" />. Enter mantém a cor atual, e a mudança é um passo que o <Command id="U" /> desfaz.
 
 Uma palavra que ele não entende mostra <Message id="colorRequired" />, e 0, um número negativo ou um acima de 255, <Message id="invalidColorNumber" />; ele pergunta de novo. Digitado com um apóstrofo dentro de um comando, `'COR`, cada objeto desenhado depois dele recebe a nova cor: cada segmento de um <Command id="LINE" /> recebe a cor atual quando começa. O COR só define o que vem depois; a paleta Propriedades ou a lista de cores da barra superior muda os objetos já desenhados.
 
@@ -14,7 +14,7 @@ Uma palavra que ele não entende mostra <Message id="colorRequired" />, e 0, um 
 
 ### Truecolor
 
-Pede uma cor como três valores de 0 a 255, vermelho, verde e azul, separados por vírgulas sem espaço: `0,128,255` é um azul médio. Uma cor que também é uma cor de índice, `255,0,0`, é guardada como essa cor de índice.
+Pede uma cor como três valores de 0 a 255, vermelho, verde e azul, separados por vírgulas sem espaço: `0,128,255` é um azul médio. Ela continua uma true color mesmo quando uma cor de índice tem o mesmo RGB: depois de `255,0,0`, o COR oferece `255,0,0`, não vermelho.
 
 ### BYLAYER
 
@@ -50,7 +50,7 @@ Cor de índice 7, também digitada como `7`: branca num fundo escuro e preta num
 
 ## Missing
 
-A caixa de diálogo Selecionar cor, os livros de cores e a forma HSL. As cores de índice de 8 a 255: só as de 1 a 7 são aceitas. PorBloco. Uma true color igual a uma cor de índice é guardada como essa cor de índice, onde o AutoCAD mantém o RGB. A transparência (CETRANSPARENCY) e os padrões por tipo HPCOLOR, HPLAYER, DIMLAYER e TEXTLAYER.
+A caixa de diálogo Selecionar cor, os livros de cores e a forma HSL. PorBloco. A transparência (CETRANSPARENCY) e os padrões por tipo HPCOLOR, HPLAYER, DIMLAYER e TEXTLAYER.
 
 ## Questions
 

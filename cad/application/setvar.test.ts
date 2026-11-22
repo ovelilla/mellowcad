@@ -606,11 +606,11 @@ describe("each variable takes AutoCAD's values", () => {
     answer(cad, "CECOLOR")
     expect(prompt(cad)).toBe('CECOLOR Enter new value for CECOLOR <"BYLAYER">:')
     answer(cad, "1")
-    expect(color()).toBe("#ff0000")
+    expect(color()).toBe("1")
     answer(cad, "CECOLOR")
     expect(prompt(cad)).toBe('CECOLOR Enter new value for CECOLOR <"1">:')
     answer(cad, "blue")
-    expect(color()).toBe("#0000ff")
+    expect(color()).toBe("5")
     answer(cad, "CECOLOR", "255,0,0")
     answer(cad, "CECOLOR", "RGB:10,20,30")
     expect(color()).toBe("#0a141e")
@@ -620,7 +620,9 @@ describe("each variable takes AutoCAD's values", () => {
     )
     answer(cad, "256")
     expect(color()).toBe("ByLayer")
-    for (const refused of ["BYBLOCK", "0", "8", "257", "FOO", "rojo"]) {
+    answer(cad, "CECOLOR", "30")
+    expect(color()).toBe("30")
+    for (const refused of ["BYBLOCK", "0", "257", "FOO", "rojo"]) {
       expect(written(cad, "CECOLOR", refused).at(-2)).toBe(
         "Cannot set CECOLOR to that value."
       )
@@ -631,7 +633,7 @@ describe("each variable takes AutoCAD's values", () => {
       'CECOLOR Indique nuevo valor para CECOLOR <"PORCAPA">:'
     )
     answer(spanish, "rojo", "CECOLOR", "green")
-    expect(settings(spanish).currentColor).toBe("#00ff00")
+    expect(settings(spanish).currentColor).toBe("3")
     answer(spanish, "CECOLOR", "porcapa")
     expect(settings(spanish).currentColor).toBe("ByLayer")
   })

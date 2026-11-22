@@ -3,7 +3,7 @@ title: DXF editor online
 metaTitle: "DXF editor online zdarma: úprava a uložení DXF"
 description: "Upravte soubor DXF zdarma v prohlížeči příkazy AutoCADu a uložte ho znovu jako DXF, AutoCAD 2000 až 2018. Bez instalace, nic se nenahrává."
 type: howTo
-sourceHash: "3b96ee37d43c"
+sourceHash: "74f66409765f"
 faq:
   - question: "Jak upravit soubor DXF online?"
     answer: "Vyberte ho nebo ho přetáhněte do horní části této stránky: otevře se v editoru MellowCAD, v prohlížeči. Upravte ho příkazy AutoCADu a pak ho příkaz ULOŽJAKO (Ctrl+Shift+S) nebo PIŠDXF znovu uloží jako soubor DXF."
@@ -45,13 +45,13 @@ Soubor se stáhne, jako všechno, co se tu ukládá ([ukládání není úplně 
 
 ## Co DXF obsahuje [#holds]
 
-Každý objekt, který MellowCAD má, zapsaný tak, jak ho zapisuje AutoCAD: úsečky, oblouky, kružnice, elipsy, křivky s jejich šířkami a vyhlazením, 3D křivky, spliny, jednořádkový a víceřádkový text, bloky s atributy, kóty, šrafy s jejich vzorem, body, 2D desky a pole jako blok jejich prvků. S nimi hladiny (zapnuté, vypnuté, uzamknuté) s jejich barvou, typem čáry a tloušťkou čáry, typy čar výkresu, i složité, a měřítko typu čáry každého objektu, textové a kótovací styly, bloky a jednotky a nastavení výkresu. Text si zachová své znaky: do verze 2004 v kódové stránce Windows, kterou používá AutoCAD, s řídicími sekvencemi pro ostatní, a od 2007 v UTF-8.
+Každý objekt, který MellowCAD má, zapsaný tak, jak ho zapisuje AutoCAD: úsečky, oblouky, kružnice, elipsy, křivky s jejich šířkami a vyhlazením, 3D křivky, spliny, jednořádkový a víceřádkový text, bloky s atributy, kóty s tím, co každá potlačuje ve svém stylu, šrafy s jejich vzorem, body, 2D desky a pole jako blok jejich prvků. S nimi každá barva tak, jak byla, zadaná indexem nebo jako Truecolor, hladiny (zapnuté, vypnuté, uzamknuté) s jejich barvou, typem čáry a tloušťkou čáry, typy čar výkresu, i složité, a měřítko typu čáry každého objektu, textové a kótovací styly, bloky a jednotky a nastavení výkresu. Text si zachová své znaky: do verze 2004 v kódové stránce Windows, kterou používá AutoCAD, s řídicími sekvencemi pro ostatní, a od 2007 v UTF-8.
 
 ## Co se nevrátí [#lost]
 
 - **Co se neotevřelo, se neuloží.** Pro co MellowCAD zatím nemá objekt – multičáry, tolerance a [zbytek toho seznamu](/docs/open-dxf#left-out) –, se při otevírání souboru spočítá v příkazovém řádku a v ukládaném souboru není. Originál si ponechte.
 - **3D tělesa a oblasti se nezapisují**: příkazový řádek vypíše, kolik jich vynechal.
-- Vlastní potlačení stylu u kóty a parametry pole se nezapisují: AutoCAD otevře kótu s nastavením jejího stylu a pole jako blok jeho prvků.
+- Parametry pole se nezapisují: AutoCAD otevře pole jako blok jeho prvků. Nezapisuje se ani to, co kóta potlačuje ve svém stylu a pro co MellowCAD nemá nastavení, například její barvy.
 - Není tu náhled miniatury, zatím žádný typ DXF AutoCAD R12/LT2 a žádný DWG.
 
 ## Vytvořte DXF od nuly [#new]

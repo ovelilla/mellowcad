@@ -9,7 +9,7 @@ import { LayerId } from "./layers"
 import { LinetypeId } from "./linetypes"
 import { Lineweight } from "./lineweights"
 import { TextStyleId } from "./textStyles"
-import { DimStyleId } from "./dimStyles"
+import { DimStyleId, DimStyleOverrides } from "./dimStyles"
 import {
   HatchPatternId,
   HatchPatternLine,
@@ -922,6 +922,11 @@ export interface DimensionEntity extends BaseEntity {
    */
   readonly textAngle?: number
   readonly styleId: DimStyleId
+  /**
+   * What it overrides of its style, as a DXF's DSTYLE xdata gives it: it is
+   * drawn and measured with these laid over its style's. Absent, nothing.
+   */
+  readonly overrides?: DimStyleOverrides
 }
 
 /**

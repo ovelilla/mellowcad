@@ -69,7 +69,7 @@ describe("-LAYER", () => {
     answer(cad, "-LAYER", "N", "L1,L2", "")
     for (const name of ["L1", "L2"]) {
       expect(named(cad, name)).toMatchObject({
-        color: "#ffffff",
+        color: "7",
         linetype: "Continuous",
         visible: true,
         locked: false,
@@ -219,9 +219,9 @@ describe("-LAYER", () => {
       "Enter name list of layer(s) for color -5 (blue) <0>:"
     )
     answer(cad, "L2", "C", "3", "")
-    expect(named(cad, "L1")?.color).toBe("#ff0000")
-    expect(named(cad, "L2")).toMatchObject({ color: "#0000ff", visible: false })
-    expect(named(cad, "0")?.color).toBe("#00ff00")
+    expect(named(cad, "L1")?.color).toBe("1")
+    expect(named(cad, "L2")).toMatchObject({ color: "5", visible: false })
+    expect(named(cad, "0")?.color).toBe("3")
   })
 
   it("Color's prompt ends ` :`, and refuses 0, past 255 and words (p392, p398)", () => {
@@ -288,6 +288,27 @@ describe("-LAYER", () => {
     expect(written(cad, "DEL", "ZZ").at(-1)).toBe(
       "No matching layer names found."
     )
+  })
+
+  it("Color takes an index colour past 7 and a true colour, which ? lists so (colors/c02)", () => {
+    const cad = createHarness()
+    answer(cad, "-LAYER", "N", "L30,LT,L10,L255", "C", "30")
+    expect(asked(cad)).toBe("Enter name list of layer(s) for color 30 <0>:")
+    answer(cad, "L30", "C", "T", "10,20,30", "LT", "C", "10", "L10")
+    answer(cad, "C", "255", "L255")
+    expect(named(cad, "L30")?.color).toBe("30")
+    expect(named(cad, "LT")?.color).toBe("#0a141e")
+    expect(written(cad, "?", "L*").slice(2)).toEqual([
+      [
+        "    Layer name        State          Color         Linetype     Lineweight",
+        "------------------ ----------- ------------------ ------------ ------------",
+        '"L10"              on       -P  10                "Continuous"  0.250 mm.',
+        '"L255"             on       -P 255                "Continuous"  0.250 mm.',
+        '"L30"              on       -P  30                "Continuous"  0.250 mm.',
+        '"LT"               on       -P 10,20,30           "Continuous"  0.250 mm.',
+        'Current layer: "0"',
+      ].join("\n"),
+    ])
   })
 
   it("? lists the layers in AutoCAD's columns (p390)", () => {

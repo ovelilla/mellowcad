@@ -197,6 +197,12 @@ export const es: EngineLocale = {
       "white": "Blanco"
     },
     "byLayer": "PorCapa",
+    "colorNumber": [
+      "Color ",
+      [
+        "index"
+      ]
+    ],
     "view": {
       "Top": "Superior",
       "Bottom": "Inferior",
@@ -5246,6 +5252,12 @@ export const es: EngineLocale = {
         ],
         "   Anotativo: No"
       ],
+      "dimStyleOfDimension": [
+        "Estilo de cota: ",
+        [
+          "name"
+        ]
+      ],
       "unknownDimStyle": "Estilo de cota desconocido.",
       "namedDimStyles": "Estilos de cota guardados:",
       "noMatchingDimStyles": "  Estilo de cota no encontrado.",
@@ -7406,7 +7418,7 @@ export const es: EngineLocale = {
         ],
         "\""
       ],
-      "listDimensionOverrides": "modificaciones de estilos de cota:\n DIMUPT      ACT",
+      "listDimensionOverrides": "modificaciones de estilos de cota:",
       "listDimensionAnnotative": "Anotativo: No",
       "listHatchPattern": [
         "                 Patrón de sombreado ",

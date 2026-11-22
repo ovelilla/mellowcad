@@ -42,7 +42,7 @@ import { DEFAULT_LAYER_ID } from "../../domain/layers"
 import { LengthUnit } from "../../domain/units"
 import { DrawingSnapshot } from "../drawingFile"
 import { DxfOut } from "./dxfOut"
-import { aciIndex } from "./dxfColors"
+import { dxfColorCodes } from "./dxfColors"
 import {
   DxfWriteContext,
   GRADIENT_COLOR_APPS,
@@ -611,11 +611,10 @@ export function writeDxf(
     record(out, "LAYER", handle(), T.layers, "AcDbLayerTableRecord")
     out.str(2, layer.name)
     out.int(70, layer.locked ? 4 : 0)
-    const rgb = Number.parseInt(layer.color.slice(1), 16)
-    const { index, exact } = aciIndex(rgb)
+    const { index, rgb } = dxfColorCodes(layer.color) ?? { index: 7 }
     // An off layer's colour is negative (the reader's DxfLayers).
     out.int(62, layer.visible ? index : -index)
-    if (!exact) out.int(420, rgb)
+    if (rgb !== undefined) out.int(420, rgb)
     out.str(6, layer.linetype)
     // AutoCAD refuses the whole file when DEFPOINTS plots ("Invalid
     // AcDbLayerTableRecord plot flag for DEFPOINTS layer").

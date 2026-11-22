@@ -629,7 +629,7 @@ describe("BOX", () => {
     )
     const box = last(cad)
     expect(cad.runtime.document.getLayer(box.layerId)?.name).toBe("L2")
-    expect(box.color).toBe("#ff0000")
+    expect(box.color).toBe("1")
     expect(box.lineweight).toBe(0.3)
   })
 

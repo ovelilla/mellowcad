@@ -197,6 +197,12 @@ export const fr: EngineLocale = {
       "white": "Blanc"
     },
     "byLayer": "DuCalque",
+    "colorNumber": [
+      "Couleur ",
+      [
+        "index"
+      ]
+    ],
     "view": {
       "Top": "Haut",
       "Bottom": "Bas",
@@ -5264,6 +5270,12 @@ export const fr: EngineLocale = {
         ],
         "   Annotatif: Non"
       ],
+      "dimStyleOfDimension": [
+        "Style de cote: ",
+        [
+          "name"
+        ]
+      ],
       "unknownDimStyle": "Style de cote inconnu.",
       "namedDimStyles": "Nom du style de cote:",
       "noMatchingDimStyles": "  Style de cote correspondant non trouvé.",
@@ -7426,7 +7438,7 @@ export const fr: EngineLocale = {
         ],
         "\""
       ],
-      "listDimensionOverrides": "Modifications du style de cote:\n DIMUPT      Actif",
+      "listDimensionOverrides": "Modifications du style de cote:",
       "listDimensionAnnotative": "Annotatif: Non",
       "listHatchPattern": [
         "                 Motif de hachures ",

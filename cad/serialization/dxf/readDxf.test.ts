@@ -27,6 +27,9 @@ import type {
   ImageEntity,
 } from "../../domain/entities"
 import { DxfReadError, ParsedDxf, parseDxf } from "./readDxf"
+import { writeDxf } from "./writeDxf"
+import { serializeDrawing } from "../drawingFile"
+import { dimensionGeometry, dimensionText } from "../../domain/dimensions"
 import { unicode } from "./dxfEntities"
 
 // AutoCAD 2027's own DXF files of two reference drawings (probes f001–f005 in
@@ -130,7 +133,7 @@ describe("parseDxf: AutoCAD 2027's files of the first drawing (f001, f002)", () 
 
   it("opens 2000's, which has no true colours, with AutoCAD's index for one", () => {
     const circles = ofType<CircleEntity>(open("fixture-2000"), "circle")
-    expect(circles[1].color).toBe("#ff7f00")
+    expect(circles[1].color).toBe("30")
   })
 
   it("reads binary R12, one-byte group codes, as its text twin", () => {
@@ -179,7 +182,7 @@ describe("parseDxf: AutoCAD 2027's files of the first drawing (f001, f002)", () 
     ])
     expect(layers["0"].id).toBe("0")
     expect(layers.Walls).toMatchObject({
-      color: "#ff0000",
+      color: "1",
       linetype: "DASHED",
       lineweight: 0.5,
       visible: true,
@@ -229,7 +232,7 @@ describe("parseDxf: AutoCAD 2027's files of the first drawing (f001, f002)", () 
     expect(walls.end).toBeCloseToPoint({ x: 100, y: 0 })
     expect(centre).toMatchObject({
       deltaZ: 5,
-      color: "#00ff00",
+      color: "3",
       linetype: "CENTER",
       lineweight: 0.35,
     })
@@ -1162,7 +1165,7 @@ describe("parseDxf: AutoCAD 2027's xlines and rays (xline/x10)", () => {
 
   it("keeps the red DASHED ray's properties", () => {
     const red = infinite[4]
-    expect(red.color).toBe("#ff0000")
+    expect(red.color).toBe("1")
     expect(red.linetype).toBe("DASHED")
   })
 })
@@ -1216,7 +1219,7 @@ describe("parseDxf: AutoCAD 2027's wipeouts (wipeout/w15)", () => {
   })
 
   it("keeps its plane, colour and linetype", () => {
-    expect(wipeouts[3]).toMatchObject({ color: "#ff0000" })
+    expect(wipeouts[3]).toMatchObject({ color: "1" })
     expect(wipeouts[3].linetype).toBeDefined()
     expect(wipeouts[4].elevation).toBe(7)
     expect(wipeouts[5].normal).toBeDefined()
@@ -1275,7 +1278,7 @@ describe("parseDxf: AutoCAD 2027's images (image/i13)", () => {
   })
 
   it("keeps its plane, colour and linetype", () => {
-    expect(images[3]).toMatchObject({ color: "#ff0000" })
+    expect(images[3]).toMatchObject({ color: "1" })
     expect(images[3].linetype).toBeDefined()
     expect(images[5].normal).toBeDefined()
   })
@@ -1386,7 +1389,7 @@ describe("parseDxf: AutoCAD 2027's 3D faces (face3d/f09)", () => {
 
   it("keeps the hidden edges (70) and the object's colour and linetype", () => {
     expect(faces.map((f) => f.invisibleEdges ?? 0)).toEqual([0, 0, 4, 9, 0, 0])
-    expect(faces[5]).toMatchObject({ color: "#ff0000", linetypeScale: 2 })
+    expect(faces[5]).toMatchObject({ color: "1", linetypeScale: 2 })
     expect(faces[5].linetype).toBeDefined()
   })
 })
@@ -1417,5 +1420,200 @@ describe("parseDxf: AutoCAD 2027's MINSERTs (minsert/m09)", () => {
     expect(minserts[1].rotation).toBeCloseTo(Math.PI / 6, 12)
     expect(minserts[4].scaleX).toBe(-1)
     expect(minserts[5].rotation).toBeCloseTo(Math.PI / 4, 12)
+  })
+})
+
+describe("parseDxf: AutoCAD 2027's dimension style overrides (colors/s01)", () => {
+  const drawing = open("dstyle-2018")
+  const dims = ofType<DimensionEntity>(drawing, "dimension")
+
+  it("keeps what each dimension overrides of its style, the variables it has", () => {
+    expect(dims[0].overrides).toBeUndefined()
+    // DIMCLRD (176) is not modelled: dropped.
+    expect(dims[1].overrides).toEqual({
+      scale: 2,
+      arrowSize: 3,
+      extensionOffset: 2,
+      baselineSpacing: 7,
+      extensionBeyond: 4,
+      suppressTrailingZeros: false,
+      textHeight: 5,
+      textGap: 1.5,
+      forceLineInside: false,
+      decimals: 1,
+      decimalSeparator: ".",
+    })
+    expect(dims[2].overrides).toEqual({ centerMark: 5, angleDecimals: 2 })
+  })
+
+  it("draws a dimension with its overrides, and LIST writes them as AutoCAD's", () => {
+    const cad = createHarness()
+    cad.runtime.loadDrawing(serializeDrawing(drawing.drawing))
+    const [plain, overridden] = cad.runtime.document
+      .getEntities()
+      .filter((e): e is DimensionEntity => e.type === "dimension")
+    const style = cad.runtime.document.getDimStyle(plain.styleId)
+    // DIMTXT 5 × DIMSCALE 2, DIMDEC 1 with DIMZIN 0 and a point.
+    expect(dimensionGeometry(overridden, style).textHeight).toBe(10)
+    expect(dimensionText(overridden, style)).toBe("100.0")
+    expect(dimensionText(plain, style)).toBe("100")
+    cad.select(overridden.id).command("LIST")
+    const log = cad.commandLog().flatMap((entry) => entry.split("\n"))
+    const from = log.indexOf("dimension style overrides:")
+    expect(log.slice(from, from + 13)).toEqual([
+      "dimension style overrides:",
+      " DIMASZ      3.0000",
+      " DIMDEC      1",
+      " DIMDLI      7.0000",
+      " DIMDSEP     .",
+      " DIMEXE      4.0000",
+      " DIMEXO      2.0000",
+      " DIMGAP      1.5000",
+      " DIMSCALE    2.0000",
+      " DIMTOFL     Off",
+      " DIMTXT      5.0000",
+      " DIMZIN      0",
+      "Annotative: No",
+    ])
+  })
+
+  it("writes them back as AutoCAD's DSTYLE, by group", () => {
+    const text = new TextDecoder().decode(
+      writeDxf(drawing.drawing, {
+        version: "2018",
+        binary: false,
+        precision: 16,
+      }).bytes
+    )
+    expect(text).toContain(
+      [
+        "1000",
+        "DSTYLE",
+        "1002",
+        "{",
+        "1070",
+        "    40",
+        "1040",
+        "2.0",
+        "1070",
+        "    41",
+        "1040",
+        "3.0",
+        "1070",
+        "    42",
+        "1040",
+        "2.0",
+        "1070",
+        "    43",
+        "1040",
+        "7.0",
+        "1070",
+        "    44",
+        "1040",
+        "4.0",
+        "1070",
+        "    78",
+        "1070",
+        "     0",
+        "1070",
+        "   140",
+        "1040",
+        "5.0",
+        "1070",
+        "   147",
+        "1040",
+        "1.5",
+        "1070",
+        "   172",
+        "1070",
+        "     0",
+        "1070",
+        "   271",
+        "1070",
+        "     1",
+        "1070",
+        "   278",
+        "1070",
+        "    46",
+        "1002",
+        "}",
+      ].join("\r\n")
+    )
+    const back = ofType<DimensionEntity>(
+      parseDxf(
+        writeDxf(drawing.drawing, {
+          version: "2000",
+          binary: true,
+          precision: 16,
+        }).bytes
+      ),
+      "dimension"
+    )
+    expect(back.map((d) => d.overrides)).toEqual(dims.map((d) => d.overrides))
+  })
+})
+
+describe("parseDxf: AutoCAD 2027's index and true colours (colors/c02)", () => {
+  const drawing = open("colors-2018")
+  const lines = ofType<LineEntity>(drawing, "line")
+
+  it("keeps an index colour as one and a true colour as one, though its RGB is an index's", () => {
+    // 62 30; 62 1 + 420 255,0,0; 62 30 + 420; 62 10; 62 1; 62 8 + 420; 62 0.
+    expect(lines.map((line) => line.color)).toEqual([
+      "30",
+      "#ff0000",
+      "#ff7f00",
+      "10",
+      "1",
+      "#808080",
+      undefined,
+    ])
+  })
+
+  it("keeps each layer's index or true colour", () => {
+    const colors = Object.fromEntries(
+      drawing.drawing.layers.map((layer) => [layer.name, layer.color])
+    )
+    expect(colors).toMatchObject({
+      "0": "7",
+      L30: "30",
+      LT: "#0a141e",
+      L10: "10",
+      L255: "255",
+    })
+  })
+
+  it("writes them back as AutoCAD wrote them, the index alone or beside the true colour", () => {
+    const text = new TextDecoder().decode(
+      writeDxf(drawing.drawing, {
+        version: "2018",
+        binary: false,
+        precision: 16,
+      }).bytes
+    )
+    const groups = (record: string) =>
+      [...record.matchAll(/^ *(62|420)\r\n *(-?\d+)\r$/gm)].map(
+        ([, code, value]) => `${code}=${value}`
+      )
+    const records = text.split("\r\n  0\r\n")
+    const ofKind = (kind: string) =>
+      records.filter((record) => record.startsWith(`${kind}\r\n`)).map(groups)
+    expect(ofKind("LINE")).toEqual([
+      ["62=30"],
+      ["62=1", "420=16711680"],
+      ["62=30", "420=16744192"],
+      ["62=10"],
+      ["62=1"],
+      ["62=8", "420=8421504"],
+      [],
+    ])
+    expect(ofKind("LAYER")).toEqual(
+      expect.arrayContaining([
+        ["62=30"],
+        ["62=168", "420=660510"],
+        ["62=10"],
+        ["62=255"],
+      ])
+    )
   })
 })

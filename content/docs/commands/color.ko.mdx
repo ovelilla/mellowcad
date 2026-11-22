@@ -7,7 +7,7 @@ generated: "lib/docs/generate.test.ts"
 faq: [{"question":"오토캐드 색상 단축키는 무엇입니까?","answer":"COL을 입력하고 Enter 키나 Space 키를 누릅니다. COLOUR도 됩니다. 전체 명령 이름을 입력해도 되며, AutoCAD의 어느 언어 버전에서든 _COLOR도 됩니다."},{"question":"오토캐드에서 객체의 색상을 바꾸려면 어떻게 합니까?","answer":"객체를 선택하고 상단 막대의 색상 목록이나 특성 팔레트의 색상 행에서 색상을 고릅니다. 한 단계로 바뀝니다. 또는 MATCHPROP 명령으로 다른 객체의 색상을 복사합니다. COLOR는 그 뒤에 그리는 객체의 색상만 정합니다."},{"question":"오토캐드에서 ByLayer는 무슨 뜻입니까?","answer":"객체가 도면층의 색상을 따른다는 뜻입니다. 그래서 도면층 특성 관리자에서 도면층 색상을 바꾸면 그 도면층의 ByLayer 객체가 모두 바뀝니다. 기본값이며, 도면의 색상을 도면층별로 정리해 줍니다. LAYER 명령을 참고하십시오."},{"question":"오토캐드에서 RGB 색상은 어떻게 씁니까?","answer":"Truecolor 옵션을 선택하고 0,128,255처럼 세 값을 쉼표로 구분하여 입력합니다."}]
 ---
 
-COLOR(색상) 명령은 새 객체를 그릴 색상을 정합니다. AutoCAD는 색상 선택 대화상자를 열지만 MellowCAD에는 아직 없으므로, COLOR는 AutoCAD에도 있는 명령행 버전인 `-COLOR` 명령을 실행합니다. 현재 색상을 제시하며 기본 객체 색상을 묻고, 새 도면에서는 `BYLAYER`입니다. ByLayer는 각 객체가 도면층의 색상을 따른다는 뜻이며, 대신 고른 색상은 객체 자체의 색상이 됩니다. 인덱스 색상의 번호나 이름을 입력하거나 `Truecolor` 옵션을 선택합니다. Enter 키는 현재 색상을 유지하며, 변경은 `U` 명령으로 되돌릴 수 있는 한 단계입니다.
+COLOR(색상) 명령은 새 객체를 그릴 색상을 정합니다. AutoCAD는 색상 선택 대화상자를 열지만 MellowCAD에는 아직 없으므로, COLOR는 AutoCAD에도 있는 명령행 버전인 `-COLOR` 명령을 실행합니다. 현재 색상을 제시하며 기본 객체 색상을 묻고, 새 도면에서는 `BYLAYER`입니다. ByLayer는 각 객체가 도면층의 색상을 따른다는 뜻이며, 대신 고른 색상은 객체 자체의 색상이 됩니다. 1부터 255까지의 인덱스 색상 번호나 처음 일곱 색상 중 하나의 이름을 입력하거나 `Truecolor` 옵션을 선택합니다. Enter 키는 현재 색상을 유지하며, 변경은 `U` 명령으로 되돌릴 수 있는 한 단계입니다.
 
 읽을 수 없는 단어는 `A color number or standard color name is required.` 메시지를, 0, 음수, 255보다 큰 숫자는 `Invalid color number.` 메시지를 표시하고 다시 묻습니다. 명령 안에서 아포스트로피를 붙여 `'COLOR`로 입력하면 그 뒤에 그리는 객체마다 새 색상을 갖습니다. [`LINE`](/docs/commands/line) 명령의 각 세그먼트는 시작할 때의 현재 색상을 갖습니다. COLOR는 다음에 그릴 객체만 정합니다. 이미 그린 객체는 특성 팔레트나 상단 막대의 색상 목록으로 바꿉니다.
 
@@ -26,7 +26,7 @@ COLOR(색상) 명령은 새 객체를 그릴 색상을 정합니다. AutoCAD는 
 
 ### `Truecolor` (`T`) [#truecolor]
 
-색상을 빨강, 초록, 파랑 순서로 0부터 255까지의 세 값으로 묻습니다. 값은 공백 없이 쉼표로 구분합니다. `0,128,255`는 중간 파랑입니다. 인덱스 색상이기도 한 색상, 예를 들어 `255,0,0`은 그 인덱스 색상으로 저장됩니다.
+색상을 빨강, 초록, 파랑 순서로 0부터 255까지의 세 값으로 묻습니다. 값은 공백 없이 쉼표로 구분합니다. `0,128,255`는 중간 파랑입니다. RGB가 같은 인덱스 색상이 있어도 트루컬러로 유지됩니다. `255,0,0` 다음에 COLOR는 빨간색이 아니라 `255,0,0`을 제시합니다.
 
 ### `BYLayer` (`BYL`) [#bylayer]
 
@@ -62,7 +62,7 @@ COLOR(색상) 명령은 새 객체를 그릴 색상을 정합니다. AutoCAD는 
 
 ## 아직 지원하지 않는 것 [#missing]
 
-색상 선택 대화상자, 색상표, HSL 형식이 없습니다. 인덱스 색상 8부터 255까지는 받지 않고 1부터 7까지만 받습니다. ByBlock이 없습니다. 인덱스 색상과 같은 트루컬러는 그 인덱스 색상으로 저장되며, AutoCAD는 RGB를 유지합니다. 투명도(CETRANSPARENCY)와 유형별 기본값인 HPCOLOR, HPLAYER, DIMLAYER, TEXTLAYER가 없습니다.
+색상 선택 대화상자, 색상표, HSL 형식이 없습니다. ByBlock이 없습니다. 투명도(CETRANSPARENCY)와 유형별 기본값인 HPCOLOR, HPLAYER, DIMLAYER, TEXTLAYER가 없습니다.
 
 [기능과 아직 없는 기능 자세히 보기(영어)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#colour--color--col--colour---color--es-color--col---color--pt-br-cor--c--colour--cordiag---cor--fr-couleur--cl--coul--ddcolor---couleur--it-colore--co--ddcolor---colore--de-farbe--far--fe--ddcolor---farbe--ru-цвет--цв--диалцвет---цвет--pl-kolor--kol--odkolor---kolor--cs-barva--bar--ddcolor--diabarva---barva--hu-szín--s--szin--dpszín---szín)
 

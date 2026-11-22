@@ -193,6 +193,7 @@
       "white": "Fehér"
     },
     "byLayer": "Fólia",
+    "colorNumber": "Szín: {index}",
     "view": {
       "Top": "Felül",
       "Bottom": "Alul",
@@ -2759,6 +2760,7 @@
       "invalid": "*Érvénytelen*",
       "styleNameInUse": "A(z) {table, select, dimension {méretstílus} other {szövegstílus}} - \"{name}\" már létezik.",
       "currentDimStyle": "Aktuális méretstílus: {name}   Feliratozási: Nem",
+      "dimStyleOfDimension": "Méretstílus: {name}",
       "unknownDimStyle": "Ismeretlen méretstílus.",
       "namedDimStyles": "Elnevezett méretstílusok:",
       "noMatchingDimStyles": "  Egyező méretstílus nem található.",
@@ -3037,7 +3039,7 @@
       "listDimensionDefaultText": "alapértelmezett szöveg",
       "listDimensionTextModifier": "méretszöveg módosító: {text}",
       "listDimensionStyle": "méretstílus: \"{style}\"",
-      "listDimensionOverrides": "méretstílus felülírások:\n DIMUPT      Be",
+      "listDimensionOverrides": "méretstílus felülírások:",
       "listDimensionAnnotative": "Feliratozási: Nem",
       "listHatchPattern": "                 Sraffozási minta {pattern}",
       "listHatchAnnotative": "                 Feliratozási: Nem",

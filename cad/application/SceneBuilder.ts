@@ -95,7 +95,7 @@ import {
   linetypeTextPlacements,
   segmentsPath,
 } from "../domain/linetypeText"
-import { normalizeColor } from "../domain/colors"
+import { colorRgb, normalizeTrueColor } from "../domain/colors"
 import {
   DEFAULT_LINETYPE_ID,
   LINETYPES,
@@ -2388,11 +2388,11 @@ function pushEntities(
       const shaded = shadedCells(
         solids.map((solid) => ({
           brep: solid.brep,
-          color: (
+          color: colorRgb(
             solid.color ??
-            layerById.get(solid.layerId)?.color ??
-            DEFAULT_LAYER_COLOR
-          ).toLowerCase(),
+              layerById.get(solid.layerId)?.color ??
+              DEFAULT_LAYER_COLOR
+          ),
           locked: layerById.get(solid.layerId)?.locked === true,
         })),
         viewDirection,
@@ -2472,7 +2472,7 @@ function pushEntities(
               // background (desktop solid-inquiry/d06: 255 → 178,178,178).
               visualStyle !== "2dWireframe" && entity.type === "solid3d"
                 ? mixedColor(
-                    normalizeColor(edged.color) ?? THEME.entity,
+                    normalizeTrueColor(edged.color) ?? THEME.entity,
                     "#000000",
                     LOCKED_EDGE_SHARE
                   )
@@ -2587,7 +2587,9 @@ export function entityStroke(
     isWidePolyline(entityShape(entity)) &&
     camera.isPlan &&
     !isTilted(entity)
-  const color = drawnColor(entity.color ?? layer?.color ?? DEFAULT_LAYER_COLOR)
+  const color = drawnColor(
+    colorRgb(entity.color ?? layer?.color ?? DEFAULT_LAYER_COLOR)
+  )
   return {
     color: faded ? fadedColor(color) : color,
     width: widthFor(lineweight, look.lwDisplay && !wideInPlan),
@@ -2664,7 +2666,7 @@ export function fadedColor(
   color: string,
   opacity: number = FADED_OPACITY
 ): string {
-  const hex = normalizeColor(color) ?? THEME.entity
+  const hex = normalizeTrueColor(color) ?? THEME.entity
   const [r, g, b] = [1, 3, 5].map((at) =>
     Number.parseInt(hex.slice(at, at + 2), 16)
   )

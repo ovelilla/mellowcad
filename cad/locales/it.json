@@ -193,6 +193,7 @@
       "white": "Bianco"
     },
     "byLayer": "DaLayer",
+    "colorNumber": "Colore {index}",
     "view": {
       "Top": "Alto",
       "Bottom": "Basso",
@@ -2761,6 +2762,7 @@
       "invalid": "*Non valido*",
       "styleNameInUse": "{table, select, dimension {Lo stile di quota} other {Lo stile di testo}} \"{name}\" esiste già.",
       "currentDimStyle": "Stile di quota corrente:  {name}   Annotativo: No",
+      "dimStyleOfDimension": "Stile di quota: {name}",
       "unknownDimStyle": "Stile di quota sconosciuto.",
       "namedDimStyles": "Stili di quota con nome:",
       "noMatchingDimStyles": "  Non è stato trovato alcuno stile di quota corrispondente alle specifiche.",

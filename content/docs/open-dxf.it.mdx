@@ -3,7 +3,7 @@ title: Aprire un file DXF online
 metaTitle: "Aprire file DXF online: visualizzatore gratis"
 description: "Apri gratis un file DXF nel browser, senza caricarlo: AutoCAD da R12 al 2018, testo o binario, con layer, testi, quote, tratteggi e blocchi."
 type: howTo
-sourceHash: "dc6533c55826"
+sourceHash: "9ec1ebd84955"
 faq:
   - question: "Come aprire un file DXF senza AutoCAD?"
     answer: "Sceglilo o trascinalo in cima a questa pagina: MellowCAD lo apre nel suo editor, nel tuo browser, senza installare nulla e senza account. Nell'editor, APRI (Ctrl+O) e DXFIN ne aprono uno."
@@ -25,8 +25,8 @@ MellowCAD apre i file DXF nel tuo browser e li disegna nel suo editor, dove puoi
 
 - **DXF da AutoCAD R12 al 2018**, il formato DXF più recente che AutoCAD scrive, in testo (ASCII) o binario, creato da AutoCAD o da un altro programma. Il testo conserva i suoi caratteri: fino al 2004 nella tabella codici indicata dal file, dal 2007 in UTF-8.
 - **Linee, archi, cerchi, ellissi e polilinee**, con le loro larghezze e le loro forme adattate a curva o a spline, polilinee 3D e spline, e i punti, disegnati con lo [stile punto](/docs/commands/ptype) del disegno, i solidi 2D, riempiti come dice FILLMODE, le facce 3D, le entità coprenti (wipeout), e le linee di costruzione e le semirette.
-- **Testo su una riga e testo multilinea**, direttrici con il loro testo, blocchi con i loro attributi, quote lineari, allineate, angolari, di raggio e di diametro, e tratteggi, ognuno con le linee del motivo che contiene, come lo disegna AutoCAD: anche un motivo definito dall'utente o quello di un altro programma.
-- **Il layer di ogni oggetto**, il colore, il tipo di linea e la sua scala, lo spessore di linea, l'altezza e l'elevazione, e i layer attivi, disattivati o bloccati; un layer congelato si apre disattivato.
+- **Testo su una riga e testo multilinea**, direttrici con il loro testo, blocchi con i loro attributi, quote lineari, allineate, angolari, di raggio e di diametro con ciò che ognuna modifica del suo stile, e tratteggi, ognuno con le linee del motivo che contiene, come lo disegna AutoCAD: anche un motivo definito dall'utente o quello di un altro programma.
+- **Il layer di ogni oggetto**, il colore, dato dal suo indice o come colore RGB, il tipo di linea e la sua scala, lo spessore di linea, l'altezza e l'elevazione, e i layer attivi, disattivati o bloccati; un layer congelato si apre disattivato.
 - **I tipi di linea del disegno**, disegnati con i loro tratti, punti e spazi alla scala del tipo di linea del disegno, e il testo di quelli complessi come GAS_LINE.
 - **Gli stili di testo e di quota del disegno**, e le sue unità quando sono millimetri, centimetri o metri.
 
@@ -45,7 +45,7 @@ Ciò che si trova in un layout viene contato a parte, dato che non ci sono ancor
 Alcune cose si aprono, ma non del tutto com'erano:
 
 - Le forme dei tipi di linea complessi come BATTING o ZIGZAG non vengono disegnate, solo i tratti e gli spazi intorno a esse.
-- Un colore dato dal suo indice si apre come il suo colore RGB, e DaBlocco come DaLayer.
+- DaBlocco si apre come DaLayer, e ciò che una quota modifica del suo stile senza che MellowCAD abbia un'impostazione corrispondente, come i suoi colori, viene scartato.
 - Un disegno in pollici o in piedi conserva i suoi numeri, letti come millimetri.
 - Il testo viene disegnato con le misure di Arial, qualunque sia il font nominato dal suo stile, senza il suo fattore di larghezza né l'angolo obliquo.
 - Un riferimento esterno conserva la sua posizione e il suo percorso, e viene disegnato come AutoCAD disegna un riferimento di cui non trova il disegno: `Xrif` e il percorso nel suo punto di inserimento. Una pagina legge solo il file che riceve, mai i disegni che lo accompagnano; salvato di nuovo come DXF, il riferimento viene conservato.

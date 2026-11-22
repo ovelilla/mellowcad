@@ -1,7 +1,13 @@
 import type { Vec2 } from "../geometry/Vec2"
 import { type Vec3, withZOf } from "../geometry/Vec3"
 import { normalizeAngle, normalizeDegrees } from "../geometry/primitives"
-import { COLOR_BYLAYER, STANDARD_COLORS } from "../domain/colors"
+import {
+  COLOR_BYLAYER,
+  STANDARD_COLORS,
+  colorChannels,
+  colorIndex,
+  indexColor,
+} from "../domain/colors"
 import { DEFAULT_HATCH_PATTERN_ID } from "../domain/hatchPatterns"
 import { LINETYPE_BYLAYER } from "../domain/linetypes"
 import { isPointMode } from "../domain/entities"
@@ -661,18 +667,16 @@ function byWord(ctx: ToolContext, id: "BYLAYER" | "BYBLOCK"): string {
 function colorValue(ctx: ToolContext): string {
   const color = ctx.document.getSettings().currentColor
   if (color === COLOR_BYLAYER) return byWord(ctx, "BYLAYER")
-  const index = STANDARD_COLORS.findIndex((each) => each.value === color)
-  if (index >= 0) return String(index + 1)
-  const [r, g, b] = [1, 3, 5].map((at) => parseInt(color.slice(at, at + 2), 16))
-  return `RGB:${r},${g},${b}`
+  const index = colorIndex(color)
+  if (index !== null) return String(index)
+  return `RGB:${colorChannels(color).join(",")}`
 }
 
 /**
  * What CECOLOR takes (p204, p208, p215): a colour number (256 ByLayer), an
  * index colour's name in English or in the command language, ByLayer, and
- * `r,g,b` with or without `RGB:`. WHY ByBlock, 0 and 8–255 are refused where
- * AutoCAD takes them (WORKSPACE-D33): ByBlock is not modelled and those
- * index colours' RGB values are not known here.
+ * `r,g,b` with or without `RGB:`. WHY ByBlock and 0 are refused where
+ * AutoCAD takes them (WORKSPACE-D33): ByBlock is not modelled.
  */
 function colorNamed(
   typed: string,
@@ -682,7 +686,7 @@ function colorNamed(
   if (/^\d+$/.test(word)) {
     const index = Number(word)
     if (index === 256) return COLOR_BYLAYER
-    return STANDARD_COLORS[index - 1]?.value ?? null
+    return indexColor(index)
   }
   if (word === "BYLAYER" || word === byWord(ctx, "BYLAYER")) {
     return COLOR_BYLAYER

@@ -2,7 +2,7 @@
 title: "Hladiny v AutoCADu: příkaz HLADINA (LAYER)"
 description: "Jak pracovat s hladinami v AutoCADu: příkaz HLADINA (LAYER, zkratka HL), Správce vlastností hladin, vytvoření, odstranění, vypnutí a uzamknutí hladiny."
 figure: "Tři hladiny, každá nastavená jako aktuální před kreslením v ní: zdi bíle, dveře žlutě, osa červeně s typem čáry Center."
-sourceHash: "85620b673df6"
+sourceHash: "429f8c52c2fa"
 ---
 
 Příkaz HLADINA (LAYER) otevře Správce vlastností hladin, ve kterém se hladiny výkresu vytvářejí, pojmenovávají a nastavují. Stejně jako v AutoCADu je to paleta, ne dialog: zůstává otevřená, zatímco kreslíte, zde jako karta panelu palet, dokud ji nezavře příkaz <Command id="LAYERCLOSE" />, a když ho zadáte s apostrofem uvnitř jiného příkazu, otevře se, aniž by ten příkaz ukončil. Každý objekt leží v nějaké hladině a jeho barva, typ čáry a tloušťka čáry, pokud jsou DleHlad, jsou ty, které má hladina. Nové objekty se umisťují do aktuální hladiny.

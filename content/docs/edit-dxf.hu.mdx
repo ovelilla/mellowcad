@@ -3,7 +3,7 @@ title: DXF-fájl szerkesztése online
 metaTitle: "Ingyenes online DXF-szerkesztő, telepítés nélkül"
 description: "Szerkesszen DXF-fájlt ingyen a böngészőben az AutoCAD parancsaival, és mentse újra DXF-ként, AutoCAD 2000–2018. Nincs telepítés, nincs feltöltés."
 type: howTo
-sourceHash: "3b96ee37d43c"
+sourceHash: "74f66409765f"
 faq:
   - question: "Hogyan szerkeszthetek DXF-fájlt online?"
     answer: "Válassza ki, vagy húzza az oldal tetejére: megnyílik a MellowCAD szerkesztőjében, a böngészőben. Módosítsa az AutoCAD parancsaival, majd a MENTMINT (Ctrl+Shift+S) vagy a DXFKI parancs újra DXF-fájlként menti."
@@ -45,13 +45,13 @@ A fájl letöltődik, mint minden, amit itt ment ([a mentés nem egészen olyan,
 
 ## Mit tartalmaz a DXF [#holds]
 
-Minden objektumot, amely a MellowCAD-ben létezik, úgy kiírva, ahogy az AutoCAD írja ki: vonalakat, íveket, köröket, ellipsziseket, vonalláncokat a szélességükkel és az illesztésükkel, 3D vonalláncokat, spline-okat, egysoros és bekezdéses szöveget, blokkokat az attribútumaikkal, méreteket, sraffozásokat a mintázatukkal, pontokat, 2D tömör objektumokat, és a kiosztásokat az elemeikből álló blokkként. Velük együtt a fóliákat (be- és kikapcsolt, zárolt) a színükkel, vonaltípusukkal és vonalvastagságukkal, a rajz vonaltípusait, az összetetteket is, és minden objektum vonaltípus-léptékét, a szöveg- és méretstílusokat, a blokkokat, valamint a rajz mértékegységét és beállításait. A szöveg megtartja a karaktereit: 2004-ig az AutoCAD által használt Windows-kódlapon, a többi karakter escape-kóddal, 2007-től UTF-8-ban.
+Minden objektumot, amely a MellowCAD-ben létezik, úgy kiírva, ahogy az AutoCAD írja ki: vonalakat, íveket, köröket, ellipsziseket, vonalláncokat a szélességükkel és az illesztésükkel, 3D vonalláncokat, spline-okat, egysoros és bekezdéses szöveget, blokkokat az attribútumaikkal, méreteket azzal, amit mindegyik felülír a stílusából, sraffozásokat a mintázatukkal, pontokat, 2D tömör objektumokat, és a kiosztásokat az elemeikből álló blokkként. Velük együtt minden színt úgy, ahogy volt, indexszínként vagy True Color színként, a fóliákat (be- és kikapcsolt, zárolt) a színükkel, vonaltípusukkal és vonalvastagságukkal, a rajz vonaltípusait, az összetetteket is, és minden objektum vonaltípus-léptékét, a szöveg- és méretstílusokat, a blokkokat, valamint a rajz mértékegységét és beállításait. A szöveg megtartja a karaktereit: 2004-ig az AutoCAD által használt Windows-kódlapon, a többi karakter escape-kóddal, 2007-től UTF-8-ban.
 
 ## Mi vész el [#lost]
 
 - **Ami nem nyílt meg, azt nem menti.** Amihez a MellowCAD-ben még nincs objektumtípus – a többszörösvonalak, a tűrések és [a lista többi eleme](/docs/open-dxf#left-out) –, azt a parancssor a fájl megnyitásakor megszámolja, és a mentett fájlban nincs benne. Őrizze meg az eredetit.
 - **A 3D szilárdtesteket és a lemezeket nem írja ki**: a parancssor kiírja, hány maradt ki.
-- A méret saját stílusfelülírásait és a kiosztás paramétereit nem írja ki: az AutoCAD a méretet a stílusa beállításaival, a kiosztást pedig az elemeiből álló blokkként nyitja meg.
+- A kiosztás paramétereit nem írja ki: az AutoCAD a kiosztást az elemeiből álló blokkként nyitja meg. Azt sem írja ki, amit egy méret felülír a stílusából, és amire a MellowCAD-ben nincs beállítás, például a színeit.
 - Nincs miniatűr előnézeti kép, még nincs AutoCAD R12/LT2 DXF-fájltípus, és nincs DWG.
 
 ## Új DXF a semmiből [#new]

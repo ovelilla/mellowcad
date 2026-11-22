@@ -193,6 +193,7 @@
       "white": "Blanc"
     },
     "byLayer": "DuCalque",
+    "colorNumber": "Couleur {index}",
     "view": {
       "Top": "Haut",
       "Bottom": "Bas",
@@ -2753,6 +2754,7 @@
       "invalid": "*Incorrect*",
       "styleNameInUse": "Un {table, select, dimension {style de cote} other {style de texte}} nommé \"{name}\" existe déjà.",
       "currentDimStyle": "Style de cote courant: {name}   Annotatif: Non",
+      "dimStyleOfDimension": "Style de cote: {name}",
       "unknownDimStyle": "Style de cote inconnu.",
       "namedDimStyles": "Nom du style de cote:",
       "noMatchingDimStyles": "  Style de cote correspondant non trouvé.",
@@ -3031,7 +3033,7 @@
       "listDimensionDefaultText": "texte par défaut",
       "listDimensionTextModifier": "modificateur du texte de cote: {text}",
       "listDimensionStyle": "Style de cote: \"{style}\"",
-      "listDimensionOverrides": "Modifications du style de cote:\n DIMUPT      Actif",
+      "listDimensionOverrides": "Modifications du style de cote:",
       "listDimensionAnnotative": "Annotatif: Non",
       "listHatchPattern": "                 Motif de hachures {pattern}",
       "listHatchAnnotative": "                 Annotatif: Non",

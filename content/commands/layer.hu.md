@@ -2,7 +2,7 @@
 title: "Fóliák az AutoCAD-ben: FÓLIA (LAYER) parancs"
 description: "Fóliák az AutoCAD-ben: a FÓLIA (LAYER, FO) parancs és a Fóliatulajdonság-kezelő oszlopai, új fólia, törlés, aktuálissá tétel, kikapcsolás és zárolás."
 figure: "Három fólia, mindegyik aktuálissá téve a rárajzolás előtt: a falak fehérrel, egy ajtó sárgával, egy tengely vörössel, Center vonaltípussal."
-sourceHash: "85620b673df6"
+sourceHash: "429f8c52c2fa"
 ---
 
 A FÓLIA (LAYER) parancs megnyitja a Fóliatulajdonság-kezelőt, ahol a rajz fóliái létrehozhatók, elnevezhetők és beállíthatók. Ahogy az AutoCAD-ben, ez paletta, nem párbeszédpanel: rajzolás közben nyitva marad, itt a palettapanel egyik lapjaként, amíg a <Command id="LAYERCLOSE" /> parancs be nem zárja, és ha egy másik parancson belül aposztróffal beírják, megnyílik anélkül, hogy azt a parancsot befejezné. Minden objektum valamelyik fólián van, és a színe, vonaltípusa és vonalvastagsága, ha Fólia szerintiek, a fóliáé. Az új objektumok az aktuális fóliára kerülnek.

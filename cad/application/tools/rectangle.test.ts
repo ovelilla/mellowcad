@@ -1,3 +1,4 @@
+import { colorRgb } from "../../domain/colors"
 import { describe, expect, it } from "vitest"
 import type { PolylineEntity } from "../../domain/entities"
 import { type CadHarness, createHarness } from "../../../test/harness"
@@ -564,7 +565,7 @@ describe("RECTANG's jig, as the desktop draws it", () => {
   it("draws the rectangle in the current colour, and no line at Pick points (d01, d04)", () => {
     const cad = createHarness()
     answer(cad, "-COLOR", "1")
-    const red = cad.runtime.document.getSettings().currentColor
+    const red = colorRgb(cad.runtime.document.getSettings().currentColor)
 
     answer(cad, "RECTANG", "0,0")
     cad.moveTo(p(10, 5))

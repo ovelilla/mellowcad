@@ -25,7 +25,13 @@
  * whole load, so files produced by other or newer minor tooling still open.
  */
 
-import { COLOR_BYLAYER, normalizeColor } from "../domain/colors"
+import {
+  COLOR_BYLAYER,
+  EntityColor,
+  legacyColor,
+  normalizeColor,
+  normalizeTrueColor,
+} from "../domain/colors"
 import { MAX_ARRAY_COUNT, arrayPathOfPieces } from "../domain/arrays"
 import {
   ArrayParameters,
@@ -103,6 +109,7 @@ import {
   DEFAULT_DIM_STYLE_ID,
   DimStyle,
   DimStyleId,
+  DimStyleOverrides,
 } from "../domain/dimStyles"
 import {
   createDefaultLayer,
@@ -164,7 +171,7 @@ import { DRAWING_FILE_TYPE } from "./drawingSummary"
 export { DRAWING_FILE_TYPE }
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 63
+export const DRAWING_FILE_VERSION = 64
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -418,8 +425,8 @@ export function parseDrawingData(data: unknown): ParsedDrawing {
   const entities = parseEntities(data.entities, version)
 
   return withLinetypeTable({
-    settings: parseSettings(data.settings),
-    layers: parseLayers(data.layers),
+    settings: parseSettings(data.settings, version),
+    layers: parseLayers(data.layers, version),
     currentLayerId: parseLayerId(data.currentLayerId),
     // Before 53 every drawing held the six (`LINETYPES`) and nothing else.
     linetypes: version < 53 ? [...LINETYPES] : parseLinetypes(data.linetypes),
@@ -638,6 +645,7 @@ function cloneEntityShape(entity: Entity): Entity {
           ? { textAngle: entity.textAngle }
           : {}),
         styleId: entity.styleId,
+        ...(entity.overrides ? { overrides: { ...entity.overrides } } : {}),
       }
     case "hatch":
       return {
@@ -1373,7 +1381,16 @@ function storedUcs(ucs: Ucs): StoredUcs {
     : { origin, xAxis: { ...ucs.xAxis }, yAxis: { ...ucs.yAxis } }
 }
 
-function parseSettings(value: unknown): DocumentSettings {
+/**
+ * A colour as the file holds it: from version 64 an index colour's number or
+ * a true colour's `#rrggbb`; before, every colour was its RGB (`legacyColor`).
+ */
+function fileColor(value: unknown, version: number): EntityColor | null {
+  if (typeof value !== "string") return null
+  return version < 64 ? legacyColor(value) : normalizeColor(value)
+}
+
+function parseSettings(value: unknown, version: number): DocumentSettings {
   if (!isRecord(value)) return DEFAULT_DOCUMENT_SETTINGS
   const unit = LENGTH_UNITS.includes(value.unit as LengthUnit)
     ? (value.unit as LengthUnit)
@@ -1436,10 +1453,7 @@ function parseSettings(value: unknown): DocumentSettings {
       home: parseSavedView(value.homeView),
     },
     // A drawing from before 25 has none of them: everything new is ByLayer.
-    currentColor:
-      typeof value.currentColor === "string"
-        ? (normalizeColor(value.currentColor) ?? COLOR_BYLAYER)
-        : COLOR_BYLAYER,
+    currentColor: fileColor(value.currentColor, version) ?? COLOR_BYLAYER,
     currentLinetype:
       typeof value.currentLinetype === "string" &&
       value.currentLinetype.length > 0
@@ -1688,10 +1702,8 @@ function parseEntityShape(raw: unknown, version: number): Entity | null {
     typeof raw.layerId === "string" && raw.layerId.length > 0
       ? raw.layerId
       : DEFAULT_LAYER_ID
-  const color =
-    typeof raw.color === "string" && normalizeColor(raw.color)
-      ? { color: normalizeColor(raw.color)! }
-      : {}
+  const own = fileColor(raw.color, version)
+  const color = own ? { color: own } : {}
   const linetype =
     typeof raw.linetype === "string" && raw.linetype.length > 0
       ? { linetype: raw.linetype }
@@ -1932,6 +1944,8 @@ function parseEntityShape(raw: unknown, version: number): Entity | null {
         ...(typeof raw.text === "string" ? { text: raw.text } : {}),
         ...(isFiniteNumber(raw.textAngle) ? { textAngle: raw.textAngle } : {}),
         styleId: parseId(raw.styleId, DEFAULT_DIM_STYLE_ID),
+        // From 64: what it overrides of its style (a DXF's DSTYLE).
+        ...parseDimStyleOverrides(raw.overrides),
       }
     }
     case "hatch": {
@@ -1982,7 +1996,7 @@ function parseEntityShape(raw: unknown, version: number): Entity | null {
         position,
         ...insertScalesOf(raw),
         rotation: isFiniteNumber(raw.rotation) ? raw.rotation : 0,
-        ...parseBlockAttributes(raw.attributes),
+        ...parseBlockAttributes(raw.attributes, version),
         ...parseArray(raw.array),
         // Since 63: a MINSERT's rows and columns.
         ...(isRecord(raw.grid)
@@ -2099,7 +2113,7 @@ function parseEntityShape(raw: unknown, version: number): Entity | null {
       const first = branches[0]
       const base = first ? mleaderDoglegEnd(first) : { x: 0, y: 0 }
       const kept = isRecord(raw.kept) ? raw.kept : {}
-      const lineColor = parseMLeaderColor(raw.lineColor)
+      const lineColor = parseMLeaderColor(raw.lineColor, version)
       return {
         id,
         type: "mleader",
@@ -2318,6 +2332,40 @@ function storedLeaderOverrides(o: LeaderOverrides): LeaderOverrides {
 }
 
 /** A leader's overrides of its style: each a number in range, DIMTAD a boolean. */
+const DIM_NUMBERS = [
+  "textHeight",
+  "arrowSize",
+  "extensionOffset",
+  "extensionBeyond",
+  "textGap",
+  "baselineSpacing",
+  "centerMark",
+  "decimals",
+  "angleDecimals",
+  "scale",
+] as const
+const DIM_SWITCHES = ["suppressTrailingZeros", "forceLineInside"] as const
+
+/** A dimension's overrides: each a variable its style holds, of its type. */
+function parseDimStyleOverrides(raw: unknown): {
+  overrides?: DimStyleOverrides
+} {
+  if (!isRecord(raw)) return {}
+  const found: Record<string, number | boolean | string> = {}
+  for (const key of DIM_NUMBERS) {
+    if (isFiniteNumber(raw[key])) found[key] = raw[key]
+  }
+  for (const key of DIM_SWITCHES) {
+    if (typeof raw[key] === "boolean") found[key] = raw[key]
+  }
+  if (typeof raw.decimalSeparator === "string") {
+    found.decimalSeparator = raw.decimalSeparator
+  }
+  return Object.keys(found).length > 0
+    ? { overrides: found as DimStyleOverrides }
+    : {}
+}
+
 function parseLeaderOverrides(raw: unknown): LeaderOverrides | undefined {
   if (!isRecord(raw)) return undefined
   const size = (value: unknown) =>
@@ -2745,7 +2793,10 @@ function parseAttributeModes(value: unknown): AttributeModes {
 }
 
 /** A reference's attributes; one without a position or a tag is skipped. */
-function parseBlockAttributes(value: unknown): {
+function parseBlockAttributes(
+  value: unknown,
+  version: number
+): {
   attributes?: BlockAttribute[]
 } {
   if (!Array.isArray(value)) return {}
@@ -2769,8 +2820,8 @@ function parseBlockAttributes(value: unknown): {
         typeof raw.layerId === "string" && raw.layerId.length > 0
           ? raw.layerId
           : DEFAULT_LAYER_ID,
-      ...(typeof raw.color === "string" && normalizeColor(raw.color)
-        ? { color: normalizeColor(raw.color)! }
+      ...(fileColor(raw.color, version)
+        ? { color: fileColor(raw.color, version)! }
         : {}),
       ...(typeof raw.linetype === "string" && raw.linetype.length > 0
         ? { linetype: raw.linetype }
@@ -2918,7 +2969,7 @@ function gradientOf(value: unknown): { gradient?: HatchGradient } {
   if (!isHatchGradientName(value.name)) return {}
   const colors = Array.isArray(value.colors)
     ? value.colors.map((c) =>
-        typeof c === "string" ? normalizeColor(c) : null
+        typeof c === "string" ? normalizeTrueColor(c) : null
       )
     : []
   const [first, second] = colors
@@ -2986,12 +3037,12 @@ function parseHatchLoops(value: unknown): HatchLoop[] {
  * files without a `layers` array open with just the base layer and every entity
  * on it. Malformed entries are skipped, not fatal.
  */
-function parseLayers(value: unknown): Layer[] {
+function parseLayers(value: unknown, version: number): Layer[] {
   const layers: Layer[] = []
   const seen = new Set<LayerId>()
   if (Array.isArray(value)) {
     for (const raw of value) {
-      const layer = parseLayer(raw)
+      const layer = parseLayer(raw, version)
       if (layer && !seen.has(layer.id)) {
         seen.add(layer.id)
         layers.push(layer)
@@ -3008,17 +3059,15 @@ function parseLayers(value: unknown): Layer[] {
  */
 const LEGACY_LAYER_COLOR = "#e2e8f0"
 
-function parseLayer(raw: unknown): Layer | null {
+function parseLayer(raw: unknown, version: number): Layer | null {
   if (!isRecord(raw)) return null
   if (typeof raw.id !== "string" || raw.id.length === 0) return null
   const name =
     typeof raw.name === "string" && raw.name.length > 0 ? raw.name : raw.id
   const color =
-    typeof raw.color === "string" &&
-    raw.color.length > 0 &&
-    raw.color !== LEGACY_LAYER_COLOR
-      ? raw.color
-      : DEFAULT_LAYER_COLOR
+    ((version >= 64 || raw.color !== LEGACY_LAYER_COLOR) &&
+      fileColor(raw.color, version)) ||
+    DEFAULT_LAYER_COLOR
   const visible = typeof raw.visible === "boolean" ? raw.visible : true
   const locked = typeof raw.locked === "boolean" ? raw.locked : false
   const linetype =
@@ -3423,11 +3472,11 @@ function parseAttachment(value: unknown): MTextAttachment | undefined {
 
 const MLEADER_PATHS = ["none", "straight", "spline"] as const
 
-function parseMLeaderColor(value: unknown): MLeaderColor | undefined {
-  return value === "ByBlock" ||
-    (typeof value === "string" && /^#[0-9a-f]{6}$/i.test(value))
-    ? value
-    : undefined
+function parseMLeaderColor(
+  value: unknown,
+  version: number
+): MLeaderColor | undefined {
+  return value === "ByBlock" ? value : (fileColor(value, version) ?? undefined)
 }
 
 /** A branch whose landing and direction read; its lines' unreadable points dropped. */

@@ -27,7 +27,7 @@ import { ptBR } from "../../locales/pt-BR"
 // pedit/p01–p253, traced, MPDUMP, en, es and pt-BR).
 
 const ARC = -1.0000000000000004
-const RED = "#ff0000"
+const RED = "1"
 /** p01's polyline: 0,0 10,0 10,10, an arc to 20,10, a line to 30,0. */
 const pl = () =>
   polylineOf([p(0, 0), p(10, 0), p(10, 10), p(20, 10), p(30, 0)], {

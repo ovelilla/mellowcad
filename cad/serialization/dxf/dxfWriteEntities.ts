@@ -46,12 +46,18 @@ import {
   dimensionGeometry,
   dimensionMeasurement,
 } from "../../domain/dimensions"
-import { DimStyle } from "../../domain/dimStyles"
+import { DimStyle, DimStyleOverrides } from "../../domain/dimStyles"
+import {
+  DIM_VARIABLE_GROUPS,
+  dimVariableNumber,
+  isRealDimGroup,
+} from "./dxfDimVariables"
 import { isSolidHatchPattern } from "../../domain/hatchPatterns"
 import type { HatchGradient } from "../../domain/hatchGradients"
 import { hatchLines } from "../../domain/hatchPatternEdits"
 import { DEFAULT_LINEWEIGHT } from "../../domain/lineweights"
-import { aciIndex } from "./dxfColors"
+import { colorRgb } from "../../domain/colors"
+import { aciIndex, dxfColorCodes } from "./dxfColors"
 import { DxfOut } from "./dxfOut"
 
 const DEG = 180 / Math.PI
@@ -133,9 +139,8 @@ function head(
 }
 
 /**
- * A colour as AutoCAD writes it: the index when the model's RGB is one of
- * the index colours' (red is 1), else the nearest index and the true colour
- * (420), as AutoCAD writes a true colour.
+ * A colour as AutoCAD writes it: an index colour its number, a true colour
+ * the nearest index and itself (420), as `dxfColorCodes` says.
  */
 export function color(out: DxfOut, value: string | undefined): void {
   // A table's block's pieces (`tableBlock`), as AutoCAD's are (table/t03).
@@ -143,11 +148,10 @@ export function color(out: DxfOut, value: string | undefined): void {
     out.int(62, 0)
     return
   }
-  if (value === undefined || !value.startsWith("#")) return
-  const rgb = Number.parseInt(value.slice(1), 16)
-  const { index, exact } = aciIndex(rgb)
-  out.int(62, index)
-  if (!exact) out.int(420, rgb)
+  const codes = value === undefined ? null : dxfColorCodes(value)
+  if (!codes) return
+  out.int(62, codes.index)
+  if (codes.rgb !== undefined) out.int(420, codes.rgb)
 }
 
 /** A layer's lineweight: AutoCAD's Default (−3) for the 0.25 mm a layer starts at here. */
@@ -239,9 +243,11 @@ export function writeEntity(
 function mleaderColorValue(color: MLeaderColor | undefined): number {
   if (color === undefined) return -1073741824
   if (color === "ByBlock") return -1056964608
-  const rgb = Number.parseInt(color.slice(1), 16)
-  const { index, exact } = aciIndex(rgb)
-  return exact ? 0xc3000000 | index | 0 : 0xc2000000 | rgb | 0
+  const codes = dxfColorCodes(color)
+  if (!codes) return -1073741824
+  return codes.rgb === undefined
+    ? 0xc3000000 | codes.index | 0
+    : 0xc2000000 | codes.rgb | 0
 }
 
 /**
@@ -1061,6 +1067,15 @@ function leader(ctx: DxfWriteContext, e: LeaderEntity, owner: string): void {
   if (o.arrowSize !== undefined) overrides.push([41, o.arrowSize, false])
   if (o.textAbove !== undefined) overrides.push([77, o.textAbove ? 1 : 0, true])
   if (o.textGap !== undefined) overrides.push([147, o.textGap, false])
+  dstyle(out, overrides)
+}
+
+/**
+ * The overrides of its style an object keeps, as AutoCAD writes its ACAD
+ * xdata: each variable's group (1070), then its value, an integer (1070) or
+ * a real (1040), in the order of their groups (colors/s01); none, nothing.
+ */
+function dstyle(out: DxfOut, overrides: readonly [number, number, boolean][]) {
   if (overrides.length === 0) return
   out.str(1001, "ACAD")
   out.str(1000, "DSTYLE")
@@ -1071,6 +1086,25 @@ function leader(ctx: DxfWriteContext, e: LeaderEntity, owner: string): void {
     else out.real(1040, value)
   }
   out.str(1002, "}")
+}
+
+/** A dimension's overrides as DSTYLE's groups (`dstyle`). */
+function dimOverridePairs(
+  overrides: DimStyleOverrides | undefined
+): [number, number, boolean][] {
+  if (!overrides) return []
+  return DIM_VARIABLE_GROUPS.flatMap(([group, variable]) => {
+    const value = overrides[variable]
+    return value === undefined
+      ? []
+      : [
+          [
+            group,
+            dimVariableNumber(variable, value),
+            !isRealDimGroup(group),
+          ] as [number, number, boolean],
+        ]
+  })
 }
 
 /** MTEXT's point and direction are the WCS's (the reader's f004). */
@@ -1247,13 +1281,13 @@ function dimension(
         if (e.rotation) out.real(50, e.rotation * DEG)
         out.str(100, "AcDbRotatedDimension")
       }
-      return
+      break
     case "angular":
       out.str(100, "AcDb3PointAngularDimension")
       wcs(13, e.first)
       wcs(14, e.second)
       wcs(15, e.vertex!)
-      return
+      break
     case "radius":
     case "diameter":
       out.str(
@@ -1263,6 +1297,7 @@ function dimension(
       wcs(15, e.second)
       out.real(40, 0)
   }
+  dstyle(out, dimOverridePairs(e.overrides))
 }
 
 /**
@@ -1365,7 +1400,7 @@ function hatch(ctx: DxfWriteContext, e: HatchEntity, owner: string): void {
  */
 function gradient(ctx: DxfWriteContext, g: HatchGradient): void {
   const { out } = ctx
-  const rgb = g.colors.map((c) => parseInt(c.slice(1), 16))
+  const rgb = g.colors.map((c) => parseInt(colorRgb(c).slice(1), 16))
   if (ctx.version < 1018) {
     GRADIENT_COLOR_APPS.forEach((app, i) => {
       out.str(1001, app)

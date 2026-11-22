@@ -197,6 +197,12 @@ export const it: EngineLocale = {
       "white": "Bianco"
     },
     "byLayer": "DaLayer",
+    "colorNumber": [
+      "Colore ",
+      [
+        "index"
+      ]
+    ],
     "view": {
       "Top": "Alto",
       "Bottom": "Basso",
@@ -5260,6 +5266,12 @@ export const it: EngineLocale = {
           "name"
         ],
         "   Annotativo: No"
+      ],
+      "dimStyleOfDimension": [
+        "Stile di quota: ",
+        [
+          "name"
+        ]
       ],
       "unknownDimStyle": "Stile di quota sconosciuto.",
       "namedDimStyles": "Stili di quota con nome:",

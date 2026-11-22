@@ -16,6 +16,7 @@ import {
   EntityId,
 } from "./entities"
 import { createDefaultLayer, DEFAULT_LAYER_ID, Layer, LayerId } from "./layers"
+import { colorRgb } from "./colors"
 import {
   CONTINUOUS,
   DEFAULT_LINETYPE_ID,
@@ -617,10 +618,10 @@ export class CadDocument extends Observable implements DocumentReader {
   }
 
   resolveEntityColor(entity: Entity): string {
-    if (entity.color) return entity.color
-    return (
-      this.layers.get(entity.layerId)?.color ??
-      this.layers.get(DEFAULT_LAYER_ID)!.color
+    return colorRgb(
+      entity.color ??
+        this.layers.get(entity.layerId)?.color ??
+        this.layers.get(DEFAULT_LAYER_ID)!.color
     )
   }
 

@@ -4,6 +4,7 @@ import {
   DRAWING_FILE_TYPE,
   DrawingFileError,
   DRAWING_FILE_VERSION,
+  parseDrawingData,
   parseDrawingFile,
   serializeDrawing,
   toDrawingFile,
@@ -186,18 +187,46 @@ describe("round trip", () => {
 
   it("reads the old default layer colour as index 7, keeping any other", () => {
     // Before 2026-10-23 layer 0 and new layers stored #e2e8f0, the stand-in
-    // for AutoCAD's colour 7 (p300).
+    // for AutoCAD's colour 7 (p300); from 64 it is a true colour like any.
     const layers = [
       layerOf("0", { color: "#e2e8f0" }),
-      layerOf("walls", { color: "#ff0000" }),
+      layerOf("walls", { color: "#d29b5f" }),
     ]
-    const parsed = parseDrawingFile(
-      serializeDrawing(snapshotOf([], { layers }))
+    const saved = JSON.parse(serializeDrawing(snapshotOf([], { layers })))
+    const colors = (version: number) =>
+      parseDrawingData({ ...saved, version }).layers.map((layer) => layer.color)
+    expect(colors(63)).toEqual(["7", "#d29b5f"])
+    expect(colors(64)).toEqual(["#e2e8f0", "#d29b5f"])
+  })
+
+  it("keeps index and true colours apart from 64, and reads an older drawing's RGB of an index colour as that index", () => {
+    const drawing = snapshotOf(
+      [
+        { ...lineOf(p(0, 0), p(1, 0)), color: "30" },
+        { ...lineOf(p(0, 1), p(1, 1)), color: "#ff0000" },
+      ],
+      { layers: [layerOf("0", { color: "#0a141e" })] }
     )
-    expect(parsed.layers.map((layer) => layer.color)).toEqual([
-      "#ffffff",
-      "#ff0000",
-    ])
+    const saved = JSON.parse(serializeDrawing(drawing))
+    const colorsOf = (data: unknown) => {
+      const parsed = parseDrawingData(data)
+      return [
+        ...parsed.entities.map((entity) => entity.color),
+        parsed.layers[0].color,
+      ]
+    }
+    expect(colorsOf(saved)).toEqual(["30", "#ff0000", "#0a141e"])
+    const old = {
+      ...saved,
+      version: 63,
+      entities: saved.entities.map((entity: object, i: number) => ({
+        ...entity,
+        color: ["#ff7f00", "#ff0000"][i],
+      })),
+      settings: { ...saved.settings, currentColor: "#0000ff" },
+    }
+    expect(colorsOf(old)).toEqual(["30", "1", "#0a141e"])
+    expect(parseDrawingData(old).settings.currentColor).toBe("5")
   })
 
   it("preserves the text-style table and the current style", () => {

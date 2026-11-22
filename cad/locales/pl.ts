@@ -197,6 +197,12 @@ export const pl: EngineLocale = {
       "white": "Biały"
     },
     "byLayer": "JakWarstwa",
+    "colorNumber": [
+      "Kolor ",
+      [
+        "index"
+      ]
+    ],
     "view": {
       "Top": "Góra",
       "Bottom": "Dół",
@@ -5390,6 +5396,12 @@ export const pl: EngineLocale = {
         ],
         "   Opisowy: Nie"
       ],
+      "dimStyleOfDimension": [
+        "Styl wymiarowania: ",
+        [
+          "name"
+        ]
+      ],
       "unknownDimStyle": "Nieznany styl wymiarowania.",
       "namedDimStyles": "Nazwane style wymiarowania:",
       "noMatchingDimStyles": "  Nie znaleziono odpowiednich stylów wymiarowania.",
@@ -7542,7 +7554,7 @@ export const pl: EngineLocale = {
         ],
         "\""
       ],
-      "listDimensionOverrides": "zmiany stylu wymiarowania:\n DIMUPT      Tak",
+      "listDimensionOverrides": "zmiany stylu wymiarowania:",
       "listDimensionAnnotative": "Opisowy: Nie",
       "listHatchPattern": [
         "                 Wzór kreskowania ",

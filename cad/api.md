@@ -909,6 +909,12 @@ export interface EngineNames {
      * (`EngineState.linetypes`).
      */
     readonly byLayer: string;
+    /**
+     * The index colours 1–255 by their number, as the Properties palette names
+     * the ones without a name: `Color 30` (acadres 45903; desktop colors/d01).
+     * `colorLabel` picks among these and the others.
+     */
+    readonly colorNumbers: Readonly<Record<string, string>>;
     /** The preset views (`state.view.preset`), and `custom` for any other. */
     readonly views: Readonly<Record<ViewPreset | "custom", string>>;
     /** The ViewCube's face labels, by the faces of `state.viewCube`. */
@@ -2218,6 +2224,31 @@ export interface ColorDef {
     readonly id: string;
 }
 
+export { colorLabel }
+/**
+ * A colour (or ByLayer) as a host's picker or list shows it, in the
+ * interface language: ByLayer, a standard colour by name, any other index
+ * colour by number, a true colour by its red, green and blue.
+ */
+export declare function colorLabel(color: string, names: EngineNames, place: ColorLabelPlace): string;
+
+export type { ColorLabelPlace }
+/**
+ * Where a colour is named, each place AutoCAD words it its own way (desktop
+ * colors/d01–d04): `palette`, the Properties palette and the rollover
+ * tooltip, `Color 30`; `bar`, the ribbon's Object Color list, `30`; `layer`,
+ * the Layer Properties Manager, its named ones in lower case (`red`, d04-1).
+ * A true colour is `255,127,0` in all three.
+ */
+export type ColorLabelPlace = "palette" | "bar" | "layer";
+
+export { colorRgb }
+/**
+ * The RGB a colour is drawn in, `#rrggbb`: an index colour's from AutoCAD's
+ * palette, a true colour's its own. Anything else is white, index 7's.
+ */
+export declare function colorRgb(color: EntityColor): string;
+
 export { DEFAULT_LAYER_ID }
 /** The always-present base layer, matching AutoCAD's layer `0`. */
 export declare const DEFAULT_LAYER_ID: LayerId;
@@ -2387,10 +2418,13 @@ export type { EntityColor }
  * linetype and lineweight: a layer carries the colour its entities inherit and
  * an entity may override it with its own ("ByObject").
  *
- * A colour is stored as a CSS hex string. The standard palette below mirrors
- * AutoCAD's first seven index colours, which is what its colour picker offers
- * as quick choices; any other hex value is still valid, so a custom colour
- * needs no special case.
+ * A colour is one of AutoCAD's two kinds (its AcCmColor): an **index colour**
+ * (ACI), 1 to 255, stored as its number written out (`"30"`), or a **true
+ * colour**, stored as a CSS hex string (`"#ff7f00"`). They stay apart even
+ * where their RGB agrees: AutoCAD keeps `255,0,0` on an object set to that
+ * true colour and writes it so (LIST's `Color: 255,0,0`, DXF 420), where
+ * index 1 is `1 (red)` (colors/c01, c02). What draws a colour reads its RGB,
+ * `colorRgb`.
  */
 export type EntityColor = string;
 
@@ -2754,8 +2788,9 @@ export declare function matchesWildcard(name: string, pattern: string): boolean;
 
 export { normalizeColor }
 /**
- * Validates a hex colour and returns it in canonical `#rrggbb` lowercase form
- * (expanding the `#rgb` shorthand), or null when it is not a hex colour.
+ * Validates a colour and returns it in canonical form: an index colour's
+ * number (`"30"`, no leading zero) or a true colour's `#rrggbb`; null when it
+ * is neither.
  */
 export declare function normalizeColor(value: string): EntityColor | null;
 
@@ -2999,6 +3034,12 @@ export declare class EngineText {
      * worded in the command language (`On`, es `ACT`).
      */
     dimVariableListing(name: string, value: string | boolean): string;
+    /**
+     * One of a dimension's overrides as LIST writes it under `dimension style
+     * overrides:`, its name in twelve and its value, a switch in -DIMSTYLE's
+     * words (colors/s02: ` DIMTOFL     Off`, es `DES`).
+     */
+    dimOverrideLine(name: string, value: string | boolean): string;
     defaultLayerName(n: number): string;
     /** The Text Style dialog's New…, `style1` (table 9391). */
     defaultTextStyleName(n: number): string;
@@ -3507,6 +3548,14 @@ export interface ViewCubeFaceUi {
     ];
 }
 
+// domain/dimStyles.ts
+/**
+ * The dimension variables one dimension overrides of its style, as AutoCAD
+ * keeps them on the object (DIMOVERRIDE, a palette edit; DXF's `DSTYLE`
+ * xdata, colors/s01): any the style holds. Absent, the style's.
+ */
+export type DimStyleOverrides = Partial<Omit<DimStyle, "id" | "name">>;
+
 // domain/entityProperties.ts
 /** The rows that write an object's Z, all in the WCS here. */
 export type ZProperty = "thickness" | "startZ" | "endZ" | "centerZ" | "positionZ" | "elevation" | "basePointZ" | "secondPointZ";
@@ -3769,6 +3818,11 @@ export interface DimensionEntity extends BaseEntity {
      */
     readonly textAngle?: number;
     readonly styleId: DimStyleId;
+    /**
+     * What it overrides of its style, as a DXF's DSTYLE xdata gives it: it is
+     * drawn and measured with these laid over its style's. Absent, nothing.
+     */
+    readonly overrides?: DimStyleOverrides;
 }
 
 // domain/entityTypes.ts

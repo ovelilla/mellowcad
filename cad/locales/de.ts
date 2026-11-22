@@ -197,6 +197,12 @@ export const de: EngineLocale = {
       "white": "Weiß"
     },
     "byLayer": "VonLayer",
+    "colorNumber": [
+      "Farbe ",
+      [
+        "index"
+      ]
+    ],
     "view": {
       "Top": "Oben",
       "Bottom": "Unten",
@@ -5279,6 +5285,12 @@ export const de: EngineLocale = {
         ],
         "   Beschriftung: Nein"
       ],
+      "dimStyleOfDimension": [
+        "Bemaßungsstil: ",
+        [
+          "name"
+        ]
+      ],
       "unknownDimStyle": "Unbekannter Bemaßungsstil.",
       "namedDimStyles": "Benannte Bemaßungsstile:",
       "noMatchingDimStyles": "  Keine entsprechenden Bemaßungsstile gefunden.",
@@ -7427,7 +7439,7 @@ export const de: EngineLocale = {
         ],
         "\""
       ],
-      "listDimensionOverrides": "Bemaßungsstil überschreibt:\n DIMUPT      Ein",
+      "listDimensionOverrides": "Bemaßungsstil überschreibt:",
       "listDimensionAnnotative": "Beschriftung: Nein",
       "listHatchPattern": [
         "                 Schraffurmuster ",

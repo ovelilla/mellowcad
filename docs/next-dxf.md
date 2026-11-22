@@ -25,8 +25,9 @@
 > WIPEOUT, publicado el 21/11 con el export estático), y
 > MINSERT con su comando y su página, hecho el 21/11 (sin publicar), sin cambio en el corpus
 > (ninguno lo tiene), y el chino simplificado (`docs/next-seo.md`, L8), hecho el 22/11 (sin
-> publicar); siguiente, por orden del dueño, lo que quede del punto 7 (los colores índice, las
-> sustituciones DSTYLE, la malla), alternando con otro idioma, una sesión cada vez.
+> publicar), y los colores índice como tales y las sustituciones DSTYLE de cada cota, del punto
+> 7, hechos el 22/11 (sin publicar); siguiente, por orden del dueño, lo
+> que queda del punto 7 (la malla de VBA_Tower), alternando con otro idioma, una sesión cada vez.
 > Se borra cuando la fase 5 esté hecha; hasta entonces cada fase cerrada se marca aquí.
 
 ## 1. Objetivo
@@ -136,8 +137,9 @@ los comandos, solicitudes y opciones de AutoCAD 2027 en inglés, español o port
   del registro dibujan su patrón; otro nombre se conserva y dibuja continuo), estilos de texto y de
   cota (un código ausente vale lo que dice la referencia DXF, los valores imperiales, no ISO-25),
   bloques (los anónimos de las cotas, `*D`, se derivan aquí y se descartan; una referencia
-  externa se conserva como la abre AutoCAD cuando no encuentra su dibujo: fase 4, punto 5). Los colores índice pasan a su RGB con la paleta de AutoCAD y ByBlock a
-  ByLayer (el modelo no tiene ninguno de los dos).
+  externa se conserva como la abre AutoCAD cuando no encuentra su dibujo: fase 4, punto 5). Los colores índice se abren como tales y
+  los verdaderos como verdaderos (desde el 22/11/2026; antes, cada color era su RGB), y ByBlock
+  como ByLayer (el modelo no lo tiene).
 - **Las unidades**: `$INSUNITS` milímetros, centímetros o metros pasa al dibujo; pulgadas, pies o
   sin unidad dejan los números como están, en milímetros (el modelo solo tiene esas tres).
 - **El puerto**: `FileTransport.open` dice qué tipos acepta y devuelve el nombre y los bytes del
@@ -463,9 +465,34 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
       error de AUDIT y lee sus seis referencias como las del suyo. Ningún fichero del corpus lo
       tiene: 153 de 154 y 577 de 577, como antes. Página `/docs/commands/minsert` en los trece
       idiomas.
-      **Queda del punto 7**, por orden: los colores índice y las sustituciones DSTYLE de cada cota
-      (ninguno con un caso medido en el corpus), y la malla (POLYLINE de caras) de VBA_Tower, lo
-      único que queda fuera de las muestras.
+      **Los colores índice como tales**, hechos el 22/11/2026 (sin publicar): un color es un índice,
+      de 1 a 255, guardado por su número, o un color verdadero, `#rrggbb`, y los dos no se
+      confunden aunque su RGB coincida (sondas `colors/c01`, `c02`: AutoCAD lista `Color: 255,0,0`
+      y escribe 62 1 junto al 420 de un verdadero 255,0,0). -COLOR, CECOLOR, CHPROP y el Color de
+      -LAYER toman del 8 al 255 (antes se preguntaba otra vez); LIST y el `?` de -LAYER los
+      escriben como la consola (`Color: 30`, ` 30`); la paleta dice `Color 30` y la cinta `30`
+      (escritorio `colors/dsk.sh`, d01–d04; acadres 45903 en cada idioma), un verdadero
+      `255,127,0`. El DXF los abre como tales y los escribe como DXFOUT: la consola abre los
+      ficheros escritos del suyo (2000 y 2018, texto y binario) sin un error de AUDIT y lista los
+      mismos colores (`colors/v01`). Fichero versión 64: un color de un fichero anterior que es el
+      RGB de un índice se abre como ese índice. Queda ByBlock, sin modelar.
+      **Las sustituciones DSTYLE de cada cota**, hechas el 22/11/2026 (sin publicar): las de las
+      variables que tiene un estilo aquí (las trece), leídas del DSTYLE por los grupos de la tabla
+      DIMSTYLE, con las que la cota se dibuja y se mide, que la paleta muestra y LIST escribe bajo
+      `dimension style overrides:` como las diez consolas (`colors/s01`, `s02`), y que se escriben
+      de vuelta como las de AutoCAD (la consola las lista iguales, `v01`). Se anotan: DIMOVERRIDE,
+      la edición de una fila de estilo en la paleta, Remove Style Overrides, las de variables que
+      no tiene un estilo (DIMCLRD, DIMUPT…: se descartan al abrir). El corpus, medido otra vez:
+      muestras sin nada fuera, 153 de 154, y ficheros de otros, 577 de 577, como antes; pero sí
+      había casos, que la medida del 8/11 no veía: 2.021 objetos de 56 muestras con un color índice
+      del 8 al 255 y 7.986 con un color verdadero (130 y ninguno en los de otros), que antes se
+      veían igual pero se guardaban como otro, y 513 de las 964 cotas de las muestras (14
+      ficheros) con sustituciones, sobre todo DIMDEC (350) y DIMSCALE (174). De las 844 cuyo texto
+      se compara con el que AutoCAD dejó en su bloque `*D`, 78 escriben ahora el mismo (54 antes),
+      ninguna peor; las demás, sobre todo por las unidades arquitectónicas (DIMLUNIT), sin modelar.
+      Páginas «abrir/editar DXF online» en los catorce idiomas, y la de COLOR.
+      **Queda del punto 7**: la malla (POLYLINE de caras) de VBA_Tower, lo único que queda fuera de
+      las muestras.
 
    Y **las presentaciones**: 20 de las 154 muestras no tienen nada en el espacio modelo (47 tienen
    algo en una presentación) y abren vacías, con la línea que cuenta lo que no se abrió. Arreglado

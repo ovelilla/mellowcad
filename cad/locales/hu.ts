@@ -197,6 +197,12 @@ export const hu: EngineLocale = {
       "white": "Fehér"
     },
     "byLayer": "Fólia",
+    "colorNumber": [
+      "Szín: ",
+      [
+        "index"
+      ]
+    ],
     "view": {
       "Top": "Felül",
       "Bottom": "Alul",
@@ -5254,6 +5260,12 @@ export const hu: EngineLocale = {
         ],
         "   Feliratozási: Nem"
       ],
+      "dimStyleOfDimension": [
+        "Méretstílus: ",
+        [
+          "name"
+        ]
+      ],
       "unknownDimStyle": "Ismeretlen méretstílus.",
       "namedDimStyles": "Elnevezett méretstílusok:",
       "noMatchingDimStyles": "  Egyező méretstílus nem található.",
@@ -7402,7 +7414,7 @@ export const hu: EngineLocale = {
         ],
         "\""
       ],
-      "listDimensionOverrides": "méretstílus felülírások:\n DIMUPT      Be",
+      "listDimensionOverrides": "méretstílus felülírások:",
       "listDimensionAnnotative": "Feliratozási: Nem",
       "listHatchPattern": [
         "                 Sraffozási minta ",

@@ -193,7 +193,7 @@ const edit: Task = {
     const session = new DrawingSession()
     session.layer({ name: "PLATE" })
     session.run("RECTANG\n0,0\n300,200")
-    session.layer({ name: "HOLES", color: "#ff0000" })
+    session.layer({ name: "HOLES", color: "1" })
     for (const [x, y] of [
       [50, 50],
       [150, 50],
@@ -204,11 +204,11 @@ const edit: Task = {
     ]) {
       session.run(`CIRCLE\n${x},${y}\n8`)
     }
-    session.layer({ name: "TEMP", color: "#ffff00" })
+    session.layer({ name: "TEMP", color: "2" })
     session.run(
       "LINE\n0,0\n300,200\n\nLINE\n0,200\n300,0\n\nCIRCLE\n150,100\n40"
     )
-    session.layer({ name: "NOTES", color: "#00ff00" })
+    session.layer({ name: "NOTES", color: "3" })
     session.run("TEXT\n10,210\n8\n0\nREV A\n")
     const dxf = await session.dxf()
     session.dispose()
@@ -569,13 +569,13 @@ const sort: Task = {
         return `CIRCLE ${centre.x},${centre.y} ${radius}`
       }).join("\n")
     )
-    session.layer({ name: "B", color: "#ff0000" })
+    session.layer({ name: "B", color: "1" })
     session.run(
       "RECTANG 200,0 240,30\nRECTANG 200,50 260,70\nRECTANG 200,90 230,120\nLINE 200,130 260,150\n\nLINE 200,150 260,130\n"
     )
-    session.layer({ name: "C", color: "#00ff00" })
+    session.layer({ name: "C", color: "3" })
     session.run("PLINE 300,0 340,0 300,30 C\nCIRCLE 320,60 10")
-    session.layer({ name: "D", color: "#ffff00" })
+    session.layer({ name: "D", color: "2" })
     session.run("TEXT 0,140 10 0\nDRAFT\n")
     const dxf = await session.dxf()
     session.dispose()

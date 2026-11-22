@@ -2,10 +2,10 @@
 title: "Comando COLORE (COLOR) in AutoCAD"
 description: "Come COLORE (COLOR, alias CO) di AutoCAD imposta il colore dei nuovi oggetti: DaLayer, un colore indicizzato per nome o numero, o un colore RGB. Provalo gratis."
 figure: "Una piastra disegnata DaLayer, il suo foro in rosso, il suo alesaggio nel colore RGB 0,128,255, poi COLORE riportato a DaLayer."
-sourceHash: "93793c2915da"
+sourceHash: "f0bfb2cf8fe7"
 ---
 
-COLORE imposta il colore con cui sono disegnati i nuovi oggetti. AutoCAD apre la finestra Seleziona colore; MellowCAD non ne ha ancora una, quindi COLORE esegue la forma da riga di comando che ha anche AutoCAD, <Command id="-COLOR" />. Chiede il colore predefinito degli oggetti, proponendo quello corrente, `BYLAYER` in un nuovo disegno: DaLayer significa che ogni oggetto prende il colore del suo layer, e un colore scelto invece è proprio dell'oggetto. Digita il numero di un colore indicizzato o il suo nome, oppure scegli <Keyword id="Truecolor" />. Invio conserva il colore corrente, e la modifica è un passo che <Command id="U" /> annulla.
+COLORE imposta il colore con cui sono disegnati i nuovi oggetti. AutoCAD apre la finestra Seleziona colore; MellowCAD non ne ha ancora una, quindi COLORE esegue la forma da riga di comando che ha anche AutoCAD, <Command id="-COLOR" />. Chiede il colore predefinito degli oggetti, proponendo quello corrente, `BYLAYER` in un nuovo disegno: DaLayer significa che ogni oggetto prende il colore del suo layer, e un colore scelto invece è proprio dell'oggetto. Digita il numero di un colore indicizzato, da 1 a 255, o il nome di uno dei primi sette, oppure scegli <Keyword id="Truecolor" />. Invio conserva il colore corrente, e la modifica è un passo che <Command id="U" /> annulla.
 
 Una parola che non sa leggere mostra <Message id="colorRequired" />, e 0, un numero negativo o uno oltre 255 <Message id="invalidColorNumber" />; chiede di nuovo. Digitato con un apostrofo dentro un comando, `'COLOR`, ogni oggetto disegnato dopo prende il nuovo colore: ogni segmento di una <Command id="LINE" /> prende il colore corrente quando inizia. COLORE imposta solo ciò che viene dopo; la tavolozza Proprietà o l'elenco dei colori della barra superiore cambia gli oggetti già disegnati.
 
@@ -13,7 +13,7 @@ Una parola che non sa leggere mostra <Message id="colorRequired" />, e 0, un num
 
 ### Truecolor
 
-Chiede un colore come tre valori da 0 a 255, rosso, verde e blu, separati da virgole senza spazi: `0,128,255` è un blu medio. Un colore che è anche un colore indicizzato, `255,0,0`, è memorizzato come quel colore indicizzato.
+Chiede un colore come tre valori da 0 a 255, rosso, verde e blu, separati da virgole senza spazi: `0,128,255` è un blu medio. Resta un colore RGB anche quando un colore indicizzato ha gli stessi valori: dopo `255,0,0`, COLORE propone `255,0,0`, non rosso.
 
 ### BYLAYER
 
@@ -49,7 +49,7 @@ Colore indicizzato 7, digitabile anche come `7`: bianco su sfondo scuro e nero s
 
 ## Missing
 
-La finestra Seleziona colore, i libri di colori e la forma HSL. I colori indicizzati da 8 a 255: solo da 1 a 7 sono accettati. DaBlocco. Un colore RGB che corrisponde a un colore indicizzato è memorizzato come quel colore indicizzato, dove AutoCAD conserva l'RGB. La trasparenza (CETRANSPARENCY), e i predefiniti per tipo HPCOLOR, HPLAYER, DIMLAYER e TEXTLAYER.
+La finestra Seleziona colore, i libri di colori e la forma HSL. DaBlocco. La trasparenza (CETRANSPARENCY), e i predefiniti per tipo HPCOLOR, HPLAYER, DIMLAYER e TEXTLAYER.
 
 ## Questions
 

@@ -1,9 +1,11 @@
 import { Vec2 } from "../../geometry/Vec2"
+import { formatLength } from "../../domain/units"
 import { assignDimStyle, DimensionEntity, Entity } from "../../domain/entities"
 import {
   DEFAULT_DIM_STYLE,
   DimStyle,
   dimStyleVariables,
+  dimVariables,
 } from "../../domain/dimStyles"
 import { newStyleIdentity, styleNamed } from "../../domain/styleNames"
 import { matchesWildcard } from "../../shared/wildcard"
@@ -409,6 +411,20 @@ export class DimStyleTool implements Tool {
       entity?.type === "dimension"
         ? ctx.document.getDimStyle(entity.styleId)
         : undefined
+    if (style && entity?.type === "dimension" && purpose === "variables") {
+      // Its style's name and what it overrides of it, nothing more, at
+      // LUPREC (colors/s03, s04: `Dimension style: ISO-25`, AcDimRes 5316).
+      const settings = ctx.document.getSettings()
+      ctx.report(
+        [
+          ctx.text.message("dimStyleOfDimension", { name: style.name }),
+          ...dimVariables(entity.overrides ?? {}, (value) =>
+            formatLength(value, settings)
+          ).map(({ name, value }) => ctx.text.dimOverrideLine(name, value)),
+        ].join("\n")
+      )
+      return true
+    }
     if (style) {
       this.useStyle(style, purpose, ctx)
       return true
@@ -474,7 +490,11 @@ export class DimStyleTool implements Tool {
     )
   }
 
-  /** Apply: the selected dimensions take the current style, one edit (p16). */
+  /**
+   * Apply: the selected dimensions take the current style, one edit (p16),
+   * "permanently overriding" what they had: their own overrides go too (the
+   * current style has none here to give them).
+   */
   private apply(ctx: ToolContext): void {
     const current = ctx.document.getCurrentDimStyleId()
     const changed = ctx.selection
@@ -482,9 +502,16 @@ export class DimStyleTool implements Tool {
       .map((id) => ctx.document.get(id))
       .filter(
         (entity): entity is DimensionEntity =>
-          entity?.type === "dimension" && entity.styleId !== current
+          entity?.type === "dimension" &&
+          (entity.styleId !== current || entity.overrides !== undefined)
       )
-      .map((entity) => assignDimStyle(entity, current))
+      .map((entity) => {
+        const next: { overrides?: unknown } & DimensionEntity = {
+          ...(assignDimStyle(entity, current) as DimensionEntity),
+        }
+        delete next.overrides
+        return next
+      })
     if (changed.length > 0) ctx.execute(new UpdateEntitiesCommand(changed))
     ctx.endCommand()
   }

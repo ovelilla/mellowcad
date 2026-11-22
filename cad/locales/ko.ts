@@ -197,6 +197,12 @@ export const ko: EngineLocale = {
       "white": "흰색"
     },
     "byLayer": "ByLayer",
+    "colorNumber": [
+      "색상 ",
+      [
+        "index"
+      ]
+    ],
     "view": {
       "Top": "평면도",
       "Bottom": "저면도",

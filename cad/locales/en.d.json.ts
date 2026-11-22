@@ -194,6 +194,7 @@ declare const source: {
       "white": string
     }
     "byLayer": string
+    "colorNumber": string
     "view": {
       "Top": string
       "Bottom": string
@@ -2790,6 +2791,7 @@ declare const source: {
       "invalid": string
       "styleNameInUse": string
       "currentDimStyle": string
+      "dimStyleOfDimension": string
       "unknownDimStyle": string
       "namedDimStyles": string
       "noMatchingDimStyles": string

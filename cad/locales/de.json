@@ -193,6 +193,7 @@
       "white": "Weiß"
     },
     "byLayer": "VonLayer",
+    "colorNumber": "Farbe {index}",
     "view": {
       "Top": "Oben",
       "Bottom": "Unten",
@@ -2784,6 +2785,7 @@
       "invalid": "*Ungültig*",
       "styleNameInUse": "Ein {table, select, dimension {Bemaßungsstil} other {Textstil}} namens \"{name}\" existiert bereits.",
       "currentDimStyle": "Aktueller Bemaßungsstil:  {name}   Beschriftung: Nein",
+      "dimStyleOfDimension": "Bemaßungsstil: {name}",
       "unknownDimStyle": "Unbekannter Bemaßungsstil.",
       "namedDimStyles": "Benannte Bemaßungsstile:",
       "noMatchingDimStyles": "  Keine entsprechenden Bemaßungsstile gefunden.",
@@ -3062,7 +3064,7 @@
       "listDimensionDefaultText": "Vorgabetext",
       "listDimensionTextModifier": "Maßtext verändert durch: {text}",
       "listDimensionStyle": "Bemaßungsstil: \"{style}\"",
-      "listDimensionOverrides": "Bemaßungsstil überschreibt:\n DIMUPT      Ein",
+      "listDimensionOverrides": "Bemaßungsstil überschreibt:",
       "listDimensionAnnotative": "Beschriftung: Nein",
       "listHatchPattern": "                 Schraffurmuster {pattern}",
       "listHatchAnnotative": "                 Beschriftung: Nein",

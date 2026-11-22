@@ -197,6 +197,12 @@ export const ar: EngineLocale = {
       "white": "أبيض"
     },
     "byLayer": "بالطبقة",
+    "colorNumber": [
+      "اللون ",
+      [
+        "index"
+      ]
+    ],
     "view": {
       "Top": "علوي",
       "Bottom": "سفلي",

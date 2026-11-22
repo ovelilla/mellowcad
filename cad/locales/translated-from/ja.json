@@ -184,6 +184,7 @@
   "interface.color.magenta": "Magenta",
   "interface.color.white": "White",
   "interface.byLayer": "ByLayer",
+  "interface.colorNumber": "Color {index}",
   "interface.view.Top": "Top",
   "interface.view.Bottom": "Bottom",
   "interface.view.Front": "Front",

@@ -81,8 +81,9 @@ import {
   clampLineweight,
 } from "../../domain/lineweights"
 import { DEFAULT_TEXT_HEIGHT, TextStyleId } from "../../domain/textStyles"
-import { DimStyleId } from "../../domain/dimStyles"
-import { aciColor, trueColor } from "./dxfColors"
+import { DimStyleId, DimStyleOverrides } from "../../domain/dimStyles"
+import { DIM_VARIABLE_GROUPS, dimVariableValue } from "./dxfDimVariables"
+import { aciColor, aciRgbColor, trueColor } from "./dxfColors"
 import { HatchGradient, isHatchGradientName } from "../../domain/hatchGradients"
 import { DxfRecord } from "./dxfSections"
 import { GroupCursor, finite, int, num, point, str, unicode } from "./dxfValues"
@@ -781,30 +782,17 @@ function leader(r: DxfRecord, ctx: DxfEntityContext): Entity | null {
 
 /** A leader's DSTYLE xdata: the dimension variables it overrides, those its palette shows. */
 function dstyleOverrides(r: DxfRecord): LeaderOverrides {
-  const { codes, values } = r
-  let i = codes.findIndex(
-    (code, k) => code === 1000 && values[k].trim().toUpperCase() === "DSTYLE"
-  )
-  if (i < 0) return {}
-  const found: {
-    scale?: number
-    arrowSize?: number
-    textGap?: number
-    textAbove?: boolean
-  } = {}
-  for (i++; i < codes.length - 1; i++) {
-    if (codes[i] === 1002 && values[i].trim() === "}") break
-    if (codes[i] !== 1070) continue
-    const variable = Number.parseInt(values[i], 10)
-    const value = finite(values[i + 1])
-    if (value === undefined) continue
-    if (variable === 40 && value > 0) found.scale = value
-    else if (variable === 41 && value >= 0) found.arrowSize = value
-    else if (variable === 147) found.textGap = value
-    else if (variable === 77) found.textAbove = value !== 0
-    i++
+  const pairs = dstylePairs(r)
+  const scale = pairs.get(40)
+  const arrowSize = pairs.get(41)
+  const textGap = pairs.get(147)
+  const above = pairs.get(77)
+  return {
+    ...(scale !== undefined && scale > 0 ? { scale } : {}),
+    ...(arrowSize !== undefined && arrowSize >= 0 ? { arrowSize } : {}),
+    ...(textGap !== undefined ? { textGap } : {}),
+    ...(above !== undefined ? { textAbove: above !== 0 } : {}),
   }
-  return found
 }
 
 function arc(r: DxfRecord, ctx: DxfEntityContext): Entity | null {
@@ -1486,8 +1474,48 @@ function dimension(r: DxfRecord, ctx: DxfEntityContext): Entity[] {
     ctx.unreadable()
     return []
   }
+  const overrides = dimensionOverrides(r)
+  if (overrides) made = { ...made, overrides }
   const raised = withElevation(made, at?.z ?? 0)
   return [common(n ? withNormal(raised, n) : raised, r, ctx)]
+}
+
+/**
+ * A dimension's DSTYLE xdata: the variables it overrides that its style
+ * holds (colors/s01), through the DIMSTYLE table's groups; the others
+ * (DIMCLRD 176, DIMUPT 288…) are not modelled and are dropped. None, none.
+ */
+function dimensionOverrides(r: DxfRecord): DimStyleOverrides | undefined {
+  const pairs = dstylePairs(r)
+  const found: Record<string, unknown> = {}
+  for (const [group, variable] of DIM_VARIABLE_GROUPS) {
+    const value = pairs.get(group)
+    if (value === undefined) continue
+    // DIMSCALE 0 is paper space's, which there is not: left the style's.
+    if (variable === "scale" && !(value > 0)) continue
+    found[variable] = dimVariableValue(variable, value)
+  }
+  return Object.keys(found).length > 0
+    ? (found as DimStyleOverrides)
+    : undefined
+}
+
+/** The groups and values of an object's DSTYLE xdata, by group. */
+function dstylePairs(r: DxfRecord): Map<number, number> {
+  const pairs = new Map<number, number>()
+  const { codes, values } = r
+  let i = codes.findIndex(
+    (code, k) => code === 1000 && values[k].trim().toUpperCase() === "DSTYLE"
+  )
+  if (i < 0) return pairs
+  for (i++; i < codes.length - 1; i++) {
+    if (codes[i] === 1002 && values[i].trim() === "}") break
+    if (codes[i] !== 1070) continue
+    const value = finite(values[i + 1])
+    if (value !== undefined) pairs.set(Number.parseInt(values[i], 10), value)
+    i++
+  }
+  return pairs
 }
 
 /**
@@ -1643,7 +1671,7 @@ function hatchGradient(r: DxfRecord): HatchGradient | null {
     else if (code === 462) tint = cursor.number()
     else if (code === 470) name = cursor.value().trim().toUpperCase()
     else if (code === 463) flush()
-    else if (code === 63) index = aciColor(cursor.number())
+    else if (code === 63) index = aciRgbColor(cursor.number())
     else if (code === 421) {
       index = trueColor(cursor.number()) ?? index
       flush()

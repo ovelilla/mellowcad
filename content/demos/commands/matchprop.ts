@@ -10,7 +10,7 @@ export const sessions = {
       script: demo({
         width: 320,
         height: 200,
-        layers: [{ name: "AXES", color: "#ff0000", linetype: "CENTER" }],
+        layers: [{ name: "AXES", color: "1", linetype: "CENTER" }],
       })
         .command("_RECTANG")
         .type("0,0")

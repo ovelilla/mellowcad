@@ -1,3 +1,4 @@
+import { dimVariables } from "../../domain/dimStyles"
 import { regionArea, regionPerimeter } from "../../domain/regions"
 import { primitiveInUcs } from "../../domain/solids"
 import { brepBox, brepMapped } from "../../geometry/solids"
@@ -1129,8 +1130,19 @@ class Report {
     }
     const style = this.ctx.document.getDimStyle(dim.styleId)
     this.say("listDimensionStyle", { style: style?.name ?? dim.styleId })
-    // DIMRADIUS and DIMDIAMETER place the text themselves (p416, p439).
-    if (radial) this.say("listDimensionOverrides")
+    // Its overrides at LUPREC, alphabetically (colors/s01, s02), with the
+    // DIMUPT On that DIMRADIUS and DIMDIAMETER set as they place the text
+    // themselves (p416, p439).
+    const overrides = [
+      ...dimVariables(dim.overrides ?? {}, (value) => this.length(value)),
+      ...(radial ? [{ name: "DIMUPT", value: true }] : []),
+    ].sort((a, b) => a.name.localeCompare(b.name))
+    if (overrides.length > 0) {
+      this.say("listDimensionOverrides")
+      for (const { name, value } of overrides) {
+        this.lines.push(this.ctx.text.dimOverrideLine(name, value))
+      }
+    }
     this.say("listDimensionAnnotative")
   }
 

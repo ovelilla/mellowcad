@@ -3,7 +3,7 @@ title: Abrir arquivo DXF online
 metaTitle: "Abrir arquivo DXF online: visualizador grátis"
 description: "Abra um arquivo DXF grátis no navegador, sem enviá-lo: do AutoCAD R12 ao 2018, de texto ou binário, com suas camadas, textos, cotas, hachuras e blocos."
 type: howTo
-sourceHash: "dc6533c55826"
+sourceHash: "9ec1ebd84955"
 faq:
   - question: "Como abrir um arquivo DXF sem o AutoCAD?"
     answer: "Escolha-o ou solte-o no alto desta página: o MellowCAD o abre no editor, no seu navegador, sem instalar nada e sem cadastro. No editor, o ABRIR (Ctrl+O) e o IMPDXF também abrem um."
@@ -25,8 +25,8 @@ O MellowCAD abre arquivos DXF no seu navegador e os desenha no editor, onde voc�
 
 - **DXF do AutoCAD R12 ao 2018**, o formato DXF mais recente que o AutoCAD grava, de texto (ASCII) ou binário, feito no AutoCAD ou em outro programa. O texto mantém os seus caracteres: até 2004, na página de código que o arquivo indica; desde 2007, em UTF-8.
 - **Linhas, arcos, círculos, elipses e polilinhas**, com as suas larguras e as suas formas ajustadas por curva e por spline, polilinhas 3D e splines, e os pontos, desenhados com o [estilo de ponto](/docs/commands/ptype) do desenho, os sólidos 2D, preenchidos conforme diz FILLMODE, as faces 3D, as coberturas (wipeouts), e as linhas de construção e os raios.
-- **Texto de linha única e multilinha**, linhas de chamada com o seu texto, blocos com os seus atributos, cotas lineares, alinhadas, angulares, de raio e de diâmetro, e hachuras, cada uma com as linhas de padrão que traz, como o AutoCAD a desenha: também um padrão definido pelo usuário ou o de outro programa.
-- **A camada de cada objeto**, a sua cor, tipo de linha e a sua escala, espessura de linha, espessura e elevação, e as camadas ativadas, desativadas ou bloqueadas; uma camada congelada abre desativada.
+- **Texto de linha única e multilinha**, linhas de chamada com o seu texto, blocos com os seus atributos, cotas lineares, alinhadas, angulares, de raio e de diâmetro com o que cada uma substitui do seu estilo, e hachuras, cada uma com as linhas de padrão que traz, como o AutoCAD a desenha: também um padrão definido pelo usuário ou o de outro programa.
+- **A camada de cada objeto**, a sua cor, pelo índice ou como true color, tipo de linha e a sua escala, espessura de linha, espessura e elevação, e as camadas ativadas, desativadas ou bloqueadas; uma camada congelada abre desativada.
 - **Os tipos de linha do desenho**, desenhados com os seus traços, pontos e vãos na escala do tipo de linha do desenho, e o texto dos complexos como GAS_LINE.
 - **Os estilos de texto e de cota do desenho**, e as suas unidades quando são milímetros, centímetros ou metros.
 
@@ -45,7 +45,7 @@ O que está em um layout é contado à parte, porque ainda não há layouts: um 
 Algumas coisas abrem, mas não exatamente como eram:
 
 - As formas dos tipos de linha complexos como BATTING ou ZIGZAG não são desenhadas, só os traços e os vãos em volta delas.
-- Uma cor pelo índice abre como a sua cor RGB, e PorBloco como PorCamada.
+- PorBloco abre como PorCamada, e o que uma cota substitui do seu estilo sem que o MellowCAD tenha uma configuração para isso, como as suas cores, é descartado.
 - Um desenho em polegadas ou em pés mantém os seus números, lidos como milímetros.
 - O texto é desenhado com as medidas da Arial, seja qual for a fonte do seu estilo, sem o fator de largura nem a inclinação.
 - Uma referência externa mantém o seu lugar e o seu caminho, e é desenhada como o AutoCAD desenha uma cujo desenho não encontra: `Refex` e o caminho no seu ponto de inserção. Uma página lê apenas o arquivo que recebe, nunca os desenhos ao lado dele; salvo de novo como DXF, a referência é mantida.

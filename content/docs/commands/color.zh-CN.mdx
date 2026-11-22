@@ -7,7 +7,7 @@ generated: "lib/docs/generate.test.ts"
 faq: [{"question":"CAD 颜色快捷键是什么？","answer":"输入 COL，然后按 Enter 键或空格键；也可以输入 COLOUR。完整的命令名同样可用；在任何语言版本的 AutoCAD 中都可以输入 _COLOR。"},{"question":"CAD 怎么改变对象的颜色？","answer":"选择对象，在顶部栏的颜色列表或“特性”选项板的“颜色”行中选择颜色：一步即完成更改。也可以用 MATCHPROP 复制另一个对象的颜色。COLOR 只设置之后绘制的对象的颜色。"},{"question":"CAD 中 ByLayer 是什么意思？","answer":"表示对象采用其图层的颜色，因此在图层特性管理器中更改图层的颜色，该图层上所有 ByLayer 对象的颜色都随之改变。这是默认值，使图形的颜色按图层组织：LAYER。"},{"question":"CAD 怎么使用 RGB 颜色？","answer":"选择 Truecolor，输入用逗号分隔的三个值，例如 0,128,255。"}]
 ---
 
-COLOR（颜色）命令设置绘制新对象时使用的颜色。AutoCAD 打开“选择颜色”对话框；MellowCAD 还没有该对话框，因此 COLOR 运行 AutoCAD 同样具有的命令行形式 `-COLOR`。命令要求输入默认对象颜色，并提供当前颜色，新图形中为 `BYLAYER`：ByLayer 表示每个对象采用其图层的颜色，而另外选择的颜色是对象自身的颜色。输入索引颜色的编号或名称，或选择 `Truecolor`。按 Enter 键保留当前颜色；更改是一步，`U` 可以一步放弃。
+COLOR（颜色）命令设置绘制新对象时使用的颜色。AutoCAD 打开“选择颜色”对话框；MellowCAD 还没有该对话框，因此 COLOR 运行 AutoCAD 同样具有的命令行形式 `-COLOR`。命令要求输入默认对象颜色，并提供当前颜色，新图形中为 `BYLAYER`：ByLayer 表示每个对象采用其图层的颜色，而另外选择的颜色是对象自身的颜色。输入索引颜色的编号（1 到 255）或前七种颜色之一的名称，或选择 `Truecolor`。按 Enter 键保留当前颜色；更改是一步，`U` 可以一步放弃。
 
 无法识别的词会显示 `A color number or standard color name is required.`，0、负数或大于 255 的数会显示 `Invalid color number.`；然后再次询问。在其他命令中带撇号输入 `'COLOR`，此后绘制的每个对象都采用新颜色：[`LINE`](/docs/commands/line) 的每一段采用开始绘制该段时的当前颜色。COLOR 只设置之后绘制的对象的颜色；已绘制的对象请用“特性”选项板或顶部栏的颜色列表更改。
 
@@ -26,7 +26,7 @@ COLOR（颜色）命令设置绘制新对象时使用的颜色。AutoCAD 打开�
 
 ### `Truecolor` (`T`) [#truecolor]
 
-要求以三个 0 到 255 的值（红、绿、蓝）输入颜色，用逗号分隔，不加空格：`0,128,255` 是中蓝色。同时也是索引颜色的颜色（如 `255,0,0`）按该索引颜色保存。
+要求以三个 0 到 255 的值（红、绿、蓝）输入颜色，用逗号分隔，不加空格：`0,128,255` 是中蓝色。即使某个索引颜色的 RGB 值与之相同，它仍是真彩色：输入 `255,0,0` 后，COLOR 提供的是 `255,0,0`，而不是红。
 
 ### `BYLayer` (`BYL`) [#bylayer]
 
@@ -62,7 +62,7 @@ COLOR（颜色）命令设置绘制新对象时使用的颜色。AutoCAD 打开�
 
 ## 尚不支持的功能 [#missing]
 
-“选择颜色”对话框、配色系统和 HSL 颜色模式。索引颜色 8 到 255：只接受 1 到 7。ByBlock。与索引颜色相同的真彩色按该索引颜色保存，而 AutoCAD 保留 RGB 值。透明度（CETRANSPARENCY），以及按对象类型设置的默认值 HPCOLOR、HPLAYER、DIMLAYER 和 TEXTLAYER。
+“选择颜色”对话框、配色系统和 HSL 颜色模式。ByBlock。透明度（CETRANSPARENCY），以及按对象类型设置的默认值 HPCOLOR、HPLAYER、DIMLAYER 和 TEXTLAYER。
 
 [功能及尚缺部分详解（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#colour--color--col--colour---color--es-color--col---color--pt-br-cor--c--colour--cordiag---cor--fr-couleur--cl--coul--ddcolor---couleur--it-colore--co--ddcolor---colore--de-farbe--far--fe--ddcolor---farbe--ru-цвет--цв--диалцвет---цвет--pl-kolor--kol--odkolor---kolor--cs-barva--bar--ddcolor--diabarva---barva--hu-szín--s--szin--dpszín---szín)
 

@@ -58,6 +58,12 @@ export interface EngineNames {
    * (`EngineState.linetypes`).
    */
   readonly byLayer: string
+  /**
+   * The index colours 1–255 by their number, as the Properties palette names
+   * the ones without a name: `Color 30` (acadres 45903; desktop colors/d01).
+   * `colorLabel` picks among these and the others.
+   */
+  readonly colorNumbers: Readonly<Record<string, string>>
   /** The preset views (`state.view.preset`), and `custom` for any other. */
   readonly views: Readonly<Record<ViewPreset | "custom", string>>
   /** The ViewCube's face labels, by the faces of `state.viewCube`. */
@@ -232,6 +238,12 @@ export class EngineText {
       snaps: this.table(this.ui.snap) as Record<SnapType, string>,
       colors: this.table(this.ui.color),
       byLayer: this.format(this.ui.byLayer),
+      colorNumbers: Object.fromEntries(
+        Array.from({ length: 255 }, (_, i) => [
+          String(i + 1),
+          this.format(this.ui.colorNumber, { index: i + 1 }),
+        ])
+      ),
       views: this.table(this.ui.view) as Record<ViewPreset | "custom", string>,
       viewCubeFaces: this.table(this.ui.viewCube.face) as Record<
         ViewCubeFace,
@@ -438,6 +450,20 @@ export class EngineText {
       value: written.padEnd(21),
       description: description === undefined ? "" : this.format(description),
     })
+  }
+
+  /**
+   * One of a dimension's overrides as LIST writes it under `dimension style
+   * overrides:`, its name in twelve and its value, a switch in -DIMSTYLE's
+   * words (colors/s02: ` DIMTOFL     Off`, es `DES`).
+   */
+  dimOverrideLine(name: string, value: string | boolean): string {
+    const listing = this.commands.listing
+    const written =
+      typeof value === "string"
+        ? value
+        : this.format(value ? listing.dimVariableOn : listing.dimVariableOff)
+    return ` ${name.padEnd(12)}${written}`
   }
 
   defaultLayerName(n: number): string {

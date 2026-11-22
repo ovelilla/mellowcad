@@ -5,7 +5,8 @@ import { Palette } from "lucide-react"
 
 import {
   COLOR_BYLAYER,
-  normalizeColor,
+  colorLabel,
+  colorRgb,
   STANDARD_COLORS,
   type EngineNames,
 } from "@mellowcad/engine"
@@ -45,20 +46,21 @@ export function ColorSelect({
   disabled?: boolean
   /**
    * Opens below the trigger, as a bar's drop-down does, instead of over it as
-   * a palette's field does.
+   * a palette's field does; and names a colour as the ribbon's list does
+   * (`30`), not as the palette (`Color 30`).
    */
   below?: boolean
 }): ReactElement {
   const t = useEditorText("Properties")
+  const place = below ? "bar" : "palette"
   const isStandard = STANDARD_COLORS.some((color) => color.value === value)
   const custom = value && value !== COLOR_BYLAYER && !isStandard ? value : null
-  // Lets the closed trigger show "Red" rather than the raw hex value.
-  const labels: Record<string, string> = {
-    [COLOR_BYLAYER]: names.byLayer,
-    ...Object.fromEntries(
-      STANDARD_COLORS.map((color) => [color.value, names.colors[color.id]])
-    ),
-  }
+  // Lets the closed trigger show "Red" or "Color 30", not the stored value.
+  const labels: Record<string, string> = Object.fromEntries(
+    [COLOR_BYLAYER, ...STANDARD_COLORS.map((color) => color.value)]
+      .concat(custom ? [custom] : [])
+      .map((color) => [color, colorLabel(color, names, place)])
+  )
 
   return (
     <div className={cn("flex items-center gap-1", className)}>
@@ -96,7 +98,7 @@ export function ColorSelect({
           {custom && (
             <SelectItem value={custom}>
               <Swatch color={custom} />
-              {custom}
+              {labels[custom]}
             </SelectItem>
           )}
         </SelectContent>
@@ -114,7 +116,7 @@ export function ColorSelect({
           type="color"
           disabled={disabled}
           aria-label={t("customColor")}
-          value={normalizeColor(custom ?? "") ?? "#ffffff"}
+          value={custom ? colorRgb(custom) : "#ffffff"}
           onChange={(event) => onValueChange(event.target.value)}
           className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
         />
@@ -129,7 +131,7 @@ function Swatch({ color }: { color: string | null }) {
     <span
       aria-hidden
       className="size-3 shrink-0 rounded-[2px] border border-border/80"
-      style={color ? { backgroundColor: color } : undefined}
+      style={color ? { backgroundColor: colorRgb(color) } : undefined}
     />
   )
 }

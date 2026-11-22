@@ -12,7 +12,7 @@ import { ellipseOf, layerOf, lineOf, p } from "../../../test/builders"
  * on purpose, AutoCAD's is beside it.
  */
 
-const RED = "#ff0000"
+const RED = "1"
 
 function answer(cad: CadHarness, ...texts: string[]): CadHarness {
   for (const text of texts) {
@@ -137,7 +137,7 @@ describe("CHPROP against AutoCAD 2027's console in English", () => {
       "New color [Truecolor] <3 (green)>:",
       PROPERTY,
     ])
-    expect(entity(cad, "l1").color).toBe("#00ff00")
+    expect(entity(cad, "l1").color).toBe("3")
   })
 
   it("takes a colour's name and BYLAYER, and asks which BY is (p04)", () => {
@@ -147,7 +147,7 @@ describe("CHPROP against AutoCAD 2027's console in English", () => {
     answer(cad, "_CHPROP", "_L", "", "_C", "_BYLAYER", "")
     expect(entity(cad, "l1").color).toBeUndefined()
     answer(cad, "_CHPROP", "_L", "", "_C", "_Green", "")
-    expect(entity(cad, "l1").color).toBe("#00ff00")
+    expect(entity(cad, "l1").color).toBe("3")
     expect(written(cad, "_CHPROP|_L||_C|BY")).toEqual([
       "CHPROP",
       "Select objects: _L",
@@ -178,7 +178,8 @@ describe("CHPROP against AutoCAD 2027's console in English", () => {
       "Red,Green,Blue: 255,0,0",
       PROPERTY,
     ])
-    expect(entity(cad, "l1").color).toBe(RED)
+    // A true colour, kept apart from index 1 (colors/c01).
+    expect(entity(cad, "l1").color).toBe("#ff0000")
   })
 
   it("finds a layer by its name in any case, and asks again for one it cannot find (p06)", () => {
@@ -349,7 +350,7 @@ describe("CHPROP against AutoCAD 2027's console in English", () => {
       "New color [Truecolor] <BYLAYER>: 3",
       PROPERTY,
     ])
-    expect(entity(cad, "a").color).toBe("#00ff00")
+    expect(entity(cad, "a").color).toBe("3")
   })
 
   it("is one step U and REDO name CHPROP, however many properties it set (p16)", () => {
@@ -400,7 +401,7 @@ describe("CHPROP against AutoCAD 2027's console in English", () => {
     answer(cad, "_LA", "'_ZOOM")
     expect(cad.commandLog().slice(-1)).toEqual(['Cannot find layer "\'_ZOOM".'])
     answer(cad, "", "")
-    expect(cad.runtime.document.getEntities().at(-1)?.color).toBe("#ffff00")
+    expect(cad.runtime.document.getEntities().at(-1)?.color).toBe("2")
   })
 })
 

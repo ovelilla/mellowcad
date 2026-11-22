@@ -7,7 +7,7 @@ generated: "lib/docs/generate.test.ts"
 faq: [{"question":"What is the shortcut for COLOR in AutoCAD?","answer":"COL, then Enter or Space; COLOUR too. The full name works as well, and _COLOR in any language of AutoCAD."},{"question":"How do I change the color of an object in AutoCAD?","answer":"Select it and choose the colour in the top bar's colour list or in the Color row of the Properties palette: it changes in one step. Or copy another object's colour with MATCHPROP. COLOR only sets the colour of objects drawn after it."},{"question":"What does ByLayer mean in AutoCAD?","answer":"That the object takes its layer's colour, so changing the layer's colour in the Layer Properties Manager changes every ByLayer object on it. It is the default, and keeps a drawing's colours organised by layer: LAYER."},{"question":"How do I use RGB colors in AutoCAD?","answer":"Choose Truecolor and type the three values separated by commas, such as 0,128,255."}]
 ---
 
-COLOR sets the colour new objects are drawn with. AutoCAD opens the Select Color dialog; MellowCAD has none yet, so COLOR runs the command-line form AutoCAD has too, `-COLOR`. It asks for the default object colour, offering the current one, `BYLAYER` in a new drawing: ByLayer means each object takes its layer's colour, and a colour chosen instead is the object's own. Type an index colour's number or its name, or choose `Truecolor`. Enter keeps the current colour, and the change is a step that `U` takes back.
+COLOR sets the colour new objects are drawn with. AutoCAD opens the Select Color dialog; MellowCAD has none yet, so COLOR runs the command-line form AutoCAD has too, `-COLOR`. It asks for the default object colour, offering the current one, `BYLAYER` in a new drawing: ByLayer means each object takes its layer's colour, and a colour chosen instead is the object's own. Type an index colour's number, from 1 to 255, or the name of one of the first seven, or choose `Truecolor`. Enter keeps the current colour, and the change is a step that `U` takes back.
 
 A word it cannot read says `A color number or standard color name is required.`, and 0, a negative number or one past 255 `Invalid color number.`; it asks again. Typed with an apostrophe inside a command, `'COLOR`, each object drawn after it takes the new colour: each segment of a [`LINE`](/docs/commands/line) takes the colour current as it starts. COLOR sets only what comes next; the Properties palette or the top bar's colour list changes objects already drawn.
 
@@ -26,7 +26,7 @@ The engine draws it and writes its history as you would type it: the prompts in 
 
 ### `Truecolor` (`T`) [#truecolor]
 
-Asks for a colour as three values from 0 to 255, red, green and blue, separated by commas with no space: `0,128,255` is a mid blue. A colour that is also an index colour, `255,0,0`, is stored as that index colour.
+Asks for a colour as three values from 0 to 255, red, green and blue, separated by commas with no space: `0,128,255` is a mid blue. It stays a true colour even where an index colour has the same RGB: after `255,0,0`, COLOR offers `255,0,0`, not red.
 
 ### `BYLayer` (`BYL`) [#bylayer]
 
@@ -62,7 +62,7 @@ Index colour 7, also typed as `7`: white on a dark background and black on a lig
 
 ## What it does not do yet [#missing]
 
-The Select Color dialog, Color Books and the HSL form. The index colours 8 to 255: only 1 to 7 are taken. ByBlock. A true colour that matches an index colour is stored as that index colour, where AutoCAD keeps the RGB. Transparency (CETRANSPARENCY), and the per-type defaults HPCOLOR, HPLAYER, DIMLAYER and TEXTLAYER.
+The Select Color dialog, Color Books and the HSL form. ByBlock. Transparency (CETRANSPARENCY), and the per-type defaults HPCOLOR, HPLAYER, DIMLAYER and TEXTLAYER.
 
 [What it does and still lacks, in detail (in English)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#colour--color--col--colour---color--es-color--col---color--pt-br-cor--c--colour--cordiag---cor--fr-couleur--cl--coul--ddcolor---couleur--it-colore--co--ddcolor---colore--de-farbe--far--fe--ddcolor---farbe--ru-цвет--цв--диалцвет---цвет--pl-kolor--kol--odkolor---kolor--cs-barva--bar--ddcolor--diabarva---barva--hu-szín--s--szin--dpszín---szín)
 

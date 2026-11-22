@@ -2044,12 +2044,28 @@ describe("LIST", () => {
     )
   })
 
+  it("writes an index colour past 7 by its number, a true colour by its RGB though it is red's (colors/c01)", () => {
+    const cad = createHarness({
+      entities: [
+        { ...lineOf(p(0, 0), p(10, 0)), color: "30" },
+        { ...lineOf(p(0, 1), p(10, 1)), color: "#ff0000" },
+        { ...lineOf(p(0, 2), p(10, 2)), color: "7" },
+      ],
+    })
+    answer(cad, "_LIST", "_ALL", "")
+    expect(listed(cad).filter((line) => line.includes("Color:"))).toEqual([
+      '                   Color: 7 (white)    Linetype: "BYLAYER"',
+      '                   Color: 255,0,0    Linetype: "BYLAYER"',
+      '                   Color: 30    Linetype: "BYLAYER"',
+    ])
+  })
+
   it("writes an object's colour, linetype, lineweight and thickness (p401)", () => {
     const cad = createHarness({
       entities: [
         {
           ...lineOf(p(0, 0), p(10, 5)),
-          color: "#ff0000",
+          color: "1",
           linetype: "DASHED",
           lineweight: 0.3,
           thickness: 2,

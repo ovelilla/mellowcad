@@ -44,13 +44,13 @@ The file is downloaded, as everything saved here is ([saving is not quite AutoCA
 
 ## What the DXF holds [#holds]
 
-Every object MellowCAD has, written as AutoCAD writes it: lines, arcs, circles, ellipses, polylines with their widths and curve fits, 3D polylines, splines, single-line and multiline text, blocks with their attributes, dimensions, hatches with their pattern, points, 2D solids, and arrays as a block of their items. With them, the layers (on, off, locked) with their colour, linetype and lineweight, the drawing's linetypes, complex ones too, and each object's linetype scale, the text and dimension styles, the blocks, and the drawing's units and settings. Text keeps its characters: up to 2004 in the Windows code page AutoCAD uses, with an escape for the rest, and from 2007 in UTF-8.
+Every object MellowCAD has, written as AutoCAD writes it: lines, arcs, circles, ellipses, polylines with their widths and curve fits, 3D polylines, splines, single-line and multiline text, blocks with their attributes, dimensions with what each overrides of its style, hatches with their pattern, points, 2D solids, and arrays as a block of their items. With them, each colour as it was, by its index or a true colour, the layers (on, off, locked) with their colour, linetype and lineweight, the drawing's linetypes, complex ones too, and each object's linetype scale, the text and dimension styles, the blocks, and the drawing's units and settings. Text keeps its characters: up to 2004 in the Windows code page AutoCAD uses, with an escape for the rest, and from 2007 in UTF-8.
 
 ## What does not come back [#lost]
 
 - **What did not open is not saved.** What MellowCAD has no object for yet — multilines, tolerances and [the rest of that list](/docs/open-dxf#left-out) — is counted on the command line when the file opens, and is not in the file you save. Keep the original.
 - **3D solids and regions are not written**: the command line lists how many were left out.
-- A dimension's own style overrides and an array's parameters are not written: AutoCAD opens the dimension with its style's settings, and the array as a block of its items.
+- An array's parameters are not written: AutoCAD opens the array as a block of its items. Nor is what a dimension overrides of its style that MellowCAD has no setting for, such as its colours.
 - There is no thumbnail preview, no AutoCAD R12/LT2 DXF type yet, and no DWG.
 
 ## Start a DXF from scratch [#new]

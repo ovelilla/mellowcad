@@ -25,7 +25,7 @@ import {
  * current colour, linetype and lineweight; ByLayer, the default, stores none.
  */
 
-const RED = "#ff0000"
+const RED = "1"
 
 function setCurrent(cad: CadHarness) {
   cad.runtime.setCurrentColor(RED)
@@ -477,7 +477,7 @@ const FROM_SCRATCH_SEEDED = FROM_SCRATCH.map(
   ([name, draw, entities]) => [name, draw, entities ?? []] as const
 )
 
-const BLUE = "#0000ff"
+const BLUE = "5"
 
 /** A blue line along X, its colour its own and the rest ByLayer. */
 const blueLine = (from: number, to: number, id: string) =>
