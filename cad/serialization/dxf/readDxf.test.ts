@@ -1691,3 +1691,26 @@ describe("parseDxf: AutoCAD 2027's index and true colours (colors/c02)", () => {
     )
   })
 })
+
+describe("parseDxf: AutoCAD 2027's named UCSs (dxf/x023)", () => {
+  // ALPHA saved at 5,5, beta turned 30° about Z from it, ALPHA restored and
+  // UCSICON OFF, as AutoCAD's DXFOUT wrote them: the UCS table, $UCSNAME and
+  // the active viewport's 74.
+  const { settings } = parseDxf(fixture("ucs-2018")).drawing
+
+  it("opens the UCS table, the current UCS named, the icon off", () => {
+    expect(
+      settings.namedUcs.map(({ name, ucs }) => [name, ucs.origin])
+    ).toEqual([
+      ["ALPHA", { x: 5, y: 5, z: 0 }],
+      ["beta", { x: 5, y: 5, z: 0 }],
+    ])
+    const beta = settings.namedUcs[1].ucs
+    expect(beta.xAxis.x).toBeCloseTo(Math.sqrt(3) / 2, 12)
+    expect(beta.xAxis.y).toBeCloseTo(0.5, 12)
+    expect(beta.yAxis.x).toBeCloseTo(-0.5, 12)
+    expect(settings.ucsName).toBe("ALPHA")
+    expect(settings.ucs.origin).toEqual({ x: 5, y: 5, z: 0 })
+    expect(settings.ucsIcon).toEqual({ visible: false, atOrigin: true })
+  })
+})

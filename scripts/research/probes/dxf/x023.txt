@@ -1,0 +1,35 @@
+_LINE
+0,0
+10,0
+
+_UCS
+_O
+5,5,0
+_UCS
+_S
+ALPHA
+_UCS
+_Z
+30
+_UCS
+_S
+beta
+_UCS
+_R
+ALPHA
+_UCSICON
+_OFF
+_-VISUALSTYLES
+_C
+_Conceptual
+(getvar "UCSNAME")
+(getvar "NAVVCUBEDISPLAY")
+(getvar "VSCURRENT")
+_DXFOUT
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\x023-2018.dxf
+16
+_DXFOUT
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\x023-2000.dxf
+_V
+2000
+16

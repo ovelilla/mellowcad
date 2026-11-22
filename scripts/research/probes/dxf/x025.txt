@@ -1,0 +1,11 @@
+(progn (setq u (tblnext "UCS" T)) (while u (princ "\nUCS ") (princ (cdr (assoc 2 u))) (princ " ") (princ (cdr (assoc 10 u))) (princ (cdr (assoc 11 u))) (princ (cdr (assoc 12 u))) (setq u (tblnext "UCS"))) (princ))
+(getvar "UCSNAME")
+(getvar "UCSORG")
+(getvar "UCSXDIR")
+(getvar "UCSICON")
+_UCS
+_NA
+_R
+beta
+(getvar "UCSNAME")
+(getvar "UCSXDIR")

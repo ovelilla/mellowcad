@@ -1,0 +1,14 @@
+(command "_.UCS" "_O" (list (/ 1.0 3) (/ 2.0 3) (/ 1.0 7)))
+(command "_.UCS" "_Z" (/ 100.0 7))
+(command "_.UCS" "_S" "Third")
+_DXFOUT
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\x024-p3.dxf
+3
+_DXFOUT
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\x024-p16.dxf
+16
+_UCS
+_W
+_.SAVEAS
+2018
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\x024.dwg

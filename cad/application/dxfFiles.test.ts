@@ -278,3 +278,18 @@ describe("a file the host already holds (openFile)", () => {
     expect(cad.entityCount).toBe(1)
   })
 })
+
+// dxf/x023: AutoCAD's DXFOUT of ALPHA and beta, ALPHA current.
+describe("a DXF's named UCSs", () => {
+  it("opens them for UCS to restore, the current one named", async () => {
+    const cad = createHarness()
+    await cad.openFile(fixture("ucs-2018"))
+    typed(cad, "_UCS")
+    expect(cad.commandLog().at(-1)).toBe("Current ucs name:  ALPHA")
+    cad.escape()
+    typed(cad, "_UCS", "_NA", "_R", "beta")
+    const { ucs, ucsName } = cad.runtime.document.getSettings()
+    expect(ucsName).toBe("beta")
+    expect(ucs.xAxis.x).toBeCloseTo(Math.sqrt(3) / 2, 12)
+  })
+})

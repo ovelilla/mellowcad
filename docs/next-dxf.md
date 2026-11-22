@@ -29,8 +29,11 @@
 > (todo eso, desde MINSERT, publicado el 22/11 a las 09:30), y la malla de VBA_Tower, una malla
 > poligonal (POLYLINE 70 16, no la de caras, 64), con 3DMESH y las solicitudes de malla de PEDIT,
 > hecha el 22/11, que lleva las muestras sin nada fuera a 154 de 154 y cierra el punto 7 (sin
-> publicar); siguiente, por orden del dueño, la fase 5 (el resto) u otro idioma, una sesión cada
-> vez.
+> publicar); y la primera pieza de la fase 5, el informe de lo que se pierde al guardar, hecha el
+> 22/11 (sin publicar): AutoCAD no informa de nada, así que no hay informe nuevo, y lo que
+> perdíamos en silencio y AutoCAD guarda, los SCP con nombre, se escribe y se lee; siguiente, por
+> orden del dueño, la fase 5 (R12, las vistas preliminares, ACIS, en ese orden) u otro idioma, una
+> sesión cada vez.
 > Se borra cuando la fase 5 esté hecha; hasta entonces cada fase cerrada se marca aquí.
 
 ## 1. Objetivo
@@ -516,8 +519,34 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
    algo en una presentación) y abren vacías, con la línea que cuenta lo que no se abrió. Arreglado
    de paso (`242d031f`): lo que sigue a EOF no se lee, como lo abre AutoCAD, y un patrón con su
    código de estilo (`ANSI31,_O`, 5 muestras) dibuja su relleno.
-5. **El resto**: el informe de lo que se pierde al guardar, las vistas preliminares, ACIS con los
-   sólidos.
+5. **El resto**, ordenado el 22/11/2026 con la investigación de su primera pieza:
+   1. **El informe de lo que se pierde al guardar.** **Hecho** (22/11/2026, sin publicar).
+      AutoCAD 2027 no informa de nada: la consola guarda un 3DSOLID y una REGION con DXFOUT 2018,
+      2000 y R12 y con SAVEAS a DWG 2000 y R14 sin una línea (sonda `x022`), el escritorio, con
+      _Save Drawing As_ a DXF 2000, DXF R12 y DWG 2000, sin un cuadro (`d02`), y sus tablas solo
+      tienen dos avisos de formato anterior, el de objetos personalizados (_Version Conflict_) y
+      el de objetos de más de 256 MB, que el modelo no puede tener. Así que no hay informe nuevo:
+      la línea `1 object not saved: …` sigue solo para lo que nuestro escritor no escribe (3DSOLID
+      y REGION, sin su SAT) y se va con ACIS; lo que perdíamos en silencio y AutoCAD guarda se
+      escribe como él: la tabla UCS (los SCP con nombre), `$UCSNAME`, el SCP del VPORT activo y
+      UCSICON (su 74), y el lector los lee (`x023`; la consola lee los 12 ficheros sin un error de
+      AUDIT y restaura cada SCP por nombre, `ucs.sh`). De paso, `$UCSORG` sale entero a cualquier
+      precisión, como el de AutoCAD (`x024`). Quedan anotados en la entrada de DXFOUT: las vistas
+      con nombre, el estilo visual (281 y 348 del VPORT y los objetos VISUALSTYLE) y el ViewCube
+      (`ACAD_NAV_VCDISPLAY`).
+   2. **R12** (el tipo «AutoCAD R12/LT2 DXF» y la versión R12 de DXFOUT): lo que más se ve, pues
+      es el último tipo de la lista de AutoCAD, y se hace con lo que ya hay. AutoCAD convierte en
+      silencio lo que R12 no tiene en un INSERT de un bloque anónimo `*U` de lo que dibuja (`x022`:
+      la caja, 24 LINE; la región, un CIRCLE; el MTEXT, un TEXT), y la ayuda («About Saving
+      Drawings to Previous Drawing File Formats») lista el resto: polilíneas ligeras y sombreados
+      a los de R12, nombres con espacios a guiones bajos y de 32 caracteres, tipos de línea
+      complejos y grupos que no se ven.
+   3. **Las vistas preliminares** (_Save thumbnail preview image_, la sección THUMBNAILIMAGE):
+      pequeña, pero de poco uso: la consola tiene `Preview= No` por defecto y el escritorio la
+      mostraba gris en el perfil del dueño (`d01`).
+   4. **ACIS con los sólidos**: escribir y leer el SAT de 3DSOLID y REGION (desde 2013, SAB en la
+      sección ACDSDATA), la única pérdida de 2000 a 2018 y la línea que la cuenta; la mayor, y es
+      la de `docs/next-solids.md` §6, en pausa: va cuando el dueño la retome.
 
 ## 6. Riesgos
 

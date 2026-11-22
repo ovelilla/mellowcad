@@ -7,7 +7,7 @@ import {
   DocumentSettings,
   LengthUnit,
 } from "../../domain/units"
-import { WORLD_UCS, ucsFromAxes } from "../../domain/ucs"
+import { NamedUcs, WORLD_UCS, ucsFromAxes } from "../../domain/ucs"
 import { AttributeDisplay, isPointMode } from "../../domain/entities"
 import { dxfColor, dxfLineweight } from "./dxfEntities"
 import { DxfRecord } from "./dxfSections"
@@ -30,6 +30,7 @@ const ATTMODE: readonly AttributeDisplay[] = ["off", "normal", "on"]
 export function dxfSettings(
   header: ReadonlyMap<string, DxfRecord>,
   activeViewport: DxfRecord | undefined,
+  ucsTable: readonly DxfRecord[],
   linetype: (name: string | undefined) => LinetypeId | undefined
 ): DocumentSettings {
   const d = DEFAULT_DOCUMENT_SETTINGS
@@ -66,7 +67,9 @@ export function dxfSettings(
     (snapRecord && point(snapRecord, 10))
   const ucs = dxfUcs(header)
   const ucsRecord = variable("$UCSNAME")
-  const ucsName = ucsRecord ? str(ucsRecord, 2) : undefined
+  const namedUcs = dxfNamedUcs(ucsTable)
+  const ucsName = ucsRecord ? str(ucsRecord, 2)?.trim() : undefined
+  const ucsIcon = activeViewport ? int(activeViewport, 74) : undefined
   return {
     ...d,
     unit: UNITS.get(integer("$INSUNITS", 70) ?? -1) ?? d.unit,
@@ -78,7 +81,16 @@ export function dxfSettings(
     attributeDisplay:
       ATTMODE[integer("$ATTMODE", 70) ?? 1] ?? d.attributeDisplay,
     ucs,
-    ucsName: ucs !== WORLD_UCS && ucsName ? ucsName : null,
+    // UCSNAME names a record of the table, the world's too (UCS NA S at
+    // the world): one it lacks names nothing, as in the drawing file.
+    ucsName:
+      namedUcs.find((n) => n.name.toUpperCase() === ucsName?.toUpperCase())
+        ?.name ?? null,
+    namedUcs,
+    ucsIcon:
+      ucsIcon === undefined
+        ? d.ucsIcon
+        : { visible: (ucsIcon & 1) !== 0, atOrigin: (ucsIcon & 2) !== 0 },
     elevation: real("$ELEVATION", 40) ?? d.elevation,
     thickness: real("$THICKNESS", 40) ?? d.thickness,
     currentColor: (color && dxfColor(color)) ?? COLOR_BYLAYER,
@@ -123,6 +135,26 @@ export function dxfSettings(
       d.gridMode
     ),
   }
+}
+
+/**
+ * The UCS table: each record's name, origin (10) and axes (11, 12), as
+ * AutoCAD's DXFOUT writes them (x023); one of no name, a name met before or
+ * axes that make no plane is skipped.
+ */
+function dxfNamedUcs(records: readonly DxfRecord[]): NamedUcs[] {
+  const out: NamedUcs[] = []
+  for (const record of records) {
+    const name = str(record, 2)?.trim()
+    const origin = point(record, 10)
+    const x = point(record, 11)
+    const y = point(record, 12)
+    if (!name || !origin || !x || !y) continue
+    if (out.some((n) => n.name.toUpperCase() === name.toUpperCase())) continue
+    const ucs = ucsFromAxes(origin, x, y)
+    if (ucs) out.push({ name, ucs })
+  }
+  return out
 }
 
 /** The current UCS ($UCSORG, $UCSXDIR, $UCSYDIR), the world's when it is that or makes no plane. */

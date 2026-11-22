@@ -67,6 +67,32 @@ function shape(value: unknown): unknown {
   return value
 }
 
+/** A UCS turned and off the plane, current and named, one tilted with a space in its name, the icon off. */
+function namedUcsDrawing() {
+  const third = {
+    origin: { x: 1 / 3, y: 2 / 3, z: 1 / 7 },
+    xAxis: { x: Math.cos(0.25), y: Math.sin(0.25), z: 0 },
+    yAxis: { x: -Math.sin(0.25), y: Math.cos(0.25), z: 0 },
+  }
+  const tilted = {
+    origin: { x: 10, y: 0, z: 0 },
+    xAxis: { x: 1, y: 0, z: 0 },
+    yAxis: { x: 0, y: 0, z: 1 },
+  }
+  return snapshotOf([lineOf(p(0, 0), p(10, 0))], {
+    settings: {
+      ...snapshotOf([]).settings,
+      ucs: third,
+      ucsName: "Third",
+      namedUcs: [
+        { name: "Third", ucs: third },
+        { name: "front wall", ucs: tilted },
+      ],
+      ucsIcon: { visible: false, atOrigin: true },
+    },
+  })
+}
+
 /** Points flat, thick, turned (DXF 50) and tilted, PDMODE 35 and PDSIZE -7. */
 function pointsDrawing() {
   const flat = withThickness(createPoint({ x: 1, y: 2, z: 3 }), 2.5)
@@ -712,6 +738,64 @@ describe("writeDxf", () => {
     ])
   })
 
+  // x023, x024: AutoCAD writes every saved UCS in the UCS table, the current
+  // one's name in $UCSNAME and the UCS in the viewport too, all whole at any
+  // precision, and UCSICON in the viewport's 74.
+  it("writes the named UCSs, the current one's name and UCSICON, read back the same", () => {
+    const drawing = namedUcsDrawing()
+    const third = drawing.settings.ucs
+    for (const version of VERSIONS) {
+      for (const binary of [false, true]) {
+        const { bytes } = writeDxf(drawing, { version, binary, precision: 3 })
+        const back = parseDxf(bytes).drawing.settings
+        expect(shape(back.namedUcs)).toEqual(shape(drawing.settings.namedUcs))
+        expect(back.ucsName).toBe("Third")
+        expect(shape(back.ucs)).toEqual(shape(third))
+        expect(back.ucsIcon).toEqual({ visible: false, atOrigin: true })
+      }
+    }
+    const text = new TextDecoder().decode(
+      writeDxf(drawing, { version: "2018", binary: false, precision: 3 }).bytes
+    )
+    expect(text).toContain(
+      "AcDbUCSTableRecord\r\n  2\r\nThird\r\n 70\r\n     0\r\n 10\r\n0.3333333333333333\r\n"
+    )
+    expect(text).toContain("$UCSNAME\r\n  2\r\nThird\r\n")
+    expect(text).toContain("110\r\n0.3333333333333333\r\n")
+    // An unnamed UCS: $UCSNAME empty, as AutoCAD writes it.
+    const unnamed = new TextDecoder().decode(
+      writeDxf(snapshotOf([]), {
+        version: "2018",
+        binary: false,
+        precision: 16,
+      }).bytes
+    )
+    expect(unnamed).toContain("$UCSNAME\r\n  2\r\n\r\n")
+    expect(unnamed).toContain(" 74\r\n     3\r\n")
+  })
+
+  it("keeps the world saved by name named, and names nothing the table lacks", () => {
+    const world = snapshotOf([]).settings
+    const named = snapshotOf([], {
+      settings: {
+        ...world,
+        ucsName: "W",
+        namedUcs: [{ name: "W", ucs: world.ucs }],
+      },
+    })
+    const bytes = writeDxf(named, {
+      version: "2018",
+      binary: false,
+      precision: 16,
+    }).bytes
+    expect(parseDxf(bytes).drawing.settings.ucsName).toBe("W")
+    // Another program's $UCSNAME with no record of that name.
+    const text = new TextDecoder()
+      .decode(bytes)
+      .replace("$UCSNAME\r\n  2\r\nW\r\n", "$UCSNAME\r\n  2\r\nFOO\r\n")
+    expect(parseDxf(text).drawing.settings.ucsName).toBeNull()
+  })
+
   // An ACIS object is counted instead (dxfSave.test.ts writes a BOX).
   it("holds every object the reader opened of the reference drawing", () => {
     const drawing = parseDxf(fixture("fixture-2018")).drawing
@@ -746,6 +830,8 @@ describe("writeDxf", () => {
       "images-2018",
       "tables-2018",
       "mleaders-2018",
+      "ucs-2018",
+      "named-ucs",
     ]) {
       const drawing =
         name === "points-2018"
@@ -756,7 +842,9 @@ describe("writeDxf", () => {
               ? leadersDrawing()
               : name === "linetypes-2018"
                 ? linetypesDrawing()
-                : parseDxf(fixture(name)).drawing
+                : name === "named-ucs"
+                  ? namedUcsDrawing()
+                  : parseDxf(fixture(name)).drawing
       for (const version of VERSIONS) {
         for (const binary of [false, true]) {
           const { bytes } = writeDxf(drawing, {

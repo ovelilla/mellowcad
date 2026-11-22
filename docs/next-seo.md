@@ -30,8 +30,9 @@
 > MULTILEADER, hechos el 19/11, y XLINE y RAY, con sus páginas, hechos el 20/11, publicados el
 > 21/11 con el export estático; MINSERT, con su página, hecho el 21/11, y los colores índice y
 > las sustituciones DSTYLE, del punto 7, hechos el 22/11, publicados el 22/11, y la malla de
-> VBA_Tower (una malla poligonal, con 3DMESH), hecha el 22/11, sin publicar, que cierra el punto 7;
-> siguiente, la fase 5) y otro idioma (los once de AutoCAD con
+> VBA_Tower (una malla poligonal, con 3DMESH), hecha el 22/11, sin publicar, que cierra el punto 7,
+> y de la fase 5 el informe de lo que se pierde al guardar (AutoCAD no informa; los SCP con nombre,
+> que perdíamos, se guardan), hecho el 22/11, sin publicar; siguiente, R12) y otro idioma (los once de AutoCAD con
 > criterio de L8 están hechos, el chino tradicional el último: ampliar el criterio es decisión del
 > dueño), alternando, además de lo que queda de §7.
 > Esperan detrás

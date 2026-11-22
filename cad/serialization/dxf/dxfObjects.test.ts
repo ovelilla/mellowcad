@@ -856,6 +856,20 @@ describe("the tables and the header", () => {
           [70, 12],
           [7, "a stray group"],
         ],
+        // R12's UCS table (dxf/x023's groups, no subclass markers); the
+        // name in $UCSNAME is a record's.
+        TABLES: [
+          ...record("TABLE", [2, "UCS"]),
+          ...record(
+            "UCS",
+            [2, "Turned"],
+            [70, 0],
+            ...at(10, 1, 2, 3),
+            ...at(11, 0, 1, 0),
+            ...at(12, -1, 0, 0)
+          ),
+          ...record("ENDTAB"),
+        ],
         ENTITIES: [],
       })
     )

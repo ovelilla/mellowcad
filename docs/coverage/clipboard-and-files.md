@@ -253,7 +253,8 @@ imperial drawing's DASHED its own 0.5 inches), text and dimension styles (a grou
 ISO-25's: f001's Standard), blocks; the header's INSUNITS (mm, cm, m), LUPREC, AUPREC, LTSCALE,
 CLAYER, CECOLOR, CELTYPE, CELTSCALE, CELWEIGHT, TEXTSTYLE, DIMSTYLE, TEXTSIZE, FILLETRAD, CHAMFERA and B,
 PLINEWID, FILLMODE, ATTMODE, ORTHOMODE, ELEVATION, THICKNESS, SPLINETYPE, SPLINESEGS, ISOLINES,
-PDMODE, PDSIZE, the UCS and the active viewport's snap and grid; what is no DXF said in AutoCAD's three lines
+PDMODE, PDSIZE, the UCS and its name (UCSNAME), the UCS table (every named UCS, for UCS Named to
+restore: dxf/x023's ALPHA and beta), the active viewport's snap, grid and UCSICON; what is no DXF said in AutoCAD's three lines
 (`Error in drawing header on line 1.`, `<file> is not valid DXF file`, `Invalid or incomplete DXF
 input -- drawing discarded.`, x010) and one ending inside a section in its two (`DXF read error on
 line 23.`, t-no-eof), the drawing left as it was; what follows EOF unread, as AutoCAD opens ezdxf's
@@ -344,7 +345,7 @@ and reads the hatch back as a SOLID, g15: here a SOLID too); a dimension's overr
 variables a style does not hold here (DIMCLRD 176, DIMUPT 288… in its DSTYLE: dropped), a text
 style's font, width and obliquing (text is
 measured with Arial's metrics), TEXT's `%%c`, `%%d` and `%%p` drawn as their characters (as TEXT
-lacks them typed); named UCSs and views, the drawing opened at its saved view; DXFIN's FILEDIA 0
+lacks them typed); named views, the drawing opened at its saved view, its visual style; DXFIN's FILEDIA 0
 prompt. **Unverified:** a hatch's clockwise arc edge (73 = 0), read as measured round from −X
 (AutoCAD wrote f006's clockwise island as a polyline loop), and an elliptical edge's angles, read
 as the ellipse's parameters
@@ -366,8 +367,12 @@ off and locked, with their colour, linetype and lineweight; the drawing's linety
 its description, lengths and a complex one's text and shapes as AutoCAD writes them, the text's
 style and the shape file's STYLE record (name empty, flag 1, `ltypeshp.shx`) by handle, which
 AutoCAD 2027's console reads back as its own records of GAS_LINE and BATTING, ltype/p06; text styles; dimension styles, every variable the model holds; the blocks),
-the header's settings the reader takes back (`$CELTSCALE` among them), an object's own linetype
-scale (48), the active viewport framing the drawing, and every
+the header's settings the reader takes back (`$CELTSCALE` among them), the UCS table (each named
+UCS as typed, 70 0, its origin and axes, 79 and 146 0) and `$UCSNAME` (empty for none), the UCS
+whole at any precision in the header and the viewport (110–112) and UCSICON in the viewport's 74,
+as AutoCAD's DXFOUT (x023, x024: the console reads the 12 files of x023's drawing and of a tilted
+UCS named `front wall` with no AUDIT error, lists their tables and restores each by name, ucs.sh),
+an object's own linetype scale (48), the active viewport framing the drawing, and every
 object the model has, as AutoCAD writes it: a fitted polyline as a POLYLINE with its fit or curve
 vertices, a spline with its fit data or its knots, weights and control points (a closed one
 clamped, f004), a dimension with its `*D` block drawn as the model draws it and its overrides as
@@ -455,13 +460,18 @@ type; NEW's is dated again
 **Deviations:** a page reloaded offers a dated name again, WHY: the autosave keeps the drawing, not
 the file it came from; what a DXF of ours cannot hold is left out and counted at the command line by its
 DXF type (`1 object not saved: 1 3DSOLID.`), WHY words of our own: AutoCAD writes everything it
-has, and the ACIS objects (3DSOLID, REGION) need their SAT, not written here; an array's
+has and says nothing of what an earlier version or DXF loses (x022: DXFOUT 2018, 2000 and R12 and
+SAVEAS to DWG 2000 and R14 of a 3DSOLID and a REGION, not a line; desktop d02: Save Drawing As
+to 2000 DXF, R12 DXF and 2000 DWG, no dialog; its only such task dialogs are for custom objects
+and objects over 256 MB, which this model cannot hold), while the ACIS objects (3DSOLID, REGION)
+need their SAT, not written here: the line goes with them; an array's
 parameters are not written, so AutoCAD opens the array as a block of its items; Save thumbnail preview image shows greyed and off, WHY: no
 preview is written yet (AutoCAD greyed it too in the owner's profile, d01)
 
 **Missing:** «AutoCAD R12/LT2 DXF (*.dxf)» and the Version prompt's R12, which converts what R12
-lacks (`docs/next-dxf.md`); the thumbnail preview; named UCSs and views (`$UCSNAME` left out
-with them); DXFOUT's and SAVEAS's FILEDIA 0 prompts
+lacks (`docs/next-dxf.md`); the thumbnail preview; named views; the visual style (the viewport's 281 and 348 and the
+VISUALSTYLE objects) and the ViewCube's display (`ACAD_NAV_VCDISPLAY` xdata on the viewport), x023;
+DXFOUT's and SAVEAS's FILEDIA 0 prompts
 (`Enter decimal places of accuracy (0 to 16) or [Binary/select Objects/Preview/Version] <16>:`,
 x002, x003, x016–x019). **Unverified:** whether Select objects starts from a set selected before
 the command (here it is dropped)

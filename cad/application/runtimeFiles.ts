@@ -381,7 +381,8 @@ export function dxfSaveOptions(choice: SaveAsChoice): {
  * What the command line says once a DXF is written: AutoCAD's warning for a
  * precision under 16 (27480, probe x015, desktop dxf/d01), then what the
  * file could not hold. WHY words of our own for that: AutoCAD writes
- * everything it has.
+ * everything it has, and says nothing of what an earlier version or DXF
+ * loses (dxf/x022, desktop d02); only our ACIS objects go unwritten.
  */
 export function dxfSaveLines(
   settings: DxfSaveSettings,

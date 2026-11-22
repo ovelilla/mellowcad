@@ -654,7 +654,19 @@ export function writeDxf(
 
   table(out, "VIEW", T.views, 0)
   out.str(0, "ENDTAB")
-  table(out, "UCS", T.ucs, 0)
+  // Each saved UCS as AutoCAD's DXFOUT writes one, its name as typed and its
+  // origin and axes whole at any precision (x023, x024).
+  table(out, "UCS", T.ucs, drawing.settings.namedUcs.length)
+  for (const { name, ucs } of drawing.settings.namedUcs) {
+    record(out, "UCS", handle(), T.ucs, "AcDbUCSTableRecord")
+    out.str(2, name)
+    out.int(70, 0)
+    out.point(10, ucs.origin.x, ucs.origin.y, ucs.origin.z, true)
+    out.point(11, ucs.xAxis.x, ucs.xAxis.y, ucs.xAxis.z, true)
+    out.point(12, ucs.yAxis.x, ucs.yAxis.y, ucs.yAxis.z, true)
+    out.int(79, 0)
+    out.real(146, 0)
+  }
   out.str(0, "ENDTAB")
 
   // A 2000 file's gradients are xdata of applications of their own (g15).
@@ -1045,16 +1057,19 @@ function activeViewport(
   out.int(71, 0)
   out.int(72, 1000)
   out.int(73, 1)
-  out.int(74, 3)
+  // UCSICON: AutoCAD keeps the origin bit with the icon off (x023's 2).
+  out.int(74, (s.ucsIcon.visible ? 1 : 0) | (s.ucsIcon.atOrigin ? 2 : 0))
   out.int(75, s.snapMode ? 1 : 0)
   out.int(76, s.gridMode ? 1 : 0)
   out.int(77, 0)
   out.int(78, 0)
   out.int(281, 0)
   out.int(65, 1)
-  out.point(110, 0, 0, 0)
-  out.point(111, 1, 0, 0)
-  out.point(112, 0, 1, 0)
+  // The viewport's UCS is the drawing's, whole at any precision (x024).
+  const { origin, xAxis, yAxis } = s.ucs
+  out.point(110, origin.x, origin.y, origin.z, true)
+  out.point(111, xAxis.x, xAxis.y, xAxis.z, true)
+  out.point(112, yAxis.x, yAxis.y, yAxis.z, true)
   out.int(79, 0)
   out.real(146, 0)
 }
@@ -1542,11 +1557,17 @@ function header(
   out.int(70, s.surfaceU)
   variable("$SURFV")
   out.int(70, s.surfaceV)
-  // WHY no $UCSNAME: the UCS table is not written, and a name it lacks
-  // would name nothing.
+  // $UCSNAME names a record of the UCS table, empty for none (x023), and the
+  // UCS is whole at any precision (x024).
   const ucs = s.ucs
+  const ucsName = s.ucsName?.toUpperCase()
+  variable("$UCSNAME")
+  out.str(
+    2,
+    s.namedUcs.find((n) => n.name.toUpperCase() === ucsName)?.name ?? ""
+  )
   variable("$UCSORG")
-  out.point(10, ucs.origin.x, ucs.origin.y, ucs.origin.z)
+  out.point(10, ucs.origin.x, ucs.origin.y, ucs.origin.z, true)
   variable("$UCSXDIR")
   out.point(10, ucs.xAxis.x, ucs.xAxis.y, ucs.xAxis.z, true)
   variable("$UCSYDIR")

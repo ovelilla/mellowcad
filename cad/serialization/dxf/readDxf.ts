@@ -335,7 +335,7 @@ export function parseDxf(file: Uint8Array | string): ParsedDxf {
     })
   )
   const settings = {
-    ...dxfSettings(dxf.header, active, linetype),
+    ...dxfSettings(dxf.header, active, table("UCS"), linetype),
     ...(wipeoutFrame === 0 || wipeoutFrame === 1 || wipeoutFrame === 2
       ? { wipeoutFrame: wipeoutFrame as 0 | 1 | 2 }
       : {}),
