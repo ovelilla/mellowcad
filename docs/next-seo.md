@@ -18,16 +18,18 @@
 > `/cs`, L8) hecho y publicado el 17/11, y el húngaro (`live` en `/hu`, L8) hecho el 19/11, y el
 > japonés (`live` en `/ja`, L8, `global`) y el coreano (`live` en `/ko`, L8, `global`) hechos el
 > 20/11, los tres publicados el 21/11 con el export estático (el push de las 09:20, hasta
-> `0f86c6ad`; desde entonces el push está congelado otra vez: `docs/next-vercel-usage.md` §4),
-> y el chino simplificado (`live` en `/zh-cn`, L8, `global`) hecho el 22/11, sin publicar;
+> `0f86c6ad`; después el push estuvo congelado otra vez: `docs/next-vercel-usage.md` §4),
+> y el chino simplificado (`live` en `/zh-cn`, L8, `global`) hecho y publicado el 22/11 (el push
+> de las 09:30, hasta `43bb8b9b`);
 > por decisión del dueño la
 > visibilidad va antes que cualquier funcionalidad; siguiente, por orden del dueño (12/11/2026), una
 > sesión cada vez, nunca en paralelo: lo que quede de la fase 4 del DXF (`docs/next-dxf.md`: las
 > referencias externas, hechas el 16/11 y publicadas el 17/11; el patrón de cada sombreado, los
 > degradados y 3DFACE, del punto 7, hechos y publicados el 17/11; WIPEOUT, IMAGE, la tabla y
 > MULTILEADER, hechos el 19/11, y XLINE y RAY, con sus páginas, hechos el 20/11, publicados el
-> 21/11 con el export estático; MINSERT, con su página, hecho el 21/11, sin publicar; lo
-> que queda del punto 7, los colores índice…, el siguiente) y otro idioma (los diez de AutoCAD con
+> 21/11 con el export estático; MINSERT, con su página, hecho el 21/11, y los colores índice y
+> las sustituciones DSTYLE, del punto 7, hechos el 22/11, publicados el 22/11; lo que queda del
+> punto 7, la malla de VBA_Tower, el siguiente) y otro idioma (los diez de AutoCAD con
 > criterio de L8 están hechos: queda el chino tradicional, `zh-TW`, o ampliar el criterio, decisión
 > del dueño), alternando, además de lo que queda de §7.
 > Esperan detrás

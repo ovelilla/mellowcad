@@ -23,10 +23,10 @@
 > y RAY con sus comandos y sus páginas, hechos el 20/11, sin cambio en el corpus
 > (ninguno las tiene), y el coreano (`docs/next-seo.md`, L8), hecho el 20/11 (todo eso, desde
 > WIPEOUT, publicado el 21/11 con el export estático), y
-> MINSERT con su comando y su página, hecho el 21/11 (sin publicar), sin cambio en el corpus
-> (ninguno lo tiene), y el chino simplificado (`docs/next-seo.md`, L8), hecho el 22/11 (sin
-> publicar), y los colores índice como tales y las sustituciones DSTYLE de cada cota, del punto
-> 7, hechos el 22/11 (sin publicar); siguiente, por orden del dueño, lo
+> MINSERT con su comando y su página, hecho el 21/11, sin cambio en el corpus
+> (ninguno lo tiene), y el chino simplificado (`docs/next-seo.md`, L8), hecho el 22/11, y los
+> colores índice como tales y las sustituciones DSTYLE de cada cota, del punto 7, hechos el 22/11
+> (todo eso, desde MINSERT, publicado el 22/11 a las 09:30); siguiente, por orden del dueño, lo
 > que queda del punto 7 (la malla de VBA_Tower), alternando con otro idioma, una sesión cada vez.
 > Se borra cuando la fase 5 esté hecha; hasta entonces cada fase cerrada se marca aquí.
 
@@ -451,7 +451,7 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
       tiene: el corpus queda igual (153 de 154, 577 de 577). La escena las recorta a la vista;
       3000 a 60 fps de mediana al hacer zoom (navegador). Páginas `/docs/commands/xline` y
       `/ray` en los doce idiomas.
-      MINSERT, hecho el 21/11/2026 (sin publicar): la referencia de bloque en filas y columnas
+      MINSERT, hecho el 21/11/2026 (publicado el 22/11): la referencia de bloque en filas y columnas
       (`InsertEntity.grid`, la clase AcDbMInsertBlock de AutoCAD, fichero versión 63), un solo
       objeto, y el comando, investigado en las diez consolas (sondas `minsert/m01`–`m10`, tablas
       20823–20826, 25140–25141) y el escritorio (`dsk.sh`: un pinzamiento, el de inserción; la
@@ -465,7 +465,7 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
       error de AUDIT y lee sus seis referencias como las del suyo. Ningún fichero del corpus lo
       tiene: 153 de 154 y 577 de 577, como antes. Página `/docs/commands/minsert` en los trece
       idiomas.
-      **Los colores índice como tales**, hechos el 22/11/2026 (sin publicar): un color es un índice,
+      **Los colores índice como tales**, hechos y publicados el 22/11/2026: un color es un índice,
       de 1 a 255, guardado por su número, o un color verdadero, `#rrggbb`, y los dos no se
       confunden aunque su RGB coincida (sondas `colors/c01`, `c02`: AutoCAD lista `Color: 255,0,0`
       y escribe 62 1 junto al 420 de un verdadero 255,0,0). -COLOR, CECOLOR, CHPROP y el Color de
@@ -476,7 +476,7 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
       ficheros escritos del suyo (2000 y 2018, texto y binario) sin un error de AUDIT y lista los
       mismos colores (`colors/v01`). Fichero versión 64: un color de un fichero anterior que es el
       RGB de un índice se abre como ese índice. Queda ByBlock, sin modelar.
-      **Las sustituciones DSTYLE de cada cota**, hechas el 22/11/2026 (sin publicar): las de las
+      **Las sustituciones DSTYLE de cada cota**, hechas y publicadas el 22/11/2026: las de las
       variables que tiene un estilo aquí (las trece), leídas del DSTYLE por los grupos de la tabla
       DIMSTYLE, con las que la cota se dibuja y se mide, que la paleta muestra y LIST escribe bajo
       `dimension style overrides:` como las diez consolas (`colors/s01`, `s02`), y que se escriben

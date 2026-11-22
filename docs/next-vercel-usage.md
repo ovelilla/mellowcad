@@ -1,13 +1,13 @@
 # El uso de Vercel bajo los límites de Hobby — brief
 
-> **Estado:** vigilancia diaria y push congelado por decisión del dueño (18/11/2026): la primera
-> sesión de cada día lee el uso de Vercel como dice §2 y anota la lectura en §3, y ninguna sesión
-> hace push (se sigue desarrollando y haciendo commit) hasta que §4 se cumpla. El proxy de
-> Cloudflare (§5) funciona desde el 18/11 a las 00:40. El 20/11 las lecturas de ISR pasaron del
-> millón (§3). Desde el 21/11 a las 09:40 el sitio es un export estático en producción, que deja
-> las lecturas de ISR de las páginas en cero: la lectura del 22/11 a las 00:45 lo confirmó (cero en
-> 12 h, §3), así que §4 se cumple; el push y la zona de Cloudflare, que reabre el sitio a los
-> rastreadores (§5), esperan la palabra del dueño.
+> **Estado:** vigilancia diaria, con el congelado del push (18/11/2026) levantado por el dueño el
+> 22/11/2026: la primera sesión de cada día lee el uso de Vercel como dice §2 y anota la lectura en
+> §3, y el push es uno al día como mucho, con la palabra del dueño (§4). El proxy de Cloudflare
+> (§5) funciona desde el 18/11 a las 00:40. El 20/11 las lecturas de ISR pasaron del millón (§3).
+> Desde el 21/11 a las 09:40 el sitio es un export estático en producción, que deja las lecturas
+> de ISR de las páginas en cero: la lectura del 22/11 a las 00:45 lo confirmó (cero en 12 h, §3),
+> y el 22/11 a las 09:30 el dueño dio su palabra: la zona de Cloudflare aplicada, que reabre el
+> sitio a los rastreadores (§5), y el push hasta `43bb8b9b`.
 
 ## 1. El problema
 
@@ -110,7 +110,10 @@ están en el sitemap de producción), WIPEOUT, IMAGE, la tabla, MULTILEADER, XLI
 búsqueda de la documentación y la función del MCP. Desde entonces el congelado sigue: esperan
 `2348a4df` y `217fe33e` (MINSERT y su página) y el chino, hasta que la lectura del 22/11 confirme
 las lecturas de ISR en cero y el dueño dé su palabra. La lectura del 22/11 (00:45) las confirmó en
-cero: falta solo la palabra del dueño.
+cero, y el dueño la dio ese día: el push de las 09:30, de `0f86c6ad` a `43bb8b9b`, llevó MINSERT y
+su página, la reapertura a los rastreadores, el chino simplificado y los colores índice con las
+sustituciones DSTYLE. El congelado queda levantado; las lecturas de los días siguientes dicen si
+vuelve.
 
 ## 5. La caché de Cloudflare delante de Vercel
 
@@ -128,9 +131,9 @@ interruptor apagado (como los de `/mcp`), y `robots.txt` ya no excluye a GPTBot 
 meta-externalagent. Un fallo de caché es ahora un fichero, una petición de las del millón al mes de
 Hobby, nunca una lectura de ISR: aunque volvieran todos (unas 6–7 mil peticiones al día, el peor
 caso sin un acierto), quedarían bajo las 400 mil al mes con las ~5.400 diarias de ahora; y que los
-modelos conozcan MellowCAD es publicidad gratis. La zona se aplica (`npm run cloudflare -- --apply`)
-tras la lectura del 22/11 que confirme las lecturas de ISR en cero; `robots.txt`, con el primer
-push. Si un rastreador se desmadra (Bytespider no lee `robots.txt`), se vuelve a encender.
+modelos conozcan MellowCAD es publicidad gratis. La zona se aplicó (`npm run cloudflare -- --apply`)
+el 22/11 a las 09:30, tras la lectura que confirmó las lecturas de ISR en cero (AhrefsBot recibe
+un 200 desde entonces), y `robots.txt` con el push de esa mañana. Si un rastreador se desmadra (Bytespider no lee `robots.txt`), se vuelve a encender.
 
 Qué mirar en la lectura diaria, además de §2: que las lecturas de ISR caen, y en Cloudflare
 (mellowcad.com → Caching) qué parte sirve la caché. En enero, que Vercel renovó sus certificados a
