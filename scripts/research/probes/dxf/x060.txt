@@ -1,0 +1,15 @@
+_CIRCLE
+0,0
+10
+(progn (princ "\nVARS ") (princ (getvar "RASTERPREVIEW")) (princ " ") (princ (getvar "THUMBSAVE")) (princ " ") (princ (getvar "UPDATETHUMBNAIL")) (princ))
+_DXFOUT
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\ext\x060-preview.dxf
+_P
+_Y
+16
+_DXFOUT
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\ext\x060-plain.dxf
+16
+_SAVEAS
+2018
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\ext\x060.dwg

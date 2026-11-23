@@ -576,7 +576,11 @@ preview is written yet (AutoCAD greyed it too in the owner's profile, d01)
 
 **Missing:** in R12, an XLINE or a RAY that
 misses the extents is a line of no length at its base point, where AutoCAD writes one of its own
-reckoning (r12.sh's xlines); the thumbnail preview; named views; the visual style (the viewport's 281 and 348 and the
+reckoning (r12.sh's xlines); the thumbnail preview (DXFOUT's Preview, a THUMBNAILIMAGE of a
+bitmap, 19,832 bytes for x060's circle), left out as nothing reads it: AutoCAD's DXFOUT writes
+none unless asked (`Preview= No`, x060), Windows has no thumbnail handler for a DXF (Autodesk
+says so; only `.dwg` has one), and 30 of the 731 real files carry one, 27 of one LibreCAD
+library; named views; the visual style (the viewport's 281 and 348 and the
 VISUALSTYLE objects) and the ViewCube's display (`ACAD_NAV_VCDISPLAY` xdata on the viewport), x023;
 DXFOUT's and SAVEAS's FILEDIA 0 prompts
 (`Enter decimal places of accuracy (0 to 16) or [Binary/select Objects/Preview/Version] <16>:`,

@@ -36,9 +36,9 @@
 > degradados, el texto de la cota angular, el bloqueo de los atributos y el xdata de los
 > sombreados, escrito y leído, el mismo día (sin publicar), y las `$DIM*` de su cabecera y
 > el sólido de caras curvas, el 23/11 (sin publicar), y la caja de un sólido con una arista de
-> normal −Z (§5, punto 2.6), el 24/11 (sin publicar); siguiente, por orden del dueño, lo que
-> queda de la fase 5 (las vistas preliminares, ACIS, en ese orden) u otro idioma, una sesión
-> cada vez.
+> normal −Z (§5, punto 2.6), el 24/11 (sin publicar), y las vistas preliminares, investigadas y
+> descartadas el 24/11 (§5, punto 3: nadie las lee); de la fase 5 solo queda ACIS (punto 4),
+> que espera a que el dueño retome `docs/next-solids.md`.
 > Se borra cuando la fase 5 esté hecha; hasta entonces cada fase cerrada se marca aquí.
 
 ## 1. Objetivo
@@ -632,9 +632,16 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
          arreglar: un SCP con la Z hacia abajo (X 180) es el SCU para las herramientas
          (`UcsFrame`), así que CIRCLE, ARC y ELLIPSE dibujan ahí con normal +Z, donde AutoCAD
          las hace −Z (0, −1e-16, −1); los mismos puntos, otra normal en el DXF y otro sentido.
-   3. **Las vistas preliminares** (_Save thumbnail preview image_, la sección THUMBNAILIMAGE):
-      pequeña, pero de poco uso: la consola tiene `Preview= No` por defecto y el escritorio la
-      mostraba gris en el perfil del dueño (`d01`).
+   3. **Las vistas preliminares** (_Save thumbnail preview image_, la sección THUMBNAILIMAGE).
+      **No se hace** (24/11/2026): la sonda no la justifica. La consola la escribe solo si se le
+      pide (`Preview= No` por defecto; con Preview, un mapa de bits de 19.832 bytes para un
+      círculo, x060), el escritorio tenía la casilla gris en el perfil del dueño (`d01`),
+      Windows no tiene visor de miniaturas para .dxf (el registro: solo .dwg tiene uno, y
+      Autodesk lo dice en su soporte: hace falta una extensión de terceros), y la llevan 30 de
+      los 731 DXF reales del corpus, 27 de una misma biblioteca de LibreCAD y 3 pruebas de
+      ezdxf, ninguna de las 154 muestras que guardó AutoCAD. Quien la leería es el cuadro
+      Select File de AutoCAD, con la vista previa activada: sin comprobar, porque pide el ratón
+      del dueño en el escritorio. Si un usuario la echa en falta, se retoma con esa sonda.
    4. **ACIS con los sólidos**: escribir y leer el SAT de 3DSOLID y REGION (desde 2013, SAB en la
       sección ACDSDATA), la única pérdida de 2000 a 2018 y la línea que la cuenta; la mayor, y es
       la de `docs/next-solids.md` §6, en pausa: va cuando el dueño la retome.

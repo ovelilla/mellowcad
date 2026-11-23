@@ -34,7 +34,8 @@
 > y de la fase 5 el informe de lo que se pierde al guardar (AutoCAD no informa; los SCP con nombre,
 > que perdíamos, se guardan), hecho el 22/11, sin publicar, y R12, con las `$DIM*` de su cabecera
 > y el sólido de caras curvas, hecho el 23/11, sin publicar, y la caja de un sólido con una arista
-> de normal −Z, hecha el 24/11, sin publicar; siguiente, las vistas preliminares) y otro idioma (los once de AutoCAD con
+> de normal −Z, hecha el 24/11, sin publicar, y las vistas preliminares, descartadas el 24/11:
+> nadie las lee; queda ACIS, que espera a `docs/next-solids.md`) y otro idioma (los once de AutoCAD con
 > criterio de L8 están hechos, el chino tradicional el último: ampliar el criterio es decisión del
 > dueño), alternando, además de lo que queda de §7.
 > Esperan detrás
