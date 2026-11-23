@@ -32,7 +32,9 @@
 > publicar); y la primera pieza de la fase 5, el informe de lo que se pierde al guardar, hecha el
 > 22/11 (sin publicar): AutoCAD no informa de nada, así que no hay informe nuevo, y lo que
 > perdíamos en silencio y AutoCAD guarda, los SCP con nombre, se escribe y se lee; y la segunda,
-> R12 (el tipo «AutoCAD R12/LT2 DXF» y la versión R12), hecha el 23/11 (sin publicar); siguiente,
+> R12 (el tipo «AutoCAD R12/LT2 DXF» y la versión R12), hecha el 23/11 (sin publicar), con sus
+> degradados, el texto de la cota angular y el bloqueo de los atributos el mismo día (sin
+> publicar); siguiente,
 > por orden del dueño, lo que queda de la fase 5 (lo que R12 aún no escribe, las vistas
 > preliminares, ACIS, en ese orden) u otro idioma, una sesión cada vez.
 > Se borra cuando la fase 5 esté hecha; hasta entonces cada fase cerrada se marca aquí.
@@ -543,12 +545,36 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
       cortan a 26 caracteres, no a 32, y no solo el espacio pasa a guion bajo, sino todo lo que no
       es letra, dígito, `$`, `-` o `_`. Lo que hace y lo que falta, en la entrada de DXFOUT de
       `docs/coverage/clipboard-and-files.md`. Queda, ordenado por lo que más se ve:
-      1. **Los degradados**: AutoCAD los escribe en R12 como bandas de SOLID de colores índice
-         (r12.sh's gradients: de 38 a 285 por degradado); hoy se cuentan como no guardados.
-      2. **El texto de una cota angular**: AutoCAD lo regenera horizontal, un TEXT dentro de su
-         `*D` (f002, fixture2); el nuestro va girado, en un `*U`.
+      1. **Los degradados.** **Hecho** (23/11/2026, sin publicar). No son bandas de colores
+         índice: AutoCAD escribe los triángulos de su malla de sombreado (de 2 a 523, más finos
+         donde el color gira) y tira los colores, cada SOLID del color y la capa del sombreado
+         (r12.sh's gradients, x029); los nuestros son los trapecios del área, como los de un
+         relleno. De paso, un relleno sólido lleva sus piezas en la capa del sombreado y con su
+         color, no en la 0 (x030). La consola abre los 4 ficheros sin un error de AUDIT y los
+         traza como su propio R12; de 2000 a 2018, idénticos byte a byte.
+      2. **El texto de una cota angular.** **Hecho** (23/11/2026, sin publicar): TEXT
+         horizontales en su `*D`, a la izquierda sobre la base, la primera línea 1,3 alturas bajo
+         el centro del texto y cada siguiente 1,3 más abajo, con cualquier DIMTAD, DIMTIH, DIMGAP
+         o giro; lo que no está en la página de códigos, `?`, también el grado (`45?`). Las demás
+         cotas guardan su `*U` (x031, x032). La consola abre los 8 ficheros sin un error de AUDIT
+         y los traza como su propio R12, salvo lo que ya separa al modelo de AutoCAD (DIMTAD y
+         DIMTIH sin modelar, DIMS-D8).
       3. **El xdata de los sombreados** (`HATCH`, `R14_HATCH_DATA`, `ASC_BOUNDS`), con el que
-         AutoCAD lee su propio R12 de vuelta como sombreados, y el `AcDbAttr` de los atributos.
+         AutoCAD lee su propio R12 de vuelta como sombreados. El `AcDbAttr` de los atributos,
+         **hecho** (23/11/2026, sin publicar): `1070 0`, `1070 1` en cada ATTDEF bloqueada y en
+         cada ATTRIB de una, y el APPID solo entonces; la consola lee el bloqueo de vuelta
+         (x033). Lo visto del sombreado, para la sesión que lo haga (fixture-2018-R12, la
+         INSERT de `*X14`): en la referencia, `GRADIENTCOLOR1ACI` y `GRADIENTCOLOR2ACI` si el
+         sombreado los traía, y el xdata `ACAD` `{ 19, HATCH, el patrón, escala, ángulo,
+         ASC_BOUNDS` con cuántos contornos y el handle de cada objeto de contorno`,
+         ASC_SEEDPOINT` con el punto, `R14_HATCH_DATA` con el handle de la referencia, los ejes
+         del SCO, la elevación, el patrón y sus banderas, cada camino (tipo, aristas con sus
+         puntos en 1040, el handle de su objeto) y cada línea del patrón (ángulo, origen,
+         desfase, rayas)`}`; y en cada objeto de contorno, `ACAD` `{ 19, ` el handle de la
+         referencia `}`. Hace falta enlazar handles entre la referencia y sus contornos (en R12
+         sí hay handles de entidad), cada tipo de arista (línea, arco, arco de elipse, spline,
+         polilínea con bultos) y leerlo de vuelta; una sonda por tipo de arista y una para un
+         sombreado no asociativo, antes de construir.
       4. **Un sólido de caras curvas** (sin sonda: se cuenta como no guardado) y las variables
          `$DIM*` de la cabecera.
    3. **Las vistas preliminares** (_Save thumbnail preview image_, la sección THUMBNAILIMAGE):

@@ -248,7 +248,7 @@ const CP1252: ReadonlyMap<string, number> = new Map(
   [...CP1252_HIGH].map((c, i) => [c, 0x80 + i])
 )
 
-function cp1252Byte(c: string): number | null {
+export function cp1252Byte(c: string): number | null {
   const mapped = CP1252.get(c)
   if (mapped !== undefined) return mapped
   const code = c.codePointAt(0)!

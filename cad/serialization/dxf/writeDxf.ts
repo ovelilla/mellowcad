@@ -52,6 +52,7 @@ import {
   writeEntity,
 } from "./dxfWriteEntities"
 import { SAME_NAMES, r12Naming, writeDxfR12 } from "./writeDxfR12"
+import { r12AngularDimensionTexts } from "./dxfR12"
 
 /** The AutoCAD releases a DXF is written for, as SAVEAS and DXFOUT name them (probe x003). */
 export type DxfVersion =
@@ -1395,7 +1396,8 @@ function dimensionBlock(
     anonymous: true,
     write: (ctx, owner) => {
       const { out } = ctx
-      const g = dimensionGeometry(dimension, styleOf(dimension.styleId))
+      const style = styleOf(dimension.styleId)
+      const g = dimensionGeometry(dimension, style)
       const z = dimension.elevation ?? 0
       const a = planeAxes(dimension)
       const world = (p: Vec2) => (a ? axesToWorld(a, { ...p, z }) : { ...p, z })
@@ -1439,6 +1441,11 @@ function dimensionBlock(
         begin("SOLID", "AcDbTrace")
         corners.forEach((p, i) => out.point(10 + i, p.x, p.y, z))
         normal()
+      }
+      if (ctx.converted && dimension.kind === "angular") {
+        for (const text of r12AngularDimensionTexts(dimension, style, g))
+          writeEntity(ctx, text, owner)
+        return
       }
       if (ctx.converted) {
         // R12 has no MTEXT: the text a reference to a `*U` block of its

@@ -469,6 +469,9 @@ each name uppercase, every character but a letter, a digit, `$`, `-` and `_` an 
 first numbered per stem (`…XY0`, `…XY1`; a letter beyond the code page kept and written as its
 `\U+XXXX`, **unverified**); blocks without handles, one with attribute definitions
 flag 2, an anonymous one named by its kind and its place among the file's blocks (`*D2`, `*U8`);
+a locked attribute's lock position, which R12 has not, as AutoCAD keeps it, `AcDbAttr` xdata (1070
+0, 1070 1) on the definition and on each reference of it, the application registered only when one
+is written (x033: the console reads each lock back);
 a polyline a POLYLINE, its widths the first vertex's and a vertex's own where they differ; a
 DIMENSION without 71, 42, 3 or bit 32; and what R12 has no object for converted in silence, as
 AutoCAD converts it: an ellipse a 3D polyline of 128 equal steps, an arc of one too (129
@@ -478,12 +481,19 @@ not move along leaving that extent alone; an MTEXT, a leader, a multileader, a t
 3D solid of flat faces an INSERT on layer 0 of a `*U` block of what EXPLODE makes of it, flat (an
 MTEXT's lines TEXTs, a leader's arrowhead a SOLID and its line a POLYLINE, a box its faces' 24
 edges), the pieces with the object's layer and properties (x027); a dimension's text an INSERT of
-a `*U` block of its TEXT, ByBlock; a hatch's pattern a `*X` block of its lines on layer 0, ByBlock,
-a solid fill a `*U` block of SOLIDs and its outline's lines, Continuous, the reference on the
-hatch's layer with its colour and Continuous; an image and a wipeout left out. The console opens
-each of the 36 files of the reference drawings and of every kind above, and of
-dxfSave.test.ts's, ASCII and binary, with no AUDIT error, and plots each as it plots its own R12
-of the same drawing (`audit.sh`, `plot.sh`)
+a `*U` block of its TEXT, ByBlock, but an angular one's, which AutoCAD's R12 writes in its `*D`
+block as TEXTs, horizontal and left on their baseline, the first 1.3 heights under the middle of the
+text and each next line 1.3 heights lower, whatever DIMTAD, DIMTIH, DIMGAP or the arc's turn, a
+character beyond the code page a `?`, the degree sign too (`45?`: AutoCAD holds it as `\U+00B0`),
+x031, x032, f002's *D4; a hatch's pattern a `*X` block of its lines on layer 0, ByBlock,
+a solid fill a `*U` block of SOLIDs and its outline's lines, a gradient one of SOLIDs alone, its
+colours lost (r12.sh's gradients, x029: AutoCAD writes the triangles of its shading mesh, 2 to 523
+of them, finer where the colour turns, none with a colour of the gradient's; ours are the area's
+trapezoids, as a fill's: the same area, plotted alike), the pieces of both on the hatch's layer with
+its colour, Continuous (x030), the reference on the hatch's layer with its colour and Continuous;
+an image and a wipeout left out. The console opens each of the 44 files of the reference drawings
+and of every kind above, and of dxfSave.test.ts's, ASCII and binary, with no AUDIT error, and
+plots each as it plots its own R12 of the same drawing (`audit.sh`, `plot.sh`)
 
 **Deviations:** a page reloaded offers a dated name again, WHY: the autosave keeps the drawing, not
 the file it came from; what a DXF of ours cannot hold is left out and counted at the command line by its
@@ -496,12 +506,10 @@ need their SAT, not written here: the line goes with them; an array's
 parameters are not written, so AutoCAD opens the array as a block of its items; Save thumbnail preview image shows greyed and off, WHY: no
 preview is written yet (AutoCAD greyed it too in the owner's profile, d01)
 
-**Missing:** in R12, a gradient's bands of SOLIDs (counted as not saved:
-`1 object not saved: 1 HATCH.`), a 3D solid with a curved face (counted, **unverified** what
-AutoCAD's R12 makes of one), the hatch's `HATCH` and `R14_HATCH_DATA` xdata and its boundaries'
-`ASC_BOUNDS`, with which AutoCAD reads its own R12 hatch back as one, an attribute's `AcDbAttr`
-xdata, the header's `$DIM*` variables, and an angular dimension's text, which AutoCAD's R12
-writes horizontal, a TEXT in its `*D` block (f002's *D4, fixture2's *D5); an XLINE or a RAY that
+**Missing:** in R12, a 3D solid with a curved face (counted as not saved:
+`1 object not saved: 1 3DSOLID.`, **unverified** what AutoCAD's R12 makes of one), the hatch's `HATCH` and `R14_HATCH_DATA` xdata and its boundaries'
+`ASC_BOUNDS`, with which AutoCAD reads its own R12 hatch back as one, and the header's `$DIM*`
+variables; an XLINE or a RAY that
 misses the extents is a line of no length at its base point, where AutoCAD writes one of its own
 reckoning (r12.sh's xlines); the thumbnail preview; named views; the visual style (the viewport's 281 and 348 and the
 VISUALSTYLE objects) and the ViewCube's display (`ACAD_NAV_VCDISPLAY` xdata on the viewport), x023;

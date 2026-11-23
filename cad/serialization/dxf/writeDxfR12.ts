@@ -11,7 +11,12 @@ import { DrawingSnapshot } from "../drawingFile"
 import { DxfOut } from "./dxfOut"
 import { dxfColorCodes } from "./dxfColors"
 import { R12Names, R12Source, r12Conversion, r12Name } from "./dxfR12"
-import { DxfWriteContext, color, writeEntity } from "./dxfWriteEntities"
+import {
+  DxfWriteContext,
+  R12_ATTRIBUTE_APP,
+  color,
+  writeEntity,
+} from "./dxfWriteEntities"
 import type { WrittenBlock } from "./writeDxf"
 
 /** The names a file gives the drawing's tables and blocks. */
@@ -123,9 +128,9 @@ export function writeDxfR12(plan: R12Plan): Uint8Array {
   ): boolean => {
     const conversion = r12Conversion(entity, source)
     if (conversion === null) {
-      // A gradient, or a solid with a curved face: not written yet.
-      if (entity.type === "hatch" || entity.type === "solid3d") {
-        c.leftOut(entity.type === "hatch" ? "HATCH" : "3DSOLID")
+      // A solid with a curved face: not written yet.
+      if (entity.type === "solid3d") {
+        c.leftOut("3DSOLID")
         return true
       }
       return false
@@ -237,11 +242,22 @@ export function writeDxfR12(plan: R12Plan): Uint8Array {
     out.point(12, ucs.yAxis.x, ucs.yAxis.y, ucs.yAxis.z, true)
   }
   out.str(0, "ENDTAB")
-  // The dimensions' DSTYLE overrides are ACAD's xdata.
-  table(out, "APPID", 1)
+  // The dimensions' DSTYLE overrides are ACAD's xdata; a locked attribute's
+  // lock position AcDbAttr's, registered only when one is written (x033;
+  // fixture's unlocked ones, none).
+  const lockedAttributes = [
+    ...plan.modelEntities,
+    ...drawing.blocks.flatMap((b) => b.entities),
+  ].some((e) => e.type === "attdef" && e.modes.lockPosition)
+  table(out, "APPID", lockedAttributes ? 2 : 1)
   out.str(0, "APPID")
   out.str(2, "ACAD")
   out.int(70, 0)
+  if (lockedAttributes) {
+    out.str(0, "APPID")
+    out.str(2, R12_ATTRIBUTE_APP)
+    out.int(70, 0)
+  }
   out.str(0, "ENDTAB")
   table(out, "DIMSTYLE", drawing.dimStyles.length)
   for (const style of drawing.dimStyles) {

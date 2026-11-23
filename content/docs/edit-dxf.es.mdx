@@ -3,7 +3,7 @@ title: Editar un archivo DXF online
 metaTitle: "Editor DXF online gratis: editar y guardar DXF"
 description: "Edita un archivo DXF gratis en tu navegador con los comandos de AutoCAD y vuelve a guardarlo como DXF, de AutoCAD R12 a 2018. Sin instalar ni subir nada."
 type: howTo
-sourceHash: "6bf191fbec69"
+sourceHash: "3aed71a61efb"
 faq:
   - question: "¿Cómo editar un archivo DXF online?"
     answer: "Elígelo o suéltalo arriba, en esta página: se abre en el editor de MellowCAD, en tu navegador. Cámbialo con los comandos de AutoCAD y, después, GUARDARCOMO (Ctrl+Mayús+S) o SALVADXF lo vuelven a guardar como archivo DXF."
@@ -52,7 +52,7 @@ Cada objeto que tiene MellowCAD, escrito como lo escribe AutoCAD: líneas, arcos
 - **Lo que no se abrió no se guarda.** Lo que MellowCAD aún no tiene — líneas múltiples, tolerancias y [el resto de esa lista](/docs/open-dxf#left-out) — se cuenta en la línea de comandos al abrir el archivo, y no está en el archivo que guardas. Conserva el original.
 - **Los sólidos 3D y las regiones no se escriben**: la línea de comandos dice cuántos se quedaron fuera.
 - Los parámetros de una matriz no se escriben: AutoCAD abre la matriz como un bloque de sus elementos. Tampoco lo que una cota modifica de su estilo sin que MellowCAD tenga un ajuste para ello, como sus colores.
-- **R12 no tiene objeto para mucho de lo que vino después**, así que lo convierte sin avisar, como hace AutoCAD: una elipse o una spline pasa a ser una polilínea 3D; un texto de líneas múltiples, un sombreado, una directriz, una directriz múltiple, una tabla, una región o un sólido 3D de caras planas, un bloque de lo que dibuja; una línea auxiliar o un rayo, una línea que cruza el dibujo. Las imágenes y las coberturas se quedan fuera, y los nombres de capas, bloques y estilos se escriben en mayúsculas, de 26 caracteres como máximo. Los degradados aún no se escriben en R12: la línea de comandos los enumera.
+- **R12 no tiene objeto para mucho de lo que vino después**, así que lo convierte sin avisar, como hace AutoCAD: una elipse o una spline pasa a ser una polilínea 3D; un texto de líneas múltiples, un sombreado, una directriz, una directriz múltiple, una tabla, una región o un sólido 3D de caras planas, un bloque de lo que dibuja; una línea auxiliar o un rayo, una línea que cruza el dibujo. Las imágenes y las coberturas se quedan fuera, y los nombres de capas, bloques y estilos se escriben en mayúsculas, de 26 caracteres como máximo. Un degradado se escribe como un relleno de su área del color del sombreado, sin sus propios colores, como lo escribe AutoCAD.
 - No hay vista preliminar en miniatura, ni DWG.
 
 ## Empieza un DXF desde cero [#new]

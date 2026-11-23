@@ -3,7 +3,7 @@ title: Modificare un file DXF online
 metaTitle: "Editor DXF online gratis: modificare file DXF"
 description: "Modifica gratis un file DXF nel browser con i comandi di AutoCAD e salvalo di nuovo come DXF, AutoCAD da R12 al 2018. Niente da installare o caricare."
 type: howTo
-sourceHash: "6bf191fbec69"
+sourceHash: "3aed71a61efb"
 faq:
   - question: "Come modificare un file DXF online?"
     answer: "Sceglilo o trascinalo in cima a questa pagina: si apre nell'editor di MellowCAD, nel tuo browser. Modificalo con i comandi di AutoCAD, poi SALVACOME (Ctrl+Maiusc+S) o DXFOUT lo salva di nuovo come file DXF."
@@ -52,7 +52,7 @@ Ogni oggetto che MellowCAD ha, scritto come lo scrive AutoCAD: linee, archi, cer
 - **Ciò che non si è aperto non viene salvato.** Ciò per cui MellowCAD non ha ancora un oggetto — multilinee, tolleranze e [il resto di quell'elenco](/docs/open-dxf#left-out) — viene contato nella riga di comando all'apertura del file, e non è nel file che salvi. Conserva l'originale.
 - **I solidi 3D e le regioni non vengono scritti**: la riga di comando dice quanti ne sono rimasti fuori.
 - I parametri di una serie non vengono scritti: AutoCAD apre la serie come un blocco dei suoi elementi. Non viene scritto neppure ciò che una quota modifica del suo stile senza che MellowCAD abbia un'impostazione corrispondente, come i suoi colori.
-- **R12 non ha un oggetto per buona parte di ciò che è venuto dopo**, quindi lo converte senza avvisare, come fa AutoCAD: un'ellisse o una spline diventa una polilinea 3D; un testo multilinea, un tratteggio, una direttrice, una direttrice multipla, una tabella, una regione o un solido 3D a facce piane, un blocco di ciò che disegna; una linea di costruzione o una semiretta, una linea che attraversa il disegno. Le immagini e le entità coprenti vengono lasciate fuori, e i nomi di layer, blocchi e stili vengono scritti in maiuscolo, al massimo 26 caratteri. Le sfumature non vengono ancora scritte in R12: la riga di comando le elenca.
+- **R12 non ha un oggetto per buona parte di ciò che è venuto dopo**, quindi lo converte senza avvisare, come fa AutoCAD: un'ellisse o una spline diventa una polilinea 3D; un testo multilinea, un tratteggio, una direttrice, una direttrice multipla, una tabella, una regione o un solido 3D a facce piane, un blocco di ciò che disegna; una linea di costruzione o una semiretta, una linea che attraversa il disegno. Le immagini e le entità coprenti vengono lasciate fuori, e i nomi di layer, blocchi e stili vengono scritti in maiuscolo, al massimo 26 caratteri. Una sfumatura viene scritta come un riempimento della sua area nel colore del tratteggio, senza i suoi colori, come la scrive AutoCAD.
 - Non c'è l'immagine di anteprima, né il DWG.
 
 ## Crea un DXF da zero [#new]

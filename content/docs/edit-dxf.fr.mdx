@@ -3,7 +3,7 @@ title: Modifier un fichier DXF en ligne
 metaTitle: "Éditeur DXF en ligne gratuit : modifier un DXF"
 description: "Modifiez gratuitement un fichier DXF dans votre navigateur avec les commandes AutoCAD, puis réenregistrez-le en DXF, d'AutoCAD R12 à 2018, sans rien installer."
 type: howTo
-sourceHash: "6bf191fbec69"
+sourceHash: "3aed71a61efb"
 faq:
   - question: "Comment modifier un fichier DXF en ligne ?"
     answer: "Choisissez-le ou déposez-le en haut de cette page : il s'ouvre dans l'éditeur de MellowCAD, dans votre navigateur. Modifiez-le avec les commandes d'AutoCAD, puis SAUVENOM (Ctrl+Maj+S) ou SAUVEDXF le réenregistre en fichier DXF."
@@ -52,7 +52,7 @@ Chaque objet que possède MellowCAD, écrit comme AutoCAD l'écrit : lignes, ar
 - **Ce qui ne s'est pas ouvert n'est pas enregistré.** Ce pour quoi MellowCAD n'a pas encore d'objet — les multilignes, les tolérances et [le reste de cette liste](/docs/open-dxf#left-out) — est compté sur la ligne de commande à l'ouverture du fichier, et n'est pas dans le fichier que vous enregistrez. Gardez l'original.
 - **Les solides 3D et les régions ne sont pas écrits** : la ligne de commande indique combien ont été laissés de côté.
 - Les paramètres d'un réseau ne sont pas écrits : AutoCAD ouvre le réseau comme un bloc de ses éléments. Ce qu'une cote remplace de son style sans que MellowCAD ait de réglage pour cela, comme ses couleurs, ne l'est pas non plus.
-- **R12 n'a pas d'objet pour une grande partie de ce qui est venu après lui**, et le convertit donc sans rien dire, comme le fait AutoCAD : une ellipse ou une spline devient une polyligne 3D ; un texte multiligne, une hachure, une ligne de repère, une ligne de repère multiple, un tableau, une région ou un solide 3D à faces planes, un bloc de ce qu'il dessine ; une ligne de construction ou une demi-droite, une ligne qui traverse le dessin. Les images et les masques sont laissés de côté, et les noms des calques, des blocs et des styles sont écrits en majuscules, 26 caractères au plus. Les gradients ne sont pas encore écrits en R12 : la ligne de commande les liste.
+- **R12 n'a pas d'objet pour une grande partie de ce qui est venu après lui**, et le convertit donc sans rien dire, comme le fait AutoCAD : une ellipse ou une spline devient une polyligne 3D ; un texte multiligne, une hachure, une ligne de repère, une ligne de repère multiple, un tableau, une région ou un solide 3D à faces planes, un bloc de ce qu'il dessine ; une ligne de construction ou une demi-droite, une ligne qui traverse le dessin. Les images et les masques sont laissés de côté, et les noms des calques, des blocs et des styles sont écrits en majuscules, 26 caractères au plus. Un gradient est écrit comme un remplissage de sa surface dans la couleur de la hachure, sans ses propres couleurs, comme l'écrit AutoCAD.
 - Il n'y a pas d'aperçu miniature, ni de DWG.
 
 ## Créez un DXF à partir de zéro [#new]

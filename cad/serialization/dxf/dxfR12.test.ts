@@ -5,12 +5,21 @@ import { ellipseOf, hatchOf, loopOf, p } from "../../../test/builders"
 import {
   BlockLookup,
   Entity,
+  createDimension,
   createMText,
+  dimensionGeometry,
   entitiesBounds,
 } from "../../domain/entities"
 import { DEFAULT_DIM_STYLE } from "../../domain/dimStyles"
+import { Vec2 } from "../../geometry/Vec2"
 import { parseDxf } from "./readDxf"
-import { R12Names, R12Source, r12Conversion, r12Name } from "./dxfR12"
+import {
+  R12Names,
+  R12Source,
+  r12AngularDimensionTexts,
+  r12Conversion,
+  r12Name,
+} from "./dxfR12"
 
 // What AutoCAD 2027's DXFOUT R12 makes of what R12 has no object for:
 // scripts/research/probes/dxf/r12.sh wrote each fixture of AutoCAD's as R12
@@ -195,26 +204,55 @@ describe("r12Conversion", () => {
     }
   })
 
-  it("fills a solid hatch with SOLIDs and its outline, on layer 0, Continuous (f002's *U15)", () => {
-    const hatch = hatchOf([loopOf(p(0, 0), p(10, 5))], { patternId: "SOLID" })
+  it("fills a solid hatch with SOLIDs and its outline, on its layer with its colour, Continuous (x030)", () => {
+    const hatch = {
+      ...hatchOf([loopOf(p(0, 0), p(10, 5))], {
+        patternId: "SOLID",
+        layerId: "red",
+      }),
+      color: "3",
+    }
     const c = r12Conversion(hatch, sourceOf([]))
     if (c?.kind !== "block") throw new Error("no block")
     expect(c.prefix).toBe("*U")
+    expect(c.dressed).toMatchObject({ layerId: "red", color: "3" })
     const types = c.pieces.map((e) => e.type)
     expect(types.filter((t) => t === "solid2d")).toHaveLength(1)
     expect(types.filter((t) => t === "line")).toHaveLength(4)
     for (const piece of c.pieces) {
-      expect(piece).toMatchObject({ layerId: "0", linetype: "Continuous" })
-      expect(piece.color).toBeUndefined()
+      expect(piece).toMatchObject({
+        layerId: "red",
+        color: "3",
+        linetype: "Continuous",
+      })
     }
   })
 
-  it("counts a gradient as not written yet", () => {
+  it("fills a gradient with SOLIDs of the hatch's colour alone, no outline (r12.sh's gradients, x029)", () => {
     const drawing = fixture("gradients-2018")
-    const gradient = drawing.entities.find(
+    const gradients = drawing.entities.filter(
       (e) => e.type === "hatch" && e.gradient
-    )!
-    expect(r12Conversion(gradient, sourceOf([]))).toBeNull()
+    )
+    expect(gradients).toHaveLength(12)
+    const triangle = (a: Vec2, b: Vec2, c: Vec2) =>
+      Math.abs((b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y)) / 2
+    for (const gradient of gradients) {
+      const c = r12Conversion(gradient, sourceOf([]))
+      if (c?.kind !== "block") throw new Error("no block")
+      expect(c.prefix).toBe("*U")
+      expect(c.dressed).toMatchObject({ layerId: "0", linetype: "Continuous" })
+      expect(c.dressed?.color).toBeUndefined()
+      // AutoCAD's covers each 100 × 50 rectangle in 2 to 285 triangles.
+      let area = 0
+      for (const piece of c.pieces) {
+        if (piece.type !== "solid2d") throw new Error(piece.type)
+        expect(piece).toMatchObject({ layerId: "0", linetype: "Continuous" })
+        expect(piece.color).toBeUndefined()
+        const [a, b, cc, d] = piece.corners
+        area += triangle(a, b, cc) + triangle(b, cc, d)
+      }
+      expect(area).toBeCloseTo(5000, 6)
+    }
   })
 
   it("breaks a multileader and a table up into R12's objects, flat (r12.sh)", () => {
@@ -246,4 +284,88 @@ describe("r12Conversion", () => {
       }
     }
   })
+})
+
+describe("an angular dimension's text in R12", () => {
+  // Each angular dimension's MTEXT middle in AutoCAD's 2018 file, and the
+  // TEXTs its R12 wrote for it in the *D block, at 6 digits (fixture2's *D5,
+  // x031: heights 2.5 and 5, DIMGAP 2, DIMTAD 0, an override, a right
+  // angle; x032: é ü, %%c and %%p, `x\U+03B1\Py`, DIMTIH 1).
+  type Case = [[number, number], [number, number, string][]]
+  const cases: [string, Case[]][] = [
+    ["fixture2-2018", [[[626.0027, 10.77067], [[626.003, 7.52067, "45?"]]]]],
+    [
+      "angulars-2018",
+      [
+        [[22.41054, 9.28275], [[22.4105, 6.03275, "45?"]]],
+        [[123.58509, 9.76926], [[123.585, 3.26926, "45?"]]],
+        [[223.68088, 9.80894], [[223.681, 6.55894, "45?"]]],
+        [[320.65857, 8.55706], [[320.659, 5.30706, "45?"]]],
+        [[422.40975, 9.28242], [[422.41, 6.03242, "abc"]]],
+        [[521.34452, 21.34452], [[521.345, 18.0945, "90?"]]],
+      ],
+    ],
+    [
+      "angulars2-2018",
+      [
+        [[22.41684, 9.28536], [[22.4168, 6.03536, "é ü"]]],
+        [[122.47986, 9.31146], [[122.48, 6.06146, "%%c5 %%p1"]]],
+        [
+          [224.65512, 10.21249],
+          [
+            [224.655, 6.96249, "x?"],
+            [224.655, 3.71249, "y"],
+          ],
+        ],
+        [[320.65857, 8.55706], [[320.659, 5.30706, "45?"]]],
+      ],
+    ],
+  ]
+  it("puts the measurement, its degree sign a ?, where an override says <>", () => {
+    const dim = createDimension("angular", p(40, 0), p(30, 30), p(20, 10), {
+      vertex: p(0, 0),
+      text: "<> max",
+    })
+    const style = DEFAULT_DIM_STYLE
+    const texts = r12AngularDimensionTexts(
+      dim,
+      style,
+      dimensionGeometry(dim, style)
+    )
+    expect(texts.map((t) => t.value)).toEqual(["45? max"])
+  })
+
+  for (const [name, expected] of cases) {
+    it(`is AutoCAD's horizontal TEXT, 1.3 heights a line under the middle (${name})`, () => {
+      const drawing = fixture(name)
+      const angulars = drawing.entities.flatMap((e) =>
+        e.type === "dimension" && e.kind === "angular" ? [e] : []
+      )
+      expect(angulars).toHaveLength(expected.length)
+      angulars.forEach((dim, i) => {
+        const style =
+          drawing.dimStyles.find((s) => s.id === dim.styleId) ??
+          DEFAULT_DIM_STYLE
+        const g = dimensionGeometry(dim, style)
+        const texts = r12AngularDimensionTexts(dim, style, g)
+        const [middle, lines] = expected[i]
+        expect(texts).toHaveLength(lines.length)
+        texts.forEach((t, j) => {
+          const [x, y, value] = lines[j]
+          // From the middle of the text drawn: the model's places it a
+          // little apart from AutoCAD's at times (DIMTAD 0), not this rule.
+          expect(t.position.x - g.textPoint.x).toBeCloseTo(x - middle[0], 2)
+          expect(t.position.y - g.textPoint.y).toBeCloseTo(y - middle[1], 2)
+          expect(t.value).toBe(value)
+          expect(t).toMatchObject({
+            height: g.textHeight,
+            rotation: 0,
+            justify: "left",
+            color: "ByBlock",
+            layerId: "0",
+          })
+        })
+      })
+    })
+  }
 })

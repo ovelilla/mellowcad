@@ -1233,6 +1233,21 @@ function attributeVersion(ctx: DxfWriteContext): void {
   if (ctx.version >= 1024) ctx.out.int(280, 0)
 }
 
+/**
+ * R12 has no lock position: AutoCAD's R12 keeps it as AcDbAttr xdata on a
+ * locked attribute, its definition or its reference, and on no other
+ * (x033: TA and TC locked, TB not; minserts' ATTDEF and ATTRIBs).
+ */
+function r12LockPosition(ctx: DxfWriteContext, locked: boolean): void {
+  if (ctx.version >= 1015 || !locked) return
+  ctx.out.str(1001, R12_ATTRIBUTE_APP)
+  ctx.out.int(1070, 0)
+  ctx.out.int(1070, 1)
+}
+
+/** The application of an R12 attribute's lock position (x033). */
+export const R12_ATTRIBUTE_APP = "AcDbAttr"
+
 function attributeDefinition(
   ctx: DxfWriteContext,
   e: AttributeDefinitionEntity,
@@ -1255,6 +1270,7 @@ function attributeDefinition(
   )
   if (vertical) out.int(74, vertical)
   if (ctx.version >= 1021) out.int(280, m.lockPosition ? 1 : 0)
+  r12LockPosition(ctx, m.lockPosition)
 }
 
 /** `v` turned `angle` radians counterclockwise. */
@@ -1327,6 +1343,16 @@ function insert(ctx: DxfWriteContext, e: InsertEntity, owner: string): void {
     out.int(70, attribute.invisible ? 1 : 0)
     if (vertical) out.int(74, vertical)
     if (ctx.version >= 1021) out.int(280, 0)
+    // A reference's attribute is locked as its definition is.
+    r12LockPosition(
+      ctx,
+      block?.entities.some(
+        (d) =>
+          d.type === "attdef" &&
+          d.tag.toUpperCase() === attribute.tag.toUpperCase() &&
+          d.modes.lockPosition
+      ) ?? false
+    )
   }
   seqend(ctx, e, own)
 }

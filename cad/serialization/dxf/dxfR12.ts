@@ -6,6 +6,8 @@ import { evenOddTrapezoids } from "../../geometry/trapezoids"
 import {
   BlockLookup,
   Bounds,
+  DimensionEntity,
+  DimensionGeometry,
   EllipseEntity,
   Entity,
   HatchEntity,
@@ -13,9 +15,12 @@ import {
   LineEntity,
   RayEntity,
   SplineEntity,
+  TextEntity,
   XlineEntity,
   carryOverrides,
   createLine,
+  createText,
+  dimensionMeasurementText,
   createPolyline,
   createPolyline3d,
   createSolid2d,
@@ -26,6 +31,7 @@ import {
   mleaderExploded,
   mleaderGeometry,
   mtextLineTexts,
+  mtextPlainText,
   nextEntityId,
   solidFaceRegions,
   solidHasCurvedFaces,
@@ -37,6 +43,7 @@ import { regionEdgeEntities } from "../../domain/regions"
 import { DimStyle } from "../../domain/dimStyles"
 import { DEFAULT_LAYER_ID } from "../../domain/layers"
 import { CONTINUOUS } from "../../domain/linetypes"
+import { cp1252Byte } from "./dxfOut"
 
 /**
  * A name as AutoCAD 2027's R12 DXF writes it (probes dxf/x027, x028):
@@ -92,8 +99,9 @@ export type R12Conversion =
   /**
    * A reference to an anonymous block of what it draws: `*X` for a
    * pattern's lines, `*U` for the rest. A hatch's reference carries its
-   * layer and properties, its lines ByBlock; any other's is plain on layer
-   * 0 and its pieces keep the object's (x027).
+   * layer and properties, a pattern's lines ByBlock, a fill's pieces the
+   * hatch's (x030); any other's is plain on layer 0 and its pieces keep the
+   * object's (x027).
    */
   | {
       readonly kind: "block"
@@ -330,14 +338,70 @@ function leaderPieces(e: LeaderEntity, source: R12Source): Entity[] {
 }
 
 /**
- * A hatch as AutoCAD's R12 writes one (f002, r12.sh's hatchpat, x027): a
- * pattern a `*X` block of its lines, a solid fill a `*U` block of SOLIDs
- * and its outline's lines, all on layer 0, the lines ByBlock, the reference
- * on its layer with its colour and Continuous. A gradient's colour bands
- * are not written yet (`null`: counted as left out).
+ * An angular dimension's text as AutoCAD's R12 writes it in its `*D` block
+ * (f002's *D4, fixture2's *D5, x031, x032): not the MTEXT along the arc but
+ * TEXTs, horizontal and left on their baseline, the first 1.3 heights under
+ * the middle of the text drawn and each next line 1.3 heights lower,
+ * whatever DIMTAD, DIMTIH, DIMGAP or the arc's turn; every character beyond
+ * the code page a `?` (x032's α), and so every `\U+XXXX` of its contents,
+ * the measurement's degree sign among them, which AutoCAD holds as
+ * `\U+00B0` (`45?`), while a typed `é` stays. A linear, aligned, radial or
+ * diametric dimension keeps its text as an MTEXT's, in a `*U` (x031, x032).
  */
-function hatchConversion(e: HatchEntity): R12Conversion | null {
-  if (e.gradient) return null
+export function r12AngularDimensionTexts(
+  dimension: DimensionEntity,
+  style: DimStyle,
+  g: DimensionGeometry
+): TextEntity[] {
+  const measured = dimensionMeasurementText(dimension, style).replace(
+    "°",
+    "\\U+00B0"
+  )
+  const contents =
+    dimension.text === undefined
+      ? measured
+      : dimension.text.replace(/<>/g, measured)
+  const lines = mtextPlainText(
+    contents.replace(/\\\\|\\U\+[0-9A-Fa-f]{4}/g, (m) =>
+      m === "\\\\" ? m : "?"
+    )
+  )
+    .split("\n")
+    .map((line) =>
+      [...line].map((c) => (cp1252Byte(c) === null ? "?" : c)).join("")
+    )
+  const z = dimension.elevation ?? 0
+  const step = R12_ANGULAR_LINE_STEP * g.textHeight
+  return lines.flatMap((value, i) =>
+    value.trim().length === 0
+      ? []
+      : [
+          {
+            ...createText(
+              { x: g.textPoint.x, y: g.textPoint.y - step * (i + 1) },
+              value,
+              { height: g.textHeight }
+            ),
+            color: "ByBlock",
+            ...(z !== 0 ? { elevation: z } : {}),
+            ...(dimension.normal ? { normal: dimension.normal } : {}),
+          },
+        ]
+  )
+}
+
+/** x031: 3.25 under the middle at a height of 2.5, 6.5 at 5. */
+const R12_ANGULAR_LINE_STEP = 1.3
+
+/**
+ * A hatch as AutoCAD's R12 writes one (f002, r12.sh's hatchpat and
+ * gradients, x027, x029, x030): a pattern a `*X` block of its lines on
+ * layer 0, ByBlock; a solid fill a `*U` block of SOLIDs and its outline's
+ * lines, a gradient one of SOLIDs alone, on the hatch's layer with its
+ * colour and Continuous; the reference on its layer with its colour and
+ * Continuous.
+ */
+function hatchConversion(e: HatchEntity): R12Conversion {
   const g = hatchGeometry(e)
   const z = e.elevation ?? 0
   const piece = <T extends Entity>(entity: T): T => ({
@@ -351,7 +415,7 @@ function hatchConversion(e: HatchEntity): R12Conversion | null {
     ...e,
     linetype: CONTINUOUS.name,
   }
-  if (!g.solid) {
+  if (!g.solid && !e.gradient) {
     return {
       kind: "block",
       prefix: "*X",
@@ -359,12 +423,18 @@ function hatchConversion(e: HatchEntity): R12Conversion | null {
       dressed: reference,
     }
   }
-  // A fill's pieces are no ByBlock, but Continuous (f002's *U15).
+  // A fill's pieces keep the hatch's layer and colour, Continuous (x030: a
+  // fill on layer RED, colour 3, its SOLIDs and lines RED and 3).
   const filled = <T extends Entity>(entity: T): T => ({
     ...entity,
-    layerId: DEFAULT_LAYER_ID,
+    layerId: e.layerId,
+    ...(e.color !== undefined ? { color: e.color } : {}),
     linetype: CONTINUOUS.name,
   })
+  // WHY a gradient's colours are lost: AutoCAD's R12 writes the triangles
+  // of its shading mesh, each a SOLID of the hatch's colour (r12.sh's
+  // gradients, x029: 2 to 523 of them, none with a colour of the
+  // gradient's). These trapezoids cover the same area, as a fill's do.
   const solids = evenOddTrapezoids(g.rings).map(([a, b, c, d]) => {
     return {
       ...filled(createSolid2d([a, b, c, d])),
@@ -372,13 +442,19 @@ function hatchConversion(e: HatchEntity): R12Conversion | null {
       ...(e.normal ? { normal: e.normal } : {}),
     }
   })
-  const outline = g.rings.flatMap((ring) =>
-    ring.map((a, i) =>
-      filled(
-        createLine(toWorld(e, a, z), toWorld(e, ring[(i + 1) % ring.length], z))
+  // A gradient has no outline (r12.sh's gradients: SOLIDs alone).
+  const outline = e.gradient
+    ? []
+    : g.rings.flatMap((ring) =>
+        ring.map((a, i) =>
+          filled(
+            createLine(
+              toWorld(e, a, z),
+              toWorld(e, ring[(i + 1) % ring.length], z)
+            )
+          )
+        )
       )
-    )
-  )
   return {
     kind: "block",
     prefix: "*U",

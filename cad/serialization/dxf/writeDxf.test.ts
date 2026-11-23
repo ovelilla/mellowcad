@@ -241,11 +241,10 @@ describe("writeDxf", () => {
     }
   }
 
-  // R12 (probes dxf/r12.sh, x027, x028): AutoCAD 2027's console opened each
+  // R12 (probes dxf/r12.sh, x027 to x032): AutoCAD 2027's console opened each
   // file of the reference drawings and of every kind the DXF_OUT test writes
   // as R12, ASCII and binary, with no AUDIT error, and plotted it as it
-  // plots its own R12 of the same drawing (but an angular dimension's text:
-  // docs/coverage/clipboard-and-files.md).
+  // plots its own R12 of the same drawing.
   for (const name of ["fixture-2018", "fixture2-2018"]) {
     const drawing = parseDxf(fixture(name)).drawing
     for (const binary of [false, true]) {
@@ -355,6 +354,116 @@ describe("writeDxf", () => {
           /AcDbRegAppTableRecord\n {2}2\nGradientColor2ACI\n/
         )
       }
+    }
+  })
+
+  // r12.sh's gradients and x029's (a layer's colour, a colour of its own, a
+  // true colour, a ring): AutoCAD's R12 writes each a `*U` of SOLIDs of the
+  // hatch's layer and colour, its reference likewise; the console opened each
+  // file with no AUDIT error and plotted it as its own R12.
+  it("writes gradients in R12 as a block of SOLIDs each, none left out", () => {
+    for (const name of ["gradients-2018", "gradients2-2018"]) {
+      const drawing = parseDxf(fixture(name)).drawing
+      const { bytes, report } = writeDxf(drawing, {
+        version: "R12",
+        binary: false,
+        precision: 16,
+      })
+      expect(report.leftOut.size).toBe(0)
+      const back = parseDxf(bytes).drawing
+      const references = back.entities.filter((e) => e.type === "insert")
+      expect(references).toHaveLength(
+        drawing.entities.filter((e) => e.type === "hatch").length
+      )
+      for (const r of references) {
+        const block = back.blocks.find(
+          (b) => r.type === "insert" && b.id === r.blockId
+        )!
+        expect(block.name).toMatch(/^\*U\d+$/)
+        expect(block.entities.length).toBeGreaterThan(0)
+        for (const piece of block.entities) {
+          expect(piece.type).toBe("solid2d")
+          expect(piece.layerId).toBe(r.layerId)
+          expect(piece.color).toBe(r.color)
+        }
+      }
+      if (name === "gradients2-2018") {
+        // x029: all four on layer RED, one ByLayer, one green, one 200,100,50.
+        const red = back.layers.find((l) => l.name === "RED")!
+        expect(references.every((r) => r.layerId === red.id)).toBe(true)
+        expect(references.map((r) => r.color).sort()).toEqual(
+          ["3", "32", undefined, undefined].sort()
+        )
+      }
+    }
+  })
+
+  // x033 (TA and TC locked, TB not), minserts (a locked definition and its
+  // two references) and fixture (unlocked): AutoCAD's R12 holds each locked
+  // attribute's lock position as AcDbAttr xdata and registers the
+  // application only then, as many AcDbAttr lines as here.
+  it("writes a locked attribute in R12 with its AcDbAttr xdata, as AutoCAD does", () => {
+    for (const [name, count] of [
+      ["attlocks-2018", 3],
+      ["minserts-2018", 4],
+      ["fixture-2018", 0],
+    ] as const) {
+      const drawing = parseDxf(fixture(name)).drawing
+      const { bytes } = writeDxf(drawing, {
+        version: "R12",
+        binary: false,
+        precision: 16,
+      })
+      const text = new TextDecoder("latin1").decode(bytes)
+      expect(text.split("\r\n").filter((l) => l === "AcDbAttr")).toHaveLength(
+        count
+      )
+      if (count > 0) {
+        expect(text).toContain(
+          "1001\r\nAcDbAttr\r\n1070\r\n     0\r\n1070\r\n     1\r\n"
+        )
+      }
+    }
+  })
+
+  // x031, x032: AutoCAD's R12 writes an angular dimension's text in its *D
+  // as TEXTs; any other dimension's as a reference to a *U of its TEXT.
+  it("writes an angular dimension's text in R12 as TEXTs in its *D block", () => {
+    const drawing = parseDxf(fixture("angulars-2018")).drawing
+    const { bytes } = writeDxf(drawing, {
+      version: "R12",
+      binary: false,
+      precision: 16,
+    })
+    const lines = new TextDecoder("latin1").decode(bytes).split("\r\n")
+    const blocks = new Map<string, string[]>()
+    let current: string[] | null = null
+    for (let i = 0; i + 1 < lines.length; i += 2) {
+      const [code, value] = [lines[i].trim(), lines[i + 1]]
+      if (code === "0" && value === "BLOCK") current = []
+      else if (code === "0" && value === "ENDBLK") current = null
+      else if (current && code === "2" && current.length === 0)
+        blocks.set(value, (current = [value]))
+      else if (current && code === "0") current.push(value)
+      else if (current && code === "1") current.push(`1:${value}`)
+    }
+    const dimensionBlocks = [...blocks.values()].filter((b) =>
+      b[0].startsWith("*D")
+    )
+    const angular = dimensionBlocks.filter((b) => b.includes("ARC"))
+    expect(angular).toHaveLength(6)
+    for (const b of angular) {
+      expect(b).toContain("TEXT")
+      expect(b).not.toContain("INSERT")
+    }
+    // The BLOCK's own 1 comes first, its TEXT's last.
+    expect(
+      angular.map((b) => b.filter((v) => v.startsWith("1:")).at(-1))
+    ).toEqual(["1:45?", "1:45?", "1:45?", "1:45?", "1:abc", "1:90?"])
+    // The aligned and the linear one keep theirs in a *U.
+    for (const b of dimensionBlocks.filter((b) => !b.includes("ARC"))) {
+      expect(b).toContain("INSERT")
+      expect(b).not.toContain("TEXT")
     }
   })
 
@@ -907,6 +1016,10 @@ describe("writeDxf", () => {
       "xref-2018",
       "hatchpat-2018",
       "gradients-2018",
+      "gradients2-2018",
+      "angulars-2018",
+      "angulars2-2018",
+      "attlocks-2018",
       "faces-2018",
       "wipeouts-2018",
       "xlines-2018",
