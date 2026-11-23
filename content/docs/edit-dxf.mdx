@@ -1,7 +1,7 @@
 ---
 title: Edit a DXF file online
 metaTitle: "Free online DXF editor: edit and save DXF files"
-description: "Edit a DXF file free in your browser with AutoCAD's commands, and save it as DXF again, AutoCAD 2000 to 2018. Nothing to install, nothing uploaded."
+description: "Edit a DXF file free in your browser with AutoCAD's commands, and save it as DXF again, AutoCAD R12 to 2018. Nothing to install, nothing uploaded."
 type: howTo
 faq:
   - question: "How do I edit a DXF file online?"
@@ -9,7 +9,7 @@ faq:
   - question: "Is it free? Do I need an account?"
     answer: "It is free, with no account and nothing to install. The file is read on your computer and never uploaded."
   - question: "Which DXF versions can I save?"
-    answer: "AutoCAD 2018, 2013, 2010, 2007, 2004 and 2000, in text (ASCII) or binary. Not R12 yet, and not DWG."
+    answer: "AutoCAD 2018, 2013, 2010, 2007, 2004, 2000 and R12, in text (ASCII) or binary. Not DWG."
   - question: "Will AutoCAD open the DXF I save?"
     answer: "Yes. Every kind of object MellowCAD writes, in every version and in text and binary, was opened by AutoCAD 2027 with no error found by its AUDIT."
   - question: "Is anything lost when I save?"
@@ -34,7 +34,7 @@ Choose or drop a DXF above and it opens in the editor, or open one there with <C
 
 ## Save it as DXF [#save]
 
-<Command id="SAVEAS" /> (`Ctrl+Shift+S`), <Command id="SAVE" /> and <Command id="DXFOUT" /> open Save Drawing As, as in AutoCAD: a file name, and a file type among AutoCAD 2018, 2013, 2010, 2007, 2004 and 2000 DXF (<Command id="DXFOUT" /> opens on AutoCAD 2018 DXF). Tools ▸ Options… opens the DXF Options of Saveas Options:
+<Command id="SAVEAS" /> (`Ctrl+Shift+S`), <Command id="SAVE" /> and <Command id="DXFOUT" /> open Save Drawing As, as in AutoCAD: a file name, and a file type among AutoCAD 2018, 2013, 2010, 2007, 2004, 2000 and R12/LT2 DXF (<Command id="DXFOUT" /> opens on AutoCAD 2018 DXF). Tools ▸ Options… opens the DXF Options of Saveas Options:
 
 - **Format**: ASCII, the text most programs read, or BINARY.
 - **Select objects**: once the dialog closes, the command asks you to select objects, and the file holds only those.
@@ -51,7 +51,8 @@ Every object MellowCAD has, written as AutoCAD writes it: lines, arcs, circles, 
 - **What did not open is not saved.** What MellowCAD has no object for yet — multilines, tolerances and [the rest of that list](/docs/open-dxf#left-out) — is counted on the command line when the file opens, and is not in the file you save. Keep the original.
 - **3D solids and regions are not written**: the command line lists how many were left out.
 - An array's parameters are not written: AutoCAD opens the array as a block of its items. Nor is what a dimension overrides of its style that MellowCAD has no setting for, such as its colours.
-- There is no thumbnail preview, no AutoCAD R12/LT2 DXF type yet, and no DWG.
+- **R12 has no object for much of what came after it**, so it converts it in silence, as AutoCAD does: an ellipse or a spline becomes a 3D polyline; a multiline text, a hatch, a leader, a multileader, a table, a region or a flat-faced 3D solid, a block of what it draws; an XLINE or a RAY, a line across the drawing. Images and wipeouts are left out, and the names of layers, blocks and styles are written in capitals, 26 characters at most. Gradients are not written to R12 yet: the command line lists them.
+- There is no thumbnail preview, and no DWG.
 
 ## Start a DXF from scratch [#new]
 
@@ -69,7 +70,7 @@ It is free, with no account and nothing to install. The file is read on your com
 
 ### Which DXF versions can I save? [#versions]
 
-AutoCAD 2018, 2013, 2010, 2007, 2004 and 2000, in text (ASCII) or binary. Not R12 yet, and not DWG.
+AutoCAD 2018, 2013, 2010, 2007, 2004, 2000 and R12, in text (ASCII) or binary. Not DWG.
 
 ### Will AutoCAD open the DXF I save? [#autocad]
 

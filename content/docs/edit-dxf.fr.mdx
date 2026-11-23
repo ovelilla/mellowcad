@@ -1,16 +1,16 @@
 ---
 title: Modifier un fichier DXF en ligne
 metaTitle: "Éditeur DXF en ligne gratuit : modifier un DXF"
-description: "Modifiez gratuitement un fichier DXF dans votre navigateur avec les commandes AutoCAD, puis réenregistrez-le en DXF, d'AutoCAD 2000 à 2018, sans rien installer."
+description: "Modifiez gratuitement un fichier DXF dans votre navigateur avec les commandes AutoCAD, puis réenregistrez-le en DXF, d'AutoCAD R12 à 2018, sans rien installer."
 type: howTo
-sourceHash: "c3abbdd860ac"
+sourceHash: "6bf191fbec69"
 faq:
   - question: "Comment modifier un fichier DXF en ligne ?"
     answer: "Choisissez-le ou déposez-le en haut de cette page : il s'ouvre dans l'éditeur de MellowCAD, dans votre navigateur. Modifiez-le avec les commandes d'AutoCAD, puis SAUVENOM (Ctrl+Maj+S) ou SAUVEDXF le réenregistre en fichier DXF."
   - question: "Est-ce gratuit ? Faut-il un compte ?"
     answer: "C'est gratuit, sans compte et sans rien à installer. Le fichier est lu sur votre ordinateur et n'est jamais envoyé."
   - question: "Dans quelles versions de DXF puis-je enregistrer ?"
-    answer: "AutoCAD 2018, 2013, 2010, 2007, 2004 et 2000, en texte (ASCII) ou en binaire. Pas encore R12, ni DWG."
+    answer: "AutoCAD 2018, 2013, 2010, 2007, 2004, 2000 et R12, en texte (ASCII) ou en binaire. Pas de DWG."
   - question: "AutoCAD ouvrira-t-il le DXF que j'enregistre ?"
     answer: "Oui. Chaque type d'objet que MellowCAD écrit, dans chaque version, en texte et en binaire, a été ouvert par AutoCAD 2027 sans que son AUDIT y trouve d'erreur."
   - question: "Perd-on quelque chose en enregistrant ?"
@@ -35,7 +35,7 @@ Choisissez ou déposez un DXF ci-dessus et il s'ouvre dans l'éditeur, ou ouvrez
 
 ## Enregistrez-le en DXF [#save]
 
-<Command id="SAVEAS" /> (`Ctrl+Maj+S`), <Command id="SAVE" /> et <Command id="DXFOUT" /> ouvrent Enregistrer le dessin sous, comme dans AutoCAD : un nom de fichier, et un type parmi les DXF d'AutoCAD 2018, 2013, 2010, 2007, 2004 et 2000 (<Command id="DXFOUT" /> s'ouvre sur le DXF d'AutoCAD 2018). Outils ▸ Options… ouvre les Options DXF d'Enregistrer sous - Options :
+<Command id="SAVEAS" /> (`Ctrl+Maj+S`), <Command id="SAVE" /> et <Command id="DXFOUT" /> ouvrent Enregistrer le dessin sous, comme dans AutoCAD : un nom de fichier, et un type parmi les DXF d'AutoCAD 2018, 2013, 2010, 2007, 2004, 2000 et R12/LT2 (<Command id="DXFOUT" /> s'ouvre sur le DXF d'AutoCAD 2018). Outils ▸ Options… ouvre les Options DXF d'Enregistrer sous - Options :
 
 - **Format** : ASCII, le texte que lisent presque tous les programmes, ou BINAIRE.
 - **Sélectionner les objets** : une fois la boîte de dialogue fermée, la commande vous demande de sélectionner des objets, et le fichier ne contient que ceux-là.
@@ -52,7 +52,8 @@ Chaque objet que possède MellowCAD, écrit comme AutoCAD l'écrit : lignes, ar
 - **Ce qui ne s'est pas ouvert n'est pas enregistré.** Ce pour quoi MellowCAD n'a pas encore d'objet — les multilignes, les tolérances et [le reste de cette liste](/docs/open-dxf#left-out) — est compté sur la ligne de commande à l'ouverture du fichier, et n'est pas dans le fichier que vous enregistrez. Gardez l'original.
 - **Les solides 3D et les régions ne sont pas écrits** : la ligne de commande indique combien ont été laissés de côté.
 - Les paramètres d'un réseau ne sont pas écrits : AutoCAD ouvre le réseau comme un bloc de ses éléments. Ce qu'une cote remplace de son style sans que MellowCAD ait de réglage pour cela, comme ses couleurs, ne l'est pas non plus.
-- Il n'y a pas d'aperçu miniature, pas encore de type DXF d'AutoCAD R12/LT2, et pas de DWG.
+- **R12 n'a pas d'objet pour une grande partie de ce qui est venu après lui**, et le convertit donc sans rien dire, comme le fait AutoCAD : une ellipse ou une spline devient une polyligne 3D ; un texte multiligne, une hachure, une ligne de repère, une ligne de repère multiple, un tableau, une région ou un solide 3D à faces planes, un bloc de ce qu'il dessine ; une ligne de construction ou une demi-droite, une ligne qui traverse le dessin. Les images et les masques sont laissés de côté, et les noms des calques, des blocs et des styles sont écrits en majuscules, 26 caractères au plus. Les gradients ne sont pas encore écrits en R12 : la ligne de commande les liste.
+- Il n'y a pas d'aperçu miniature, ni de DWG.
 
 ## Créez un DXF à partir de zéro [#new]
 
@@ -70,7 +71,7 @@ C'est gratuit, sans compte et sans rien à installer. Le fichier est lu sur votr
 
 ### Dans quelles versions de DXF puis-je enregistrer ? [#versions]
 
-AutoCAD 2018, 2013, 2010, 2007, 2004 et 2000, en texte (ASCII) ou en binaire. Pas encore R12, ni DWG.
+AutoCAD 2018, 2013, 2010, 2007, 2004, 2000 et R12, en texte (ASCII) ou en binaire. Pas de DWG.
 
 ### AutoCAD ouvrira-t-il le DXF que j'enregistre ? [#autocad]
 

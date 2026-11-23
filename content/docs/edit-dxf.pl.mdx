@@ -1,16 +1,16 @@
 ---
 title: Edytor DXF online
 metaTitle: "Edytor DXF online: edycja i zapis plików DXF"
-description: "Edytuj plik DXF za darmo w przeglądarce poleceniami AutoCADa i zapisz go ponownie jako DXF, AutoCAD 2000 do 2018. Bez instalacji, nic nie jest wysyłane."
+description: "Edytuj plik DXF za darmo w przeglądarce poleceniami AutoCADa i zapisz go ponownie jako DXF, AutoCAD R12 do 2018. Bez instalacji, nic nie jest wysyłane."
 type: howTo
-sourceHash: "c3abbdd860ac"
+sourceHash: "6bf191fbec69"
 faq:
   - question: "Jak edytować plik DXF online?"
     answer: "Wybierz go lub upuść u góry tej strony: otworzy się w edytorze MellowCAD, w przeglądarce. Zmień go poleceniami AutoCADa, a potem polecenie NZAPISZ (Ctrl+Shift+S) lub DXFWY zapisze go ponownie jako plik DXF."
   - question: "Czy to jest darmowe? Czy potrzebuję konta?"
     answer: "Jest darmowe, bez konta i bez instalacji. Plik jest odczytywany na twoim komputerze i nigdy nie jest wysyłany."
   - question: "W jakich wersjach DXF mogę zapisać plik?"
-    answer: "AutoCAD 2018, 2013, 2010, 2007, 2004 i 2000, w formacie tekstowym (ASCII) lub binarnym. R12 jeszcze nie, DWG też nie."
+    answer: "AutoCAD 2018, 2013, 2010, 2007, 2004, 2000 i R12, w formacie tekstowym (ASCII) lub binarnym. DWG nie."
   - question: "Czy AutoCAD otworzy zapisany przeze mnie DXF?"
     answer: "Tak. Każdy rodzaj obiektu, który zapisuje MellowCAD, w każdej wersji, tekstowo i binarnie, został otwarty w AutoCADzie 2027, a jego polecenie TEST (AUDIT) nie znalazło błędów."
   - question: "Czy coś ginie przy zapisie?"
@@ -35,7 +35,7 @@ Wybierz lub upuść DXF powyżej, a otworzy się w edytorze, albo otwórz go tam
 
 ## Zapisz go jako DXF [#save]
 
-Polecenia <Command id="SAVEAS" /> (`Ctrl+Shift+S`), <Command id="SAVE" /> i <Command id="DXFOUT" /> otwierają okno „Zapisz rysunek jako”, jak w AutoCADzie: nazwa pliku i typ pliku spośród DXF AutoCAD 2018, 2013, 2010, 2007, 2004 i 2000 (<Command id="DXFOUT" /> otwiera je z wybranym typem DXF AutoCAD 2018). „Narzędzia ▸ Opcje…” otwiera kartę „Opcje DXF” okna „Opcje Zapisz jako”:
+Polecenia <Command id="SAVEAS" /> (`Ctrl+Shift+S`), <Command id="SAVE" /> i <Command id="DXFOUT" /> otwierają okno „Zapisz rysunek jako”, jak w AutoCADzie: nazwa pliku i typ pliku spośród DXF AutoCAD 2018, 2013, 2010, 2007, 2004, 2000 i R12/LT2 (<Command id="DXFOUT" /> otwiera je z wybranym typem DXF AutoCAD 2018). „Narzędzia ▸ Opcje…” otwiera kartę „Opcje DXF” okna „Opcje Zapisz jako”:
 
 - **Format**: ASCII, tekst, który odczytuje większość programów, lub binarny.
 - **Wybierz obiekty**: po zamknięciu okna polecenie prosi o wybranie obiektów i plik zawiera tylko te obiekty.
@@ -52,7 +52,8 @@ Każdy obiekt, jaki ma MellowCAD, zapisany tak, jak zapisuje go AutoCAD: linie, 
 - **To, co się nie otworzyło, nie jest zapisywane.** To, dla czego MellowCAD nie ma jeszcze obiektu – multilinie, tolerancje i [reszta tej listy](/docs/open-dxf#left-out) – jest liczone w wierszu polecenia przy otwieraniu pliku i nie trafia do zapisywanego pliku. Zachowaj oryginał.
 - **Bryły 3D i regiony nie są zapisywane**: wiersz polecenia podaje, ile ich pominięto.
 - Parametry szyku nie są zapisywane: AutoCAD otwiera szyk jako blok jego elementów. Nie jest zapisywane również to, co wymiar nadpisuje w swoim stylu bez odpowiednika w ustawieniach MellowCAD, na przykład jego kolory.
-- Nie ma miniatury podglądu, nie ma jeszcze typu DXF AutoCAD R12/LT2 i nie ma DWG.
+- **R12 nie ma obiektu dla wielu rzeczy, które pojawiły się później**, więc po cichu je przekształca, jak AutoCAD: elipsa lub splajn staje się polilinią 3D; tekst wielowierszowy, kreskowanie, linia odniesienia, wielolinia odniesienia, tabela, region lub bryła 3D o płaskich ścianach – blokiem tego, co rysuje; linia konstrukcyjna lub półprosta – linią przecinającą cały rysunek. Obrazy i maskowania są pomijane, a nazwy warstw, bloków i stylów są zapisywane wielkimi literami, najwyżej 26 znaków. Gradienty nie są jeszcze zapisywane w R12: wiersz polecenia je wymienia.
+- Nie ma miniatury podglądu ani DWG.
 
 ## Utwórz DXF od zera [#new]
 
@@ -70,7 +71,7 @@ Jest darmowe, bez konta i bez instalacji. Plik jest odczytywany na twoim kompute
 
 ### W jakich wersjach DXF mogę zapisać plik? [#versions]
 
-AutoCAD 2018, 2013, 2010, 2007, 2004 i 2000, w formacie tekstowym (ASCII) lub binarnym. R12 jeszcze nie, DWG też nie.
+AutoCAD 2018, 2013, 2010, 2007, 2004, 2000 i R12, w formacie tekstowym (ASCII) lub binarnym. DWG nie.
 
 ### Czy AutoCAD otworzy zapisany przeze mnie DXF? [#autocad]
 

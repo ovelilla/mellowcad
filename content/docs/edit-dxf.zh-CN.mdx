@@ -1,16 +1,16 @@
 ---
 title: 在线编辑 DXF 文件
 metaTitle: "DXF 在线编辑：免费 DXF 编辑器，编辑并保存 DXF"
-description: "在浏览器中用 AutoCAD 命令免费在线编辑 DXF 文件，并重新保存为 AutoCAD 2000 到 2018 的 DXF。无需安装，不上传文件。"
+description: "在浏览器中用 AutoCAD 命令免费在线编辑 DXF 文件，并重新保存为 AutoCAD R12 到 2018 的 DXF。无需安装，不上传文件。"
 type: howTo
-sourceHash: "c3abbdd860ac"
+sourceHash: "6bf191fbec69"
 faq:
   - question: "如何在线编辑 DXF 文件？"
     answer: "在本页顶部选择或拖放文件，它会在浏览器中的 MellowCAD 编辑器里打开。用 AutoCAD 命令修改它，然后用 SAVEAS（Ctrl+Shift+S）或 DXFOUT 将其重新保存为 DXF 文件。"
   - question: "免费吗？需要账号吗？"
     answer: "免费，无需账号，也无需安装。文件在本机读取，不会上传。"
   - question: "可以保存为哪些 DXF 版本？"
-    answer: "AutoCAD 2018、2013、2010、2007、2004 和 2000，ASCII 或二进制格式。暂不支持 R12，也不支持 DWG。"
+    answer: "AutoCAD 2018、2013、2010、2007、2004、2000 和 R12，ASCII 或二进制格式。不支持 DWG。"
   - question: "AutoCAD 能打开保存的 DXF 吗？"
     answer: "能。MellowCAD 写入的每种对象，在每个版本中、以 ASCII 和二进制格式，都已用 AutoCAD 2027 打开，其 AUDIT 未发现错误。"
   - question: "保存时会丢失内容吗？"
@@ -35,7 +35,7 @@ MellowCAD 在浏览器中编辑 DXF 文件，使用 AutoCAD 的命令、提示�
 
 ## 保存为 DXF [#save]
 
-与 AutoCAD 一样，<Command id="SAVEAS" />（`Ctrl+Shift+S`）、<Command id="SAVE" /> 和 <Command id="DXFOUT" /> 会打开“图形另存为”对话框：输入文件名，并在 AutoCAD 2018、2013、2010、2007、2004 和 2000 DXF 中选择文件类型（<Command id="DXFOUT" /> 打开时已选中 AutoCAD 2018 DXF）。“工具 ▸ 选项…”会打开“另存为选项”的“DXF 选项”：
+与 AutoCAD 一样，<Command id="SAVEAS" />（`Ctrl+Shift+S`）、<Command id="SAVE" /> 和 <Command id="DXFOUT" /> 会打开“图形另存为”对话框：输入文件名，并在 AutoCAD 2018、2013、2010、2007、2004、2000 和 R12/LT2 DXF 中选择文件类型（<Command id="DXFOUT" /> 打开时已选中 AutoCAD 2018 DXF）。“工具 ▸ 选项…”会打开“另存为选项”的“DXF 选项”：
 
 - **格式**：ASCII（大多数程序都能读取），或者 BINARY。
 - **选择对象**：对话框关闭后，命令会要求选择对象，文件中只包含所选对象。
@@ -52,7 +52,8 @@ MellowCAD 拥有的每种对象都按 AutoCAD 的方式写入：直线、圆弧�
 - **未能打开的内容不会保存。** MellowCAD 尚无对应对象的内容（多线、形位公差以及[该列表中的其余内容](/docs/open-dxf#left-out)）会在打开文件时在命令行上计数，并且不在保存的文件中。请保留原始文件。
 - **三维实体和面域不会写入**：命令行会列出略去了多少个。
 - 阵列的参数不会写入：AutoCAD 会将阵列作为由其项目组成的块打开。标注的样式替代中 MellowCAD 没有对应设置的部分（如其颜色）也不会写入。
-- 目前没有缩略图预览，没有 AutoCAD R12/LT2 DXF 文件类型，也不支持 DWG。
+- **R12 没有其后出现的许多对象**，因此会像 AutoCAD 一样不加提示地进行转换：椭圆或样条曲线变为三维多段线；多行文字、图案填充、引线、多重引线、表格、面域或由平面构成的三维实体变为由其所绘内容组成的块；构造线或射线变为横贯图形的直线。图像和区域覆盖会被略去，图层、块和样式的名称以大写写入，最多 26 个字符。渐变色尚不写入 R12：命令行会将其列出。
+- 目前没有缩略图预览，也不支持 DWG。
 
 ## 从头创建 DXF [#new]
 
@@ -70,7 +71,7 @@ MellowCAD 拥有的每种对象都按 AutoCAD 的方式写入：直线、圆弧�
 
 ### 可以保存为哪些 DXF 版本？ [#versions]
 
-AutoCAD 2018、2013、2010、2007、2004 和 2000，ASCII 或二进制格式。暂不支持 R12，也不支持 DWG。
+AutoCAD 2018、2013、2010、2007、2004、2000 和 R12，ASCII 或二进制格式。不支持 DWG。
 
 ### AutoCAD 能打开保存的 DXF 吗？ [#autocad]
 

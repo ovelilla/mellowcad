@@ -1,0 +1,6 @@
+(foreach n '("abcdefghijklmnopqrstuvwxyz0123456789ABCDEF" "abcdefghijklmnopqrstuvwxyz0123456" "abcdefghijklmnopqrstuvwxyz012345" "abcdefghijklmnopqrstuvwxyz01234" "aaaa bbbb cccc dddd eeee ffff gggg hhhh" "aaaa bbbb cccc dddd eeee ffff gg" "x.y#z@w(v)" "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFxxx") (entmake (list '(0 . "LAYER") '(100 . "AcDbSymbolTableRecord") '(100 . "AcDbLayerTableRecord") (cons 2 n) '(70 . 0) '(62 . 3) '(6 . "Continuous"))))
+_DXFOUT
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\r12\x028-R12.dxf
+_V
+R12
+16

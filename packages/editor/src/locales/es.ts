@@ -174,6 +174,7 @@ export const es: EditorLocale = {
       "dxf2007": "DXF AutoCAD 2007/LT2007 (*.dxf)",
       "dxf2004": "DXF AutoCAD 2004/LT2004 (*.dxf)",
       "dxf2000": "DXF AutoCAD 2000/LT2000 (*.dxf)",
+      "dxfR12": "DXF AutoCAD R12/LT2 (*.dxf)",
       "optionsTitle": "Opciones de guardado",
       "dxfOptions": "Opciones DXF",
       "format": "Formato",

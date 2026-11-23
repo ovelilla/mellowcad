@@ -201,7 +201,7 @@
     "q4": "Opravdu funguje jako AutoCAD?",
     "a4": "To je zadání: příkazy, aliasy, pořadí výzev, písmena možností a výchozí hodnoty odpovídají aktuálnímu AutoCADu. Některé příkazy jsou zatím neúplné a plán vývoje přesně uvádí, které možnosti chybějí.",
     "q5": "Lze otevírat a\u00a0ukládat soubory DWG nebo DXF, nebo tisknout?",
-    "a5": "MellowCAD <dxf>otevírá soubory DXF</dxf> z AutoCADu R12 až 2018, textové i binární: úsečky, oblouky, kružnice, elipsy, křivky, spliny, text, kóty, odkazy, multiodkazy, tabulky, šrafy, body a bloky, na jejich hladinách. Objekty, které zatím nezná (rozvržení, 3D tělesa), vynechá a při otevření souboru vypíše. <edit>Ukládá i DXF</edit>, AutoCAD 2000 až 2018. Soubory DWG zatím neumí a tisk ani export do PDF zatím nemá.",
+    "a5": "MellowCAD <dxf>otevírá soubory DXF</dxf> z AutoCADu R12 až 2018, textové i binární: úsečky, oblouky, kružnice, elipsy, křivky, spliny, text, kóty, odkazy, multiodkazy, tabulky, šrafy, body a bloky, na jejich hladinách. Objekty, které zatím nezná (rozvržení, 3D tělesa), vynechá a při otevření souboru vypíše. <edit>Ukládá i DXF</edit>, AutoCAD R12 až 2018. Soubory DWG zatím neumí a tisk ani export do PDF zatím nemá.",
     "q6": "Kde se ukládají moje výkresy?",
     "a6": "Ve vašem zařízení. MellowCAD ukládá automaticky v prohlížeči a vaše výkresy nikdy nikam nenahrává. Vymazáním dat webu zmizí automaticky uložený výkres, proto si stiskem Ctrl+S uložte soubor.",
     "q7": "Je MellowCAD spojený se společností Autodesk?",

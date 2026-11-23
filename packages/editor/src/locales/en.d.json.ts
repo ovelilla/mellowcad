@@ -165,6 +165,7 @@ declare const source: {
     "dxf2007": string
     "dxf2004": string
     "dxf2000": string
+    "dxfR12": string
     "optionsTitle": string
     "dxfOptions": string
     "format": string

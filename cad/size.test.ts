@@ -30,9 +30,10 @@ const ISLAND_MAX_BYTES = 1 * KB
  * (2026-11-20), to 489 KB for MINSERT and its grid (2026-11-21), to 491 KB
  * for index colours, whose palette every drawing now reads, and a
  * dimension's style overrides (2026-11-22), to 496 KB for 3DMESH, the polygon
- * mesh and PEDIT's mesh prompts (2026-11-22).
+ * mesh and PEDIT's mesh prompts (2026-11-22), to 500 KB for R12's DXF writer,
+ * in the chunk Save Drawing As loads (2026-11-23).
  */
-const ENGINE_MAX_GZIP_BYTES = 496 * KB
+const ENGINE_MAX_GZIP_BYTES = 500 * KB
 
 /**
  * A language's catalog, gzipped, against English's, which the engine carries:

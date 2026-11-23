@@ -164,6 +164,7 @@
     "dxf2007": "AutoCAD 2007/LT2007 DXF (*.dxf)",
     "dxf2004": "DXF di AutoCAD 2004/LT2004 (*.dxf)",
     "dxf2000": "DXF di AutoCAD 2000/LT2000 (*.dxf)",
+    "dxfR12": "DXF di AutoCAD R12/LT2 (*.dxf)",
     "optionsTitle": "Opzioni salva con nome",
     "dxfOptions": "Opzioni DXF",
     "format": "Formato",

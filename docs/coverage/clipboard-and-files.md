@@ -353,8 +353,8 @@ as the ellipse's parameters
 ### `DXFOUT` and SAVEAS of a DXF · es `SALVADXF` · pt-BR `EXPDXF` · fr `SAUVEDXF` · it `DXFOUT` · de `DXFOUT` · ru `ЭКСПОРТА` · pl `DXFWY` · cs `PIŠDXF` · hu `DXFKI`
 
 **Implemented:** DXFOUT's Save Drawing As, SAVEAS's and SAVE's, on «AutoCAD 2018 DXF (*.dxf)»
-(desktop dxf/d01), and their DXF types: 2018, 2013, 2010, 2007, 2004 and 2000, each its
-`$ACADVER`; Tools ▸ Options…, Saveas Options' DXF Options tab: Format ASCII or BINARY, Select
+(desktop dxf/d01), and their DXF types: 2018, 2013, 2010, 2007, 2004, 2000 and «AutoCAD R12/LT2
+DXF (*.dxf)» last (4714 in each language's table), each its `$ACADVER`; Tools ▸ Options…, Saveas Options' DXF Options tab: Format ASCII or BINARY, Select
 objects, Decimal places of accuracy (0 to 16), kept for the session whatever type is saved
 (x015, x020); with Select objects the command asks `Select objects:` once the dialog closes and
 the file holds that set (d01: `Select objects: _L`, `1 found`, `Select objects:`); a precision under
@@ -457,6 +457,34 @@ it), as AutoCAD 2027 offers `plano-prueba.dwg` after opening plano-prueba.dxf an
 `plano-prueba.dxf` (desktop point/d01, dxf/d01): here `plano-prueba.ecad.json` for the drawing
 type; NEW's is dated again
 
+**R12** (AC1009, as AutoCAD 2027's DXFOUT R12 writes it: probes dxf/r12.sh, which saved each
+AutoCAD fixture as R12, x027, x028): no CLASSES or OBJECTS, no subclass markers, owners,
+lineweights, true colours (the nearest index alone), linetype scales or version groups; a binary
+file's codes in one byte; the header's R12 variables (`$EXTMIN`, `$EXTMAX`, `$HANDLING` 1, no
+`$CELTSCALE`, `$CELWEIGHT`, `$LWDISPLAY`, `$INSUNITS` or code page), its tables with R12's groups
+(no ByBlock or ByLayer LTYPE; a complex linetype its dashes and gaps alone, x027's GAS_LINE; a
+TrueType style's font `txt`; a dimension style's R12 variables, ISO-25's where the model has none);
+each name uppercase, every character but a letter, a digit, `$`, `-` and `_` an underscore, at most
+26 characters (the help says spaces and 32; x028 cut a 44-character name to 26), one another took
+first numbered per stem (`…XY0`, `…XY1`; a letter beyond the code page kept and written as its
+`\U+XXXX`, **unverified**); blocks without handles, one with attribute definitions
+flag 2, an anonymous one named by its kind and its place among the file's blocks (`*D2`, `*U8`);
+a polyline a POLYLINE, its widths the first vertex's and a vertex's own where they differ; a
+DIMENSION without 71, 42, 3 or bit 32; and what R12 has no object for converted in silence, as
+AutoCAD converts it: an ellipse a 3D polyline of 128 equal steps, an arc of one too (129
+vertices); a spline a 3D polyline of 32 points per control point at equal knot steps (not
+SPLINESEGS: x027); an XLINE or a RAY the line of it the drawing's extents hold, a direction it does
+not move along leaving that extent alone; an MTEXT, a leader, a multileader, a table, a region or a
+3D solid of flat faces an INSERT on layer 0 of a `*U` block of what EXPLODE makes of it, flat (an
+MTEXT's lines TEXTs, a leader's arrowhead a SOLID and its line a POLYLINE, a box its faces' 24
+edges), the pieces with the object's layer and properties (x027); a dimension's text an INSERT of
+a `*U` block of its TEXT, ByBlock; a hatch's pattern a `*X` block of its lines on layer 0, ByBlock,
+a solid fill a `*U` block of SOLIDs and its outline's lines, Continuous, the reference on the
+hatch's layer with its colour and Continuous; an image and a wipeout left out. The console opens
+each of the 36 files of the reference drawings and of every kind above, and of
+dxfSave.test.ts's, ASCII and binary, with no AUDIT error, and plots each as it plots its own R12
+of the same drawing (`audit.sh`, `plot.sh`)
+
 **Deviations:** a page reloaded offers a dated name again, WHY: the autosave keeps the drawing, not
 the file it came from; what a DXF of ours cannot hold is left out and counted at the command line by its
 DXF type (`1 object not saved: 1 3DSOLID.`), WHY words of our own: AutoCAD writes everything it
@@ -468,8 +496,14 @@ need their SAT, not written here: the line goes with them; an array's
 parameters are not written, so AutoCAD opens the array as a block of its items; Save thumbnail preview image shows greyed and off, WHY: no
 preview is written yet (AutoCAD greyed it too in the owner's profile, d01)
 
-**Missing:** «AutoCAD R12/LT2 DXF (*.dxf)» and the Version prompt's R12, which converts what R12
-lacks (`docs/next-dxf.md`); the thumbnail preview; named views; the visual style (the viewport's 281 and 348 and the
+**Missing:** in R12, a gradient's bands of SOLIDs (counted as not saved:
+`1 object not saved: 1 HATCH.`), a 3D solid with a curved face (counted, **unverified** what
+AutoCAD's R12 makes of one), the hatch's `HATCH` and `R14_HATCH_DATA` xdata and its boundaries'
+`ASC_BOUNDS`, with which AutoCAD reads its own R12 hatch back as one, an attribute's `AcDbAttr`
+xdata, the header's `$DIM*` variables, and an angular dimension's text, which AutoCAD's R12
+writes horizontal, a TEXT in its `*D` block (f002's *D4, fixture2's *D5); an XLINE or a RAY that
+misses the extents is a line of no length at its base point, where AutoCAD writes one of its own
+reckoning (r12.sh's xlines); the thumbnail preview; named views; the visual style (the viewport's 281 and 348 and the
 VISUALSTYLE objects) and the ViewCube's display (`ACAD_NAV_VCDISPLAY` xdata on the viewport), x023;
 DXFOUT's and SAVEAS's FILEDIA 0 prompts
 (`Enter decimal places of accuracy (0 to 16) or [Binary/select Objects/Preview/Version] <16>:`,

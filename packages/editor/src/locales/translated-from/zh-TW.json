@@ -135,6 +135,7 @@
   "SaveAs.dxf2007": "AutoCAD 2007/LT2007 DXF (*.dxf)",
   "SaveAs.dxf2004": "AutoCAD 2004/LT2004 DXF (*.dxf)",
   "SaveAs.dxf2000": "AutoCAD 2000/LT2000 DXF (*.dxf)",
+  "SaveAs.dxfR12": "AutoCAD R12/LT2 DXF (*.dxf)",
   "SaveAs.optionsTitle": "Saveas Options",
   "SaveAs.dxfOptions": "DXF Options",
   "SaveAs.format": "Format",

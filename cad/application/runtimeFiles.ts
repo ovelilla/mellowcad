@@ -312,6 +312,7 @@ const DXF_VERSIONS: Readonly<
   dxf2007: "2007",
   dxf2004: "2004",
   dxf2000: "2000",
+  dxfR12: "R12",
 }
 
 /** How `writeDxf` writes a DXF; each option left out is DXFOUT's default. */

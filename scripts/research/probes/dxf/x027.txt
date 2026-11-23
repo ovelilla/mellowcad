@@ -1,0 +1,76 @@
+_-LINETYPE
+_L
+GAS_LINE
+acadiso.lin
+
+(entmake '((0 . "LAYER") (100 . "AcDbSymbolTableRecord") (100 . "AcDbLayerTableRecord") (2 . "my walls layer with a very long name over 32") (70 . 0) (62 . 3) (6 . "GAS_LINE")))
+(entmake '((0 . "STYLE") (100 . "AcDbSymbolTableRecord") (100 . "AcDbTextStyleTableRecord") (2 . "My Notes") (70 . 0) (40 . 0.0) (41 . 1.0) (50 . 0.0) (71 . 0) (42 . 2.5) (3 . "simplex.shx") (4 . "")))
+(entmake '((0 . "LINE") (8 . "my walls layer with a very long name over 32") (10 0.0 0.0 0.0) (11 100.0 0.0 0.0)))
+(entmake '((0 . "LINE") (8 . "0") (6 . "GAS_LINE") (10 0.0 5.0 0.0) (11 100.0 5.0 0.0)))
+(entmake '((0 . "MTEXT") (100 . "AcDbEntity") (8 . "my walls layer with a very long name over 32") (62 . 1) (100 . "AcDbMText") (10 0.0 20.0 0.0) (40 . 2.5) (41 . 40.0) (71 . 1) (7 . "My Notes") (1 . "red mtext")))
+(entmake '((0 . "MTEXT") (100 . "AcDbEntity") (8 . "my walls layer with a very long name over 32") (100 . "AcDbMText") (10 0.0 30.0 0.0) (40 . 2.5) (41 . 40.0) (71 . 5) (1 . "bylayer centred")))
+(entmake '((0 . "ELLIPSE") (100 . "AcDbEntity") (8 . "my walls layer with a very long name over 32") (62 . 5) (100 . "AcDbEllipse") (10 80.0 30.0 0.0) (11 10.0 0.0 0.0) (40 . 0.3) (41 . 0.0) (42 . 6.283185307179586)))
+_SPLINESEGS
+4
+_SPLINE
+_M
+_CV
+0,50
+10,55
+20,50
+30,55
+40,50
+
+_RECTANG
+100,0
+120,20
+_-HATCH
+_S
+_L
+
+
+_CHPROP
+_L
+
+_C
+1
+_LA
+my walls layer with a very long name over 32
+
+_LEADER
+200,0
+210,10
+_A
+lead
+
+_CHPROP
+_L
+
+_C
+2
+
+_-BLOCK
+my block
+0,0
+(ssadd (entmakex '((0 . "CIRCLE") (8 . "0") (10 0.0 0.0 0.0) (40 . 1.0))))
+
+_-INSERT
+my block
+300,0
+1
+1
+0
+_UCS
+_NA
+_S
+my ucs name with spaces
+_UCS
+_W
+_DXFOUT
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\r12\x027-R12.dxf
+_V
+R12
+16
+_DXFOUT
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\r12\x027-2018.dxf
+16

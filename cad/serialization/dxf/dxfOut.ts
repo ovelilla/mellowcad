@@ -23,9 +23,30 @@ export class DxfOut {
     /** Up to 2004 the text is in the drawing's code page, ANSI_1252 (probe x014). */
     private readonly codePage: boolean,
     /** Whether this starts the file: a binary one opens with its sentinel. */
-    start = true
+    start = true,
+    /**
+     * An R12 file: a binary one's codes in one byte (255, then two, above
+     * 254); `objects` its objects, written by the later versions' writers,
+     * which drop the groups R13 brought ({@link R13_GROUPS}).
+     */
+    private readonly r12: false | "tables" | "objects" = false
   ) {
     if (binary && start) this.push(latin1Bytes(BINARY_SENTINEL))
+  }
+
+  /** An empty writer of this one's kind, for a part of the file written apart. */
+  sibling(): DxfOut {
+    return new DxfOut(
+      this.binary,
+      this.precision,
+      this.codePage,
+      false,
+      this.r12
+    )
+  }
+
+  private dropped(code: number): boolean {
+    return this.r12 === "objects" && R13_GROUPS.has(code)
   }
 
   /** Puts another writer's groups after these: the header, written last, goes first. */
@@ -37,6 +58,7 @@ export class DxfOut {
 
   /** A string group: names, text, handles. */
   str(code: number, value: string): void {
+    if (this.dropped(code)) return
     if (this.binary) {
       this.code(code)
       this.push(this.encode(value))
@@ -46,6 +68,7 @@ export class DxfOut {
 
   /** An integer group, written as wide as AutoCAD pads it in ASCII. */
   int(code: number, value: number): void {
+    if (this.dropped(code)) return
     const n = Math.trunc(value)
     const type = valueType(code)
     if (this.binary) {
@@ -97,6 +120,7 @@ export class DxfOut {
   }
 
   private double(code: number, value: number, places: number): void {
+    if (this.dropped(code)) return
     if (this.binary) {
       this.code(code)
       const bytes = new Uint8Array(8)
@@ -106,6 +130,13 @@ export class DxfOut {
   }
 
   private code(code: number): void {
+    if (this.r12) {
+      if (code < 255) {
+        this.push(new Uint8Array([code]))
+        return
+      }
+      this.push(new Uint8Array([255]))
+    }
     const bytes = new Uint8Array(2)
     new DataView(bytes.buffer).setInt16(0, code, true)
     this.push(bytes)
@@ -131,6 +162,17 @@ export class DxfOut {
       : new TextEncoder().encode(value)
   }
 }
+
+/**
+ * The groups an R12 file has none of, which came with R13's objects:
+ * subclass markers (100), reactors and owners (102, 330, 340, 350, 360),
+ * lineweight (370), plot style (390), true colour (420, 430, 440), an
+ * object's linetype scale (48) and the version flags (280, 290). AutoCAD's
+ * R12 writes an object's index colour alone (f002's fixture-R12).
+ */
+const R13_GROUPS: ReadonlySet<number> = new Set([
+  48, 100, 102, 280, 290, 330, 340, 350, 360, 370, 390, 420, 430, 440,
+])
 
 /**
  * A real as AutoCAD writes it at `places` decimal places (probe x015): no

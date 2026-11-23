@@ -241,6 +241,90 @@ describe("writeDxf", () => {
     }
   }
 
+  // R12 (probes dxf/r12.sh, x027, x028): AutoCAD 2027's console opened each
+  // file of the reference drawings and of every kind the DXF_OUT test writes
+  // as R12, ASCII and binary, with no AUDIT error, and plotted it as it
+  // plots its own R12 of the same drawing (but an angular dimension's text:
+  // docs/coverage/clipboard-and-files.md).
+  for (const name of ["fixture-2018", "fixture2-2018"]) {
+    const drawing = parseDxf(fixture(name)).drawing
+    for (const binary of [false, true]) {
+      it(`writes ${name} as R12${binary ? " binary" : ""}, as AutoCAD's R12 holds it`, () => {
+        const { bytes, report } = writeDxf(drawing, {
+          version: "R12",
+          binary,
+          precision: 16,
+        })
+        expect(report.leftOut.size).toBe(0)
+        const back = parseDxf(bytes).drawing
+        // What R12 has no object for is gone; the rest is there, as many.
+        const count = (entities: readonly Entity[], type: string) =>
+          entities.filter((e) => e.type === type).length
+        for (const type of [
+          "mtext",
+          "ellipse",
+          "spline",
+          "hatch",
+          "leader",
+          "xline",
+          "ray",
+        ]) {
+          expect(count(back.entities, type)).toBe(0)
+        }
+        for (const type of ["circle", "arc", "text", "dimension", "point"]) {
+          expect(count(back.entities, type)).toBe(count(drawing.entities, type))
+        }
+        expect(back.layers.map((l) => l.name)).toEqual(
+          drawing.layers.map((l) => l.name.toUpperCase())
+        )
+        if (binary) {
+          // One byte a code: 0, then SECTION, after the sentinel.
+          expect(bytes[22]).toBe(0)
+          expect(String.fromCharCode(...bytes.subarray(23, 30))).toBe("SECTION")
+        } else {
+          const text = new TextDecoder("latin1").decode(bytes)
+          expect(text).toContain("$ACADVER\r\n  1\r\nAC1009")
+          expect(text).not.toContain("CLASSES")
+          expect(text).not.toContain("OBJECTS")
+          expect(text).not.toContain("AcDb")
+        }
+      })
+    }
+  }
+
+  it("writes R12's tables under R12's names, a TrueType font as txt (x027, f002)", () => {
+    const base = snapshotOf([]).layers[0]
+    const drawing = snapshotOf(
+      [{ ...lineOf(p(0, 0), p(10, 0)), layerId: "walls" }],
+      { layers: [base, { ...base, id: "walls", name: "my walls layer" }] }
+    )
+    const text = new TextDecoder("latin1").decode(
+      writeDxf(drawing, { version: "R12", binary: false, precision: 16 }).bytes
+    )
+    expect(text).toContain("LAYER\r\n  2\r\nMY_WALLS_LAYER\r\n")
+    expect(text).toContain("LINE\r\n  5\r\n")
+    expect(text).toContain("  8\r\nMY_WALLS_LAYER\r\n")
+    expect(text).toContain("STYLE\r\n  2\r\nSTANDARD\r\n")
+    expect(text).toContain("  3\r\ntxt\r\n")
+  })
+
+  it("writes a true colour in R12 as its nearest index alone, the current one too", () => {
+    const drawing = snapshotOf(
+      [{ ...lineOf(p(0, 0), p(10, 0)), color: "#ff8000" }],
+      {
+        settings: {
+          ...snapshotOf([]).settings,
+          currentColor: "#ff8000",
+        },
+      }
+    )
+    const text = new TextDecoder("latin1").decode(
+      writeDxf(drawing, { version: "R12", binary: false, precision: 16 }).bytes
+    )
+    expect(text).toContain("$CECOLOR\r\n 62\r\n    30\r\n")
+    expect(text).not.toMatch(/\r\n420\r\n/)
+  })
+
   // gradient/g16's drawing: AutoCAD 2027's console opened each version,
   // ASCII and binary, with no AUDIT error, read 2004 on as its gradients
   // and plotted them as it plots its own file.
@@ -845,7 +929,7 @@ describe("writeDxf", () => {
                 : name === "named-ucs"
                   ? namedUcsDrawing()
                   : parseDxf(fixture(name)).drawing
-      for (const version of VERSIONS) {
+      for (const version of ["R12", ...VERSIONS] as const) {
         for (const binary of [false, true]) {
           const { bytes } = writeDxf(drawing, {
             version,

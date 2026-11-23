@@ -100,6 +100,7 @@ describe("the Save Drawing As dialog", () => {
       dxf2007: "AC1021",
       dxf2004: "AC1018",
       dxf2000: "AC1015",
+      dxfR12: "AC1009",
     } as const
     for (const [type, acadver] of Object.entries(versions)) {
       const { cad, files } = drawing()
@@ -237,6 +238,7 @@ describe("the Save Drawing As dialog", () => {
       "dxf2007",
       "dxf2004",
       "dxf2000",
+      "dxfR12",
     ] as const) {
       for (const binary of [false, true]) {
         typed(cad, "DXFOUT")
@@ -247,7 +249,12 @@ describe("the Save Drawing As dialog", () => {
         const saved = files.saved.at(-1)!
         if (dir) writeFileSync(join(dir, saved.fileName), saved.bytes!)
         const back = parseDxf(saved.bytes!).drawing
-        expect(back.entities.map((e) => e.type)).toEqual(types)
+        // R12 makes its MTEXT and its hatch references to blocks of them.
+        expect(back.entities.map((e) => e.type)).toEqual(
+          fileType === "dxfR12"
+            ? types.map((t) => (t === "mtext" || t === "hatch" ? "insert" : t))
+            : types
+        )
       }
     }
   })
@@ -330,7 +337,7 @@ describe("writeDxf, with no command", () => {
     const { cad } = drawing()
     const version = "2019" as DxfVersion
     await expect(cad.writeDxf({ version })).rejects.toThrow(
-      "No DXF version 2019: one of 2018, 2013, 2010, 2007, 2004, 2000."
+      "No DXF version 2019: one of 2018, 2013, 2010, 2007, 2004, 2000, R12."
     )
   })
 

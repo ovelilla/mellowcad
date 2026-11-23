@@ -174,6 +174,7 @@ export const ko: EditorLocale = {
       "dxf2007": "AutoCAD 2007/LT2007 DXF (*.dxf)",
       "dxf2004": "AutoCAD 2004/LT2004 DXF (*.dxf)",
       "dxf2000": "AutoCAD 2000/LT2000 DXF (*.dxf)",
+      "dxfR12": "AutoCAD R12/LT2 DXF (*.dxf)",
       "optionsTitle": "다른 이름으로 저장 옵션",
       "dxfOptions": "DXF 옵션",
       "format": "형식",

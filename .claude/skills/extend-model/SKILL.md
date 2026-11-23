@@ -51,7 +51,9 @@ Then the parts that are no switch at all:
   then `npm run locales`).
 - Its DXF entity in `dxfEntities` (`cad/serialization/dxf/dxfEntities.ts`), taken out of what a
   DXF opens without it (the `leftOut` count), tested against a file AutoCAD 2027 wrote
-  (`cad/serialization/dxf/fixtures/`, the probes of `scripts/research/probes/dxf/`).
+  (`cad/serialization/dxf/fixtures/`, the probes of `scripts/research/probes/dxf/`); written in
+  `writeEntity`, and in R12, which knows none of R13's objects, as AutoCAD's R12 writes it
+  (`r12Conversion`, probe `r12.sh`): as it is, replaced, in a `*U` block or left out.
 
 ## A dimension kind
 

@@ -142,10 +142,12 @@ opens a drawing and an ASCII DXF in UTF-8. A file your page already holds — dr
 handed over by another page — opens with `openFile({ name, bytes })`, as OPEN opens the one it
 picks.
 
-SAVEAS's DXF types and DXFOUT write a DXF of AutoCAD 2000 to 2018, ASCII or binary, with DXF
-Options' decimal places and Select objects; the writer loads only when the dialog opens. Up to 2004
-the file is in its code page and a binary one is bytes, so `save` takes a `Uint8Array` as well as
-text.
+SAVEAS's DXF types and DXFOUT write a DXF of AutoCAD R12 or 2000 to 2018, ASCII or binary, with
+DXF Options' decimal places and Select objects; the writer loads only when the dialog opens. Up to
+2004 the file is in its code page and a binary one is bytes, so `save` takes a `Uint8Array` as well
+as text. R12 converts in silence what it has no object for, as AutoCAD does: an ellipse or a spline
+becomes a 3D polyline, an MTEXT, a hatch, a leader or a table a block of what it draws, and an image
+or a wipeout is left out; names are uppercase and at most 26 characters.
 
 For a DXF of your own, with no dialog, `writeDxf()` returns the file's bytes and what it could not
 hold, counted by DXF type. It is no command: nothing on the command line, no undo step, the

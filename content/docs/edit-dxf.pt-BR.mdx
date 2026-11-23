@@ -1,16 +1,16 @@
 ---
 title: Editar arquivo DXF online
 metaTitle: "Editor DXF online grátis: editar e salvar DXF"
-description: "Edite um arquivo DXF grátis no navegador com os comandos do AutoCAD e salve-o de novo como DXF, do AutoCAD 2000 ao 2018. Sem instalar nem enviar nada."
+description: "Edite um arquivo DXF grátis no navegador com os comandos do AutoCAD e salve-o de novo como DXF, do AutoCAD R12 ao 2018. Sem instalar nem enviar nada."
 type: howTo
-sourceHash: "c3abbdd860ac"
+sourceHash: "6bf191fbec69"
 faq:
   - question: "Como editar um arquivo DXF online?"
     answer: "Escolha-o ou solte-o no alto desta página: ele abre no editor do MellowCAD, no seu navegador. Altere-o com os comandos do AutoCAD e depois SALVARCOMO (Ctrl+Shift+S) ou EXPDXF o salva de novo como arquivo DXF."
   - question: "É grátis? Preciso de uma conta?"
     answer: "É grátis, sem conta e sem nada para instalar. O arquivo é lido no seu computador e nunca é enviado."
   - question: "Em quais versões de DXF posso salvar?"
-    answer: "AutoCAD 2018, 2013, 2010, 2007, 2004 e 2000, de texto (ASCII) ou binário. Ainda não R12, nem DWG."
+    answer: "AutoCAD 2018, 2013, 2010, 2007, 2004, 2000 e R12, de texto (ASCII) ou binário. Não em DWG."
   - question: "O AutoCAD abre o DXF que eu salvar?"
     answer: "Sim. Cada tipo de objeto que o MellowCAD escreve, em cada versão, de texto e binário, foi aberto pelo AutoCAD 2027 sem que o AUDIT dele encontrasse um erro."
   - question: "Algo se perde ao salvar?"
@@ -35,7 +35,7 @@ Escolha ou solte um DXF no alto e ele abre no editor, ou abra-o lá com <Command
 
 ## Salve como DXF [#save]
 
-<Command id="SAVEAS" /> (`Ctrl+Shift+S`), <Command id="SAVE" /> e <Command id="DXFOUT" /> abrem Salvar desenho como, como no AutoCAD: um nome de arquivo e um tipo entre DXF do AutoCAD 2018, 2013, 2010, 2007, 2004 e 2000 (<Command id="DXFOUT" /> abre em AutoCAD 2018 DXF). Ferramentas ▸ Opções… abre as Opções DXF de Opções de 'Salvar como':
+<Command id="SAVEAS" /> (`Ctrl+Shift+S`), <Command id="SAVE" /> e <Command id="DXFOUT" /> abrem Salvar desenho como, como no AutoCAD: um nome de arquivo e um tipo entre DXF do AutoCAD 2018, 2013, 2010, 2007, 2004, 2000 e R12/LT2 (<Command id="DXFOUT" /> abre em AutoCAD 2018 DXF). Ferramentas ▸ Opções… abre as Opções DXF de Opções de 'Salvar como':
 
 - **Formato**: ASCII, o texto que quase todo programa lê, ou BINÁRIO.
 - **Selecionar objetos**: quando a caixa fecha, o comando pede para selecionar objetos, e o arquivo guarda só esses.
@@ -52,7 +52,8 @@ Cada objeto que o MellowCAD tem, escrito como o AutoCAD o escreve: linhas, arcos
 - **O que não abriu não é salvo.** O que o MellowCAD ainda não tem — multilinhas, tolerâncias e [o resto dessa lista](/docs/open-dxf#left-out) — é contado na linha de comando ao abrir o arquivo, e não está no arquivo que você salva. Guarde o original.
 - **Os sólidos 3D e as regiões não são escritos**: a linha de comando diz quantos ficaram de fora.
 - Os parâmetros de uma matriz não são escritos: o AutoCAD abre a matriz como um bloco dos seus itens. Nem o que uma cota substitui do seu estilo sem que o MellowCAD tenha uma configuração para isso, como as suas cores.
-- Não há imagem de visualização prévia, nem ainda o tipo AutoCAD R12/LT2 DXF, nem DWG.
+- **O R12 não tem objeto para muito do que veio depois dele**, então o converte sem aviso, como faz o AutoCAD: uma elipse ou uma spline vira uma polilinha 3D; um texto de várias linhas, uma hachura, uma linha de chamada, uma linha de chamada múltipla, uma tabela, uma região ou um sólido 3D de faces planas, um bloco do que desenha; uma linha de construção ou um raio, uma linha que atravessa o desenho. As imagens e as coberturas ficam de fora, e os nomes de camadas, blocos e estilos são escritos em maiúsculas, com 26 caracteres no máximo. Os gradientes ainda não são escritos no R12: a linha de comando os lista.
+- Não há imagem de visualização prévia, nem DWG.
 
 ## Comece um DXF do zero [#new]
 
@@ -70,7 +71,7 @@ Escolha-o ou solte-o no alto desta página: ele abre no editor do MellowCAD, no 
 
 ### Em quais versões de DXF posso salvar? [#versions]
 
-AutoCAD 2018, 2013, 2010, 2007, 2004 e 2000, de texto (ASCII) ou binário. Ainda não R12, nem DWG.
+AutoCAD 2018, 2013, 2010, 2007, 2004, 2000 e R12, de texto (ASCII) ou binário. Não em DWG.
 
 ### O AutoCAD abre o DXF que eu salvar? [#autocad]
 

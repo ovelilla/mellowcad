@@ -31,9 +31,10 @@
 > hecha el 22/11, que lleva las muestras sin nada fuera a 154 de 154 y cierra el punto 7 (sin
 > publicar); y la primera pieza de la fase 5, el informe de lo que se pierde al guardar, hecha el
 > 22/11 (sin publicar): AutoCAD no informa de nada, así que no hay informe nuevo, y lo que
-> perdíamos en silencio y AutoCAD guarda, los SCP con nombre, se escribe y se lee; siguiente, por
-> orden del dueño, la fase 5 (R12, las vistas preliminares, ACIS, en ese orden) u otro idioma, una
-> sesión cada vez.
+> perdíamos en silencio y AutoCAD guarda, los SCP con nombre, se escribe y se lee; y la segunda,
+> R12 (el tipo «AutoCAD R12/LT2 DXF» y la versión R12), hecha el 23/11 (sin publicar); siguiente,
+> por orden del dueño, lo que queda de la fase 5 (lo que R12 aún no escribe, las vistas
+> preliminares, ACIS, en ese orden) u otro idioma, una sesión cada vez.
 > Se borra cuando la fase 5 esté hecha; hasta entonces cada fase cerrada se marca aquí.
 
 ## 1. Objetivo
@@ -534,13 +535,22 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
       precisión, como el de AutoCAD (`x024`). Quedan anotados en la entrada de DXFOUT: las vistas
       con nombre, el estilo visual (281 y 348 del VPORT y los objetos VISUALSTYLE) y el ViewCube
       (`ACAD_NAV_VCDISPLAY`).
-   2. **R12** (el tipo «AutoCAD R12/LT2 DXF» y la versión R12 de DXFOUT): lo que más se ve, pues
-      es el último tipo de la lista de AutoCAD, y se hace con lo que ya hay. AutoCAD convierte en
-      silencio lo que R12 no tiene en un INSERT de un bloque anónimo `*U` de lo que dibuja (`x022`:
-      la caja, 24 LINE; la región, un CIRCLE; el MTEXT, un TEXT), y la ayuda («About Saving
-      Drawings to Previous Drawing File Formats») lista el resto: polilíneas ligeras y sombreados
-      a los de R12, nombres con espacios a guiones bajos y de 32 caracteres, tipos de línea
-      complejos y grupos que no se ven.
+   2. **R12** (el tipo «AutoCAD R12/LT2 DXF» y la versión R12 de DXFOUT). **Hecho** (23/11/2026,
+      sin publicar): `writeDxfR12.ts` y `dxfR12.ts`, cada conversión como la de AutoCAD 2027
+      (sonda `r12.sh`, que guardó como R12 cada fichero de referencia de AutoCAD, y `x027`,
+      `x028`): la consola abre sin un error de AUDIT los 36 ficheros (18 dibujos, ASCII y binario)
+      y los traza como su propio R12 del mismo dibujo. Lo hallado contra la ayuda: los nombres se
+      cortan a 26 caracteres, no a 32, y no solo el espacio pasa a guion bajo, sino todo lo que no
+      es letra, dígito, `$`, `-` o `_`. Lo que hace y lo que falta, en la entrada de DXFOUT de
+      `docs/coverage/clipboard-and-files.md`. Queda, ordenado por lo que más se ve:
+      1. **Los degradados**: AutoCAD los escribe en R12 como bandas de SOLID de colores índice
+         (r12.sh's gradients: de 38 a 285 por degradado); hoy se cuentan como no guardados.
+      2. **El texto de una cota angular**: AutoCAD lo regenera horizontal, un TEXT dentro de su
+         `*D` (f002, fixture2); el nuestro va girado, en un `*U`.
+      3. **El xdata de los sombreados** (`HATCH`, `R14_HATCH_DATA`, `ASC_BOUNDS`), con el que
+         AutoCAD lee su propio R12 de vuelta como sombreados, y el `AcDbAttr` de los atributos.
+      4. **Un sólido de caras curvas** (sin sonda: se cuenta como no guardado) y las variables
+         `$DIM*` de la cabecera.
    3. **Las vistas preliminares** (_Save thumbnail preview image_, la sección THUMBNAILIMAGE):
       pequeña, pero de poco uso: la consola tiene `Preview= No` por defecto y el escritorio la
       mostraba gris en el perfil del dueño (`d01`).

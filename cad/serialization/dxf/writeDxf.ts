@@ -15,6 +15,7 @@ import {
   MLeaderStyleData,
   XrefSource,
   createInsert,
+  createMText,
   entitiesBounds,
   tableExploded,
   tableGeometry,
@@ -50,12 +51,15 @@ import {
   layerLineweight,
   writeEntity,
 } from "./dxfWriteEntities"
+import { SAME_NAMES, r12Naming, writeDxfR12 } from "./writeDxfR12"
 
 /** The AutoCAD releases a DXF is written for, as SAVEAS and DXFOUT name them (probe x003). */
-export type DxfVersion = "2000" | "2004" | "2007" | "2010" | "2013" | "2018"
+export type DxfVersion =
+  "R12" | "2000" | "2004" | "2007" | "2010" | "2013" | "2018"
 
 /** Each version's $ACADVER. */
 const ACADVER: Readonly<Record<DxfVersion, string>> = {
+  R12: "AC1009",
   "2000": "AC1015",
   "2004": "AC1018",
   "2007": "AC1021",
@@ -92,7 +96,7 @@ const INSUNITS: Readonly<Record<LengthUnit, number>> = {
 }
 
 /** A block the file holds: the drawing's, an array's items, a dimension's geometry. */
-interface WrittenBlock {
+export interface WrittenBlock {
   readonly name: string
   readonly record: string
   readonly basePoint: Vec2
@@ -104,10 +108,11 @@ interface WrittenBlock {
 }
 
 /**
- * Writes a drawing as a DXF of 2000 to 2018, ASCII or binary, as AutoCAD
+ * Writes a drawing as a DXF of R12 or 2000 to 2018, ASCII or binary, as AutoCAD
  * 2027's SAVEAS and DXFOUT write one (probes dxf/x001–x021): what the model
  * holds, in the tables, blocks and objects AutoCAD reads it back from, and
- * a report of the objects a DXF of ours cannot hold (ACIS).
+ * a report of the objects a DXF of ours cannot hold (ACIS). R12 is planned
+ * here and written by `writeDxfR12`.
  */
 export function writeDxf(
   drawing: DrawingSnapshot,
@@ -116,7 +121,14 @@ export function writeDxf(
   const version = Number.parseInt(ACADVER[options.version].slice(2), 10)
   const precision = Math.min(16, Math.max(0, Math.round(options.precision)))
   const codePage = version < 1021
-  const body = new DxfOut(options.binary, precision, codePage, false)
+  const r12 = version < 1015
+  const body = new DxfOut(
+    options.binary,
+    precision,
+    codePage,
+    false,
+    r12 && "objects"
+  )
   let nextHandle = 0x20
   const handle = () => (nextHandle++).toString(16).toUpperCase()
   const leftOut = new Map<string, number>()
@@ -160,6 +172,9 @@ export function writeDxf(
 
   // Every block the file holds, named before the tables list them.
   const written: WrittenBlock[] = []
+  // The names the file gives: R12's its own, read once every block is
+  // planned (`r12Naming`); a later version's the drawing's.
+  const names = r12 ? r12Naming(drawing, written) : SAME_NAMES
   const takenNames = drawing.blocks.map((b) => ({ name: b.name }))
   const dimensionBlocks = new Map<DimensionEntity, string>()
   const arrayBlocks = new Map<InsertEntity, string>()
@@ -339,14 +354,20 @@ export function writeDxf(
       const target = annotationOf.get(key(space, leader.id))
       return target ? pairedHandle(target) : null
     },
-    layerName: (id) => layers.get(id)?.name ?? "0",
-    textStyleName: (id) => textStyles.get(id)?.name ?? "Standard",
-    dimStyleName: (id) => dimStyles.get(id)?.name ?? "ISO-25",
+    layerName: (id) => names.layer(layers.get(id)?.name ?? "0"),
+    linetypeName: (name) => names.linetype(name),
+    textStyleName: (id) =>
+      names.textStyle(textStyles.get(id)?.name ?? "Standard"),
+    dimStyleName: (id) => names.dimStyle(dimStyles.get(id)?.name ?? "ISO-25"),
     dimStyle: styleOf,
-    blockName: (id) => blocksById.get(id)?.name ?? id,
+    blockName: (id) => names.block(blocksById.get(id)?.name ?? id),
     block: (id) => blocksById.get(id),
-    dimensionBlock: (dimension) => dimensionBlocks.get(dimension) ?? "",
-    arrayBlock: (insert) => arrayBlocks.get(insert) ?? null,
+    dimensionBlock: (dimension) =>
+      names.block(dimensionBlocks.get(dimension) ?? ""),
+    arrayBlock: (insert) => {
+      const name = arrayBlocks.get(insert)
+      return name === undefined ? null : names.block(name)
+    },
     leftOut: (type) => leftOut.set(type, (leftOut.get(type) ?? 0) + 1),
     tableBlock: (table) => tableBlocks.get(table) ?? { name: "", record: "0" },
     tableStyle: (table, own) => {
@@ -423,6 +444,20 @@ export function writeDxf(
   }
   for (const block of drawing.blocks) plan(block.entities)
   plan(modelEntities)
+  if (r12) {
+    const file = writeDxfR12({
+      drawing,
+      binary: options.binary,
+      precision,
+      ctx,
+      written,
+      modelEntities,
+      lookup,
+      names,
+      handle,
+    })
+    return { bytes: file, report: { leftOut } }
+  }
 
   const linetypes = drawing.linetypes.filter(
     (l) => !sameLinetypeName(l.name, DEFAULT_LINETYPE_ID)
@@ -1404,6 +1439,22 @@ function dimensionBlock(
         begin("SOLID", "AcDbTrace")
         corners.forEach((p, i) => out.point(10 + i, p.x, p.y, z))
         normal()
+      }
+      if (ctx.converted) {
+        // R12 has no MTEXT: the text a reference to a `*U` block of its
+        // TEXT, ByBlock (f002's *D2 and *U9).
+        const text: Entity = {
+          ...createMText(g.textPoint, g.text, {
+            height: g.textHeight,
+            rotation: g.textAngle,
+            attachment: "mc",
+          }),
+          color: "ByBlock",
+          ...(z !== 0 ? { elevation: z } : {}),
+          ...(a && dimension.normal ? { normal: dimension.normal } : {}),
+        }
+        ctx.converted(ctx, text, owner)
+        return
       }
       const at = world(g.textPoint)
       const along = { x: Math.cos(g.textAngle), y: Math.sin(g.textAngle) }

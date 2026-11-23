@@ -1,16 +1,16 @@
 ---
 title: DXF editor online
 metaTitle: "DXF editor online zdarma: úprava a uložení DXF"
-description: "Upravte soubor DXF zdarma v prohlížeči příkazy AutoCADu a uložte ho znovu jako DXF, AutoCAD 2000 až 2018. Bez instalace, nic se nenahrává."
+description: "Upravte soubor DXF zdarma v prohlížeči příkazy AutoCADu a uložte ho znovu jako DXF, AutoCAD R12 až 2018. Bez instalace, nic se nenahrává."
 type: howTo
-sourceHash: "c3abbdd860ac"
+sourceHash: "6bf191fbec69"
 faq:
   - question: "Jak upravit soubor DXF online?"
     answer: "Vyberte ho nebo ho přetáhněte do horní části této stránky: otevře se v editoru MellowCAD, v prohlížeči. Upravte ho příkazy AutoCADu a pak ho příkaz ULOŽJAKO (Ctrl+Shift+S) nebo PIŠDXF znovu uloží jako soubor DXF."
   - question: "Je to zdarma? Potřebuji účet?"
     answer: "Je to zdarma, bez účtu a bez instalace. Soubor se čte ve vašem počítači a nikdy se nenahrává."
   - question: "Do kterých verzí DXF mohu ukládat?"
-    answer: "AutoCAD 2018, 2013, 2010, 2007, 2004 a 2000, textově (ASCII) nebo binárně. R12 zatím ne a DWG také ne."
+    answer: "AutoCAD 2018, 2013, 2010, 2007, 2004, 2000 a R12, textově (ASCII) nebo binárně. DWG ne."
   - question: "Otevře AutoCAD DXF, který uložím?"
     answer: "Ano. Každý druh objektu, který MellowCAD zapisuje, v každé verzi, textově i binárně, otevřel AutoCAD 2027 a jeho příkaz DIAG (AUDIT) nenašel žádnou chybu."
   - question: "Ztratí se něco při uložení?"
@@ -35,7 +35,7 @@ Vyberte nebo přetáhněte DXF výše a otevře se v editoru, nebo ho tam otevř
 
 ## Uložte ho jako DXF [#save]
 
-Příkazy <Command id="SAVEAS" /> (`Ctrl+Shift+S`), <Command id="SAVE" /> a <Command id="DXFOUT" /> otevřou okno „Uložit výkres jako“, jako v AutoCADu: název souboru a typ souboru mezi DXF AutoCAD 2018, 2013, 2010, 2007, 2004 a 2000 (<Command id="DXFOUT" /> ho otevře s typem DXF AutoCAD 2018). „Nástroje ▸ Možnosti…“ otevře kartu „Možnosti DXF“ okna „Možnosti Ulož jako“:
+Příkazy <Command id="SAVEAS" /> (`Ctrl+Shift+S`), <Command id="SAVE" /> a <Command id="DXFOUT" /> otevřou okno „Uložit výkres jako“, jako v AutoCADu: název souboru a typ souboru mezi DXF AutoCAD 2018, 2013, 2010, 2007, 2004, 2000 a R12/LT2 (<Command id="DXFOUT" /> ho otevře s typem DXF AutoCAD 2018). „Nástroje ▸ Možnosti…“ otevře kartu „Možnosti DXF“ okna „Možnosti Ulož jako“:
 
 - **Formát**: ASCII, text, který čte většina programů, nebo BINÁRNĚ.
 - **Vybrat objekty**: po zavření okna vás příkaz vyzve k výběru objektů a soubor obsahuje jen ty.
@@ -52,7 +52,8 @@ Každý objekt, který MellowCAD má, zapsaný tak, jak ho zapisuje AutoCAD: ús
 - **Co se neotevřelo, se neuloží.** Pro co MellowCAD zatím nemá objekt – multičáry, tolerance a [zbytek toho seznamu](/docs/open-dxf#left-out) –, se při otevírání souboru spočítá v příkazovém řádku a v ukládaném souboru není. Originál si ponechte.
 - **3D tělesa a oblasti se nezapisují**: příkazový řádek vypíše, kolik jich vynechal.
 - Parametry pole se nezapisují: AutoCAD otevře pole jako blok jeho prvků. Nezapisuje se ani to, co kóta potlačuje ve svém stylu a pro co MellowCAD nemá nastavení, například její barvy.
-- Není tu náhled miniatury, zatím žádný typ DXF AutoCAD R12/LT2 a žádný DWG.
+- **R12 nemá objekt pro mnohé z toho, co přišlo po něm**, a tak to tiše převede, jako to dělá AutoCAD: elipsa nebo spline se stane 3D křivkou; víceřádkový text, šrafy, odkaz, multiodkaz, tabulka, oblast nebo 3D těleso s rovinnými plochami blokem toho, co kreslí; přímka nebo polopřímka úsečkou přes celý výkres. Obrázky a zakrytí se vynechají a názvy hladin, bloků a stylů se zapíšou velkými písmeny, nejvýše 26 znaků. Gradienty se do R12 zatím nezapisují: příkazový řádek je vypíše.
+- Není tu náhled miniatury a žádný DWG.
 
 ## Vytvořte DXF od nuly [#new]
 
@@ -70,7 +71,7 @@ Je to zdarma, bez účtu a bez instalace. Soubor se čte ve vašem počítači a
 
 ### Do kterých verzí DXF mohu ukládat? [#versions]
 
-AutoCAD 2018, 2013, 2010, 2007, 2004 a 2000, textově (ASCII) nebo binárně. R12 zatím ne a DWG také ne.
+AutoCAD 2018, 2013, 2010, 2007, 2004, 2000 a R12, textově (ASCII) nebo binárně. DWG ne.
 
 ### Otevře AutoCAD DXF, který uložím? [#autocad]
 

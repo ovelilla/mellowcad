@@ -67,7 +67,10 @@ const DEG = 180 / Math.PI
 /** What writing an object needs from the rest of the file. */
 export interface DxfWriteContext {
   readonly out: DxfOut
-  /** AC1015 (2000) to AC1032 (2018), as a number: groups added in a release are written from it. */
+  /**
+   * AC1009 (R12) or AC1015 (2000) to AC1032 (2018), as a number: groups
+   * added in a release are written from it.
+   */
   readonly version: number
   handle(): string
   /**
@@ -80,6 +83,8 @@ export interface DxfWriteContext {
   /** A leader's annotation written with it: its handle, or none. */
   annotation(leader: LeaderEntity): string | null
   layerName(id: string): string
+  /** A linetype, by name, as the file names it (R12's are its own: `r12Names`). */
+  linetypeName(name: string): string
   textStyleName(id: string): string
   dimStyleName(id: string): string
   dimStyle(id: string): DimStyle
@@ -108,6 +113,11 @@ export interface DxfWriteContext {
   imageDefinition(image: ImageEntity): string
   /** A new IMAGEDEF_REACTOR for the image written with handle `own`. */
   imageReactor(image: ImageEntity, own: string): string
+  /**
+   * R12's writing of an object it has no type for (`writeDxfR12`): whether
+   * it took the object, which is then not written here.
+   */
+  converted?(ctx: DxfWriteContext, entity: Entity, owner: string): boolean
 }
 
 /** The groups every object opens with, the owner its block's record. */
@@ -131,7 +141,8 @@ function head(
   out.str(330, owner)
   out.str(100, "AcDbEntity")
   out.str(8, ctx.layerName(entity.layerId))
-  if (entity.linetype !== undefined) out.str(6, entity.linetype)
+  if (entity.linetype !== undefined)
+    out.str(6, ctx.linetypeName(entity.linetype))
   color(out, entity.color)
   if (entity.lineweight !== undefined)
     out.int(370, Math.round(entity.lineweight * 100))
@@ -184,6 +195,7 @@ export function writeEntity(
   entity: Entity,
   owner: string
 ): void {
+  if (ctx.converted?.(ctx, entity, owner)) return
   switch (entity.type) {
     case "line":
       return line(ctx, entity, owner)
@@ -213,7 +225,9 @@ export function writeEntity(
     case "polyline":
       return entity.fit
         ? polyline2d(ctx, entity, owner)
-        : lightPolyline(ctx, entity, owner)
+        : ctx.version < 1015
+          ? heavyPolyline(ctx, entity, owner)
+          : lightPolyline(ctx, entity, owner)
     case "polyline3d":
       return polyline3d(ctx, entity, owner)
     case "polygonMesh":
@@ -772,6 +786,40 @@ function lightPolyline(
   writeNormal(ctx, e)
 }
 
+/**
+ * A polyline in R12, which has no LWPOLYLINE, as AutoCAD writes one there
+ * (f002's fixture-R12): a POLYLINE whose 40 and 41 are the first vertex's
+ * widths, a VERTEX's own only where they differ from them, and its bulge.
+ */
+function heavyPolyline(
+  ctx: DxfWriteContext,
+  e: PolylineEntity,
+  owner: string
+): void {
+  const { out } = ctx
+  const own = ctx.entityHandle(e)
+  const z = e.elevation ?? 0
+  const [start, end] = e.widths?.[0] ?? [0, 0]
+  head(ctx, "POLYLINE", e, owner, own)
+  out.int(66, 1)
+  out.point(10, 0, 0, z)
+  thickness(ctx, e)
+  out.int(70, polylineFlags(e))
+  if (start !== 0) out.real(40, start)
+  if (end !== 0) out.real(41, end)
+  writeNormal(ctx, e)
+  e.vertices.forEach((v, i) => {
+    head(ctx, "VERTEX", e, own)
+    out.point(10, v.x, v.y, z)
+    const [s, w] = e.widths?.[i] ?? [0, 0]
+    if (s !== start) out.real(40, s)
+    if (w !== end) out.real(41, w)
+    const bulge = e.bulges?.[i] ?? 0
+    if (bulge !== 0) out.real(42, bulge)
+  })
+  seqend(ctx, e, own)
+}
+
 /** The one width every segment has, or `null` when they differ; 0 for none. */
 function constantWidth(widths: PolylineEntity["widths"]): number | null {
   if (!widths || widths.length === 0) return 0
@@ -1313,12 +1361,17 @@ function dimension(
   }
   wcs(10, geometry.definition)
   out.point(11, geometry.text.x, geometry.text.y, z)
-  out.int(70, geometry.type | 32 | (e.textPoint ? 128 : 0))
-  out.int(71, 5)
-  out.real(42, dimensionMeasurement(e))
+  // R12's has no attachment (71), measurement (42) or style name (3), nor
+  // the bit of a block of its own (32): AutoCAD's R12 (f002, x027).
+  const r12 = ctx.version < 1015
+  out.int(70, geometry.type | (r12 ? 0 : 32) | (e.textPoint ? 128 : 0))
+  if (!r12) {
+    out.int(71, 5)
+    out.real(42, dimensionMeasurement(e))
+  }
   if (e.text !== undefined) out.str(1, e.text)
   if (e.textAngle !== undefined) out.real(53, e.textAngle * DEG)
-  out.str(3, ctx.dimStyleName(e.styleId))
+  if (!r12) out.str(3, ctx.dimStyleName(e.styleId))
   writeNormal(ctx, e)
   switch (e.kind) {
     case "linear":

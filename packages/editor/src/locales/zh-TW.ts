@@ -174,6 +174,7 @@ export const zhTW: EditorLocale = {
       "dxf2007": "AutoCAD 2007/LT2007 DXF (*.dxf)",
       "dxf2004": "AutoCAD 2004/LT2004 DXF (*.dxf)",
       "dxf2000": "AutoCAD 2000/LT2000 DXF (*.dxf)",
+      "dxfR12": "AutoCAD R12/LT2 DXF (*.dxf)",
       "optionsTitle": "另存選項",
       "dxfOptions": "DXF 選項",
       "format": "格式",

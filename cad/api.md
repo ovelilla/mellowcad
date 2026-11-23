@@ -1308,8 +1308,7 @@ export { SAVE_FILE_TYPES }
 /**
  * The Save Drawing As dialog's Files of type, in AutoCAD's order (desktop
  * dxf/d01): this engine's drawing where AutoCAD lists its DWG versions, then
- * the DXF versions it writes. WHY no R12: its DXF converts what R12 lacks,
- * which is not written yet (`docs/coverage/`).
+ * the DXF versions it writes, R12 last.
  */
 export declare const SAVE_FILE_TYPES: readonly [
     "drawing",
@@ -1318,7 +1317,8 @@ export declare const SAVE_FILE_TYPES: readonly [
     "dxf2010",
     "dxf2007",
     "dxf2004",
-    "dxf2000"
+    "dxf2000",
+    "dxfR12"
 ];
 
 export type { SaveAsChoice }
@@ -1674,7 +1674,7 @@ export interface DrawingSummary {
 
 export type { DxfVersion }
 /** The AutoCAD releases a DXF is written for, as SAVEAS and DXFOUT name them (probe x003). */
-export type DxfVersion = "2000" | "2004" | "2007" | "2010" | "2013" | "2018";
+export type DxfVersion = "R12" | "2000" | "2004" | "2007" | "2010" | "2013" | "2018";
 
 export type { DxfWriteOptions }
 /** How `writeDxf` writes a DXF; each option left out is DXFOUT's default. */

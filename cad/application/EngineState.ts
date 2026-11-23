@@ -131,8 +131,7 @@ export type StylesPanelTab = "dimension" | "text"
 /**
  * The Save Drawing As dialog's Files of type, in AutoCAD's order (desktop
  * dxf/d01): this engine's drawing where AutoCAD lists its DWG versions, then
- * the DXF versions it writes. WHY no R12: its DXF converts what R12 lacks,
- * which is not written yet (`docs/coverage/`).
+ * the DXF versions it writes, R12 last.
  */
 export const SAVE_FILE_TYPES = [
   "drawing",
@@ -142,6 +141,7 @@ export const SAVE_FILE_TYPES = [
   "dxf2007",
   "dxf2004",
   "dxf2000",
+  "dxfR12",
 ] as const
 
 export type SaveFileType = (typeof SAVE_FILE_TYPES)[number]
