@@ -100,14 +100,16 @@ export type R12Conversion =
    * A reference to an anonymous block of what it draws: `*X` for a
    * pattern's lines, `*U` for the rest. A hatch's reference carries its
    * layer and properties, a pattern's lines ByBlock, a fill's pieces the
-   * hatch's (x030); any other's is plain on layer 0 and its pieces keep the
-   * object's (x027).
+   * hatch's (x030), and the xdata that says what `hatch` is
+   * (`writeR12HatchXdata`); any other's is plain on layer 0 and its pieces
+   * keep the object's (x027).
    */
   | {
       readonly kind: "block"
       readonly prefix: "*U" | "*X"
       readonly pieces: readonly Entity[]
       readonly dressed?: Entity
+      readonly hatch?: HatchEntity
     }
 
 /** What a conversion reads from the drawing. */
@@ -399,7 +401,7 @@ const R12_ANGULAR_LINE_STEP = 1.3
  * layer 0, ByBlock; a solid fill a `*U` block of SOLIDs and its outline's
  * lines, a gradient one of SOLIDs alone, on the hatch's layer with its
  * colour and Continuous; the reference on its layer with its colour and
- * Continuous.
+ * Continuous, and with the hatch itself in its xdata.
  */
 function hatchConversion(e: HatchEntity): R12Conversion {
   const g = hatchGeometry(e)
@@ -421,6 +423,7 @@ function hatchConversion(e: HatchEntity): R12Conversion {
       prefix: "*X",
       pieces: g.lines.map(([a, b]) => line(a, b)),
       dressed: reference,
+      hatch: e,
     }
   }
   // A fill's pieces keep the hatch's layer and colour, Continuous (x030: a
@@ -460,5 +463,6 @@ function hatchConversion(e: HatchEntity): R12Conversion {
     prefix: "*U",
     pieces: [...solids, ...outline],
     dressed: reference,
+    hatch: e,
   }
 }

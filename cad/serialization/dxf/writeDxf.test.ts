@@ -49,6 +49,19 @@ const VERSIONS: readonly DxfVersion[] = [
   "2018",
 ]
 
+/**
+ * An ASCII R12 file as AutoCAD opens it, each hatch still the reference to
+ * the block of what it draws: its hatch data unnamed, which the reader would
+ * otherwise make the hatch of.
+ */
+function asReferences(bytes: Uint8Array): Uint8Array {
+  const text = new TextDecoder("latin1").decode(bytes)
+  return Uint8Array.from(
+    text.replaceAll("R14_HATCH_DATA", "NO_HATCH_DATA"),
+    (c) => c.charCodeAt(0)
+  )
+}
+
 /** A drawing's objects as plain data, ids dropped and numbers to 9 places. */
 function shape(value: unknown): unknown {
   if (typeof value === "number") {
@@ -256,21 +269,28 @@ describe("writeDxf", () => {
         })
         expect(report.leftOut.size).toBe(0)
         const back = parseDxf(bytes).drawing
-        // What R12 has no object for is gone; the rest is there, as many.
+        // What R12 has no object for is gone; the rest is there, as many,
+        // each hatch read back from its reference's xdata (dxfR12Hatch.ts).
         const count = (entities: readonly Entity[], type: string) =>
           entities.filter((e) => e.type === type).length
         for (const type of [
           "mtext",
           "ellipse",
           "spline",
-          "hatch",
           "leader",
           "xline",
           "ray",
         ]) {
           expect(count(back.entities, type)).toBe(0)
         }
-        for (const type of ["circle", "arc", "text", "dimension", "point"]) {
+        for (const type of [
+          "circle",
+          "arc",
+          "text",
+          "dimension",
+          "point",
+          "hatch",
+        ]) {
           expect(count(back.entities, type)).toBe(count(drawing.entities, type))
         }
         expect(back.layers.map((l) => l.name)).toEqual(
@@ -370,7 +390,7 @@ describe("writeDxf", () => {
         precision: 16,
       })
       expect(report.leftOut.size).toBe(0)
-      const back = parseDxf(bytes).drawing
+      const back = parseDxf(asReferences(bytes)).drawing
       const references = back.entities.filter((e) => e.type === "insert")
       expect(references).toHaveLength(
         drawing.entities.filter((e) => e.type === "hatch").length
@@ -1029,6 +1049,16 @@ describe("writeDxf", () => {
       "mleaders-2018",
       "ucs-2018",
       "named-ucs",
+      // AutoCAD's own R12 of the hatch probes (x034–x046), read as hatches.
+      "hatch-lines-R12",
+      "hatch-arcs-R12",
+      "hatch-ellipses-R12",
+      "hatch-splines-R12",
+      "hatch-polylines-R12",
+      "hatch-kinds-R12",
+      "hatch-gradients-R12",
+      "hatch-planes-R12",
+      "hatch-fills-R12",
     ]) {
       const drawing =
         name === "points-2018"
@@ -1049,7 +1079,7 @@ describe("writeDxf", () => {
             binary,
             precision: 16,
           })
-          const file = `${name.replace("-2018", "")}-${version}${binary ? "b" : ""}.dxf`
+          const file = `${name.replace(/-(2018|R12)$/, "")}-${version}${binary ? "b" : ""}.dxf`
           writeFileSync(join(dir, file), bytes)
         }
       }

@@ -1,0 +1,14 @@
+_ZOOM
+_E
+_AUDIT
+_N
+_CONVERT
+_H
+_S
+(ssget "_X" '((0 . "INSERT")))
+
+(progn (setq s (ssget "_X" '((0 . "INSERT"))) i 0 r "") (if s (repeat (sslength s) (setq r (strcat r " " (cdr (assoc 5 (entget (ssname s i)))))) (setq i (1+ i)))) (princ (strcat "\nLEFT:" r)) (princ))
+_HATCHEDIT
+(ssname (ssget "_X" '((0 . "INSERT"))) 0)
+_EXPLODE
+(ssname (ssget "_X" '((0 . "INSERT"))) 0)

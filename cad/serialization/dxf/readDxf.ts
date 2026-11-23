@@ -273,6 +273,7 @@ export function parseDxf(file: Uint8Array | string): ParsedDxf {
   let inLayouts = 0
   let unreadable = 0
 
+  const hatchBlocks = new Set<string>()
   const targets = new Map<string, DxfBlockTarget | "dependent">()
   const definitions: DxfBlock[] = []
   const xrefs: (DxfXref & { overlay: boolean; z: number })[] = []
@@ -380,6 +381,7 @@ export function parseDxf(file: Uint8Array | string): ParsedDxf {
     },
     splineSegments: settings.splineSegments,
     hatchSplineFitData: version >= 1024,
+    hatchBlock: (name) => hatchBlocks.add(name.toUpperCase()),
     leftOut: (type) => leftOut.set(type, (leftOut.get(type) ?? 0) + 1),
     unreadable: () => {
       unreadable++
@@ -476,6 +478,17 @@ export function parseDxf(file: Uint8Array | string): ParsedDxf {
     else if (countable([record])) inLayouts++
   }
   const entities = readSpace(modelRecords)
+  // The anonymous block of what an R12 hatch draws (`*X`, `*U`) goes with
+  // its reference, read as the hatch, unless another reference names it.
+  const named = new Set(
+    [...entities, ...blocks.flatMap((b) => b.entities)].flatMap((e) =>
+      e.type === "insert" ? [e.blockId.toUpperCase()] : []
+    )
+  )
+  const kept = blocks.filter((b) => {
+    const key = b.name.toUpperCase()
+    return !(hatchBlocks.has(key) && /^\*[XU]\d*$/.test(key)) || named.has(key)
+  })
 
   return {
     drawing: withLinetypeTable({
@@ -487,7 +500,7 @@ export function parseDxf(file: Uint8Array | string): ParsedDxf {
       currentTextStyleId: textStyles.id(header("$TEXTSTYLE", 7)),
       dimStyles: dimStyles.entries(),
       currentDimStyleId: dimStyles.id(header("$DIMSTYLE", 2)),
-      blocks: [...blocks, ...external],
+      blocks: [...kept, ...external],
       entities,
     }),
     report: {

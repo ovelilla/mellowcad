@@ -31,9 +31,11 @@ const ISLAND_MAX_BYTES = 1 * KB
  * for index colours, whose palette every drawing now reads, and a
  * dimension's style overrides (2026-11-22), to 496 KB for 3DMESH, the polygon
  * mesh and PEDIT's mesh prompts (2026-11-22), to 500 KB for R12's DXF writer,
- * in the chunk Save Drawing As loads (2026-11-23).
+ * in the chunk Save Drawing As loads (2026-11-23), to 503 KB for an R12
+ * hatch's xdata, written in that chunk and read in the one a DXF opens with
+ * (2026-11-23).
  */
-const ENGINE_MAX_GZIP_BYTES = 500 * KB
+const ENGINE_MAX_GZIP_BYTES = 503 * KB
 
 /**
  * A language's catalog, gzipped, against English's, which the engine carries:

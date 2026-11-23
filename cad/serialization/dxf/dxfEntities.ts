@@ -89,6 +89,7 @@ import { DIM_VARIABLE_GROUPS, dimVariableValue } from "./dxfDimVariables"
 import { aciColor, aciRgbColor, trueColor } from "./dxfColors"
 import { HatchGradient, isHatchGradientName } from "../../domain/hatchGradients"
 import { DxfRecord } from "./dxfSections"
+import { r12HatchRecord } from "./dxfR12Hatch"
 import { GroupCursor, finite, int, num, point, str, unicode } from "./dxfValues"
 
 const DEG = Math.PI / 180
@@ -128,6 +129,8 @@ export interface DxfEntityContext extends DxfMLeaderContext {
   readonly splineSegments: number
   /** Whether spline hatch edges carry their fit data (2010 on). */
   readonly hatchSplineFitData: boolean
+  /** Notes a block that a reference read as the hatch it stands for named. */
+  hatchBlock(name: string): void
   /** Counts an object of a type the model has none of. */
   leftOut(type: string): void
   /** Counts an object of a known type too malformed to make. */
@@ -1327,6 +1330,11 @@ function attributeDefinition(
  */
 function insert(r: DxfRecord, ctx: DxfEntityContext): Entity[] {
   const name = str(r, 2)?.trim()
+  const hatched = r12Hatch(r, ctx)
+  if (hatched) {
+    if (name) ctx.hatchBlock(name)
+    return hatched
+  }
   const target = name ? ctx.block(name) : null
   // Only an xref's own drawing, never in the file, references one nested in it.
   if (target === "dependent") return []
@@ -1683,6 +1691,30 @@ function hatch(r: DxfRecord, ctx: DxfEntityContext): Entity[] {
 }
 
 /**
+ * An R12 hatch: the reference to the anonymous block of what it draws,
+ * whose xdata says what the hatch is (`r12HatchRecord`), read as that hatch.
+ * A gradient comes back the fill AutoCAD's CONVERT makes of one, its
+ * colours lost (dxf/back.sh on x040). Null for any other reference, and for
+ * one whose boundary cannot be read whole, which stays the reference.
+ *
+ * WHY on opening, where AutoCAD keeps the reference until its CONVERT is
+ * run: this model holds no xdata on a reference, so one kept would lose its
+ * hatch at the next save. It also reads what CONVERT leaves a reference,
+ * though the data is whole: a boundary of elliptical arcs or splines, one
+ * whose objects are gone (x036, x037, x045).
+ */
+function r12Hatch(r: DxfRecord, ctx: DxfEntityContext): Entity[] | null {
+  const record = r12HatchRecord(r)
+  if (!record) return null
+  // The data is a HATCH's of before 2010: a spline edge has no fit points.
+  const reading = { ...ctx, hatchSplineFitData: false }
+  const loops = hatchLoops(record, reading).length
+  if (loops === 0 || loops !== int(record, 91)) return null
+  const made = hatch(record, reading)
+  return made.length > 0 ? made : null
+}
+
+/**
  * A HATCH's gradient, from 450 on (gradient/g02, the samples' Annotation
  * blocks): 460 its angle in radians, 461 its shift (0 centred), 452 one
  * colour with 462 its tint, then each colour's 463, 63 and 421 (the true
@@ -1891,8 +1923,9 @@ function edgeLoop(
       V.distance(edge.end, last) <= 1e-6
         ? reversed(edge)
         : edge
-    vertices.push(...runs.points)
-    bulges.push(...runs.bulges)
+    // WHY a loop, not a spread: a long spline's points overflow the call stack.
+    for (const point of runs.points) vertices.push(point)
+    for (const bulge of runs.bulges) bulges.push(bulge)
     last = runs.end
   }
   return { vertices, ...(bulges.some((b) => b !== 0) ? { bulges } : {}) }
@@ -1917,8 +1950,9 @@ function lineEdge(cursor: GroupCursor): EdgeRuns | null {
 /**
  * An arc edge. Counterclockwise (73 = 1) from 50 to 51, which AutoCAD writes
  * past 360 to keep the end after the start (f004: 270 to 450). Clockwise
- * (0), its angles are measured the other way round, about −X (**unverified**:
- * AutoCAD wrote f006's clockwise island as a polyline loop).
+ * (0), its angles are measured the other way round, about −X (dxf/x035's
+ * crescent: its inner arc, 233.13° to 306.87° as an ARC, is the edge 53.13
+ * to 126.87 with 73 0).
  */
 function arcEdge(cursor: GroupCursor): EdgeRuns | null {
   const center = cursor.takePoint(10)

@@ -1,0 +1,22 @@
+_QAFLAGS
+2
+_ZOOM
+_E
+(progn (setq s (ssget "_X") i 0 r "") (repeat (sslength s) (setq r (strcat r " " (cdr (assoc 0 (entget (ssname s i)))))) (setq i (1+ i))) (princ (strcat "\nBEFORE:" r)) (princ))
+_LIST
+(ssget "_X" '((0 . "INSERT")))
+
+_CONVERT
+?
+_H
+?
+_A
+(progn (setq s (ssget "_X") i 0 r "") (repeat (sslength s) (setq r (strcat r " " (cdr (assoc 0 (entget (ssname s i)))))) (setq i (1+ i))) (princ (strcat "\nAFTER:" r)) (princ))
+_LIST
+(ssget "_X" '((0 . "HATCH")))
+
+_DXFOUT
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\r12\x043-converted.dxf
+_V
+2018
+16

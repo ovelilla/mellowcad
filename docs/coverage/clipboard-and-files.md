@@ -261,7 +261,30 @@ line 23.`, t-no-eof), the drawing left as it was; what follows EOF unread, as Au
 `R12_with_trash_beyond_EOF.dxf`; es and pt-BR's from their consoles (pt-BR's
 `online` for "on line" is Autodesk's). A 50,000-object DXF of 7.1 MB reads in 0.2 s
 
-**Deviations:** what the model has no object for is left out and counted at the command line by
+**An R12 hatch** (probes dxf/x034–x049, back.sh): R12 has no HATCH, so AutoCAD's R12 holds one as
+a reference to an anonymous block of what it draws, with the hatch itself in the reference's ACAD
+xdata, `R14_HATCH_DATA` (DXFOUT's entry). That reference is read as the hatch AutoCAD's CONVERT
+(Hatch) makes of it, group by group what the 2018 file of the same drawing holds: its loops (a
+polyline's vertices and bulges, or edges: lines, arcs either way round, elliptical arcs, splines, a
+closed spline's periodic edge), pattern by name and type, scale, angle, the lines it carries, a
+User-defined one's spacing and Double, elevation and normal, on the reference's layer with its
+colour and linetype (CONVERT's hatch takes the reference's `Continuous`); the origin where the
+pattern's first line starts, HPORIGIN's own xdata not being in the file; a gradient the solid fill
+CONVERT makes of one, its colours lost; and the block of what it drew goes with the reference. A
+reference without `R14_HATCH_DATA` stays a reference: a hatch R12 itself wrote, and one of AutoCAD
+2027's whose boundary was too long for its xdata (x048); so does a copy of a hatch's reference,
+whose data names its source's handle and which CONVERT leaves too, and one that stands moved, scaled
+or turned, which no file of AutoCAD's holds: it makes the hatch before an edit moves it (x049)
+
+**Deviations:** an R12 hatch is a hatch on opening, where AutoCAD 2027 opens it as the reference
+to its `*X` or `*U` block (LIST reads `Hatch pattern`, `Hatch scale`, `Hatch angle` and
+`Associative` from its xdata) and makes the hatch only when CONVERT's Hatch is run (x043: `2 hatch
+objects converted.`) or the reference is edited (MOVE, ROTATE: x049), WHY: this model keeps no xdata on a reference, so one kept as AutoCAD keeps
+it would lose its hatch at the next save; and it reads those CONVERT leaves a reference though
+their data is whole: AutoCAD's own R12 of a pattern hatch bounded by an ellipse or a spline (the
+polyline R12 makes of each loses its link back, and a spline's its handle: `0 hatch objects
+converted.`, x036, x037, AUDIT's `XData Handle Unknown`), and one whose boundary object is gone or
+no longer names it (x045); what the model has no object for is left out and counted at the command line by
 its DXF type (`5 objects not opened: 1 MLINE, 1 TOLERANCE, …`), a layout's apart (`1 object in a
 layout not opened.`), an object too malformed to make too (`1 object could not be read.`): WHY
 words of our own, AutoCAD having an object for all of it and nothing to say (docs/next-dxf.md);
@@ -346,9 +369,12 @@ variables a style does not hold here (DIMCLRD 176, DIMUPT 288… in its DSTYLE: 
 style's font, width and obliquing (text is
 measured with Arial's metrics), TEXT's `%%c`, `%%d` and `%%p` drawn as their characters (as TEXT
 lacks them typed); named views, the drawing opened at its saved view, its visual style; DXFIN's FILEDIA 0
-prompt. **Unverified:** a hatch's clockwise arc edge (73 = 0), read as measured round from −X
-(AutoCAD wrote f006's clockwise island as a polyline loop), and an elliptical edge's angles, read
-as the ellipse's parameters
+prompt; CONVERT (its Hatch has nothing to convert here, above; its Polyline none either, an old
+POLYLINE being read as the polyline it is), and a hatch that R12 itself wrote, its `HATCH` xdata and
+`ASC_BOUNDS` with no `R14_HATCH_DATA`, which CONVERT makes again from its boundary objects (x045's
+v4) and here stays the block; a hatch's island style (75: Ignore draws over its inner loops in
+AutoCAD, x039, and here every inner loop is a hole). **Unverified:** an elliptical edge's angles, read
+as the ellipse's parameters (x036's are half and whole ellipses, where the two agree)
 
 ### `DXFOUT` and SAVEAS of a DXF · es `SALVADXF` · pt-BR `EXPDXF` · fr `SAUVEDXF` · it `DXFOUT` · de `DXFOUT` · ru `ЭКСПОРТА` · pl `DXFWY` · cs `PIŠDXF` · hu `DXFKI`
 
@@ -487,7 +513,21 @@ text and each next line 1.3 heights lower, whatever DIMTAD, DIMTIH, DIMGAP or th
 character beyond the code page a `?`, the degree sign too (`45?`: AutoCAD holds it as `\U+00B0`),
 x031, x032, f002's *D4; a hatch's pattern a `*X` block of its lines on layer 0, ByBlock,
 a solid fill a `*U` block of SOLIDs and its outline's lines, a gradient one of SOLIDs alone, its
-colours lost (r12.sh's gradients, x029: AutoCAD writes the triangles of its shading mesh, 2 to 523
+colours lost; the hatch itself in its reference's xdata, as AutoCAD's R12 says it (x034–x048): a
+pattern's `HATCH` group, R12's own (`19`, the pattern, its scale, its angle in radians, a
+User-defined one's Double), which LIST reads, and `R14_HATCH_DATA` inside the same braces (a fill's
+alone): the reference's handle, three axes, the elevation, the normal and then the HATCH's groups
+in their order (name, fill, associativity, each loop, style, type, angle, scale, Double, each
+pattern line, seed points), every real rounded to the file's places (x047) and every angle in
+radians; a gradient's two colours by index under `GRADIENTCOLOR1ACI` and `GRADIENTCOLOR2ACI`, both
+registered only then (x040); a hatch whose xdata would pass an object's 16383 bytes with its
+pattern group alone, and a fill bare, as AutoCAD writes them (x048: 410 line edges fit, 411 do not;
+314 arc edges fit, 315 do not); never `ASC_BOUNDS` or `ASC_SEEDPOINT`, an associative hatch's, the
+model's being none. AutoCAD's console LISTs each reference of the 28 files of 14 hatch drawings,
+ASCII and binary, with its pattern, scale and angle, its CONVERT turns every one into a HATCH
+(`6 hatch objects converted.`), those bounded by ellipses and splines too, which its own R12
+cannot, and each converted hatch reads back here as the one written (`back.sh`,
+dxfR12Hatch.test.ts's `DXF_BACK`) (r12.sh's gradients, x029: AutoCAD writes the triangles of its shading mesh, 2 to 523
 of them, finer where the colour turns, none with a colour of the gradient's; ours are the area's
 trapezoids, as a fill's: the same area, plotted alike), the pieces of both on the hatch's layer with
 its colour, Continuous (x030), the reference on the hatch's layer with its colour and Continuous;
@@ -507,8 +547,7 @@ parameters are not written, so AutoCAD opens the array as a block of its items; 
 preview is written yet (AutoCAD greyed it too in the owner's profile, d01)
 
 **Missing:** in R12, a 3D solid with a curved face (counted as not saved:
-`1 object not saved: 1 3DSOLID.`, **unverified** what AutoCAD's R12 makes of one), the hatch's `HATCH` and `R14_HATCH_DATA` xdata and its boundaries'
-`ASC_BOUNDS`, with which AutoCAD reads its own R12 hatch back as one, and the header's `$DIM*`
+`1 object not saved: 1 3DSOLID.`, **unverified** what AutoCAD's R12 makes of one) and the header's `$DIM*`
 variables; an XLINE or a RAY that
 misses the extents is a line of no length at its base point, where AutoCAD writes one of its own
 reckoning (r12.sh's xlines); the thumbnail preview; named views; the visual style (the viewport's 281 and 348 and the

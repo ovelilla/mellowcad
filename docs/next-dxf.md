@@ -33,9 +33,9 @@
 > 22/11 (sin publicar): AutoCAD no informa de nada, así que no hay informe nuevo, y lo que
 > perdíamos en silencio y AutoCAD guarda, los SCP con nombre, se escribe y se lee; y la segunda,
 > R12 (el tipo «AutoCAD R12/LT2 DXF» y la versión R12), hecha el 23/11 (sin publicar), con sus
-> degradados, el texto de la cota angular y el bloqueo de los atributos el mismo día (sin
-> publicar); siguiente,
-> por orden del dueño, lo que queda de la fase 5 (lo que R12 aún no escribe, las vistas
+> degradados, el texto de la cota angular, el bloqueo de los atributos y el xdata de los
+> sombreados, escrito y leído, el mismo día (sin publicar); siguiente,
+> por orden del dueño, lo que queda de la fase 5 (las `$DIM*` de la cabecera de R12, las vistas
 > preliminares, ACIS, en ese orden) u otro idioma, una sesión cada vez.
 > Se borra cuando la fase 5 esté hecha; hasta entonces cada fase cerrada se marca aquí.
 
@@ -559,24 +559,43 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
          cotas guardan su `*U` (x031, x032). La consola abre los 8 ficheros sin un error de AUDIT
          y los traza como su propio R12, salvo lo que ya separa al modelo de AutoCAD (DIMTAD y
          DIMTIH sin modelar, DIMS-D8).
-      3. **El xdata de los sombreados** (`HATCH`, `R14_HATCH_DATA`, `ASC_BOUNDS`), con el que
-         AutoCAD lee su propio R12 de vuelta como sombreados. El `AcDbAttr` de los atributos,
-         **hecho** (23/11/2026, sin publicar): `1070 0`, `1070 1` en cada ATTDEF bloqueada y en
-         cada ATTRIB de una, y el APPID solo entonces; la consola lee el bloqueo de vuelta
-         (x033). Lo visto del sombreado, para la sesión que lo haga (fixture-2018-R12, la
-         INSERT de `*X14`): en la referencia, `GRADIENTCOLOR1ACI` y `GRADIENTCOLOR2ACI` si el
-         sombreado los traía, y el xdata `ACAD` `{ 19, HATCH, el patrón, escala, ángulo,
-         ASC_BOUNDS` con cuántos contornos y el handle de cada objeto de contorno`,
-         ASC_SEEDPOINT` con el punto, `R14_HATCH_DATA` con el handle de la referencia, los ejes
-         del SCO, la elevación, el patrón y sus banderas, cada camino (tipo, aristas con sus
-         puntos en 1040, el handle de su objeto) y cada línea del patrón (ángulo, origen,
-         desfase, rayas)`}`; y en cada objeto de contorno, `ACAD` `{ 19, ` el handle de la
-         referencia `}`. Hace falta enlazar handles entre la referencia y sus contornos (en R12
-         sí hay handles de entidad), cada tipo de arista (línea, arco, arco de elipse, spline,
-         polilínea con bultos) y leerlo de vuelta; una sonda por tipo de arista y una para un
-         sombreado no asociativo, antes de construir.
-      4. **Un sólido de caras curvas** (sin sonda: se cuenta como no guardado) y las variables
-         `$DIM*` de la cabecera.
+      3. **El xdata de los sombreados.** **Hecho** (23/11/2026, sin publicar), escrito y leído
+         (`dxfR12Hatch.ts`, `writeDxfR12Hatch.ts`; sondas `x034`–`x049`, `back.sh`). Lo hallado, contra lo que este
+         brief daba por hecho: **AutoCAD 2027 no lee su propio R12 de vuelta como sombreados**.
+         Al abrirlo cada uno sigue siendo la referencia a su bloque `*X` o `*U` (LIST lee de su
+         xdata `Hatch pattern`, `Hatch scale`, `Hatch angle` y `Associative`), y es el comando
+         CONVERT (Hatch), o editarla (MOVE, ROTATE), lo que hace de ella un HATCH, solo con
+         `R14_HATCH_DATA`: convierte igual una referencia con el bloque vacío, y deja como bloque
+         una copia, cuyo dato nombra el handle del original. Ese grupo es el HATCH de 2018 grupo a grupo y en su
+         orden, como xdata (1000 cadena, 1070 entero, 1071 entero largo, 1040 real, 1005 handle),
+         con los ángulos en radianes y los reales redondeados a los decimales del fichero. Lo que
+         CONVERT no convierte: el R12 del propio AutoCAD de un sombreado de patrón con contorno de
+         elipse o de spline (la polilínea que R12 hace de cada una pierde su enlace de vuelta, y
+         la de la spline su handle: AUDIT da `XData Handle Unknown`), el que perdió un objeto de
+         contorno o su `ASC_BOUNDS`, y el que no cabe: el xdata de un objeto tiene 16.383 bytes,
+         y pasado eso AutoCAD escribe solo el grupo `HATCH` (el patrón) y, de un relleno, nada.
+         Un degradado vuelve como relleno sólido, sin sus colores. Lo nuestro: se escribe como
+         AutoCAD escribe un sombreado no asociativo (el modelo no tiene asociatividad: sin
+         `ASC_BOUNDS` ni handles de contorno), y la consola abre los 28 ficheros de 14 dibujos sin
+         un error de AUDIT, LIST da patrón, escala y ángulo de cada uno, CONVERT los convierte
+         todos (también los de elipse y spline, que salen como polilíneas) y cada HATCH
+         convertido es el que se escribió; de 2000 a 2018, 264 de 264 ficheros idénticos byte a
+         byte. Al leer, **desviación decidida**: la referencia con `R14_HATCH_DATA` se abre ya
+         como sombreado (lo que CONVERT haría), porque el modelo no guarda xdata en una
+         referencia y, dejada como bloque, perdería el sombreado al siguiente guardado; se leen
+         también los que CONVERT deja como bloque con los datos enteros. Queda fuera, anotado en
+         la entrada de DXFIN: el sombreado que escribió el propio R12 (sin `R14_HATCH_DATA`,
+         que CONVERT rehace desde sus contornos), el comando CONVERT y el estilo de islas (75).
+      4. **Las variables `$DIM*` de la cabecera**, con su sonda. Lo visto ya (23/11): la
+         cabecera R12 de AutoCAD lista 133 variables y la nuestra 37; de las que faltan, 41 son
+         `$DIM*` (de `$DIMSCALE` a `$DIMGAP`, con `$DIMASO` y `$DIMSHO`, que no son del estilo) y
+         en `x034-2018-R12.dxf` valen lo que el registro DIMSTYLE del estilo actual, ISO-25, grupo
+         a grupo (DIMSCALE el 40, DIMASZ el 41… DIMGAP el 147: los mismos que ya escribe
+         `dimStyleRecord`); de 2000 a 2018 tampoco las escribimos (solo `$DIMSTYLE`). Hace falta
+         una sonda con el estilo cambiado y con una variable sustituida sobre el estilo, para ver
+         si la cabecera lleva el estilo o el estilo con sus sustituciones, y decidir si las demás
+         que faltan (`$LIMMIN`, `$OSMODE`, `$ANGBASE`, `$MIRRTEXT`…) van en la misma entrega.
+         Después, **un sólido de caras curvas** (sin sonda: se cuenta como no guardado).
    3. **Las vistas preliminares** (_Save thumbnail preview image_, la sección THUMBNAILIMAGE):
       pequeña, pero de poco uso: la consola tiene `Preview= No` por defecto y el escritorio la
       mostraba gris en el perfil del dueño (`d01`).

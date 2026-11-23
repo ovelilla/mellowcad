@@ -1,0 +1,29 @@
+_ZOOM
+_E
+_MOVE
+(handent "2E0")
+
+0,0
+500,300
+_COPY
+(handent "2FD")
+
+0,0
+0,200
+
+_ROTATE
+(handent "2FD")
+
+0,0
+90
+_ZOOM
+_E
+_CONVERT
+_H
+_A
+(progn (setq s (ssget "_X" '((0 . "INSERT,HATCH"))) i 0 r "") (repeat (sslength s) (setq e (entget (ssname s i)) r (strcat r " " (cdr (assoc 0 e)) ":" (cdr (assoc 5 e)))) (setq i (1+ i))) (princ (strcat "\nAFTER:" r)) (princ))
+_DXFOUT
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\r12\x049-back.dxf
+_V
+2018
+16

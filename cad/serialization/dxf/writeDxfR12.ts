@@ -11,6 +11,7 @@ import { DrawingSnapshot } from "../drawingFile"
 import { DxfOut } from "./dxfOut"
 import { dxfColorCodes } from "./dxfColors"
 import { R12Names, R12Source, r12Conversion, r12Name } from "./dxfR12"
+import { R12_GRADIENT_COLOR_APPS, writeR12HatchXdata } from "./writeDxfR12Hatch"
 import {
   DxfWriteContext,
   R12_ATTRIBUTE_APP,
@@ -121,6 +122,7 @@ export function writeDxfR12(plan: R12Plan): Uint8Array {
   // The anonymous blocks of what R12 has no type for, named after the
   // drawing's and numbered on from them.
   const made: { name: string; out: DxfOut }[] = []
+  let gradients = false
   const converted = (
     c: DxfWriteContext,
     entity: Entity,
@@ -149,14 +151,19 @@ export function writeDxfR12(plan: R12Plan): Uint8Array {
         for (const piece of conversion.pieces) writeEntity(inner, piece, "0")
         const { out: o } = c
         const dressed = conversion.dressed
+        const reference = handle()
         o.str(0, "INSERT")
-        o.str(5, handle())
+        o.str(5, reference)
         o.str(8, dressed ? c.layerName(dressed.layerId) : "0")
         if (dressed?.linetype !== undefined)
           o.str(6, c.linetypeName(dressed.linetype))
         if (dressed) color(o, dressed.color)
         o.str(2, name)
         o.point(10, 0, 0, 0)
+        if (conversion.hatch) {
+          writeR12HatchXdata(o, conversion.hatch, reference)
+          if (conversion.hatch.gradient) gradients = true
+        }
         return true
       }
     }
@@ -242,20 +249,23 @@ export function writeDxfR12(plan: R12Plan): Uint8Array {
     out.point(12, ucs.yAxis.x, ucs.yAxis.y, ucs.yAxis.z, true)
   }
   out.str(0, "ENDTAB")
-  // The dimensions' DSTYLE overrides are ACAD's xdata; a locked attribute's
-  // lock position AcDbAttr's, registered only when one is written (x033;
-  // fixture's unlocked ones, none).
+  // The dimensions' DSTYLE overrides and a hatch's data are ACAD's xdata; a
+  // locked attribute's lock position AcDbAttr's and a gradient's colours
+  // their two applications', each registered only when one is written (x033,
+  // x040; fixture's unlocked attributes, none).
   const lockedAttributes = [
     ...plan.modelEntities,
     ...drawing.blocks.flatMap((b) => b.entities),
   ].some((e) => e.type === "attdef" && e.modes.lockPosition)
-  table(out, "APPID", lockedAttributes ? 2 : 1)
-  out.str(0, "APPID")
-  out.str(2, "ACAD")
-  out.int(70, 0)
-  if (lockedAttributes) {
+  const apps = [
+    "ACAD",
+    ...(lockedAttributes ? [R12_ATTRIBUTE_APP] : []),
+    ...(gradients ? R12_GRADIENT_COLOR_APPS : []),
+  ]
+  table(out, "APPID", apps.length)
+  for (const app of apps) {
     out.str(0, "APPID")
-    out.str(2, R12_ATTRIBUTE_APP)
+    out.str(2, app)
     out.int(70, 0)
   }
   out.str(0, "ENDTAB")

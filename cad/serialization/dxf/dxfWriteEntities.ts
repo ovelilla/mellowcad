@@ -1489,35 +1489,58 @@ function hatch(ctx: DxfWriteContext, e: HatchEntity, owner: string): void {
   }
   out.int(75, 0)
   out.int(76, e.patternType === "user" ? 0 : e.patternType === "custom" ? 2 : 1)
-  const lines = solid ? [] : hatchLines(e)
+  const lines = solid ? [] : hatchDrawnLines(e)
   if (!solid) {
     out.real(52, e.patternAngle * DEG)
     out.real(41, e.patternScale)
     out.int(77, e.patternType === "user" && lines.length > 1 ? 1 : 0)
     out.int(78, lines.length)
     for (const l of lines) {
-      const angle = e.patternAngle + l.angle
-      const base = V.add(
-        e.origin,
-        rotate(V.scale(l.origin, e.patternScale), e.patternAngle)
-      )
-      const offset = rotate(
-        { x: l.deltaX * e.patternScale, y: l.deltaY * e.patternScale },
-        angle
-      )
-      out.real(53, angle * DEG)
-      out.exact(43, base.x)
-      out.exact(44, base.y)
-      out.exact(45, offset.x)
-      out.exact(46, offset.y)
+      out.real(53, l.angle * DEG)
+      out.exact(43, l.base.x)
+      out.exact(44, l.base.y)
+      out.exact(45, l.offset.x)
+      out.exact(46, l.offset.y)
       out.int(79, l.dashes.length)
-      for (const d of l.dashes) out.exact(49, d * e.patternScale)
+      for (const d of l.dashes) out.exact(49, d)
     }
   }
   out.int(98, 0)
   if (e.gradient) gradient(ctx, e.gradient)
   out.str(1001, "ACAD")
   out.point(1010, e.origin.x, e.origin.y, 0, true)
+}
+
+/** A pattern line as a HATCH holds it: drawn, turned and scaled, its angle in radians. */
+export interface HatchDrawnLine {
+  readonly angle: number
+  readonly base: Vec2
+  readonly offset: Vec2
+  readonly dashes: readonly number[]
+}
+
+/** The lines a hatch draws, as its DXF lists them (53, 43–46, 49). */
+export function hatchDrawnLines(e: HatchEntity): HatchDrawnLine[] {
+  return hatchLines(e).map((l) => {
+    const angle = e.patternAngle + l.angle
+    return {
+      angle,
+      base: V.add(
+        e.origin,
+        rotate(V.scale(l.origin, e.patternScale), e.patternAngle)
+      ),
+      offset: rotate(
+        { x: l.deltaX * e.patternScale, y: l.deltaY * e.patternScale },
+        angle
+      ),
+      dashes: l.dashes.map((d) => d * e.patternScale),
+    }
+  })
+}
+
+/** Each of a gradient's two colours as its nearest index colour. */
+export function gradientColorIndices(g: HatchGradient): number[] {
+  return g.colors.map((c) => aciIndex(parseInt(colorRgb(c).slice(1), 16)).index)
 }
 
 /**

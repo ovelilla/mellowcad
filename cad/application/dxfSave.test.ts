@@ -249,10 +249,11 @@ describe("the Save Drawing As dialog", () => {
         const saved = files.saved.at(-1)!
         if (dir) writeFileSync(join(dir, saved.fileName), saved.bytes!)
         const back = parseDxf(saved.bytes!).drawing
-        // R12 makes its MTEXT and its hatch references to blocks of them.
+        // R12 makes its MTEXT a reference to a block of it; its hatch too,
+        // which is read back from that reference's xdata as the hatch.
         expect(back.entities.map((e) => e.type)).toEqual(
           fileType === "dxfR12"
-            ? types.map((t) => (t === "mtext" || t === "hatch" ? "insert" : t))
+            ? types.map((t) => (t === "mtext" ? "insert" : t))
             : types
         )
       }
