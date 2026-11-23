@@ -523,6 +523,8 @@ export {
   regionEdgeAt,
 } from "./entityQueries"
 
+export { entityWorldBox, entitiesWorldBox } from "./worldBoxes"
+
 export {
   lineMidpoint,
   lineLength,

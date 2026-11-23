@@ -1,0 +1,71 @@
+_TORUS
+0,0,0
+5
+10
+_ZOOM
+_E
+(progn (princ "\nTOR 5 10 ") (princ (getvar "EXTMIN")) (princ " ") (princ (getvar "EXTMAX")) (princ))
+_ERASE
+_L
+
+_TORUS
+0,0,0
+-5
+10
+_ZOOM
+_E
+(progn (princ "\nTOR -5 10 ") (princ (getvar "EXTMIN")) (princ " ") (princ (getvar "EXTMAX")) (princ))
+_ERASE
+_L
+
+_TORUS
+0,0,0
+2
+10
+_ZOOM
+_E
+(progn (princ "\nTOR 2 10 ") (princ (getvar "EXTMIN")) (princ " ") (princ (getvar "EXTMAX")) (princ))
+_ERASE
+_L
+
+_TORUS
+0,0,0
+-2
+10
+_ZOOM
+_E
+(progn (princ "\nTOR -2 10 ") (princ (getvar "EXTMIN")) (princ " ") (princ (getvar "EXTMAX")) (princ))
+_ERASE
+_L
+
+_TORUS
+0,0,0
+8
+10
+_ZOOM
+_E
+(progn (princ "\nTOR 8 10 ") (princ (getvar "EXTMIN")) (princ " ") (princ (getvar "EXTMAX")) (princ))
+_ERASE
+_L
+
+_TORUS
+0,0,0
+-8
+10
+_ZOOM
+_E
+(progn (princ "\nTOR -8 10 ") (princ (getvar "EXTMIN")) (princ " ") (princ (getvar "EXTMAX")) (princ))
+_ERASE
+_L
+
+_TORUS
+0,0,0
+15
+3
+_ZOOM
+_E
+(progn (princ "\nTOR 15 3 ") (princ (getvar "EXTMIN")) (princ " ") (princ (getvar "EXTMAX")) (princ))
+_MASSPROP
+_L
+
+_N

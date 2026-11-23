@@ -15,7 +15,7 @@ import type {
 } from "./ports"
 import type { DxfWriteOptions, WrittenDxf } from "./runtimeFiles"
 import type { KeyedInLine } from "./runtimeKeyIn"
-import { entitiesBounds } from "../domain/entities"
+import { entitiesWorldBox } from "../domain/entities"
 import type {
   BlockDefinition,
   Bounds,
@@ -24,7 +24,7 @@ import type {
 } from "../domain/entities"
 import type { Scene } from "../scene/types"
 import type { Vec2 } from "../geometry/Vec2"
-import type { Vec3 } from "../geometry/Vec3"
+import { type Vec3, planar } from "../geometry/Vec3"
 
 /** A point to point at: one with a Z is drawn at that height in a view off the plan. */
 type WorldPoint = Vec2 | Vec3
@@ -538,10 +538,11 @@ export class CadDriver {
    * empty drawing.
    */
   extents(): Bounds | null {
-    return entitiesBounds(
+    const box = entitiesWorldBox(
       this.runtime.document.getEntities(),
       this.runtime.document.blockLookup()
     )
+    return box && { min: planar(box.min), max: planar(box.max) }
   }
 
   /** The most recently added entity — what a draw command just produced. */

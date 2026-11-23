@@ -33,8 +33,8 @@
 > VBA_Tower (una malla poligonal, con 3DMESH), hecha el 22/11, sin publicar, que cierra el punto 7,
 > y de la fase 5 el informe de lo que se pierde al guardar (AutoCAD no informa; los SCP con nombre,
 > que perdíamos, se guardan), hecho el 22/11, sin publicar, y R12, con las `$DIM*` de su cabecera
-> y el sólido de caras curvas, hecho el 23/11, sin publicar; siguiente, la caja de un sólido con
-> una arista de normal −Z, y las vistas preliminares) y otro idioma (los once de AutoCAD con
+> y el sólido de caras curvas, hecho el 23/11, sin publicar, y la caja de un sólido con una arista
+> de normal −Z, hecha el 24/11, sin publicar; siguiente, las vistas preliminares) y otro idioma (los once de AutoCAD con
 > criterio de L8 están hechos, el chino tradicional el último: ampliar el criterio es decisión del
 > dueño), alternando, además de lo que queda de §7.
 > Esperan detrás
@@ -484,6 +484,9 @@ el dueño dio a las sesiones el 6/11).
    publicado lo traiga, por decisión del dueño (22/11): `gsc-prioritize.mjs` reconoce `/zh-tw`, lo
    pesa a 0,14 (Taiwán, unos 38 en el índice de la auditoría, y Hong Kong encima: 0,4 × 38/113) y
    pone sus URLs detrás de todas las demás (`LAST`), en ese orden entre ellas.
+   **23/11, 22:36 UTC (sesión de la caja del sólido):** la tanda del día, 11 pedidas (`edit-dxf`
+   en alemán, japonés y coreano, `/cs`, las guías de 2D a 3D, de coordenadas y de inicio en varios
+   idiomas) hasta la cuota, en la duodécima: 1.664 en la cola.
 3. **Bing Webmaster Tools**: la clave responde ya en producción
    (`https://mellowcad.com/1eb5d0fec5dc99d5695b010f04667a07.txt`, 5/11); enviar el sitemap a IndexNow:
    `npm run indexnow` lista lo que enviaría y `npm run indexnow -- --send` lo envía (se niega si la

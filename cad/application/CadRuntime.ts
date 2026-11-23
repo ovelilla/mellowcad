@@ -21,7 +21,7 @@ import { COLOR_BYLAYER, EntityColor } from "../domain/colors"
 import { Solid3dEntity } from "../domain/entityTypes"
 import { solidViewEntities } from "../domain/solids"
 import { facesAlong } from "../geometry/hiddenLines"
-import { Box3, Brep, brepBox } from "../geometry/solids"
+import { brepBox } from "../geometry/solids"
 import {
   createLayer,
   DEFAULT_LAYER_COLOR,
@@ -4927,7 +4927,7 @@ export class CadRuntime extends Observable {
     // cursor can be neither in front nor near: measuring every solid's lines
     // on each pointer move cost 50 ms with 400 of them (VSD-03).
     const within = (solid: Solid3dEntity, by: number) => {
-      const box = this.solidBox(solid.brep)
+      const box = brepBox(solid.brep)
       if (!box) return true
       let [left, top, right, bottom] = [
         Infinity,
@@ -4978,18 +4978,6 @@ export class CadRuntime extends Observable {
       return best
     }
   }
-
-  /** A solid's box, its B-rep's (`brepBox`), worked out once per B-rep. */
-  private solidBox(brep: Brep): Box3 | null {
-    let box = this.solidBoxes.get(brep)
-    if (box === undefined) {
-      box = brepBox(brep)
-      this.solidBoxes.set(brep, box)
-    }
-    return box
-  }
-
-  private readonly solidBoxes = new WeakMap<Brep, Box3 | null>()
 
   /**
    * Whether a pick takes a locked layer's objects: at `Command:` it selects

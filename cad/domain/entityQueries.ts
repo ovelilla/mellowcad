@@ -65,7 +65,7 @@ import { face3dEdges } from "./faces3d"
 import { polygonMeshEdges, polygonMeshGrid } from "./polygonMeshes"
 import { entityShape } from "./polylineFits"
 import { Vec3, planar } from "../geometry/Vec3"
-import { closedSurfaceReach } from "../geometry/solids"
+import { brepBox } from "../geometry/solids"
 import { arcStartPoint, arcEndPoint } from "./entityMeasures"
 
 /** A box outline as four segments, for hit-testing and crossing tests. */
@@ -681,26 +681,13 @@ export function entityBounds(drawn: Entity, blocks?: BlockLookup): Bounds {
         }
       )
     case "solid3d": {
-      // Its edges and its vertices: a cone's apex is on no edge; a sphere's
-      // or a torus' face, which has neither.
-      const edges = entitiesBounds(solidEdgeEntities(entity))
-      const xs = entity.brep.vertices.map((p) => p.x)
-      const ys = entity.brep.vertices.map((p) => p.y)
-      if (edges) {
-        xs.push(edges.min.x, edges.max.x)
-        ys.push(edges.min.y, edges.max.y)
-      }
-      for (const { surface } of entity.brep.faces) {
-        const reach = closedSurfaceReach(surface)
-        if (!reach || !("center" in surface)) continue
-        xs.push(surface.center.x - reach.x, surface.center.x + reach.x)
-        ys.push(surface.center.y - reach.y, surface.center.y + reach.y)
-      }
-      if (xs.length === 0) return { min: { x: 0, y: 0 }, max: { x: 0, y: 0 } }
-      return {
-        min: { x: Math.min(...xs), y: Math.min(...ys) },
-        max: { x: Math.max(...xs), y: Math.max(...ys) },
-      }
+      // Its exact box in plan. Not its edges' bounds: each edge reads in its
+      // own plane, and a cone's base circle, facing down, at 100,0 reads at
+      // −100,0 there (dxf/x058).
+      const box = brepBox(entity.brep)
+      return box
+        ? { min: planar(box.min), max: planar(box.max) }
+        : { min: { x: 0, y: 0 }, max: { x: 0, y: 0 } }
     }
   }
 }

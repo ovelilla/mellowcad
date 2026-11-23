@@ -8,16 +8,8 @@ import {
   scale3,
   sub3,
 } from "../geometry/Vec3"
-import {
-  BlockLookup,
-  Entity,
-  entitiesBounds,
-  entityElevation,
-  entityThickness,
-  lineEndZ,
-  splineCurve,
-} from "../domain/entities"
-import { brepBox } from "../geometry/solids"
+import { BlockLookup, Entity, entitiesWorldBox } from "../domain/entities"
+import type { Box3 } from "../geometry/solids"
 import { Viewport } from "./Viewport"
 
 /** Radians the view turns per pixel dragged: half a turn across 400 px. */
@@ -85,52 +77,6 @@ export function drawingMiddle(
 export function drawingBox(
   entities: readonly Entity[],
   blocks?: BlockLookup
-): { readonly min: Vec3; readonly max: Vec3 } | null {
-  const bounds = entitiesBounds(entities, blocks)
-  if (!bounds) return null
-  let low = Number.POSITIVE_INFINITY
-  let high = Number.NEGATIVE_INFINITY
-  for (const entity of entities) {
-    if (entity.type === "solid3d") {
-      // Its exact box: a sphere or a torus has no vertex (ARRAYRECT's base
-      // and level spacing, primitives/p413).
-      const box = brepBox(entity.brep)
-      if (box) {
-        low = Math.min(low, box.min.z)
-        high = Math.max(high, box.max.z)
-      }
-      continue
-    }
-    if (
-      entity.type === "polyline3d" ||
-      entity.type === "face3d" ||
-      entity.type === "polygonMesh"
-    ) {
-      const points = entity.type === "face3d" ? entity.corners : entity.vertices
-      for (const point of points) {
-        low = Math.min(low, point.z)
-        high = Math.max(high, point.z)
-      }
-      continue
-    }
-    if (entity.type === "spline" && !entity.normal) {
-      // Its control points' hull holds the curve.
-      for (const point of splineCurve(entity).controlPoints) {
-        low = Math.min(low, point.z)
-        high = Math.max(high, point.z)
-      }
-      continue
-    }
-    const z = entityElevation(entity)
-    const thickness = entityThickness(entity)
-    const top = entity.type === "line" ? lineEndZ(entity) : z
-    for (const height of [z, top, z + thickness, top + thickness]) {
-      low = Math.min(low, height)
-      high = Math.max(high, height)
-    }
-  }
-  return {
-    min: { x: bounds.min.x, y: bounds.min.y, z: low },
-    max: { x: bounds.max.x, y: bounds.max.y, z: high },
-  }
+): Box3 | null {
+  return entitiesWorldBox(entities, blocks)
 }

@@ -48,6 +48,7 @@ Traffic. La CLI no sirve: en Hobby sus métricas solo cubren 30 minutos.
 | 21/11 09:00 | 1M (el proyecto, 864K) | — | **8,14 GB** (el proyecto, 6,63) | ventana hasta el 21/11 a las 00:00; el mismo día, el export estático a producción |
 | 22/11 00:45 | el proyecto, 865K | — | el proyecto, 6,63 GB | ventana hasta el 21/11 a las 16:00; Observability, 12 h ya estáticas: **0 lecturas de ISR** |
 | 23/11 00:30 | el proyecto, 864K | — | el proyecto, 6,62 GB | ventana hasta el 22/11 a las 16:00, tras el push de las 09:30; Observability, 12 h: **0 lecturas de ISR**; CDN Requests 210K en 30 días |
+| 24/11 00:00 | el proyecto, 862K | — | el proyecto, 6,61 GB | ventana hasta el 23/11 a las 16:00, sin push desde el del 22/11; Observability, 12 h: **0 lecturas de ISR**; CDN Requests 213K en 30 días |
 
 El 19/11 el panel de uso aún cerraba su ventana el 18/11 a las 16:00, así que el ritmo de después
 se leyó en Observability (últimas 12 h, todas ya con Cloudflare): **28K unidades de lectura de ISR

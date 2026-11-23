@@ -1077,6 +1077,18 @@ export function ellipticalArcExtremes(
  * Bounding box, solid/m01–m04; a turned pyramid's is its corners', 6.6800).
  */
 export function brepBox(brep: Brep): Box3 | null {
+  // Worked out once per B-rep: the snaps ask for it on every pointer move.
+  let box = brepBoxes.get(brep)
+  if (box === undefined) {
+    box = measuredBrepBox(brep)
+    brepBoxes.set(brep, box)
+  }
+  return box
+}
+
+const brepBoxes = new WeakMap<Brep, Box3 | null>()
+
+function measuredBrepBox(brep: Brep): Box3 | null {
   const points: Vec3[] = [...brep.vertices]
   for (const edge of brep.edges) {
     const c = edge.curve

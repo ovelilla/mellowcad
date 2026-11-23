@@ -35,9 +35,10 @@
 > R12 (el tipo «AutoCAD R12/LT2 DXF» y la versión R12), hecha el 23/11 (sin publicar), con sus
 > degradados, el texto de la cota angular, el bloqueo de los atributos y el xdata de los
 > sombreados, escrito y leído, el mismo día (sin publicar), y las `$DIM*` de su cabecera y
-> el sólido de caras curvas, el 23/11 (sin publicar); siguiente, la caja de un sólido con una
-> arista de normal −Z (§5, punto 2.5), y por orden del dueño lo que queda de la fase 5 (las
-> vistas preliminares, ACIS, en ese orden) u otro idioma, una sesión cada vez.
+> el sólido de caras curvas, el 23/11 (sin publicar), y la caja de un sólido con una arista de
+> normal −Z (§5, punto 2.6), el 24/11 (sin publicar); siguiente, por orden del dueño, lo que
+> queda de la fase 5 (las vistas preliminares, ACIS, en ese orden) u otro idioma, una sesión
+> cada vez.
 > Se borra cuando la fase 5 esté hecha; hasta entonces cada fase cerrada se marca aquí.
 
 ## 1. Objetivo
@@ -611,11 +612,26 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
          iba en la 0). Lo nuestro da las mismas piezas, en los mismos planos y con las caras en
          el mismo orden. Solo cambia el sentido de cada LINE: AutoCAD sigue el de su arista
          ACIS y nosotros el del lazo de la cara. La consola lo abre sin errores de AUDIT y lo
-         traza como su R12, a un píxel. Hallado de paso, sin arreglar: la caja de un sólido
-         (`entityBounds`) mide en su OCS una arista circular de normal −Z, y un cono en 100,0
-         da x de −110 a 110. ZOOM Extensión no lo sufre (proyecta), pero `$EXTMIN` de cualquier
-         versión sí. Arreglarlo cambia la salida de 2000 a 2018 de esos dibujos: va en su propio
-         commit, el siguiente.
+         traza como su R12, a un píxel.
+      6. **La caja de un sólido con una arista de normal −Z.** **Hecho** (24/11/2026, sin
+         publicar). Nacía en dos sitios: la caja de un 3DSOLID juntaba las de sus aristas, cada
+         una leída en su OCS (ahora es `brepBox`, la exacta), y los escritores tomaban por
+         EXTMIN `entityBounds`, que lee cada objeto en su plano, así que también un CIRCLE, un
+         ARC o una ELLIPSE de normal −Z, y cualquier objeto inclinado, salían donde su plano los
+         lee. Ahora la caja es la del espacio (`entityWorldBox`), con su Z, como la de AutoCAD
+         (x058: getvar y su DXFOUT, a 1e-5). De 2000 a 2018 no hay `$EXTMIN`: lo que cambia es
+         la vista del VPORT `*Active` (12, 22, 40), en los 4 dibujos de prueba con objetos
+         inclinados; en R12, `$EXTMIN` y `$EXTMAX` de 11. La consola mide la misma caja en
+         cada uno (`extents.sh`, objeto por objeto `boxes.sh`), salvo lo que mide de otro
+         modo y ya era así: un POINT por su figura, una imagen recortada por su recorte, una
+         cota con su texto, los textos con sus métricas, una elipse por una aproximación
+         (24,9995 por 25) y un toroide de huso o de limón por una caja más holgada sin regla a
+         la vista (x059). Una polilínea 3D ajustada ya se mide por su curva (antes, la Z por
+         su marco). El R12 y el 2018 de x058 abren sin errores de AUDIT; el R12 se traza como
+         el suyo, y el 2018 también, salvo los sólidos (ACIS, punto 4). Hallado de paso, sin
+         arreglar: un SCP con la Z hacia abajo (X 180) es el SCU para las herramientas
+         (`UcsFrame`), así que CIRCLE, ARC y ELLIPSE dibujan ahí con normal +Z, donde AutoCAD
+         las hace −Z (0, −1e-16, −1); los mismos puntos, otra normal en el DXF y otro sentido.
    3. **Las vistas preliminares** (_Save thumbnail preview image_, la sección THUMBNAILIMAGE):
       pequeña, pero de poco uso: la consola tiene `Preview= No` por defecto y el escritorio la
       mostraba gris en el perfil del dueño (`d01`).

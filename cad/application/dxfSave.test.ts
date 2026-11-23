@@ -446,6 +446,77 @@ describe("writeDxf, with no command", () => {
     )
   })
 
+  // x058: AutoCAD 2027's EXTMIN and EXTMAX of these objects, the box in
+  // space, getvar's and its DXFOUT's alike (its file's to 1e-5: it writes
+  // -15.00000321821426). A cone's, a cylinder's and the elliptical one's base
+  // edge face down, as do a circle, an arc and an ellipse AutoCAD drew in a
+  // UCS turned 180° about X, and their own planes read them mirrored.
+  it("writes the box of objects facing down in space, as AutoCAD's EXTMIN and EXTMAX", async () => {
+    // x058's own three, as its DXFOUT wrote them: a UCS facing down is the
+    // WCS to our tools, so CIRCLE there draws one facing up.
+    const down = ["210", "0.0", "220", "-0.0000000000000001", "230", "-1.0"]
+    const facingDown = parseDxf(
+      [
+        ...["0", "SECTION", "2", "ENTITIES"],
+        ...["0", "CIRCLE", "8", "0", "10", "0.0", "20", "-100.0", "30", "0.0"],
+        ...["40", "15.0", ...down],
+        ...["0", "ARC", "8", "0", "10", "-100.0", "20", "-100.0", "30", "0.0"],
+        ...["40", "15.0", ...down, "50", "180.0", "51", "90.0"],
+        ...["0", "ELLIPSE", "8", "0", "10", "200.0", "20", "-100.0"],
+        ...["30", "0.0000000000000122", "11", "20.0", "21", "0.0", "31", "0.0"],
+        ...[...down, "40", "0.4", "41", "0.0", "42", "6.283185307179586"],
+        ...["0", "ENDSEC", "0", "EOF", ""],
+      ].join("\r\n")
+    ).drawing.entities
+    expect(facingDown.map((e) => [e.type, e.normal?.z])).toEqual([
+      ["circle", -1],
+      ["arc", -1],
+      ["ellipse", -1],
+    ])
+    const cad = createHarness({ entities: facingDown })
+    typed(cad, "_CONE", "100,0,0", "10", "30")
+    typed(cad, "_CYLINDER", "0,100,0", "10", "30")
+    typed(cad, "_TORUS", "200,50,0", "20", "5")
+    typed(cad, "_CYLINDER", "_E", "290,0,0", "310,0,0", "300,6,0", "20")
+    expect(cad.entityCount).toBe(7)
+    const autocad = { min: [-15, -115, -5], max: [310, 110, 30] }
+    const extents = cad.extents()!
+    expect(extents.min).toBeCloseToPoint(p(-15, -115))
+    expect(extents.max).toBeCloseToPoint(p(310, 110))
+
+    const header = (bytes: Uint8Array, name: string) => {
+      const lines = new TextDecoder("latin1").decode(bytes).split("\r\n")
+      const at = lines.findIndex((line) => line === name)
+      return [2, 4, 6].map((k) => Number(lines[at + k]))
+    }
+    const r12 = await cad.writeDxf({ version: "R12" })
+    const v2018 = await cad.writeDxf({ version: "2018" })
+    // The console opens these with no AUDIT error and plots the R12 as its
+    // own x058-R12.dxf (audit.sh, plot.sh).
+    const dir = process.env.DXF_OUT
+    if (dir) {
+      writeFileSync(join(dir, "extents-R12.dxf"), r12.bytes)
+      writeFileSync(join(dir, "extents-2018.dxf"), v2018.bytes)
+    }
+    for (const [name, box] of [
+      ["$EXTMIN", autocad.min],
+      ["$EXTMAX", autocad.max],
+    ] as const) {
+      header(r12.bytes, name).forEach((value, i) =>
+        expect(value).toBeCloseTo(box[i], 5)
+      )
+    }
+    // From 2000 on the extents are only the *Active view's: ZOOM Extents's
+    // centre and height of that box.
+    const text = new TextDecoder().decode(v2018.bytes).split("\r\n")
+    const active = text.indexOf("*Active")
+    const group = (code: string) =>
+      Number(text[text.indexOf(code, active) + 1].trim())
+    expect(group(" 12")).toBeCloseTo(147.5, 9)
+    expect(group(" 22")).toBeCloseTo(-2.5, 9)
+    expect(group(" 40")).toBeCloseTo(225 * 1.1, 9)
+  })
+
   it("needs no file access", async () => {
     const cad = createHarness({ entities: [circleOf(p(0, 0), 5)] })
     const { bytes } = await cad.writeDxf()

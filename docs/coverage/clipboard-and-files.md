@@ -401,7 +401,9 @@ UCS as typed, 70 0, its origin and axes, 79 and 146 0) and `$UCSNAME` (empty for
 whole at any precision in the header and the viewport (110–112) and UCSICON in the viewport's 74,
 as AutoCAD's DXFOUT (x023, x024: the console reads the 12 files of x023's drawing and of a tilted
 UCS named `front wall` with no AUDIT error, lists their tables and restores each by name, ucs.sh),
-an object's own linetype scale (48), the active viewport framing the drawing, and every
+an object's own linetype scale (48), the active viewport framing the drawing's box in space as
+ZOOM Extents does (x058: an object facing down or tilted where it is, not where its own plane
+reads it), and every
 object the model has, as AutoCAD writes it: a fitted polyline as a POLYLINE with its fit or curve
 vertices, a spline with its fit data or its knots, weights and control points (a closed one
 clamped, f004), a dimension with its `*D` block drawn as the model draws it and its overrides as
@@ -491,7 +493,13 @@ AutoCAD fixture as R12, x027, x028): no CLASSES or OBJECTS, no subclass markers,
 lineweights, true colours (the nearest index alone), linetype scales or version groups; a binary
 file's codes in one byte; the header's R12 variables (`$EXTMIN`, `$EXTMAX`, `$HANDLING` 1, no
 `$CELTSCALE`, `$CELWEIGHT`, `$LWDISPLAY`, `$INSUNITS` or code page), each in AutoCAD's order and
-with its value, and the current dimension style's R12 variables there as its record holds them, from
+with its value, `$EXTMIN` and `$EXTMAX` the drawing's box in space with its Z, as AutoCAD's
+(x058: a cone's, a cylinder's and an elliptical cylinder's base edge and a circle, an arc and an
+ellipse facing down, getvar's and its DXFOUT's to 1e-5, a fitted 3D polyline by its curve; the
+console's ZOOM Extents measures the same box in the 2018 file of each test drawing holding such
+objects, extents.sh, object by object boxes.sh, but where it measures an object otherwise: a point by its figure, a clipped image by its clip, a dimension
+with its text, a spindle or lemon torus by a looser box of its own, x059, here the exact one, an
+ellipse by a tighter approximation, 24.9995 for 25), and the current dimension style's R12 variables there as its record holds them, from
 `$DIMSCALE` to `$DIMGAP` with `$DIMSTYLE` among them (AutoCAD writes the style with its current
 overrides, x050, x051; the model has none), `$LIMMAX` 420,297, `$TRACEWID` 1 and `$SKETCHINC` 1
 as its metric drawing has them: R12 has no `$MEASUREMENT`, and AutoCAD 2027 opens an R12 lacking

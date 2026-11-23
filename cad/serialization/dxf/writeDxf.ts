@@ -16,7 +16,7 @@ import {
   XrefSource,
   createInsert,
   createMText,
-  entitiesBounds,
+  entitiesWorldBox,
   tableExploded,
   tableGeometry,
 } from "../../domain/entities"
@@ -1059,7 +1059,8 @@ function activeViewport(
   lookup: BlockLookup
 ): void {
   const s = drawing.settings
-  const bounds = entitiesBounds(entities, lookup)
+  // What ZOOM Extents frames: the drawing in space, seen in plan (x058).
+  const bounds = entitiesWorldBox(entities, lookup)
   const center = bounds
     ? {
         x: (bounds.min.x + bounds.max.x) / 2,

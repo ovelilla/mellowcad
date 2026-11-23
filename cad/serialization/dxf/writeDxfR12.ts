@@ -1,4 +1,4 @@
-import { BlockLookup, Entity, entitiesBounds } from "../../domain/entities"
+import { BlockLookup, Entity, entitiesWorldBox } from "../../domain/entities"
 import { DimStyle, createDefaultDimStyle } from "../../domain/dimStyles"
 import {
   CONTINUOUS,
@@ -113,7 +113,9 @@ export interface R12Plan {
 export function writeDxfR12(plan: R12Plan): Uint8Array {
   const { drawing, names, written, handle } = plan
   const s = drawing.settings
-  const extents = entitiesBounds(plan.modelEntities, plan.lookup)
+  // In space, as AutoCAD's EXTMIN and EXTMAX (x058): an object facing down
+  // or tilted is not where its own plane reads it.
+  const extents = entitiesWorldBox(plan.modelEntities, plan.lookup)
   const source: R12Source = {
     blocks: plan.lookup,
     dimStyle: plan.ctx.dimStyle,
@@ -361,7 +363,7 @@ function header(
   out: DxfOut,
   drawing: DrawingSnapshot,
   names: FileNames,
-  extents: ReturnType<typeof entitiesBounds>,
+  extents: ReturnType<typeof entitiesWorldBox>,
   seed: string
 ): void {
   const s = drawing.settings
@@ -381,9 +383,9 @@ function header(
   variable("$INSBASE")
   out.point(10, 0, 0, 0)
   variable("$EXTMIN")
-  out.point(10, extents?.min.x ?? 0, extents?.min.y ?? 0, 0)
+  out.point(10, extents?.min.x ?? 0, extents?.min.y ?? 0, extents?.min.z ?? 0)
   variable("$EXTMAX")
-  out.point(10, extents?.max.x ?? 0, extents?.max.y ?? 0, 0)
+  out.point(10, extents?.max.x ?? 0, extents?.max.y ?? 0, extents?.max.z ?? 0)
   // LIMMAX, TRACEWID and SKETCHINC as AutoCAD's metric drawing has them (x034,
   // x052): R12 has no MEASUREMENT, and without them AutoCAD opens an R12 with
   // the imperial 12,9, 0.05 and 0.1 (getvars.sh). The rest of its header that
@@ -480,7 +482,7 @@ function header(
 function activeViewport(
   out: DxfOut,
   drawing: DrawingSnapshot,
-  bounds: ReturnType<typeof entitiesBounds>
+  bounds: ReturnType<typeof entitiesWorldBox>
 ): void {
   const s = drawing.settings
   const center = bounds

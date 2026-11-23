@@ -255,7 +255,7 @@ source.id)` alone is the bug: it drops colour, linetype, lineweight and Z.
   segment makes the plan ambiguous, read a point's own Z, never `entityZAt`.
 - **The domain's 2D queries read one plane** (`readsInPlan`); drawing, picking, bounds and snapping
   project every object through its plane in `application/` (`planeCamera`, `viewPick.ts`). Objects
-  in different planes have no intersection yet.
+  in different planes have no intersection yet. EXTMIN's box is `entityWorldBox`.
 
 ## Serialization
 
