@@ -155,6 +155,25 @@ describe("parseDxf: AutoCAD 2027's files of the first drawing (f001, f002)", () 
     )
   })
 
+  // x051, x053: a header's $DIM* that differ from the current style's record
+  // are what AutoCAD opens as that style's current overrides (`Current
+  // dimension overrides: DIMASZ 5.0000`), the record left as it is. The model
+  // has no such overrides (DIMS-D9): the style is its record's.
+  it("reads R12's dimension styles from their records, whatever the header's $DIM* say", () => {
+    const text = new TextDecoder("latin1").decode(fixture("fixture-R12"))
+    const overridden = text.replace(
+      /(\$DIMASZ\r?\n *40\r?\n)[^\r\n]+/,
+      (_, head: string) => `${head}5.0`
+    )
+    expect(overridden).toContain("$DIMASZ\r\n 40\r\n5.0\r\n")
+    expect(overridden).not.toBe(text)
+    const styles = (bytes: Uint8Array) =>
+      parseDxf(bytes).drawing.dimStyles.map((s) => [s.name, s.arrowSize])
+    expect(styles(new TextEncoder().encode(overridden))).toEqual(
+      styles(fixture("fixture-R12"))
+    )
+  })
+
   it("lists what the model has no object for, by type, and paper space apart", () => {
     expect([...drawing.report.leftOut]).toEqual([
       ["3DSOLID", 1],

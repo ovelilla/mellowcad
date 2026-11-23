@@ -365,7 +365,10 @@ as itself (it snaps as the pieces it draws, Nearest along its leaders included);
 the gaps they stand in are drawn, the shapes need their SHX: 3 of the 154 samples); a 2000
 DXF's gradient colours (AutoCAD writes them as `GradientColor1ACI` and `GradientColor2ACI` xdata
 and reads the hatch back as a SOLID, g15: here a SOLID too); a dimension's overrides of the
-variables a style does not hold here (DIMCLRD 176, DIMUPT 288… in its DSTYLE: dropped), a text
+variables a style does not hold here (DIMCLRD 176, DIMUPT 288… in its DSTYLE: dropped); the
+header's `$DIM*` where they differ from the current style's record, which AutoCAD opens as that
+style's current overrides (`Current dimension overrides:`, x051, x053) and here leave the style
+its record's (no current overrides: dimensions.md's Dimension overrides); a text
 style's font, width and obliquing (text is
 measured with Arial's metrics), TEXT's `%%c`, `%%d` and `%%p` drawn as their characters (as TEXT
 lacks them typed); named views, the drawing opened at its saved view, its visual style; DXFIN's FILEDIA 0
@@ -487,7 +490,16 @@ type; NEW's is dated again
 AutoCAD fixture as R12, x027, x028): no CLASSES or OBJECTS, no subclass markers, owners,
 lineweights, true colours (the nearest index alone), linetype scales or version groups; a binary
 file's codes in one byte; the header's R12 variables (`$EXTMIN`, `$EXTMAX`, `$HANDLING` 1, no
-`$CELTSCALE`, `$CELWEIGHT`, `$LWDISPLAY`, `$INSUNITS` or code page), its tables with R12's groups
+`$CELTSCALE`, `$CELWEIGHT`, `$LWDISPLAY`, `$INSUNITS` or code page), each in AutoCAD's order and
+with its value, and the current dimension style's R12 variables there as its record holds them, from
+`$DIMSCALE` to `$DIMGAP` with `$DIMSTYLE` among them (AutoCAD writes the style with its current
+overrides, x050, x051; the model has none), `$LIMMAX` 420,297, `$TRACEWID` 1 and `$SKETCHINC` 1
+as its metric drawing has them: R12 has no `$MEASUREMENT`, and AutoCAD 2027 opens an R12 lacking
+one of these with the imperial value (12,9; 0.05; 0.1; DIMASZ 0.18, DIMTAD 0… as overrides of
+the style), while the other 54 of the 133 its R12 header lists (`$LIMMIN`, `$OSMODE`,
+`$ANGBASE`, `$MIRRTEXT`, `$TILEMODE`, `$PLINEGEN`, `$DIMASO` and `$DIMSHO`, which it writes 1
+even at DIMASSOC 0…) open the same left out (x052, getvars.sh): the console gives each R12 of
+ours the variables and DIMSTYLE ▸ Status of its own R12 of the same drawing; its tables with R12's groups
 (no ByBlock or ByLayer LTYPE; a complex linetype its dashes and gaps alone, x027's GAS_LINE; a
 TrueType style's font `txt`; a dimension style's R12 variables, ISO-25's where the model has none);
 each name uppercase, every character but a letter, a digit, `$`, `-` and `_` an underscore, at most
@@ -503,10 +515,18 @@ DIMENSION without 71, 42, 3 or bit 32; and what R12 has no object for converted 
 AutoCAD converts it: an ellipse a 3D polyline of 128 equal steps, an arc of one too (129
 vertices); a spline a 3D polyline of 32 points per control point at equal knot steps (not
 SPLINESEGS: x027); an XLINE or a RAY the line of it the drawing's extents hold, a direction it does
-not move along leaving that extent alone; an MTEXT, a leader, a multileader, a table, a region or a
-3D solid of flat faces an INSERT on layer 0 of a `*U` block of what EXPLODE makes of it, flat (an
-MTEXT's lines TEXTs, a leader's arrowhead a SOLID and its line a POLYLINE, a box its faces' 24
-edges), the pieces with the object's layer and properties (x027); a dimension's text an INSERT of
+not move along leaving that extent alone; an MTEXT, a leader, a multileader, a table or a region
+an INSERT on layer 0 of a `*U` block of what EXPLODE makes of it, flat (an MTEXT's lines TEXTs, a
+leader's arrowhead a SOLID and its line a POLYLINE), the pieces with the object's layer and
+properties (x027); a 3D solid an INSERT on its own layer, plain, of a `*U` block of the edges of
+each face in turn, an edge once for each face it bounds, with the solid's layer and properties, a
+flat face's in its plane (210) and a curved face's in its curve's: a box's 24 lines, a cylinder's
+two circles twice each, a cone's base circle twice and its apex a POINT, an elliptical edge a 3D
+polyline as an ellipse is, a sphere and a donut torus an empty block, a spindle or lemon torus its
+two poles as POINTs (x054–x057: the pieces, planes and order of faces of AutoCAD's R12 of the same
+commands, which the console opens with no AUDIT error and plots as its own within a pixel; each
+LINE runs its face's loop here, AutoCAD's the way its ACIS edge runs, and a closed loop starts at
+another vertex); a dimension's text an INSERT of
 a `*U` block of its TEXT, ByBlock, but an angular one's, which AutoCAD's R12 writes in its `*D`
 block as TEXTs, horizontal and left on their baseline, the first 1.3 heights under the middle of the
 text and each next line 1.3 heights lower, whatever DIMTAD, DIMTIH, DIMGAP or the arc's turn, a
@@ -546,9 +566,7 @@ need their SAT, not written here: the line goes with them; an array's
 parameters are not written, so AutoCAD opens the array as a block of its items; Save thumbnail preview image shows greyed and off, WHY: no
 preview is written yet (AutoCAD greyed it too in the owner's profile, d01)
 
-**Missing:** in R12, a 3D solid with a curved face (counted as not saved:
-`1 object not saved: 1 3DSOLID.`, **unverified** what AutoCAD's R12 makes of one) and the header's `$DIM*`
-variables; an XLINE or a RAY that
+**Missing:** in R12, an XLINE or a RAY that
 misses the extents is a line of no length at its base point, where AutoCAD writes one of its own
 reckoning (r12.sh's xlines); the thumbnail preview; named views; the visual style (the viewport's 281 and 348 and the
 VISUALSTYLE objects) and the ViewCube's display (`ACAD_NAV_VCDISPLAY` xdata on the viewport), x023;

@@ -2,6 +2,7 @@ import { Vec3, add3, cross3, length3, scale3 } from "../geometry/Vec3"
 import { Axes3, axesToWorld } from "../geometry/ocs"
 import {
   Brep,
+  BrepFace,
   BrepEdge,
   Wire,
   boxBrep,
@@ -19,9 +20,14 @@ import {
 } from "../geometry/solids"
 import { arbitraryAxis, worldToAxes } from "../geometry/ocs"
 import { viewLines } from "../geometry/hiddenLines"
-import { createRegion } from "./regions"
+import { createRegion, regionEdgeEntities } from "./regions"
 import { sweepMapped } from "./sweptSolids"
-import { createArc, createCircle, createLine } from "./entityFactories"
+import {
+  createArc,
+  createCircle,
+  createLine,
+  createPoint,
+} from "./entityFactories"
 import { createEllipse } from "./ellipses"
 import { createSpline } from "./splines"
 import { BSplineCurve } from "../geometry/nurbs"
@@ -319,6 +325,37 @@ export function solidEdgeEntities(solid: Solid3dEntity): Entity[] {
   return solid.brep.edges.flatMap((edge) => edgeEntity(solid, edge) ?? [])
 }
 
+/**
+ * The edges of each face in turn, as the objects they draw as: an edge once
+ * for each face it bounds, a cone's apex or a spindle torus' pole a point, a
+ * sphere or a donut torus nothing. What AutoCAD 2027's R12 writes of a solid
+ * (probes dxf/x054–x057: a cylinder's two circles twice each, a cone's base
+ * circle twice and its apex a POINT, a sphere and a donut an empty block, a
+ * spindle or a lemon its two poles). A flat face's edges
+ * are its region's, in its plane and round its loops (a box's LINEs each
+ * with its face's 210); a curved face's are its edges' own, each in the
+ * plane of its curve (a cylinder's bottom circle at -Z on its side too).
+ */
+export function solidFaceEdgeEntities(solid: Solid3dEntity): Entity[] {
+  const { vertices, edges, faces } = solid.brep
+  return faces.flatMap((face) => {
+    if (face.surface.kind === "plane") {
+      return regionEdgeEntities(faceRegion(solid, face))
+    }
+    return face.loops.flatMap((loop) =>
+      loop.flatMap(({ edge: index }): Entity[] => {
+        const edge = edges[index]
+        if (edge.curve.kind === "point") {
+          const at = vertices[edge.start]
+          return [dressed(solid, createPoint(at, solid.layerId))]
+        }
+        const piece = edgeEntity(solid, edge)
+        return piece ? [piece] : []
+      })
+    )
+  })
+}
+
 /** A cone's apex, a vertex no edge runs to: an Endpoint (solid/s09, s10). */
 export function solidApexes(solid: Solid3dEntity): Vec3[] {
   return solid.brep.edges
@@ -486,11 +523,13 @@ export function solidStretchPoints(solid: Solid3dEntity): readonly Vec3[] {
  * wearing the solid's layer and overrides (solid/p09).
  */
 export function solidFaceRegions(solid: Solid3dEntity): RegionEntity[] {
-  return solid.brep.faces.map((face) => {
-    const flat = planarFace(solid.brep, face)
-    const region = dressed(solid, createRegion([flat.face], solid.layerId))
-    return withNormal(withElevation(region, flat.elevation), flat.axes.z)
-  })
+  return solid.brep.faces.map((face) => faceRegion(solid, face))
+}
+
+function faceRegion(solid: Solid3dEntity, face: BrepFace): RegionEntity {
+  const flat = planarFace(solid.brep, face)
+  const region = dressed(solid, createRegion([flat.face], solid.layerId))
+  return withNormal(withElevation(region, flat.elevation), flat.axes.z)
 }
 
 /** Its surface area: AREA's Object (solid/p01, `Area = 700.0000, Perimeter = 0.0000`). */

@@ -1,0 +1,17 @@
+_DIMASZ
+5
+_DIMSCALE
+2
+(princ (strcat "\nSTYLE=" (getvar "DIMSTYLE")))
+_DIMLINEAR
+0,0
+100,0
+50,20
+_DXFOUT
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\r12\x051-2018.dxf
+16
+_DXFOUT
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\r12\x051-2018-R12.dxf
+_V
+R12
+16

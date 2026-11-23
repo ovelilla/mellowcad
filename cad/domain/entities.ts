@@ -546,5 +546,6 @@ export {
   solidArea,
   solidHasCurvedFaces,
   solidEdgeEntities,
+  solidFaceEdgeEntities,
   solidFaceRegions,
 } from "./solids"

@@ -1,0 +1,13 @@
+_TORUS
+0,0,0
+5
+10
+_TORUS
+60,0,0
+-5
+10
+_DXFOUT
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\r12\x057-2018-R12.dxf
+_V
+R12
+16

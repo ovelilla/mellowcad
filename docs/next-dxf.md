@@ -34,9 +34,10 @@
 > perdíamos en silencio y AutoCAD guarda, los SCP con nombre, se escribe y se lee; y la segunda,
 > R12 (el tipo «AutoCAD R12/LT2 DXF» y la versión R12), hecha el 23/11 (sin publicar), con sus
 > degradados, el texto de la cota angular, el bloqueo de los atributos y el xdata de los
-> sombreados, escrito y leído, el mismo día (sin publicar); siguiente,
-> por orden del dueño, lo que queda de la fase 5 (las `$DIM*` de la cabecera de R12, las vistas
-> preliminares, ACIS, en ese orden) u otro idioma, una sesión cada vez.
+> sombreados, escrito y leído, el mismo día (sin publicar), y las `$DIM*` de su cabecera y
+> el sólido de caras curvas, el 23/11 (sin publicar); siguiente, la caja de un sólido con una
+> arista de normal −Z (§5, punto 2.5), y por orden del dueño lo que queda de la fase 5 (las
+> vistas preliminares, ACIS, en ese orden) u otro idioma, una sesión cada vez.
 > Se borra cuando la fase 5 esté hecha; hasta entonces cada fase cerrada se marca aquí.
 
 ## 1. Objetivo
@@ -586,16 +587,35 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
          también los que CONVERT deja como bloque con los datos enteros. Queda fuera, anotado en
          la entrada de DXFIN: el sombreado que escribió el propio R12 (sin `R14_HATCH_DATA`,
          que CONVERT rehace desde sus contornos), el comando CONVERT y el estilo de islas (75).
-      4. **Las variables `$DIM*` de la cabecera**, con su sonda. Lo visto ya (23/11): la
-         cabecera R12 de AutoCAD lista 133 variables y la nuestra 37; de las que faltan, 41 son
-         `$DIM*` (de `$DIMSCALE` a `$DIMGAP`, con `$DIMASO` y `$DIMSHO`, que no son del estilo) y
-         en `x034-2018-R12.dxf` valen lo que el registro DIMSTYLE del estilo actual, ISO-25, grupo
-         a grupo (DIMSCALE el 40, DIMASZ el 41… DIMGAP el 147: los mismos que ya escribe
-         `dimStyleRecord`); de 2000 a 2018 tampoco las escribimos (solo `$DIMSTYLE`). Hace falta
-         una sonda con el estilo cambiado y con una variable sustituida sobre el estilo, para ver
-         si la cabecera lleva el estilo o el estilo con sus sustituciones, y decidir si las demás
-         que faltan (`$LIMMIN`, `$OSMODE`, `$ANGBASE`, `$MIRRTEXT`…) van en la misma entrega.
-         Después, **un sólido de caras curvas** (sin sonda: se cuenta como no guardado).
+      4. **Las variables `$DIM*` de la cabecera.** **Hecho** (23/11/2026, sin publicar). La
+         cabecera lleva el estilo actual con sus sustituciones actuales (x050: otro estilo puesto
+         como actual; x051: DIMASZ y DIMSCALE cambiadas sobre ISO-25, el registro intacto), y
+         AutoCAD lee de vuelta la que no coincide con su registro como esas sustituciones
+         (`Current dimension overrides:`, x053). Sin ellas, AutoCAD abría nuestro R12 con los
+         valores imperiales de Standard como sustituciones de ISO-25 (DIMASZ 0,18, DIMTAD 0…:
+         `getvars.sh`, que lee las 133 variables y DIMSTYLE ▸ Status). R12 no tiene
+         `$MEASUREMENT`, y por eso también `$LIMMAX`, `$TRACEWID` y `$SKETCHINC` abrían
+         imperiales (12,9; 0,05; 0,1). Las otras 54 abren igual sin escribirlas (`$OSMODE`,
+         `$ANGBASE`, `$MIRRTEXT`…; `$DIMASO` sale 1 aun con DIMASSOC 0, x052), así que no se
+         escriben. Ahora la consola da a 10 de 12 R12 nuestros las mismas variables y el mismo
+         Status que a su R12 del mismo dibujo. Los otros dos no son el mismo dibujo: leaders es
+         sintético, y en el suyo DIMSCALE 10 es una sustitución actual; tables tiene MIRRTEXT 1,
+         que el modelo no tiene. Al leer se queda el registro del estilo (el modelo no tiene
+         sustituciones actuales, DIMS-D9). Los 64 R12 abren sin un error de AUDIT, y de 2000 a
+         2018, 372 de 372 ficheros idénticos byte a byte.
+      5. **Un sólido de caras curvas.** **Hecho** (23/11/2026, sin publicar). AutoCAD escribe de
+         cualquier sólido las aristas de cada cara, una vez por cara que bordea: el vértice de un
+         cono como POINT, la esfera y el toroide como bloque vacío, y los polos de un toroide de
+         huso o de limón como dos POINT. Las aristas de una cara plana van en su plano (210). Y
+         el INSERT va en la capa del sólido, no en la 0 (x054–x057; la caja también, que antes
+         iba en la 0). Lo nuestro da las mismas piezas, en los mismos planos y con las caras en
+         el mismo orden. Solo cambia el sentido de cada LINE: AutoCAD sigue el de su arista
+         ACIS y nosotros el del lazo de la cara. La consola lo abre sin errores de AUDIT y lo
+         traza como su R12, a un píxel. Hallado de paso, sin arreglar: la caja de un sólido
+         (`entityBounds`) mide en su OCS una arista circular de normal −Z, y un cono en 100,0
+         da x de −110 a 110. ZOOM Extensión no lo sufre (proyecta), pero `$EXTMIN` de cualquier
+         versión sí. Arreglarlo cambia la salida de 2000 a 2018 de esos dibujos: va en su propio
+         commit, el siguiente.
    3. **Las vistas preliminares** (_Save thumbnail preview image_, la sección THUMBNAILIMAGE):
       pequeña, pero de poco uso: la consola tiene `Preview= No` por defecto y el escritorio la
       mostraba gris en el perfil del dueño (`d01`).

@@ -1,0 +1,8 @@
+(princ (strcat "\nSTYLE=" (getvar "DIMSTYLE") " DIMASZ=" (rtos (getvar "DIMASZ")) " DIMSCALE=" (rtos (getvar "DIMSCALE"))))
+_-DIMSTYLE
+_ST
+_DIMLINEAR
+0,0
+100,0
+50,20
+(princ (strcat "\nXDATA=" (vl-princ-to-string (assoc -3 (entget (entlast) '("ACAD"))))))

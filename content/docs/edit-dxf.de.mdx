@@ -3,7 +3,7 @@ title: DXF-Datei online bearbeiten
 metaTitle: "DXF-Datei bearbeiten (online, kostenlos)"
 description: "DXF-Datei kostenlos im Browser mit den Befehlen von AutoCAD bearbeiten und wieder als DXF speichern, AutoCAD R12 bis 2018. Ohne Installation, ohne Upload."
 type: howTo
-sourceHash: "3aed71a61efb"
+sourceHash: "0d867e1a9660"
 faq:
   - question: "Wie bearbeite ich eine DXF-Datei online?"
     answer: "Wählen Sie sie oben auf dieser Seite aus oder ziehen Sie sie dorthin: Sie öffnet sich im Editor von MellowCAD, in Ihrem Browser. Ändern Sie sie mit den Befehlen von AutoCAD, dann speichert SICHALS (Strg+Umschalt+S) oder DXFOUT sie wieder als DXF-Datei."
@@ -52,7 +52,7 @@ MellowCAD schreibt jedes seiner Objekte so, wie AutoCAD es schreibt: Linien, Bö
 - **Was sich nicht geöffnet hat, wird nicht gespeichert.** Wofür MellowCAD noch kein Objekt hat — Mehrfachlinien, Toleranzen und [der Rest dieser Liste](/docs/open-dxf#left-out) — wird beim Öffnen der Datei in der Befehlszeile gezählt und steht nicht in der Datei, die Sie speichern. Behalten Sie das Original.
 - **3D-Volumenkörper und Regionen werden nicht geschrieben**: Die Befehlszeile nennt, wie viele ausgelassen wurden.
 - Die Parameter einer Reihe werden nicht geschrieben: AutoCAD öffnet die Reihe als Block ihrer Elemente. Ebenso wenig, was eine Bemaßung an ihrem Stil überschreibt, wofür MellowCAD keine Einstellung hat, etwa ihre Farben.
-- **R12 hat für vieles, was danach kam, kein Objekt** und wandelt es daher stillschweigend um, wie AutoCAD: Eine Ellipse oder ein Spline wird zur 3D-Polylinie; ein mehrzeiliger Text, eine Schraffur, eine Führungslinie, eine Multiführungslinie, eine Tabelle, eine Region oder ein 3D-Volumenkörper mit ebenen Flächen zu einem Block aus dem, was das Objekt zeichnet; eine Konstruktionslinie oder ein Strahl zu einer Linie quer durch die Zeichnung. Bilder und Abdeckungen werden weggelassen, und die Namen von Layern, Blöcken und Stilen werden in Großbuchstaben geschrieben, mit höchstens 26 Zeichen. Eine Abstufung wird als Füllung ihrer Fläche in der Farbe der Schraffur geschrieben, ohne ihre eigenen Farben, wie AutoCAD sie schreibt.
+- **R12 hat für vieles, was danach kam, kein Objekt** und wandelt es daher stillschweigend um, wie AutoCAD: Eine Ellipse oder ein Spline wird zur 3D-Polylinie; ein mehrzeiliger Text, eine Schraffur, eine Führungslinie, eine Multiführungslinie, eine Tabelle, eine Region oder ein 3D-Volumenkörper zu einem Block aus dem, was das Objekt zeichnet; eine Konstruktionslinie oder ein Strahl zu einer Linie quer durch die Zeichnung. Bilder und Abdeckungen werden weggelassen, und die Namen von Layern, Blöcken und Stilen werden in Großbuchstaben geschrieben, mit höchstens 26 Zeichen. Eine Abstufung wird als Füllung ihrer Fläche in der Farbe der Schraffur geschrieben, ohne ihre eigenen Farben, wie AutoCAD sie schreibt.
 - Es gibt keine Miniaturvorschau und keine DWG-Dateien.
 
 ## Ein DXF von Grund auf neu erstellen [#new]

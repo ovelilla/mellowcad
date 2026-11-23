@@ -351,6 +351,101 @@ describe("writeDxf, with no command", () => {
     expect(cad.commandLog()).toEqual(log)
   })
 
+  // x054–x057: AutoCAD 2027's R12 writes each solid as a reference on its
+  // layer to a *U block of its faces' edges, each once per face it bounds, a
+  // flat face's in its plane (210).
+  it("writes a solid of curved faces in R12 as AutoCAD does, its faces' edges", async () => {
+    const cad = createHarness({})
+    typed(cad, "_-LAYER", "_M", "SOL", "")
+    typed(cad, "_CYLINDER", "0,0,0", "10", "30")
+    typed(cad, "_SPHERE", "50,0,0", "10")
+    typed(cad, "_CONE", "100,0,0", "10", "30")
+    typed(cad, "_TORUS", "160,0,0", "15", "3")
+    typed(cad, "_CYLINDER", "_E", "0,60,0", "@20,0", "10,68", "30")
+    typed(cad, "_BOX", "100,60,0", "@40,40,20")
+    // A spindle torus and a lemon: their poles, x057.
+    typed(cad, "_TORUS", "200,0,0", "5", "10")
+    typed(cad, "_TORUS", "260,0,0", "-5", "10")
+    expect(cad.entityCount).toBe(8)
+    const { bytes, leftOut } = await cad.writeDxf({ version: "R12" })
+    expect(leftOut.size).toBe(0)
+    // The console opens these and plots them as x056-2018-R12.dxf, AutoCAD's
+    // R12 of the same commands.
+    const dir = process.env.DXF_OUT
+    if (dir) {
+      writeFileSync(join(dir, "curved-R12.dxf"), bytes)
+      const binary = await cad.writeDxf({ version: "R12", binary: true })
+      writeFileSync(join(dir, "curved-R12b.dxf"), binary.bytes)
+    }
+    const lines = new TextDecoder("latin1").decode(bytes).split("\r\n")
+    const pairs: [string, string][] = []
+    for (let i = 0; i + 1 < lines.length; i += 2) {
+      pairs.push([lines[i].trim(), lines[i + 1]])
+    }
+    // Each *U block's objects, each its type and groups but its handle, and
+    // each INSERT's layer and block.
+    const blocks = new Map<string, string[]>()
+    let block: string[] | null = null
+    const inserts: [layer: string, block: string][] = []
+    let entities = false
+    pairs.forEach(([code, value], i) => {
+      if (code === "0" && value === "BLOCK") {
+        const name = pairs.slice(i).find(([c]) => c === "2")![1]
+        blocks.set(name, (block = []))
+      } else if (code === "0" && value === "ENDBLK") block = null
+      else if (code === "0" && block) block.push(value)
+      else if (block && block.length > 0 && code !== "5") {
+        block[block.length - 1] += ` ${code}=${value.trim()}`
+      }
+      if (code === "2" && value === "ENTITIES") entities = true
+      if (entities && code === "0" && value === "INSERT") {
+        const groups = new Map(pairs.slice(i + 1, i + 8))
+        inserts.push([groups.get("8")!, groups.get("2")!])
+      }
+    })
+    const objects = inserts.map(([, name]) => blocks.get(name) ?? [])
+    const counted = (rows: readonly string[], key: (row: string) => string) =>
+      Object.entries(Object.groupBy(rows, key)).map(
+        ([k, all]) => `${all!.length} ${k}`
+      )
+    const type = (row: string) => row.split(" ")[0]
+    expect(inserts.map(([layer]) => layer)).toEqual(Array(8).fill("SOL"))
+    expect(objects.map((rows) => counted(rows, type))).toEqual([
+      ["4 CIRCLE"],
+      [],
+      ["2 CIRCLE", "1 POINT"],
+      [],
+      ["4 POLYLINE", "516 VERTEX", "4 SEQEND"],
+      ["24 LINE"],
+      ["2 POINT"],
+      ["2 POINT"],
+    ])
+    // The cone's apex, and each torus' poles (x057: z ±8.660254).
+    const points = (rows: readonly string[]) =>
+      rows.filter((r) => type(r) === "POINT").map((r) => r.split(" 10=")[1])
+    expect(points(objects[2])).toEqual(["100.0 20=0.0 30=30.0"])
+    for (const [i, x] of [
+      [6, "200.0"],
+      [7, "260.0"],
+    ] as const) {
+      expect(
+        points(objects[i]).map((p) => p.replace(/(\.\d{6})\d*/g, "$1"))
+      ).toEqual([`${x} 20=0.0 30=8.660254`, `${x} 20=0.0 30=-8.660254`])
+    }
+    // The box's LINEs in their faces' planes, four in each (x056).
+    const plane = (row: string) => row.match(/ 210=.*/)?.[0].trim() ?? "+Z"
+    expect(counted(objects[5], plane).sort()).toEqual(
+      [
+        "4 +Z",
+        "4 210=0.0 220=0.0 230=-1.0",
+        "4 210=0.0 220=-1.0 230=0.0",
+        "4 210=-1.0 220=0.0 230=0.0",
+        "4 210=0.0 220=1.0 230=0.0",
+        "4 210=1.0 220=0.0 230=0.0",
+      ].sort()
+    )
+  })
+
   it("needs no file access", async () => {
     const cad = createHarness({ entities: [circleOf(p(0, 0), 5)] })
     const { bytes } = await cad.writeDxf()

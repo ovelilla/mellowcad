@@ -1,5 +1,5 @@
 import { BlockLookup, Entity, entitiesBounds } from "../../domain/entities"
-import { DimStyle } from "../../domain/dimStyles"
+import { DimStyle, createDefaultDimStyle } from "../../domain/dimStyles"
 import {
   CONTINUOUS,
   DEFAULT_LINETYPE_ID,
@@ -9,6 +9,7 @@ import {
 import { COLOR_BYLAYER } from "../../domain/colors"
 import { DrawingSnapshot } from "../drawingFile"
 import { DxfOut } from "./dxfOut"
+import { isRealDimGroup } from "./dxfDimVariables"
 import { dxfColorCodes } from "./dxfColors"
 import { R12Names, R12Source, r12Conversion, r12Name } from "./dxfR12"
 import { R12_GRADIENT_COLOR_APPS, writeR12HatchXdata } from "./writeDxfR12Hatch"
@@ -129,14 +130,7 @@ export function writeDxfR12(plan: R12Plan): Uint8Array {
     owner: string
   ): boolean => {
     const conversion = r12Conversion(entity, source)
-    if (conversion === null) {
-      // A solid with a curved face: not written yet.
-      if (entity.type === "solid3d") {
-        c.leftOut("3DSOLID")
-        return true
-      }
-      return false
-    }
+    if (conversion === null) return false
     switch (conversion.kind) {
       case "dropped":
         return true
@@ -154,7 +148,8 @@ export function writeDxfR12(plan: R12Plan): Uint8Array {
         const reference = handle()
         o.str(0, "INSERT")
         o.str(5, reference)
-        o.str(8, dressed ? c.layerName(dressed.layerId) : "0")
+        const layer = dressed?.layerId ?? conversion.layerId
+        o.str(8, layer !== undefined ? c.layerName(layer) : "0")
         if (dressed?.linetype !== undefined)
           o.str(6, c.linetypeName(dressed.linetype))
         if (dressed) color(o, dressed.color)
@@ -377,8 +372,8 @@ function header(
     drawing.textStyles.find((t) => t.id === drawing.currentTextStyleId)?.name ??
     "Standard"
   const dimStyle =
-    drawing.dimStyles.find((d) => d.id === drawing.currentDimStyleId)?.name ??
-    "ISO-25"
+    drawing.dimStyles.find((d) => d.id === drawing.currentDimStyleId) ??
+    createDefaultDimStyle()
   out.str(0, "SECTION")
   out.str(2, "HEADER")
   variable("$ACADVER")
@@ -389,6 +384,12 @@ function header(
   out.point(10, extents?.min.x ?? 0, extents?.min.y ?? 0, 0)
   variable("$EXTMAX")
   out.point(10, extents?.max.x ?? 0, extents?.max.y ?? 0, 0)
+  // LIMMAX, TRACEWID and SKETCHINC as AutoCAD's metric drawing has them (x034,
+  // x052): R12 has no MEASUREMENT, and without them AutoCAD opens an R12 with
+  // the imperial 12,9, 0.05 and 0.1 (getvars.sh). The rest of its header that
+  // the model has no value for opens the same left out.
+  variable("$LIMMAX")
+  out.point(10, 420, 297)
   variable("$ORTHOMODE")
   out.int(70, s.orthoMode ? 1 : 0)
   variable("$FILLMODE")
@@ -402,6 +403,8 @@ function header(
   )
   variable("$TEXTSIZE")
   out.real(40, s.textSize)
+  variable("$TRACEWID")
+  out.real(40, 1)
   variable("$TEXTSTYLE")
   out.str(7, names.textStyle(textStyle))
   variable("$CLAYER")
@@ -418,12 +421,13 @@ function header(
   if (s.currentColor === COLOR_BYLAYER) out.int(62, 256)
   else if (s.currentColor === "ByBlock") out.int(62, 0)
   else out.int(62, dxfColorCodes(s.currentColor)?.index ?? 256)
-  variable("$DIMSTYLE")
-  out.str(2, names.dimStyle(dimStyle))
+  headerDimVariables(out, dimStyle, names.dimStyle(dimStyle.name))
   variable("$LUNITS")
   out.int(70, 2)
   variable("$LUPREC")
   out.int(70, s.precision)
+  variable("$SKETCHINC")
+  out.real(40, 1)
   variable("$FILLETRAD")
   out.real(40, s.filletRadius)
   variable("$AUNITS")
@@ -520,34 +524,101 @@ function activeViewport(
 }
 
 /**
- * A dimension style in R12's groups (f002's ISO-25): what the model holds,
- * the rest ISO-25's. DIMDEC, DIMADEC and DIMDSEP came with R13: a
- * dimension's own overrides of them still go in its DSTYLE xdata.
+ * R12's dimension variables in a style (f002's ISO-25): what the model
+ * holds, the rest ISO-25's, each by its DIMSTYLE group, in the order of the
+ * header's (x034). DIMDEC, DIMADEC and DIMDSEP came with R13: a dimension's
+ * own overrides of them still go in its DSTYLE xdata.
  */
+const R12_DIM_VARIABLES: readonly (readonly [
+  name: string,
+  group: number,
+  value: (style: DimStyle) => number | string,
+])[] = [
+  ["$DIMSCALE", 40, (s) => s.scale],
+  ["$DIMASZ", 41, (s) => s.arrowSize],
+  ["$DIMEXO", 42, (s) => s.extensionOffset],
+  ["$DIMDLI", 43, (s) => s.baselineSpacing],
+  ["$DIMRND", 45, () => 0],
+  ["$DIMDLE", 46, () => 0],
+  ["$DIMEXE", 44, (s) => s.extensionBeyond],
+  ["$DIMTP", 47, () => 0],
+  ["$DIMTM", 48, () => 0],
+  ["$DIMTXT", 140, (s) => s.textHeight],
+  ["$DIMCEN", 141, (s) => s.centerMark],
+  ["$DIMTSZ", 142, () => 0],
+  ["$DIMTOL", 71, () => 0],
+  ["$DIMLIM", 72, () => 0],
+  ["$DIMTIH", 73, () => 0],
+  ["$DIMTOH", 74, () => 0],
+  ["$DIMSE1", 75, () => 0],
+  ["$DIMSE2", 76, () => 0],
+  ["$DIMTAD", 77, () => 1],
+  ["$DIMZIN", 78, (s) => (s.suppressTrailingZeros ? 8 : 0)],
+  ["$DIMBLK", 5, () => ""],
+  ["$DIMPOST", 3, () => ""],
+  ["$DIMAPOST", 4, () => ""],
+  ["$DIMALT", 170, () => 0],
+  ["$DIMALTD", 171, () => 3],
+  ["$DIMALTF", 143, () => 0.03937007874016],
+  ["$DIMLFAC", 144, () => 1],
+  ["$DIMTOFL", 172, (s) => (s.forceLineInside ? 1 : 0)],
+  ["$DIMTVP", 145, () => 0],
+  ["$DIMTIX", 174, () => 0],
+  ["$DIMSOXD", 175, () => 0],
+  ["$DIMSAH", 173, () => 0],
+  ["$DIMBLK1", 6, () => ""],
+  ["$DIMBLK2", 7, () => ""],
+  ["$DIMCLRD", 176, () => 0],
+  ["$DIMCLRE", 177, () => 0],
+  ["$DIMCLRT", 178, () => 0],
+  ["$DIMTFAC", 146, () => 1],
+  ["$DIMGAP", 147, (s) => s.textGap],
+]
+
+/** A record's groups in their order (f002): 3–7, 40–48, 140–147, 71–78, 170–178. */
+const R12_DIMSTYLE_GROUPS = [3, 4, 5, 6, 7, 40, 41, 42, 43, 44, 45, 46, 47, 48]
+  .concat([140, 141, 142, 143, 144, 145, 146, 147])
+  .concat([71, 72, 73, 74, 75, 76, 77, 78])
+  .concat([170, 171, 172, 173, 174, 175, 176, 177, 178])
+
+/** A dimension style in R12's groups. */
 function dimStyleRecord(out: DxfOut, name: string, style: DimStyle): void {
   out.str(0, "DIMSTYLE")
   out.str(2, name)
   out.int(70, 0)
-  for (const code of [3, 4, 5, 6, 7]) out.str(code, "")
-  out.real(40, style.scale)
-  out.real(41, style.arrowSize)
-  out.real(42, style.extensionOffset)
-  out.real(43, style.baselineSpacing)
-  out.real(44, style.extensionBeyond)
-  for (const code of [45, 46, 47, 48]) out.real(code, 0)
-  out.real(140, style.textHeight)
-  out.real(141, style.centerMark)
-  out.real(142, 0)
-  out.real(143, 0.03937007874016)
-  out.real(144, 1)
-  out.real(145, 0)
-  out.real(146, 1)
-  out.real(147, style.textGap)
-  for (const code of [71, 72, 73, 74, 75, 76]) out.int(code, 0)
-  out.int(77, 1)
-  out.int(78, style.suppressTrailingZeros ? 8 : 0)
-  out.int(170, 0)
-  out.int(171, 3)
-  out.int(172, style.forceLineInside ? 1 : 0)
-  for (const code of [173, 174, 175, 176, 177, 178]) out.int(code, 0)
+  for (const group of R12_DIMSTYLE_GROUPS) {
+    const [, , value] = R12_DIM_VARIABLES.find(([, g]) => g === group)!
+    const v = value(style)
+    if (typeof v === "string") out.str(group, v)
+    else if (isRealDimGroup(group)) out.real(group, v)
+    else out.int(group, v)
+  }
+}
+
+/**
+ * The header's dimension variables, `$DIMSTYLE` among them: the current
+ * style's, as its record holds them. AutoCAD writes there the style with its
+ * current overrides (x051) and reads the header back as those overrides
+ * (x053); the model has none (DIMS-D9). Left out, AutoCAD opens an R12 with
+ * Standard's imperial values as overrides of the style (DIMASZ 0.18, DIMTAD
+ * 0: getvars.sh). DIMASO and DIMSHO, not a style's, are left out: AutoCAD
+ * writes DIMASO 1 even at DIMASSOC 0 (x052), and opens both as 1 without
+ * them, as its own R12 of a new drawing writes them.
+ */
+function headerDimVariables(
+  out: DxfOut,
+  style: DimStyle,
+  styleName: string
+): void {
+  for (const [name, group, value] of R12_DIM_VARIABLES) {
+    out.str(9, name)
+    const v = value(style)
+    if (typeof v === "string") out.str(1, v)
+    else if (isRealDimGroup(group)) out.real(40, v)
+    else out.int(70, v)
+    if (name === "$DIMBLK2") {
+      out.str(9, "$DIMSTYLE")
+      out.str(2, styleName)
+    }
+  }
 }

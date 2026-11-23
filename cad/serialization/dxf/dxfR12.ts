@@ -33,15 +33,14 @@ import {
   mtextLineTexts,
   mtextPlainText,
   nextEntityId,
-  solidFaceRegions,
-  solidHasCurvedFaces,
+  solidFaceEdgeEntities,
   splineCurve,
   tableExploded,
   tableGeometry,
 } from "../../domain/entities"
 import { regionEdgeEntities } from "../../domain/regions"
 import { DimStyle } from "../../domain/dimStyles"
-import { DEFAULT_LAYER_ID } from "../../domain/layers"
+import { DEFAULT_LAYER_ID, LayerId } from "../../domain/layers"
 import { CONTINUOUS } from "../../domain/linetypes"
 import { cp1252Byte } from "./dxfOut"
 
@@ -101,14 +100,15 @@ export type R12Conversion =
    * pattern's lines, `*U` for the rest. A hatch's reference carries its
    * layer and properties, a pattern's lines ByBlock, a fill's pieces the
    * hatch's (x030), and the xdata that says what `hatch` is
-   * (`writeR12HatchXdata`); any other's is plain on layer 0 and its pieces
-   * keep the object's (x027).
+   * (`writeR12HatchXdata`); any other's is plain on layer 0, a 3D solid's
+   * on its `layerId`, and its pieces keep the object's (x027, x055).
    */
   | {
       readonly kind: "block"
       readonly prefix: "*U" | "*X"
       readonly pieces: readonly Entity[]
       readonly dressed?: Entity
+      readonly layerId?: LayerId
       readonly hatch?: HatchEntity
     }
 
@@ -165,15 +165,10 @@ export function r12Conversion(
     case "region":
       return block(flat(regionEdgeEntities(entity), source))
     case "solid3d":
-      // WHY a curved face is not written: what AutoCAD's R12 makes of one
-      // is unverified (r12.sh's box: the 4 edges of each face, 24 lines).
-      if (solidHasCurvedFaces(entity)) return null
-      return block(
-        flat(
-          solidFaceRegions(entity).flatMap((face) => regionEdgeEntities(face)),
-          source
-        )
-      )
+      // The reference on the solid's layer, plain (x055: five solids on
+      // layer SOL, one green, each's INSERT on SOL with no colour), unlike
+      // the other conversions' on layer 0 (x027's MTEXT).
+      return block(flat(solidFaceEdgeEntities(entity), source), entity.layerId)
     case "hatch":
       return hatchConversion(entity)
     default:
@@ -181,8 +176,13 @@ export function r12Conversion(
   }
 }
 
-function block(pieces: readonly Entity[]): R12Conversion {
-  return { kind: "block", prefix: "*U", pieces }
+function block(pieces: readonly Entity[], layerId?: LayerId): R12Conversion {
+  return {
+    kind: "block",
+    prefix: "*U",
+    pieces,
+    ...(layerId !== undefined ? { layerId } : {}),
+  }
 }
 
 /**

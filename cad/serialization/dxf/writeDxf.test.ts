@@ -327,6 +327,48 @@ describe("writeDxf", () => {
     expect(text).toContain("  3\r\ntxt\r\n")
   })
 
+  // getvars.sh (x053): AutoCAD 2027 opens an R12 whose header lacks a
+  // variable with the imperial default (DIMASZ 0.18, LIMMAX 12,9), the
+  // header's $DIM* being the current style's overrides (x051, x053). Every
+  // variable ours writes is AutoCAD's, in its order and with its value, but
+  // the extents and the handle seed; what ours leaves out opens the same.
+  it("writes R12's header as AutoCAD's R12 of the same drawing, the dimension variables among it", () => {
+    const header = (bytes: Uint8Array) => {
+      const lines = new TextDecoder("latin1")
+        .decode(bytes)
+        .split("\r\n")
+        .map((l) => l.trim())
+      const vars = new Map<string, string[]>()
+      let name = ""
+      for (let i = 0; i + 1 < lines.length; i += 2) {
+        const [code, value] = [lines[i], lines[i + 1]]
+        if (code === "0" && value === "ENDSEC") break
+        if (code === "9") vars.set((name = value), [])
+        else if (name) vars.get(name)!.push(`${code} ${value}`)
+      }
+      return vars
+    }
+    const acad = header(fixture("fixture-R12"))
+    const ours = header(
+      writeDxf(parseDxf(fixture("fixture-2018")).drawing, {
+        version: "R12",
+        binary: false,
+        precision: 16,
+      }).bytes
+    )
+    const names = [...acad.keys()]
+    const order = [...ours.keys()].map((n) => names.indexOf(n))
+    expect(order).not.toContain(-1)
+    expect(order).toEqual([...order].sort((a, b) => a - b))
+    for (const [name, groups] of ours) {
+      if (/^\$(EXTMIN|EXTMAX|HANDSEED)$/.test(name)) continue
+      expect([name, groups]).toEqual([name, acad.get(name)])
+    }
+    const dims = names.filter((n) => n.startsWith("$DIM"))
+    expect(dims.filter((n) => !ours.has(n))).toEqual(["$DIMASO", "$DIMSHO"])
+    expect(ours.get("$DIMSTYLE")).toEqual(["2 ARCH"])
+  })
+
   it("writes a true colour in R12 as its nearest index alone, the current one too", () => {
     const drawing = snapshotOf(
       [{ ...lineOf(p(0, 0), p(10, 0)), color: "#ff8000" }],

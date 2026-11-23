@@ -3,7 +3,7 @@ title: Edytor DXF online
 metaTitle: "Edytor DXF online: edycja i zapis plików DXF"
 description: "Edytuj plik DXF za darmo w przeglądarce poleceniami AutoCADa i zapisz go ponownie jako DXF, AutoCAD R12 do 2018. Bez instalacji, nic nie jest wysyłane."
 type: howTo
-sourceHash: "3aed71a61efb"
+sourceHash: "0d867e1a9660"
 faq:
   - question: "Jak edytować plik DXF online?"
     answer: "Wybierz go lub upuść u góry tej strony: otworzy się w edytorze MellowCAD, w przeglądarce. Zmień go poleceniami AutoCADa, a potem polecenie NZAPISZ (Ctrl+Shift+S) lub DXFWY zapisze go ponownie jako plik DXF."
@@ -52,7 +52,7 @@ Każdy obiekt, jaki ma MellowCAD, zapisany tak, jak zapisuje go AutoCAD: linie, 
 - **To, co się nie otworzyło, nie jest zapisywane.** To, dla czego MellowCAD nie ma jeszcze obiektu – multilinie, tolerancje i [reszta tej listy](/docs/open-dxf#left-out) – jest liczone w wierszu polecenia przy otwieraniu pliku i nie trafia do zapisywanego pliku. Zachowaj oryginał.
 - **Bryły 3D i regiony nie są zapisywane**: wiersz polecenia podaje, ile ich pominięto.
 - Parametry szyku nie są zapisywane: AutoCAD otwiera szyk jako blok jego elementów. Nie jest zapisywane również to, co wymiar nadpisuje w swoim stylu bez odpowiednika w ustawieniach MellowCAD, na przykład jego kolory.
-- **R12 nie ma obiektu dla wielu rzeczy, które pojawiły się później**, więc po cichu je przekształca, jak AutoCAD: elipsa lub splajn staje się polilinią 3D; tekst wielowierszowy, kreskowanie, linia odniesienia, wielolinia odniesienia, tabela, region lub bryła 3D o płaskich ścianach – blokiem tego, co rysuje; linia konstrukcyjna lub półprosta – linią przecinającą cały rysunek. Obrazy i maskowania są pomijane, a nazwy warstw, bloków i stylów są zapisywane wielkimi literami, najwyżej 26 znaków. Gradient jest zapisywany jako wypełnienie jego obszaru w kolorze kreskowania, bez własnych kolorów, tak jak zapisuje go AutoCAD.
+- **R12 nie ma obiektu dla wielu rzeczy, które pojawiły się później**, więc po cichu je przekształca, jak AutoCAD: elipsa lub splajn staje się polilinią 3D; tekst wielowierszowy, kreskowanie, linia odniesienia, wielolinia odniesienia, tabela, region lub bryła 3D – blokiem tego, co rysuje; linia konstrukcyjna lub półprosta – linią przecinającą cały rysunek. Obrazy i maskowania są pomijane, a nazwy warstw, bloków i stylów są zapisywane wielkimi literami, najwyżej 26 znaków. Gradient jest zapisywany jako wypełnienie jego obszaru w kolorze kreskowania, bez własnych kolorów, tak jak zapisuje go AutoCAD.
 - Nie ma miniatury podglądu ani DWG.
 
 ## Utwórz DXF od zera [#new]

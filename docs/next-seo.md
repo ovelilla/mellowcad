@@ -32,8 +32,9 @@
 > las sustituciones DSTYLE, del punto 7, hechos el 22/11, publicados el 22/11, y la malla de
 > VBA_Tower (una malla poligonal, con 3DMESH), hecha el 22/11, sin publicar, que cierra el punto 7,
 > y de la fase 5 el informe de lo que se pierde al guardar (AutoCAD no informa; los SCP con nombre,
-> que perdíamos, se guardan), hecho el 22/11, sin publicar, y R12, hecho el 23/11, sin publicar;
-> siguiente, lo que R12 aún no escribe o las vistas preliminares) y otro idioma (los once de AutoCAD con
+> que perdíamos, se guardan), hecho el 22/11, sin publicar, y R12, con las `$DIM*` de su cabecera
+> y el sólido de caras curvas, hecho el 23/11, sin publicar; siguiente, la caja de un sólido con
+> una arista de normal −Z, y las vistas preliminares) y otro idioma (los once de AutoCAD con
 > criterio de L8 están hechos, el chino tradicional el último: ampliar el criterio es decisión del
 > dueño), alternando, además de lo que queda de §7.
 > Esperan detrás
