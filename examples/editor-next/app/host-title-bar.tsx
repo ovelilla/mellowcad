@@ -1,12 +1,12 @@
 "use client"
 
-import type { TopBarProps } from "@mellowcad/editor"
+import type { TitleBarProps } from "@mellowcad/editor"
 
 const TOOLS = ["line", "circle", "rectangle"]
 
-// It renders inside the editor's top zone and root: the editor's tokens and
+// It renders inside the editor's title zone and root: the editor's tokens and
 // fonts reach it, and its classes are this app's Tailwind's.
-export function HostTopBar({ engine, state }: TopBarProps) {
+export function HostTitleBar({ engine, state }: TitleBarProps) {
   const tools = state.tools.filter((tool) => TOOLS.includes(tool.id))
   return (
     <nav className="flex w-full items-center gap-1">

@@ -19,7 +19,7 @@ export const hu: EditorLocale = {
       "copyBase": "Ctrl+Shift+C",
       "paste": "Ctrl+V"
     },
-    "TopBar": {
+    "TitleBar": {
       "menu": "Alkalmazásmenü",
       "new": "Új",
       "open": "Megnyitás",

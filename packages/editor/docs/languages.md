@@ -94,7 +94,7 @@ import { CadEditor, type EditorLocale } from "@mellowcad/editor"
 
 const english: EditorLocale = {
   tag: "en",
-  messages: { TopBar: { savedHint: "Saved to your account" } },
+  messages: { TitleBar: { savedHint: "Saved to your account" } },
 }
 
 export const Editor = () => <CadEditor editorLocale={english} />
@@ -110,7 +110,7 @@ export const spanish: EditorLocale = {
   ...es,
   messages: {
     ...es.messages,
-    TopBar: { ...es.messages.TopBar, savedHint: "Guardado en tu cuenta" },
+    TitleBar: { ...es.messages.TitleBar, savedHint: "Guardado en tu cuenta" },
   },
 }
 ```

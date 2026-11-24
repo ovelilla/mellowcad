@@ -525,7 +525,7 @@ describe("ERASE undone and redone", () => {
 })
 
 // U and REDO name an edit made outside a command by where it was made: the
-// top bar's drop-downs on objects CHPROP (desktop properties/d05-2, d05-3b;
+// title bar's drop-downs on objects CHPROP (desktop properties/d05-2, d05-3b;
 // es CAMBPROP, table 52586), the Properties palette Modify Property (desktop
 // arrays/d20), a grip Grip Edit (arrays/d14; es table 6001). CECOLOR set
 // from a drop-down with nothing selected names nothing (properties/d05-3).

@@ -94,10 +94,10 @@ describe("a language laid over English", () => {
   })
 
   it("is how a host gives the editor words of its own", () => {
-    const own = extendEditorLocale(en, { TopBar: { save: "Keep" } })
+    const own = extendEditorLocale(en, { TitleBar: { save: "Keep" } })
     expect(own.tag).toBe("en")
-    expect(own.messages.TopBar?.save).toBe("Keep")
-    expect(own.messages.TopBar?.open).toBe(en.messages.TopBar.open)
-    expect(en.messages.TopBar.save).not.toBe("Keep")
+    expect(own.messages.TitleBar?.save).toBe("Keep")
+    expect(own.messages.TitleBar?.open).toBe(en.messages.TitleBar.open)
+    expect(en.messages.TitleBar.save).not.toBe("Keep")
   })
 })

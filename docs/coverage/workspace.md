@@ -179,10 +179,10 @@ it (desktop workspace/d09); with Clean Screen on, RIBBON shows the ribbon and Cl
 command may not be invoked transparently **` (d09). The engine keeps, for the session, the tab in
 front and the member each drop-down shows (`state.ribbon`), as AutoCAD keeps the member for the
 session and not after a restart (`docs/plans/autocad-ui.md`, §2.3) — WHY the ribbon closed hides
-the tool palette and the top bar's Layers and Properties groups, the palette toggles with them: the
-editor has no ribbon yet, and those are what it stands in for (`docs/plans/autocad-ui.md`, phase 1)
+the ribbon's band, the tool palette and the title bar's Layers and Properties groups, the
+palette toggles with them: the ribbon's tabs are not built yet, and those stand in for them (`docs/plans/autocad-ui.md`, phase 1)
 
-**Missing:** the ribbon itself (phase 1 of `docs/plans/autocad-ui.md`), its right-click menu's
+**Missing:** the ribbon's tabs (phase 1 of `docs/plans/autocad-ui.md`), its right-click menu's
 Close and Undock, docking and floating it
 
 ### F1 (Help)
@@ -202,28 +202,38 @@ main, 2026-10-30)
 **Missing:** HELP and `'HELP` as commands; F1 over a tooltip, a palette or a dialog (Help for
 that one); a command named in the command line but not run yet; offline Help
 
-### Top bar
+### Title bar
 
-**Implemented:** the application menu (New, Open, Save, Save As, then Drawing Units, which the help
-files under Drawing Utilities > Units, the page's language, which AutoCAD has no menu for, and last
-Send Feedback, which opens the host's page in a new tab — the site's issue forms, filled in — where
-AutoCAD's opens its form on Autodesk's site: WHY in the application menu, AutoCAD 2027 has it as
-the Start tab's Connect panel's button, «Help us improve our products · Send feedback» (desktop,
+**Implemented:** AutoCAD's frame from the top (`docs/plans/autocad-ui.md`, §2.1): the title bar,
+32 px, then the ribbon's band, 124 (its tab row and its panels), shown from the first paint and gone
+while RIBBONCLOSE or Clean Screen has closed it, then the drawing. In the title bar the application
+button, 48 wide, flush at its start, and the Quick Access Toolbar's buttons at AutoCAD's 24×22 with
+16 px icons, one against the next from 56 px (UI Automation at 1280×720, 2026-11-24). The
+application menu: New, Open, Save, Save As, then Drawing Units, which the help files under Drawing
+Utilities > Units, the page's language, which AutoCAD has no menu for, and last Send Feedback,
+which opens the host's page in a new tab — the site's issue forms, filled in — where AutoCAD's
+opens its form on Autodesk's site: WHY in the application menu, AutoCAD 2027 has it as the Start
+tab's Connect panel's button, «Help us improve our products · Send feedback» (desktop,
 2026-11-07), and in the Help menu between Online Resources and Privacy Settings (acad.cuix
 `ID_SendFeedback`, `^C^C^P_ai_send_feedback ^P`), and neither exists here: it moves to the title
-bar's Help list when the chrome has one, `docs/plans/autocad-ui.md`, F7) and the Quick Access Toolbar in AutoCAD's order — New (QNEW), Open, Save, Save As, Undo, Redo —, each
-run as its command by its global name (`_QSAVE`), so it echoes (Drawing Units as the desktop's
-application menu runs it, `^C^C_UNITS`: see UNITS); the Home tab's Layers and Properties
-panels beside them (`Object properties`, `Layers`), and at the end View's palette toggles: Styles,
-Blocks and the command line, which RIBBONCLOSE and Clean Screen hide as the ribbon's — WHY one 36 px row instead of the ribbon: a ribbon costs 70–150 px of
-height, which a wide screen is short of (revoked by the owner on 2026-11-07: the chrome follows AutoCAD's layout, `docs/next-autocad-ui.md`)
+bar's Help list when the chrome has one, `docs/plans/autocad-ui.md`, F7. The Quick Access Toolbar
+in AutoCAD's order — New (QNEW), Open, Save, Save As, Undo, Redo —, each run as its command by its
+global name (`_QSAVE`), so it echoes (Drawing Units as the desktop's application menu runs it,
+`^C^C_UNITS`: see UNITS); the save state where AutoCAD's title names the drawing. After them, until
+the ribbon's tabs are built, the Home tab's Layers and Properties panels (`Object properties`,
+`Layers`) and at the end View's palette toggles: Styles, Blocks and the command line, which
+RIBBONCLOSE and Clean Screen hide as the ribbon's — WHY in the title bar: the ribbon's band is
+empty until its Home tab is built (`docs/plans/autocad-ui.md`, §6, blocks 3 and 4)
 
-**Missing:** the rest of the application menu and its layout (the 2027 desktop's: New, Open, Save,
-Save As, Import, Export | Publish, Print, Drawing Utilities | Close, each but Save with a page of
-items, Units one of Drawing Utilities'; a search, the recent and open documents, Options and Exit;
-`docs/plans/autocad-ui.md`, §2.2), Undo's and Redo's lists (split buttons in AutoCAD, plain
-buttons here), Plot and the Web & Mobile pair, the drawing's name in the title (the file port does
-not know the open file's name), the ribbon's tabs and its minimize states
+**Missing:** the ribbon's tabs and panels and its minimize states (phase 1 of
+`docs/plans/autocad-ui.md`); the rest of the application menu and its layout (the 2027 desktop's:
+New, Open, Save, Save As, Import, Export | Publish, Print, Drawing Utilities | Close, each but Save
+with a page of items, Units one of Drawing Utilities'; a search, the recent and open documents,
+Options and Exit; `docs/plans/autocad-ui.md`, §2.2), Undo's and Redo's lists (split buttons in
+AutoCAD, 36 wide, plain buttons of 24 here), Plot, Customize ▾ and Share, the title centred and
+InfoCenter (Help ▾ comes with phase 2), the drawing's name in the title (the file port does not
+know the open file's name), the file tabs (one drawing at a time) — WHY no window buttons
+(minimise, maximise, close): a page cannot draw its window's frame
 
 ### Tool palette
 
@@ -243,7 +253,7 @@ whose macros are transparent, `'_attdisp _n` / `_on` / `_off` (ID_AttdispNo/On/O
 a running command too, which resumes (probe workspace/p313); Edit Text has a slot of its own
 (TEXTEDIT's `^C^C_textedit` is on the Text toolbar, not the ribbon); Utilities is Measure ▾
 (Distance and Area, as 2026 names them) and ID Point, `'_id` (the panel's expanded part); under
-700 px of height Annotation, Block and Utilities fold to one drop-down each, the ribbon's "Minimize to Panel Buttons" — WHY a palette: as the top bar (revoked by the owner on 2026-11-07: the chrome follows AutoCAD's layout, `docs/next-autocad-ui.md`)
+1016 px of window (scrolled at 720) Annotation, Block and Utilities fold to one drop-down each, the ribbon's "Minimize to Panel Buttons" — WHY a palette: the ribbon's band is empty until Home is built (revoked by the owner on 2026-11-07: the chrome follows AutoCAD's layout, `docs/next-autocad-ui.md`)
 
 **Missing:** DIM, Arc Length, Jogged and Ordinate in Dimension (the commands do not exist), the
 panels' other expanded tools, Edit Attributes ▸ Multiple (`^C^C_-attedit`, ID_AtteditGlo: -ATTEDIT

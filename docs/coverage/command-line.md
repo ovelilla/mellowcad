@@ -66,7 +66,7 @@ dialog resumes it once closed (workspace/p303); DIMSTYLE and STYLE, which ask no
 palette), run in place and the running command resumes at once, as PROPERTIES, LAYER and
 BLOCKSPALETTE open their palette's tab and resume it (d02-5, d02-t); MATCHPROP asks `>>Select source
 object:`, its change an entry of the interrupted command's step, Escape there `*Cancel*` and
-`Resuming LINE command.` (d02-3), and the top bar's Match Properties runs it so, its macro `'_matchprop`
+`Resuming LINE command.` (d02-3), and the title bar's Match Properties runs it so, its macro `'_matchprop`
 (d02-1); `'VIEW` and `'EATTEDIT` are refused, as the desktop refuses them (d02-t); Escape cancels only the transparent one
 (`>>Specify first corner: *Cancel*`), the Command menu's Cancel (^C^C) both, as U does; `'LINE` says
 `** That command may not be invoked transparently **` (es
@@ -378,7 +378,7 @@ AutoCAD 2023's console does: the command's name as echoed (`LINE` for `L`, `-LAY
 `LTSCALE Regenerating model.` for one that regenerated (LINE with a transparent LTSCALE in it too,
 and -VIEW, VPOINT and PLAN only when they turned the line of sight, never ZOOM: view/p337, p339,
 p340–p343, p349, p350), an edit made outside a command by where it was made — `CHPROP` (es `CAMBPROP`) for
-the top bar's drop-downs on objects, `Modify Property` for the Properties palette, `Grip Edit` (es
+the title bar's drop-downs on objects, `Modify Property` for the Properties palette, `Grip Edit` (es
 `Editar pinzamiento`) for a grip, `'CLAYER` for the current layer from a drop-down, nothing for
 CECOLOR, CELTYPE or CELWEIGHT set from one (desktop properties/d05-1 to d05-3b, arrays/d14, d20;
 `properties.md`) —, and with nothing left `Everything has been undone`, then `Nothing to undo`; REDO

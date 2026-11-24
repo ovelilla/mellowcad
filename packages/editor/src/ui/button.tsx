@@ -34,6 +34,11 @@ const VARIANTS = {
     // A settings arrow: half of a 28 px button, attached to the mode it
     // belongs to.
     "icon-flyout": "h-7 w-3.5 [&_svg:not([class*='size-'])]:size-3",
+    // AutoCAD's title bar, at its measures (docs/plans/autocad-ui.md, §2.2):
+    // a Quick Access button, 24 wide and 22 high, its icon 16, on a 24 px
+    // pitch; the application button, 48 across the bar's 32.
+    quick: "h-5.5 w-6",
+    application: "h-8 w-12",
     // The ViewCube's own, drawn on it at its scale: outside the system.
     cube: "h-6 gap-1 px-2 [&_svg:not([class*='size-'])]:size-3",
     "icon-cube": "size-6 [&_svg:not([class*='size-'])]:size-3",

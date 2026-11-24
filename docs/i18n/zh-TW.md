@@ -104,9 +104,9 @@ Autodesk's follow Taiwan: Columns 行數, Rows 列 (ax26res 1189, 1194), MINSERT
 | ViewCube | Rotate clockwise; counterclockwise; View the face above… | 順時鐘旋轉; 逆時鐘旋轉; 檢視上方的面… | † (AcArrayRes 5024–5025 have 逆時鐘方向, 順時鐘方向) |
 | Navigation bar | Navigation bar; Zoom; Zoom Extents; Window; Previous; In; Out | 導覽列; 縮放; 縮放實際範圍; 縮放視窗; 縮放回前次; 拉近; 拉遠 | X ACAD_159; P AcVMToolsRes 47094, 47098, 47105, 47102, 47099, 47101 |
 | Viewport | View controls: {name} | 視圖控制: {name} | P acadres 49037 |
-| Top bar | Application menu; New; Open; Save; Save As | 應用程式功能表; 新建; 開啟; 儲存; 另存 | D acadres 7013:1278; X ACAD_673, ACAD_674, ACAD_UIE_31, ACAD_32 |
-| Top bar | Undo; Redo; Drawing Units…; Language; Send Feedback | 退回; 重做; 圖面單位…; 語言; 傳送回饋 | X XLS_UIE_1068, XLS_UIE_0019; D unitsRes 500:title; P acadres 5878; X XLS_7254 |
-| Top bar | Object color; Saving…; Saved; Saved on this device | 物件顏色; 正在儲存…; 已儲存 †; 已儲存至此裝置 † | P gridres 109, AcPltRes 5319 |
+| Title bar | Application menu; New; Open; Save; Save As | 應用程式功能表; 新建; 開啟; 儲存; 另存 | D acadres 7013:1278; X ACAD_673, ACAD_674, ACAD_UIE_31, ACAD_32 |
+| Title bar | Undo; Redo; Drawing Units…; Language; Send Feedback | 退回; 重做; 圖面單位…; 語言; 傳送回饋 | X XLS_UIE_1068, XLS_UIE_0019; D unitsRes 500:title; P acadres 5878; X XLS_7254 |
+| Title bar | Object color; Saving…; Saved; Saved on this device | 物件顏色; 正在儲存…; 已儲存 †; 已儲存至此裝置 † | P gridres 109, AcPltRes 5319 |
 | Command line | Command line; Type a command (LINE, TR, CO…); Command history | 指令行; 鍵入指令（LINE、TR、CO…）; 指令歷程 | P acadres 4233; N AcWindows (by text: the command line's `鍵入指令`, a BAML TextBlock); P dwgaidsRes 1328 (指令歷程背景) |
 | Shortcut menu | Shortcut menu; Repeat {command}; Enter; Cancel | 快顯功能表; 重複「{command}」; 輸入; 取消 | N AcCustomize; X ACAD_1897 (`重複「%s」(&R)`), ACAD_1758 (`輸入(&E)`), ACAD_1923 |
 | Shortcut menu | Clipboard; Copy with Base Point; Paste; Copy Selection; Deselect All | 剪貼簿; 以基準點複製; 貼上; 複本選取; 取消全選 | X RBN_00011049, ACAD_1974, ACAD_58, XLS_1005, ACAD_1931 |

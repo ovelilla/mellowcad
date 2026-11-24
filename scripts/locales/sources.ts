@@ -8,7 +8,7 @@
  * today's English and drops one no longer translated, but never moves a stale
  * key forward on its own — only once someone has read it and named it:
  *
- *   npm run locales -- --reviewed es:TopBar.save es:interface.tool.line
+ *   npm run locales -- --reviewed es:TitleBar.save es:interface.tool.line
  *
  * WHY a folder of its own: next-intl infers the site's languages from the
  * `*.json` files in `messages/`, and the compilers read their tags the same way.

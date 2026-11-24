@@ -140,7 +140,7 @@ function translator(
 }
 
 /**
- * The messages of one part of the editor (`useEditorText("TopBar")`), or of
+ * The messages of one part of the editor (`useEditorText("TitleBar")`), or of
  * the whole catalog without a namespace. A key that is not English's fails
  * to compile, and so does a call that passes the wrong values.
  */

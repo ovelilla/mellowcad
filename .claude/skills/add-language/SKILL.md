@@ -160,7 +160,7 @@ every left-to-right island (`ui.md`). Plurals and IME as the plan found.
   language's name joins every landing: measure every language's first load before and after;
   the latin ones sit within a few hundred bytes of 250 KiB (`docs/plans/fr-language.md`).
 - Screenshots of the landing at 360 px and of the editor at 1280×720 for text that no longer fits
-  (skill `browser-verify`): the palettes and every drop-down, the top bar's palette toggles and
+  (skill `browser-verify`): the palettes and every drop-down, the title bar's palette toggles and
   the panel's tabs at its narrowest, the figures' tooltips and diagrams, the lists of command
   names. pt-BR found six, all the layout's, each fixed for every language. A layout with dead keys
   or an IME is typed into the command line and the dynamic input (`browser-verify`).

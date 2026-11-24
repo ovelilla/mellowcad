@@ -189,27 +189,31 @@ and line height; the editor's root starts every text, its popups too, as `text-u
 
 ## Size
 
-One size for everything one presses: **28 px**, with 16 px icons (WCAG 2.2's 2.5.8 asks 24; at 32
-the tool palette would fold on a Full HD laptop at 125 %).
+**AutoCAD's measures** where it has them (`docs/plans/autocad-ui.md`, decision 1): the title bar,
+the ribbon, the bottom row from phase 4. **28 px**, icons 16, for the rest one presses. AutoCAD's
+24×22 pass WCAG 2.2's 2.5.8 by its spacing exception (a 24 px pitch).
 
 | What                                                                     | Size                                                                                        |
 | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------- |
+| The title bar; its application button (`size="application"`)             | 32 (`h-8`); 48 × 32, the host's mark 20                                                     |
+| A Quick Access button (`IconAction size="quick"`)                        | 24 × 22 (`h-5.5 w-6`), icon 16, one against the next from 56 px                             |
+| The ribbon, whole                                                        | 124 (`h-31`): the tab row, 24, and the panels, 100                                          |
 | An icon button (`Button size="icon"`, `IconAction`)                      | 28 × 28, its icon 16                                                                        |
 | A text button, a drop-down's trigger, a field, a tab, a row of a list    | 28 high (`Button`'s default, `SelectTrigger`, `h-7`)                                        |
 | A mode's settings arrow (`size="icon-flyout"`), Zoom's under its button  | 14 × 28, 28 × 14 — attached, so the 28 px mode is the equivalent target (2.5.8's exception) |
-| A docked bar: the top bar, the status bar, the command line, the tab bar | 36 (`h-9`): the control and 4 px either side; the folded panel is 36 wide                   |
-| The tool palette                                                         | two columns of 28, 2 px apart: a grid of 58 (`w-14.5`) inside `p-1`                         |
+| A docked bar: the status bar, the command line, the palette panel's tabs | 36 (`h-9`): the control and 4 px either side; the folded panel is 36 wide                   |
+| The tool palette, until Home replaces it                                 | two columns of 28, 2 px apart: a grid of 58 (`w-14.5`) inside `p-1`                         |
 
 - **A zone sizes its content** (`box-content`): its border lies outside those numbers. A border
   inside the box eats a pixel, every control lands on a half pixel and its icon blurs.
 - **In a bar every part has a whole width**: a text part (the palette toggles `w-24`, the save
   state's slot `w-24`, there before the first save, Units `w-9`) gets a fixed one, or its fraction
   of a pixel pushes every icon after it off the pixel grid.
-- Outside the system, each for a reason: the ViewCube's Home, roll arrows and UCS menu
+- Outside both systems, each for a reason: the ViewCube's Home, roll arrows and UCS menu
   (`size="icon-cube"`, `"cube"`, 24), drawn at the cube's scale; the viewport control `[Top]`, a
   label on the drawing; separators, the product mark and swatches, which are not targets.
-- `packages/editor/src/control-size.test.ts` holds the system, and `Button`'s sizes to the table; a new size is
-  argued here first — AutoCAD's own measure (the ribbon's large buttons) is the argument.
+- `packages/editor/src/control-size.test.ts` holds both, each AutoCAD size with where it was
+  measured, and `Button`'s sizes to the table; a new size is argued here first, from AutoCAD's.
 
 ## Base UI gotchas
 
@@ -244,12 +248,13 @@ the tool palette would fold on a Full HD laptop at 125 %).
 
 Each bar's AutoCAD order is in its component's header comment; touch and phones are out of scope.
 
-- **The workspace is a grid of named areas** (`CadEditor`): `top`, `tools` · `canvas` · `panel`,
-  `command`, `status`. A control goes into a zone, never absolutely over the drawing; the canvas
+- **The workspace is a grid of named areas** (`CadEditor`), AutoCAD's frame (plan §2.1): `title`,
+  `ribbon`, `tools` · `canvas` · `panel`, `command`, `status`. The ribbon zone goes while
+  `state.ribbon.open` is false, the tool palette with it. A control goes into a zone, never absolutely over the drawing; the canvas
   takes what is left, so ZOOM Extents frames only what is visible.
 - **A piece a host may replace is a slot** of `CadEditorComponents` (`components`; `null` turns it
   off and its zone goes too, from the first paint). It takes `PieceProps`, plus only what the host
-  gives `CadEditor` for it (`TopBarProps`, `StatusBarProps`), never state of the workspace: its
+  gives `CadEditor` for it (`TitleBarProps`, `StatusBarProps`), never state of the workspace: its
   words come from `useEditorText`, its popups' container from `usePortalContainer`. The zone, its
   size and border stay the editor's. A menu or dialog the engine opens and waits on is never a
   slot. `packages/editor/src/cad-editor.test.ts` renders the slots against a stand-in engine.
@@ -281,8 +286,7 @@ Each bar's AutoCAD order is in its component's header comment; touch and phones 
 - **The tool palette** holds only commands that act on the drawing, grouped by meaning, never to
   save room (no "more" menu). Unlisted tools fall into a trailing group, so a tool that belongs
   elsewhere in the chrome (view tools, Select, Match Properties) must be listed in `RAIL_EXCLUDED`.
-  A new slot keeps the palette inside its zone at 720 px of window and, folded (`short:`, below
-  720), at 650. Its scroller fills the zone: sized to its content, a pressed button of the last
+  Whole from 1016 px of window, folded below (`short:`), scrolled at 720. Its scroller fills the zone: sized to its content, a pressed button of the last
   row (`active:translate-y-px`) overflowed it into both scrollbars.
 - **The dynamic input** is `pointer-events-none` and keyboard-driven — never clickable. A
   `paragraphs` field (MTEXT) is a textarea, never reselected when focus comes back; nor is a value
@@ -304,7 +308,7 @@ A palette is a **tab of the palette panel** (until `docs/next-autocad-ui.md` rev
 a popover closes on the first click on the drawing. Which tab shows, and the Styles table
 (`state.stylesTable`), are `EngineState`, never `useState` — or typing `DIMSTYLE` cannot open it. A
 new palette is a `PaletteTab` (`PALETTE_TABS`), a command that calls `showPalette`, a branch in
-`PalettePanel` and, if the top bar has its trigger, a `PaletteToggle`.
+`PalettePanel` and, if the title bar has its trigger, a `PaletteToggle`.
 
 Anything that **draws drawing content** (a block thumbnail) asks the engine for a `Scene`
 (`engine.buildBlockPreview(...)`) and paints it with `CanvasScenePresenter`. Never walk entities in

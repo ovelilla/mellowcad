@@ -64,7 +64,7 @@ Create New Drawing, Ctrl+N (the browser keeps it for a new window)
 ### `QSAVE` / `SAVEAS` / `SAVE` / `OPEN` (Ctrl+S / Ctrl+Shift+S / Ctrl+O) · es `GUARDARR` / `GUARDARCOMO` / `GUARDAR` / `ABRE` · pt-BR `SALVARR` / `SALVARCOMO` / `SALVAR` / `SALVARURL` / `ABRIR` / `ABRIRURL` / `OPENURL` · fr `SAUVERAP` / `SAUVENOM` / `SAUVEGRD` / `SAUVEURL` / `OUVRIR` / `OUVRIRURL` / `CHRGDXF` · it `SALVAVEL` / `SALVACOME` / `SALVA` / `SALVAURL` / `APRI` / `APRIURL` · de `KSICH` / `SICHALS` / `SICHERN` / `URLSPEICHERN` / `ÖFFNEN` / `URLÖFFNEN` · ru `БСОХРАНИТЬ` / `СОХРАНИТЬКАК` / `СОХРАНИТЬ` / `УРЛСОХРАНИ` / `ОТКРЫТЬ` / `УРЛОТКРОЙ` · pl `SZAPISZ` / `NZAPISZ` / `ZAPISZ` / `ZAPISZURL` / `OTWÓRZ` / `OTWÓRZURL` · cs `RULOŽ` / `ULOŽJAKO` / `ULOŽ` / `ULOŽURL` / `OTEVŘI` / `OTEVŘIURL` · hu `GYMENT` / `MENTMINT` / `URLMENT` / `ELMENT` / `MEGNYIT` / `MNY` / `URLMEGNYIT`
 
 **Implemented:** `FileTransport` port, versioned tolerant JSON, transparent autosave behind the
-`DrawingStore` port (this device's localStorage), its state in the top bar, a change still in its
+`DrawingStore` port (this device's localStorage), its state in the title bar, a change still in its
 350 ms debounce written at once when the engine is disposed or the page hidden or left (CLOSE
 "prompted to save or discard the changes": with nothing to ask, nothing is dropped); the file keeps what
 AutoCAD saves in the drawing (FILLETRAD, CHAMFERA/B, TEXTSIZE and TEXT's justification, ORTHOMODE,

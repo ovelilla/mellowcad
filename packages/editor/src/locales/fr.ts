@@ -19,7 +19,7 @@ export const fr: EditorLocale = {
       "copyBase": "Ctrl+Maj+C",
       "paste": "Ctrl+V"
     },
-    "TopBar": {
+    "TitleBar": {
       "menu": "Menu d'application",
       "new": "Nouveau",
       "open": "Ouvrir",

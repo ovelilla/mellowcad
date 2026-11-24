@@ -5264,7 +5264,7 @@ export class CadRuntime extends Observable {
 
   /**
    * What U and REDO name an edit of the selected objects made outside a
-   * command: the top bar's drop-downs' `CHPROP` (desktop properties/d05-2,
+   * command: the title bar's drop-downs' `CHPROP` (desktop properties/d05-2,
    * d05-3b), the Properties palette's `Modify Property` (arrays/d20). WHY
    * the English words for the palette's in Spanish too: no Spanish palette
    * edit was probed (PROPS-D65).

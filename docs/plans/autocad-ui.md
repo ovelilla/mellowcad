@@ -1,7 +1,7 @@
 # AutoCAD's interface: inventory and plan
 
-> **Status:** phase 0 (this inventory and plan) done on 2026-11-24; of phase 1, block 1 (the
-> engine) done the same day, block 2 (the frame) next; phases 2 to 6 not started.
+> **Status:** phase 0 (this inventory and plan) done on 2026-11-24; of phase 1, blocks 1 (the
+> engine) and 2 (the frame) done the same day, block 3 (Home) next; phases 2 to 6 not started.
 > The brief is `docs/next-autocad-ui.md`; where its phases and this plan differ, this plan rules
 > (the brief says so) and the brief was corrected the same day.
 
@@ -457,14 +457,22 @@ Each closes with skill `finish-feature`. Each starts with the captures it still 
 
 1. **The engine**: the ribbon's state (decision 2), RIBBON and RIBBONCLOSE (skill `new-command`;
    their prompts and U's names probed on the desktop), Clean Screen closing and restoring it.
-2. **The frame**: the grid becomes title row (32), ribbon, canvas with the panel, command row,
-   status row; the application button and the Quick Access Toolbar move to the title row at
-   AutoCAD's sizes, with what they hold today. The `tools` zone goes.
+2. **The frame** (done 2026-11-24): the grid becomes title row (32), ribbon (124), canvas with
+   the panel, command row, status row; the application button and the Quick Access Toolbar move
+   to the title row at AutoCAD's sizes, with what they hold today, and the slot `TopBar` becomes
+   `TitleBar`. The ribbon's zone has its height and follows `state.ribbon.open`, empty; Layers,
+   Properties and the palette toggles stay in the title row after the Quick Access Toolbar. **The
+   `tools` zone stays** (decision 6: each block leaves the editor whole, and the ribbon replaces
+   the palette in one commit), folding below 1016 px of window and scrolling at 720.
 3. **Home**: Draw, Modify, Annotation, Layers, Block, Properties, Utilities and Clipboard in
    AutoCAD's rows (`ribbon.mjs --tab Home --built` is the worklist), large and small buttons, the
-   split buttons with their behaviours, the slide-outs with their pin. It takes the top bar's
-   Layers and Properties groups.
-4. **The other tabs**: Annotate, View (Palettes takes the top bar's toggles; Viewport Tools;
+   split buttons with their behaviours, the slide-outs with their pin. It takes the title bar's
+   Layers and Properties groups, **and the `tools` zone goes** with the tool palette, the `short:`
+   variant and the slot `ToolRail`; the ribbon's zone becomes a slot. The command notes and the
+   pages of `content/docs/` that say "top bar" or "tool palette" are corrected here, in every
+   language, where the controls they name land (block 2 left them: the title bar is still the
+   row on top, and they would change twice), with the one coverage phrase tied to them, Undo's Missing in `docs/coverage/command-line.md` ("what the top bar's buttons write").
+4. **The other tabs**: Annotate, View (Palettes takes the title bar's toggles; Viewport Tools;
    Named Views; Visual Styles with the gallery, which answers the owner's request of 2026-11-10
    and takes `vscurrent` out of the commands without a button; Coordinates; Navigate), 3D Tools,
    Insert. Before minimize and fold, so the tools the palette offered get their buttons back
@@ -474,7 +482,7 @@ Each closes with skill `finish-feature`. Each starts with the captures it still 
    order, a folded panel opening whole under its button.
 6. **What it leaves false**, corrected in the same commits: `docs/coverage/workspace.md` (Top
    bar and Tool palette become Title bar and Ribbon), `.claude/rules/ui.md` (Size, Where a
-   control belongs), `control-size.test.ts`, `cad-editor.test.ts` and the slots (`TopBar`,
+   control belongs), `control-size.test.ts`, `cad-editor.test.ts` and the slots (`TitleBar`,
    `ToolRail`), `packages/editor/docs/customizing.md` and the README, step 9 of skill
    `new-command`, skill `browser-verify` (Measuring the workspace), the pages of `content/docs/`
    and the command notes that say "tool palette" or "top bar", and the landing's filing where it

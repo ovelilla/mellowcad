@@ -2174,7 +2174,7 @@ updated.` (es `El objeto de destino no puede actualizarse porque se encuentra en
 bloqueada.`, acmatchRes 28), a pick on one starting no window and the prompt asked again (d07), a
 window saying it for each one it found (**unverified**: the window was not probed); one step U names
 `MATCHPROP` (d07). `'MATCHPROP` runs inside a running command, `>>Select source object:`, its change an entry of that command's step, Escape resuming it, and
-the top bar's Match Properties runs acad.cuix's `'_matchprop` (ID_Matchprop) so, echoed `'_matchprop`
+the title bar's Match Properties runs acad.cuix's `'_matchprop` (ID_Matchprop) so, echoed `'_matchprop`
 (desktop workspace/d02-1, d02-3, d02-4). What it copies, as the Property Settings' defaults (help, 2027; d07-6): layer,
 colour, lineweight; linetype to all but hatches, multiline text and attribute definitions;
 thickness between objects that have one (overrides the source lacks are cleared); between texts

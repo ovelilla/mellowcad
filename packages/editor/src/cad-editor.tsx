@@ -41,7 +41,7 @@ import { PalettePanel, PaletteResizeHandle } from "./palette-panel"
 import { ViewCube } from "./view-cube"
 import { NavigationBar } from "./navigation-bar"
 import { ViewportControls } from "./viewport-controls"
-import { type LanguageLink, TopBar, type TopBarProps } from "./top-bar"
+import { type LanguageLink, TitleBar, type TitleBarProps } from "./title-bar"
 import { ShortcutMenu } from "./shortcut-menu"
 import { SnapOverrideMenu } from "./snap-override-menu"
 import { SelectionCyclingList } from "./selection-cycling-list"
@@ -101,13 +101,13 @@ export function helpUrl(help: HelpLinks, command: string | null): string {
  * The pieces a host may replace with its own component, each by its default's
  * name, or turn off with `null`: its zone goes with it and the canvas takes
  * the room. A replacement is handed what the default is (`PieceProps`, and
- * the host's props for the top bar and the status bar) and renders inside the
+ * the host's props for the title bar and the status bar) and renders inside the
  * editor's root, where its tokens, catalog and popups' container reach it;
  * its classes are the host's to compile. The menus and dialogs the engine
  * opens are not pieces: the engine waits on their answer.
  */
 export interface CadEditorComponents {
-  readonly TopBar?: ComponentType<TopBarProps> | null
+  readonly TitleBar?: ComponentType<TitleBarProps> | null
   readonly ToolRail?: ComponentType<PieceProps> | null
   readonly PalettePanel?: ComponentType<PieceProps> | null
   readonly CommandLine?: ComponentType<PieceProps> | null
@@ -243,12 +243,14 @@ function Workspace({
   // direction: in a right-to-left page the tools are on the right and the
   // palettes on the left.
   //
-  // The sizes are one system (.claude/rules/ui.md, "Size"): every control is
-  // 28 px; a bar of them, 36 — the control and 4 px either side —, the command
-  // line among them; the tool palette, two columns of 28, 2 px apart. Each
-  // zone sizes its content (`box-content`) and its border lies outside it, or
-  // the border eats a pixel and every control lands on a half pixel, which
-  // blurs its icon.
+  // The frame is AutoCAD's, top to bottom (docs/plans/autocad-ui.md, §2.1):
+  // the title bar, 32; the ribbon, 124 (its tab row and its panels); the
+  // drawing with the palettes; the command line and the status bar, 36 each
+  // until they take AutoCAD's one bottom row. The title bar and the ribbon
+  // take AutoCAD's sizes; the rest, the editor's system of 28 px controls
+  // (.claude/rules/ui.md, "Size"). Each zone sizes its content (`box-content`)
+  // and its border lies outside it, or the border eats a pixel and every
+  // control lands on a half pixel, which blurs its icon.
   //
   // The editor is the page's main content: a landmark, so every control on
   // it sits in one (axe's region rule). The head script writes the palette's
@@ -264,7 +266,7 @@ function Workspace({
       style={EDITOR_THEME_STYLE as React.CSSProperties}
     >
       <PortalContainerProvider container={portal}>
-        <main className="grid h-svh w-full grid-cols-[auto_minmax(0,1fr)_auto] grid-rows-[auto_minmax(0,1fr)_auto_auto] overflow-hidden bg-card [grid-template-areas:'top_top_top'_'tools_canvas_panel'_'command_command_command'_'status_status_status']">
+        <main className="grid h-svh w-full grid-cols-[auto_minmax(0,1fr)_auto] grid-rows-[auto_auto_minmax(0,1fr)_auto_auto] overflow-hidden bg-card [grid-template-areas:'title_title_title'_'ribbon_ribbon_ribbon'_'tools_canvas_panel'_'command_command_command'_'status_status_status']">
           <EditorZones
             components={components}
             ready={ready ? { engine, state } : null}
@@ -362,7 +364,7 @@ export function EditorZones({
   paletteHandle: ReactNode
 }): ReactElement {
   const {
-    TopBar: Top = TopBar,
+    TitleBar: Title = TitleBar,
     ToolRail: Tools = ToolRail,
     PalettePanel: Palettes = PalettePanel,
     CommandLine: Command = CommandLine,
@@ -373,18 +375,20 @@ export function EditorZones({
     DynamicInput: Input = DynamicInput,
   } = components
   // Clean Screen hides the palette panel (a palette opened meanwhile shows it
-  // again) and closes the ribbon, whose tools are the tool palette's until it
-  // is built; neither is on at the first paint, as AutoCAD saves neither.
+  // again) and closes the ribbon, whose tools are the tool palette's until
+  // Home is built; neither is on at the first paint, as AutoCAD saves neither.
   const clean = ready?.state.cleanScreen
   const ribbon = ready?.state.ribbon
   const commandLine = ready?.state.commandLine
 
   return (
     <>
-      {Top && (
-        <div className="box-content flex h-9 min-w-0 items-center gap-1 border-b px-1 [grid-area:top]">
+      {/* AutoCAD's title bar: the application button flush at the start,
+      as the window's own frame has it, and the Quick Access Toolbar. */}
+      {Title && (
+        <div className="box-content flex h-8 min-w-0 items-center gap-1 border-b [grid-area:title]">
           {ready && (
-            <Top
+            <Title
               {...ready}
               mark={mark}
               languages={languages}
@@ -393,6 +397,17 @@ export function EditorZones({
           )}
         </div>
       )}
+
+      {/* The ribbon whole, its tab row (24) and its panels (100), shown from
+      the first paint as AutoCAD starts with it; RIBBONCLOSE and Clean Screen
+      take it away. Empty until its Home tab is built
+      (docs/plans/autocad-ui.md, §6, block 3). */}
+      <div
+        className={cn(
+          "box-content h-31 border-b [grid-area:ribbon]",
+          ribbon?.open === false && "hidden"
+        )}
+      />
 
       {Tools && (
         <div

@@ -332,7 +332,7 @@ const REACT_NEXT: Host = {
   example: "editor-next",
   without: ["@mellowcad/editor"],
   files: {
-    "app/host-top-bar.tsx": null,
+    "app/host-title-bar.tsx": null,
     "app/layout.tsx": `import type { ReactNode } from "react"
 
 export default function RootLayout({ children }: { children: ReactNode }) {
@@ -403,11 +403,12 @@ const EDITOR_NEXT: Host = {
       )
       // The pieces paint once the engine exists, after mount: the prerender
       // has the zones and the server page's payload names the client
-      // component handed to the top bar's.
+      // component handed to the title bar's.
       expectIn(where, html, "data-mellowcad-editor")
-      expectIn(where, html, "[grid-area:top]")
+      expectIn(where, html, "[grid-area:title]")
+      expectIn(where, html, "[grid-area:ribbon]")
       expectNotIn(where, html, "[grid-area:panel]")
-      expectIn(where, html, 'HostTopBar\\"]')
+      expectIn(where, html, 'HostTitleBar\\"]')
       expectIn(where, text(join(dir, ".next/static"), ".js"), "My drawing app")
       const css = text(join(dir, ".next/static"), ".css")
       expectIn(where, css, EDITOR_ROOT)

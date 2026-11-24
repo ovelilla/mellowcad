@@ -19,7 +19,7 @@ export const zhCN: EditorLocale = {
       "copyBase": "Ctrl+Shift+C",
       "paste": "Ctrl+V"
     },
-    "TopBar": {
+    "TitleBar": {
       "menu": "应用程序菜单",
       "new": "新建",
       "open": "打开",

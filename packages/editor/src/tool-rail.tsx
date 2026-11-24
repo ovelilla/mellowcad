@@ -402,7 +402,7 @@ const PALETTE: readonly PaletteSection[] = [
  * Tools that live elsewhere in the chrome. Zoom, Pan and Orbit are on the
  * navigation bar under the ViewCube and the preset views on the viewport
  * controls, the way AutoCAD keeps them off the Draw and Modify ribbon panels.
- * Match Properties sits with the object properties in the top bar. Select has
+ * Match Properties sits with the object properties in the title bar. Select has
  * no button: it is where Escape leaves every command. The clipboard commands are reached by
  * Ctrl+C/X/V or by name; AutoCAD's own Clipboard panel is not built yet, and a
  * Paste button that only works when something has been copied would be a poor
@@ -468,7 +468,7 @@ const RAIL_EXCLUDED = new Set([
   "fill",
   "ltscale",
   "auprec",
-  // UNDO and MREDO are typed; the top bar has Undo and Redo.
+  // UNDO and MREDO are typed; the Quick Access Toolbar has Undo and Redo.
   "undo",
   "mredo",
   // SETVAR and the system variables: typed only.
@@ -481,7 +481,7 @@ const RAIL_EXCLUDED = new Set([
   "spline",
   // ARRAY is typed; the ribbon's Array drop-down runs the three kinds.
   "arraycommand",
-  // CECOLOR, CELTYPE and CELWEIGHT are the top bar's property drop-downs.
+  // CECOLOR, CELTYPE and CELWEIGHT are the title bar's property drop-downs.
   "color",
   "linetype",
   "lweight",

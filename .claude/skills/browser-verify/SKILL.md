@@ -96,12 +96,16 @@ clipboard once shipped a hang no harness test could see.
 
 ## Measuring the workspace
 
-Per window size and in `/draw`, `/es/draw` and `/ar/draw`: the zones by their grid area and their
-`clientWidth`/`clientHeight` (a zone's own numbers, its border outside); the topmost
-`.pointer-events-auto` elements of `main`, which must not overlap one another nor cut the canvas but
-for what AutoCAD puts there; the tool palette's buttons past its zone's bottom; the canvas's box at
-the first paint (bundles blocked) against its box after mount; and after `ZOOM` `E` every drawn
-extreme inside the canvas. Every icon button starts on a whole pixel. The type is audited as
+Per window size (1280×720 and 1920×1080, AutoCAD's two in `docs/plans/autocad-ui.md`) and in
+`/draw`, `/es/draw` and `/ar/draw`: the zones by their grid area, their `clientWidth`/`clientHeight`
+(a zone's own numbers, its border outside) and their `y`, against the plan's frame (§2.1: the title
+bar 32, the ribbon 124 under it); each control's box against AutoCAD's (§2.2, §2.3: a Quick Access
+button 24×22 on a 24 px pitch); the topmost `.pointer-events-auto` elements of `main`, which must
+not overlap one another nor cut the canvas but for what AutoCAD puts there; the tool palette's
+buttons past its zone's bottom; the canvas's box at the first paint (scripts off: the context's
+`javaScriptEnabled: false`) against its box after mount; RIBBONCLOSE and RIBBON typed, the ribbon's
+zone gone and back; and after `ZOOM` `E` every drawn extreme inside the canvas. Every icon button
+starts on a whole pixel (a text tab may not: its width is its text's). The type is audited as
 `.claude/rules/ui.md` ("Type") says.
 
 ## Navigation and view transitions

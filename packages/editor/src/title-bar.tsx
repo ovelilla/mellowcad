@@ -70,8 +70,8 @@ export interface LanguageLink {
   readonly current: boolean
 }
 
-/** The top bar's props: a piece's, and what the host gives `CadEditor` for it. */
-export interface TopBarProps extends PieceProps {
+/** The title bar's props: a piece's, and what the host gives `CadEditor` for it. */
+export interface TitleBarProps extends PieceProps {
   /** The application menu's glyph, the host's product mark. */
   readonly mark?: ReactNode
   /** The application menu's languages; none, no Language submenu. */
@@ -84,20 +84,21 @@ export interface TopBarProps extends PieceProps {
 const BAR_SELECT = "border-input bg-transparent shadow-none dark:bg-transparent"
 
 /**
- * The top bar, AutoCAD's application frame and the Home tab's Layers and
- * Properties panels in one row: the application menu and the Quick Access
- * Toolbar, the save state, the current layer, the object properties, and last
- * the palette toggles. Every part has a fixed width or truncates, so the row
- * never grows with a layer's name or the selection.
+ * AutoCAD's title bar: the application button and the Quick Access Toolbar at
+ * AutoCAD's sizes, then the save state where AutoCAD's title names the
+ * drawing. Until the ribbon's Home and View tabs are built, the Layers and
+ * Properties panels and View's palette toggles follow them here. Every part
+ * has a fixed width or truncates, so the row never grows with a layer's name
+ * or the selection.
  */
-export function TopBar({
+export function TitleBar({
   engine,
   state,
   mark,
   languages = [],
   feedback,
-}: TopBarProps): ReactElement {
-  const t = useEditorText("TopBar")
+}: TitleBarProps): ReactElement {
+  const t = useEditorText("TitleBar")
   const keys = useEditorText("Keys")
   const layers = useEditorText("Layers")
   const styles = useEditorText("Styles")
@@ -112,17 +113,21 @@ export function TopBar({
       {/* The Quick Access Toolbar's defaults in their order (New, Open, Save,
           Save As, …, Undo, Redo); Plot and the Web & Mobile pair do not exist
           here. */}
-      <Panel className="shrink-0 items-center">
-        <ApplicationMenu
-          engine={engine}
-          mark={mark}
-          links={languages}
-          feedback={feedback}
-        />
+      <ApplicationMenu
+        engine={engine}
+        mark={mark}
+        links={languages}
+        feedback={feedback}
+      />
+      {/* WHY ms-1: AutoCAD's first Quick Access button starts 56 px from
+          the edge, 8 after the application button. One button against the
+          next, on a 24 px pitch. */}
+      <Panel className="ms-1 shrink-0 items-center gap-0">
         <IconAction
           icon={FilePlus}
           label={t("new")}
           side="bottom"
+          size="quick"
           onClick={() => run("new")}
         />
         <IconAction
@@ -130,6 +135,7 @@ export function TopBar({
           label={t("open")}
           shortcut={keys("open")}
           side="bottom"
+          size="quick"
           onClick={() => run("open")}
         />
         <IconAction
@@ -137,12 +143,14 @@ export function TopBar({
           label={t("save")}
           shortcut={keys("save")}
           side="bottom"
+          size="quick"
           onClick={() => run("save")}
         />
         <IconAction
           icon={SaveAll}
           label={t("saveAs")}
           side="bottom"
+          size="quick"
           onClick={() => run("saveAs")}
         />
         <IconAction
@@ -151,6 +159,7 @@ export function TopBar({
           label={t("undo")}
           shortcut={keys("undo")}
           side="bottom"
+          size="quick"
           disabled={!state.canUndo}
           onClick={() => engine.undo()}
         />
@@ -160,6 +169,7 @@ export function TopBar({
           label={t("redo")}
           shortcut={keys("redo")}
           side="bottom"
+          size="quick"
           disabled={!state.canRedo}
           onClick={() => engine.redo()}
         />
@@ -238,7 +248,7 @@ function ApplicationMenu({
   feedback: string | undefined
 }) {
   const portal = usePortalContainer()
-  const t = useEditorText("TopBar")
+  const t = useEditorText("TitleBar")
   const item = (icon: LucideIcon, label: string, onClick: () => void) => {
     const Icon = icon
     return (
@@ -256,7 +266,11 @@ function ApplicationMenu({
           render={
             <Menu.Trigger
               render={
-                <Button size="icon" variant="ghost" aria-label={t("menu")}>
+                <Button
+                  size="application"
+                  variant="ghost"
+                  aria-label={t("menu")}
+                >
                   {mark ?? <MenuIcon />}
                 </Button>
               }
@@ -361,7 +375,7 @@ function ApplicationMenu({
  * writes.
  */
 function SaveStatus({ state }: { state: EditorState }) {
-  const t = useEditorText("TopBar")
+  const t = useEditorText("TitleBar")
   const saving = state.saveState === "saving"
   const shown = saving || state.lastSavedAt !== null
   // A slot of a whole width, there before the first save: the groups after it
@@ -393,7 +407,7 @@ function LayerControl({
   engine: CadEngine
   state: EditorState
 }) {
-  const t = useEditorText("TopBar")
+  const t = useEditorText("TitleBar")
   const properties = useEditorText("Properties")
   const selected = state.selectionCount > 0
   const value = selected ? state.selectionLayerId : state.currentLayerId
@@ -451,7 +465,7 @@ function PropertyControls({
   engine: CadEngine
   state: EditorState
 }) {
-  const t = useEditorText("TopBar")
+  const t = useEditorText("TitleBar")
   const selected = state.selectionCount > 0
   const matchprop = state.tools.find((entry) => entry.id === "matchprop")
   const list = state.tools.find((entry) => entry.id === "list")

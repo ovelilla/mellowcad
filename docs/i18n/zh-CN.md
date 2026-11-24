@@ -94,9 +94,9 @@ MINSERT's Columns row 分栏 (ax26res 266).
 | ViewCube | Rotate clockwise; counterclockwise; View the face above… | 顺时针旋转; 逆时针旋转; 查看上方的面… | † (AcArrayRes 5024–5025 have 逆时针, 顺时针) |
 | Navigation bar | Navigation bar; Zoom; Zoom Extents; Window; Previous; In; Out | 导航栏; 缩放; 范围缩放; 窗口缩放; 缩放上一个; 放大; 缩小 | X ACAD_159; P AcVMToolsRes 47094, 47098, 47105, 47102, 47099, 47101 |
 | Viewport | View controls: {name} | 视图控件: {name} | P acadres 49037 |
-| Top bar | Application menu; New; Open; Save; Save As | 应用程序菜单; 新建; 打开; 保存; 另存为 | D acadres 7013:1278; X ACAD_673, ACAD_674, ACAD_UIE_31, ACAD_32 |
-| Top bar | Undo; Redo; Drawing Units…; Language; Send Feedback | 放弃; 重做; 图形单位…; 语言; 发送反馈 | X XLS_UIE_1068, XLS_UIE_0019; D unitsRes 500:title; P acadres 5878; X XLS_7254 |
-| Top bar | Object color; Saving…; Saved; Saved on this device | 对象颜色; 正在保存…; 已保存 †; 已保存到此设备 † | P gridres 109, AcPltRes 5319 |
+| Title bar | Application menu; New; Open; Save; Save As | 应用程序菜单; 新建; 打开; 保存; 另存为 | D acadres 7013:1278; X ACAD_673, ACAD_674, ACAD_UIE_31, ACAD_32 |
+| Title bar | Undo; Redo; Drawing Units…; Language; Send Feedback | 放弃; 重做; 图形单位…; 语言; 发送反馈 | X XLS_UIE_1068, XLS_UIE_0019; D unitsRes 500:title; P acadres 5878; X XLS_7254 |
+| Title bar | Object color; Saving…; Saved; Saved on this device | 对象颜色; 正在保存…; 已保存 †; 已保存到此设备 † | P gridres 109, AcPltRes 5319 |
 | Command line | Command line; Type a command (LINE, TR, CO…); Command history | 命令行; 键入命令（LINE、TR、CO…）; 命令历史记录 | P acadres 4233; N AcWindows (by text: the command line's `键入命令`, a BAML TextBlock); P dwgaidsRes 1328 (命令历史记录背景) |
 | Shortcut menu | Shortcut menu; Repeat {command}; Enter; Cancel | 快捷菜单; 重复{command}; 确认; 取消 | N AcCustomize NAME_ShortcutMenu; X ACAD_1897 (`重复%s(&R)`), ACAD_1758 (the menu's NameRef `确认(&E)`), ACAD_1923 |
 | Shortcut menu | Clipboard; Copy with Base Point; Paste; Copy Selection; Deselect All | 剪贴板; 带基点复制; 粘贴; 复制选择; 全部不选 | X RBN_00011049, ACAD_1974, ACAD_58, XLS_1005, ACAD_1931 |

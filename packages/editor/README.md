@@ -1,8 +1,9 @@
 # MellowCAD editor
 
 The whole MellowCAD drafting editor as one React component, `CadEditor`: the drawing with the
-chrome an AutoCAD user expects around it — the top bar, the tool palette, the palettes, the command
-line, the status bar, the ViewCube — its menus and dialogs, and its words in English, Spanish,
+chrome an AutoCAD user expects around it, in AutoCAD's frame — the title bar with the application
+menu and Quick Access, the tool palette, the palettes, the command line, the status bar, the
+ViewCube — its menus and dialogs, and its words in English, Spanish,
 Arabic, Brazilian Portuguese, French, Italian, German and Russian. It is the editor of
 [mellowcad.com/draw](https://mellowcad.com/draw), built on [`@mellowcad/engine`](../../cad/README.md)
 and [`@mellowcad/react`](../react/README.md), and it ships its own stylesheet.
@@ -75,7 +76,7 @@ Every prop is optional.
   editor's own words, and `dir="rtl"` to mirror the chrome. See [Languages](docs/languages.md).
 - **The drawing**: `store`, where it is kept, and `onEngine`, which hands you the engine to save,
   open or run commands from your own code. See [Saving drawings](docs/drawings.md).
-- **The chrome**: `components`, your own top bar, status bar or other piece, or none; `mark`, your
+- **The chrome**: `components`, your own title bar, status bar or other piece, or none; `mark`, your
   product's glyph on the application menu; `languages`, the page in each language you offer, in
   that menu; `feedback`, the page its Send Feedback opens, where your users report a problem;
   `layoutStorage`, the `localStorage` keys under which the palette panel and the status bar are
@@ -89,7 +90,7 @@ editor starts. To change one, mount a new editor: give it a new `key`.
 
 | Guide                               | What it covers                                                           |
 | ----------------------------------- | ------------------------------------------------------------------------ |
-| [Customizing](docs/customizing.md)  | Replacing or removing the top bar, the status bar and the other pieces   |
+| [Customizing](docs/customizing.md)  | Replacing or removing the title bar, the status bar and the other pieces |
 | [Saving drawings](docs/drawings.md) | Your own store, and saving and opening drawings from your code           |
 | [Languages](docs/languages.md)      | Its languages, right to left, the language menu, your own words          |
 | [Next.js](docs/nextjs.md)           | Server pages, catalogs loaded on the server, fonts and the layout script |

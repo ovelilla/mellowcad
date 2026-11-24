@@ -9,7 +9,7 @@
 @source not "../../../components/marketing";
 @source not "../../../components/docs";
 @source not "../../global-not-found.tsx";
-/* The examples are other apps, with their own Tailwind (the Next one's top bar). */
+/* The examples are other apps, with their own Tailwind (the Next one's title bar). */
 @source not "../../../examples";
 
 /* The page around the editor is the site's, as dark as it. */

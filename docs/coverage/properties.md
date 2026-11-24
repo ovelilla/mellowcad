@@ -46,7 +46,7 @@ lock or an unlock adding `Regenerating model.` (p302), and with UNDO's Layer on 
 consecutive ones are one step, U naming each (`'.-LAYER '.-LAYER '.-LAYER Regenerating model.`,
 d04-3; consecutive -LAYER runs fold so too, p303, p306), each its own with Layer No (p315), parted by
 any command between (p329); made while a command runs, an edit joins its step; the Layers panel's
-drop-down in the top bar shows the selection's layer (empty when it is mixed, as the ribbon's is,
+drop-down in the title bar shows the selection's layer (empty when it is mixed, as the ribbon's is,
 d06-1) or, with nothing selected, the current one; choosing a layer moves the selected objects to
 it in one undo step and keeps the current layer, or with nothing selected makes it current
 ("If no objects are selected, the drop-down lists … display the current settings", 2026), a step U
@@ -286,7 +286,7 @@ resumes it (p134); COL is an alias in both languages (p136), COLOUR in English o
 Colorbook (the 2027 console lists `[Truecolor/COlorbook]`, c01; not offered here), CECOLOR's `RGB:` and HSL forms, the Select Color dialog, the per-type defaults HPLAYER and HPCOLOR, DIMLAYER,
 TEXTLAYER (all "use current" initially, which is what everything does here), CETRANSPARENCY
 
-### Object properties (top bar)
+### Object properties (title bar)
 
 **Implemented:** the Properties panel's Match Properties, Object Color, Lineweight and Linetype, in
 that order: with objects selected they show their value (empty when mixed — **unverified**: the help

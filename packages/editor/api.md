@@ -22,13 +22,13 @@ export type { CadEditorComponents }
  * The pieces a host may replace with its own component, each by its default's
  * name, or turn off with `null`: its zone goes with it and the canvas takes
  * the room. A replacement is handed what the default is (`PieceProps`, and
- * the host's props for the top bar and the status bar) and renders inside the
+ * the host's props for the title bar and the status bar) and renders inside the
  * editor's root, where its tokens, catalog and popups' container reach it;
  * its classes are the host's to compile. The menus and dialogs the engine
  * opens are not pieces: the engine waits on their answer.
  */
 export interface CadEditorComponents {
-    readonly TopBar?: ComponentType<TopBarProps> | null;
+    readonly TitleBar?: ComponentType<TitleBarProps> | null;
     readonly ToolRail?: ComponentType<PieceProps> | null;
     readonly PalettePanel?: ComponentType<PieceProps> | null;
     readonly CommandLine?: ComponentType<PieceProps> | null;
@@ -179,6 +179,28 @@ export interface StatusBarProps extends PieceProps {
     readonly storageKey?: string;
 }
 
+export { TitleBar }
+/**
+ * AutoCAD's title bar: the application button and the Quick Access Toolbar at
+ * AutoCAD's sizes, then the save state where AutoCAD's title names the
+ * drawing. Until the ribbon's Home and View tabs are built, the Layers and
+ * Properties panels and View's palette toggles follow them here. Every part
+ * has a fixed width or truncates, so the row never grows with a layer's name
+ * or the selection.
+ */
+export declare function TitleBar(titleBarProps: TitleBarProps): ReactElement;
+
+export type { TitleBarProps }
+/** The title bar's props: a piece's, and what the host gives `CadEditor` for it. */
+export interface TitleBarProps extends PieceProps {
+    /** The application menu's glyph, the host's product mark. */
+    readonly mark?: ReactNode;
+    /** The application menu's languages; none, no Language submenu. */
+    readonly languages?: readonly LanguageLink[];
+    /** The page the application menu's Send Feedback opens; none, no Send Feedback. */
+    readonly feedback?: string;
+}
+
 export { ToolRail }
 /**
  * The tool palette, two columns of the ribbon's Home tab panels (Draw,
@@ -187,27 +209,6 @@ export { ToolRail }
  * each.
  */
 export declare function ToolRail(pieceProps: PieceProps): ReactElement;
-
-export { TopBar }
-/**
- * The top bar, AutoCAD's application frame and the Home tab's Layers and
- * Properties panels in one row: the application menu and the Quick Access
- * Toolbar, the save state, the current layer, the object properties, and last
- * the palette toggles. Every part has a fixed width or truncates, so the row
- * never grows with a layer's name or the selection.
- */
-export declare function TopBar(topBarProps: TopBarProps): ReactElement;
-
-export type { TopBarProps }
-/** The top bar's props: a piece's, and what the host gives `CadEditor` for it. */
-export interface TopBarProps extends PieceProps {
-    /** The application menu's glyph, the host's product mark. */
-    readonly mark?: ReactNode;
-    /** The application menu's languages; none, no Language submenu. */
-    readonly languages?: readonly LanguageLink[];
-    /** The page the application menu's Send Feedback opens; none, no Send Feedback. */
-    readonly feedback?: string;
-}
 
 export { ViewCube }
 /**
@@ -415,7 +416,7 @@ type Compiled<T> = T extends string ? CompiledMessage : {
     readonly [K in keyof T]: Compiled<T[K]>;
 };
 
-// src/top-bar.tsx
+// src/title-bar.tsx
 /**
  * The page in one language, for the application menu. A plain link: a switch
  * is a full page load, since the language changes `lang`, `dir` and the

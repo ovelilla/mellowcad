@@ -1,14 +1,17 @@
 # Customizing the editor
 
-The editor is nine pieces round the drawing. Each one is a slot of the `components` prop: give it
-a component of your own and it renders in the piece's place, or give it `null` and the piece is
-gone, with the room it took.
+The editor is nine pieces round the drawing, in AutoCAD's frame: the title bar across the top,
+then the ribbon's band, the drawing with its palettes, the command line and the status bar. Each
+piece is a slot of the `components` prop: give it a component of your own and it renders in the
+piece's place, or give it `null` and the piece is gone, with the room it took. The ribbon's band
+is not a slot yet: it holds nothing until the ribbon's tabs are built, and keeps its height while
+the ribbon is open (`RIBBONCLOSE` closes it, `RIBBON` brings it back).
 
 ## The pieces
 
 | Slot               | The piece                                                                   |
 | ------------------ | --------------------------------------------------------------------------- |
-| `TopBar`           | Across the top: the application menu, Quick Access, layers and properties   |
+| `TitleBar`         | Across the top: the application menu, Quick Access, layers and properties   |
 | `ToolRail`         | Down the start side: the tool palette                                       |
 | `PalettePanel`     | Down the end side: Properties, Layers, Blocks and Styles, as tabs           |
 | `CommandLine`      | Under the drawing: the command line and its history                         |
@@ -23,15 +26,15 @@ In a right-to-left page the start side is the right.
 ## Replacing a piece
 
 A replacement is handed what the piece is: `PieceProps`, the engine and its state, and for the
-top bar and the status bar what you gave `CadEditor` for them (`mark`, `languages` and
+title bar and the status bar what you gave `CadEditor` for them (`mark`, `languages` and
 `feedback`, the status bar's `storageKey`).
 
 ```tsx
 "use client"
 
-import type { TopBarProps } from "@mellowcad/editor"
+import type { TitleBarProps } from "@mellowcad/editor"
 
-export function MyTopBar({ engine, state }: TopBarProps) {
+export function MyTitleBar({ engine, state }: TitleBarProps) {
   return (
     <nav className="flex w-full items-center gap-1 px-2">
       <span>My app</span>
@@ -43,7 +46,7 @@ export function MyTopBar({ engine, state }: TopBarProps) {
 ```
 
 ```tsx
-<CadEditor components={{ TopBar: MyTopBar }} />
+<CadEditor components={{ TitleBar: MyTitleBar }} />
 ```
 
 - **`state` changes when the drawing or a mode does**, not with every mouse move. The cursor's
@@ -78,12 +81,12 @@ The nine pieces are exported, so a replacement can render the editor's own piece
 ```tsx
 "use client"
 
-import { TopBar, type TopBarProps } from "@mellowcad/editor"
+import { TitleBar, type TitleBarProps } from "@mellowcad/editor"
 
-export function TopBarWithHelp(props: TopBarProps) {
+export function TitleBarWithHelp(props: TitleBarProps) {
   return (
     <>
-      <TopBar {...props} />
+      <TitleBar {...props} />
       <a href="/help">Help</a>
     </>
   )
@@ -103,7 +106,7 @@ objects and for unsaved text. The engine waits on their answer, so the editor al
 ## The rest of the chrome
 
 - **`mark`** is your product's glyph on the application menu's button, which shows a menu icon
-  without it.
+  without it. The button is 48 × 32, as AutoCAD's: a mark of 20 px fits it.
 - **`feedback`** is the page Send Feedback opens, in a new tab: the last entry of the application
   menu, named as AutoCAD names it in each language. Point it at wherever your users report a
   problem (a form, an issue tracker, a `mailto:` link), with what you know already filled in.

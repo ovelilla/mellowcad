@@ -60,7 +60,7 @@ type At<T, P extends string> = P extends `${infer Head}.${infer Rest}`
     ? T[P]
     : never
 
-/** A group of messages a part reads, `useEditorText("TopBar")`. */
+/** A group of messages a part reads, `useEditorText("TitleBar")`. */
 export type EditorNamespace = Groups<Source>
 
 /** A message's key within a namespace, or from the root without one. */

@@ -19,7 +19,7 @@ export const ja: EditorLocale = {
       "copyBase": "Ctrl+Shift+C",
       "paste": "Ctrl+V"
     },
-    "TopBar": {
+    "TitleBar": {
       "menu": "アプリケーション メニュー",
       "new": "新規作成",
       "open": "開く",

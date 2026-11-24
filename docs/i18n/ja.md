@@ -90,8 +90,8 @@ style (`新しい図面ファイルを作成`). None of it was seen on the deskt
 | ViewCube | Home; Parallel; Set Current View as Home; WCS; New UCS; Unnamed | ホーム; 平行投影ビュー; 現在のビューをホーム ビューに設定; WCS; UCS を新規作成; 名前なし | P AcVMToolsRes 47021, 47022, 47026, 47009, 47042, 47010 |
 | ViewCube | Rotate clockwise (the roll arrows) | 時計回りに回転 | † |
 | Navigation bar | Zoom Extents; Window; Previous; In; Out | オブジェクト範囲ズーム; 窓ズーム; 前画面ズーム; 拡大ズーム; 縮小ズーム | P AcVMToolsRes 47098, 47105, 47102, 44021, 44022 |
-| Top bar | Application menu; New; Open; Save; Save As | アプリケーション メニュー; 新規作成; 開く; 上書き保存; 名前を付けて保存 | D acadres 7013:1278; X ID_New, ID_Open, ID_Save, ID_Saveas |
-| Top bar | Drawing Units…; Object color; Saved on this device | 単位管理…; オブジェクトの色; このデバイスに保存済み † | D unitsRes 500:title; P gridres 109 |
+| Title bar | Application menu; New; Open; Save; Save As | アプリケーション メニュー; 新規作成; 開く; 上書き保存; 名前を付けて保存 | D acadres 7013:1278; X ID_New, ID_Open, ID_Save, ID_Saveas |
+| Title bar | Drawing Units…; Object color; Saved on this device | 単位管理…; オブジェクトの色; このデバイスに保存済み † | D unitsRes 500:title; P gridres 109 |
 | Command line | Command line; Type a command (LINE, TR, CO…); Command history | コマンド ライン; ここにコマンドを入力 (LINE、TR、CO…); コマンド ヒストリ | P acadres 4233; N AcWindows (by text); P dwgaidsRes 1328 |
 | Shortcut menu | Repeat {command}; Deselect All; Properties; Dimension Style | 繰り返し {command}; すべてを選択解除; オブジェクト プロパティ管理; 寸法スタイル管理 | X ACAD_1897, ACAD_1931, ACAD_334, ACAD_2000 |
 | Properties | Properties; General; Geometry; Misc | プロパティ; 一般; ジオメトリ; その他 | P AcVMToolsRes 47008, acopmRes 133, ax26res 19, acopmRes 135 |

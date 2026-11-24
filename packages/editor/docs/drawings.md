@@ -38,7 +38,7 @@ one. Pass it the same way, `store={() => store}`. In Next.js, the server page ca
 for it ([Next.js](nextjs.md#what-a-server-page-can-pass)).
 
 The editor writes once a burst of changes settles, about a third of a second after the last, and
-once more when the page is hidden or closed. The top bar shows `Saving…`, then `Saved`, whose
+once more when the page is hidden or closed. The title bar shows `Saving…`, then `Saved`, whose
 hint says `Saved on this device`: for a store of your own, reword it (see
 [Languages](languages.md#your-own-words)).
 

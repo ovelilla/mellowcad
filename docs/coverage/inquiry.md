@@ -195,8 +195,8 @@ WHY no `Handle = 2d7` line: the model has no handles, and an id made up as one w
 AutoCAD's. WHY every line at once, with no `Press ENTER to continue:` (es
 `Pulse INTRO para continuar:`) each screenful: the pause pages AutoCAD's text window, whose height
 is the desktop's (the console pauses every few lines without QAFLAGS 2, p422), and the history here
-scrolls. WHY on the top bar, after the linetype, not the rail: it is the ribbon's Properties
-panel's (acad.cuix RBN_01740411, `^C^C_list`), which the top bar is here. A reference to an external reference adds `External reference` under
+scrolls. WHY on the title bar, after the linetype, not the rail: it is the ribbon's Properties
+panel's (acad.cuix RBN_01740411, `^C^C_list`), which the title bar holds until Home is built. A reference to an external reference adds `External reference` under
 its block's name (es `Referencia externa`, it `Xrif`; xref/p14, from each console)
 
 **Missing:** the area of an open curve-fit polyline, which AutoCAD's LIST and AREA give larger

@@ -15,7 +15,7 @@ declare const source: {
     "copyBase": string
     "paste": string
   }
-  "TopBar": {
+  "TitleBar": {
     "menu": string
     "new": string
     "open": string

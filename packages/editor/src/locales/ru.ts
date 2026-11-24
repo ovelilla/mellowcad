@@ -19,7 +19,7 @@ export const ru: EditorLocale = {
       "copyBase": "Ctrl+Shift+C",
       "paste": "Ctrl+V"
     },
-    "TopBar": {
+    "TitleBar": {
       "menu": "Меню приложения",
       "new": "Создать",
       "open": "Открыть",

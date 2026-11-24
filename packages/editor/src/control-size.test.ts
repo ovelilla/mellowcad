@@ -10,24 +10,33 @@ const DIRS = ["packages/editor/src"]
 /**
  * A height or square size off the system (.claude/rules/ui.md, "Size"): every
  * control is 28 px (`h-7`, `size-7`), its icon 16 (`size-4`), a docked bar 36
- * (`h-9`). A 20, 24, 32 or 40 px control, or an arbitrary one, is not.
+ * (`h-9`). A 20, 22, 24, 32 or 40 px control, or an arbitrary one, is not,
+ * unless it is AutoCAD's own measure, listed below with where it was taken.
  */
 const OFF_SYSTEM =
-  /(?<=^|[\s"'`:])(?:min-h|h|size)-(?:5|6|8|9|10|11|12|\[[^\]]*\])(?=$|[\s"'`!])/g
+  /(?<=^|[\s"'`:])(?:min-h|h|size)-(?:5(?:\.5)?|6|8|9|10|11|12|31|\[[^\]]*\])(?=$|[\s"'`!])/g
 
 /** Each exception with its reason, file → exact match → why. */
 const ALLOWED: Record<string, Record<string, string>> = {
   "packages/editor/src/ui/button.tsx": {
     "h-6": "the ViewCube's own buttons, drawn on it at its scale",
     "size-6": "the ViewCube's own buttons, drawn on it at its scale",
+    "h-5.5":
+      "a Quick Access button, AutoCAD's 24 × 22 on a 24 px pitch (docs/plans/autocad-ui.md, §2.2)",
+    "h-8":
+      "the application button, AutoCAD's 48 across its title bar's 32 (§2.2)",
   },
   "packages/editor/src/cad-editor.tsx": {
-    "h-9": "the top bar and the status bar: a control and 4 px either side",
+    "h-8": "the title bar, AutoCAD's 32 (docs/plans/autocad-ui.md, §2.1)",
+    "h-31":
+      "the ribbon whole, AutoCAD's tab row of 24 and its panels' 100 (§2.1)",
+    "h-9":
+      "the command line and the status bar: a control and 4 px either side",
   },
   "packages/editor/src/palette-panel.tsx": {
     "h-9": "the palette panel's tab bar, a bar like the others",
   },
-  "packages/editor/src/top-bar.tsx": {
+  "packages/editor/src/title-bar.tsx": {
     "h-6": "the separators between the bar's groups, not a control",
   },
 }
@@ -37,6 +46,8 @@ const BUTTON_SIZES: Record<string, RegExp> = {
   default: /\bh-7\b/,
   icon: /\bsize-7\b/,
   "icon-flyout": /\bh-7 w-3\.5\b/,
+  quick: /\bh-5\.5 w-6\b/,
+  application: /\bh-8 w-12\b/,
   cube: /\bh-6\b/,
   "icon-cube": /\bsize-6\b/,
 }

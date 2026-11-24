@@ -251,7 +251,7 @@ describe("MATCHPROP and the palettes, transparent on the desktop", () => {
     )
   })
 
-  it("is what the top bar's Match Properties runs, '_matchprop (d02-1)", () => {
+  it("is what the title bar's Match Properties runs, '_matchprop (d02-1)", () => {
     const cad = twoLinesThenLine()
     cad.tool("matchprop")
     expect(cad.commandLog().at(-1)).toBe(

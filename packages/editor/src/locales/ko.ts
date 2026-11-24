@@ -19,7 +19,7 @@ export const ko: EditorLocale = {
       "copyBase": "Ctrl+Shift+C",
       "paste": "Ctrl+V"
     },
-    "TopBar": {
+    "TitleBar": {
       "menu": "응용프로그램 메뉴",
       "new": "새로 만들기",
       "open": "열기",

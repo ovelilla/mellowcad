@@ -19,7 +19,7 @@ export const ar: EditorLocale = {
       "copyBase": "Ctrl+Shift+C",
       "paste": "Ctrl+V"
     },
-    "TopBar": {
+    "TitleBar": {
       "menu": "قائمة التطبيق",
       "new": "جديد",
       "open": "فتح",

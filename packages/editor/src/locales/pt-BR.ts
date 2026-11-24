@@ -19,7 +19,7 @@ export const ptBR: EditorLocale = {
       "copyBase": "Ctrl+Shift+C",
       "paste": "Ctrl+V"
     },
-    "TopBar": {
+    "TitleBar": {
       "menu": "Menu Aplicativo",
       "new": "Novo",
       "open": "Abrir",

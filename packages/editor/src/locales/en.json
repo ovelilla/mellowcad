@@ -14,7 +14,7 @@
     "copyBase": "Ctrl+Shift+C",
     "paste": "Ctrl+V"
   },
-  "TopBar": {
+  "TitleBar": {
     "menu": "Application menu",
     "new": "New",
     "open": "Open",

@@ -156,7 +156,7 @@ export declare class CadEngine {
     setCurrentLinetype(linetype: string): void;
     setCurrentLineweight(lineweight: number | "ByLayer"): void;
     /**
-     * The top bar's property drop-downs: the selection when there is one, else
+     * The Properties panel's drop-downs: the selection when there is one, else
      * the current property, as {@link applyLayerControl} does with the layer.
      */
     applyColorControl(color: string): void;

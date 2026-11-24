@@ -84,9 +84,9 @@ unverified there.
 | ViewCube | Rotate clockwise; counterclockwise; View the face above… | 시계 방향으로 회전; 시계 반대 방향으로 회전; 위쪽 면 보기… | † (AcArrayRes 5024–5025 have 시계 반대 방향, 시계 방향) |
 | Navigation bar | Navigation bar; Zoom; Zoom Extents; Window; Previous; In; Out | 탐색 막대; 줌; 줌 범위; 줌 윈도우; 줌 이전; 줌 확대; 줌 축소 | X ACAD_159; P AcVMToolsRes 47094, 47098, 47105, 47102, 47099, 47101 |
 | Viewport | View controls: {name} | 뷰 조정: {name} | P acadres 49037 |
-| Top bar | Application menu; New; Open; Save; Save As | 응용프로그램 메뉴; 새로 만들기; 열기; 저장; 다른 이름으로 저장 | D acadres 7013:1278; X ACAD_673, ACAD_674, ACAD_UIE_31, ACAD_32 |
-| Top bar | Undo; Redo; Drawing Units…; Language; Send Feedback | 명령 취소; 명령 복구; 도면 단위…; 언어; 피드백 보내기 | X XLS_UIE_1068, XLS_UIE_0019; D unitsRes 500:title; P acadres 5878; X XLS_7254 |
-| Top bar | Object color; Saving…; Saved; Saved on this device | 객체 색상; 저장 중…; 저장됨 †; 이 장치에 저장됨 † | P gridres 109, AcPltRes 5319 |
+| Title bar | Application menu; New; Open; Save; Save As | 응용프로그램 메뉴; 새로 만들기; 열기; 저장; 다른 이름으로 저장 | D acadres 7013:1278; X ACAD_673, ACAD_674, ACAD_UIE_31, ACAD_32 |
+| Title bar | Undo; Redo; Drawing Units…; Language; Send Feedback | 명령 취소; 명령 복구; 도면 단위…; 언어; 피드백 보내기 | X XLS_UIE_1068, XLS_UIE_0019; D unitsRes 500:title; P acadres 5878; X XLS_7254 |
+| Title bar | Object color; Saving…; Saved; Saved on this device | 객체 색상; 저장 중…; 저장됨 †; 이 장치에 저장됨 † | P gridres 109, AcPltRes 5319 |
 | Command line | Command line; Type a command (LINE, TR, CO…); Command history | 명령행; 명령 입력(LINE, TR, CO…); 명령 사용 내역 | P acadres 4233; N AcWindows (by text, "Type a command"); P dwgaidsRes 1328 |
 | Shortcut menu | Shortcut menu; Repeat {command}; Enter; Cancel | 바로 가기 메뉴; 반복 {command}; 입력; 취소 | N AcCustomize NAME_ShortcutMenu; X ACAD_1897, ACAD_1758 |
 | Shortcut menu | Clipboard; Copy with Base Point; Paste; Copy Selection; Deselect All | 클립보드; 기준점을 사용하여 복사; 붙여넣기; 선택 복사; 모두 선택해제 | X RBN_00011049, ACAD_1974, ACAD_58, XLS_1005, ACAD_1931 |

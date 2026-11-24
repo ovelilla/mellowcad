@@ -19,7 +19,7 @@ export const zhTW: EditorLocale = {
       "copyBase": "Ctrl+Shift+C",
       "paste": "Ctrl+V"
     },
-    "TopBar": {
+    "TitleBar": {
       "menu": "應用程式功能表",
       "new": "新建",
       "open": "開啟",
