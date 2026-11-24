@@ -4,7 +4,7 @@ paths:
   - ".claude/**"
   - "AGENTS.md"
   - "README.md"
-  - "docs/**"
+  - "docs/**/*.md"
   - "test/knowledge.test.ts"
 ---
 
@@ -27,12 +27,8 @@ paths:
   was incomplete. Write what the code cannot say: the constraint, the trap, the reason.
 - **One owner per fact**: anywhere else, a pointer to it.
 - **A rule that can be checked becomes the check.** The prose then shrinks to "checked by X".
-- **The hooks** (`.claude/hooks/`, wired in `.claude/settings.json`) run in Claude Code only: what
-  one enforces also lives in the prose an agent of any tool reads (the skill, `AGENTS.md`), and its
-  logic is tested (`test/deps.test.ts` runs the session hook in a scratch repo).
-- A rule is English and terse. A library's behaviour carries a header after the title,
-  `> Verified against **<package> <version>**.`, with the installed version: an upgrade turns it
-  red until the rule is re-verified.
+- Writing a rule, a skill, a hook or `AGENTS.md`, and what the test holds them to:
+  `rules-and-skills.md`.
 
 ## What `test/knowledge.test.ts` checks
 
@@ -44,19 +40,5 @@ READMEs, the rules, the skills and `docs/`:
   `docs/`, which cite AutoCAD's names). A path with a placeholder (`<tag>`, `…`) is not checked.
   A citation that is absent on purpose goes in `ABSENT_CITATIONS` with its reason; an entry no
   longer cited fails.
-- **Every rule has a one-line `description:`** (up to 200 characters): the index
-  `grep -H '^description:' .claude/rules/*.md` that `AGENTS.md` points to. Claude Code reads only
-  `paths:` and ignores the rest of the frontmatter.
-- **Every rule has `paths:` and each glob matches a file.** Write `app/*/*app*/**`, never
-  `app/[locale]/(app)/**`: Claude Code reads `[locale]` as a character class and `(app)` as a group,
-  so that glob never loads the rule.
-- **A skill's `name` is its folder** (kebab-case) and it has a `description` of up to 1,024
-  characters (Copilot's limit), which is what an agent sees before loading it: say when to use it.
-  Its `SKILL.md` stays under 16 KB, about what Claude Code re-attaches after compacting.
-- **No `CLAUDE.md` or `CLAUDE.local.md`** at the root or in `.claude/`: Claude Code would stop
-  reading `AGENTS.md`.
 - **Each brief, `docs/next-*.md`, opens with a status line** (`> **Estado:** …`): the session hook
   shows its first sentence.
-- **Budgets**, ratchets that only go down: `AGENTS.md`, each rule and skill file, and the p90 of
-  rule KB loaded per source file (`npm run knowledge` prints median, p90 and max). The frontmatter
-  does not count: Claude Code injects only what follows it.

@@ -33,6 +33,7 @@ try {
       file: inRepo(input.file_path),
       reason: input.load_reason,
       trigger: inRepo(input.trigger_file_path),
+      globs: input.globs,
     }) + "\n"
   )
 } catch {

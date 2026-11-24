@@ -13,7 +13,8 @@ import { describe, expect, it } from "vitest"
 // The knowledge the agents load — AGENTS.md, the scoped rules, the skills and
 // the docs — checked against the repo, so a rename or a deleted file turns the
 // sentence that cites it red instead of leaving it to mislead. What it checks
-// and how to cite is in .claude/rules/knowledge.md.
+// and how to cite is in .claude/rules/knowledge.md, what it holds the rules
+// and skills to in .claude/rules/rules-and-skills.md.
 
 // Ratchets: lower them as the knowledge slims down, never raise them to pass.
 const ALWAYS_LOADED_MAX_KB = 10
@@ -29,6 +30,17 @@ const RULE_DESCRIPTION_MAX = 200
 // Cited on purpose without existing in the repo or a declared package.
 const ABSENT_CITATIONS: Record<string, { reason: string; values: string[] }> =
   {}
+
+// A rule's glob that also loads it below the folder it names (see `loadsFor`),
+// with the reason that is acceptable: by rule file and glob.
+const ANY_LEVEL_GLOBS: Record<string, string> = {
+  ".claude/rules/knowledge.md README.md":
+    "every README.md: the packages' are this test's sources too, and no glob anchors at the root",
+  ".claude/rules/knowledge.md docs/**/*.md":
+    "the packages' guides (cad/docs, packages/*/docs), which this test reads too",
+  ".claude/rules/i18n.md i18n/*.ts":
+    "cad/i18n, the engine's language rules, which the rule covers too",
+}
 
 const ALWAYS_LOADED = ["AGENTS.md"]
 const SOURCE_PATTERN =
@@ -76,9 +88,9 @@ const roots = new Set(repoFiles.map((file) => file.split("/")[0]))
 const sources = repoFiles.filter((file) => SOURCE_PATTERN.test(file))
 const read = (file: string) => readFileSync(file, "utf8")
 
-// Claude Code reads `paths:` globs as picomatch does: `[locale]` is a
-// character class and `(app)` a group, so neither matches the folder of that
-// name. Rules write `app/*/*app*/**` instead, and `bracketsIn` refuses both.
+// Claude Code reads `paths:` globs as gitignore patterns: `[locale]` is a
+// character class, so it never matches the folder of that name. Rules write
+// `app/*/*app*/**` instead, and `bracketsIn` refuses brackets and parentheses.
 function globToRegExp(glob: string) {
   let source = ""
   let braces = 0
@@ -105,6 +117,16 @@ function globToRegExp(glob: string) {
 }
 
 const bracketsIn = (glob: string) => /[[\]()]/.test(glob)
+
+// Claude Code tries a rule's globs from every folder of the file's path, not
+// only from the root: `docs/**` loads for content/docs/ too. Every load of the
+// log from 10/11 to 24/11/2026 fits this (793 of 793, two from paths since
+// moved), and so does a file under .claude/worktrees/ loading the main tree's
+// rules.
+function loadsFor(pattern: RegExp, file: string) {
+  const parts = file.split("/")
+  return parts.some((_, i) => pattern.test(parts.slice(i).join("/")))
+}
 
 function frontmatter(content: string) {
   const block = content.match(/^---\n([\s\S]*?)\n---/)?.[1] ?? ""
@@ -339,6 +361,36 @@ describe("the agents' knowledge", () => {
     expect(broken).toEqual([])
   })
 
+  it("loads each rule only below the folders its paths name", () => {
+    const reaches = rules.flatMap(({ file, paths = [] }) => {
+      const own = paths.map(globToRegExp)
+      return paths.map((glob) => {
+        const pattern = globToRegExp(glob)
+        const beyond = repoFiles.filter(
+          (repoFile) =>
+            !own.some((anchored) => anchored.test(repoFile)) &&
+            loadsFor(pattern, repoFile)
+        )
+        return { key: `${file} ${glob}`, beyond }
+      })
+    })
+    const broken = [
+      ...reaches
+        .filter(({ key, beyond }) => beyond.length && !(key in ANY_LEVEL_GLOBS))
+        .map(
+          ({ key, beyond }) =>
+            `${key} also loads for ${beyond.length} files, such as ${beyond[0]}: narrow it, or list it in ANY_LEVEL_GLOBS`
+        ),
+      ...Object.keys(ANY_LEVEL_GLOBS)
+        .filter(
+          (key) =>
+            !reaches.some((reach) => reach.key === key && reach.beyond.length)
+        )
+        .map((key) => `${key}: in ANY_LEVEL_GLOBS, reaches nothing beyond`),
+    ]
+    expect(broken).toEqual([])
+  })
+
   it("describes every rule in one line, the index grep reads", () => {
     const broken = rules.flatMap(({ file, description }) =>
       description && description.length <= RULE_DESCRIPTION_MAX
@@ -405,7 +457,7 @@ describe("the agents' knowledge", () => {
       .map((file) =>
         compiled
           .filter(({ patterns }) =>
-            patterns.some((pattern) => pattern.test(file))
+            patterns.some((pattern) => loadsFor(pattern, file))
           )
           .reduce((total, { kb }) => total + kb, 0)
       )
