@@ -21,7 +21,7 @@
 > `0f86c6ad`; después el push estuvo congelado otra vez: `docs/next-vercel-usage.md` §4),
 > y el chino simplificado (`live` en `/zh-cn`, L8, `global`) hecho y publicado el 22/11 (el push
 > de las 09:30, hasta `43bb8b9b`), y el chino tradicional (`live` en `/zh-tw`, L8, `global`) hecho el
-> 22/11, sin publicar;
+> 22/11 y publicado el 24/11 (el push de las 08:40, hasta `48ce4a75`);
 > por decisión del dueño la
 > visibilidad va antes que cualquier funcionalidad; siguiente, por orden del dueño (12/11/2026), una
 > sesión cada vez, nunca en paralelo: lo que quede de la fase 4 del DXF (`docs/next-dxf.md`: las
@@ -30,11 +30,11 @@
 > MULTILEADER, hechos el 19/11, y XLINE y RAY, con sus páginas, hechos el 20/11, publicados el
 > 21/11 con el export estático; MINSERT, con su página, hecho el 21/11, y los colores índice y
 > las sustituciones DSTYLE, del punto 7, hechos el 22/11, publicados el 22/11, y la malla de
-> VBA_Tower (una malla poligonal, con 3DMESH), hecha el 22/11, sin publicar, que cierra el punto 7,
+> VBA_Tower (una malla poligonal, con 3DMESH), hecha el 22/11, que cierra el punto 7,
 > y de la fase 5 el informe de lo que se pierde al guardar (AutoCAD no informa; los SCP con nombre,
-> que perdíamos, se guardan), hecho el 22/11, sin publicar, y R12, con las `$DIM*` de su cabecera
-> y el sólido de caras curvas, hecho el 23/11, sin publicar, y la caja de un sólido con una arista
-> de normal −Z, hecha el 24/11, sin publicar, y las vistas preliminares, descartadas el 24/11:
+> que perdíamos, se guardan), hecho el 22/11, y R12, con las `$DIM*` de su cabecera
+> y el sólido de caras curvas, hecho el 23/11, y la caja de un sólido con una arista
+> de normal −Z, hecha el 24/11 (todo eso, desde la malla, publicado el 24/11 a las 08:40), y las vistas preliminares, descartadas el 24/11:
 > nadie las lee; queda ACIS, que espera a `docs/next-solids.md`) y otro idioma (los once de AutoCAD con
 > criterio de L8 están hechos, el chino tradicional el último: ampliar el criterio es decisión del
 > dueño), alternando, además de lo que queda de §7.

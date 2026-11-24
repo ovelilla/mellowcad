@@ -7,7 +7,8 @@
 > Desde el 21/11 a las 09:40 el sitio es un export estático en producción, que deja las lecturas
 > de ISR de las páginas en cero: la lectura del 22/11 a las 00:45 lo confirmó (cero en 12 h, §3),
 > y el 22/11 a las 09:30 el dueño dio su palabra: la zona de Cloudflare aplicada, que reabre el
-> sitio a los rastreadores (§5), y el push hasta `43bb8b9b`.
+> sitio a los rastreadores (§5), y el push hasta `43bb8b9b`. El siguiente, el 24/11 a las 08:40,
+> hasta `48ce4a75`.
 
 ## 1. El problema
 
@@ -115,7 +116,10 @@ las lecturas de ISR en cero y el dueño dé su palabra. La lectura del 22/11 (00
 cero, y el dueño la dio ese día: el push de las 09:30, de `0f86c6ad` a `43bb8b9b`, llevó MINSERT y
 su página, la reapertura a los rastreadores, el chino simplificado y los colores índice con las
 sustituciones DSTYLE. El congelado queda levantado; las lecturas de los días siguientes dicen si
-vuelve.
+vuelve. El push del 24/11 a las 08:40, de `43bb8b9b` a `48ce4a75`, con la palabra del dueño y tras
+la lectura del 24/11 (§3), llevó el chino tradicional, 3DMESH y la malla poligonal, los SCP con
+nombre en el DXF y R12 con la caja del punto 2.6 de §5 de `docs/next-dxf.md`; el CI y el
+despliegue, en verde, y la caché de Cloudflare purgada a las 08:55.
 
 ## 5. La caché de Cloudflare delante de Vercel
 

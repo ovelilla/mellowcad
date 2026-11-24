@@ -28,15 +28,14 @@
 > colores índice como tales y las sustituciones DSTYLE de cada cota, del punto 7, hechos el 22/11
 > (todo eso, desde MINSERT, publicado el 22/11 a las 09:30), y la malla de VBA_Tower, una malla
 > poligonal (POLYLINE 70 16, no la de caras, 64), con 3DMESH y las solicitudes de malla de PEDIT,
-> hecha el 22/11, que lleva las muestras sin nada fuera a 154 de 154 y cierra el punto 7 (sin
-> publicar); y la primera pieza de la fase 5, el informe de lo que se pierde al guardar, hecha el
-> 22/11 (sin publicar): AutoCAD no informa de nada, así que no hay informe nuevo, y lo que
+> hecha el 22/11, que lleva las muestras sin nada fuera a 154 de 154 y cierra el punto 7; y la
+> primera pieza de la fase 5, el informe de lo que se pierde al guardar, hecha el 22/11: AutoCAD no informa de nada, así que no hay informe nuevo, y lo que
 > perdíamos en silencio y AutoCAD guarda, los SCP con nombre, se escribe y se lee; y la segunda,
-> R12 (el tipo «AutoCAD R12/LT2 DXF» y la versión R12), hecha el 23/11 (sin publicar), con sus
+> R12 (el tipo «AutoCAD R12/LT2 DXF» y la versión R12), hecha el 23/11, con sus
 > degradados, el texto de la cota angular, el bloqueo de los atributos y el xdata de los
-> sombreados, escrito y leído, el mismo día (sin publicar), y las `$DIM*` de su cabecera y
-> el sólido de caras curvas, el 23/11 (sin publicar), y la caja de un sólido con una arista de
-> normal −Z (§5, punto 2.6), el 24/11 (sin publicar), y las vistas preliminares, investigadas y
+> sombreados, escrito y leído, el mismo día, y las `$DIM*` de su cabecera y
+> el sólido de caras curvas, el 23/11, y la caja de un sólido con una arista de
+> normal −Z (§5, punto 2.6), el 24/11 (todo eso, desde la malla, publicado el 24/11 a las 08:40), y las vistas preliminares, investigadas y
 > descartadas el 24/11 (§5, punto 3: nadie las lee); de la fase 5 solo queda ACIS (punto 4),
 > que espera a que el dueño retome `docs/next-solids.md`.
 > Se borra cuando la fase 5 esté hecha; hasta entonces cada fase cerrada se marca aquí.
@@ -502,7 +501,7 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
       se compara con el que AutoCAD dejó en su bloque `*D`, 78 escriben ahora el mismo (54 antes),
       ninguna peor; las demás, sobre todo por las unidades arquitectónicas (DIMLUNIT), sin modelar.
       Páginas «abrir/editar DXF online» en los catorce idiomas, y la de COLOR.
-      **La malla poligonal**, hecha el 22/11/2026 (sin publicar): la de VBA_Tower no era la malla
+      **La malla poligonal**, hecha el 22/11/2026 (publicada el 24/11): la de VBA_Tower no era la malla
       de caras (POLYLINE 70 64, AcDbPolyFaceMesh) sino una poligonal (70 48: 16 más 32, cerrada en
       N; AcDbPolygonMesh, M × N vértices, 2 × 8, en el bloque FZA), la de 3DMESH. Hechos el objeto
       (`PolygonMeshEntity`, fichero versión 65) y 3DMESH en las diez consolas (sondas
@@ -525,7 +524,7 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
    de paso (`242d031f`): lo que sigue a EOF no se lee, como lo abre AutoCAD, y un patrón con su
    código de estilo (`ANSI31,_O`, 5 muestras) dibuja su relleno.
 5. **El resto**, ordenado el 22/11/2026 con la investigación de su primera pieza:
-   1. **El informe de lo que se pierde al guardar.** **Hecho** (22/11/2026, sin publicar).
+   1. **El informe de lo que se pierde al guardar.** **Hecho** (22/11/2026, publicado el 24/11).
       AutoCAD 2027 no informa de nada: la consola guarda un 3DSOLID y una REGION con DXFOUT 2018,
       2000 y R12 y con SAVEAS a DWG 2000 y R14 sin una línea (sonda `x022`), el escritorio, con
       _Save Drawing As_ a DXF 2000, DXF R12 y DWG 2000, sin un cuadro (`d02`), y sus tablas solo
@@ -540,28 +539,28 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
       con nombre, el estilo visual (281 y 348 del VPORT y los objetos VISUALSTYLE) y el ViewCube
       (`ACAD_NAV_VCDISPLAY`).
    2. **R12** (el tipo «AutoCAD R12/LT2 DXF» y la versión R12 de DXFOUT). **Hecho** (23/11/2026,
-      sin publicar): `writeDxfR12.ts` y `dxfR12.ts`, cada conversión como la de AutoCAD 2027
+      publicado el 24/11): `writeDxfR12.ts` y `dxfR12.ts`, cada conversión como la de AutoCAD 2027
       (sonda `r12.sh`, que guardó como R12 cada fichero de referencia de AutoCAD, y `x027`,
       `x028`): la consola abre sin un error de AUDIT los 36 ficheros (18 dibujos, ASCII y binario)
       y los traza como su propio R12 del mismo dibujo. Lo hallado contra la ayuda: los nombres se
       cortan a 26 caracteres, no a 32, y no solo el espacio pasa a guion bajo, sino todo lo que no
       es letra, dígito, `$`, `-` o `_`. Lo que hace y lo que falta, en la entrada de DXFOUT de
       `docs/coverage/clipboard-and-files.md`. Queda, ordenado por lo que más se ve:
-      1. **Los degradados.** **Hecho** (23/11/2026, sin publicar). No son bandas de colores
+      1. **Los degradados.** **Hecho** (23/11/2026, publicado el 24/11). No son bandas de colores
          índice: AutoCAD escribe los triángulos de su malla de sombreado (de 2 a 523, más finos
          donde el color gira) y tira los colores, cada SOLID del color y la capa del sombreado
          (r12.sh's gradients, x029); los nuestros son los trapecios del área, como los de un
          relleno. De paso, un relleno sólido lleva sus piezas en la capa del sombreado y con su
          color, no en la 0 (x030). La consola abre los 4 ficheros sin un error de AUDIT y los
          traza como su propio R12; de 2000 a 2018, idénticos byte a byte.
-      2. **El texto de una cota angular.** **Hecho** (23/11/2026, sin publicar): TEXT
+      2. **El texto de una cota angular.** **Hecho** (23/11/2026, publicado el 24/11): TEXT
          horizontales en su `*D`, a la izquierda sobre la base, la primera línea 1,3 alturas bajo
          el centro del texto y cada siguiente 1,3 más abajo, con cualquier DIMTAD, DIMTIH, DIMGAP
          o giro; lo que no está en la página de códigos, `?`, también el grado (`45?`). Las demás
          cotas guardan su `*U` (x031, x032). La consola abre los 8 ficheros sin un error de AUDIT
          y los traza como su propio R12, salvo lo que ya separa al modelo de AutoCAD (DIMTAD y
          DIMTIH sin modelar, DIMS-D8).
-      3. **El xdata de los sombreados.** **Hecho** (23/11/2026, sin publicar), escrito y leído
+      3. **El xdata de los sombreados.** **Hecho** (23/11/2026, publicado el 24/11), escrito y leído
          (`dxfR12Hatch.ts`, `writeDxfR12Hatch.ts`; sondas `x034`–`x049`, `back.sh`). Lo hallado, contra lo que este
          brief daba por hecho: **AutoCAD 2027 no lee su propio R12 de vuelta como sombreados**.
          Al abrirlo cada uno sigue siendo la referencia a su bloque `*X` o `*U` (LIST lee de su
@@ -588,7 +587,7 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
          también los que CONVERT deja como bloque con los datos enteros. Queda fuera, anotado en
          la entrada de DXFIN: el sombreado que escribió el propio R12 (sin `R14_HATCH_DATA`,
          que CONVERT rehace desde sus contornos), el comando CONVERT y el estilo de islas (75).
-      4. **Las variables `$DIM*` de la cabecera.** **Hecho** (23/11/2026, sin publicar). La
+      4. **Las variables `$DIM*` de la cabecera.** **Hecho** (23/11/2026, publicado el 24/11). La
          cabecera lleva el estilo actual con sus sustituciones actuales (x050: otro estilo puesto
          como actual; x051: DIMASZ y DIMSCALE cambiadas sobre ISO-25, el registro intacto), y
          AutoCAD lee de vuelta la que no coincide con su registro como esas sustituciones
@@ -604,7 +603,7 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
          que el modelo no tiene. Al leer se queda el registro del estilo (el modelo no tiene
          sustituciones actuales, DIMS-D9). Los 64 R12 abren sin un error de AUDIT, y de 2000 a
          2018, 372 de 372 ficheros idénticos byte a byte.
-      5. **Un sólido de caras curvas.** **Hecho** (23/11/2026, sin publicar). AutoCAD escribe de
+      5. **Un sólido de caras curvas.** **Hecho** (23/11/2026, publicado el 24/11). AutoCAD escribe de
          cualquier sólido las aristas de cada cara, una vez por cara que bordea: el vértice de un
          cono como POINT, la esfera y el toroide como bloque vacío, y los polos de un toroide de
          huso o de limón como dos POINT. Las aristas de una cara plana van en su plano (210). Y
