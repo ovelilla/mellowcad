@@ -133,7 +133,7 @@ Pedido por el dueño (10/11/2026): **cambiar el estilo visual desde la interfaz*
 puede tecleando VSCURRENT (`VS`, es `EVA`), y un usuario de AutoCAD busca la etiqueta de los
 controles del viewport (`[2D Wireframe]`, arriba a la izquierda) y su lista de estilos; también
 la galería de estilos visuales del ribbon. La fase 0 la sitúa en View › Visual Styles, un panel
-que «Drafting & Annotation» tiene oculto y aquí se muestra: va con la fase 1 (su bloque 5), así
+que «Drafting & Annotation» tiene oculto y aquí se muestra: va con la fase 1 (su bloque 4), así
 que el pedido se cumple primero por el ribbon, y la etiqueta del viewport llega en la fase 4. La
 lista ofrece solo los estilos construidos (2D Wireframe, Hidden,
 Conceptual: `docs/coverage/view.md`, VSCURRENT) y ejecuta VSCURRENT, como la de AutoCAD; quita
@@ -151,3 +151,17 @@ acceso rápido.
 
 Hatch Creation, Text Editor y Array como pestañas que siguen a su comando. Cada una es la
 interfaz de un comando, así que pasa por la revisión y la investigación de ese comando.
+
+## 5. Con qué modelo
+
+Como en `docs/next-mcp.md` §6.1, y por la misma razón (Fable agota pronto su límite semanal): lo
+que pedía el modelo más capaz, decidir qué construir, ya está en el plan; lo que queda es
+ejecución con AutoCAD delante, las skills y la puerta, que cazan el error.
+
+- **Cada sesión de este brief empieza con Opus 5.5 en High**.
+- **Fable 5.2 solo en dos casos**: una sesión de Opus atascada, que al cerrar dice en qué y por
+  qué (no se insiste con el mismo modelo), y una revisión corta del diff del marco y de Home
+  (bloques 2 y 3 del §6 del plan), una sesión de revisión, no la de construcción.
+- **Al cerrar, cada sesión le dice al dueño el modelo de la siguiente** y por qué, siendo
+  crítica: «Fable» pide un motivo concreto de ese bloque (qué se intentó y no salió, o qué
+  decisión queda abierta que el plan no resuelve), nunca «es más difícil».

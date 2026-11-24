@@ -443,6 +443,10 @@ colour scheme. Each has its WHY in its coverage entry already.
    32 px drawing of its tool, not the 16 px one scaled.
 6. **One block per commit and the gate once per block**, each block leaving the editor whole: the
    ribbon replaces the palette in one commit, never both on screen.
+7. **The look is ours; the place, the order, the sizes and the states are AutoCAD's.** The ribbon
+   is drawn with the editor's primitives and tokens, in its one dark scheme; what follows AutoCAD
+   is where each control is, in what order, at what size and in which state. It does not take the
+   28 px system: it has variants of its own at §2.3's measures (decision 1).
 
 ## 6. Phases
 
@@ -459,12 +463,14 @@ Each closes with skill `finish-feature`. Each starts with the captures it still 
    AutoCAD's rows (`ribbon.mjs --tab Home --built` is the worklist), large and small buttons, the
    split buttons with their behaviours, the slide-outs with their pin. It takes the top bar's
    Layers and Properties groups.
-4. **Minimize and fold**: the four states, the button and its menu; the fold in the measured
-   order, a folded panel opening whole under its button.
-5. **The other tabs**: Annotate, View (Palettes takes the top bar's toggles; Viewport Tools;
+4. **The other tabs**: Annotate, View (Palettes takes the top bar's toggles; Viewport Tools;
    Named Views; Visual Styles with the gallery, which answers the owner's request of 2026-11-10
    and takes `vscurrent` out of the commands without a button; Coordinates; Navigate), 3D Tools,
-   Insert.
+   Insert. Before minimize and fold, so the tools the palette offered get their buttons back
+   first: **no push is asked for between block 3, which removes the palette, and this one**, when
+   every tool it offered has a button again.
+5. **Minimize and fold**: the four states, the button and its menu; the fold in the measured
+   order, a folded panel opening whole under its button.
 6. **What it leaves false**, corrected in the same commits: `docs/coverage/workspace.md` (Top
    bar and Tool palette become Title bar and Ribbon), `.claude/rules/ui.md` (Size, Where a
    control belongs), `control-size.test.ts`, `cad-editor.test.ts` and the slots (`TopBar`,
