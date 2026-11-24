@@ -13,6 +13,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  type SelectFinalFocus,
 } from "./ui/select"
 import { useEditorText } from "./editor-text"
 
@@ -34,6 +35,7 @@ export function LinetypeSelect({
   className,
   disabled = false,
   below = false,
+  finalFocus,
 }: {
   value: string | null
   /** The engine's names, for ByLayer. */
@@ -51,6 +53,8 @@ export function LinetypeSelect({
    * a palette's field does.
    */
   below?: boolean
+  /** Where focus goes once the list has closed; the trigger, when omitted. */
+  finalFocus?: SelectFinalFocus
 }): ReactElement {
   const t = useEditorText("Properties")
   // The closed trigger shows ByLayer in the page's language, a linetype by
@@ -74,6 +78,7 @@ export function LinetypeSelect({
       <SelectContent
         align={below ? "start" : undefined}
         alignItemWithTrigger={!below}
+        finalFocus={finalFocus}
       >
         {includeByLayer && (
           <SelectItem value={LINETYPE_BYLAYER}>

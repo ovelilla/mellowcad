@@ -148,21 +148,22 @@ describe("CadEditor's components", () => {
 describe("CadEditor's ribbon", () => {
   const RIBBON = /class="([^"]*\[grid-area:ribbon\][^"]*)"/
 
-  /** The ribbon zone's classes in a render of the zones with `open`. */
-  const ribbonZone = (open: boolean) =>
-    RIBBON.exec(
-      renderToString(
-        createElement(EditorZones, {
-          components: { ...NONE, Ribbon: stand<PieceProps>("ribbon", []) },
-          ready: {
-            engine,
-            state: { ...state, ribbon: { ...state.ribbon, open } },
-          },
-          canvas: null,
-          paletteHandle: null,
-        })
-      )
-    )?.[1]
+  /** A render of the zones with the ribbon `open` or closed. */
+  const zonesWith = (open: boolean) =>
+    renderToString(
+      createElement(EditorZones, {
+        components: { ...NONE, Ribbon: stand<PieceProps>("ribbon", []) },
+        ready: {
+          engine,
+          state: { ...state, ribbon: { ...state.ribbon, open } },
+        },
+        canvas: null,
+        paletteHandle: null,
+      })
+    )
+
+  /** The ribbon zone's classes in that render. */
+  const ribbonZone = (open: boolean) => RIBBON.exec(zonesWith(open))?.[1]
 
   it("keeps the ribbon's height from the first paint, before the engine exists", () => {
     const html = renderToString(
@@ -174,6 +175,13 @@ describe("CadEditor's ribbon", () => {
   it("takes the ribbon away while RIBBONCLOSE or Clean Screen has closed it", () => {
     expect(ribbonZone(true)).not.toContain("hidden")
     expect(ribbonZone(false)).toContain("hidden")
+  })
+
+  // Hidden only, a slide-out pinned open stayed over the title bar, anchored
+  // to nothing: what the ribbon opens is portalled out of its zone.
+  it("takes the ribbon's piece away with it, and what it had open", () => {
+    expect(zonesWith(true)).toContain("<output>ribbon</output>")
+    expect(zonesWith(false)).not.toContain("<output>ribbon</output>")
   })
 })
 

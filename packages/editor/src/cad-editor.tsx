@@ -399,7 +399,10 @@ export function EditorZones({
 
       {/* The ribbon whole, its tab row (24) and its panels (100), shown from
       the first paint as AutoCAD starts with it; RIBBONCLOSE and Clean Screen
-      take it away. */}
+      take it away. WHY its piece goes with it, not only hidden: what it has
+      open over the drawing is portalled out of the zone — a slide-out pinned
+      open, a list, Insert's gallery — and would stay there, anchored to
+      nothing. */}
       {Tabs && (
         <div
           className={cn(
@@ -407,7 +410,7 @@ export function EditorZones({
             ribbon?.open === false && "hidden"
           )}
         >
-          {ready && <Tabs {...ready} />}
+          {ready && ready.state.ribbon.open && <Tabs {...ready} />}
         </div>
       )}
 

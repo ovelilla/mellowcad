@@ -41,6 +41,7 @@ import { LinetypeSelect } from "./linetype-select"
 import { LineweightSelect } from "./lineweight-select"
 import { LayerSwatch } from "./layers-control"
 import { BlockThumbnail } from "./blocks-control"
+import { drawingFocus } from "./drawing-focus"
 import { LinetypeIcon, LineweightIcon } from "./icons"
 import {
   LARGE_TOOL_ICONS,
@@ -96,6 +97,25 @@ interface Context {
   readonly text: (id: ItemId) => string
   /** Runs what a button does, then gives the drawing its keys back. */
   readonly act: (run: () => void) => void
+  /** A modal list's `finalFocus`: the drawing's, once it has closed. */
+  readonly toDrawing: () => false
+}
+
+/**
+ * How far a turn of the wheel moves the panels' row sideways: down goes on
+ * towards the panels' end, which in a right-to-left page is a scrollLeft
+ * below 0. A sideways turn is the browser's own (a trackpad, Shift with the
+ * wheel). WHY `inRow`: React hands the row the wheel of every popup it
+ * rendered, portalled or not, so a turn over a list — the layers', a
+ * drop-down's, Insert's gallery — would move the row under it as well.
+ */
+export function panelsScroll(
+  wheel: { readonly deltaX: number; readonly deltaY: number },
+  inRow: boolean,
+  rtl: boolean
+): number {
+  if (!inRow || wheel.deltaX !== 0) return 0
+  return rtl ? -wheel.deltaY : wheel.deltaY
 }
 
 /**
@@ -116,6 +136,7 @@ export function Ribbon({ engine, state }: PieceProps): ReactElement {
       run()
       engine.focusSurface()
     },
+    toDrawing: drawingFocus(engine),
   }
 
   return (
@@ -146,12 +167,15 @@ export function Ribbon({ engine, state }: PieceProps): ReactElement {
         aria-label={t("tabs.home")}
         className="flex h-25 scrollbar-none overflow-x-auto overflow-y-hidden pt-px"
         onWheel={(event) => {
-          if (event.deltaX !== 0 || event.deltaY === 0) return
-          // Down goes on towards the panels' end, which in a right-to-left
-          // page is a scrollLeft below 0.
           const row = event.currentTarget
-          const rtl = getComputedStyle(row).direction === "rtl"
-          row.scrollLeft += rtl ? -event.deltaY : event.deltaY
+          const by = panelsScroll(
+            event,
+            event.target instanceof Node && row.contains(event.target),
+            getComputedStyle(row).direction === "rtl"
+          )
+          // Nothing written where the turn is the browser's: a write would
+          // cut its own sideways scroll short.
+          if (by !== 0) row.scrollLeft += by
         }}
       >
         {HOME.map((panel) => (
@@ -250,7 +274,10 @@ function PanelView({ panel, ctx }: { panel: RibbonPanel; ctx: Context }) {
                 className="z-50"
               >
                 {/* The drawing keeps the keys: opening takes no focus, and
-                closing gives none back to the title bar. */}
+                closing gives none back to the title bar. WHY not
+                `toDrawing`: a popover that is not modal also closes on a
+                press elsewhere, and Base UI runs the function on every
+                close — it would take focus from the field just pressed. */}
                 <Popover.Popup
                   initialFocus={false}
                   finalFocus={false}
@@ -288,7 +315,10 @@ function PanelView({ panel, ctx }: { panel: RibbonPanel; ctx: Context }) {
                     </button>
                     {/* The title bar moved under the rows: it closes the
                     slide-out, as the one it covers opened it. */}
-                    <Popover.Close className="flex h-4.5 flex-1 items-center justify-center rounded-sm outline-none hover:bg-muted hover:text-foreground">
+                    <Popover.Close
+                      className="flex h-4.5 flex-1 items-center justify-center rounded-sm outline-none hover:bg-muted hover:text-foreground"
+                      onClick={() => ctx.engine.focusSurface()}
+                    >
                       {name}
                     </Popover.Close>
                     {launcher || <span aria-hidden className="w-4" />}
@@ -630,7 +660,9 @@ function SplitButton({
     const Icon = LARGE_TOOL_ICONS[shown]
     const lines = largeLines(text)
     // Two targets (§2.3): the icon, 38 high, runs; the text and its arrow,
-    // 35, open the list.
+    // 35, open the list. They share a pixel (`-mt-px`), as 38 and 35 do in
+    // AutoCAD's 72: one under the other the button ends a pixel below its
+    // neighbours.
     return (
       <Menu.Root>
         <div className={cn("group flex h-18 shrink-0 flex-col", WHOLE_EVEN)}>
@@ -651,7 +683,7 @@ function SplitButton({
             aria-label={text}
             className={cn(
               BUTTON,
-              "h-8.75 flex-col justify-start rounded-t-none px-2.5 group-hover:border-border"
+              "-mt-px h-8.75 flex-col justify-start rounded-t-none px-2.5 group-hover:border-border"
             )}
           >
             {lines.map((line, i) => (
@@ -738,15 +770,7 @@ function MemberList({
         sideOffset={large ? 0 : 1}
         className="z-50"
       >
-        {/* A pick gives the drawing its keys once the menu has closed:
-        before, the page is inert and Base UI hands focus to the trigger. */}
-        <Menu.Popup
-          className={cn(POPUP, "p-0.5")}
-          finalFocus={() => {
-            ctx.engine.focusSurface()
-            return false
-          }}
-        >
+        <Menu.Popup className={cn(POPUP, "p-0.5")} finalFocus={ctx.toDrawing}>
           {members.map((member, i) => {
             if (member === null) {
               return (
@@ -833,7 +857,11 @@ function LayerCombo({ ctx }: { ctx: Context }) {
           }
         </SelectValue>
       </SelectTrigger>
-      <SelectContent align="start" alignItemWithTrigger={false}>
+      <SelectContent
+        align="start"
+        alignItemWithTrigger={false}
+        finalFocus={ctx.toDrawing}
+      >
         {state.layers.map((layer) => (
           <SelectItem key={layer.id} value={layer.id}>
             <LayerSwatch color={layer.color} />
@@ -876,6 +904,7 @@ function PropertyCombo({
         ariaLabel={t("color")}
         className="w-50"
         triggerClassName={COMBO}
+        finalFocus={ctx.toDrawing}
       />
     )
   }
@@ -900,6 +929,7 @@ function PropertyCombo({
           }}
           ariaLabel={t("lineweight")}
           className={cn(COMBO, "w-45")}
+          finalFocus={ctx.toDrawing}
         />
       ) : (
         <LinetypeSelect
@@ -914,6 +944,7 @@ function PropertyCombo({
           }}
           ariaLabel={t("linetype")}
           className={cn(COMBO, "w-45")}
+          finalFocus={ctx.toDrawing}
         />
       )}
     </div>

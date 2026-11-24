@@ -493,6 +493,34 @@ Each closes with skill `finish-feature`. Each starts with the captures it still 
      REVOLVE, PRESSPULL, the booleans, SLICE, Fillet and Chamfer Edge and the face edits (3D Tools).
      TEXTEDIT loses its button for good: no panel of 2027 has one (its `^C^C_textedit` is the Text
      toolbar's); it is typed, or a double-click on a text.
+   - **Reviewed 2026-11-24** (blocks 2 and 3: the diff against acad.cuix, the desktop's captures
+     and the editor in Chrome); what it fixed is in its commit. What it leaves, each for the block
+     named:
+     - **Block 4: the Attribute Display drop-down.** Block's slide-out holds acad.cuix's
+       `AcATTMODEDataBoundDropDown` (as Insert's Block panel does): three entries, `'_attdisp _n`,
+       `_on` and `_off`, the one ATTMODE holds shown. Home's stand-in, one button that leaves the
+       option to ATTDISP's prompt, is a gesture of ours nothing on the platform forces: build the
+       drop-down, bound to ATTMODE, its three words each culture's acad.CUIX's.
+     - **Block 4: Object Color's picker.** The 20 px icon before the combo opens the browser's
+       colour picker; AutoCAD's icon is no target, and its list ends in a row that opens Select
+       Color. The picker goes behind that last row (its wording on the ribbon read on the desktop
+       first), in the ribbon and in the Properties palette, which share `ColorSelect`.
+     - **Block 5: widths where `calc-size` is missing.** `WHOLE` and `WHOLE_EVEN` round a text's
+       width up in Chromium; where the function is not supported the width keeps its fraction and
+       every icon after the first text is off the pixel grid (emulated in Chrome with
+       `width: auto`: 59 of Home's 60 icons; Firefox and Safari **unverified**, neither is
+       installed here). The fold measures the panels anyway: it rounds what CSS did not.
+     - **Block 5 goes before the push.** Home is whole from 1521 px of window (1632 in Spanish):
+       at 1280, 1366, 1440 and 1536, the usual laptops, Properties, Utilities and Clipboard are
+       past the edge with nothing to say so, where the palette showed every tool. The push that
+       ships the ribbon waits for the fold, unless the owner says otherwise.
+     - **Phase 5: tooltips.** A drop-down that only lists (Cut, Copy) and every list's arrow have
+       none: Base UI opens no popup from a trigger that also has a tooltip.
+     - **On the desktop, with the owner's word** (`gui.md`): whether a slide-out stays open after
+       one of its tools is clicked (here it does, until the pointer leaves), whether a pinned one
+       is closed by its title bar, and whether the pin outlives RIBBONCLOSE and Clean Screen (here
+       it does not); Layer Properties' echo, and Modify's buttons with a grip hot
+       (`docs/coverage/workspace.md`, Ribbon).
 4. **The other tabs**: Annotate, View (Palettes takes the title bar's toggles; Viewport Tools;
    Named Views; Visual Styles with the gallery, which answers the owner's request of 2026-11-10
    and takes `vscurrent` out of the commands without a button; Coordinates; Navigate), 3D Tools,

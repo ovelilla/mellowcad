@@ -4,7 +4,9 @@
 > la fase 0 (inventario y plan) está hecha y su plan, `docs/plans/autocad-ui.md`, manda sobre las
 > fases de §4, que se corrigieron con él; de la fase 1 (el marco y el ribbon), los bloques 1
 > (el estado del ribbon en el motor), 2 (el marco) y 3 (Home, que quitó la paleta de herramientas)
-> del §6 del plan están hechos el 24/11; sigue el 4, las otras pestañas, sin push antes.
+> del §6 del plan están hechos el 24/11, y el 2 y el 3 revisados ese día (la revisión corta con
+> Fable de §5: lo que deja para los bloques 4 y 5, en el §6 del plan); sigue el 4, las otras
+> pestañas, sin push antes.
 > Acordado el 7/11/2026 por el dueño. Se borra cuando la última fase esté hecha; hasta entonces
 > cada fase cerrada se marca aquí.
 

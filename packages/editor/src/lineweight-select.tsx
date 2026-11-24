@@ -14,6 +14,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  type SelectFinalFocus,
 } from "./ui/select"
 import { useEditorText } from "./editor-text"
 
@@ -35,6 +36,7 @@ export function LineweightSelect({
   className,
   disabled = false,
   below = false,
+  finalFocus,
 }: {
   value: number | "ByLayer" | null
   /** The engine's name for ByLayer. */
@@ -50,6 +52,8 @@ export function LineweightSelect({
    * a palette's field does.
    */
   below?: boolean
+  /** Where focus goes once the list has closed; the trigger, when omitted. */
+  finalFocus?: SelectFinalFocus
 }): ReactElement {
   const t = useEditorText("Properties")
   return (
@@ -80,6 +84,7 @@ export function LineweightSelect({
       <SelectContent
         align={below ? "start" : undefined}
         alignItemWithTrigger={!below}
+        finalFocus={finalFocus}
       >
         {includeByLayer && (
           <SelectItem value={LINEWEIGHT_BYLAYER}>

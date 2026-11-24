@@ -237,10 +237,12 @@ the ribbon, the bottom row from phase 4. **28 px**, icons 16, for the rest one p
 - **A menu the engine opens has no trigger**: `ShortcutMenu` is a controlled `Menu.Root` anchored
   to the pointer. Base UI names a trigger-less menu's node in its floating tree itself, so a
   submenu does not close it as a sibling (`sibling-open`).
-- **A modal menu leaves the page inert until it has closed**, so a `focusSurface()` run as an item
-  acts is lost and Base UI returns focus to the trigger. Give focus back in the popup's
-  `finalFocus` (`() => { engine.focusSurface(); return false }`). A dialog: `finalFocus={false}` and
-  `focusSurface` on `onOpenChangeComplete`.
+- **A modal menu or `Select` leaves the page inert until it has closed**, so a `focusSurface()` run
+  as an item acts is lost and Base UI focuses the trigger, whose next key is its own (a letter
+  picks, Space opens). Give focus back in the popup's `finalFocus` (`drawingFocus(engine)`). A
+  dialog: `finalFocus={false}` and `focusSurface` on `onOpenChangeComplete`.
+- **React hands a portalled popup's events to what rendered it**: an ancestor's `onWheel` hears a
+  list's (`panelsScroll`).
 - `Panel` (`toolbar-primitives.tsx`) does **not** forward props: `<PopoverTrigger render={<Panel>…} />`
   drops the click handler and the popover silently never opens. Render the `Button` as the trigger
   and wrap the whole `Popover` in the `Panel`.

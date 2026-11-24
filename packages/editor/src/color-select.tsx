@@ -17,6 +17,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  type SelectFinalFocus,
 } from "./ui/select"
 import { useEditorText } from "./editor-text"
 
@@ -35,6 +36,7 @@ export function ColorSelect({
   disabled = false,
   below = false,
   ribbon = false,
+  finalFocus,
 }: {
   value: string | null
   /** The engine's names for the colours and for ByLayer. */
@@ -56,6 +58,8 @@ export function ColorSelect({
    * the list, 22 high (docs/plans/autocad-ui.md, §2.3).
    */
   ribbon?: boolean
+  /** Where focus goes once the list has closed; the trigger, when omitted. */
+  finalFocus?: SelectFinalFocus
 }): ReactElement {
   const t = useEditorText("Properties")
   const place = below ? "bar" : "palette"
@@ -116,6 +120,7 @@ export function ColorSelect({
         <SelectContent
           align={below ? "start" : undefined}
           alignItemWithTrigger={!below}
+          finalFocus={finalFocus}
         >
           <SelectItem value={COLOR_BYLAYER}>
             <Swatch color={null} />

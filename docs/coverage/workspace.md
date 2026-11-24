@@ -253,12 +253,15 @@ desktop 2026-11-24, `autocad-mouse/rect-list.png`); the member is the engine's f
 (`state.ribbon.members`), as AutoCAD keeps it until a restart. A panel's title bar with ▾ opens its
 slide-out over the drawing, its rows on the same pitch and the title bar under them with a push pin
 at its start; unpinned it closes as soon as the pointer leaves it (desktop 2026-11-24,
-`autocad-mouse/ds-a.png`), pinned it stays until its title bar, moved under the rows, closes it. Properties' dialog
+`autocad-mouse/ds-a.png`), pinned it stays until its title bar, moved under the rows, closes it, or the
+ribbon closes (RIBBONCLOSE, Clean Screen: whatever the ribbon had open goes with it, and RIBBON brings it
+back with no panel pinned — whether AutoCAD keeps the pin across them is **unverified**). Properties' dialog
 launcher runs `^C^C_properties` or `^C^C_propertiesclose`, as Ctrl+1; Text Style and Dimension Style
 `'_style` and `'_dimstyle`, transparent inside a command; Layer Properties opens and closes the Layer
 Properties Manager, lit while it is open; a running command's button is not lit, as AutoCAD's is not
 (§2.3, R15); Insert opens a gallery of the drawing's blocks (AcInsertGalleryControl), a pick starting
--INSERT as the Blocks palette's does; after a button acts the drawing has the keys again. Hovered, a
+-INSERT as the Blocks palette's does; after a button acts, a list is picked from or closed, or a
+slide-out's title bar closes it, the drawing has the keys again. Hovered, a
 button takes a faint frame; pressed, a darker fill (desktop 2026-11-24,
 `autocad-mouse/press-line.png`) — WHY the panels' row scrolls sideways where Home does not fit (1521
 px whole in English, 1632 in Spanish, where AutoCAD's whole Home is 1760): the panels fold as the
@@ -286,7 +289,9 @@ entries, the gallery's Recent, Favorite and Library blocks; Properties' Plot Sty
 Utilities' Quick (MEASUREGEOM), Quick Select, Select All and Quick Calculator; Clipboard's Paste as
 Block, as Hyperlink, to Original Coordinates, Paste Special and Cut with Base Point; Layer
 Properties' echo (AcLayerCommandToggleButton has no macro: here it opens the palette with none,
-**unverified**)
+**unverified**); Modify's Move, Copy, Stretch, Rotate, Mirror and Scale with a grip hot (acad.cuix
+`$M=$(if,$(eq,$(substr,$(getvar,cmdnames),1,4),GRIP),_move,^C^C_move)`: the button answers the grip's
+prompt with its mode; here the button starts its command — the desktop's **unverified**)
 
 ### Palette panel
 

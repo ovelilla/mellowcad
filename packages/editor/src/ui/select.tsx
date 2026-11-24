@@ -197,6 +197,9 @@ function SelectScrollDownButton({
   )
 }
 
+/** Where focus goes once a list has closed: `Select.Popup`'s own prop. */
+export type SelectFinalFocus = SelectPrimitive.Popup.Props["finalFocus"]
+
 export {
   Select,
   SelectContent,

@@ -38,6 +38,7 @@ import {
   colorRgb,
 } from "@mellowcad/engine"
 import { type EditorState, isImeKey } from "@mellowcad/react"
+import { drawingFocus } from "./drawing-focus"
 import { LinetypeSelect } from "./linetype-select"
 import { LineweightSelect } from "./lineweight-select"
 import { useEditorText } from "./editor-text"
@@ -442,6 +443,7 @@ function LayerRow({
 }) {
   const t = useEditorText("Layers")
   const done = () => engine.focusSurface()
+  const toDrawing = drawingFocus(engine)
   // The row's tint, painted on the frozen cell's opaque ground: the row's own
   // would show through the columns scrolled beneath it.
   const frozen = cn(
@@ -552,6 +554,7 @@ function LayerRow({
             done()
           }}
           ariaLabel={t("linetypeLabel", { name: layer.name })}
+          finalFocus={toDrawing}
           className="w-28 border-0 bg-transparent px-1.5 text-foreground shadow-none hover:bg-accent/40 dark:bg-transparent"
         />
       </td>
@@ -567,6 +570,7 @@ function LayerRow({
             }
           }}
           ariaLabel={t("lineweightLabel", { name: layer.name })}
+          finalFocus={toDrawing}
           className="w-24 border-0 bg-transparent px-1.5 text-foreground shadow-none hover:bg-accent/40 dark:bg-transparent"
         />
       </td>

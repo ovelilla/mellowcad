@@ -15,8 +15,10 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  type SelectFinalFocus,
 } from "./ui/select"
 import { ColorSelect } from "./color-select"
+import { drawingFocus } from "./drawing-focus"
 import { LinetypeSelect } from "./linetype-select"
 import { LineweightSelect } from "./lineweight-select"
 import { useEditorText } from "./editor-text"
@@ -48,6 +50,7 @@ export function PropertiesPanel({
   const info = properties.info
   const selected = info !== null
   const done = () => engine.focusSurface()
+  const toDrawing = drawingFocus(engine)
   const filterItems: Record<string, string> = selected
     ? Object.fromEntries(
         properties.filters.map((entry) => [entry.type ?? ALL, entry.label])
@@ -75,7 +78,7 @@ export function PropertiesPanel({
           >
             <SelectValue />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent finalFocus={toDrawing}>
             {Object.entries(filterItems).map(([value, label]) => (
               <SelectItem key={value} value={value}>
                 {label}
@@ -102,6 +105,7 @@ export function PropertiesPanel({
               }}
               ariaLabel={selected ? t("colorLabel") : t("currentColorLabel")}
               className="w-36"
+              finalFocus={toDrawing}
             />
           </div>
 
@@ -125,7 +129,7 @@ export function PropertiesPanel({
               >
                 <SelectValue placeholder={t("varies")} />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent finalFocus={toDrawing}>
                 {state.layers.map((layer) => (
                   <SelectItem key={layer.id} value={layer.id}>
                     {layer.name}
@@ -151,6 +155,7 @@ export function PropertiesPanel({
                 selected ? t("linetypeLabel") : t("currentLinetypeLabel")
               }
               className="w-36 bg-background dark:bg-background"
+              finalFocus={toDrawing}
             />
           </div>
 
@@ -183,6 +188,7 @@ export function PropertiesPanel({
                 selected ? t("lineweightLabel") : t("currentLineweightLabel")
               }
               className="w-36 bg-background dark:bg-background"
+              finalFocus={toDrawing}
             />
           </div>
 
@@ -207,6 +213,7 @@ export function PropertiesPanel({
                 engine.setSelectionTextStyle(id)
                 done()
               }}
+              finalFocus={toDrawing}
             />
           )}
           {properties.dimStyleId !== null && (
@@ -219,6 +226,7 @@ export function PropertiesPanel({
                 engine.setSelectionDimStyle(id)
                 done()
               }}
+              finalFocus={toDrawing}
             />
           )}
         </div>
@@ -355,7 +363,7 @@ function PropertyChoice({
       >
         <SelectValue />
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent finalFocus={drawingFocus(engine)}>
         {choices.map((choice) => (
           <SelectItem key={choice.value} value={choice.value}>
             {choice.label}
@@ -373,12 +381,14 @@ function StyleRow({
   value,
   styles,
   onValueChange,
+  finalFocus,
 }: {
   label: string
   ariaLabel: string
   value: string
   styles: ReadonlyArray<{ id: string; name: string }>
   onValueChange: (id: string) => void
+  finalFocus: SelectFinalFocus
 }) {
   const t = useEditorText("Properties")
   return (
@@ -396,7 +406,7 @@ function StyleRow({
         >
           <SelectValue placeholder={t("varies")} />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent finalFocus={finalFocus}>
           {styles.map((style) => (
             <SelectItem key={style.id} value={style.id}>
               {style.name}

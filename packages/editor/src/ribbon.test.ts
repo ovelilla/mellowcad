@@ -7,7 +7,7 @@ import type { EditorState } from "@mellowcad/react"
 import { createHarness } from "../../../test/harness"
 import { LARGE_TOOL_ICONS } from "./large-icons"
 import { TOOL_ICONS } from "./tool-icons"
-import { Ribbon } from "./ribbon"
+import { panelsScroll, Ribbon } from "./ribbon"
 import {
   HOME,
   OTHER_TABS,
@@ -108,6 +108,16 @@ describe("a split button's member", () => {
     expect(html).not.toContain('aria-label="2-Point"')
   })
 
+  // 38 and 35 in AutoCAD's 72 (§2.3): the two targets share a pixel. One
+  // under the other, the button ended a pixel below Line's.
+  it("keeps a large one's two targets inside its 72", () => {
+    const triggers = [
+      ...render({}).matchAll(/class="([^"]*\bh-8\.75\b[^"]*)"/g),
+    ]
+    expect(triggers.length).toBeGreaterThan(0)
+    for (const [, classes] of triggers) expect(classes).toContain("-mt-px")
+  })
+
   it("lights no button for the command that runs (R15)", () => {
     const cad = createHarness()
     cad.command("LINE")
@@ -118,5 +128,25 @@ describe("a split button's member", () => {
       })
     )
     expect(html).not.toContain("bg-active/15")
+  })
+})
+
+describe("the wheel over the panels' row", () => {
+  it("goes on towards the panels' end, in either direction of the page", () => {
+    expect(panelsScroll({ deltaX: 0, deltaY: 100 }, true, false)).toBe(100)
+    expect(panelsScroll({ deltaX: 0, deltaY: -100 }, true, false)).toBe(-100)
+    expect(panelsScroll({ deltaX: 0, deltaY: 100 }, true, true)).toBe(-100)
+  })
+
+  it("leaves a sideways turn to the browser", () => {
+    expect(panelsScroll({ deltaX: 40, deltaY: 0 }, true, false)).toBe(0)
+    expect(panelsScroll({ deltaX: 40, deltaY: 12 }, true, false)).toBe(0)
+  })
+
+  // React bubbles a portalled popup's wheel to the row that rendered it: over
+  // the layer list or a drop-down's, the row moved under the list.
+  it("is not the row's over a list the ribbon opened", () => {
+    expect(panelsScroll({ deltaX: 0, deltaY: 100 }, false, false)).toBe(0)
+    expect(panelsScroll({ deltaX: 0, deltaY: 100 }, false, true)).toBe(0)
   })
 })
