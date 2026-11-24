@@ -156,14 +156,16 @@ The editor sets `lang` and `dir` on its own root; the page's `<html>` is the lay
 ## The palette panel at the first paint
 
 With `layoutStorage.palette`, the editor remembers the palette panel's width and whether it is
-folded. The server cannot know either, so a script in the page's `<head>` lays the panel out from
-`localStorage` as the page is parsed, before anything is painted:
+folded, and with `layoutStorage.ribbon` the ribbon's minimize state. The server cannot know any of
+them, so a script in the page's `<head>` for each lays it out from `localStorage` as the page is
+parsed, before anything is painted:
 
 ```tsx
-import { paletteLayoutScript } from "@mellowcad/editor"
+import { paletteLayoutScript, ribbonLayoutScript } from "@mellowcad/editor"
 import type { ReactNode } from "react"
 
 const PALETTE_KEY = "my-app:palette"
+const RIBBON_KEY = "my-app:ribbon"
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
@@ -171,6 +173,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <head>
         <script
           dangerouslySetInnerHTML={{ __html: paletteLayoutScript(PALETTE_KEY) }}
+        />
+        <script
+          dangerouslySetInnerHTML={{ __html: ribbonLayoutScript(RIBBON_KEY) }}
         />
       </head>
       <body>{children}</body>
@@ -181,11 +186,16 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 
 ```tsx
 <CadEditor
-  layoutStorage={{ palette: PALETTE_KEY, statusBar: "my-app:status-bar" }}
+  layoutStorage={{
+    palette: PALETTE_KEY,
+    ribbon: RIBBON_KEY,
+    statusBar: "my-app:status-bar",
+  }}
 />
 ```
 
-The key in the script and in `layoutStorage` must be the same. Without the script the editor still
-works: the panel opens or folds by the window's width until the scripts run, then takes what this
-browser remembered. A key is a promise to your users: renaming it forgets what they kept.
-`paletteLayoutScript` is a plain function, so a server component may call it.
+The key in each script and in `layoutStorage` must be the same. Without the scripts the editor
+still works: the panel opens or folds by the window's width and the ribbon shows whole until the
+scripts run, then each takes what this browser remembered. A key is a promise to your users:
+renaming it forgets what they kept. `paletteLayoutScript` and `ribbonLayoutScript` are plain
+functions, so a server component may call them.

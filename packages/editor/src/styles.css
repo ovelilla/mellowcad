@@ -23,6 +23,25 @@
   }
 }
 
+/* The ribbon minimized, before the engine exists and after: what the head
+   script or the workspace wrote on the editor's root (ribbon-layout.ts). In
+   CSS, so the canvas has its final box at the first paint. */
+@custom-variant ribbon-buttons {
+  [data-mellowcad-editor][data-ribbon="panelButtons"] & {
+    @slot;
+  }
+}
+@custom-variant ribbon-titles {
+  [data-mellowcad-editor][data-ribbon="panelTitles"] & {
+    @slot;
+  }
+}
+@custom-variant ribbon-tabs {
+  [data-mellowcad-editor][data-ribbon="tabs"] & {
+    @slot;
+  }
+}
+
 /* The chrome's type scale (.claude/rules/ui.md, "Type"): one body, as
    AutoCAD's Segoe UI at 9 pt, its hierarchy in weight and colour. A role
    carries its size, weight and line height; monospace is `font-mono` on

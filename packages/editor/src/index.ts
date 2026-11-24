@@ -11,6 +11,7 @@ export {
   type HelpLinks,
 } from "./cad-editor"
 export { paletteLayoutScript } from "./palette-layout"
+export { ribbonLayoutScript } from "./ribbon-layout"
 
 // @group Pieces
 export type { PieceProps } from "./piece"
@@ -20,6 +21,15 @@ export { NavigationBar } from "./navigation-bar"
 export { PalettePanel } from "./palette-panel"
 export { StatusBar, type StatusBarProps } from "./status-bar"
 export { Ribbon } from "./ribbon"
+export {
+  useRibbonLayout,
+  type RibbonLayoutControl,
+} from "./ribbon-layout-context"
+export type {
+  RibbonLayout,
+  RibbonMinimizeMode,
+  RibbonState,
+} from "./ribbon-layout"
 export { TitleBar, type TitleBarProps } from "./title-bar"
 export { ViewCube } from "./view-cube"
 export { ViewportControls } from "./viewport-controls"

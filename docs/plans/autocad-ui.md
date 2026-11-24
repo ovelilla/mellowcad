@@ -1,8 +1,8 @@
 # AutoCAD's interface: inventory and plan
 
-> **Status:** phase 0 (this inventory and plan) done on 2026-11-24; of phase 1, blocks 1 (the
-> engine), 2 (the frame), 3 (Home) and 4 (the other tabs) done the same day, block 5 (minimize and
-> fold) next, before the push that ships the ribbon; phases 2 to 6 not started.
+> **Status:** phase 0 (this inventory and plan) done on 2026-11-24; phase 1 done the same day,
+> its five blocks (the engine, the frame, Home, the other tabs, minimize and fold); the push that
+> ships the ribbon waits for the owner's word; phases 2 to 6 not started.
 > The brief is `docs/next-autocad-ui.md`; where its phases and this plan differ, this plan rules
 > (the brief says so) and the brief was corrected the same day.
 
@@ -171,8 +171,11 @@ them with a push pin, 16×18, at its start. **It closes as soon as the pointer l
 click needed, unless pinned (`autocad-mouse/ds-a.png`: the pointer moved off, it was gone).
 
 **Minimize states**, by the button, in the order of the help's Cycle Through All. Its arrow's
-menu (rows of 22, under the arrow): Minimize to Tabs, Minimize to Panel Titles, Minimize to
-Panel Buttons | Cycle through All. RIBBONCLOSE takes the whole ribbon away (`RIBBONSTATE` 0) and
+menu (230 × 95, rows of 22, under the arrow): Minimize to Tabs, Minimize to Panel Titles, Minimize
+to Panel Buttons | Cycle through All, the last checked in this profile; the button's glyph a box
+with ▲, with ▼ in Tabs (research/ui/2026-11-24/block5). Minimized to panel buttons, each 60 × 59
+with no ▾, its name cut (`Annotati…`); to panel titles, each 18 high, as wide as its name and 12,
+no ▾, the dialog launcher kept after Properties'. RIBBONCLOSE takes the whole ribbon away (`RIBBONSTATE` 0) and
 RIBBON brings it back (1), neither asking anything:
 
 | State             | Ribbon below the title bar | Drawing area starts at | What shows                                    |
@@ -201,7 +204,10 @@ slide-out's rows already out**, the title bar at its foot:
 
 Modify at 133 is its twelve tools as icons; Annotation at 148 keeps Text and Dimension large and
 drops the small ones' text; Block at 159 and Layers keep their large buttons. Draw was still
-whole at 800.
+whole at 800. Insert, Annotate and View (block5, `uia-w<width>-<Tab>.txt`) do the same: every
+panel sheds width first, then they fold from the right (Insert's Location, Linking & Extraction,
+Data and Import at 1024; Annotate's Annotation Scaling, Markup and Tables at 1440; View's Interface
+at 1024) — on AutoCAD's whole content, which is far more than is built here.
 
 **What each tab holds that the engine has** (`ribbon.mjs --tabs --built`; a command counts when
 its name is in `cad/locales/en.json`, so MEASUREGEOM's Distance and Area, which DIST and AREA
@@ -505,12 +511,12 @@ Each closes with skill `finish-feature`. Each starts with the captures it still 
        colour picker; AutoCAD's icon is no target, and its list ends in a row that opens Select
        Color. The picker goes behind that last row (its wording on the ribbon read on the desktop
        first), in the ribbon and in the Properties palette, which share `ColorSelect`.
-     - **Block 5: widths where `calc-size` is missing.** `WHOLE` and `WHOLE_EVEN` round a text's
+     - **Block 5: widths where `calc-size` is missing** (done with it: `roundWidths`). `WHOLE` and `WHOLE_EVEN` round a text's
        width up in Chromium; where the function is not supported the width keeps its fraction and
        every icon after the first text is off the pixel grid (emulated in Chrome with
        `width: auto`: 59 of Home's 60 icons; Firefox and Safari **unverified**, neither is
        installed here). The fold measures the panels anyway: it rounds what CSS did not.
-     - **Block 5 goes before the push.** Home is whole from 1521 px of window (1632 in Spanish):
+     - **Block 5 goes before the push** (done 2026-11-24). Home is whole from 1521 px of window (1632 in Spanish):
        at 1280, 1366, 1440 and 1536, the usual laptops, Properties, Utilities and Clipboard are
        past the edge with nothing to say so, where the palette showed every tool. The push that
        ships the ribbon waits for the fold, unless the owner says otherwise.
@@ -540,11 +546,22 @@ Each closes with skill `finish-feature`. Each starts with the captures it still 
      their dialog launchers on its title bars.
    - Left, each in `docs/coverage/workspace.md` (Ribbon): the palette toggles' undo step (`GROUP
      LAYER`); the Define UCS list's `Icon` style; whether UCS Icon cancels a running command.
-   - **Found by its second reading, older than it** (for block 5): a drag in the browser's colour
+   - **Found by its second reading, older than it** (block 5, done: `useColorPicker`): a drag in the browser's colour
      picker applies the colour on every `input` event, a step each (`color-select.tsx`'s
      `onChange`, as the swatch did); one pick should be one step, on the field's `change`.
-5. **Minimize and fold**: the four states, the button and its menu; the fold in the measured
-   order, a folded panel opening whole under its button.
+5. **Minimize and fold** (done 2026-11-24): the four states, the button and its menu; the fold in
+   the measured order, a folded panel opening whole under its button. The desktop without the
+   mouse (research/ui/2026-11-24/block5) confirmed the cycle and the default mode, measured the
+   minimized rows and the other tabs' fold; neither the arrow's menu nor a minimized ribbon's
+   popups opened that way. Built so:
+   - **The state is the device's** (`ribbon-layout.ts`, `layoutStorage.ribbon`, the site's
+     `mellowcad:ribbon:v1`), written on the root by a `<head>` script as the palette's is: the
+     canvas's first box is its final one in each state (checked in Chrome).
+   - **The fold is measured**, never a table: our panels are not AutoCAD's widths (Home is 1521
+     whole), so the order is AutoCAD's and the width where each step falls is ours (`HOME_FOLD`;
+     the other tabs by the rule, as they fit at 800 here). The row no longer scrolls.
+   - **A menu pick only sets the mode**; whether AutoCAD minimizes at once, and how its minimized
+     popups open and close, wait for the mouse (`docs/coverage/workspace.md`, Ribbon).
 6. **What it leaves false**, corrected in the same commits: `docs/coverage/workspace.md` (Top
    bar and Tool palette become Title bar and Ribbon), `.claude/rules/ui.md` (Size, Where a
    control belongs), `control-size.test.ts`, `cad-editor.test.ts` and the slots (`TitleBar`,

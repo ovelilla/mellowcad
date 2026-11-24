@@ -246,7 +246,14 @@
     "lineweight": "선가중치",
     "linetype": "선종류",
     "pin": "고정",
-    "moreColors": "추가 색상..."
+    "moreColors": "추가 색상...",
+    "minimize": {
+      "full": "전체 리본 표시",
+      "tabs": "탭으로 최소화",
+      "panelTitles": "패널 제목으로 최소화",
+      "panelButtons": "패널 버튼으로 최소화",
+      "cycle": "모두 순환"
+    }
   },
   "CommandLine": {
     "label": "명령행",

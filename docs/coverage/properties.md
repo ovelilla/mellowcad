@@ -303,7 +303,9 @@ in both
 **Missing:** the Select Color dialog: the colour lists' last row, `More Colors...` on the ribbon
 (AcWindows.resources.dll, each culture's; desktop `research/ui/2026-11-24/block4`) and `Select
 Color...` in the Properties palette (AcDimRes 318, the Win32 colour lists' word; the palette's own
-row **unverified**), opens the browser's colour picker in its place; the ribbon list's true colours
+row **unverified**), opens the browser's colour picker in its place, a colour picked there one
+undo step however long it was dragged across (the picker's `change`, as Select Color applies on
+OK); the ribbon list's true colours
 and Index Colors rows; the
 linetype list's Other… and the lineweight list's Lineweight Settings…, ByBlock and Default in the
 lists, Transparency, the List drop-down

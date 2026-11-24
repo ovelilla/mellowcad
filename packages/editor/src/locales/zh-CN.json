@@ -246,7 +246,14 @@
     "lineweight": "线宽",
     "linetype": "线型",
     "pin": "固定",
-    "moreColors": "更多颜色..."
+    "moreColors": "更多颜色...",
+    "minimize": {
+      "full": "显示完整的功能区",
+      "tabs": "最小化为选项卡",
+      "panelTitles": "最小化为面板标题",
+      "panelButtons": "最小化为面板按钮",
+      "cycle": "循环浏览所有项"
+    }
   },
   "CommandLine": {
     "label": "命令行",

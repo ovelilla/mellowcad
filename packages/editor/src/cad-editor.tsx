@@ -27,6 +27,13 @@ import {
   PALETTE_WIDTH,
   rememberPalette,
 } from "./palette-layout"
+import {
+  applyRibbonLayout,
+  rememberRibbon,
+  ribbonLayoutAtLoad,
+  type RibbonLayout,
+} from "./ribbon-layout"
+import { RibbonLayoutProvider } from "./ribbon-layout-context"
 import { CommandLine } from "./command-line"
 import { Ribbon } from "./ribbon"
 import { StatusBar, type StatusBarProps } from "./status-bar"
@@ -59,6 +66,11 @@ export interface LayoutStorage {
   readonly palette?: string
   /** The status bar's Customization. */
   readonly statusBar?: string
+  /**
+   * The ribbon's minimize state and what its button does, also read by the
+   * `<head>` script.
+   */
+  readonly ribbon?: string
 }
 
 /**
@@ -199,6 +211,7 @@ function Workspace({
   dir: "ltr" | "rtl"
 }) {
   const paletteKey = layoutStorage.palette
+  const ribbonKey = layoutStorage.ribbon
   const [engine, setEngine] = useState<CadEngine | null>(null)
   const state = useEditorState(engine)
   const t = useEditorText("Workspace")
@@ -214,12 +227,24 @@ function Workspace({
       : paletteLayoutAtLoad(paletteKey).width
   )
 
+  // The ribbon's minimize state, as the head script laid it out.
+  const [ribbonLayout, setRibbonLayout] = useState<RibbonLayout>(() =>
+    typeof window === "undefined"
+      ? ribbonLayoutAtLoad(undefined)
+      : ribbonLayoutAtLoad(ribbonKey)
+  )
+
   // What the head script wrote, again: a root rendered on the client never
   // met the script.
   useLayoutEffect(() => {
     if (root.current)
       applyPaletteLayout(root.current, paletteLayoutAtLoad(paletteKey))
   }, [paletteKey])
+
+  // The ribbon's zone takes its height before the frame is painted.
+  useLayoutEffect(() => {
+    if (root.current) applyRibbonLayout(root.current, ribbonLayout)
+  }, [ribbonLayout])
 
   // From then on the engine's open state and the dragged width drive the
   // same CSS, before the frame is painted.
@@ -265,64 +290,74 @@ function Workspace({
       style={EDITOR_THEME_STYLE as React.CSSProperties}
     >
       <PortalContainerProvider container={portal}>
-        <main className="grid h-svh w-full grid-cols-[minmax(0,1fr)_auto] grid-rows-[auto_auto_minmax(0,1fr)_auto_auto] overflow-hidden bg-card [grid-template-areas:'title_title'_'ribbon_ribbon'_'canvas_panel'_'command_command'_'status_status']">
-          <EditorZones
-            components={components}
-            ready={ready ? { engine, state } : null}
-            mark={mark}
-            languages={languages}
-            feedback={feedback}
-            statusBarKey={layoutStorage.statusBar}
-            sheet={sheet}
-            canvas={
-              // The editor is the page: it takes every key, which the engine
-              // leaves to whoever asks. The drawing is geometry: it never
-              // mirrors, whatever the page.
-              <CadCanvas
-                store={store}
-                scope="document"
-                locale={engineLocale}
-                paletteOpen={() => paletteLayoutAtLoad(paletteKey).open}
-                // AutoCAD opens its help in a browser: here, a tab of its own.
-                onHelp={
-                  help &&
-                  ((command) => {
-                    window.open(helpUrl(help, command), "_blank", "noopener")
-                  })
-                }
-                onEngine={(next) => {
-                  setEngine(next)
-                  onEngine?.(next)
-                }}
-                dir="ltr"
-                className="absolute inset-0 h-full w-full touch-none outline-none"
-                aria-label={t("canvas")}
-              />
-            }
-            paletteHandle={
-              state?.palette.open && (
-                <PaletteResizeHandle
-                  width={paletteWidth}
-                  onResize={setPaletteWidth}
-                  onCommit={(width) => rememberPalette(paletteKey, { width })}
+        <RibbonLayoutProvider
+          value={{
+            layout: ribbonLayout,
+            setLayout: (layout) => {
+              setRibbonLayout(layout)
+              rememberRibbon(ribbonKey, layout)
+            },
+          }}
+        >
+          <main className="grid h-svh w-full grid-cols-[minmax(0,1fr)_auto] grid-rows-[auto_auto_minmax(0,1fr)_auto_auto] overflow-hidden bg-card [grid-template-areas:'title_title'_'ribbon_ribbon'_'canvas_panel'_'command_command'_'status_status']">
+            <EditorZones
+              components={components}
+              ready={ready ? { engine, state } : null}
+              mark={mark}
+              languages={languages}
+              feedback={feedback}
+              statusBarKey={layoutStorage.statusBar}
+              sheet={sheet}
+              canvas={
+                // The editor is the page: it takes every key, which the engine
+                // leaves to whoever asks. The drawing is geometry: it never
+                // mirrors, whatever the page.
+                <CadCanvas
+                  store={store}
+                  scope="document"
+                  locale={engineLocale}
+                  paletteOpen={() => paletteLayoutAtLoad(paletteKey).open}
+                  // AutoCAD opens its help in a browser: here, a tab of its own.
+                  onHelp={
+                    help &&
+                    ((command) => {
+                      window.open(helpUrl(help, command), "_blank", "noopener")
+                    })
+                  }
+                  onEngine={(next) => {
+                    setEngine(next)
+                    onEngine?.(next)
+                  }}
+                  dir="ltr"
+                  className="absolute inset-0 h-full w-full touch-none outline-none"
+                  aria-label={t("canvas")}
                 />
-              )
-            }
-          />
+              }
+              paletteHandle={
+                state?.palette.open && (
+                  <PaletteResizeHandle
+                    width={paletteWidth}
+                    onResize={setPaletteWidth}
+                    onCommit={(width) => rememberPalette(paletteKey, { width })}
+                  />
+                )
+              }
+            />
 
-          {ready && (
-            <>
-              <ShortcutMenu engine={engine} state={state} />
-              <SnapOverrideMenu engine={engine} state={state} />
-              <SelectionCyclingList engine={engine} state={state} />
-              <UnitsDialog engine={engine} state={state} />
-              <PointStyleDialog engine={engine} state={state} />
-              <SaveAsDialog engine={engine} state={state} />
-              <LockedObjectsDialog engine={engine} state={state} />
-              <UnsavedTextDialog engine={engine} state={state} />
-            </>
-          )}
-        </main>
+            {ready && (
+              <>
+                <ShortcutMenu engine={engine} state={state} />
+                <SnapOverrideMenu engine={engine} state={state} />
+                <SelectionCyclingList engine={engine} state={state} />
+                <UnitsDialog engine={engine} state={state} />
+                <PointStyleDialog engine={engine} state={state} />
+                <SaveAsDialog engine={engine} state={state} />
+                <LockedObjectsDialog engine={engine} state={state} />
+                <UnsavedTextDialog engine={engine} state={state} />
+              </>
+            )}
+          </main>
+        </RibbonLayoutProvider>
       </PortalContainerProvider>
       {/* The popups mount here, inside the root, so its tokens, `dir` and
           `lang` reach them. Like the <body> they mounted in before, it comes after the
@@ -397,16 +432,18 @@ export function EditorZones({
         </div>
       )}
 
-      {/* The ribbon whole, its tab row (24) and its panels (100), shown from
-      the first paint as AutoCAD starts with it; RIBBONCLOSE and Clean Screen
-      take it away. WHY its piece goes with it, not only hidden: what it has
+      {/* The ribbon, its tab row (24) and its panels (100), shown from the
+      first paint as AutoCAD starts with it, or minimized as this device left
+      it — to panel buttons (86), panel titles (45) or the tabs (24): the head
+      script's `data-ribbon` (ribbon-layout.ts) —; RIBBONCLOSE and Clean
+      Screen take it away, whatever its state. WHY its piece goes with it, not only hidden: what it has
       open over the drawing is portalled out of the zone — a slide-out pinned
       open, a list, Insert's gallery — and would stay there, anchored to
       nothing. */}
       {Tabs && (
         <div
           className={cn(
-            "box-content flex h-31 min-w-0 flex-col border-b [grid-area:ribbon]",
+            "box-content flex h-31 min-w-0 flex-col border-b [grid-area:ribbon] ribbon-buttons:h-21.5 ribbon-titles:h-11.25 ribbon-tabs:h-6",
             ribbon?.open === false && "hidden"
           )}
         >

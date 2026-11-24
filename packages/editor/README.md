@@ -79,8 +79,8 @@ Every prop is optional.
 - **The chrome**: `components`, your own title bar, status bar or other piece, or none; `mark`, your
   product's glyph on the application menu; `languages`, the page in each language you offer, in
   that menu; `feedback`, the page its Send Feedback opens, where your users report a problem;
-  `layoutStorage`, the `localStorage` keys under which the palette panel and the status bar are
-  remembered; `help`, where F1 opens help; and `sheet`, an id and a `view-transition-name` for the
+  `layoutStorage`, the `localStorage` keys under which the palette panel, the ribbon's minimize
+  state and the status bar are remembered; `help`, where F1 opens help; and `sheet`, an id and a `view-transition-name` for the
   drawing's cell. See [Customizing](docs/customizing.md).
 
 `engineLocale`, `store`, `onEngine` and `help` go to the engine, so they are read once, when the

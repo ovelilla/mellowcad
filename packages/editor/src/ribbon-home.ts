@@ -93,8 +93,32 @@ export type RibbonSlot = RibbonControl | RibbonColumn | RibbonRows
 /** The 4 px acad.cuix puts between a row's groups (its `Spacer`). */
 export const SPACER = "spacer"
 
+/**
+ * One step by which a panel sheds width as the window narrows, before it
+ * folds (plan §2.3): the small controls of some cells drop their text — a
+ * cell is a slot, or one row of a column or a sub-panel — or the combos
+ * narrow.
+ */
+export type RibbonReduction =
+  | {
+      readonly kind: "iconsOnly"
+      /** `[slot]` every row of a slot, `[slot, row]` one row. */
+      readonly cells: readonly (readonly [number, number?])[]
+    }
+  | { readonly kind: "narrowCombos" }
+
 export interface RibbonPanel {
   readonly id: PanelId
+  /**
+   * The action whose 32 px glyph stands for the panel where it is one
+   * button: folded, or the ribbon minimized to panel buttons.
+   */
+  readonly icon: string
+  /**
+   * How it sheds width, in order; without it, each slot with small controls
+   * that show their text drops it, from the last slot to the first.
+   */
+  readonly reduce?: readonly RibbonReduction[]
   /** What shows before the panel's break, left to right. */
   readonly slots: readonly RibbonSlot[]
   /** What slides out from under it: rows of small controls. */
@@ -103,9 +127,20 @@ export interface RibbonPanel {
   readonly launcher?: "properties" | "textStyle" | "dimensionStyle"
 }
 
+/** A step of a tab's fold: a panel sheds width once more, or folds. */
+export interface RibbonFoldStep {
+  readonly panel: PanelId
+  readonly step: "reduce" | "fold"
+}
+
 export interface RibbonTab {
   readonly id: TabId
   readonly panels: readonly RibbonPanel[]
+  /**
+   * The order its panels shed width and fold in as the window narrows, as
+   * measured on the desktop; without it, `foldSteps`' rule.
+   */
+  readonly fold?: readonly RibbonFoldStep[]
 }
 
 /**
@@ -231,6 +266,7 @@ export const rows = (
 export const HOME: readonly RibbonPanel[] = [
   {
     id: "draw",
+    icon: "line",
     slots: [
       tool("line", "large"),
       tool("polyline", "large"),
@@ -294,6 +330,7 @@ export const HOME: readonly RibbonPanel[] = [
   },
   {
     id: "modify",
+    icon: "move",
     slots: [
       column(
         tool("move", "small"),
@@ -338,6 +375,7 @@ export const HOME: readonly RibbonPanel[] = [
   },
   {
     id: "annotation",
+    icon: "text",
     slots: [
       {
         kind: "split",
@@ -372,10 +410,18 @@ export const HOME: readonly RibbonPanel[] = [
   },
   {
     id: "layers",
+    icon: "layerProperties",
     slots: [{ kind: "layerProperties" }, column({ kind: "layerCombo" })],
   },
   {
     id: "block",
+    icon: "insert",
+    // Edit Attributes' text goes first, then the column's (desktop
+    // 2026-11-24: 105 wide at 1760, 24 at 1680; Create and Edit at 1600).
+    reduce: [
+      { kind: "iconsOnly", cells: [[1, 1]] },
+      { kind: "iconsOnly", cells: [[1]] },
+    ],
     slots: [
       { kind: "insertGallery" },
       column(tool("block", "small"), {
@@ -393,6 +439,9 @@ export const HOME: readonly RibbonPanel[] = [
   },
   {
     id: "properties",
+    icon: "matchprop",
+    // The combos narrow by 33, 170 to 137 (desktop 2026-11-24, at 1680).
+    reduce: [{ kind: "narrowCombos" }],
     slots: [
       tool("matchprop", "large"),
       column(
@@ -406,6 +455,7 @@ export const HOME: readonly RibbonPanel[] = [
   },
   {
     id: "utilities",
+    icon: "measure",
     slots: [
       // WHY DIST and AREA, where the ribbon's Distance and Area run
       // MEASUREGEOM (`^C^C_MEASUREGEOM _distance`, `_area`): their prompts
@@ -425,6 +475,7 @@ export const HOME: readonly RibbonPanel[] = [
   },
   {
     id: "clipboard",
+    icon: "paste",
     slots: [
       {
         kind: "split",
@@ -573,3 +624,32 @@ export function toolsOn(panels: readonly RibbonPanel[]): Set<string> {
   }
   return out
 }
+
+/**
+ * Home's fold, in the order measured on the desktop at widths from 1760 to
+ * 800 (docs/plans/autocad-ui.md, §2.3, "Folding as the window narrows"):
+ * Block and Properties shed width first (1680), then Block again,
+ * Annotation and Modify's third column (1600), Modify's second column
+ * (1536) and its first (1440); then the panels fold from the right —
+ * Clipboard and Utilities (1440), Properties (1366), Block and Layers
+ * (1152), Annotation (900), Modify (800). Draw was still whole at 800. Of
+ * the steps the desktop showed at one width, a panel's shedding goes before
+ * a fold and the rest right to left: their order within it is unverified. Groups and View, not built, fold in AutoCAD's
+ * among them.
+ */
+export const HOME_FOLD: readonly RibbonFoldStep[] = [
+  { panel: "block", step: "reduce" },
+  { panel: "properties", step: "reduce" },
+  { panel: "block", step: "reduce" },
+  { panel: "annotation", step: "reduce" },
+  { panel: "modify", step: "reduce" },
+  { panel: "modify", step: "reduce" },
+  { panel: "modify", step: "reduce" },
+  { panel: "clipboard", step: "fold" },
+  { panel: "utilities", step: "fold" },
+  { panel: "properties", step: "fold" },
+  { panel: "block", step: "fold" },
+  { panel: "layers", step: "fold" },
+  { panel: "annotation", step: "fold" },
+  { panel: "modify", step: "fold" },
+]

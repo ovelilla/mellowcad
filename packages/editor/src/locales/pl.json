@@ -246,7 +246,14 @@
     "lineweight": "Szerokość linii",
     "linetype": "Rodzaj linii",
     "pin": "Przypnij",
-    "moreColors": "Więcej kolorów..."
+    "moreColors": "Więcej kolorów...",
+    "minimize": {
+      "full": "Pokaż pełną wstążkę",
+      "tabs": "Minimalizuj do kart",
+      "panelTitles": "Minimalizuj do tytułów paneli",
+      "panelButtons": "Minimalizuj do przycisków paneli",
+      "cycle": "Przechodź przez wszystko"
+    }
   },
   "CommandLine": {
     "label": "Wiersz polecenia",

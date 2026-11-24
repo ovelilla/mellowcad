@@ -7,7 +7,9 @@ import type { EditorState } from "@mellowcad/react"
 import { createHarness } from "../../../test/harness"
 import { LARGE_BUTTON_ICONS, LARGE_TOOL_ICONS } from "./large-icons"
 import { BUTTON_ICONS, TOOL_ICONS } from "./tool-icons"
-import { panelsScroll, Ribbon } from "./ribbon"
+import { Ribbon } from "./ribbon"
+import { RibbonLayoutProvider } from "./ribbon-layout-context"
+import type { RibbonState } from "./ribbon-layout"
 import {
   ACTIONS,
   SPACER,
@@ -42,17 +44,30 @@ const toolIds = () =>
     .state()
     .tools.map((tool) => tool.id)
 
-/** The ribbon rendered with the engine's state, after `prepare`. */
+/**
+ * The ribbon rendered with the engine's state, after `prepare`, in the
+ * device's minimize state `minimized` (the full ribbon by default).
+ */
 function renderRibbon(
-  prepare: (cad: ReturnType<typeof createHarness>) => void = () => {}
+  prepare: (cad: ReturnType<typeof createHarness>) => void = () => {},
+  minimized: RibbonState = "full"
 ) {
   const cad = createHarness()
   prepare(cad)
   return renderToString(
-    createElement(Ribbon, {
-      engine: cad.runtime as unknown as CadEngine,
-      state: cad.state() as EditorState,
-    })
+    createElement(
+      RibbonLayoutProvider,
+      {
+        value: {
+          layout: { state: minimized, mode: "cycle" },
+          setLayout: () => {},
+        },
+      },
+      createElement(Ribbon, {
+        engine: cad.runtime as unknown as CadEngine,
+        state: cad.state() as EditorState,
+      })
+    )
   )
 }
 
@@ -224,22 +239,42 @@ describe("a split button's member", () => {
   })
 })
 
-describe("the wheel over the panels' row", () => {
-  it("goes on towards the panels' end, in either direction of the page", () => {
-    expect(panelsScroll({ deltaX: 0, deltaY: 100 }, true, false)).toBe(100)
-    expect(panelsScroll({ deltaX: 0, deltaY: -100 }, true, false)).toBe(-100)
-    expect(panelsScroll({ deltaX: 0, deltaY: 100 }, true, true)).toBe(-100)
+describe("the ribbon minimized", () => {
+  const tabpanel = (html: string) =>
+    /<div[^>]*role="tabpanel"[^>]*>/.exec(html)?.[0] ?? ""
+
+  it("shows the panels, one button per panel, one title per panel or none", () => {
+    const full = renderRibbon()
+    expect(tabpanel(full)).toContain("h-25")
+    expect(full).toContain(">Draw<")
+
+    // One button per panel, named by it: its icon over its name, no ▾.
+    const buttons = renderRibbon(undefined, "panelButtons")
+    expect(tabpanel(buttons)).toContain("h-15.5")
+    expect(buttons).toContain('aria-label="Draw"')
+    expect(buttons).not.toContain('aria-label="Line"')
+
+    // One title per panel; Properties keeps its dialog launcher.
+    const titles = renderRibbon(undefined, "panelTitles")
+    expect(tabpanel(titles)).toContain("h-5.25")
+    expect(titles).toContain(">Modify<")
+    expect(titles).not.toContain('aria-label="Line"')
+
+    // The tab row alone.
+    const tabs = renderRibbon(undefined, "tabs")
+    expect(tabpanel(tabs)).toBe("")
+    expect(tabs).toContain(">Home<")
+    expect(tabs).not.toContain(">Draw<")
   })
 
-  it("leaves a sideways turn to the browser", () => {
-    expect(panelsScroll({ deltaX: 40, deltaY: 0 }, true, false)).toBe(0)
-    expect(panelsScroll({ deltaX: 40, deltaY: 12 }, true, false)).toBe(0)
-  })
-
-  // React bubbles a portalled popup's wheel to the row that rendered it: over
-  // the layer list or a drop-down's, the row moved under the list.
-  it("is not the row's over a list the ribbon opened", () => {
-    expect(panelsScroll({ deltaX: 0, deltaY: 100 }, false, false)).toBe(0)
-    expect(panelsScroll({ deltaX: 0, deltaY: 100 }, false, true)).toBe(0)
+  // The button is named for what a click does next, as its tooltip is.
+  it("names the minimize button for the state it leads to", () => {
+    expect(renderRibbon()).toContain('aria-label="Minimize to Panel Buttons"')
+    expect(renderRibbon(undefined, "panelTitles")).toContain(
+      'aria-label="Minimize to Tabs"'
+    )
+    expect(renderRibbon(undefined, "tabs")).toContain(
+      'aria-label="Show Full Ribbon"'
+    )
   })
 })

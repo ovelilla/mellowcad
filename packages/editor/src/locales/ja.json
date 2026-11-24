@@ -246,7 +246,14 @@
     "lineweight": "線の太さ",
     "linetype": "線種",
     "pin": "ピン留め",
-    "moreColors": "その他の色..."
+    "moreColors": "その他の色...",
+    "minimize": {
+      "full": "リボン全体を表示",
+      "tabs": "タブのみを表示",
+      "panelTitles": "パネル タイトルのみを表示",
+      "panelButtons": "パネル ボタンのみを表示",
+      "cycle": "すべてを循環"
+    }
   },
   "CommandLine": {
     "label": "コマンド ライン",

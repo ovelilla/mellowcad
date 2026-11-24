@@ -39,8 +39,8 @@ key is prevented, where focus goes, which element captures the pointer (`useComm
 keyboard listener. If a button needs one, the engine owes it a method (behind a port, implemented
 in `cad/adapters/`), or every host has to rewrite it. Failures are reported at the command prompt,
 never in a React banner. The exception is the layout, kept on the device as AutoCAD keeps it in
-the profile: the palette panel's width and fold (`palette-layout.ts`, read by a `<head>`
-script before any bundle) and the status bar's Customization (`status-bar-layout.ts`, read
+the profile: the palette panel's width and fold (`palette-layout.ts`) and the ribbon's minimize
+state (`ribbon-layout.ts`), each read by a `<head>` script before any bundle, and the status bar's Customization (`status-bar-layout.ts`, read
 after mount), each under the host's key (`layoutStorage`; none, not kept), the site's frozen
 (`lib/site.test.ts`).
 
@@ -198,7 +198,7 @@ the ribbon, the bottom row from phase 4. **28 px**, icons 16, for the rest one p
 | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------- |
 | The title bar; its application button (`size="application"`)             | 32 (`h-8`); 48 × 32, the host's mark 20                                                     |
 | A Quick Access button (`IconAction size="quick"`)                        | 24 × 22 (`h-5.5 w-6`), icon 16, one against the next from 56 px                             |
-| The ribbon, whole                                                        | 124 (`h-31`): the tab row, 24, and the panels, 100; each panel 97                           |
+| The ribbon, whole; minimized to panel buttons, titles, tabs              | 124 (`h-31`): the tab row, 24, and the panels, 100, each 97; 86, 45, 24 (`ribbon-*:`)       |
 | A ribbon button, large or small; a combo; a list's row                   | 72, icon 32; 22, icon 16, on a 24 pitch; 22; 38, icon 32 (`control-size.test.ts`)           |
 | An icon button (`Button size="icon"`, `IconAction`)                      | 28 × 28, its icon 16                                                                        |
 | A text button, a drop-down's trigger, a field, a tab, a row of a list    | 28 high (`Button`'s default, `SelectTrigger`, `h-7`)                                        |
@@ -209,7 +209,8 @@ the ribbon, the bottom row from phase 4. **28 px**, icons 16, for the rest one p
   inside the box eats a pixel, every control lands on a half pixel and its icon blurs.
 - **In a bar every part has a whole width**: a text part (the save
   state's slot `w-24`, there before the first save, Units `w-9`) gets a fixed one, or its fraction
-  of a pixel pushes every icon after it off the pixel grid; the ribbon's round up (`WHOLE`).
+  of a pixel pushes every icon after it off the pixel grid; the ribbon's round up (`WHOLE`;
+  `roundWidths` without `calc-size`).
 - Outside both systems, each for a reason: the ViewCube's Home, roll arrows and UCS menu
   (`size="icon-cube"`, `"cube"`, 24), drawn at the cube's scale; the viewport control `[Top]`, a
   label on the drawing; separators, the product mark and swatches, which are not targets.
@@ -241,8 +242,7 @@ the ribbon, the bottom row from phase 4. **28 px**, icons 16, for the rest one p
   as an item acts is lost and Base UI focuses the trigger, whose next key is its own (a letter
   picks, Space opens). Give focus back in the popup's `finalFocus` (`drawingFocus(engine)`). A
   dialog: `finalFocus={false}` and `focusSurface` on `onOpenChangeComplete`.
-- **React hands a portalled popup's events to what rendered it**: an ancestor's `onWheel` hears a
-  list's (`panelsScroll`).
+- **React hands a portalled popup's events to what rendered it**: an ancestor's `onWheel` too.
 - `Panel` (`toolbar-primitives.tsx`) does **not** forward props: `<PopoverTrigger render={<Panel>…} />`
   drops the click handler and the popover silently never opens. Render the `Button` as the trigger
   and wrap the whole `Popover` in the `Panel`.
@@ -265,7 +265,7 @@ Each bar's AutoCAD order is in its component's header comment; touch and phones 
   `h-31`, the panel's `w-9` / `palette-open:w-(--palette-width)`), never from its content: the canvas's first box is its final one, which the landing's view transition
   grows into and the first view is centred in. A zone that resizes with the work makes the drawing
   jump. A size this device remembers is decided by the `<head>` script on the editor's root
-  as it is parsed (`data-palette`, `--palette-width`) and handed to the engine at build
+  as it is parsed (`data-palette`, `--palette-width`, `data-ribbon`) and handed to the engine at build
   (`CadCanvas`'s `paletteOpen`), never after mount. Clean Screen is never on at the first paint (AutoCAD does not save it).
 - **The canvas cell** alone carries the host's `sheet` (`SHEET_TRANSITION`) and holds what is
   placed in the canvas's pixels (the dynamic input, at `state.dynamicInput.screen`). A popup
@@ -288,8 +288,9 @@ Each bar's AutoCAD order is in its component's header comment; touch and phones 
 - **The ribbon** draws its tabs from `RIBBON_TABS`: acad.cuix's panels, rows and drop-downs
   (`ribbon.mjs --built`), only what the engine has, its words each culture's acad.CUIX's (or its
   AcWindows resources'). A tool with no button is in `TYPED` with its WHY (`ribbon.test.ts`). What
-  a control shows is the engine's (`setRibbonTab`, `setRibbonMember`, `visualStyle`): the piece
-  unmounts while closed. A control with no macro does what the desktop's does, read there first.
+  a control shows is the engine's (`setRibbonTab`, `setRibbonMember`, `visualStyle`), its minimize
+  state the device's: the piece unmounts while closed. Panels fold, never scroll (a tab's `fold`,
+  else `foldSteps`). A control with no macro does what the desktop's does, read there first.
 - **The dynamic input** is `pointer-events-none` and keyboard-driven — never clickable. A
   `paragraphs` field (MTEXT) is a textarea, never reselected when focus comes back; nor is a value
   field with text in it: keys typed on the drawing before the box had focus went into it. **A
@@ -306,7 +307,7 @@ Each bar's AutoCAD order is in its component's header comment; touch and phones 
 
 ## Palettes that show drawing content
 
-A palette is a **tab of the palette panel** (until `docs/next-autocad-ui.md` revokes it), never a popover: AutoCAD's palettes are modeless, and
+A palette is a **tab of the palette panel** (until phase 3), never a popover: AutoCAD's palettes are modeless, and
 a popover closes on the first click on the drawing. Which tab shows, and the Styles table
 (`state.stylesTable`), are `EngineState`, never `useState` — or typing `DIMSTYLE` cannot open it. A
 new palette is a `PaletteTab` (`PALETTE_TABS`), a command that calls `showPalette`, a branch in

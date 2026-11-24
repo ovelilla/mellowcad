@@ -248,6 +248,13 @@ declare const source: {
     "linetype": string
     "pin": string
     "moreColors": string
+    "minimize": {
+      "full": string
+      "tabs": string
+      "panelTitles": string
+      "panelButtons": string
+      "cycle": string
+    }
   }
   "CommandLine": {
     "label": string

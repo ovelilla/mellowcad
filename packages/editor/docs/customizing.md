@@ -4,7 +4,9 @@ The editor is nine pieces round the drawing, in AutoCAD's frame: the title bar a
 then the ribbon's band, the drawing with its palettes, the command line and the status bar. Each
 piece is a slot of the `components` prop: give it a component of your own and it renders in the
 piece's place, or give it `null` and the piece is gone, with the room it took. The ribbon's band
-keeps its height while the ribbon is open (`RIBBONCLOSE` closes it, `RIBBON` brings it back).
+keeps its height while the ribbon is open (`RIBBONCLOSE` closes it, `RIBBON` brings it back): the
+full ribbon's, or the one its minimize state takes, which a `Ribbon` of your own reads and sets
+with `useRibbonLayout()`.
 
 ## The pieces
 
@@ -132,9 +134,9 @@ objects and for unsaved text. The engine waits on their answer, so the editor al
 
   Without `help`, F1 is the browser's.
 - **`layoutStorage`** names the `localStorage` keys under which this browser remembers the palette
-  panel's width and fold (`palette`) and what the status bar shows (`statusBar`). A part without a
-  key is not remembered. On a page rendered on a server, `palette` needs
-  [the layout script](nextjs.md#the-palette-panel-at-the-first-paint) too, or the panel shows as
-  the window's width decides until the scripts run, then changes.
+  panel's width and fold (`palette`), the ribbon's minimize state (`ribbon`) and what the status
+  bar shows (`statusBar`). A part without a key is not remembered. On a page rendered on a server,
+  `palette` and `ribbon` need [their layout scripts](nextjs.md#the-palette-panel-at-the-first-paint)
+  too, or the panel and the ribbon show as they start until the scripts run, then change.
 - **`sheet`** gives the drawing's cell an `id` and a `view-transition-name`, for a page that grows
   into the editor with a view transition.

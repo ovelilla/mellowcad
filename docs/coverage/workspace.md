@@ -289,16 +289,41 @@ World, Rotate UCS ▾ (X, Y, Z), Previous, Origin, Z-Axis Vector, 3 Point and De
 Object, Face), each `^C^C_ucs` and its option, a step U names `UCS GROUP`; Palettes' Properties,
 Blocks, Command Line and Layer Properties, lit while theirs shows, with no echo, as the desktop's
 (block4); Navigate's Pan, Orbit and Zoom ▾ (Extents, Window, Previous, In, Out), the navigation
-bar's macros. Every word each culture's acad.CUIX's (Arabic's ours) — WHY the panels' row scrolls
-sideways where a tab does not fit (Home 1521 px whole in English, 1632 in Spanish, where AutoCAD's
-whole Home is 1760): the panels fold as the window narrows in block 5 of `docs/plans/autocad-ui.md`,
-§6; until then the wheel or a trackpad scrolls it — WHY TEXTEDIT has no button: its
+bar's macros. Every word each culture's acad.CUIX's (Arabic's ours). **Minimize states**
+(`docs/plans/autocad-ui.md`, §2.3): after the last tab the minimize button, 20 × 18, and its
+arrow, 10 × 18; a click steps through the four states in the help's Cycle Through All order —
+full (124), panel buttons (86), panel titles (45), tabs (24) — or, with one chosen in the arrow's
+menu, toggles between the full ribbon and it (help, "To Display and Control the Display State of
+the Ribbon"); the menu, rows of 22 under the arrow, at least 230 wide: Minimize to Tabs, Minimize
+to Panel Titles, Minimize to Panel Buttons | Cycle through All, checked by default (desktop
+2026-11-24, block5 and `autocad-mouse/uia2-min-menu.txt`), each culture's AdWindows.resources.dll's
+words (Arabic's ours); the button named for what it does next (`Show Full Ribbon` from the last),
+its glyph a box with ▲, or ▼ when it shows the full ribbon again (block5/minbtn-*.png). Minimized
+to panel buttons, one button per panel, 60 × 59, its 32 px icon over its name cut short, no ▾;
+to panel titles, a row of 21, each title 18 high, no ▾, a panel's dialog launcher after its title
+(Properties'); each opens its panel whole under it. Minimized to the tabs, a click on a tab drops
+its panels over the drawing, as wide as the tab row, and a second click or a press elsewhere
+takes them away. The state and the button's mode are this device's (the host's `layoutStorage`
+key), written on the editor's root by the `<head>` script, so the canvas's first box is its final
+one; RIBBON, RIBBONCLOSE and Clean Screen leave the state as it was. **The fold**: as the window
+narrows the panels shed width, then fold from the right, each to a button 61 wide (its 32 px
+icon, its name and ▾) that opens the panel whole under it, left-aligned, its slide-out's rows
+already out and its title bar with its launcher at the foot, no pin (desktop
+`autocad-mouse/folded-open.png`); Home in the order the desktop showed between 1760 and 800 —
+Block's Edit Attributes text and the property combos (33 narrower), then Block's column,
+Annotation's small text, Modify's columns from the right; then Clipboard, Utilities, Properties,
+Block, Layers, Annotation and Modify fold; Draw never (the order of the steps the desktop showed
+at one width is **unverified**). The other tabs fit at 800 here; their order is the rule the
+desktop's Insert, Annotate and View show (block5: every panel sheds width first, then they fold
+from the right), never seen on what is built here, so **unverified**. The panels' row never
+scrolls; each level's width is measured in the page's language and rounded where the browser has
+no `calc-size` (Firefox and Safari **unverified**) — WHY TEXTEDIT has no button: its
 `^C^C_textedit` is on the Text toolbar, on no ribbon panel of 2027; it is typed, or a double-click
 on a text — WHY no Styles toggle: View's Palettes has none, the Styles palette (phase 3's dialogs)
 is reached by its tab, the Text Style and Dimension Style buttons and launchers, STYLE and DIMSTYLE
 
 **Missing:** the Parametric, Visualize, Manage, Output, Add-ins, Collaborate, Express Tools and
-Featured Apps tabs, nothing of theirs built; the minimize states and the fold (block 5), AutoCAD's tooltips — the name, a description, the command and `Press
+Featured Apps tabs, nothing of theirs built; AutoCAD's tooltips — the name, a description, the command and `Press
 F1 for more help`, and after a longer rest the extended one, a paragraph and an illustration added
 (desktop 2026-11-24, `autocad-mouse/tip-long.png`; phase 5) —, the right-click menu (phase 5); Groups
 and View, with nothing built; what each panel lacks: Draw's Tan, Tan, Radius and Tan, Tan, Tan, Arc's
@@ -329,7 +354,10 @@ other members; Define UCS's list drawn as AutoCAD's `Icon` style (here its rows 
 **unverified** on the desktop); the palette toggles' undo step (U names `GROUP LAYER`, `GROUP
 BLOCKSPALETTE`, a bare `GROUP` after Properties closed: block4; none here); whether the UCS Icon
 toggle cancels a running command as `^C^C` would (here it does, **unverified**); Layer
-Properties' echo, none on the desktop either (block4); Modify's Move, Copy, Stretch, Rotate, Mirror and Scale with a grip hot (acad.cuix
+Properties' echo, none on the desktop either (block4); whether picking a minimize mode in the
+arrow's menu minimizes at once (here it only sets what the button does), and how the popups of a
+minimized ribbon open and close — on a click here, as the slide-outs, closed by a press elsewhere
+or Escape — **unverified**: without the mouse neither the menu nor the popups opened (block5); Modify's Move, Copy, Stretch, Rotate, Mirror and Scale with a grip hot (acad.cuix
 `$M=$(if,$(eq,$(substr,$(getvar,cmdnames),1,4),GRIP),_move,^C^C_move)`: the button answers the grip's
 prompt with its mode; here the button starts its command — the desktop's **unverified**)
 

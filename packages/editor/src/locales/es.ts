@@ -256,7 +256,14 @@ export const es: EditorLocale = {
       "lineweight": "Grosor de línea",
       "linetype": "Tipo de línea",
       "pin": "Fijar",
-      "moreColors": "Más colores..."
+      "moreColors": "Más colores...",
+      "minimize": {
+        "full": "Mostrar cinta de opciones completa",
+        "tabs": "Minimizar a fichas",
+        "panelTitles": "Minimizar a títulos de grupo",
+        "panelButtons": "Minimizar a botones de grupo",
+        "cycle": "Recorrer todo cíclicamente"
+      }
     },
     "CommandLine": {
       "label": "Línea de comando",

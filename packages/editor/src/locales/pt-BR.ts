@@ -256,7 +256,14 @@ export const ptBR: EditorLocale = {
       "lineweight": "Espessura de linha",
       "linetype": "Tipo de linha",
       "pin": "Fixar",
-      "moreColors": "Mais cores..."
+      "moreColors": "Mais cores...",
+      "minimize": {
+        "full": "Mostrar a faixa de opções completa",
+        "tabs": "Minimizar para as guias",
+        "panelTitles": "Minimizar os títulos dos painéis",
+        "panelButtons": "Minimizar para os botões do painel",
+        "cycle": "Navegar através de todos"
+      }
     },
     "CommandLine": {
       "label": "Linha de comando",

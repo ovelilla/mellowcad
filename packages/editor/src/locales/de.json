@@ -246,7 +246,14 @@
     "lineweight": "Linienstärke",
     "linetype": "Linientyp",
     "pin": "Anheften",
-    "moreColors": "Mehr Farben..."
+    "moreColors": "Mehr Farben...",
+    "minimize": {
+      "full": "Vollständige Multifunktionsleiste anzeigen",
+      "tabs": "Auf Registerkarten verkleinern",
+      "panelTitles": "Auf Gruppentitel verkleinern",
+      "panelButtons": "Auf Gruppenschaltflächen minimieren",
+      "cycle": "Durch alle wechseln"
+    }
   },
   "CommandLine": {
     "label": "Befehlszeile",

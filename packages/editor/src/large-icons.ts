@@ -107,6 +107,17 @@ export const LARGE_TOOL_ICONS: Readonly<Record<string, LargeIcon>> = {
       [27, 5],
     ],
   }),
+  // Four arrows out of one point: Modify's panel button, folded or minimized.
+  move: largeIcon("Move", {
+    d: [
+      "M16 3 V29",
+      "M3 16 H29",
+      "M12 7 L16 3 L20 7",
+      "M12 25 L16 29 L20 25",
+      "M7 12 L3 16 L7 20",
+      "M25 12 L29 16 L25 20",
+    ],
+  }),
   // A line, then an arc back over it, as PLINE draws one.
   polyline: largeIcon("Polyline", {
     d: ["M4 22 H17 A6 6 0 0 0 17 10 H8"],
@@ -456,6 +467,7 @@ export const LayerPropertiesLarge: LargeIcon = largeIcon("LayerProperties", {
  * options rather than a tool, by the button's id.
  */
 export const LARGE_BUTTON_ICONS: Readonly<Record<string, LargeIcon>> = {
+  layerProperties: LayerPropertiesLarge,
   // World: the axes, and the globe they belong to.
   ucsWorld: largeIcon("UcsWorld", {
     d: [

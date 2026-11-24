@@ -1,5 +1,6 @@
 import {
   HOME,
+  HOME_FOLD,
   SPACER,
   column,
   rows,
@@ -17,6 +18,7 @@ import {
 export const INSERT: readonly RibbonPanel[] = [
   {
     id: "insertBlock",
+    icon: "insert",
     slots: [
       { kind: "insertGallery" },
       column(
@@ -34,6 +36,7 @@ export const INSERT: readonly RibbonPanel[] = [
   },
   {
     id: "blockDefinition",
+    icon: "block",
     slots: [
       {
         kind: "split",
@@ -56,6 +59,7 @@ export const INSERT: readonly RibbonPanel[] = [
 export const ANNOTATE: readonly RibbonPanel[] = [
   {
     id: "text",
+    icon: "mtext",
     slots: [
       {
         kind: "split",
@@ -69,6 +73,7 @@ export const ANNOTATE: readonly RibbonPanel[] = [
   },
   {
     id: "dimensions",
+    icon: "dimlinear",
     // Its rows: [style combo, Break, Adjust Space, Jog Line], [layer combo,
     // Inspect, Update, Reassociate], [Linear ▾, Quick, Continue ▾], with
     // what is built.
@@ -107,6 +112,7 @@ export const ANNOTATE: readonly RibbonPanel[] = [
   },
   {
     id: "markup",
+    icon: "wipeout",
     slots: [tool("wipeout", "large")],
   },
 ]
@@ -119,6 +125,7 @@ export const ANNOTATE: readonly RibbonPanel[] = [
 export const TOOLS_3D: readonly RibbonPanel[] = [
   {
     id: "modeling",
+    icon: "box",
     slots: [
       {
         kind: "split",
@@ -142,6 +149,7 @@ export const TOOLS_3D: readonly RibbonPanel[] = [
   },
   {
     id: "solidEditing",
+    icon: "filletedge",
     slots: [
       column(tool("presspull", "small"), {
         kind: "split",
@@ -173,6 +181,7 @@ export const TOOLS_3D: readonly RibbonPanel[] = [
   },
   {
     id: "coordinates3d",
+    icon: "ucsWorld",
     slots: [
       tool("world", "large"),
       {
@@ -202,6 +211,7 @@ export const TOOLS_3D: readonly RibbonPanel[] = [
 export const VIEW: readonly RibbonPanel[] = [
   {
     id: "viewportTools",
+    icon: "ucsIcon",
     slots: [
       { kind: "toggle", toggle: "ucsIcon", size: "large" },
       { kind: "toggle", toggle: "viewCube", size: "large" },
@@ -209,10 +219,12 @@ export const VIEW: readonly RibbonPanel[] = [
   },
   {
     id: "visualStyles",
+    icon: "vs2dWireframe",
     slots: [rows([{ kind: "visualStyles" }])],
   },
   {
     id: "coordinates",
+    icon: "ucsWorld",
     // [UCSICON ▾ | UCS Icon Properties | UCS, Named UCS, World],
     // [Rotate ▾ | Previous | Origin, Z-Axis Vector, 3 Point],
     // [Define ▾ | named UCS combo], with what is built.
@@ -250,6 +262,7 @@ export const VIEW: readonly RibbonPanel[] = [
   },
   {
     id: "palettes",
+    icon: "propertiesPalette",
     slots: [
       { kind: "toggle", toggle: "propertiesPalette", size: "large" },
       { kind: "toggle", toggle: "blocksPalette", size: "large" },
@@ -261,6 +274,7 @@ export const VIEW: readonly RibbonPanel[] = [
   },
   {
     id: "navigate",
+    icon: "orbit",
     // Back and Forward (VIEWBACK, VIEWFORWARD) are not built.
     slots: [
       column(
@@ -299,7 +313,7 @@ export const VIEW: readonly RibbonPanel[] = [
  * something built (decision 3).
  */
 export const RIBBON_TABS: readonly RibbonTab[] = [
-  { id: "home", panels: HOME },
+  { id: "home", panels: HOME, fold: HOME_FOLD },
   { id: "insert", panels: INSERT },
   { id: "annotate", panels: ANNOTATE },
   { id: "tools3d", panels: TOOLS_3D },

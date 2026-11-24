@@ -256,7 +256,14 @@ export const ru: EditorLocale = {
       "lineweight": "Вес линий",
       "linetype": "Тип линий",
       "pin": "Закрепить",
-      "moreColors": "Дополнительные цвета..."
+      "moreColors": "Дополнительные цвета...",
+      "minimize": {
+        "full": "Показать всю ленту",
+        "tabs": "Свернуть до вкладок",
+        "panelTitles": "Свернуть до названий панелей",
+        "panelButtons": "Свернуть до кнопок панелей",
+        "cycle": "Перебор всех вариантов"
+      }
     },
     "CommandLine": {
       "label": "Командная строка",

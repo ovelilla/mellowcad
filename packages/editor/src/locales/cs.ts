@@ -256,7 +256,14 @@ export const cs: EditorLocale = {
       "lineweight": "Tloušťka čáry",
       "linetype": "Typ čáry",
       "pin": "Připnout",
-      "moreColors": "Další barvy..."
+      "moreColors": "Další barvy...",
+      "minimize": {
+        "full": "Zobrazit úplný pás karet",
+        "tabs": "Minimalizovat na zobrazení karet",
+        "panelTitles": "Minimalizovat na zobrazení názvů panelů",
+        "panelButtons": "Minimalizovat na zobrazení tlačítek panelů",
+        "cycle": "Cyklicky procházet všechny"
+      }
     },
     "CommandLine": {
       "label": "Příkazový řádek",

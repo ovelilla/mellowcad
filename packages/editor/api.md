@@ -107,6 +107,16 @@ export { paletteLayoutScript }
  * by the window's width, so the canvas keeps its final box.
  */
 export declare const paletteLayoutScript: (key: string) => string;
+
+export { ribbonLayoutScript }
+/**
+ * The `<head>` script that lays out the ribbon's minimize state kept under
+ * `key` (`layoutStorage.ribbon`) as the page is parsed, so the drawing's
+ * first box is its final one: plain ES5, run before any bundle, it marks the
+ * editor's root as the parser inserts it, as `paletteLayoutScript` does.
+ * Without it the ribbon shows whole until the editor's scripts run.
+ */
+export declare const ribbonLayoutScript: (key: string) => string;
 ```
 
 ### Pieces
@@ -164,13 +174,37 @@ export interface PieceProps {
 
 export { Ribbon }
 /**
- * AutoCAD's ribbon (docs/plans/autocad-ui.md, §2.3): its tab row, 24, and
- * the panels of the tab in front, 100, of which Home is built. Each panel is
- * acad.cuix's rows at AutoCAD's sizes, with its title bar, the slide-out
- * under it and their push pin; the drop-downs keep the member last used in
- * the engine (`state.ribbon.members`), for the session.
+ * AutoCAD's ribbon (docs/plans/autocad-ui.md, §2.3): its tab row, 24, with
+ * the minimize button after the last tab, and under it the tab in front in
+ * the state this device left it in — its panels (100), one button per panel
+ * (62), one title per panel (21) or nothing. Each panel is acad.cuix's rows
+ * at AutoCAD's sizes, with its title bar, the slide-out under it and their
+ * push pin; the panels shed text and fold from the right as the window
+ * narrows; the drop-downs keep the member last used in the engine
+ * (`state.ribbon.members`), for the session.
  */
 export declare function Ribbon(pieceProps: PieceProps): ReactElement;
+
+export type { RibbonLayout }
+/** The ribbon's minimize state, and what its minimize button does. */
+export interface RibbonLayout {
+    readonly state: RibbonState;
+    readonly mode: RibbonMinimizeMode;
+}
+
+export type { RibbonLayoutControl }
+/** The ribbon's minimize state on this device, and the way to change it. */
+export interface RibbonLayoutControl {
+    readonly layout: RibbonLayout;
+    /** Takes the new layout and keeps it, under the host's key if it gave one. */
+    readonly setLayout: (layout: RibbonLayout) => void;
+}
+
+export type { RibbonMinimizeMode }
+export type RibbonMinimizeMode = (typeof RIBBON_MINIMIZE_MODES)[number];
+
+export type { RibbonState }
+export type RibbonState = (typeof RIBBON_STATES)[number];
 
 export { StatusBar }
 /**
@@ -207,6 +241,13 @@ export interface TitleBarProps extends PieceProps {
     /** The page the application menu's Send Feedback opens; none, no Send Feedback. */
     readonly feedback?: string;
 }
+
+export { useRibbonLayout }
+/**
+ * The ribbon's minimize state and its setter, for the `Ribbon` piece or one a
+ * host puts in its place: the zone's height follows it.
+ */
+export declare function useRibbonLayout(): RibbonLayoutControl;
 
 export { ViewCube }
 /**
@@ -372,6 +413,11 @@ export interface LayoutStorage {
     readonly palette?: string;
     /** The status bar's Customization. */
     readonly statusBar?: string;
+    /**
+     * The ribbon's minimize state and what its button does, also read by the
+     * `<head>` script.
+     */
+    readonly ribbon?: string;
 }
 
 // src/cad-editor.tsx
@@ -413,6 +459,32 @@ export type EditorMessages = Compiled<Source>;
 type Compiled<T> = T extends string ? CompiledMessage : {
     readonly [K in keyof T]: Compiled<T[K]>;
 };
+
+// src/ribbon-layout.ts
+/**
+ * The four states, in the order Cycle through All steps through them (the
+ * help's "full ribbon, minimize to panel buttons, minimize to panel titles,
+ * and minimize to tabs"): the panels; one button per panel; one title per
+ * panel; the tab row alone.
+ */
+export declare const RIBBON_STATES: readonly [
+    "full",
+    "panelButtons",
+    "panelTitles",
+    "tabs"
+];
+
+// src/ribbon-layout.ts
+/**
+ * What the minimize button does, as its arrow's menu sets it: toggle between
+ * the full ribbon and one minimized state, or step through all four.
+ */
+export declare const RIBBON_MINIMIZE_MODES: readonly [
+    "tabs",
+    "panelTitles",
+    "panelButtons",
+    "cycle"
+];
 
 // src/title-bar.tsx
 /**

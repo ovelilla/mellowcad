@@ -256,7 +256,14 @@ export const en: EditorCatalog = {
       "lineweight": "Lineweight",
       "linetype": "Linetype",
       "pin": "Pin",
-      "moreColors": "More Colors..."
+      "moreColors": "More Colors...",
+      "minimize": {
+        "full": "Show Full Ribbon",
+        "tabs": "Minimize to Tabs",
+        "panelTitles": "Minimize to Panel Titles",
+        "panelButtons": "Minimize to Panel Buttons",
+        "cycle": "Cycle through All"
+      }
     },
     "CommandLine": {
       "label": "Command line",

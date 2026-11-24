@@ -4,7 +4,7 @@ import type { Metadata, Viewport } from "next"
 import { getLocale, getTranslations } from "next-intl/server"
 
 import "./globals.css"
-import { paletteLayoutScript } from "@mellowcad/editor"
+import { paletteLayoutScript, ribbonLayoutScript } from "@mellowcad/editor"
 import { THEME } from "@mellowcad/engine"
 import { localePath } from "@/i18n/navigation"
 import { DIRECTION, OG_LOCALE, localeParams } from "@/i18n/routing"
@@ -136,6 +136,11 @@ export default async function AppLayout({
         <script
           dangerouslySetInnerHTML={{
             __html: paletteLayoutScript(EDITOR_LAYOUT_STORAGE.palette),
+          }}
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: ribbonLayoutScript(EDITOR_LAYOUT_STORAGE.ribbon),
           }}
         />
         <link rel="expect" href={`#${EDITOR_SHEET_ID}`} blocking="render" />

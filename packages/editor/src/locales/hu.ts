@@ -256,7 +256,14 @@ export const hu: EditorLocale = {
       "lineweight": "Vonalvastagság",
       "linetype": "Vonaltípus",
       "pin": "Kitűzés",
-      "moreColors": "Több szín..."
+      "moreColors": "Több szín...",
+      "minimize": {
+        "full": "A teljes szalag megjelenítése",
+        "tabs": "Összecsukás füllé",
+        "panelTitles": "Összecsukás panelcímmé",
+        "panelButtons": "Kicsinyítés a panel gombjaira",
+        "cycle": "Végiglépés az összesen"
+      }
     },
     "CommandLine": {
       "label": "Parancssor",

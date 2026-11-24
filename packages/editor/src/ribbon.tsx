@@ -3,16 +3,22 @@
 import {
   createElement,
   Fragment,
+  useLayoutEffect,
   useRef,
   useState,
   type ReactElement,
+  type RefObject,
 } from "react"
+import { flushSync } from "react-dom"
 import { Menu } from "@base-ui/react/menu"
 import { Popover } from "@base-ui/react/popover"
 import { Tabs } from "@base-ui/react/tabs"
 import {
+  Check,
   ChevronDown,
   MoveDiagonal2,
+  PanelTopClose,
+  PanelTopOpen,
   PencilRuler,
   Pin,
   PinOff,
@@ -61,9 +67,24 @@ import {
   type RibbonControl,
   type RibbonPanel,
   type RibbonSlot,
+  type RibbonTab,
   type RibbonToggle,
 } from "./ribbon-home"
 import { RIBBON_TABS } from "./ribbon-tabs"
+import {
+  foldAt,
+  foldSteps,
+  levelFor,
+  panelShape,
+  type PanelShape,
+} from "./ribbon-fold"
+import {
+  nextRibbonState,
+  RIBBON_MINIMIZE_MODES,
+  type RibbonLayout,
+  type RibbonMinimizeMode,
+} from "./ribbon-layout"
+import { useRibbonLayout } from "./ribbon-layout-context"
 import { useEditorText } from "./editor-text"
 import type { PieceProps } from "./piece"
 
@@ -108,32 +129,22 @@ interface Context {
 }
 
 /**
- * How far a turn of the wheel moves the panels' row sideways: down goes on
- * towards the panels' end, which in a right-to-left page is a scrollLeft
- * below 0. A sideways turn is the browser's own (a trackpad, Shift with the
- * wheel). WHY `inRow`: React hands the row the wheel of every popup it
- * rendered, portalled or not, so a turn over a list — the layers', a
- * drop-down's, Insert's gallery — would move the row under it as well.
- */
-export function panelsScroll(
-  wheel: { readonly deltaX: number; readonly deltaY: number },
-  inRow: boolean,
-  rtl: boolean
-): number {
-  if (!inRow || wheel.deltaX !== 0) return 0
-  return rtl ? -wheel.deltaY : wheel.deltaY
-}
-
-/**
- * AutoCAD's ribbon (docs/plans/autocad-ui.md, §2.3): its tab row, 24, and
- * the panels of the tab in front, 100, of which Home is built. Each panel is
- * acad.cuix's rows at AutoCAD's sizes, with its title bar, the slide-out
- * under it and their push pin; the drop-downs keep the member last used in
- * the engine (`state.ribbon.members`), for the session.
+ * AutoCAD's ribbon (docs/plans/autocad-ui.md, §2.3): its tab row, 24, with
+ * the minimize button after the last tab, and under it the tab in front in
+ * the state this device left it in — its panels (100), one button per panel
+ * (62), one title per panel (21) or nothing. Each panel is acad.cuix's rows
+ * at AutoCAD's sizes, with its title bar, the slide-out under it and their
+ * push pin; the panels shed text and fold from the right as the window
+ * narrows; the drop-downs keep the member last used in the engine
+ * (`state.ribbon.members`), for the session.
  */
 export function Ribbon({ engine, state }: PieceProps): ReactElement {
   const t = useEditorText("Ribbon")
   const items = useEditorText("Ribbon.items")
+  const { layout, setLayout } = useRibbonLayout()
+  const tabRow = useRef<HTMLDivElement>(null)
+  // Minimized to the tabs, a tab's panels drop over the drawing while open.
+  const [dropped, setDropped] = useState(false)
   const ctx: Context = {
     engine,
     state,
@@ -149,6 +160,7 @@ export function Ribbon({ engine, state }: PieceProps): ReactElement {
   // piece, which unmounts while the ribbon is closed.
   const front =
     RIBBON_TABS.find((tab) => tab.id === state.ribbon.tab) ?? RIBBON_TABS[0]
+  const panelsLabel = t(`tabs.${front.id}`)
 
   return (
     <TooltipProvider>
@@ -157,52 +169,307 @@ export function Ribbon({ engine, state }: PieceProps): ReactElement {
         onValueChange={(value) => engine.setRibbonTab(String(value))}
       >
         {/* The tab row: the tabs 20 high on its foot, the one in front on
-        the panels' surface. */}
-        <Tabs.List className="flex h-6 items-end bg-background ps-1">
-          {RIBBON_TABS.map((tab) => (
-            <Tabs.Tab
-              key={tab.id}
-              value={tab.id}
-              // A click hands the keys back to the drawing; the arrow keys
-              // keep moving along the tabs.
-              onClick={(event) => {
-                if (event.detail > 0) engine.focusSurface()
-              }}
-              className="h-5 rounded-t-sm px-2.5 whitespace-nowrap text-muted-foreground outline-none hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/50 data-active:bg-card data-active:text-foreground"
-            >
-              {t(`tabs.${tab.id}`)}
-            </Tabs.Tab>
-          ))}
-        </Tabs.List>
-        {/* WHY it scrolls sideways: until the panels fold as the window
-        narrows (block 5 of the plan's §6), Home's built panels are wider
-        than a window of 1280 (docs/plans/autocad-ui.md, §6, decision 6);
-        the wheel or a trackpad scrolls it, Shift with the wheel, and no bar
-        takes the panels' height. */}
-        <Tabs.Panel
-          key={front.id}
-          value={front.id}
-          aria-label={t(`tabs.${front.id}`)}
-          className="flex h-25 scrollbar-none overflow-x-auto overflow-y-hidden pt-px outline-none"
-          onWheel={(event) => {
-            const row = event.currentTarget
-            const by = panelsScroll(
-              event,
-              event.target instanceof Node && row.contains(event.target),
-              getComputedStyle(row).direction === "rtl"
-            )
-            // Nothing written where the turn is the browser's: a write would
-            // cut its own sideways scroll short.
-            if (by !== 0) row.scrollLeft += by
-          }}
-        >
-          {front.panels.map((panel) => (
-            <PanelView key={panel.id} panel={panel} ctx={ctx} />
-          ))}
-        </Tabs.Panel>
+        the panels' surface, and after the last the minimize button and its
+        arrow (20 × 18 and 10 × 18). */}
+        <div ref={tabRow} className="flex h-6 items-end bg-background ps-1">
+          <Tabs.List className="flex items-end">
+            {RIBBON_TABS.map((tab) => (
+              <Tabs.Tab
+                key={tab.id}
+                value={tab.id}
+                // A click hands the keys back to the drawing; the arrow keys
+                // keep moving along the tabs. Minimized to the tabs, it drops
+                // the tab's panels over the drawing.
+                onClick={(event) => {
+                  if (layout.state === "tabs")
+                    setDropped(!(dropped && tab.id === front.id))
+                  if (event.detail > 0) engine.focusSurface()
+                }}
+                className={cn(
+                  "h-5 rounded-t-sm px-2.5 whitespace-nowrap text-muted-foreground outline-none hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/50",
+                  layout.state === "tabs"
+                    ? dropped &&
+                        "data-active:bg-card data-active:text-foreground"
+                    : "data-active:bg-card data-active:text-foreground"
+                )}
+              >
+                {t(`tabs.${tab.id}`)}
+              </Tabs.Tab>
+            ))}
+          </Tabs.List>
+          <MinimizeButton
+            layout={layout}
+            onLayout={(next) => {
+              setDropped(false)
+              setLayout(next)
+            }}
+            ctx={ctx}
+          />
+        </div>
+        {layout.state === "full" && (
+          <Tabs.Panel
+            key={front.id}
+            value={front.id}
+            aria-label={panelsLabel}
+            className="flex h-25 pt-px outline-none"
+          >
+            <FoldingRow tab={front} ctx={ctx} />
+          </Tabs.Panel>
+        )}
+        {(layout.state === "panelButtons" ||
+          layout.state === "panelTitles") && (
+          <Tabs.Panel
+            key={front.id}
+            value={front.id}
+            aria-label={panelsLabel}
+            ref={rounded}
+            className={cn(
+              "flex overflow-hidden outline-none",
+              layout.state === "panelButtons" ? "h-15.5 pt-px" : "h-5.25 pt-px"
+            )}
+          >
+            {front.panels.map((panel) => (
+              <PanelPopup
+                key={panel.id}
+                panel={panel}
+                as={layout.state === "panelButtons" ? "button" : "title"}
+                ctx={ctx}
+              />
+            ))}
+          </Tabs.Panel>
+        )}
+        {layout.state === "tabs" && (
+          <DroppedPanels
+            open={dropped}
+            onOpenChange={setDropped}
+            anchor={tabRow}
+            label={panelsLabel}
+            tab={front}
+            ctx={ctx}
+          />
+        )}
       </Tabs.Root>
     </TooltipProvider>
   )
+}
+
+/**
+ * The minimize button and its arrow's menu (plan §2.3): a click steps to the
+ * state its mode leads to (`nextRibbonState`); the menu, rows of 22, sets
+ * the mode — Minimize to Tabs, to Panel Titles, to Panel Buttons | Cycle
+ * through All — each culture's AdWindows.resources.dll's words. The button
+ * is named for what it does next, as its tooltip on the desktop is.
+ */
+function MinimizeButton({
+  layout,
+  onLayout,
+  ctx,
+}: {
+  layout: RibbonLayout
+  onLayout: (layout: RibbonLayout) => void
+  ctx: Context
+}) {
+  const t = useEditorText("Ribbon.minimize")
+  const portal = usePortalContainer()
+  const next = nextRibbonState(layout)
+  const label = next === "full" ? t("full") : t(next)
+  // A box with ▲ while a click minimizes further, with ▼ once it shows the
+  // full ribbon again (block5/minbtn-*.png).
+  const Icon = next === "full" ? PanelTopOpen : PanelTopClose
+  return (
+    <div className="ms-1 mb-px flex h-4.5 items-stretch text-muted-foreground">
+      <button
+        type="button"
+        aria-label={label}
+        className="flex w-5 items-center justify-center rounded-s-sm outline-none hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/50"
+        onClick={() => {
+          onLayout({ ...layout, state: next })
+          ctx.engine.focusSurface()
+        }}
+      >
+        <Icon aria-hidden className="size-3.5" />
+      </button>
+      <Menu.Root>
+        {/* Named by the mode it holds: the button beside it is named for what
+        it does next, and two controls of one name could not be told apart. */}
+        <Menu.Trigger
+          aria-label={t(layout.mode)}
+          className="flex w-2.5 items-center justify-center rounded-e-sm outline-none hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/50 aria-expanded:bg-muted"
+        >
+          <ChevronDown aria-hidden className="size-2.5" />
+        </Menu.Trigger>
+        <Menu.Portal container={portal}>
+          <Menu.Positioner
+            side="bottom"
+            align="start"
+            sideOffset={1}
+            className="z-50"
+          >
+            <Menu.Popup
+              className={cn(POPUP, "min-w-57.5 p-0.5")}
+              finalFocus={ctx.toDrawing}
+            >
+              <Menu.RadioGroup
+                value={layout.mode}
+                onValueChange={(mode: RibbonMinimizeMode) =>
+                  onLayout({ ...layout, mode })
+                }
+              >
+                {RIBBON_MINIMIZE_MODES.map((mode) => (
+                  <Fragment key={mode}>
+                    {mode === "cycle" && (
+                      <Menu.Separator className="-mx-0.5 my-0.5 h-px bg-border" />
+                    )}
+                    <Menu.RadioItem
+                      value={mode}
+                      closeOnClick
+                      className="relative flex h-5.5 cursor-default items-center rounded-sm ps-8.75 pe-3 whitespace-nowrap outline-hidden select-none data-highlighted:bg-accent"
+                    >
+                      <Menu.RadioItemIndicator className="absolute inset-s-2.5 flex">
+                        <Check aria-hidden className="size-3.5 text-primary" />
+                      </Menu.RadioItemIndicator>
+                      {t(mode)}
+                    </Menu.RadioItem>
+                  </Fragment>
+                ))}
+              </Menu.RadioGroup>
+            </Menu.Popup>
+          </Menu.Positioner>
+        </Menu.Portal>
+      </Menu.Root>
+    </div>
+  )
+}
+
+/**
+ * The panels of the tab in front, folded to fit the row (plan §2.3): its
+ * steps (`foldSteps`) taken one by one until what they leave fits, each
+ * level's width measured once and kept, so a wider window goes straight back
+ * to the first level that fits. WHY measured and not a table of widths: the
+ * panels are as wide as their words in the page's language and the members
+ * they show. WHY no sideways scroll any more: a panel past the edge folds.
+ */
+function FoldingRow({ tab, ctx }: { tab: RibbonTab; ctx: Context }) {
+  const row = useRef<HTMLDivElement>(null)
+  const content = useRef<HTMLDivElement>(null)
+  const steps = foldSteps(tab).length
+  const [level, setLevel] = useState(0)
+  const at = useRef(0)
+  const needed = useRef<(number | undefined)[]>([])
+  const fit = useRef<() => void>(() => {})
+
+  useLayoutEffect(() => {
+    at.current = level
+    fit.current = () => {
+      const box = row.current
+      const panels = content.current
+      if (!box || !panels) return
+      roundWidths(panels)
+      const width = box.clientWidth
+      const need = Math.ceil(panels.getBoundingClientRect().width)
+      const now = at.current
+      // What a level needs changes with the members shown and the words:
+      // then what the others were measured to need is no longer known.
+      if (needed.current[now] !== undefined && needed.current[now] !== need)
+        needed.current = []
+      needed.current[now] = need
+      const next =
+        need > width
+          ? Math.min(now + 1, steps)
+          : levelFor(width, needed.current, steps)
+      if (next !== now) setLevel(next)
+    }
+  })
+
+  // After every render, before it is painted: a step that leaves the panels
+  // too wide takes the next at once, so no frame shows them cut.
+  useLayoutEffect(() => fit.current())
+
+  // The window's width, and the panels' own: a font that arrives after the
+  // first paint (Arabic's Readex Pro) widens them with no render.
+  useLayoutEffect(() => {
+    const box = row.current
+    const panels = content.current
+    if (!box || !panels) return
+    // Synchronous, so the frame the resize is painted in is already folded.
+    const observer = new ResizeObserver(() => flushSync(() => fit.current()))
+    observer.observe(box)
+    observer.observe(panels)
+    return () => observer.disconnect()
+  }, [])
+
+  const folds = foldAt(tab, level)
+  return (
+    <div ref={row} className="flex min-w-0 flex-1 overflow-hidden">
+      <div ref={content} className="flex w-max">
+        {tab.panels.map((panel) => {
+          const fold = folds.get(panel.id) ?? { reduced: 0, folded: false }
+          return fold.folded ? (
+            <PanelPopup key={panel.id} panel={panel} as="folded" ctx={ctx} />
+          ) : (
+            <PanelView
+              key={panel.id}
+              panel={panel}
+              shape={panelShape(panel, fold.reduced)}
+              ctx={ctx}
+            />
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+/** Whether this browser rounds a text's width itself (`WHOLE`). */
+const roundsWidths = (): boolean =>
+  typeof CSS !== "undefined" &&
+  CSS.supports("width", "calc-size(fit-content, size)")
+
+/**
+ * Rounds up, where `calc-size` is not supported, the width of what `WHOLE`
+ * and `WHOLE_EVEN` size by their text, deepest first so a panel is measured
+ * round its rounded buttons: a fraction would push every icon after it off
+ * the pixel grid (plan §6, block 3's review). Firefox and Safari, without
+ * `calc-size`, are unverified: neither is installed here.
+ */
+function roundWidths(root: HTMLElement): void {
+  if (roundsWidths()) return
+  const sized = [
+    ...root.querySelectorAll<HTMLElement>('[class*="calc-size(fit-content"]'),
+  ]
+  if (root.matches('[class*="calc-size(fit-content"]')) sized.push(root)
+  const depth = (element: HTMLElement) => {
+    let n = 0
+    for (
+      let at: Element | null = element;
+      at && at !== root;
+      at = at.parentElement
+    )
+      n++
+    return n
+  }
+  for (const element of sized) element.style.width = ""
+  const byDepth = new Map<number, HTMLElement[]>()
+  for (const element of sized) {
+    const d = depth(element)
+    byDepth.set(d, [...(byDepth.get(d) ?? []), element])
+  }
+  for (const d of [...byDepth.keys()].sort((a, b) => b - a)) {
+    const level = byDepth.get(d) ?? []
+    const widths = level.map((element) => element.getBoundingClientRect().width)
+    level.forEach((element, i) => {
+      const step = element.className.includes("2px))") ? 2 : 1
+      element.style.width = `${Math.ceil(widths[i] / step) * step}px`
+    })
+  }
+}
+
+/**
+ * Rounds the widths inside what it is the ref of, once it is in the page: a
+ * popup, or the panel titles' row, which no `FoldingRow` measures.
+ */
+function rounded(element: HTMLElement | null): void {
+  if (element) roundWidths(element)
 }
 
 /**
@@ -210,44 +477,23 @@ export function Ribbon({ engine, state }: PieceProps): ReactElement {
  * slide-out drops from the title bar over the drawing and closes as the
  * pointer leaves it, unless pinned (desktop autocad-mouse/ds-a.png).
  */
-function PanelView({ panel, ctx }: { panel: RibbonPanel; ctx: Context }) {
+function PanelView({
+  panel,
+  shape,
+  ctx,
+}: {
+  panel: RibbonPanel
+  shape: PanelShape
+  ctx: Context
+}) {
   const t = useEditorText("Ribbon")
   const portal = usePortalContainer()
   const anchor = useRef<HTMLDivElement>(null)
   const [open, setOpen] = useState(false)
   const [pinned, setPinned] = useState(false)
   const name = t(`panels.${panel.id}`)
-  const slideOut = panel.slideOut
-    ?.map((row) => row.filter((c) => c === SPACER || shows(c, ctx)))
-    .filter((row) => row.some((c) => c !== SPACER))
-
-  // A panel's dialog launcher, at the end of its title bar, the slide-out's
-  // too, which covers the panel's: Properties' runs PROPERTIES as Ctrl+1,
-  // Text's and Dimensions' `'_style` and `'_dimstyle` (acad.cuix's ID_Style,
-  // ID_Ddim), named as AutoCAD's tooltips name them.
-  const button = panel.launcher
-  const launcherName =
-    button === "properties" ? name : button && ctx.text(button)
-  const launcher = button && (
-    <Tooltip>
-      <TooltipTrigger
-        render={
-          <button
-            type="button"
-            aria-label={launcherName}
-            className="flex h-4.5 w-3 items-end justify-center rounded-sm pb-0.5 outline-none hover:bg-muted hover:text-foreground"
-            onClick={() => ctx.act(() => ctx.engine.runRibbonButton(button))}
-          >
-            <MoveDiagonal2
-              aria-hidden
-              className="size-2.5 -scale-y-100 rtl:-scale-x-100"
-            />
-          </button>
-        }
-      />
-      <TooltipContent side="bottom">{launcherName}</TooltipContent>
-    </Tooltip>
-  )
+  const slideOut = slideOutOf(panel, ctx)
+  const launcher = <Launcher panel={panel} ctx={ctx} />
 
   return (
     <div
@@ -257,21 +503,9 @@ function PanelView({ panel, ctx }: { panel: RibbonPanel; ctx: Context }) {
         if (!pinned) setOpen(false)
       }}
     >
-      <div className="mt-1 flex h-18 items-start ps-0.75 pe-0.5">
-        {panel.slots.map((slot, i) => (
-          <Fragment key={i}>
-            {i > 0 && (
-              <span
-                aria-hidden
-                className={gapBetween(panel.slots[i - 1], slot)}
-              />
-            )}
-            <Slot slot={slot} ctx={ctx} />
-          </Fragment>
-        ))}
-      </div>
+      <PanelRows panel={panel} shape={shape} ctx={ctx} />
       <div className="mx-px mt-0.75 flex h-4.5 text-muted-foreground">
-        {slideOut && slideOut.length > 0 ? (
+        {slideOut.length > 0 ? (
           <Popover.Root
             open={open}
             onOpenChange={(next, details) => {
@@ -310,6 +544,7 @@ function PanelView({ panel, ctx }: { panel: RibbonPanel; ctx: Context }) {
                 press elsewhere, and Base UI runs the function on every
                 close — it would take focus from the field just pressed. */}
                 <Popover.Popup
+                  ref={rounded}
                   initialFocus={false}
                   finalFocus={false}
                   className={cn(
@@ -317,19 +552,7 @@ function PanelView({ panel, ctx }: { panel: RibbonPanel; ctx: Context }) {
                     "min-w-(--anchor-width) rounded-t-none border-t-0 pt-5.5 shadow-lg"
                   )}
                 >
-                  <div className="flex flex-col gap-0.5 ps-0.5 pe-0.5">
-                    {slideOut.map((row, r) => (
-                      <div key={r} className="flex h-5.5 items-center">
-                        {row.map((control, c) =>
-                          control === SPACER ? (
-                            <span key={c} aria-hidden className="w-1" />
-                          ) : (
-                            <Control key={c} control={control} ctx={ctx} />
-                          )
-                        )}
-                      </div>
-                    ))}
-                  </div>
+                  <SlideOutRows rows={slideOut} ctx={ctx} />
                   <div className="mx-px mt-px flex h-4.5 items-center text-muted-foreground">
                     <button
                       type="button"
@@ -352,7 +575,11 @@ function PanelView({ panel, ctx }: { panel: RibbonPanel; ctx: Context }) {
                     >
                       {name}
                     </Popover.Close>
-                    {launcher || <span aria-hidden className="w-4" />}
+                    {panel.launcher ? (
+                      launcher
+                    ) : (
+                      <span aria-hidden className="w-4" />
+                    )}
                   </div>
                 </Popover.Popup>
               </Popover.Positioner>
@@ -363,9 +590,269 @@ function PanelView({ panel, ctx }: { panel: RibbonPanel; ctx: Context }) {
             {name}
           </span>
         )}
-        {launcher}
+        {panel.launcher && launcher}
       </div>
     </div>
+  )
+}
+
+/** A panel's rows before its break: 4 above them, 72 high. */
+function PanelRows({
+  panel,
+  shape,
+  ctx,
+}: {
+  panel: RibbonPanel
+  shape: PanelShape
+  ctx: Context
+}) {
+  return (
+    <div className="mt-1 flex h-18 items-start ps-0.75 pe-0.5">
+      {panel.slots.map((slot, i) => (
+        <Fragment key={i}>
+          {i > 0 && (
+            <span
+              aria-hidden
+              className={gapBetween(panel.slots[i - 1], slot)}
+            />
+          )}
+          <Slot slot={slot} at={i} shape={shape} ctx={ctx} />
+        </Fragment>
+      ))}
+    </div>
+  )
+}
+
+/** A panel's slide-out rows, with what the engine has. */
+function slideOutOf(
+  panel: RibbonPanel,
+  ctx: Context
+): (RibbonControl | typeof SPACER)[][] {
+  return (panel.slideOut ?? [])
+    .map((row) => row.filter((c) => c === SPACER || shows(c, ctx)))
+    .filter((row) => row.some((c) => c !== SPACER))
+}
+
+/** The slide-out's rows on the 24 px pitch. */
+function SlideOutRows({
+  rows,
+  ctx,
+}: {
+  rows: readonly (readonly (RibbonControl | typeof SPACER)[])[]
+  ctx: Context
+}) {
+  return (
+    <div className="flex flex-col gap-0.5 ps-0.5 pe-0.5">
+      {rows.map((row, r) => (
+        <div key={r} className="flex h-5.5 items-center">
+          {row.map((control, c) =>
+            control === SPACER ? (
+              <span key={c} aria-hidden className="w-1" />
+            ) : (
+              <Control key={c} control={control} ctx={ctx} />
+            )
+          )}
+        </div>
+      ))}
+    </div>
+  )
+}
+
+/**
+ * A panel's dialog launcher, at the end of its title bar, the slide-out's
+ * too, which covers the panel's: Properties' runs PROPERTIES as Ctrl+1,
+ * Text's and Dimensions' `'_style` and `'_dimstyle` (acad.cuix's ID_Style,
+ * ID_Ddim), named as AutoCAD's tooltips name them.
+ */
+function Launcher({ panel, ctx }: { panel: RibbonPanel; ctx: Context }) {
+  const t = useEditorText("Ribbon")
+  const button = panel.launcher
+  if (!button) return null
+  const name =
+    button === "properties" ? t(`panels.${panel.id}`) : ctx.text(button)
+  return (
+    <Tooltip>
+      <TooltipTrigger
+        render={
+          <button
+            type="button"
+            aria-label={name}
+            className="flex h-4.5 w-3 items-end justify-center rounded-sm pb-0.5 outline-none hover:bg-muted hover:text-foreground"
+            onClick={() => ctx.act(() => ctx.engine.runRibbonButton(button))}
+          >
+            <MoveDiagonal2
+              aria-hidden
+              className="size-2.5 -scale-y-100 rtl:-scale-x-100"
+            />
+          </button>
+        }
+      />
+      <TooltipContent side="bottom">{name}</TooltipContent>
+    </Tooltip>
+  )
+}
+
+/**
+ * A panel as one button that opens it whole under it (plan §2.3): folded as
+ * the window narrows (`folded`, 61 × 97: its 32 px icon, its name and ▾), or
+ * the ribbon minimized to panel buttons (`button`, 60 × 59, the icon over
+ * the name) or to panel titles (`title`, 18 high). Open, the panel shows its
+ * rows, its slide-out's rows already out, and its title bar at the foot,
+ * left-aligned with the button. A popover that is not modal: the drawing
+ * keeps the keys.
+ */
+function PanelPopup({
+  panel,
+  as,
+  ctx,
+}: {
+  panel: RibbonPanel
+  as: "folded" | "button" | "title"
+  ctx: Context
+}) {
+  const t = useEditorText("Ribbon")
+  const portal = usePortalContainer()
+  const name = t(`panels.${panel.id}`)
+  const slideOut = slideOutOf(panel, ctx)
+
+  const trigger = (() => {
+    switch (as) {
+      case "folded":
+        return cn(
+          BUTTON,
+          "me-px h-24.25 w-15 flex-col justify-start bg-muted/60 pt-1"
+        )
+      case "button":
+        return cn(BUTTON, "me-px h-14.75 w-15 flex-col justify-start pt-1")
+      case "title":
+        return cn(BUTTON, "h-4.5 px-1.5", WHOLE)
+    }
+  })()
+
+  const popover = (
+    <Popover.Root>
+      {/* A click on the button leaves the drawing the keys, as a slide-out's
+      title bar does; no tooltip, which would keep the popover shut. */}
+      <Popover.Trigger
+        aria-label={as === "title" ? undefined : name}
+        className={trigger}
+        onClick={(event) => {
+          if (event.detail > 0) ctx.engine.focusSurface()
+        }}
+      >
+        {as !== "title" && <LargeGlyph action={panel.icon} />}
+        {as === "title" ? (
+          name
+        ) : (
+          <span className="mt-0.5 w-full truncate px-0.5 text-center">
+            {name}
+          </span>
+        )}
+        {as === "folded" && (
+          <ChevronDown aria-hidden className="mt-auto mb-1 size-3" />
+        )}
+      </Popover.Trigger>
+      <Popover.Portal container={portal}>
+        <Popover.Positioner
+          side="bottom"
+          align="start"
+          collisionPadding={0}
+          className="z-50"
+        >
+          <Popover.Popup
+            ref={rounded}
+            initialFocus={false}
+            finalFocus={false}
+            aria-label={name}
+            className={cn(POPUP, "rounded-t-none shadow-lg")}
+          >
+            <PanelRows panel={panel} shape={WHOLE_SHAPE} ctx={ctx} />
+            {slideOut.length > 0 && (
+              <div className="mt-0.5">
+                <SlideOutRows rows={slideOut} ctx={ctx} />
+              </div>
+            )}
+            <div className="mx-px mt-0.75 flex h-4.5 text-muted-foreground">
+              <span className="flex flex-1 items-center justify-center">
+                {name}
+              </span>
+              <Launcher panel={panel} ctx={ctx} />
+            </div>
+          </Popover.Popup>
+        </Popover.Positioner>
+      </Popover.Portal>
+    </Popover.Root>
+  )
+  // A title keeps its panel's dialog launcher after it, as on the desktop
+  // (block5/titles-draw.png: Properties' ↘), and no ▾.
+  return as === "title" ? (
+    <div className="mt-px flex h-4.5 shrink-0 items-center border-e pe-px text-muted-foreground">
+      {popover}
+      <Launcher panel={panel} ctx={ctx} />
+    </div>
+  ) : (
+    popover
+  )
+}
+
+/** A panel shown whole: nothing shed. */
+const WHOLE_SHAPE: PanelShape = panelShape(
+  { id: "draw", icon: "line", slots: [] },
+  0
+)
+
+/**
+ * Minimized to the tabs, the tab's panels drop over the drawing from under
+ * the tab row, as wide as it, while the tab is open: a click on a tab opens
+ * them, another or a press elsewhere closes them.
+ */
+function DroppedPanels({
+  open,
+  onOpenChange,
+  anchor,
+  label,
+  tab,
+  ctx,
+}: {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  anchor: RefObject<HTMLDivElement | null>
+  label: string
+  tab: RibbonTab
+  ctx: Context
+}) {
+  const portal = usePortalContainer()
+  return (
+    <Popover.Root
+      open={open}
+      onOpenChange={(next, details) => {
+        // A press on the tab row is the tabs': a tab's click opens its panels
+        // or closes them.
+        const target = details.event?.target
+        if (!next && target instanceof Node && anchor.current?.contains(target))
+          return
+        onOpenChange(next)
+      }}
+    >
+      <Popover.Portal container={portal}>
+        <Popover.Positioner
+          anchor={anchor}
+          side="bottom"
+          align="start"
+          collisionPadding={0}
+          className="z-50"
+        >
+          <Popover.Popup
+            initialFocus={false}
+            finalFocus={false}
+            aria-label={label}
+            className="flex h-25 w-(--anchor-width) border-b bg-card pt-px shadow-lg outline-none"
+          >
+            <FoldingRow key={tab.id} tab={tab} ctx={ctx} />
+          </Popover.Popup>
+        </Popover.Positioner>
+      </Popover.Portal>
+    </Popover.Root>
   )
 }
 
@@ -382,13 +869,43 @@ function gapBetween(before: RibbonSlot, after: RibbonSlot): string {
   return "hidden"
 }
 
-function Slot({ slot, ctx }: { slot: RibbonSlot; ctx: Context }) {
+/** A control that sheds its text: a small one shows its icon alone. */
+function iconsOnly(control: RibbonControl): RibbonControl {
+  switch (control.kind) {
+    case "tool":
+    case "split":
+    case "attributeDisplay":
+      return control.size === "small" ? { ...control, size: "icon" } : control
+    default:
+      return control
+  }
+}
+
+/** The `at`-th slot of a panel's row, as much of it as its shape leaves. */
+function Slot({
+  slot,
+  at,
+  shape,
+  ctx,
+}: {
+  slot: RibbonSlot
+  at: number
+  shape: PanelShape
+  ctx: Context
+}) {
+  const shed = (control: RibbonControl, row?: number) =>
+    shape.iconsOnly(at, row) ? iconsOnly(control) : control
   if (slot.kind === "column") {
     // Three rows on a 24 px pitch, the first 1 px below a large button's top.
     return (
       <div className="mt-px flex flex-col items-start gap-0.5">
         {slot.rows.map((row, i) => (
-          <Control key={i} control={row} ctx={ctx} />
+          <Control
+            key={i}
+            control={shed(row, i)}
+            narrow={shape.narrowCombos}
+            ctx={ctx}
+          />
         ))}
       </div>
     )
@@ -403,7 +920,7 @@ function Slot({ slot, ctx }: { slot: RibbonSlot; ctx: Context }) {
               control === SPACER ? (
                 <span key={c} aria-hidden className="w-1" />
               ) : (
-                <Control key={c} control={control} ctx={ctx} />
+                <Control key={c} control={shed(control, i)} ctx={ctx} />
               )
             )}
           </div>
@@ -411,7 +928,7 @@ function Slot({ slot, ctx }: { slot: RibbonSlot; ctx: Context }) {
       </div>
     )
   }
-  return <Control control={slot} ctx={ctx} />
+  return <Control control={shed(slot)} ctx={ctx} />
 }
 
 /** Whether the engine has what an item runs. */
@@ -470,7 +987,16 @@ function LargeGlyph({ action }: { action: string }): ReactElement | null {
   return icon ? createElement(icon, { className: mirror(action) }) : null
 }
 
-function Control({ control, ctx }: { control: RibbonControl; ctx: Context }) {
+function Control({
+  control,
+  narrow = false,
+  ctx,
+}: {
+  control: RibbonControl
+  /** The Properties panel's combos narrowed as the window narrows. */
+  narrow?: boolean
+  ctx: Context
+}) {
   const { engine, state } = ctx
   if (!shows(control, ctx)) return null
 
@@ -504,7 +1030,9 @@ function Control({ control, ctx }: { control: RibbonControl; ctx: Context }) {
     case "layerCombo":
       return <LayerCombo ctx={ctx} />
     case "propertyCombo":
-      return <PropertyCombo property={control.property} ctx={ctx} />
+      return (
+        <PropertyCombo property={control.property} narrow={narrow} ctx={ctx} />
+      )
     case "insertGallery":
       return <InsertGallery ctx={ctx} />
     case "attributeDisplay":
@@ -1042,11 +1570,16 @@ function LayerCombo({ ctx }: { ctx: Context }) {
  */
 function PropertyCombo({
   property,
+  narrow,
   ctx,
 }: {
   property: "color" | "lineweight" | "linetype"
+  /** 33 narrower, as AutoCAD's 170 become 137 (desktop, at 1680). */
+  narrow: boolean
   ctx: Context
 }) {
+  const outer = narrow ? "w-42" : "w-50"
+  const inner = narrow ? "w-37" : "w-45"
   const { engine, state } = ctx
   const t = useEditorText("Ribbon")
   const selected = state.selectionCount > 0
@@ -1064,7 +1597,7 @@ function PropertyCombo({
           done()
         }}
         ariaLabel={t("color")}
-        className="w-50"
+        className={outer}
         triggerClassName={COMBO}
         finalFocus={ctx.toDrawing}
       />
@@ -1072,7 +1605,7 @@ function PropertyCombo({
   }
   const Icon = property === "lineweight" ? LineweightIcon : LinetypeIcon
   return (
-    <div className="flex w-50 items-center">
+    <div className={cn("flex items-center", outer)}>
       <span
         aria-hidden
         className="flex w-5 justify-center text-muted-foreground"
@@ -1090,7 +1623,7 @@ function PropertyCombo({
             done()
           }}
           ariaLabel={t("lineweight")}
-          className={cn(COMBO, "w-45")}
+          className={cn(COMBO, inner)}
           finalFocus={ctx.toDrawing}
         />
       ) : (
@@ -1105,7 +1638,7 @@ function PropertyCombo({
             done()
           }}
           ariaLabel={t("linetype")}
-          className={cn(COMBO, "w-45")}
+          className={cn(COMBO, inner)}
           finalFocus={ctx.toDrawing}
         />
       )}

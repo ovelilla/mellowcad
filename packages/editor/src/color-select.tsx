@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, type ReactElement } from "react"
+import type { ReactElement } from "react"
 import { Palette } from "lucide-react"
 
 import {
@@ -10,6 +10,7 @@ import {
   STANDARD_COLORS,
   type EngineNames,
 } from "@mellowcad/engine"
+import { useColorPicker } from "@mellowcad/react"
 import { cn } from "./utils"
 import {
   Select,
@@ -70,7 +71,9 @@ export function ColorSelect({
 }): ReactElement {
   const t = useEditorText("Properties")
   const ribbonText = useEditorText("Ribbon")
-  const picker = useRef<HTMLInputElement>(null)
+  // One pick is one step: the picker hands its colour once it is done, never
+  // on each move of a drag across it.
+  const { field: pickerField, open: openPicker } = useColorPicker(onValueChange)
   const place = below ? "bar" : "palette"
   const isStandard = STANDARD_COLORS.some((color) => color.value === value)
   const custom = value && value !== COLOR_BYLAYER && !isStandard ? value : null
@@ -83,25 +86,20 @@ export function ColorSelect({
 
   // WHY a hidden field: only `<input type="color">` opens the browser's
   // picker; the row asks it to (`showPicker`, in the pick's click), placed
-  // over the trigger so the picker opens beside the list.
+  // over the trigger so the picker opens beside the list. Uncontrolled: its
+  // value is the picker's starting colour, and what it hears is the hook's.
   const field = (
     <input
-      ref={picker}
+      key={custom ?? ""}
+      ref={pickerField}
       type="color"
       tabIndex={-1}
       aria-hidden
       disabled={disabled}
-      value={custom ? colorRgb(custom) : "#ffffff"}
-      onChange={(event) => onValueChange(event.target.value)}
+      defaultValue={custom ? colorRgb(custom) : "#ffffff"}
       className="pointer-events-none absolute inset-0 size-full opacity-0"
     />
   )
-  const openPicker = () => {
-    const input = picker.current
-    if (!input) return
-    if (typeof input.showPicker === "function") input.showPicker()
-    else input.click()
-  }
 
   return (
     <div className={cn("relative flex items-center", className)}>

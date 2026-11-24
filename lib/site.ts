@@ -24,12 +24,13 @@ export const SEARCH_INDEX_PATH = "/search-index.json"
 
 /**
  * Where the editor keeps this device's layout (`CadEditor`'s
- * `layoutStorage`). FROZEN, old product name included: a renamed key orphans
+ * `layoutStorage`). FROZEN, the first two under the old product name: a renamed key orphans
  * what every user already saved (`lib/site.test.ts`).
  */
 export const EDITOR_LAYOUT_STORAGE = {
   palette: "easycad:palette:v1",
   statusBar: "easycad:status-bar:v1",
+  ribbon: "mellowcad:ribbon:v1",
 } as const
 
 /**

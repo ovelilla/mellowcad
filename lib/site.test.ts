@@ -9,6 +9,7 @@ describe("the editor's storage keys", () => {
     expect(EDITOR_LAYOUT_STORAGE).toEqual({
       palette: "easycad:palette:v1",
       statusBar: "easycad:status-bar:v1",
+      ribbon: "mellowcad:ribbon:v1",
     })
   })
 })

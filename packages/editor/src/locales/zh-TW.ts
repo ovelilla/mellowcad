@@ -256,7 +256,14 @@ export const zhTW: EditorLocale = {
       "lineweight": "線粗",
       "linetype": "線型",
       "pin": "釘住",
-      "moreColors": "更多顏色..."
+      "moreColors": "更多顏色...",
+      "minimize": {
+        "full": "顯示完整功能區",
+        "tabs": "最小化為頁籤",
+        "panelTitles": "最小化為面板標題",
+        "panelButtons": "最小化為面板按鈕",
+        "cycle": "全部循環檢視"
+      }
     },
     "CommandLine": {
       "label": "指令行",

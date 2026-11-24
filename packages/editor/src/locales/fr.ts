@@ -256,7 +256,14 @@ export const fr: EditorLocale = {
       "lineweight": "Epaisseur de ligne",
       "linetype": "Type de ligne",
       "pin": "Épingler",
-      "moreColors": "Plus de couleurs..."
+      "moreColors": "Plus de couleurs...",
+      "minimize": {
+        "full": "Afficher le ruban complet",
+        "tabs": "Réduire en onglets",
+        "panelTitles": "Réduire en titres de groupe de fonctions",
+        "panelButtons": "Réduire en boutons de groupe de fonctions",
+        "cycle": "Tout parcourir"
+      }
     },
     "CommandLine": {
       "label": "Ligne de commande",
