@@ -629,6 +629,13 @@ export const SYSTEM_VARIABLES: readonly SystemVariable[] = [
       return step === 0 ? null : heldChange("POLARANG", step, ctx)
     },
   },
+  {
+    type: "integer",
+    name: "RIBBONSTATE",
+    min: 0,
+    max: 1,
+    read: (ctx) => ctx.inquiry().ribbonState,
+  },
   heldInteger("SELECTIONCYCLING", -2, 2),
   heldInteger("SOLIDCHECK", 0, 1),
   heldInteger("SPLDEGREE", 1, 10),

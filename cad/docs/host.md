@@ -188,6 +188,9 @@ opens what it opens in AutoCAD:
   show; `setUnitsDialog(false)`, `closeLockedObjectsDialog()` and `answerUnsavedText(answer)` close
   them.
 - `state.commandLine.visible` and `state.cleanScreen` say what Ctrl+9 and Ctrl+0 have hidden.
+- `state.ribbon` says whether the ribbon shows (RIBBON, RIBBONCLOSE, Clean Screen), the tab in
+  front and the member each drop-down shows, by ids the host chooses; `setRibbonTab` and
+  `setRibbonMember` keep them for the session.
 - `state.viewCube` is the ViewCube, with the `viewCube…` methods to drive it.
 
 A host that leaves one of them out simply has nothing to show when it opens.

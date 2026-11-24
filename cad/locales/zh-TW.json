@@ -167,7 +167,9 @@
       "PROPERTIESCLOSE": "關閉「性質」選項板",
       "UNITS": "控制座標和距離顯示的精確度和格式",
       "CLEANSCREENON": "清除螢幕上的工具列和選項板",
-      "CLEANSCREENOFF": "回復「清爽螢幕」之前的顯示狀態"
+      "CLEANSCREENOFF": "回復「清爽螢幕」之前的顯示狀態",
+      "RIBBON": "顯示功能區",
+      "RIBBONCLOSE": "隱藏功能區"
     },
     "snap": {
       "endpoint": "端點",

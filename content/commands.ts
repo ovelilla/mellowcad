@@ -216,6 +216,8 @@ export const COMMAND_FILING: Readonly<Record<string, Filing>> = {
   UNITS: { group: "inquiry" },
   CLEANSCREENON: { group: "inquiry" },
   CLEANSCREENOFF: { group: "inquiry" },
+  RIBBON: { group: "inquiry" },
+  RIBBONCLOSE: { group: "inquiry" },
 
   NEW: { group: "files" },
   QNEW: { group: "files" },

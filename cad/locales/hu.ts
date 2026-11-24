@@ -171,7 +171,9 @@ export const hu: EngineLocale = {
       "PROPERTIESCLOSE": "Bezárja a Tulajdonságok palettát",
       "UNITS": "A koordináták és a távolságok megjelenítési pontosságának és formátumának megadása",
       "CLEANSCREENON": "Az eszköztárak és a paletták eltávolítása a képernyőről",
-      "CLEANSCREENOFF": "A Tiszta képernyő előtti megjelenítés visszaállítása"
+      "CLEANSCREENOFF": "A Tiszta képernyő előtti megjelenítés visszaállítása",
+      "RIBBON": "A szalag megjelenítése",
+      "RIBBONCLOSE": "A szalag elrejtése"
     },
     "snap": {
       "endpoint": "Végpont",
@@ -1351,6 +1353,12 @@ export const hu: EngineLocale = {
       ],
       "CLEANSCREENOFF": [
         "TISZTAKÉPERNYŐKI"
+      ],
+      "RIBBON": [
+        "SZALAG"
+      ],
+      "RIBBONCLOSE": [
+        "SZALAGBEZÁR"
       ],
       "COLOR": [
         "SZÍN",

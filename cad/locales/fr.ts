@@ -171,7 +171,9 @@ export const fr: EngineLocale = {
       "PROPERTIESCLOSE": "Ferme la palette Propriétés",
       "UNITS": "Contrôle la précision et le format d'affichage des coordonnées et des distances",
       "CLEANSCREENON": "Supprime de l'écran les barres d'outils et les palettes",
-      "CLEANSCREENOFF": "Restaure l'affichage tel qu'il était avant Nettoyer écran"
+      "CLEANSCREENOFF": "Restaure l'affichage tel qu'il était avant Nettoyer écran",
+      "RIBBON": "Affiche le ruban",
+      "RIBBONCLOSE": "Masque le ruban"
     },
     "snap": {
       "endpoint": "Extrémité",
@@ -1353,6 +1355,12 @@ export const fr: EngineLocale = {
       ],
       "CLEANSCREENOFF": [
         "NETECRANINACTIF"
+      ],
+      "RIBBON": [
+        "RUBAN"
+      ],
+      "RIBBONCLOSE": [
+        "FERMERUBAN"
       ],
       "COLOR": [
         "COULEUR",

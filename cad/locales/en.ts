@@ -171,7 +171,9 @@ export const en: EngineCatalog = {
       "PROPERTIESCLOSE": "Close the Properties palette",
       "UNITS": "Control the precision and display format of coordinates and distances",
       "CLEANSCREENON": "Clear toolbars and palettes from the screen",
-      "CLEANSCREENOFF": "Restore the display as it was before Clean Screen"
+      "CLEANSCREENOFF": "Restore the display as it was before Clean Screen",
+      "RIBBON": "Display the ribbon",
+      "RIBBONCLOSE": "Hide the ribbon"
     },
     "snap": {
       "endpoint": "Endpoint",
@@ -1355,6 +1357,12 @@ export const en: EngineCatalog = {
       ],
       "CLEANSCREENOFF": [
         "CLEANSCREENOFF"
+      ],
+      "RIBBON": [
+        "RIBBON"
+      ],
+      "RIBBONCLOSE": [
+        "RIBBONCLOSE"
       ],
       "COLOR": [
         "COLOR",

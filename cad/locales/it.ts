@@ -171,7 +171,9 @@ export const it: EngineLocale = {
       "PROPERTIESCLOSE": "Chiude la tavolozza Proprietà",
       "UNITS": "Controlla la precisione e il formato di visualizzazione di coordinate e distanze",
       "CLEANSCREENON": "Rimuove dallo schermo le barre degli strumenti e le tavolozze",
-      "CLEANSCREENOFF": "Ripristina la visualizzazione precedente a Schermo intero"
+      "CLEANSCREENOFF": "Ripristina la visualizzazione precedente a Schermo intero",
+      "RIBBON": "Visualizza la barra multifunzione",
+      "RIBBONCLOSE": "Nasconde la barra multifunzione"
     },
     "snap": {
       "endpoint": "Punto finale",
@@ -1351,6 +1353,12 @@ export const it: EngineLocale = {
       ],
       "CLEANSCREENOFF": [
         "DISATTSCHINT"
+      ],
+      "RIBBON": [
+        "BARRAMULTIF"
+      ],
+      "RIBBONCLOSE": [
+        "CHIUDIBARRAMULTIF"
       ],
       "COLOR": [
         "COLORE",

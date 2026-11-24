@@ -523,6 +523,7 @@ export interface Inquiry {
   /** DISTANCE: the last distance DIST measured. */
   readonly distance: number
   readonly cleanScreenState: 0 | 1
+  readonly ribbonState: 0 | 1
   /** UNDOCTL's bits: 1 on, 2 One, 4 Auto, 8 a group open, 16 Combine, 32 Layer. */
   readonly undoControl: number
 }

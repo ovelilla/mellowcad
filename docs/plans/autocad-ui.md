@@ -1,6 +1,7 @@
 # AutoCAD's interface: inventory and plan
 
-> **Status:** phase 0 (this inventory and plan) done on 2026-11-24; phases 1 to 6 not started.
+> **Status:** phase 0 (this inventory and plan) done on 2026-11-24; of phase 1, block 1 (the
+> engine) done the same day, block 2 (the frame) next; phases 2 to 6 not started.
 > The brief is `docs/next-autocad-ui.md`; where its phases and this plan differ, this plan rules
 > (the brief says so) and the brief was corrected the same day.
 

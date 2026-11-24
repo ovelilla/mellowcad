@@ -167,7 +167,9 @@
       "PROPERTIESCLOSE": "[プロパティ]パレットを閉じる",
       "UNITS": "座標と距離の表示精度および表示形式をコントロール",
       "CLEANSCREENON": "ツールバーとパレットを画面から消去",
-      "CLEANSCREENOFF": "フル スクリーン表示の前の表示に戻す"
+      "CLEANSCREENOFF": "フル スクリーン表示の前の表示に戻す",
+      "RIBBON": "リボンを表示",
+      "RIBBONCLOSE": "リボンを非表示"
     },
     "snap": {
       "endpoint": "端点",

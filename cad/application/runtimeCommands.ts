@@ -252,6 +252,8 @@ export function registerCommands(
   register({ id: "UNITS", makeTool: units, run: () => startTool(units()) })
   register({ id: "CLEANSCREENON", run: () => runtime.cleanScreenStep(true) })
   register({ id: "CLEANSCREENOFF", run: () => runtime.cleanScreenStep(false) })
+  register({ id: "RIBBON", run: () => runtime.ribbonStep(true) })
+  register({ id: "RIBBONCLOSE", run: () => runtime.ribbonStep(false) })
 }
 
 /**

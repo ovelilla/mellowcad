@@ -649,6 +649,19 @@ export class CadRuntime extends Observable {
   // opened while it is on, which shows the palette panel again.
   private cleanScreen = false
   private cleanScreenPalette = false
+  // The ribbon (RIBBONSTATE, not saved), the tab in front and the member each
+  // drop-down shows, all the session's; whether it was open when Clean Screen
+  // came on, which CLEANSCREENOFF puts back; and, while Clean Screen's step
+  // runs or is replayed, whether the ribbon was open before it moved it (null
+  // when it has not), for the ribbon's own step after it.
+  private ribbonOpen = true
+  private ribbonTab = "home"
+  private ribbonMembers: Readonly<Record<string, string>> = {}
+  private ribbonBeforeCleanScreen = true
+  private ribbonMovedFrom: boolean | null = null
+  // Whether a menu macro runs (`menuGroup`), whose group holds the steps of
+  // the commands it runs.
+  private inMenuGroup = false
 
   private disposed = false
   private initializedView = false
@@ -819,7 +832,7 @@ export class CadRuntime extends Observable {
       selection: this.selection,
       dynamicInput: this.dynamicInput,
       blocks: this.document.blockLookup(),
-      undo: () => this.history.undo() !== null,
+      undo: () => this.undoInCommand(),
       historyDepth: () => this.history.depth,
       undoTo: (depth) => this.undoTo(depth),
       undoHistory: this.undoHistory,
@@ -1305,10 +1318,17 @@ export class CadRuntime extends Observable {
     let named = label
     const depth = this.history.depth
     const waiting = this.waiting
-    const ran = run((said) => {
-      named ??= said
-      return this.text.message("menuStep", { command: named })
-    })
+    const outer = this.inMenuGroup
+    this.inMenuGroup = true
+    let ran = false
+    try {
+      ran = run((said) => {
+        named ??= said
+        return this.text.message("menuStep", { command: named })
+      })
+    } finally {
+      this.inMenuGroup = outer
+    }
     if (ran && named !== null && this.waiting !== waiting && this.waiting) {
       // Its command waits on the host: the group is its tool's step, or
       // this empty one if it starts none.
@@ -3018,6 +3038,7 @@ export class CadRuntime extends Observable {
       perimeter: area instanceof MeasureTool ? area.lastPerimeter() : 0,
       distance: dist instanceof MeasureTool ? dist.lastDistance() : 0,
       cleanScreenState: this.cleanScreen ? 1 : 0,
+      ribbonState: this.ribbonOpen ? 1 : 0,
       undoControl:
         (control === "none" ? 0 : 1) +
         (control === "one" ? 2 : 0) +
@@ -3178,22 +3199,84 @@ export class CadRuntime extends Observable {
   }
 
   /**
-   * Clean Screen (CLEANSCREENON / CLEANSCREENOFF, Ctrl+0): hides the tool
-   * palette, the palette panel and the ribbon's parts of the top bar, and
-   * keeps the Quick Access Toolbar, the command line and the status bar.
+   * Clean Screen (CLEANSCREENON / CLEANSCREENOFF, Ctrl+0): hides the palette
+   * panel and closes the ribbon, and keeps the Quick Access Toolbar, the
+   * command line and the status bar. Off, the ribbon is as it was when it
+   * came on, whatever RIBBON or RIBBONCLOSE did meanwhile (desktop
+   * workspace/d11, d13). A host's switch: no undo step.
    */
   setCleanScreen(on: boolean): void {
+    this.applyCleanScreen(on)
+    this.ribbonMovedFrom = null
+  }
+
+  private applyCleanScreen(on: boolean): void {
     if (this.cleanScreen === on) return
     this.cleanScreen = on
     this.cleanScreenPalette = false
+    if (on) this.ribbonBeforeCleanScreen = this.ribbonOpen
+    const ribbon = on ? false : this.ribbonBeforeCleanScreen
+    if (ribbon !== this.ribbonOpen) {
+      this.ribbonMovedFrom ??= this.ribbonOpen
+      this.ribbonOpen = ribbon
+    }
+    this.invalidateState()
+  }
+
+  /**
+   * The step of the ribbon's change a Clean Screen step made, run, undone or
+   * redone: AutoCAD closes and opens the ribbon with RIBBONCLOSE and RIBBON,
+   * steps of their own after it, which U names and leaves as they are; one
+   * made by U drops what REDO would redo (desktop workspace/d10–d12). An
+   * UNDO of several steps that leaves the ribbon as it found it makes none
+   * (unprobed).
+   */
+  private recordRibbonStep(): void {
+    const from = this.ribbonMovedFrom
+    this.ribbonMovedFrom = null
+    if (from === null || from === this.ribbonOpen) return
+    const open = this.ribbonOpen
+    const [name] = this.text.commandNames(open ? "RIBBON" : "RIBBONCLOSE")
+    this.history.recordEmpty(name)
+  }
+
+  /**
+   * RIBBON and RIBBONCLOSE: no echo, and a step U names as invoked that U
+   * and REDO leave as they are — the ribbon stays as the command left it
+   * (desktop workspace/d09). With Clean Screen on, RIBBON shows the ribbon
+   * and Clean Screen stays (d12).
+   */
+  ribbonStep(open: boolean): void {
+    if (this.ribbonOpen !== open) {
+      this.ribbonOpen = open
+      this.invalidateState()
+    }
+    this.history.recordEmpty(
+      this.startingName ??
+        this.text.commandNames(open ? "RIBBON" : "RIBBONCLOSE")[0]
+    )
+  }
+
+  /** The ribbon's tab in front: the host's choice, kept for the session. */
+  setRibbonTab(tab: string): void {
+    if (this.ribbonTab === tab) return
+    this.ribbonTab = tab
+    this.invalidateState()
+  }
+
+  /**
+   * The member a ribbon drop-down shows and runs from now on, as the host
+   * names both: the one last picked from its list, for the session.
+   */
+  setRibbonMember(dropDown: string, member: string): void {
+    if (this.ribbonMembers[dropDown] === member) return
+    this.ribbonMembers = { ...this.ribbonMembers, [dropDown]: member }
     this.invalidateState()
   }
 
   /**
    * The status bar's Clean Screen: no echo, and a step U names CLEANSCREENON
-   * or CLEANSCREENOFF (desktop workspace/d01). WHY no RIBBON and RIBBONCLOSE
-   * steps beside it, as AutoCAD's makes: they are the ribbon's own commands,
-   * not built here.
+   * or CLEANSCREENOFF (desktop workspace/d01), the ribbon's after it.
    */
   toggleCleanScreen(): void {
     const on = !this.cleanScreen
@@ -3218,11 +3301,15 @@ export class CadRuntime extends Observable {
   cleanScreenStep(on: boolean): void {
     this.history.execute(
       new SessionSettingCommand(
-        (value: boolean) => this.setCleanScreen(value),
+        (value: boolean) => this.applyCleanScreen(value),
         this.cleanScreen,
         on
       )
     )
+    // Ctrl+0's macro is one group, the ribbon's change in it: U names it
+    // `CLEANSCREENON GROUP` alone (desktop workspace/d04).
+    if (this.inMenuGroup) this.ribbonMovedFrom = null
+    else this.recordRibbonStep()
   }
 
   /**
@@ -3298,10 +3385,20 @@ export class CadRuntime extends Observable {
    */
   private undoTo(depth: number): boolean {
     const taken = this.history.undoTo(depth).length > 0
+    // WHY no ribbon step: inside the command, the step a Clean Screen there
+    // made (the status bar's) goes back with it; unprobed.
+    this.ribbonMovedFrom = null
     if (taken && this.regenQueued && this.regenQueuedAt > depth) {
       this.regenQueued = false
       this.sayRegenerating()
     }
+    return taken
+  }
+
+  /** A tool's own step back (`ctx.undo`), the ribbon's as {@link undoTo}'s. */
+  private undoInCommand(): boolean {
+    const taken = this.history.undo() !== null
+    this.ribbonMovedFrom = null
     return taken
   }
 
@@ -3369,6 +3466,8 @@ export class CadRuntime extends Observable {
               : null
       if (ending) this.commandLine.write("info", this.text.message(ending))
     }
+    // After `Everything has been undone`, as AutoCAD writes it (d10).
+    this.recordRibbonStep()
     // An undo that finds nothing leaves REDO the one before it (acc/h3).
     if (nothing) return
     // Stopped at a group's start with nothing taken, REDO and MREDO find
@@ -3544,38 +3643,44 @@ export class CadRuntime extends Observable {
    * own once nothing is (acc/m12, n2, n3, n19, n24), or `Nothing to redo`.
    */
   private doAgain(count: number, said: boolean): void {
-    const names: string[] = []
-    let regenerates = false
-    let done = 0
-    for (; done < count; done++) {
-      const step = this.history.redo()
-      if (!step) break
-      const name = this.stepName(step, false)
-      if (name !== null) names.push(name)
-      regenerates ||= step.regenerates
+    try {
+      const names: string[] = []
+      let regenerates = false
+      let done = 0
+      for (; done < count; done++) {
+        const step = this.history.redo()
+        if (!step) break
+        const name = this.stepName(step, false)
+        if (name !== null) names.push(name)
+        regenerates ||= step.regenerates
+      }
+      if (done > 0) {
+        this.selection.clear()
+        this.undoing = "redid"
+      }
+      if (!said) return
+      if (done === 0) {
+        this.commandLine.write("info", this.text.message("nothingToRedo"))
+        return
+      }
+      const all = !this.history.canRedo()
+      const regen = this.text.message("regeneratingModel")
+      regenerates &&= this.regenerationSaid()
+      if (names.length > 0) {
+        const line = names.join(" ")
+        this.commandLine.write(
+          "info",
+          regenerates && !all ? `${line} ${regen}` : line
+        )
+      }
+      if (!all) return
+      this.commandLine.write("info", this.text.message("everythingRedone"))
+      if (regenerates) this.commandLine.write("info", regen)
+    } finally {
+      // A REDO of a Clean Screen step moves the ribbon again, a step as its
+      // U's is (by analogy with d10: unprobed).
+      this.recordRibbonStep()
     }
-    if (done > 0) {
-      this.selection.clear()
-      this.undoing = "redid"
-    }
-    if (!said) return
-    if (done === 0) {
-      this.commandLine.write("info", this.text.message("nothingToRedo"))
-      return
-    }
-    const all = !this.history.canRedo()
-    const regen = this.text.message("regeneratingModel")
-    regenerates &&= this.regenerationSaid()
-    if (names.length > 0) {
-      const line = names.join(" ")
-      this.commandLine.write(
-        "info",
-        regenerates && !all ? `${line} ${regen}` : line
-      )
-    }
-    if (!all) return
-    this.commandLine.write("info", this.text.message("everythingRedone"))
-    if (regenerates) this.commandLine.write("info", regen)
   }
 
   /**
@@ -8271,6 +8376,11 @@ export class CadRuntime extends Observable {
       cleanScreen: {
         active: this.cleanScreen,
         palette: this.cleanScreenPalette,
+      },
+      ribbon: {
+        open: this.ribbonOpen,
+        tab: this.ribbonTab,
+        members: this.ribbonMembers,
       },
       commandOptions: options,
       commandOptionList:

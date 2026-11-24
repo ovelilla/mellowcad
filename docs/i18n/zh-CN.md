@@ -199,6 +199,7 @@ Also ours (†): the canvas's name 绘图区域 (after acadres 7015:1861's 绘�
 | Descriptions | U, REDO, -OSNAP, FROM, NEW, QSAVE, SAVE, OPEN, PASTECLIP, DIMSTYLE, LAYER, LAYERCLOSE, PROPERTIESCLOSE | acad.CUIX's HelpString, whole (撤消上一个动作, 恢复上一个用 UNDO 或 U 命令放弃的效果, 设置执行对象捕捉模式, …) | X ID_U, ID_Redo, ID_Osnap, ID_From, ID_New, ID_Save, ID_UIE_Save, ID_Open, ID_Pasteclip, ID_Ddim, ID_Layer, ID_LayerClose, ID_PropertiesClose |
 | Descriptions | QNEW, SAVEAS, STYLE, BLOCKSPALETTE, UNITS, PURGE | the HelpString cut to the English: 创建新的图形文件; 以新文件名保存当前图形; 创建和修改文字样式; 打开“块”选项板; 控制坐标和距离的显示精度和格式; 删除图形中未使用的块定义 | X ID_New (for ID_QNew), ID_Saveas, ID_Style, ID_BlocksPalette, ID_Units, ID_Purge |
 | Descriptions | SNAP, DXFIN, DXFOUT, INSERT, PROPERTIES, CLEANSCREENON, CLEANSCREENOFF | 限制光标按指定的捕捉间距移动 †; 打开 DXF 文件 †; 将当前图形保存为 DXF 文件 †; 从“块”选项板插入块 †; 显示选定对象的特性 †; 清除屏幕上的工具栏和选项板 †; 恢复“全屏显示”之前的显示状态 † | † (全屏显示 is ID_CleanScreen's Name; 捕捉间距 acadres' SNAP prompt) |
+| Descriptions | RIBBON, RIBBONCLOSE | 显示功能区; 隐藏功能区 | the 2027 help pages' (GUID-EC71B17B, GUID-A9EE8263, CHS), no final period |
 
 Also ours (†): 更改特性 (Chinese AutoCAD leaves CHPROP's menu name `Chprop`; the names list's word, after the
 help's 更改对象的特性), 多重重做 (MREDO has no name of its own: ID_Redo is 重做; 多重 as in 多重插入块,

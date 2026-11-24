@@ -167,7 +167,9 @@
       "PROPERTIESCLOSE": "특성 팔레트를 닫습니다",
       "UNITS": "좌표 및 거리에 대해 표시된 정밀도와 형식을 조정합니다",
       "CLEANSCREENON": "화면에서 도구막대와 팔레트를 지웁니다",
-      "CLEANSCREENOFF": "화면 정리 이전의 화면표시로 복원합니다"
+      "CLEANSCREENOFF": "화면 정리 이전의 화면표시로 복원합니다",
+      "RIBBON": "리본을 표시합니다",
+      "RIBBONCLOSE": "리본을 숨깁니다"
     },
     "snap": {
       "endpoint": "끝점",

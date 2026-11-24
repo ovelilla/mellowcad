@@ -386,10 +386,30 @@ export interface CommandOptionUi {
 
 /** Clean Screen: what it hides is the host's chrome, so the host hides it. */
 export interface CleanScreenUi {
-  /** CLEANSCREENSTATE: the tool palette, the palette panel and the ribbon hidden. */
+  /**
+   * CLEANSCREENSTATE: the palette panel hidden. The ribbon it closes is
+   * {@link RibbonUi.open}'s.
+   */
   readonly active: boolean
   /** A palette was opened while it is on: the palette panel shows again. */
   readonly palette: boolean
+}
+
+/**
+ * The ribbon, which the host draws: whether it shows, and what it shows that
+ * the session keeps.
+ */
+export interface RibbonUi {
+  /** RIBBONSTATE: shown (RIBBON), or closed (RIBBONCLOSE, Clean Screen). */
+  readonly open: boolean
+  /** The tab in front, by the host's id for it. */
+  readonly tab: string
+  /**
+   * The member each drop-down shows and runs, by the host's ids for both; a
+   * drop-down not listed shows its first. The session's, as AutoCAD keeps it
+   * (Circle's list was Center, Radius again after a restart).
+   */
+  readonly members: Readonly<Record<string, string>>
 }
 
 /** Snapshot of the command line (AutoCAD's `Command:` prompt) for the UI. */
@@ -715,6 +735,8 @@ export interface EngineState {
   readonly unsavedTextDialog: boolean
   /** Clean Screen (CLEANSCREENON / CLEANSCREENOFF, Ctrl+0). */
   readonly cleanScreen: CleanScreenUi
+  /** The ribbon (RIBBON, RIBBONCLOSE, Clean Screen). */
+  readonly ribbon: RibbonUi
   /**
    * Command options (keywords) the active tool currently offers — AutoCAD's
    * `[Close/Undo]` prompt. The UI renders these as hint chips near the dynamic

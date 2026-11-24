@@ -75,6 +75,8 @@ const NOT_OFFERED: ReadonlySet<string> = new Set([
   "PASTECLIP",
   "CLEANSCREENON",
   "CLEANSCREENOFF",
+  "RIBBON",
+  "RIBBONCLOSE",
   "LAYERCLOSE",
   "PROPERTIESCLOSE",
   "NAVVCUBE",

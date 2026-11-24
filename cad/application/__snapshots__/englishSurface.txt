@@ -161,6 +161,8 @@ PROPERTIESCLOSE [] "Close the Properties palette"
 UNITS ["UN","DDUNITS"] "Control the precision and display format of coordinates and distances"
 CLEANSCREENON [] "Clear toolbars and palettes from the screen"
 CLEANSCREENOFF [] "Restore the display as it was before Clean Screen"
+RIBBON [] "Display the ribbon"
+RIBBONCLOSE [] "Hide the ribbon"
 ## tools
 select "Select" s
 line "Line" L

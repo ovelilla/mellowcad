@@ -171,7 +171,9 @@ export const cs: EngineLocale = {
       "PROPERTIESCLOSE": "Zavře paletu Vlastnosti",
       "UNITS": "Řídí zobrazenou přesnost a formát souřadnic a vzdáleností",
       "CLEANSCREENON": "Odstraní z obrazovky panely nástrojů a palety",
-      "CLEANSCREENOFF": "Obnoví zobrazení do stavu před vyčištěním obrazovky"
+      "CLEANSCREENOFF": "Obnoví zobrazení do stavu před vyčištěním obrazovky",
+      "RIBBON": "Zobrazí pás karet",
+      "RIBBONCLOSE": "Skryje pás karet"
     },
     "snap": {
       "endpoint": "Koncový",
@@ -1414,6 +1416,12 @@ export const cs: EngineLocale = {
       ],
       "CLEANSCREENOFF": [
         "ČISTÁOBRAZOVKANE"
+      ],
+      "RIBBON": [
+        "PÁSKARET"
+      ],
+      "RIBBONCLOSE": [
+        "PÁSKARETZAVŘI"
       ],
       "COLOR": [
         "BARVA",

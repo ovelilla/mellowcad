@@ -189,7 +189,8 @@ defpoints), 첫 번째 점 X/Y (after ax26res 65's 두 번째 점), 기준 Z (af
 and the descriptions of SNAP, DXFIN, DXFOUT, INSERT, PURGE, PROPERTIES, CLEANSCREENON and
 CLEANSCREENOFF, written as acad.CUIX's help strings are (`…합니다`, no period); QNEW, STYLE,
 BLOCKSPALETTE and UNITS take their HelpString cut to what the English says (ID_QNew says 빈 도면,
-ID_Style adds 또는 지정, ID_BlocksPalette 열거나 닫습니다, ID_Units 각도 for distances). Overridden
+ID_Style adds 또는 지정, ID_BlocksPalette 열거나 닫습니다, ID_Units 각도 for distances), and RIBBON and
+RIBBONCLOSE the 2027 help pages' (리본을 표시합니다, 리본을 숨깁니다: GUID-EC71B17B, GUID-A9EE8263). Overridden
 against a single pairing because the row's place says otherwise: `dimrotated` 회전된 치수 (AcDimRes
 5853 is left `ROTATED`), `setvar` 변수 설정 (the only pairing is an Express Tools title left in
 English), `U`'s description 가장 최근의 작업을 취소합니다 (ID_U's HelpString, like every other

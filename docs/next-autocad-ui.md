@@ -2,9 +2,10 @@
 
 > **Estado:** en curso desde el 24/11/2026, agotada la cola de la visibilidad (`docs/next-seo.md`):
 > la fase 0 (inventario y plan) está hecha y su plan, `docs/plans/autocad-ui.md`, manda sobre las
-> fases de §4, que se corrigieron con él; sigue la fase 1 (el marco y el ribbon). Acordado el
-> 7/11/2026 por el dueño. Se borra cuando la última fase esté hecha; hasta entonces cada fase
-> cerrada se marca aquí.
+> fases de §4, que se corrigieron con él; de la fase 1 (el marco y el ribbon), el bloque 1 del
+> §6 del plan (el estado del ribbon en el motor) está hecho el 24/11 y sigue el 2, el marco.
+> Acordado el 7/11/2026 por el dueño. Se borra cuando la última fase esté hecha; hasta entonces
+> cada fase cerrada se marca aquí.
 
 ## 1. Objetivo
 

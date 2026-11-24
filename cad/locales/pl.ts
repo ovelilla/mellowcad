@@ -171,7 +171,9 @@ export const pl: EngineLocale = {
       "PROPERTIESCLOSE": "Zamyka paletę Właściwości",
       "UNITS": "Steruje poziomem wyświetlanej dokładności i formatem współrzędnych i odległości",
       "CLEANSCREENON": "Usuwa z ekranu paski narzędzi i palety",
-      "CLEANSCREENOFF": "Przywraca ekran do stanu sprzed włączenia trybu czyszczenia ekranu"
+      "CLEANSCREENOFF": "Przywraca ekran do stanu sprzed włączenia trybu czyszczenia ekranu",
+      "RIBBON": "Wyświetla wstążkę",
+      "RIBBONCLOSE": "Ukrywa wstążkę"
     },
     "snap": {
       "endpoint": "Punkt końcowy",
@@ -1404,6 +1406,12 @@ export const pl: EngineLocale = {
       ],
       "CLEANSCREENOFF": [
         "CZYŚĆEKRANWYŁ"
+      ],
+      "RIBBON": [
+        "WSTĄŻKA"
+      ],
+      "RIBBONCLOSE": [
+        "WSTĄŻKAZAMKNIJ"
       ],
       "COLOR": [
         "KOLOR",

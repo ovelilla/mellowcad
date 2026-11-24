@@ -53,6 +53,7 @@ export type {
   PaletteTab,
   PaletteUi,
   CleanScreenUi,
+  RibbonUi,
   PropertiesUi,
   PropertiesFilterOption,
   ObjectType,

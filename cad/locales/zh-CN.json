@@ -167,7 +167,9 @@
       "PROPERTIESCLOSE": "关闭“特性”选项板",
       "UNITS": "控制坐标和距离的显示精度和格式",
       "CLEANSCREENON": "清除屏幕上的工具栏和选项板",
-      "CLEANSCREENOFF": "恢复“全屏显示”之前的显示状态"
+      "CLEANSCREENOFF": "恢复“全屏显示”之前的显示状态",
+      "RIBBON": "显示功能区",
+      "RIBBONCLOSE": "隐藏功能区"
     },
     "snap": {
       "endpoint": "端点",

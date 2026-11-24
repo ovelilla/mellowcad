@@ -169,6 +169,8 @@ declare const source: {
       "UNITS": string
       "CLEANSCREENON": string
       "CLEANSCREENOFF": string
+      "RIBBON": string
+      "RIBBONCLOSE": string
     }
     "snap": {
       "endpoint": string
@@ -737,6 +739,8 @@ declare const source: {
       "SETVAR": string[]
       "CLEANSCREENON": string[]
       "CLEANSCREENOFF": string[]
+      "RIBBON": string[]
+      "RIBBONCLOSE": string[]
       "COLOR": string[]
       "-COLOR": string[]
       "LINETYPE": string[]

@@ -315,6 +315,9 @@ describe("a system variable typed by its name runs SETVAR for it", () => {
       ["UCSXDIR", "UCSXDIR = 1.00,0.00,0.00 (read only)"],
       ["UNDOCTL", "UNDOCTL = 53 (read only)"],
       ["CLEANSCREENSTATE", "CLEANSCREENSTATE = 0 (read only)"],
+      // The help's initial value, the desktop's (workspace/d09): the
+      // console, with no ribbon, reads 0 (p127)
+      ["RIBBONSTATE", "RIBBONSTATE = 1 (read only)"],
     ]) {
       expect(written(cad, `_${name}`)).toEqual([name, line])
     }
@@ -333,6 +336,9 @@ describe("a system variable typed by its name runs SETVAR for it", () => {
     cad.runtime.setCleanScreen(true)
     expect(written(cad, "CLEANSCREENSTATE").at(-1)).toBe(
       "CLEANSCREENSTATE = 1 (read only)"
+    )
+    expect(written(cad, "RIBBONSTATE").at(-1)).toBe(
+      "RIBBONSTATE = 0 (read only)"
     )
   })
 })

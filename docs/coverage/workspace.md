@@ -20,8 +20,9 @@ format here. The modes' buttons echo as their keys, ` <Grid on>` (es ` <Rejilla 
 workspace/d01, d01-2, d01-3, e01; Object Snap's and Object Snap Tracking's by analogy); a Polar
 angle chosen writes nothing and turns Polar on (d01-m); Lineweight writes nothing (**unverified**:
 it has no key, and its echo is unprobed); Clean Screen echoes nothing and is a step U names
-CLEANSCREENON / CLEANSCREENOFF (d01) — WHY without AutoCAD's RIBBON and RIBBONCLOSE steps round
-it: the ribbon's own commands, not built here
+CLEANSCREENON / CLEANSCREENOFF (d01), the ribbon's RIBBONCLOSE or RIBBON after it when it moves the
+ribbon, as typed (see CLEANSCREENON; the button's own steps by analogy: it offers no UI Automation
+pattern, d13)
 
 **Missing:** Paper Space, Infer Constraints, Dynamic Input, Isometric Drafting, Transparency, 3D
 Object Snap, Dynamic UCS, Selection Filtering, Gizmo, the annotation and viewport tools, Workspace
@@ -120,7 +121,8 @@ para ninguno`, a name no block has taken, `.` none; INSERT finds it case-blind),
 the UCS, a 2D point at ELEVATION, `@` from itself, kept in the WCS; p212, p224), CIRCLERAD (not
 negative; U after CIRCLE leaves it: draw.md), OFFSETDIST (below 0 Through), POLYSIDES (3–1024); the
 values the probes show taken and refused (p205, p211–p214, p216, p223); read only AREA, PERIMETER,
-DISTANCE, UCSNAME, UCSORG, UCSXDIR, UNDOCTL, CLEANSCREENSTATE. `?` lists them in AutoCAD's order,
+DISTANCE, UCSNAME, UCSORG, UCSXDIR, UNDOCTL, CLEANSCREENSTATE, RIBBONSTATE (1 at first, the
+desktop's and the help's: the console, with no ribbon, reads 0, p127). `?` lists them in AutoCAD's order,
 the older ones then the newer (p126, p127)
 
 **Missing:** the variables whose effect is fixed or unmodelled (LUNITS, ATTDIA, ATTREQ,
@@ -142,10 +144,18 @@ too, p161) and PolarSnap with a negative POLARDIST stepping by its size (d08) ho
 
 ### `CLEANSCREENON` / `CLEANSCREENOFF` / Ctrl+0 · es `LIMPIAPANTACT` / `LIMPIAPANTDES` · pt-BR `TELALIMPAATIV` / `TELALIMPADESAT` · fr `NETECRANACTIF` / `NETECRANINACTIF` · it `ATTSCHINT` / `DISATTSCHINT` · de `BILDSCHBEREIN` / `BILDSCHBERAUS` · ru `ЧИСТЭКРВКЛ` / `ЧИСТЭКРОТКЛ` · pl `CZYŚĆEKRANWŁ` / `CZYŚĆEKRANWYŁ` · cs `ČISTÁOBRAZOVKAANO` / `ČISTÁOBRAZOVKANE` · hu `TISZTAKÉPERNYŐBE` / `TISZTAKÉPERNYŐKI`
 
-**Implemented:** hides the tool palette, the palette panel and the top bar's ribbon parts (the
-Layers and Properties groups, the palette toggles) and keeps the application menu, the Quick Access
-Toolbar, the command line and the status bar ("Clean screen does not hide the Quick Access toolbar,
-the command window, or the status bar"); Ctrl+0 is acad.cuix's `^C^C_CleanScreenON` /
+**Implemented:** hides the palette panel and closes the ribbon (RIBBONSTATE 0: see RIBBON) and
+keeps the application menu, the Quick Access Toolbar, the command line and the status bar ("Clean
+screen does not hide the Quick Access toolbar, the command window, or the status bar"); off, it
+puts the ribbon back as it was when Clean Screen came on, whatever RIBBON or RIBBONCLOSE did
+meanwhile (desktop workspace/d11, d13). Each change it makes to the ribbon, run, undone or redone,
+is a step of its own after it that U names RIBBONCLOSE or RIBBON and leaves as it is: typed with
+the ribbon open, CLEANSCREENON is two steps (`RIBBONCLOSE`, then `CLEANSCREENON`), and U of
+CLEANSCREENON makes a RIBBON step, so REDO then finds `Nothing to redo` (d10, d12); with the ribbon
+closed before, no step of the ribbon's (d11); one run by Ctrl+0's macro holds it in its group (d04:
+U names `CLEANSCREENON GROUP` alone), and a REDO's step is by analogy (unprobed). Once,
+CLEANSCREENON followed by RIBBON showed no RIBBONCLOSE step (d12 (b)); twice it did (d10, d12 (a)):
+the steps here are those. Ctrl+0 is acad.cuix's `^C^C_CleanScreenON` /
 `^C^C_CleanScreenOFF` (ID_CleanScreen, by CLEANSCREENSTATE): the running command cancelled, then
 the command run, echoed so (desktop workspace/d04), a group U names `CLEANSCREENON GROUP`; the
 status bar's Clean Screen (es Limpiar pantalla) toggles it with no echo, a step U names
@@ -153,9 +163,27 @@ status bar's Clean Screen (es Limpiar pantalla) toggles it with no echo, a step 
 panel again (**unverified**); not saved (CLEANSCREENSTATE, read only by SETVAR, is Not-saved), so a reload starts without it;
 CLEANSCREENOPTIONS, sometimes cited, is BricsCAD's. Typed, each is an undo step U names as invoked
 (es string tables 52590, 52589) and U and REDO toggle back, one that changes nothing too (probes
-workspace/p306, p316); program state, so it leaves the drawing unchanged. Not transparent:
+workspace/p306, p316, in the console, which has no ribbon: with one open, the ribbon's steps
+above come between); program state, so it leaves the drawing unchanged. Not transparent:
 `'CLEANSCREENON` inside a command is refused, `** That command may not be invoked transparently **`
 (p305)
+
+### `RIBBON` / `RIBBONCLOSE` · es `CINTA` / `CERRARCINTA` · pt-BR `FAIXAOPCOES` / `FECHARFAIXAOPCOES` · fr `RUBAN` / `FERMERUBAN` · it `BARRAMULTIF` / `CHIUDIBARRAMULTIF` · de `MFLEISTE` / `MFLEISTESCHL` · ru `ЛЕНТА` / `ЛЕНТАЗАКР` · pl `WSTĄŻKA` / `WSTĄŻKAZAMKNIJ` · cs `PÁSKARET` / `PÁSKARETZAVŘI` · hu `SZALAG` / `SZALAGBEZÁR`
+
+**Implemented:** RIBBONCLOSE closes the ribbon and RIBBON shows it (RIBBONSTATE, read only and not
+saved: a reload starts with it shown), neither asking anything, the names from the 2027 help pages'
+titles in each language (GUID-EC71B17B, GUID-A9EE8263); no echo, and each is a step U and REDO name
+as invoked and leave as they are, one that changes nothing too: the ribbon stays as the command left
+it (desktop workspace/d09); with Clean Screen on, RIBBON shows the ribbon and Clean Screen stays
+(d12, d13). Not transparent: `'RIBBON` and `'RIBBONCLOSE` inside a command are refused, `** That
+command may not be invoked transparently **` (d09). The engine keeps, for the session, the tab in
+front and the member each drop-down shows (`state.ribbon`), as AutoCAD keeps the member for the
+session and not after a restart (`docs/plans/autocad-ui.md`, §2.3) — WHY the ribbon closed hides
+the tool palette and the top bar's Layers and Properties groups, the palette toggles with them: the
+editor has no ribbon yet, and those are what it stands in for (`docs/plans/autocad-ui.md`, phase 1)
+
+**Missing:** the ribbon itself (phase 1 of `docs/plans/autocad-ui.md`), its right-click menu's
+Close and Undock, docking and floating it
 
 ### F1 (Help)
 
@@ -187,7 +215,7 @@ bar's Help list when the chrome has one, `docs/plans/autocad-ui.md`, F7) and the
 run as its command by its global name (`_QSAVE`), so it echoes (Drawing Units as the desktop's
 application menu runs it, `^C^C_UNITS`: see UNITS); the Home tab's Layers and Properties
 panels beside them (`Object properties`, `Layers`), and at the end View's palette toggles: Styles,
-Blocks and the command line — WHY one 36 px row instead of the ribbon: a ribbon costs 70–150 px of
+Blocks and the command line, which RIBBONCLOSE and Clean Screen hide as the ribbon's — WHY one 36 px row instead of the ribbon: a ribbon costs 70–150 px of
 height, which a wide screen is short of (revoked by the owner on 2026-11-07: the chrome follows AutoCAD's layout, `docs/next-autocad-ui.md`)
 
 **Missing:** the rest of the application menu and its layout (the 2027 desktop's: New, Open, Save,

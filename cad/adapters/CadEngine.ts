@@ -655,6 +655,20 @@ export class CadEngine {
     this.runtime.toggleCleanScreen()
   }
 
+  /** Brings a ribbon tab to the front, by the host's id for it (`state.ribbon.tab`). */
+  setRibbonTab(tab: string): void {
+    this.runtime.setRibbonTab(tab)
+  }
+
+  /**
+   * The member a ribbon drop-down shows and runs from now on, by the host's
+   * ids for both (`state.ribbon.members`): the one last picked from its list,
+   * kept for the session, as AutoCAD keeps it.
+   */
+  setRibbonMember(dropDown: string, member: string): void {
+    this.runtime.setRibbonMember(dropDown, member)
+  }
+
   /**
    * A point of the state's screen space (the canvas's own pixels: the cursor,
    * the snap override menu, the cycling list) in the page's viewport, where a

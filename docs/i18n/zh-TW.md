@@ -210,6 +210,7 @@ keeps the resource's corner brackets, `重複「%s」`.
 | Descriptions | U, REDO, -OSNAP, FROM, NEW, QSAVE, SAVE, OPEN, PASTECLIP, DIMSTYLE, LAYER, LAYERCLOSE, PROPERTIESCLOSE | acad.CUIX's HelpString, whole (倒回最近的動作, 倒回先前 UNDO 或 U 指令的效果, 設定常駐式物件鎖點模式, …) | X ID_U, ID_Redo, ID_Osnap, ID_From, ID_New, ID_Save, ID_UIE_Save, ID_Open, ID_Pasteclip, ID_Ddim, ID_Layer, ID_LayerClose, ID_PropertiesClose |
 | Descriptions | QNEW, SAVEAS, STYLE, BLOCKSPALETTE, UNITS, PURGE | the HelpString cut to the English: 建立一個新圖檔; 以新檔名儲存目前的圖面; 建立與修改文字型式; 開啟「圖塊」選項板; 控制座標和距離顯示的精確度和格式; 從圖面移除未使用的圖塊定義 | X ID_New (for ID_QNew), ID_Saveas, ID_Style, ID_BlocksPalette, ID_Units, ID_Purge |
 | Descriptions | SNAP, DXFIN, DXFOUT, INSERT, PROPERTIES, CLEANSCREENON, CLEANSCREENOFF | 限制游標以指定的鎖點間距移動 †; 開啟 DXF 檔案 †; 將目前的圖面儲存為 DXF 檔案 †; 從「圖塊」選項板插入圖塊 †; 顯示選取物件的性質 †; 清除螢幕上的工具列和選項板 †; 回復「清爽螢幕」之前的顯示狀態 † | † (清爽螢幕 is ID_CleanScreen's Name; 鎖點間距 acadres 25946's SNAP prompt) |
+| Descriptions | RIBBON, RIBBONCLOSE | 顯示功能區; 隱藏功能區 | the 2027 help pages' (GUID-EC71B17B, GUID-A9EE8263, CHT; RIBBON's reads 螢幕上將顯示顯示功能區, its doubled 顯示 left out), no final period |
 
 Also ours (†): 變更性質 (Taiwanese AutoCAD leaves CHPROP's menu name `Chprop`; the help's 變更物件的性質),
 多重重做 (MREDO has no name of its own; 多重 as in 多重引線), the dashed command-line tools' (指令行)

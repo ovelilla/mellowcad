@@ -167,7 +167,9 @@
       "PROPERTIESCLOSE": "Bezárja a Tulajdonságok palettát",
       "UNITS": "A koordináták és a távolságok megjelenítési pontosságának és formátumának megadása",
       "CLEANSCREENON": "Az eszköztárak és a paletták eltávolítása a képernyőről",
-      "CLEANSCREENOFF": "A Tiszta képernyő előtti megjelenítés visszaállítása"
+      "CLEANSCREENOFF": "A Tiszta képernyő előtti megjelenítés visszaállítása",
+      "RIBBON": "A szalag megjelenítése",
+      "RIBBONCLOSE": "A szalag elrejtése"
     },
     "snap": {
       "endpoint": "Végpont",
@@ -710,6 +712,8 @@
       "SETVAR": ["VÁLTOZÓK", "VAL"],
       "CLEANSCREENON": ["TISZTAKÉPERNYŐBE"],
       "CLEANSCREENOFF": ["TISZTAKÉPERNYŐKI"],
+      "RIBBON": ["SZALAG"],
+      "RIBBONCLOSE": ["SZALAGBEZÁR"],
       "COLOR": ["SZÍN", "S", "SZIN", "DPSZÍN"],
       "-COLOR": ["-SZÍN"],
       "LINETYPE": ["VTÍPUS", "VT", "DPVTÍPUS"],

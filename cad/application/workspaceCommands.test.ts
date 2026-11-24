@@ -154,7 +154,8 @@ describe("Clean Screen", () => {
   })
 
   // probe workspace/p306: `_CLEANSCREENON`, `_U` writes `CLEANSCREENON` (es
-  // `LIMPIAPANTACT`); then `_CLEANSCREENOFF`, already off, is a step too
+  // `LIMPIAPANTACT`); then `_CLEANSCREENOFF`, already off, is a step too. The
+  // console has no ribbon (RIBBONSTATE 0, p127), so these close it first.
   it.each([
     ["CLEANSCREENON", "CLEANSCREENOFF", undefined],
     ["LIMPIAPANTACT", "LIMPIAPANTDES", es],
@@ -162,6 +163,7 @@ describe("Clean Screen", () => {
     "%s and %s are each a step U names, the line before kept",
     (on, off, locale) => {
       const cad = withLine(locale)
+      cad.command("_RIBBONCLOSE")
 
       expect(written(cad, "_CLEANSCREENON", "_U").at(-1)).toBe(on)
       expect(cad.state().cleanScreen.active).toBe(false)
@@ -177,7 +179,7 @@ describe("Clean Screen", () => {
   // (`CLEANSCREENON`) sets it to 1
   it("REDO turns it on again", () => {
     const cad = createHarness()
-    written(cad, "CLEANSCREENON", "U")
+    written(cad, "RIBBONCLOSE", "CLEANSCREENON", "U")
 
     expect(written(cad, "REDO")).toContain("CLEANSCREENON")
     expect(cad.state().cleanScreen.active).toBe(true)
@@ -213,6 +215,203 @@ describe("Clean Screen", () => {
     copy.runtime.loadDrawing(cad.runtime.serializeDrawing())
 
     expect(copy.state().cleanScreen.active).toBe(false)
+  })
+
+  // desktop workspace/d10: the ribbon closed by RIBBONCLOSE, a step of its
+  // own after CLEANSCREENON; U of CLEANSCREENON opens it, by RIBBON, a step
+  // that drops what REDO would redo
+  it("closes the ribbon, a RIBBONCLOSE step after it, and U opens it again", () => {
+    const cad = createHarness()
+
+    expect(written(cad, "CLEANSCREENON")).toEqual(["CLEANSCREENON"])
+    expect(cad.state().ribbon.open).toBe(false)
+
+    expect(written(cad, "U")).toEqual(["U", "RIBBONCLOSE"])
+    expect(cad.state().ribbon.open).toBe(false)
+    expect(cad.state().cleanScreen.active).toBe(true)
+
+    expect(written(cad, "U").slice(0, 2)).toEqual(["U", "CLEANSCREENON"])
+    expect(cad.state().ribbon.open).toBe(true)
+    expect(cad.state().cleanScreen.active).toBe(false)
+
+    expect(written(cad, "REDO")).toEqual(["REDO", "Nothing to redo"])
+    expect(written(cad, "U").slice(0, 2)).toEqual(["U", "RIBBON"])
+    expect(cad.state().ribbon.open).toBe(true)
+  })
+
+  // desktop workspace/d11: with the ribbon closed before, it stays closed and
+  // makes no step
+  it("leaves a ribbon closed before it closed, with no step of its own", () => {
+    const cad = createHarness()
+    cad.command("RIBBONCLOSE")
+
+    written(cad, "CLEANSCREENON", "CLEANSCREENOFF")
+    expect(cad.state().ribbon.open).toBe(false)
+
+    expect(written(cad, "U").at(-1)).toBe("CLEANSCREENOFF")
+    expect(written(cad, "U").at(-1)).toBe("CLEANSCREENON")
+    expect(written(cad, "U").slice(0, 2)).toEqual(["U", "RIBBONCLOSE"])
+    expect(cad.state().ribbon.open).toBe(false)
+  })
+
+  // desktop workspace/d12 (a), d13: RIBBON inside it shows the ribbon, Clean
+  // Screen staying on; CLEANSCREENOFF puts the ribbon back as it was before
+  // Clean Screen, whatever was done meanwhile, a RIBBON step after it
+  it("puts the ribbon back as it was before, whatever RIBBON did meanwhile", () => {
+    const cad = createHarness()
+    written(cad, "CLEANSCREENON", "RIBBON")
+    expect(cad.state().ribbon.open).toBe(true)
+    expect(cad.state().cleanScreen.active).toBe(true)
+
+    written(cad, "RIBBONCLOSE", "CLEANSCREENOFF")
+    expect(cad.state().ribbon.open).toBe(true)
+    expect(cad.state().cleanScreen.active).toBe(false)
+
+    expect(written(cad, "U").at(-1)).toBe("RIBBON")
+    expect(written(cad, "U").at(-1)).toBe("CLEANSCREENOFF")
+    expect(cad.state().ribbon.open).toBe(false)
+    expect(cad.state().cleanScreen.active).toBe(true)
+  })
+
+  // A command's own Undo takes the status bar's Clean Screen back with its
+  // step: no ribbon step is left owed to a later U (unprobed)
+  it("leaves no ribbon step owed after LINE's Undo takes it back", () => {
+    const cad = createHarness()
+    written(cad, "LINE", "0,0", "10,0", "20,0")
+    cad.runtime.toggleCleanScreen()
+    written(cad, "U", "")
+    written(cad, "CIRCLE", "0,0", "5")
+
+    expect(written(cad, "U").slice(0, 2)).toEqual(["U", "CIRCLE"])
+    expect(written(cad, "REDO").slice(0, 2)).toEqual(["REDO", "CIRCLE"])
+  })
+
+  // An UNDO that closes and opens the ribbon leaves it as it found it: no
+  // step of the ribbon's (unprobed)
+  it("makes no ribbon step when UNDO leaves the ribbon as it was", () => {
+    const cad = withLine()
+    cad.press("0", { ctrlKey: true })
+    cad.press("0", { ctrlKey: true })
+
+    written(cad, "UNDO", "2")
+    expect(cad.state().ribbon.open).toBe(true)
+    expect(written(cad, "U").slice(0, 2)).toEqual(["U", "LINE"])
+  })
+
+  it("closes and restores the ribbon from the host's switch, with no step", () => {
+    const cad = createHarness()
+    cad.runtime.setCleanScreen(true)
+    expect(cad.state().ribbon.open).toBe(false)
+    cad.runtime.setCleanScreen(false)
+    expect(cad.state().ribbon.open).toBe(true)
+    expect(written(cad, "U")).toEqual(["U", "Everything has been undone"])
+  })
+})
+
+describe("RIBBON and RIBBONCLOSE", () => {
+  // The names: the 2027 help pages' titles (GUID-EC71B17B, GUID-A9EE8263)
+  it.each([
+    [undefined, "RIBBON", "RIBBONCLOSE"],
+    [es, "CINTA", "CERRARCINTA"],
+    [es, "_RIBBON", "_RIBBONCLOSE"],
+  ])("%s %s and %s show and close the ribbon", (locale, open, close) => {
+    const cad = createHarness({ locale })
+    expect(cad.state().ribbon.open).toBe(true)
+
+    cad.command(close)
+    expect(cad.state().ribbon.open).toBe(false)
+    cad.command(close)
+    expect(cad.state().ribbon.open).toBe(false)
+    cad.command(open)
+    expect(cad.state().ribbon.open).toBe(true)
+  })
+
+  // desktop workspace/d09: no echo; U and REDO name the step and leave the
+  // ribbon as it is
+  it("write nothing, and U names the step and leaves the ribbon", () => {
+    const cad = withLine()
+
+    expect(written(cad, "RIBBONCLOSE")).toEqual(["RIBBONCLOSE"])
+    expect(written(cad, "_U")).toEqual(["U", "RIBBONCLOSE"])
+    expect(cad.state().ribbon.open).toBe(false)
+    expect(cad.entityCount).toBe(1)
+
+    expect(written(cad, "RIBBON")).toEqual(["RIBBON"])
+    expect(written(cad, "_U")).toEqual(["U", "RIBBON"])
+    expect(written(cad, "_REDO")).toEqual([
+      "REDO",
+      "RIBBON",
+      "Everything has been redone",
+    ])
+    expect(cad.state().ribbon.open).toBe(true)
+    expect(cad.entityCount).toBe(1)
+  })
+
+  it("name the step in the command language", () => {
+    const cad = withLine(es)
+    written(cad, "CERRARCINTA")
+    expect(written(cad, "H").at(-1)).toBe("CERRARCINTA")
+  })
+
+  // desktop workspace/d09
+  it.each(["'RIBBON", "'RIBBONCLOSE"])(
+    "%s inside LINE is refused and LINE goes on",
+    (typed) => {
+      const cad = createHarness()
+      written(cad, "LINE", "0,0")
+
+      expect(written(cad, typed)).toEqual([
+        `Specify next point or [Undo]: ${typed}`,
+        "** That command may not be invoked transparently **",
+        "Point or option keyword required.",
+      ])
+      expect(cad.activeToolId()).toBe("line")
+      expect(cad.state().ribbon.open).toBe(true)
+    }
+  )
+
+  it("are not saved with the drawing", () => {
+    const cad = createHarness()
+    cad.command("RIBBONCLOSE")
+
+    const copy = createHarness()
+    copy.runtime.loadDrawing(cad.runtime.serializeDrawing())
+
+    expect(copy.state().ribbon.open).toBe(true)
+  })
+})
+
+describe("the ribbon's tab and drop-downs", () => {
+  it("are the host's, kept for the session", () => {
+    const cad = createHarness()
+    expect(cad.state().ribbon).toEqual({
+      open: true,
+      tab: "home",
+      members: {},
+    })
+
+    cad.runtime.setRibbonTab("annotate")
+    cad.runtime.setRibbonMember("circle", "circle2p")
+    cad.runtime.setRibbonMember("arc", "arcsce")
+    cad.runtime.setRibbonMember("circle", "circle3p")
+    expect(cad.state().ribbon).toEqual({
+      open: true,
+      tab: "annotate",
+      members: { circle: "circle3p", arc: "arcsce" },
+    })
+
+    written(cad, "RIBBONCLOSE", "RIBBON", "NEW")
+    expect(cad.state().ribbon.tab).toBe("annotate")
+    expect(cad.state().ribbon.members.circle).toBe("circle3p")
+  })
+
+  it("keep the state's identity when nothing changed", () => {
+    const cad = createHarness()
+    cad.runtime.setRibbonMember("circle", "circle2p")
+    const before = cad.state().ribbon
+    cad.runtime.setRibbonMember("circle", "circle2p")
+    cad.runtime.setRibbonTab("home")
+    expect(cad.state().ribbon).toBe(before)
   })
 })
 
@@ -255,7 +454,8 @@ describe("the accelerators' macros", () => {
 
   // ID_CleanScreen: `$M=$(if,$(and,$(getvar,CleanScreenState),1),
   // ^C^C_CleanScreenOFF,^C^C_CleanScreenON)`
-  // desktop workspace/d04: U names the macro's group `CLEANSCREENON GROUP`.
+  // desktop workspace/d04: U names the macro's group `CLEANSCREENON GROUP`;
+  // the ribbon's step inside it, and the one its U makes (d10), unprobed.
   it("Ctrl+0 ends LINE, then runs CLEANSCREENON or OFF: a group U names", () => {
     const cad = inLine()
 
@@ -267,8 +467,10 @@ describe("the accelerators' macros", () => {
 
     expect(written(cad, "U").at(-1)).toBe("CLEANSCREENOFF GROUP")
     expect(cad.state().cleanScreen.active).toBe(true)
+    expect(written(cad, "U").at(-1)).toBe("RIBBONCLOSE")
     expect(written(cad, "U").at(-1)).toBe("CLEANSCREENON GROUP")
     expect(cad.state().cleanScreen.active).toBe(false)
+    expect(cad.state().ribbon.open).toBe(true)
     expect(cad.entityCount).toBe(1)
   })
 
@@ -681,8 +883,8 @@ describe("the chrome's undo groups", () => {
     expect(cad.entityCount).toBe(1)
   })
 
-  // desktop workspace/d01: no echo; U names CLEANSCREENON (with RIBBON and
-  // RIBBONCLOSE, the ribbon's own commands, not built)
+  // desktop workspace/d01: no echo; U names CLEANSCREENON, and the ribbon's
+  // RIBBONCLOSE after it (as typed, d10)
   it("the status bar's Clean Screen writes nothing and is a step", () => {
     const cad = withLine()
     const from = cad.commandLog().length
@@ -690,6 +892,7 @@ describe("the chrome's undo groups", () => {
     expect(cad.commandLog().slice(from)).toEqual([])
     expect(cad.state().cleanScreen.active).toBe(true)
 
+    expect(written(cad, "_U")).toEqual(["U", "RIBBONCLOSE"])
     expect(written(cad, "_U")).toEqual(["U", "CLEANSCREENON"])
     expect(cad.state().cleanScreen.active).toBe(false)
     expect(cad.entityCount).toBe(1)

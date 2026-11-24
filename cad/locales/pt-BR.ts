@@ -171,7 +171,9 @@ export const ptBR: EngineLocale = {
       "PROPERTIESCLOSE": "Fecha a paleta Propriedades",
       "UNITS": "Controla a precisão e o formato de exibição das coordenadas e das distâncias",
       "CLEANSCREENON": "Remove da tela as barras de ferramentas e as paletas",
-      "CLEANSCREENOFF": "Restaura a tela como estava antes de Limpar tela"
+      "CLEANSCREENOFF": "Restaura a tela como estava antes de Limpar tela",
+      "RIBBON": "Exibe a faixa de opções",
+      "RIBBONCLOSE": "Oculta a faixa de opções"
     },
     "snap": {
       "endpoint": "Ponto final",
@@ -1354,6 +1356,12 @@ export const ptBR: EngineLocale = {
       ],
       "CLEANSCREENOFF": [
         "TELALIMPADESAT"
+      ],
+      "RIBBON": [
+        "FAIXAOPCOES"
+      ],
+      "RIBBONCLOSE": [
+        "FECHARFAIXAOPCOES"
       ],
       "COLOR": [
         "COR",

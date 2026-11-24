@@ -167,7 +167,9 @@
       "PROPERTIESCLOSE": "Schließt die Palette Eigenschaften",
       "UNITS": "Steuert die Genauigkeit und das Anzeigeformat von Koordinaten und Abständen",
       "CLEANSCREENON": "Blendet Werkzeugkästen und Paletten auf dem Bildschirm aus",
-      "CLEANSCREENOFF": "Stellt die Anzeige wie vor Vollbild wieder her"
+      "CLEANSCREENOFF": "Stellt die Anzeige wie vor Vollbild wieder her",
+      "RIBBON": "Zeigt die Multifunktionsleiste an",
+      "RIBBONCLOSE": "Blendet die Multifunktionsleiste aus"
     },
     "snap": {
       "endpoint": "Endpunkt",
@@ -717,6 +719,8 @@
       "SETVAR": ["SETVAR", "SET"],
       "CLEANSCREENON": ["BILDSCHBEREIN"],
       "CLEANSCREENOFF": ["BILDSCHBERAUS"],
+      "RIBBON": ["MFLEISTE"],
+      "RIBBONCLOSE": ["MFLEISTESCHL"],
       "COLOR": ["FARBE", "FAR", "FE", "DDCOLOR"],
       "-COLOR": ["-FARBE"],
       "LINETYPE": ["LINIENTYP", "LT", "LTYP", "DDLTYPE"],

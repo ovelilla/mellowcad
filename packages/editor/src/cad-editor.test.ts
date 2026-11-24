@@ -52,6 +52,7 @@ const zones = (html: string) =>
 const engine = {} as CadEngine
 const state = {
   cleanScreen: { active: false, palette: false },
+  ribbon: { open: true, tab: "home", members: {} },
   commandLine: { visible: true, buffer: "" },
   rollover: null,
 } as unknown as EditorState

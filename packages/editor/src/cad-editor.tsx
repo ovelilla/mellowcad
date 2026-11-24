@@ -372,10 +372,11 @@ export function EditorZones({
     NavigationBar: Navigation = NavigationBar,
     DynamicInput: Input = DynamicInput,
   } = components
-  // Clean Screen hides the tool palette and the palette panel (a palette
-  // opened meanwhile shows the panel again); it is never on at the first
-  // paint, as AutoCAD does not save it.
+  // Clean Screen hides the palette panel (a palette opened meanwhile shows it
+  // again) and closes the ribbon, whose tools are the tool palette's until it
+  // is built; neither is on at the first paint, as AutoCAD saves neither.
   const clean = ready?.state.cleanScreen
+  const ribbon = ready?.state.ribbon
   const commandLine = ready?.state.commandLine
 
   return (
@@ -397,7 +398,7 @@ export function EditorZones({
         <div
           className={cn(
             "box-content flex min-h-0 w-14.5 flex-col border-e p-1 [grid-area:tools]",
-            clean?.active && "hidden"
+            ribbon?.open === false && "hidden"
           )}
         >
           {ready && <Tools {...ready} />}

@@ -171,7 +171,9 @@ export const es: EngineLocale = {
       "PROPERTIESCLOSE": "Cerrar la paleta Propiedades",
       "UNITS": "Controlar la precisión y el formato de visualización de las coordenadas y las distancias",
       "CLEANSCREENON": "Borrar de la pantalla las barras de herramientas y las paletas",
-      "CLEANSCREENOFF": "Restablecer la pantalla como estaba antes de limpiarla"
+      "CLEANSCREENOFF": "Restablecer la pantalla como estaba antes de limpiarla",
+      "RIBBON": "Mostrar la cinta de opciones",
+      "RIBBONCLOSE": "Ocultar la cinta de opciones"
     },
     "snap": {
       "endpoint": "Punto final",
@@ -1344,6 +1346,12 @@ export const es: EngineLocale = {
       ],
       "CLEANSCREENOFF": [
         "LIMPIAPANTDES"
+      ],
+      "RIBBON": [
+        "CINTA"
+      ],
+      "RIBBONCLOSE": [
+        "CERRARCINTA"
       ],
       "COLOR": [
         "COLOR",

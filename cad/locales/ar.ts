@@ -171,7 +171,9 @@ export const ar: EngineLocale = {
       "PROPERTIESCLOSE": "إغلاق لوحة الخصائص",
       "UNITS": "التحكم في دقة الإحداثيات والمسافات وتنسيق عرضها",
       "CLEANSCREENON": "إخلاء الشاشة من أشرطة الأدوات واللوحات",
-      "CLEANSCREENOFF": "استعادة الشاشة كما كانت قبل تنظيفها"
+      "CLEANSCREENOFF": "استعادة الشاشة كما كانت قبل تنظيفها",
+      "RIBBON": "إظهار الشريط",
+      "RIBBONCLOSE": "إخفاء الشريط"
     },
     "snap": {
       "endpoint": "نقطة النهاية",

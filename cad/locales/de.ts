@@ -171,7 +171,9 @@ export const de: EngineLocale = {
       "PROPERTIESCLOSE": "Schließt die Palette Eigenschaften",
       "UNITS": "Steuert die Genauigkeit und das Anzeigeformat von Koordinaten und Abständen",
       "CLEANSCREENON": "Blendet Werkzeugkästen und Paletten auf dem Bildschirm aus",
-      "CLEANSCREENOFF": "Stellt die Anzeige wie vor Vollbild wieder her"
+      "CLEANSCREENOFF": "Stellt die Anzeige wie vor Vollbild wieder her",
+      "RIBBON": "Zeigt die Multifunktionsleiste an",
+      "RIBBONCLOSE": "Blendet die Multifunktionsleiste aus"
     },
     "snap": {
       "endpoint": "Endpunkt",
@@ -1349,6 +1351,12 @@ export const de: EngineLocale = {
       ],
       "CLEANSCREENOFF": [
         "BILDSCHBERAUS"
+      ],
+      "RIBBON": [
+        "MFLEISTE"
+      ],
+      "RIBBONCLOSE": [
+        "MFLEISTESCHL"
       ],
       "COLOR": [
         "FARBE",

@@ -167,10 +167,10 @@ export function TopBar({
 
       <SaveStatus state={state} />
 
-      {/* Clean Screen keeps the application menu and the Quick Access
-          Toolbar, and hides the ribbon: the Layers and Properties panels and
-          View's palette toggles. */}
-      {!state.cleanScreen.active && (
+      {/* The ribbon's parts of the bar, which RIBBONCLOSE and Clean Screen
+          close: the Layers and Properties panels and View's palette toggles.
+          The application menu and the Quick Access Toolbar stay. */}
+      {state.ribbon.open && (
         <>
           <Separator orientation="vertical" className="mx-0.5 h-6!" />
 

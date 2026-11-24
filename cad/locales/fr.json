@@ -167,7 +167,9 @@
       "PROPERTIESCLOSE": "Ferme la palette Propriétés",
       "UNITS": "Contrôle la précision et le format d'affichage des coordonnées et des distances",
       "CLEANSCREENON": "Supprime de l'écran les barres d'outils et les palettes",
-      "CLEANSCREENOFF": "Restaure l'affichage tel qu'il était avant Nettoyer écran"
+      "CLEANSCREENOFF": "Restaure l'affichage tel qu'il était avant Nettoyer écran",
+      "RIBBON": "Affiche le ruban",
+      "RIBBONCLOSE": "Masque le ruban"
     },
     "snap": {
       "endpoint": "Extrémité",
@@ -710,6 +712,8 @@
       "SETVAR": ["MODIFVAR", "MDV"],
       "CLEANSCREENON": ["NETECRANACTIF"],
       "CLEANSCREENOFF": ["NETECRANINACTIF"],
+      "RIBBON": ["RUBAN"],
+      "RIBBONCLOSE": ["FERMERUBAN"],
       "COLOR": ["COULEUR", "CL", "COUL", "DDCOLOR"],
       "-COLOR": ["-COULEUR"],
       "LINETYPE": ["TYPELIGNE", "TL", "TYPEL", "DDLTYPE"],

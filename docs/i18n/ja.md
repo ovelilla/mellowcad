@@ -108,6 +108,7 @@ style (`新しい図面ファイルを作成`). None of it was seen on the deskt
 | Dialogs | Properties - Locked objects; Multiline Text - Unsaved Changes; OK; Cancel; Close | プロパティ - ロックされたオブジェクト; マルチ テキスト - 変更が保存されていません; OK; キャンセル; 閉じる | T AcTaskDialogs; D unitsRes 500:1, 500:2; AcDimRes 101:1 |
 | Dim styles | Lines; Symbols and arrows; Text; Fit; Primary units | 寸法線; シンボルと矢印; 寸法値; フィット; 基本単位 | P AcDimRes 6000, 6013; D AcDimRes 305:2689; P ax26res 141, 142 |
 | Dim styles | Baseline spacing; Offset from dim line; Use overall scale of; Decimal separator | 並列寸法の寸法線間隔; 寸法線からのオフセット; 全体の尺度; 十進数の区切り | D AcDimRes 302:2567, 303:2626, 305:2682, 307:2596 |
+| Descriptions | RIBBON, RIBBONCLOSE | リボンを表示; リボンを非表示 | the 2027 help pages (GUID-EC71B17B, GUID-A9EE8263, JPN), clipped |
 
 Also ours (†): the canvas's name 作図領域; the save state (保存中…, 保存済み); the Blocks palette's
 text; the "…of the selected objects" labels; the palette's fold, unfold and width; the Point
