@@ -2,9 +2,10 @@
 
 > **Estado:** acordado el 10/11/2026 por el dueño, en el orden de §3: el registro de cargas, leído
 > el 24/11 con lo barato decidido y aplicado (§3, «La lectura del registro»), sigue corriendo; el
-> piloto de 16 ejecuciones está preparado (§3, «El piloto, preparado») y espera la palabra del
-> dueño, y el banco completo, solo si el piloto da una señal clara. Recoge los puntos 4, 5 y 8 de §5 de la auditoría
-> (`docs/plans/knowledge-audit.md`, triaje en §8), que dependen de medir.
+> piloto de 16 ejecuciones, lanzado el 24/11 con la palabra del dueño (§3, «El piloto»), espera
+> su lectura, y el banco completo, solo si el piloto da una señal clara. Recoge los puntos 4, 5
+> y 8 de §5 de la auditoría (`docs/plans/knowledge-audit.md`, triaje en §8), que dependen de
+> medir.
 
 ## 1. Qué se quiere saber
 
@@ -138,9 +139,9 @@ archivo de sus `paths:`, ellas o sus subagentes.
 - **`marketing.md`**: 13 de 24 sesiones editan su área; `lib/site.ts` y `content/commands.ts` la
   cargan de paso. Sin decisión hasta ver otra quincena.
 
-### El piloto, preparado (24/11/2026): espera la palabra del dueño
+### El piloto (24/11/2026): lanzado
 
-Unas ocho horas de agente. No se lanza sin la palabra del dueño.
+Unas ocho horas de agente, más el juez. Lanzado el 24/11 con la palabra del dueño.
 
 **Las variantes.** _Con_: el repo del commit padre tal cual. _Sin_: el mismo, con el cuerpo de
 `.claude/rules/cad-tools.md` vaciado y su frontmatter intacto, para que las citas a la regla sigan
@@ -193,35 +194,39 @@ Lo que hay que saber de cada una:
   the runtime's») y `a7c84dba` (SLICE, Surface sin resaltado al pasar; Pick feedback, commit
   grande). Descartada `791ada7e`: su pasaje lo añadió el mismo arreglo.
 
-**El ejecutor**: un script en `scripts/knowledge/`, por escribir cuando el dueño dé la palabra (una
-sesión corta). Por cada tarea, variante y repetición, en serie y alternando el orden de las
-variantes (con, sin, sin, con), para que la carga de la máquina o la hora no caigan en una sola:
+**El ejecutor**: `scripts/knowledge/pilot.mjs`, escrito y lanzado el 24/11 con la palabra del dueño.
+Todo vive en `~/.cache/mellowcad-pilot` (en el disco de `/home`: `cp -al` no cruza a `/tmp`), y
+`runs.jsonl` guarda una línea por ejecución: se reanuda saltando las hechas. Por cada tarea,
+variante y repetición, en serie y alternando el orden de las variantes (con, sin, sin, con), para
+que la carga de la máquina o la hora no caigan en una sola:
 
-1. **El clon**: `git init` en un directorio de `mktemp -d -p ~/.cache` (en el disco de `/home`:
-   `cp -al` no cruza a `/tmp`, que es otro sistema de archivos) y
-   `git fetch --depth 1 file://<repo> <padre>`, con el hash entero (uno corto no se encuentra),
-   luego `git checkout FETCH_HEAD`. Sin historia: ni `git log` ni `git show` llegan al arreglo.
-   `node_modules` como lo copia el hook de worktree (`cp -al` del árbol principal, sin `.cache` ni
-   el `.package-lock.json` oculto); los enlaces de los workspaces son relativos y resuelven al
-   código del clon. Sin `research/`: las tareas no sondan AutoCAD. Probado el 24/11 con la tarea 1:
-   un commit en el clon, el arreglo inalcanzable, `cp -al` en 2 s y su juez fallando 1 de 296.
+1. **El clon**: `git fetch --depth 1 file://<repo> <padre>`, con el hash entero (uno corto no se
+   encuentra), y su árbol rehecho como un único commit raíz con el asunto del padre: ni `git log`
+   ni `git show` llegan al arreglo, ni a la regla de antes de vaciarla en la variante _sin_.
+   `node_modules` con `cp -al` de una plantilla con `npm ci` por lockfile (los padres tienen dos, y
+   ninguno es el de hoy), sin `.cache` ni el `.package-lock.json` oculto, como hace el hook de
+   worktree. Sin `research/`: las tareas no sondan AutoCAD.
 2. **Los hooks**: el `.claude/settings.json` del clon pierde `SessionStart` (el hook de sesión
    reparte trabajo real, la tanda de Google con el Chrome del dueño o la revisión de dependencias,
-   y `reap.mjs` cierra procesos de la máquina) y `WorktreeCreate`/`WorktreeRemove`. Se quedan el
-   registro de cargas, que escribe en el clon y dice si `cad-tools.md` cargó, el guard de git y el
-   formato. `--bare` no sirve: salta también `AGENTS.md` y las reglas, y `--setting-sources user`
-   tampoco: sin la fuente `project`, Claude Code no carga las reglas del proyecto.
-3. **La ejecución**: `claude -p "<encargo>" --output-format json --model claude-opus-5-5
-   --permission-mode bypassPermissions --no-session-persistence`, en el clon, con un tope de 60
-   minutos. Al encargo se le añade una línea igual para todas: «Work directly in this checkout: no
-   worktree, no commit, no push.»
-4. **El juez**, después, en el clon: los archivos de test del commit real copiados encima
-   (`git show <arreglo>:<test>` desde el repo), y deben pasar los tests que fallaban en el padre;
-   además `npm run typecheck`, `npm run build -w cad` (el test de knowledge cita archivos que
-   generan esos dos), `npm run lint` y `npm test` en verde. Acierto es todo eso.
-5. **Lo que se guarda** por ejecución, en un JSONL fuera del repo: tarea, variante, repetición,
-   acierto y qué falló, la duración, los turnos, los tokens de entrada, salida y caché y el coste
-   del JSON de `claude -p`, si `cad-tools.md` cargó (el registro del clon) y el tamaño del diff.
+   y `reap.mjs` cierra procesos de la máquina) y `WorktreeCreate`/`WorktreeRemove`, y gana un
+   registro de cargas propio, fuera del clon (los padres no tenían el hook). Se quedan el guard de
+   git y el formato. El cambio va en el commit del clon, igual en las dos variantes. `--bare` no
+   sirve: salta también `AGENTS.md` y las reglas, y `--setting-sources user` tampoco: sin la
+   fuente `project`, Claude Code no carga las reglas del proyecto.
+3. **La ejecución**: `claude -p "<encargo>" --model claude-opus-5-5 --permission-mode
+   bypassPermissions --no-session-persistence --strict-mcp-config` (sin MCP: ni el conector de
+   producción ni ruido), `--disallowedTools EnterWorktree`, `--output-format stream-json`, en el
+   clon, con un tope de 60 minutos y sin las variables `CLAUDE*` ni `GIT_*` de quien lo lanza. Al
+   encargo se le añade una línea igual para todas: «Work directly in this checkout: no worktree,
+   no commit, no push.»
+4. **El juez**, relativo a la línea base de cada padre (los mismos chequeos en el clon intacto,
+   una vez por tarea): `npm run typecheck`, `npm run build -w cad`, `npm run lint` y la suite
+   entera, sin nada nuevo en rojo; después, los archivos de test del arreglo copiados encima, y
+   deben pasar los tests que fallaban en el padre sin que falle ninguno de los que pasaban.
+   Acierto es todo eso, dentro del tope.
+5. **Lo que se guarda**: acierto y qué falló, la duración, los turnos, los tokens y el coste del
+   resultado de `claude -p` (por modelo, subagentes incluidos), las reglas que cargaron, y el diff
+   entero en `runs/`.
 
 **Cómo se lee**: 8 ejecuciones por variante. Si _sin_ acierta igual y gasta menos, la poda de §4
 tiene apoyo; si falla en las tareas cuyo pasaje cubre la regla, la regla se queda y el banco
