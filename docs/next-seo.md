@@ -1,6 +1,9 @@
 # Visibilidad y tráfico orgánico — plan maestro
 
-> **Estado:** auditoría, plan y sesiones 01 y 02 hechos y publicados (5/11/2026), la 03 (la serie
+> **Estado:** la cola de visibilidad está agotada desde el 24/11/2026 y el trabajo en curso es
+> `docs/next-autocad-ui.md` (la interfaz de AutoCAD, por su plan `docs/plans/autocad-ui.md`: la
+> fase 0 hecha el 24/11, sigue la 1); de este brief sigue vivo lo que queda de §7. Lo hecho hasta
+> agotarla: auditoría, plan y sesiones 01 y 02 hechos y publicados (5/11/2026), la 03 (la serie
 > de comandos, completa) publicada el 6/11 y el 7/11, la 04 (la landing) publicada el 6/11, la 05
 > (lanzamiento) preparada el 6/11, que publica el dueño según el calendario de L5, y la 06 (12
 > ejercicios y 3 guías en los cuatro idiomas) y la 07 (DXF: su brief, `docs/next-dxf.md`, y abrir
@@ -37,7 +40,7 @@
 > de normal −Z, hecha el 24/11 (todo eso, desde la malla, publicado el 24/11 a las 08:40), y las vistas preliminares, descartadas el 24/11:
 > nadie las lee; queda ACIS, que espera a `docs/next-solids.md`) y otro idioma (los once de AutoCAD con
 > criterio de L8 están hechos, el chino tradicional el último: ampliar el criterio es decisión del
-> dueño), alternando, además de lo que queda de §7.
+> dueño), alternando, además de lo que queda de §7. Esa cola se agotó el 24/11/2026.
 > Esperan detrás
 > `docs/next-solids.md`, `docs/next-integrations.md`, `docs/next-mcp.md` y la revisión 32 del roadmap. Se borra cuando §6
 > se cumpla a seis meses y cada línea esté hecha o descartada.
@@ -706,8 +709,8 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   `/privacy` no cambia.
   En el editor, Send Feedback / Enviar comentarios / Enviar feedback, los nombres de AutoCAD 2027
   (su menú Ayuda, acad.cuix `ID_SendFeedback`, y el botón del panel Connect de la pestaña Inicio,
-  visto en el escritorio), al final del menú de la aplicación con su WHY hasta que haya pestaña
-  Inicio (`docs/next-autocad-ui.md`, fase 2); en árabe, إرسال ملاحظات †. La URL se la pasa la app
+  visto en el escritorio), al final del menú de la aplicación con su WHY hasta que la barra de
+  título tenga su lista Ayuda ▾ (`docs/plans/autocad-ui.md`, F7: no habrá pestaña Inicio); en árabe, إرسال ملاحظات †. La URL se la pasa la app
   (`feedback`, nuevo en `@mellowcad/editor`, con su changeset). En el pie, Report a problem /
   Reportar un problema / Relatar um problema / الإبلاغ عن مشكلة, junto al correo. `lib/report.test.ts`
   comprueba que cada campo que rellena la URL es un `id` de cada formulario. Verificado en Chrome

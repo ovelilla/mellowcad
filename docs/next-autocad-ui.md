@@ -1,8 +1,10 @@
 # La interfaz de AutoCAD — brief
 
-> **Estado:** acordado el 7/11/2026 por el dueño, nada empezado; va después de la visibilidad
-> (`docs/next-seo.md`) salvo que el dueño lo adelante. Se borra cuando la última fase esté hecha;
-> hasta entonces cada fase cerrada se marca aquí.
+> **Estado:** en curso desde el 24/11/2026, agotada la cola de la visibilidad (`docs/next-seo.md`):
+> la fase 0 (inventario y plan) está hecha y su plan, `docs/plans/autocad-ui.md`, manda sobre las
+> fases de §4, que se corrigieron con él; sigue la fase 1 (el marco y el ribbon). Acordado el
+> 7/11/2026 por el dueño. Se borra cuando la última fase esté hecha; hasta entonces cada fase
+> cerrada se marca aquí.
 
 ## 1. Objetivo
 
@@ -57,9 +59,27 @@ que la rodea, con su WHY, como dice `AGENTS.md`.
 Cada fase se cierra con la skill `finish-feature`: el gate, la cobertura, las reglas, las guías,
 y las figuras de la landing y de la documentación que muestren la interfaz vieja.
 
-### Fase 0 — inventario y plan
+### Fase 0 — inventario y plan (hecha el 24/11/2026)
 
-Con la skill `autocad-research` (escritorio de AutoCAD 2027, espacio de trabajo «Drafting &
+El resultado es `docs/plans/autocad-ui.md`: el inventario de AutoCAD 2027 con sus medidas, el del
+editor, la tabla de diferencias y las fases. Lo que cambió respecto a lo acordado, y por qué:
+
+- **Los estilos no son paletas en AutoCAD**: STYLE y DIMSTYLE abren cuadros de diálogo modales, y
+  el ribbon ofrece cada estilo como lista. La paleta Styles pasa a ser esos dos diálogos (fase 3).
+- **No habrá pestaña Inicio** (un solo dibujo, sin pestañas de archivo), así que Send Feedback va
+  a la lista Ayuda ▾ de la barra de título (fase 2).
+- **La línea de comandos de AutoCAD flota** sobre el dibujo, y las pestañas Model/Layout comparten
+  fila con la barra de estado: la fase 4 lo iguala y devuelve esa altura al dibujo.
+- **La pestaña 3D Tools**, que el espacio «Drafting & Annotation» tiene oculta, se muestra aquí, y
+  también los paneles ocultos de View (Visual Styles, Coordinates, Navigate): no hay cambio de
+  espacio de trabajo ni el menú «Show Tabs» para llegar a ellos.
+- **Dos fases nuevas**: la 5 (tooltips, el menú contextual del ribbon, personalizar el acceso
+  rápido) y la 6 (pestañas contextuales: Hatch Creation, Text Editor, Array).
+- **Sin ratón**: el dueño trabajaba en el otro monitor y todo se midió por UI Automation. Lo que
+  pide el ratón (el menú de la aplicación, los tooltips, el cursor) queda apuntado en el §7 del
+  plan como el primer bloque de la fase que lo necesita.
+
+Lo que se pidió, tal como se acordó: con la skill `autocad-research` (escritorio de AutoCAD 2027, espacio de trabajo «Drafting &
 Annotation», tema oscuro): capturas de cada zona a 1280×720 y 1920×1080, sus medidas, el orden
 y los estados (ribbon completo, minimizado, paneles que se pliegan al estrechar la ventana). La
 estructura del ribbon sale de `RibbonRoot.cui` en `acad.cuix`: pestañas, paneles, filas, tamaño
@@ -75,38 +95,53 @@ la función** (se apunta en la cobertura). El resultado es el plan `docs/plans/<
 inventario, la tabla y las fases siguientes con su orden. Si las fases de abajo no encajan con
 lo que se encuentre, el plan manda.
 
-### Fase 1 — el ribbon
+### Fase 1 — el marco y el ribbon
 
-Las pestañas que tengan herramientas construidas, empezando por Home, con sus paneles en el
-orden de 2027, sus botones grandes y pequeños, los desplegables que recuerdan el último miembro
-usado, los paneles expandidos, los estados de minimizar y su botón, el plegado de paneles al
-estrechar la ventana, RIBBON y RIBBONCLOSE (y CLEANSCREENON, que ya los nombra). Sustituye a la
-paleta de herramientas y a los grupos Layers y Properties de la barra superior. El paso 9 de la
-skill `new-command` («the rail») pasa a describir el ribbon.
+La fila de título (el botón de la aplicación y el acceso rápido, con lo que tienen hoy, a los
+tamaños de AutoCAD) y el ribbon: las pestañas que tengan herramientas construidas, empezando por
+Home, con sus paneles en el orden de 2027, sus botones grandes y pequeños, los desplegables que
+recuerdan el último miembro usado, los paneles expandidos, los estados de minimizar y su botón,
+el plegado de paneles al estrechar la ventana, RIBBON y RIBBONCLOSE (y CLEANSCREENON, que ya los
+nombra). Sustituye a la paleta de herramientas y a los grupos Layers y Properties de la barra
+superior. El paso 9 de la skill `new-command` («the rail») pasa a describir el ribbon. Sus
+bloques y lo que deja falso, en el §6 del plan.
 
-### Fase 2 — menú de la aplicación, acceso rápido y título
+### Fase 2 — la barra de título
 
-El orden completo del menú de la aplicación, Undo y Redo como botones divididos con su lista, y
-el nombre del dibujo en el título y en las pestañas de archivo si la fase 0 las pide. Send
-Feedback, que la sesión 05b dejó al final del menú de la aplicación con su WHY, va a la pestaña
-Inicio (su panel Connect) cuando la haya, o donde la fase 0 lo encuentre fuera de ella (el menú
-Ayuda lo tiene: acad.cuix `ID_SendFeedback`).
+El menú de la aplicación en la disposición y el orden de AutoCAD (tras capturarlo con el ratón),
+Undo y Redo como botones divididos con su lista, la lista Ayuda ▾ con Send Feedback, y el nombre
+del dibujo en el título.
 
-### Fase 3 — las paletas
+### Fase 3 — las paletas y los diálogos de estilos
 
-Properties, Layer Properties Manager, Blocks y los estilos como paletas propias de AutoCAD:
-dónde se abren, acopladas o flotantes, auto-ocultar, y lo que el navegador permita.
+Properties, Layer Properties Manager y Blocks como paletas propias: flotantes dentro de la
+página, acoplables a los lados, con auto-ocultar, y su sitio y tamaño guardados en el
+dispositivo. STYLE y DIMSTYLE como los diálogos de AutoCAD, con las listas de estilos del ribbon.
 
-### Fase 4 — el resto del inventario
+### Fase 4 — el área de dibujo y la fila inferior
 
-La barra de estado, la línea de comandos, las pestañas Model/Layout y lo que quede en la tabla
-de la fase 0.
+La línea de comandos flotante, la fila inferior a los tamaños y con los valores iniciales de
+AutoCAD, el ViewCube en reposo, y los grips y el resaltado comparados con sus capturas.
 
 Pedido por el dueño (10/11/2026): **cambiar el estilo visual desde la interfaz**. Hoy solo se
 puede tecleando VSCURRENT (`VS`, es `EVA`), y un usuario de AutoCAD busca la etiqueta de los
 controles del viewport (`[2D Wireframe]`, arriba a la izquierda) y su lista de estilos; también
-la galería de estilos visuales del ribbon, donde la fase 0 la sitúe (si cae en una pestaña de la
-fase 1, va con ella). La lista ofrece solo los estilos construidos (2D Wireframe, Hidden,
+la galería de estilos visuales del ribbon. La fase 0 la sitúa en View › Visual Styles, un panel
+que «Drafting & Annotation» tiene oculto y aquí se muestra: va con la fase 1 (su bloque 5), así
+que el pedido se cumple primero por el ribbon, y la etiqueta del viewport llega en la fase 4. La
+lista ofrece solo los estilos construidos (2D Wireframe, Hidden,
 Conceptual: `docs/coverage/view.md`, VSCURRENT) y ejecuta VSCURRENT, como la de AutoCAD; quita
 `vscurrent` de la lista de comandos sin botón de `packages/editor/src/tool-rail.tsx` (o de la que
-la sustituya) y la fila «the viewport controls' style menu» de su Missing.
+la sustituya) con la galería, y la fila «the viewport controls' style menu» de su Missing con la
+etiqueta.
+
+### Fase 5 — lo que le falta al ribbon
+
+Los tooltips como los de AutoCAD, el menú contextual del ribbon con «Show Tabs» y «Show Panels»
+(y entonces se revisa qué pestañas y paneles se muestran de entrada) y la lista «Customize» del
+acceso rápido.
+
+### Fase 6 — pestañas contextuales
+
+Hatch Creation, Text Editor y Array como pestañas que siguen a su comando. Cada una es la
+interfaz de un comando, así que pasa por la revisión y la investigación de ese comando.

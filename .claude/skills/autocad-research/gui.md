@@ -66,6 +66,35 @@ Windows desktop.
   reviews took that for a quirk). Beside the user's instance, COM will not reach it; type and
   capture by its window handle.
 
+## The chrome, without the mouse (interface inventory, 2026-11-24)
+
+AutoCAD's chrome is WPF and answers UI Automation, so its layout is read and its popups opened
+while the owner works in another window:
+
+- `acad.sh tree <hwnd> [depth]` prints every element with its rectangle and AutomationId: the
+  title bar and Quick Access Toolbar, the ribbon's tabs, panels and buttons (`ID_Line`,
+  `ID_PanelDraw`), the file and layout tabs, the status bar, the command line, an open list.
+  **Not there**: the application button, and what the view draws (ViewCube, navigation bar,
+  viewport controls): those are captures, and the application menu needs a click.
+- `acad.sh act <hwnd> <id>` invokes or toggles one: a tab (`ACAD.ID_TabView`), the minimize
+  button (`ID_MinimizeButton`, one state per call), a drop-down
+  (`ID_RBN_SPLITBTN_CIRCLE_FlyoutButtonShowFlyout`), a panel's slide-out
+  (`ID_PanelModify_PanelTitleBar`), a status bar menu (`ID_2D_Object_Snap>PART_ToggleButton`).
+  The popup opens without AutoCAD taking the foreground; capture it from the screen, read its
+  rows with `tree`, and close it with the same call. A toggle's printed state is not the
+  popup's: look at the capture.
+- `acad.sh place <hwnd> at <x> <y> <w> <h>` sizes the window for a capture without activating
+  it, `max` puts it back; the ribbon folds its panels by the window's width.
+- **`com send` and `com eval` bring AutoCAD forward**, and a palette a command opens appears
+  where the profile left it, the owner's monitor included: read the foreground first
+  (`place <hwnd> info`), hand it back after (`place <owner's hwnd> front`), and close a palette
+  that landed on their screen at once.
+- `shot` cannot write onto the WSL share (GDI+): let it save in its own folder and copy from the
+  path it prints.
+- `node scripts/research/ribbon.mjs` prints a workspace's ribbon from `acad.cuix`: tabs, panels,
+  rows, each button's size, its drop-down's behaviour and members, its macro (`--built` marks the
+  commands the engine has). The desktop adds what plug-ins bring (Express Tools, Featured Apps).
+
 ## Traps (PEDIT, SPLINEDIT review, 2026-11-05)
 
 - **An owner's window over AutoCAD** (a browser) keeps the top even after a click on AutoCAD's
