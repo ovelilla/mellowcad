@@ -3,7 +3,7 @@ title: "Příkaz ZPĚT (UNDO) v AutoCADu"
 description: "Jak funguje příkaz ZPĚT (UNDO) v AutoCADu: počet kroků zpět, Označ a Zpátky, Začátek a Konec, Řízení, a čím se liší od Z a Ctrl+Z."
 before: "Deska se dvěma otvory a úsečkou napříč, nakreslená čtyřmi příkazy: OBD, dvakrát KRUŽNICE a ÚSEČKA."
 figure: "ZPĚT 2: dva poslední příkazy se vrátí, úsečka a druhý otvor, a deska si ponechá první otvor."
-sourceHash: "b4fed2178b6a"
+sourceHash: "5d2bca4366d1"
 ---
 
 Příkaz ZPĚT (UNDO) vrací příkazy. Krok je celý příkaz: všechno, co nakreslil jeden příkaz ÚSEČKA, zmizí najednou, bez ohledu na počet segmentů, stejně jako to, co příkaz nastavil, například TČMĚŘ. ZPĚT vypíše svá aktuální nastavení a pak se zeptá na počet operací, které se mají vrátit, nebo na možnost; Enter vrátí jednu. Názvy vrácených příkazů vypíše na jeden řádek, `KRUŽNICE ÚSEČKA`, a když dojde na začátek, <Message id="everythingUndone" />; potom <Message id="nothingToUndo" />. Příkaz, který nic nezměnil, jako ID nebo VÝPIS, je také krok, stejně jako to, co s pohledem udělaly příkazy ZOOM a PP.
@@ -38,7 +38,7 @@ Vrátí všechny kroky až k poslední značce, i se značkou. Bez značky se ze
 
 ## Missing
 
-<Keyword id="Auto" /> nic nespojuje, protože zde žádná nabídka nespouští víc než jeden příkaz. <Keyword id="Combine" /> a <Keyword id="Layer" /> platí do konce relace prohlížeče, zatímco AutoCAD je zachová z jedné relace do další. Tlačítka Zpět a Znovu na horní liště nic nezapisují do historie, zatímco panel nástrojů Rychlý přístup AutoCADu zapisuje vlastní záznamy. Ctrl+Shift+Z také obnovuje, beze zprávy, přestože mu AutoCAD nic nepřiřazuje.
+<Keyword id="Auto" /> nic nespojuje, protože zde žádná nabídka nespouští víc než jeden příkaz. <Keyword id="Combine" /> a <Keyword id="Layer" /> platí do konce relace prohlížeče, zatímco AutoCAD je zachová z jedné relace do další. Tlačítka Zpět a Znovu na panelu nástrojů Rychlý přístup nic nezapisují do historie, zatímco tlačítka AutoCADu zapisují vlastní záznamy. Ctrl+Shift+Z také obnovuje, beze zprávy, přestože mu AutoCAD nic nepřiřazuje.
 
 ## Questions
 

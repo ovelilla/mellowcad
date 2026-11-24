@@ -94,7 +94,7 @@ loop: `Move cursor or [Distance/Radius/Angle/ARea/Volume/Quick/Mode/eXit] <eXit>
 `Desplace el cursor o [Distancia/RAdio/ángUlo/áRea/Volumen/ráPido/Modo/Salir] <Salir>:`, p105,
 p106), then after each measure `Enter an option [...] <Distance>:` until eXit (p360, p361), with
 Radius, Angle, Volume and Quick; the ribbon's Distance and Area buttons run it
-(`^C^C_MEASUREGEOM _distance`, `_area`), the rail DIST and AREA, whose prompts are its Distance and
+(`^C^C_MEASUREGEOM _distance`, `_area`), the ribbon DIST and AREA, whose prompts are its Distance and
 Area word for word; AREA's corners off the UCS's XY plane,
 which AutoCAD measures in 3D (p256: `Area = 61.2372, Perimeter = 36.5028`) and of which it refuses
 some later ones with `Lines are not coplanar.` by a rule p249–p252 do not settle (a coplanar one
@@ -112,7 +112,7 @@ then ` X = …     Y = …     Z = …` (one space ahead, a value that rounds to
 2027's console writes it, p315, p355) in the current UCS at the command prompt (p316, p317); the Z
 is the object's with an object snap and the elevation plane's otherwise (p313); Enter ends it
 without a word (p303); a preselection is dropped as it starts, as DIST and AREA drop it (p349–p351);
-the rail's ID is its button's macro `'_id`, run inside a running command as `'ID` typed there
+the ribbon's ID Point is its button's macro `'_id`, run inside a running command as `'ID` typed there
 (acad.cuix, p320)
 
 ### `LIST` / `LI` / `LS` · es `LIST` / `LS` / `LT` · pt-BR `LISTA` / `LI` / `LS` / `MOSTRARMAT` · fr `LISTE` / `LS` / `LST` / `AFFMAT` · it `LISTA` / `LI` / `LS` / `SHOWMAT` · de `LISTE` / `LS` / `LIS` / `ZEIGMAT` · ru `СПИСОК` / `СП` / `ПОКМАТ` · pl `LISTA` / `LI` / `LS` / `POKMAT` · cs `VÝPIS` / `VY` / `UKAŽMAT` · hu `LISTA` / `LI` / `LS` / `ANYAGLISTA`
@@ -195,8 +195,8 @@ WHY no `Handle = 2d7` line: the model has no handles, and an id made up as one w
 AutoCAD's. WHY every line at once, with no `Press ENTER to continue:` (es
 `Pulse INTRO para continuar:`) each screenful: the pause pages AutoCAD's text window, whose height
 is the desktop's (the console pauses every few lines without QAFLAGS 2, p422), and the history here
-scrolls. WHY on the title bar, after the linetype, not the rail: it is the ribbon's Properties
-panel's (acad.cuix RBN_01740411, `^C^C_list`), which the title bar holds until Home is built. A reference to an external reference adds `External reference` under
+scrolls. Its button is the ribbon's, in the Properties panel's slide-out (acad.cuix RBN_01740411,
+`^C^C_list`). A reference to an external reference adds `External reference` under
 its block's name (es `Referencia externa`, it `Xrif`; xref/p14, from each console)
 
 **Missing:** the area of an open curve-fit polyline, which AutoCAD's LIST and AREA give larger

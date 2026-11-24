@@ -154,7 +154,7 @@ export class EngineText {
 
   // The interface language.
 
-  /** A tool's label in the rail; a tool the catalog does not know shows its id. */
+  /** A tool's label (`state.tools`); a tool the catalog does not know shows its id. */
   tool(id: string): string {
     const label = compiledTable(this.ui.tool)[id]
     return label === undefined ? id : this.format(label)

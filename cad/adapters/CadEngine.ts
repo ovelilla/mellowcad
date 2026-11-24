@@ -670,6 +670,17 @@ export class CadEngine {
   }
 
   /**
+   * A ribbon button that runs a command rather than a tool, as its acad.cuix
+   * macro does: Text Style (`'_style`) and Dimension Style (`'_dimstyle`),
+   * transparent mid-command, and the Properties panel's dialog launcher,
+   * PROPERTIES or PROPERTIESCLOSE as Ctrl+1. A tool's button is
+   * {@link setActiveTool}.
+   */
+  runRibbonButton(button: "textStyle" | "dimensionStyle" | "properties"): void {
+    this.runtime.runRibbonButton(button)
+  }
+
+  /**
    * A point of the state's screen space (the canvas's own pixels: the cursor,
    * the snap override menu, the cycling list) in the page's viewport, where a
    * popup anchored to it is positioned. The canvas does not start at the

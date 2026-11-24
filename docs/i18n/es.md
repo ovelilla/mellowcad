@@ -31,6 +31,7 @@ the 5,124 probes run in `es-ES` with their English twins (`research/console/es.m
 
 | Area | English | Spanish | Source | Verified |
 | --- | --- | --- | --- | --- |
+| Ribbon's Home tab | Home; Draw, Modify, Annotation, Layers, Block, Properties, Utilities, Clipboard; Pin | Inicio; Dibujo, Modificar, Anotación, Capas, Bloque, Propiedades, Utilidades, Portapapeles; Fijar † | X ID_TabHome, ID_PanelDraw … RBN_00011049 and every button's and list member's uid (`ribbon.mjs --lang es`, 2026-11-24); Pin † ours: AutoCAD's pin has no name, the word undoes acadres 49183 `Unpin` | no |
 | Object snaps | Endpoint, Midpoint, Center, Intersection, Apparent intersection | Punto final, Punto medio, Centro, Intersección, Intersección ficticia | C 50383F73-4F23-4F70-B4FC-52D5748D80AF | yes |
 |  | Perpendicular, Tangent, Insertion, Extension, Parallel, Quadrant, Nearest | Perpendicular, Tangente, Inserción, Extensión, Paralelo, Cuadrante, Cercano | same | yes |
 |  | None | Ninguno | X ACAD_14 (the snap menu) | yes |
@@ -65,8 +66,8 @@ the 5,124 probes run in `es-ES` with their English twins (`research/console/es.m
 |  | Wedge, Pyramid; Modeling; Solid type Wedge, Pyramid; Base radius, Top radius, Sides, Type, Inscribed, Circumscribed | Cuña, Pirámide; Modelado; Tipo de sólido Cuña, Pirámide; Radio de base, Radio superior, Lados, Tipo, Inscrito, Circunscrito | es-es acad.cuix `ID_Wedge`, `ID_Pyramid`, `ID_Panel3D_Modeling`; LIST's lines and the keywords (solid/w01, y01, y02); the palette's rows not seen in Spanish | partly |
 |  | Cylinder, Cone; Elliptical, Major radius, Minor radius, Base/Top major and minor radius | Cilindro, Cono; Elíptico, Radio mayor, Radio menor, Radio mayor/menor de base, Radio mayor/menor superior | es-es acad.cuix `ID_Cylinder`, `ID_Cone`; LIST's lines and the keywords (solid/c01, c04, k01, k03); `Radio menor superior` and the palette's rows, ours | partly |
 |  | Extrude; Extrusion, Extrusion height, Taper angle | Extruir; Extrusión, Altura de extrusión, Ángulo Inclinación | the console (extrude/x01–x11, es-ES): prompts, keywords, messages and LIST's lines; `Extruir` and the palette's value, ours | partly |
-|  | Revolve; Start angle, Angle of revolution, Direction vector | Revolución; Ángulo inicial, Ángulo de revolución, Vector de dirección | the console (revolve/r01–r09, es-ES): prompts, keywords, messages and LIST's lines; `Revolución` on the rail, ours | partly |
-|  | Presspull; Select object or bounded area | Presionar/Tirar; Seleccione un objeto o un área delimitada | the 2027 tables (31244, 53916, 292); `Presionar/Tirar` on the rail and `Múltiple` as declared, **unverified** (no console run can click) | partly |
+|  | Revolve; Start angle, Angle of revolution, Direction vector | Revolución; Ángulo inicial, Ángulo de revolución, Vector de dirección | the console (revolve/r01–r09, es-ES): prompts, keywords, messages and LIST's lines; `Revolución` the tool's label, ours | partly |
+|  | Presspull; Select object or bounded area | Presionar/Tirar; Seleccione un objeto o un área delimitada | the 2027 tables (31244, 53916, 292); `Presionar/Tirar` on the ribbon and `Múltiple` as declared, **unverified** (no console run can click) | partly |
 |  | Presspull on a face: Specify offset distance; extrusion(s) created, face(s) offset | Especifique la distancia de desfase; extrusión/extrusiones creada(s), cara(s) desfasada(s) | the 2027 tables (67, 55300, 11379), as the English desktop's lines show them | partly |
 |  | Slice, Section; slicing plane, keep Both sides, planar Object | Corte, Sección; plano cortante, mantener Ambos lados, Objeto plano | es-es acad.cuix `ID_Slice`, `ID_Section`; the console (slice/s01–s13, section/c01–c09, es-ES): prompts, keywords, messages | yes |
 |  | Fillet Edge, Chamfer Edge; FILLETEDGE's and CHAMFEREDGE's prompts, keywords and messages | Empalmar aristas, Achaflanar aristas; ARISTAEMPALME, ACHAFLANAARISTA | es-es acad.cuix `ID_FILLET_EDGE`, `ID_CHAMFER_EDGE`; the help's titles with the English GUIDs (0546E8D5, 9CE971E3); the console (filletedge/f01–f07, chamferedge/c01–c07, solid-edits/p202–p239, es-ES), the accept's distances (50252 with 22196, 22197; p222) and the refusals (22180, 22191, 22203, 29677; p215–p218, p231) among them; ACIS's `Error en operación de modelado:` (c04), FILLETEDGE's failure lines from the tables (22186, 22187), never seen together; the grip's `>>Precise radio o [Salir]:` from the table (56015), as the desktop's Spanish writes it (solid-edits/d04-c) | partly |
@@ -234,14 +235,14 @@ above, explains):
   settings line are 2027's console's (spline/p01.es, p02.es, p108, p111.es, p113.es, p125.es,
   p155.es), which asks no `Precise tangente` at the closure (p124.es); Object's `Objeto`, `Designe
   polilínea de ajuste de spline` and `No se ha encontrado ninguno.` (spline/p114.es, pedit/p178.es),
-  not EXPLODE's `No hallada.`. The rail's
+  not EXPLODE's `No hallada.`. The ribbon's
   `Ajuste de spline` and `VC de spline` are the ribbon's tooltips (acad.cuix), the palette's
   `Parametrización de nudos` ax26res 910.
 - **SPLINEDIT:** `EDITSPLINE` (table 52827) and `SPE` from the 2027 Spanish `acad.pgp`; every
   prompt, keyword and message from 2027's console (spline-knots/k57–k146.es), whose `initget`
   spells some words per prompt (`añaDIr` and `dEsplazar` at Fit data, `Añadir` and `Desplazar` at
   Edit vertex, `Polilínea` at a closed spline's first prompt, eXit's hidden `SA` or `S`).
-  The rail's `Editar spline` is the ribbon's (X ID_RBN_CMDBTN_SPLINEDIT).
+  The ribbon's `Editar spline` is the ribbon's (X ID_RBN_CMDBTN_SPLINEDIT).
 - **PEDIT:** `EDITPOL` and `PE` from the 2027 Spanish `acad.pgp`; every prompt, keyword and
   message from 2027's console (pedit/p01–p146.es), whose `initget` spells Join `Juntar` at a 2D
   polyline's prompt and `Unir` at a 3D one's, eXit `Salir` at Edit vertex and the hidden `SAlir`
@@ -249,7 +250,7 @@ above, explains):
   `anularcuRVatura` and its hidden twin `ELiminarcurva`, a 3D polyline's `Spline` listed `curva
   Spline` (p51.es, p55.es, p198.es). **Deviation:** Multiple's prompts list Spline `SPline` and a 3D
   polyline's `curvaB`, and declare `Eliminarcurva` (p196.es, p197.es): here as the single prompts
-  spell them, a keyword's label being one per command. The rail's `Editar polilínea` is the
+  spell them, a keyword's label being one per command. The ribbon's `Editar polilínea` is the
   ribbon's (X ID_RBN_CMDBTN_PEDIT). **Unverified:** Jointype's default `<Ambos>`, worded as the
   console words `<Alargar>` and `<Añadir>` (pedit/p105–p108); no probe left it at Both.
 - **UCS:** `SCP` and `SIMBSCP` from the Spanish pages with the English GUIDs, as is `PLANTA`;

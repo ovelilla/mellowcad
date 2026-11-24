@@ -259,6 +259,14 @@ export declare class CadEngine {
      */
     setRibbonMember(dropDown: string, member: string): void;
     /**
+     * A ribbon button that runs a command rather than a tool, as its acad.cuix
+     * macro does: Text Style (`'_style`) and Dimension Style (`'_dimstyle`),
+     * transparent mid-command, and the Properties panel's dialog launcher,
+     * PROPERTIES or PROPERTIESCLOSE as Ctrl+1. A tool's button is
+     * {@link setActiveTool}.
+     */
+    runRibbonButton(button: "textStyle" | "dimensionStyle" | "properties"): void;
+    /**
      * A point of the state's screen space (the canvas's own pixels: the cursor,
      * the snap override menu, the cycling list) in the page's viewport, where a
      * popup anchored to it is positioned. The canvas does not start at the
@@ -2996,7 +3004,7 @@ export declare class EngineText {
     /** The command language's tag: the locale's own, or English's for the global one. */
     readonly commandTag: string;
     constructor(locale?: EngineLocale);
-    /** A tool's label in the rail; a tool the catalog does not know shows its id. */
+    /** A tool's label (`state.tools`); a tool the catalog does not know shows its id. */
     tool(id: string): string;
     /** What a command that is not a tool does, for the autocomplete list. */
     description(command: string): string | null;

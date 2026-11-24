@@ -29,7 +29,7 @@ plan each block has its table, a cell reading `match · p07 · LineTool.test.ts:
   regions/p400).
 - Repeating it: Enter or Space at `Command:`, the right button's Repeat, the recent commands.
 - Typed transparently (`'LINE`): refused as AutoCAD refuses it, or run as it runs.
-- The rail entry and any shortcut key; a double-click on its object (DoubleClickRoot.cui: a
+- The ribbon entry and any shortcut key; a double-click on its object (DoubleClickRoot.cui: a
   spline runs SPLINEDIT, pedit SPE-01).
 
 **B. Prompts and options** — for each prompt:
@@ -125,7 +125,7 @@ none, pedit TPO-01) and lineweight; hover and selection highlight. The desktop s
 AutoCAD's (template §2).
 
 **P. Pointer gestures** — the command used with the mouse alone, as most users use it: started
-from the rail, each point picked, the rubber band following, hover over objects (rollover
+from the ribbon, each point picked, the rubber band following, hover over objects (rollover
 highlight, the snap marker and its tooltip, the aperture), a dwell that acquires a tracking point,
 a drag, the wheel's zoom and pan and the middle button mid-command, Shift with the right button
 (the snap menu), the right button's menus, a double-click. Each gesture is a desktop probe.
@@ -133,7 +133,7 @@ a drag, the wheel's zoom and pan and the middle button mid-command, Shift with t
 **Q. Look** — what an AutoCAD user sees and must recognise on sight (AGENTS.md: a look that slows
 them down is a finding): the cursor and pickbox, the snap markers' shapes, the tooltips, the
 dynamic-input boxes, the rubber band, grips and their colours, the command line's prompt, where the
-command sits in the rail; every refusal hovered before its click (a refused pair shows a badge and
+command sits in the ribbon; every refusal hovered before its click (a refused pair shows a badge and
 its words at the cursor, corners/d06-1). Compared with the desktop's screenshot; styling may
 differ, recognition may not.
 

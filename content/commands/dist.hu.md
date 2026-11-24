@@ -3,7 +3,7 @@ title: "AutoCAD TÁVS (DIST) parancs"
 metaTitle: "Távolság mérése az AutoCAD-ben: TÁVS (DIST)"
 description: "Távolság mérése az AutoCAD TÁVS (DIST, TÁ) parancsával: két pont távolsága a szögekkel és az X, Y, Z különbséggel, vagy pontsorozat hossza. Próbálja ki ingyen."
 figure: "TÁVS egy 100 × 60-as lemez átlója mentén: a távolság, az XY síkbeli szög és a koordináta-különbségek."
-sourceHash: "31fbe420bc43"
+sourceHash: "43624d8b3d78"
 ---
 
 A TÁVS (DIST) parancs két pont távolságát méri. Kattintással, tárgyraszterrel vagy beírással adja meg az első és a második pontot, és a parancs kiírja a parancssorba a távolságot, az XY síkbeli szöget és az XY síkkal bezárt szöget, valamint az X, Y és Z irányú különbséget, majd véget ér. Minden pontot ott mér, ahol van, a Z koordinátájával együtt, így a távolság a valódi térbeli távolság. Az első pontnál az Enter az utoljára megadott pontból indul, a másodiknál pedig visszamér az elsőhöz. A számok a rajz pontosságát követik, a szögek az AUPREC változóét.

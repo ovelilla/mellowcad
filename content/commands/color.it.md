@@ -2,12 +2,12 @@
 title: "Comando COLORE (COLOR) in AutoCAD"
 description: "Come COLORE (COLOR, alias CO) di AutoCAD imposta il colore dei nuovi oggetti: DaLayer, un colore indicizzato per nome o numero, o un colore RGB. Provalo gratis."
 figure: "Una piastra disegnata DaLayer, il suo foro in rosso, il suo alesaggio nel colore RGB 0,128,255, poi COLORE riportato a DaLayer."
-sourceHash: "f0bfb2cf8fe7"
+sourceHash: "8f98a2a79cf5"
 ---
 
 COLORE imposta il colore con cui sono disegnati i nuovi oggetti. AutoCAD apre la finestra Seleziona colore; MellowCAD non ne ha ancora una, quindi COLORE esegue la forma da riga di comando che ha anche AutoCAD, <Command id="-COLOR" />. Chiede il colore predefinito degli oggetti, proponendo quello corrente, `BYLAYER` in un nuovo disegno: DaLayer significa che ogni oggetto prende il colore del suo layer, e un colore scelto invece è proprio dell'oggetto. Digita il numero di un colore indicizzato, da 1 a 255, o il nome di uno dei primi sette, oppure scegli <Keyword id="Truecolor" />. Invio conserva il colore corrente, e la modifica è un passo che <Command id="U" /> annulla.
 
-Una parola che non sa leggere mostra <Message id="colorRequired" />, e 0, un numero negativo o uno oltre 255 <Message id="invalidColorNumber" />; chiede di nuovo. Digitato con un apostrofo dentro un comando, `'COLOR`, ogni oggetto disegnato dopo prende il nuovo colore: ogni segmento di una <Command id="LINE" /> prende il colore corrente quando inizia. COLORE imposta solo ciò che viene dopo; la tavolozza Proprietà o l'elenco dei colori della barra superiore cambia gli oggetti già disegnati.
+Una parola che non sa leggere mostra <Message id="colorRequired" />, e 0, un numero negativo o uno oltre 255 <Message id="invalidColorNumber" />; chiede di nuovo. Digitato con un apostrofo dentro un comando, `'COLOR`, ogni oggetto disegnato dopo prende il nuovo colore: ogni segmento di una <Command id="LINE" /> prende il colore corrente quando inizia. COLORE imposta solo ciò che viene dopo; la tavolozza Proprietà o l'elenco dei colori della barra multifunzione (Inizio › Proprietà) cambia gli oggetti già disegnati.
 
 ## Options
 
@@ -59,7 +59,7 @@ La finestra Seleziona colore, i libri di colori e la forma HSL. DaBlocco. La tra
 
 ### Come si cambia il colore di un oggetto in AutoCAD?
 
-Selezionalo e scegli il colore nell'elenco dei colori della barra superiore o nella riga Colore della tavolozza Proprietà: cambia in un solo passo. Oppure copia il colore di un altro oggetto con <Command id="MATCHPROP" />. COLORE imposta solo il colore degli oggetti disegnati dopo.
+Selezionalo e scegli il colore nell'elenco dei colori della barra multifunzione (Inizio › Proprietà) o nella riga Colore della tavolozza Proprietà: cambia in un solo passo. Oppure copia il colore di un altro oggetto con <Command id="MATCHPROP" />. COLORE imposta solo il colore degli oggetti disegnati dopo.
 
 ### Che cosa significa DaLayer in AutoCAD?
 

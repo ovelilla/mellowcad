@@ -3,12 +3,12 @@ title: "Color en AutoCAD: comando COLOR"
 metaTitle: "Color de objetos en AutoCAD: COLOR y PorCapa"
 description: "Cómo funciona COLOR (alias COL) de AutoCAD en español: el color de los objetos nuevos, PorCapa, un color de índice por nombre o número, o RGB. Pruébalo gratis."
 figure: "Una placa dibujada PorCapa, su agujero en rojo, su taladro en el color verdadero 0,128,255, y después COLOR de nuevo a PorCapa."
-sourceHash: "f0bfb2cf8fe7"
+sourceHash: "8f98a2a79cf5"
 ---
 
 COLOR, con el mismo nombre en español, fija el color con que se dibujan los objetos nuevos. AutoCAD abre el cuadro de diálogo Seleccionar color; MellowCAD aún no lo tiene, así que COLOR ejecuta la forma de línea de comando que AutoCAD también tiene, <Command id="-COLOR" />. Pide el color de objeto por defecto y ofrece el actual, `PORCAPA` en un dibujo nuevo: PorCapa significa que cada objeto toma el color de su capa, y un color elegido en su lugar es el del propio objeto. Escribe el número de un color de índice, del 1 al 255, o el nombre de uno de los siete primeros, o elige <Keyword id="Truecolor" />. Intro conserva el color actual, y el cambio es un paso que <Command id="U" /> deshace.
 
-Una palabra que no entiende dice <Message id="colorRequired" />, y 0, un número negativo o uno mayor que 255, <Message id="invalidColorNumber" />; después vuelve a preguntar. Escrito con un apóstrofo dentro de un comando, `'COLOR`, cada objeto dibujado después toma el color nuevo: cada segmento de <Command id="LINE" /> toma el color actual al empezar. COLOR solo fija lo que viene después; la paleta Propiedades o la lista desplegable de colores de la barra superior cambian los objetos ya dibujados.
+Una palabra que no entiende dice <Message id="colorRequired" />, y 0, un número negativo o uno mayor que 255, <Message id="invalidColorNumber" />; después vuelve a preguntar. Escrito con un apóstrofo dentro de un comando, `'COLOR`, cada objeto dibujado después toma el color nuevo: cada segmento de <Command id="LINE" /> toma el color actual al empezar. COLOR solo fija lo que viene después; la paleta Propiedades o la lista desplegable de colores de la cinta de opciones (Inicio › Propiedades) cambian los objetos ya dibujados.
 
 ## Options
 
@@ -60,7 +60,7 @@ COLOR, igual que en inglés, con el alias `COL`. El nombre inglés con un guion 
 
 ### ¿Cómo cambio el color de un objeto en AutoCAD?
 
-Desígnalo y elige el color en la lista desplegable de colores de la barra superior o en la fila Color de la paleta Propiedades: cambia en un paso. O copia el color de otro objeto con <Command id="MATCHPROP" />. COLOR solo fija el color de los objetos que se dibujan después.
+Desígnalo y elige el color en la lista desplegable de colores de la cinta de opciones (Inicio › Propiedades) o en la fila Color de la paleta Propiedades: cambia en un paso. O copia el color de otro objeto con <Command id="MATCHPROP" />. COLOR solo fija el color de los objetos que se dibujan después.
 
 ### ¿Qué significa PorCapa en AutoCAD?
 

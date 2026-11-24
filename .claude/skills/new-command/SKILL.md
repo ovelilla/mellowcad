@@ -1,6 +1,6 @@
 ---
 name: new-command
-description: Checklist for adding an AutoCAD command, dash command or system variable to the engine — the tool, every registration point, the catalogs in every declared language, transparency, tests, snapshots, the rail, the landing's filing and the coverage entry. Use when a change adds a command a user can type.
+description: Checklist for adding an AutoCAD command, dash command or system variable to the engine — the tool, every registration point, the catalogs in every declared language, transparency, tests, snapshots, the ribbon, the landing's filing and the coverage entry. Use when a change adds a command a user can type.
 ---
 
 # Adding a command
@@ -19,7 +19,7 @@ wording (skill `autocad-research`). How a tool is written: `.claude/rules/cad-to
 2. **A runtime hook, if it needs one.** Something new it asks the runtime, or the runtime asks it,
    is an optional member of `Tool` or a method of `ToolContext` / `UndoHistory` in `Tool.ts`, wired
    in `CadRuntime.ts`: COPYCLIP's `keepsSelection` (ef9c204), MREDO's `redo` (85565ad).
-3. **`defaultTools`** in `cad/application/runtimeTools.ts`: `new XTool()` in rail order. A tool the
+3. **`defaultTools`** in `cad/application/runtimeTools.ts`: `new XTool()` in ribbon order. A tool the
    runtime drives directly (a `CadRuntime` field) is passed in instead. (Every command commit.)
 4. **`TOOL_COMMANDS`** in `cad/application/CommandLine.ts`: tool id → the command's global name.
    Dispatch comes from here; `Tool.shortcut` is display-only. (Every command commit.)
@@ -58,9 +58,13 @@ wording (skill `autocad-research`). How a tool is written: `.claude/rules/cad-to
    new command, so this is **enforced**) and, when the landing's transcripts change,
    `npx vitest run content/transcripts.test.ts -u` (88090fd, 86628d4). Never `-u` a diff that
    rewords text the change did not mean to.
-9. **The rail.** `packages/editor/src/tool-rail.tsx`: `TOOL_ICONS` and `PALETTE`, in the ribbon panel
-   AutoCAD puts it in, or `RAIL_EXCLUDED` for a tool that lives elsewhere (ZOOM, -PAN, MREDO). Not
-   enforced: an unlisted tool falls into a trailing group. (Every command commit.)
+9. **The ribbon.** Its button where acad.cuix puts it (`node scripts/research/ribbon.mjs --built`
+   finds the tab, panel, row, size and drop-down): a control in that tab's data
+   (`packages/editor/src/ribbon-home.ts`), its words from each culture's acad.CUIX in the editor's
+   catalog (`Ribbon.items`), its 16 px icon in `tool-icons.ts` and, for a large button or a list's
+   member, its 32 px drawing in `large-icons.ts`; or `TYPED` with its WHY for a tool no panel
+   offers (ZOOM, -PAN, MREDO), or `OTHER_TABS` while its tab is not built. **Enforced**:
+   `ribbon.test.ts` fails on a tool in none. (Every command commit.)
 10. **What it creates.** A command that creates objects gives each the properties AutoCAD gives
     (`cad-tools.md`, "What a new object wears") and gets a row in `FROM_SCRATCH` or `DERIVED` of
     `cad/application/tools/currentProperties.test.ts`, or one of its lists (variant, pinned elsewhere,

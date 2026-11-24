@@ -29,7 +29,7 @@ export type { CadEditorComponents }
  */
 export interface CadEditorComponents {
     readonly TitleBar?: ComponentType<TitleBarProps> | null;
-    readonly ToolRail?: ComponentType<PieceProps> | null;
+    readonly Ribbon?: ComponentType<PieceProps> | null;
     readonly PalettePanel?: ComponentType<PieceProps> | null;
     readonly CommandLine?: ComponentType<PieceProps> | null;
     readonly StatusBar?: ComponentType<StatusBarProps> | null;
@@ -162,6 +162,16 @@ export interface PieceProps {
     readonly state: EditorState;
 }
 
+export { Ribbon }
+/**
+ * AutoCAD's ribbon (docs/plans/autocad-ui.md, §2.3): its tab row, 24, and
+ * the panels of the tab in front, 100, of which Home is built. Each panel is
+ * acad.cuix's rows at AutoCAD's sizes, with its title bar, the slide-out
+ * under it and their push pin; the drop-downs keep the member last used in
+ * the engine (`state.ribbon.members`), for the session.
+ */
+export declare function Ribbon(pieceProps: PieceProps): ReactElement;
+
 export { StatusBar }
 /**
  * AutoCAD's status bar, in the order of its 2026 reference: the coordinates,
@@ -183,10 +193,8 @@ export { TitleBar }
 /**
  * AutoCAD's title bar: the application button and the Quick Access Toolbar at
  * AutoCAD's sizes, then the save state where AutoCAD's title names the
- * drawing. Until the ribbon's Home and View tabs are built, the Layers and
- * Properties panels and View's palette toggles follow them here. Every part
- * has a fixed width or truncates, so the row never grows with a layer's name
- * or the selection.
+ * drawing. Until the ribbon's View tab is built, its palette toggles follow
+ * them here. Every part has a fixed width, so the row never grows.
  */
 export declare function TitleBar(titleBarProps: TitleBarProps): ReactElement;
 
@@ -200,15 +208,6 @@ export interface TitleBarProps extends PieceProps {
     /** The page the application menu's Send Feedback opens; none, no Send Feedback. */
     readonly feedback?: string;
 }
-
-export { ToolRail }
-/**
- * The tool palette, two columns of the ribbon's Home tab panels (Draw,
- * Modify, Annotation, Block, Utilities): only commands that act on the
- * drawing. A window too short for it folds the last three into a drop-down
- * each.
- */
-export declare function ToolRail(pieceProps: PieceProps): ReactElement;
 
 export { ViewCube }
 /**

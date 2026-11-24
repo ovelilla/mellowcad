@@ -4,7 +4,7 @@ metaTitle: "CIRCLE in AutoCAD: 2P, 3P, Ttr and alias"
 description: "How AutoCAD's CIRCLE (C) works, prompt by prompt: centre and radius or Diameter, 2P, 3P and Ttr, a circle tangent to two objects. Try it free in your browser."
 figure: "Three circles: centre and radius, two ends of a diameter (2P), centre and Diameter."
 related: ["ARC", "ELLIPSE", "OFFSET", "DIMRADIUS"]
-coverage: "b82177668cf1"
+coverage: "89ca93aad500"
 ---
 
 CIRCLE draws a circle from its centre and its radius, typed or given by a point on the circle, or in one of the other ways its first prompt offers. Enter at the radius repeats the last circle's size, kept for the drawing. While you give the radius, an amber dashed line runs from the centre to the cursor, past the rim when you give the diameter, as AutoCAD draws it. The circle lies in the plane of its first point, at the current elevation if the point has no Z of its own.
@@ -29,7 +29,7 @@ At the radius prompt: give the diameter instead, typed or as a point.
 
 ## Missing
 
-Ttr on a polyline segment, which AutoCAD takes and MellowCAD refuses; the tool palette's Tan, Tan, Tan entry (typing it, 3P with three Tangent snaps, works); Quick Properties on a double-click of a circle.
+Ttr on a polyline segment, which AutoCAD takes and MellowCAD refuses; the ribbon's Tan, Tan, Tan entry (typing it, 3P with three Tangent snaps, works); Quick Properties on a double-click of a circle.
 
 ## Questions
 

@@ -41,7 +41,7 @@ export const Arabic = () => (
 )
 ```
 
-`dir="rtl"` mirrors the chrome: the tool palette moves to the right, the palettes to the left, the
+`dir="rtl"` mirrors the chrome: the ribbon's panels run from the right, the palettes go to the left, the
 ViewCube to the top left. The drawing never mirrors, and neither does what is typed: the command
 line, the dynamic input and the coordinates read left to right in every language.
 

@@ -2,4 +2,4 @@
 "@mellowcad/editor": minor
 ---
 
-The Point Style dialog of PTYPE (`PointStyle` in the editor's catalog), the tool palette's Points drop-down (Multiple Points, Divide, Measure) and Point Style beside ID Point, in every language of the editor.
+The Point Style dialog of PTYPE (`PointStyle` in the editor's catalog), Multiple Points, Divide and Measure in the ribbon's Draw slide-out and Point Style in Utilities', in every language of the editor.

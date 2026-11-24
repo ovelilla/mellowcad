@@ -86,6 +86,7 @@ Autodesk's follow Taiwan: Columns 行數, Rows 列 (ax26res 1189, 1194), MINSERT
 
 | Area | English | Traditional Chinese | Source |
 | --- | --- | --- | --- |
+| Ribbon's Home tab | Home; Draw, Modify, Annotation, Layers, Block, Properties, Utilities, Clipboard; Pin | 常用; 繪製, 修改, 註解, 圖層, 圖塊, 性質, 公用程式, 剪貼簿; 釘住 † | X ID_TabHome, ID_PanelDraw … RBN_00011049 and every button's and list member's uid (`ribbon.mjs --cuix` on the pack's acad.CUIX, 2026-11-24); Pin † ours: AutoCAD's pin has no name, the word undoes acadres 49183 `Unpin` |
 | Status bar | Model space; MODEL; Coordinates | 模型空間; 模型; 座標 | P acadres 21486, 20008; P ax26res 4 |
 | Status bar | Grid; Snap mode; Snap; Grid Snap; Polar Snap | 格線; 鎖點模式; 鎖點; 格線鎖點; PolarSnap | P acadres 21453, 20021 (`鎖點模式 (F9)` less the key), 21452; D dwgaidsRes 130:1109, 130:1106 |
 | Status bar | Snap settings; Snap X spacing; Snap X; Polar distance; Polar snap distance | 鎖點設定; 鎖點 X 間距; 鎖點 X †; 極座標距離; 極座標鎖點距離 † | X XLSR_0955 (鎖點設定下拉式功能表, less 下拉式功能表); D dwgaidsRes 130:1002, 130:1098 |

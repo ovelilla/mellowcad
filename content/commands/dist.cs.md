@@ -2,7 +2,7 @@
 title: "Příkaz VZD (DIST) v AutoCADu"
 description: "Jak v AutoCADu změřit vzdálenost příkazem VZD (DIST, zkratka VZ): mezi dvěma body, s úhly a přírůstky X, Y a Z, nebo délku řady bodů. Vyzkoušejte zdarma online."
 figure: "VZD po úhlopříčce desky 100 × 60: vzdálenost, úhel v rovině XY a přírůstky."
-sourceHash: "31fbe420bc43"
+sourceHash: "43624d8b3d78"
 ---
 
 Příkaz VZD (DIST) měří vzdálenost mezi dvěma body. Vyberte (i s uchopením objektu) nebo zadejte první a druhý bod a příkaz vypíše na příkazovém řádku vzdálenost, úhel v rovině XY a úhel od ní a přírůstky X, Y a Z, a pak skončí. Každý bod se měří tam, kde leží, i se svou souřadnicí Z, takže vzdálenost je skutečná vzdálenost v prostoru. Enter u prvního bodu začne od naposledy zadaného bodu a u druhého změří vzdálenost zpět k prvnímu. Čísla mají přesnost výkresu a úhly AUPREC.

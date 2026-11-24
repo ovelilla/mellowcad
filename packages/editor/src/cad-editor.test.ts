@@ -43,15 +43,7 @@ function canvasOf(props: Parameters<typeof CadEditor>[0] = {}) {
   return canvases[0]
 }
 
-const ZONES = [
-  "title",
-  "ribbon",
-  "tools",
-  "canvas",
-  "panel",
-  "command",
-  "status",
-]
+const ZONES = ["title", "ribbon", "canvas", "panel", "command", "status"]
 
 /** The grid areas a render lays out, in document order. */
 const zones = (html: string) =>
@@ -68,7 +60,7 @@ const state = {
 /** Every piece turned off, so only what a test puts back renders. */
 const NONE: Required<CadEditorComponents> = {
   TitleBar: null,
-  ToolRail: null,
+  Ribbon: null,
   PalettePanel: null,
   CommandLine: null,
   StatusBar: null,
@@ -111,13 +103,13 @@ describe("CadEditor's components", () => {
   it("takes a turned-off piece's zone away from the first paint", () => {
     const html = renderToString(
       createElement(CadEditor, {
-        components: { TitleBar: null, ToolRail: null, StatusBar: null },
+        components: { TitleBar: null, Ribbon: null, StatusBar: null },
       })
     )
-    expect(zones(html)).toEqual(["ribbon", "canvas", "panel", "command"])
+    expect(zones(html)).toEqual(["canvas", "panel", "command"])
     expect(
       zones(renderToString(createElement(CadEditor, { components: NONE })))
-    ).toEqual(["ribbon", "canvas"])
+    ).toEqual(["canvas"])
   })
 
   it("renders a replacement in its piece's place, handed what the piece is", () => {
@@ -127,6 +119,7 @@ describe("CadEditor's components", () => {
     const html = renderZones({
       ...NONE,
       TitleBar: stand("title", tops),
+      Ribbon: stand("ribbon", pieces),
       StatusBar: stand("status", statuses),
       ViewCube: stand("cube", pieces),
       DynamicInput: stand("input", pieces),
@@ -135,7 +128,7 @@ describe("CadEditor's components", () => {
     expect(zones(html)).toEqual(["title", "ribbon", "canvas", "status"])
     expect(
       [...html.matchAll(/<output>(\w+)<\/output>/g)].map((m) => m[1])
-    ).toEqual(["title", "input", "cube", "status"])
+    ).toEqual(["title", "ribbon", "input", "cube", "status"])
     for (const props of [...pieces, ...tops, ...statuses]) {
       expect(props.engine).toBe(engine)
       expect(props.state).toBe(state)
@@ -148,7 +141,7 @@ describe("CadEditor's components", () => {
     const html = renderToString(
       createElement(CadEditor, { components: { ...NONE, TitleBar: undefined } })
     )
-    expect(zones(html)).toEqual(["title", "ribbon", "canvas"])
+    expect(zones(html)).toEqual(["title", "canvas"])
   })
 })
 
@@ -160,7 +153,7 @@ describe("CadEditor's ribbon", () => {
     RIBBON.exec(
       renderToString(
         createElement(EditorZones, {
-          components: NONE,
+          components: { ...NONE, Ribbon: stand<PieceProps>("ribbon", []) },
           ready: {
             engine,
             state: { ...state, ribbon: { ...state.ribbon, open } },
@@ -172,7 +165,9 @@ describe("CadEditor's ribbon", () => {
     )?.[1]
 
   it("keeps the ribbon's height from the first paint, before the engine exists", () => {
-    const html = renderToString(createElement(CadEditor, { components: NONE }))
+    const html = renderToString(
+      createElement(CadEditor, { components: { ...NONE, Ribbon: undefined } })
+    )
     expect(RIBBON.exec(html)?.[1]).toContain("h-31")
   })
 

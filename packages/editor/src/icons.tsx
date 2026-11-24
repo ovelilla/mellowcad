@@ -356,3 +356,18 @@ export const ZoomPreviousIcon: LucideIcon = createLucideIcon("ZoomPrevious", [
   ["path", { d: "M7.5 11h7", key: "shaft" }],
   ["path", { d: "m10.5 8-3 3 3 3", key: "head" }],
 ])
+
+/** The ribbon's Linetype combo: a solid line, a dashed one, a dotted one. */
+export const LinetypeIcon: LucideIcon = createLucideIcon("Linetype", [
+  ["path", { d: "M3 6 H21", key: "solid" }],
+  [
+    "path",
+    {
+      d: "M3 12 H21",
+      strokeDasharray: "5 3",
+      strokeLinecap: "butt",
+      key: "dashed",
+    },
+  ],
+  ["path", { d: "M3 18 H21", strokeDasharray: "1 3", key: "dotted" }],
+])

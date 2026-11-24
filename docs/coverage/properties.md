@@ -351,7 +351,7 @@ reference's `BLOCKs`, 20407; es `Imposible cambiar la altura de objeto de ELLIPS
 asks `Specify new linetype scale <1.0000>:` (20394 + 20399; es `Precise nueva escala del tipo de
 línea`), `<varies>` where the objects differ, a distance at LUPREC (p22), so two points give it
 too, −2 taken as 2, 0 `Value must be nonzero.` asked again (p08, p08b), and sets each object's
-own; not on the rail (no ribbon panel offers it)
+own; no ribbon button (no ribbon panel offers it)
 
 **Missing:** TRansparency (`Specify transparency value <ByLayer>:`, an integer from 0 to 90,
 `Requires an integer between 0 and 90.`), Material (`Enter new material name <ByLayer>:`) and

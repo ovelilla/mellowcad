@@ -4,7 +4,7 @@ metaTitle: "Befehl ZURÜCK (UNDO) in AutoCAD"
 description: "So arbeitet AutoCADs ZURÜCK (UNDO): mehrere Schritte zurück, Markierung und Rück, Beginn und Ende, Steuern, und der Unterschied zu Z und Strg+Z. Online testen."
 before: "Eine Platte mit zwei Bohrungen und einer Linie quer darüber, gezeichnet mit vier Befehlen: RECTANG, zweimal CIRCLE und LINE."
 figure: "UNDO 2: Die letzten zwei Befehle werden zurückgenommen, die Linie und die zweite Bohrung, und die Platte behält ihre erste Bohrung."
-sourceHash: "b4fed2178b6a"
+sourceHash: "5d2bca4366d1"
 ---
 
 ZURÜCK (UNDO) nimmt Befehle zurück. Ein Schritt ist ein ganzer Befehl: Alles, was ein LINIE-Aufruf gezeichnet hat, verschwindet auf einmal, wie viele Segmente er auch hatte, und ebenso alles, was ein Befehl festgelegt hat, etwa LTSCALE. ZURÜCK schreibt seine aktuellen Einstellungen und fragt dann nach der Anzahl der zurückzunehmenden Vorgänge oder nach einer Option; die Eingabetaste nimmt einen zurück. Es schreibt die Namen der zurückgenommenen Befehle in eine Zeile, `CIRCLE LINE`, und <Message id="everythingUndone" />, wenn nichts mehr übrig ist; danach <Message id="nothingToUndo" />. Auch ein Befehl, der nichts geändert hat, wie ID oder LIST, ist ein Schritt, ebenso das, was ZOOM und PAN mit der Ansicht getan haben.
@@ -39,7 +39,7 @@ Nimmt jeden Schritt bis zur letzten Markierung zurück, und die Markierung mit i
 
 ## Missing
 
-Auto fasst nichts zusammen, da hier kein Menü mehr als einen Befehl ausführt. Kombinieren und Layer gelten für die Browsersitzung, wo AutoCAD sie von einer Sitzung zur nächsten behält. Die Schaltflächen Rückgängig und Wiederholen der oberen Leiste schreiben nichts in den Verlauf, wo AutoCADs Schnellzugriff-Werkzeugkasten seinen eigenen schreibt. Strg+Umschalt+Z stellt ebenfalls wieder her, stumm, obwohl AutoCAD nichts daran bindet.
+Auto fasst nichts zusammen, da hier kein Menü mehr als einen Befehl ausführt. Kombinieren und Layer gelten für die Browsersitzung, wo AutoCAD sie von einer Sitzung zur nächsten behält. Die Schaltflächen Rückgängig und Wiederholen des Schnellzugriff-Werkzeugkastens schreiben nichts in den Verlauf, wo die von AutoCAD ihre eigenen Zeilen schreiben. Strg+Umschalt+Z stellt ebenfalls wieder her, stumm, obwohl AutoCAD nichts daran bindet.
 
 ## Questions
 

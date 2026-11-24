@@ -136,12 +136,13 @@ From the installed pack by id against `en-US/` (`propose-interface.mjs --lang it
 <assembly> <key>` a .NET resource, `X <uid>` an element of `UserDataCache/it-it/Support/acad.CUIX`.
 The engine's `interface` (456 words, `linetype` and `hatchPattern` being drawing data): 230 settled
 by one wording or as French's ids, 136 by the row's place (a palette row takes `ax26res`'s word, a
-tool the ribbon's: `Interrompi` and `Raccorda` on the rail, as the ribbon says them), the rest ours,
+tool the ribbon's: `Interrompi` and `Raccorda` on the ribbon, as it says them), the rest ours,
 below. The editor's catalog (phase 2): 100 of 267 by id, 68 by place, 96 ours. Italian AutoCAD
 leaves the Layer Properties Manager's On and Off in English (`N AcLayer On`), and so does this.
 
 | Area | English | Italian | Source | Verified |
 | --- | --- | --- | --- | --- |
+| Ribbon's Home tab | Home; Draw, Modify, Annotation, Layers, Block, Properties, Utilities, Clipboard; Pin | Inizio; Disegna, Edita, Annotazione, Layer, Blocco, Proprietà, Utilità, Appunti; Fissa † | X ID_TabHome, ID_PanelDraw … RBN_00011049 and every button's and list member's uid (`ribbon.mjs --lang it`, 2026-11-24); Pin † ours: AutoCAD's pin has no name, the word undoes acadres 49183 `Unpin` | no |
 | Tools | Diameter circle, 2-Point circle, 3-Point circle; Start, Center, End arc; Center ellipse | Cerchio centro, diametro; Cerchio 2 punti; Cerchio 3 punti; Arco inizio, centro, fine; Ellisse centro | ours, worded from the ribbon's options (`ID_RBN_0128`, `0130`, `0094`, `0113`, `ELLIPSECE`) | — |
 |  | Attribute display, Change properties, Pan by points, Multiple redo | Visibilità attributi, Modifica proprietà, Pan per punti, Ripeti multiplo | ours, from the neighbouring tables' words | — |
 | Descriptions | The tools' descriptions | «Ripristina l'ultima operazione annullata»… | ours, in the style of the cuix tooltips (ACAD_1559, 1561, 1604) | — |

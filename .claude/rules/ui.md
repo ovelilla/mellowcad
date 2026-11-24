@@ -97,8 +97,8 @@ a second layout. This file owns the rule for the landing too.
   `components/**`, `app/**` or `packages/**` outside its justified exceptions, and on an exception
   that matches nothing. `components.json` has `rtl: true`, so `shadcn add` writes logical classes;
   change its `start-*`/`end-*` to `inset-s-*`/`inset-e-*` (Tailwind 4.2 deprecated them).
-- **Popups take logical sides**: `side="inline-end"` for the tool palette's tooltips and drop-downs
-  and the menus at the cursor; `top`/`bottom` need nothing. `Side` (`toolbar-primitives.tsx`) and
+- **Popups take logical sides**: `side="inline-end"` for the menus at the cursor; `top`/`bottom`,
+  the ribbon's lists and tooltips, need nothing. `Side` (`toolbar-primitives.tsx`) and
   the `ui/` wrappers accept both kinds.
 - **LTR islands** (`dir="ltr"`): the canvas, the ViewCube's box (faces, compass, triangles, the
   order of the roll arrows), the command line, the dynamic input, the coordinates, keys
@@ -191,24 +191,25 @@ and line height; the editor's root starts every text, its popups too, as `text-u
 
 **AutoCAD's measures** where it has them (`docs/plans/autocad-ui.md`, decision 1): the title bar,
 the ribbon, the bottom row from phase 4. **28 px**, icons 16, for the rest one presses. AutoCAD's
-24×22 pass WCAG 2.2's 2.5.8 by its spacing exception (a 24 px pitch).
+24×22 pass WCAG 2.2's 2.5.8 by its spacing exception (a 24 px pitch). The ribbon's are plan
+§2.3's, its look the editor's tokens (decision 7).
 
 | What                                                                     | Size                                                                                        |
 | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------- |
 | The title bar; its application button (`size="application"`)             | 32 (`h-8`); 48 × 32, the host's mark 20                                                     |
 | A Quick Access button (`IconAction size="quick"`)                        | 24 × 22 (`h-5.5 w-6`), icon 16, one against the next from 56 px                             |
-| The ribbon, whole                                                        | 124 (`h-31`): the tab row, 24, and the panels, 100                                          |
+| The ribbon, whole                                                        | 124 (`h-31`): the tab row, 24, and the panels, 100; each panel 97                           |
+| A ribbon button, large or small; a combo; a list's row                   | 72, icon 32; 22, icon 16, on a 24 pitch; 22; 38, icon 32 (`control-size.test.ts`)           |
 | An icon button (`Button size="icon"`, `IconAction`)                      | 28 × 28, its icon 16                                                                        |
 | A text button, a drop-down's trigger, a field, a tab, a row of a list    | 28 high (`Button`'s default, `SelectTrigger`, `h-7`)                                        |
 | A mode's settings arrow (`size="icon-flyout"`), Zoom's under its button  | 14 × 28, 28 × 14 — attached, so the 28 px mode is the equivalent target (2.5.8's exception) |
 | A docked bar: the status bar, the command line, the palette panel's tabs | 36 (`h-9`): the control and 4 px either side; the folded panel is 36 wide                   |
-| The tool palette, until Home replaces it                                 | two columns of 28, 2 px apart: a grid of 58 (`w-14.5`) inside `p-1`                         |
 
 - **A zone sizes its content** (`box-content`): its border lies outside those numbers. A border
   inside the box eats a pixel, every control lands on a half pixel and its icon blurs.
 - **In a bar every part has a whole width**: a text part (the palette toggles `w-24`, the save
   state's slot `w-24`, there before the first save, Units `w-9`) gets a fixed one, or its fraction
-  of a pixel pushes every icon after it off the pixel grid.
+  of a pixel pushes every icon after it off the pixel grid; the ribbon's round up (`WHOLE`).
 - Outside both systems, each for a reason: the ViewCube's Home, roll arrows and UCS menu
   (`size="icon-cube"`, `"cube"`, 24), drawn at the cube's scale; the viewport control `[Top]`, a
   label on the drawing; separators, the product mark and swatches, which are not targets.
@@ -249,8 +250,8 @@ the ribbon, the bottom row from phase 4. **28 px**, icons 16, for the rest one p
 Each bar's AutoCAD order is in its component's header comment; touch and phones are out of scope.
 
 - **The workspace is a grid of named areas** (`CadEditor`), AutoCAD's frame (plan §2.1): `title`,
-  `ribbon`, `tools` · `canvas` · `panel`, `command`, `status`. The ribbon zone goes while
-  `state.ribbon.open` is false, the tool palette with it. A control goes into a zone, never absolutely over the drawing; the canvas
+  `ribbon`, `canvas` · `panel`, `command`, `status`. The ribbon zone goes while
+  `state.ribbon.open` is false. A control goes into a zone, never absolutely over the drawing; the canvas
   takes what is left, so ZOOM Extents frames only what is visible.
 - **A piece a host may replace is a slot** of `CadEditorComponents` (`components`; `null` turns it
   off and its zone goes too, from the first paint). It takes `PieceProps`, plus only what the host
@@ -258,9 +259,8 @@ Each bar's AutoCAD order is in its component's header comment; touch and phones 
   words come from `useEditorText`, its popups' container from `usePortalContainer`. The zone, its
   size and border stay the editor's. A menu or dialog the engine opens and waits on is never a
   slot. `packages/editor/src/cad-editor.test.ts` renders the slots against a stand-in engine.
-- **Every zone has its size in CSS before the engine mounts** (the bars' `h-9`, the palette's
-  `w-14.5`, the panel's `w-9` / `palette-open:w-(--palette-width)`, the `short:` variant), never
-  from its content: the canvas's first box is its final one, which the landing's view transition
+- **Every zone has its size in CSS before the engine mounts** (the bars' `h-9`, the ribbon's
+  `h-31`, the panel's `w-9` / `palette-open:w-(--palette-width)`), never from its content: the canvas's first box is its final one, which the landing's view transition
   grows into and the first view is centred in. A zone that resizes with the work makes the drawing
   jump. A size this device remembers is decided by the `<head>` script on the editor's root
   as it is parsed (`data-palette`, `--palette-width`) and handed to the engine at build
@@ -283,11 +283,10 @@ Each bar's AutoCAD order is in its component's header comment; touch and phones 
   (`openDrawingUnits`, `navigate`). A tool's button is `engine.setActiveTool(id)`, echoing `_line`,
   repeated by Enter, a menu group U names `LINE GROUP` (`cad-runtime.md`); a menu's own path is an
   engine method of its own (`openDrawingUnitsFromMenu`, `choosePolarAngle`).
-- **The tool palette** holds only commands that act on the drawing, grouped by meaning, never to
-  save room (no "more" menu). Unlisted tools fall into a trailing group, so a tool that belongs
-  elsewhere in the chrome (view tools, Select, Match Properties) must be listed in `RAIL_EXCLUDED`.
-  Whole from 1016 px of window, folded below (`short:`), scrolled at 720. Its scroller fills the zone: sized to its content, a pressed button of the last
-  row (`active:translate-y-px`) overflowed it into both scrollbars.
+- **The ribbon** draws a tab from its data (`ribbon-home.ts`): acad.cuix's panels, rows and
+  drop-downs (`ribbon.mjs --built`), only what the engine has, its words each culture's acad.CUIX's.
+  A tool with no button is in `TYPED` with its WHY, or `OTHER_TABS` until its tab is built
+  (`ribbon.test.ts`). A drop-down's member is the engine's (`setRibbonMember`).
 - **The dynamic input** is `pointer-events-none` and keyboard-driven — never clickable. A
   `paragraphs` field (MTEXT) is a textarea, never reselected when focus comes back; nor is a value
   field with text in it: keys typed on the drawing before the box had focus went into it. **A
@@ -321,6 +320,7 @@ must stay up while one draws belongs in the panel.
 ## Icons
 
 Custom CAD glyphs go in `packages/editor/src/icons.tsx` via `createLucideIcon`, on lucide's metrics: 24
-viewBox, rings at `r=10`, `stroke-width` 2. Point beads need `fill: "currentColor"` and
+viewBox, rings at `r=10`, `stroke-width` 2; the ribbon's 32 px ones are drawn for 32
+(`large-icons.ts`). Point beads need `fill: "currentColor"` and
 `stroke: "none"`, or the inherited stroke pushes them past the viewBox and they clip. Prefer a real
 lucide icon: a hand-rolled shape smaller than the viewBox aliases badly at 16 px.

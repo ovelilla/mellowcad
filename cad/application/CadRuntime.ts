@@ -1446,7 +1446,7 @@ export class CadRuntime extends Observable {
         !UNDO_COMMANDS.has(TOOL_COMMANDS[next.id] ?? next.id)
       )
     }
-    // A tool started from the rail is its command too.
+    // A tool started from a button is its command too.
     if (next.id !== "select" && this.starting === null) {
       this.commandStarts(TOOL_COMMANDS[next.id] ?? next.id)
     }
@@ -6246,6 +6246,28 @@ export class CadRuntime extends Observable {
     this.runAccelerator(command, echo)
   }
 
+  /**
+   * A ribbon button that runs a command of its own rather than a tool, as its
+   * acad.cuix macro types it: Text Style's and Dimension Style's `'_style`
+   * and `'_dimstyle` (ID_Style, ID_Ddim), transparent inside a running
+   * command, and the Properties panel's dialog launcher, `^C^C_properties`
+   * or, with the palette shown, `^C^C_propertiesclose` (its `$M=` on
+   * OPMSTATE), as Ctrl+1.
+   */
+  runRibbonButton(button: "textStyle" | "dimensionStyle" | "properties"): void {
+    if (button === "properties") {
+      const shown = this.paletteOpen && this.paletteTab === "properties"
+      this.runAccelerator(
+        shown ? "PROPERTIESCLOSE" : "PROPERTIES",
+        shown ? "_propertiesclose" : "_properties"
+      )
+      return
+    }
+    // A menu group, as every macro of the chrome: U names the group, never
+    // the command before it (desktop workspace/d02–d05).
+    this.runTransparentMacro(button === "textStyle" ? "STYLE" : "DIMSTYLE")
+  }
+
   purgeBlocks(ids?: readonly BlockId[]): number {
     return purgeBlocks(this.document, this.history, ids)
   }
@@ -7519,12 +7541,9 @@ export class CadRuntime extends Observable {
       )
       return true
     }
+    // ID_Modify's macro, the Properties panel's dialog launcher's.
     if (e.ctrlKey && !e.altKey && e.key === "1") {
-      const shown = this.paletteOpen && this.paletteTab === "properties"
-      this.runAccelerator(
-        shown ? "PROPERTIESCLOSE" : "PROPERTIES",
-        shown ? "_propertiesclose" : "_properties"
-      )
+      this.runRibbonButton("properties")
       return true
     }
 

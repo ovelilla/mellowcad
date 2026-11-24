@@ -3,7 +3,7 @@ title: "Polecenie POLE (AREA): jak obliczyć pole powierzchni w AutoCADzie"
 metaTitle: "Pole powierzchni w AutoCADzie: POLE (AREA)"
 description: "Jak obliczyć pole w AutoCADzie poleceniem POLE (AREA, skrót POL): pole i obwód z punktów lub obiektu oraz suma z opcjami Dodaj pole i Odejmij pole."
 figure: "Płyta 100 na 60 z otworem o promieniu 18: POLE dodaje pole płyty, odejmuje pole otworu i wypisuje pozostałą sumę."
-sourceHash: "a8ad70c08b3a"
+sourceHash: "2ca9bb942d1e"
 ---
 
 Polecenie POLE (AREA) mierzy pole powierzchni i obwód zamkniętego kształtu: takiego, który obrysowujesz jego narożnikami, albo wskazanego obiektu. Podaj pierwszy narożnik, potem kolejne: od drugiego kształt zamknięty przez kursor wypełnia się półprzezroczystą zielenią, jak cieniuje go AutoCAD. Enter lub <Keyword id="Total" /> wypisuje `Pole powierzchni = …, obwód wieloboczny = …` w wierszu polecenia i kończy; Enter przed trzecim narożnikiem zostaje odrzucony. Z opcjami Dodaj pole i Odejmij pole prowadzi bieżącą sumę dla kilku kształtów. Liczby są wypisywane z dokładnością rysunku, a ostatnie zmierzone pole można odczytać ponownie, wpisując `'POLE`.

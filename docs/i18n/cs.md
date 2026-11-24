@@ -133,6 +133,7 @@ Polish, 79 by the row's place, 84 ours (11 of them key names and file types).
 
 | Area | English | Czech | Source | Verified |
 | --- | --- | --- | --- | --- |
+| Ribbon's Home tab | Home; Draw, Modify, Annotation, Layers, Block, Properties, Utilities, Clipboard; Pin | Výchozí; Kreslit, Modifikace, Poznámka, Hladiny, Blok, Vlastnosti, Pomůcky, Schránka; Připnout † | X ID_TabHome, ID_PanelDraw … RBN_00011049 and every button's and list member's uid (`ribbon.mjs --lang cs`, 2026-11-24); Pin † ours: AutoCAD's pin has no name, the word undoes acadres 49183 `Unpin` | no |
 | Palette | An XLINE's and a RAY's Basepoint Y | Refbod Y | ax26res 64, set right: it says `Refbox Y` | — |
 | Status bar | Object Snap, Polar Tracking, Object Snap Tracking, Grid, Snap Mode | Uchopení objektů, Polární trasování, Trasování uchopení objektů, Rastr, Režim kroku | acadres 20020–20029, dwgaidsRes 2 | yes |
 | Ribbon | Draw, Modify, Annotation, Block, Utilities, Clipboard | Kreslit, Modifikace, Poznámka, Blok, Pomůcky, Schránka | the desktop (names/d00) | yes |

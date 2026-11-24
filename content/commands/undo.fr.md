@@ -3,7 +3,7 @@ title: "Commande ANNULER (UNDO) dans AutoCAD"
 description: "Comment fonctionne ANNULER (UNDO) d'AutoCAD en français : un nombre d'étapes, Marque et Retour, Début et Fin, Contrôle, et sa différence avec U et Ctrl+Z."
 before: "Une plaque percée de deux trous et une ligne qui la traverse, dessinées par quatre commandes : RECTANGLE, CERCLE deux fois et LIGNE."
 figure: "ANNULER 2 : les deux dernières commandes sont annulées, la ligne et le second trou, et la plaque garde son premier trou."
-sourceHash: "b4fed2178b6a"
+sourceHash: "5d2bca4366d1"
 ---
 
 ANNULER (UNDO) annule des commandes. Une étape est une commande entière : tout ce qu'a dessiné une LIGNE disparaît d'un coup, quel que soit son nombre de segments, de même que ce qu'une commande a réglé, comme ECHLTP. ANNULER écrit ses paramètres courants, puis demande le nombre d'opérations à annuler ou une option ; Entrée en annule une. La commande écrit sur une ligne les noms des commandes annulées, `CERCLE LIGNE`, et <Message id="everythingUndone" /> quand il n'y en a plus ; ensuite, <Message id="nothingToUndo" />. Une commande qui n'a rien changé, comme ID ou LISTE, est aussi une étape, de même que ce que ZOOM et PAN ont fait à la vue.
@@ -38,7 +38,7 @@ Annule toutes les étapes jusqu'à la dernière marque, et la marque avec elles.
 
 ## Missing
 
-Auto ne regroupe rien, puisqu'aucun menu n'exécute ici plus d'une commande. Associer et Calque durent le temps de la session du navigateur, là où AutoCAD les garde d'une session à l'autre. Les boutons Annuler et Rétablir de la barre supérieure n'écrivent rien dans l'historique, là où la barre d'outils Accès rapide d'AutoCAD écrit ses propres lignes. Ctrl+Maj+Z rétablit aussi, sans rien dire, bien qu'AutoCAD n'y associe rien.
+Auto ne regroupe rien, puisqu'aucun menu n'exécute ici plus d'une commande. Associer et Calque durent le temps de la session du navigateur, là où AutoCAD les garde d'une session à l'autre. Les boutons Annuler et Rétablir de la barre d'outils Accès rapide n'écrivent rien dans l'historique, là où ceux d'AutoCAD écrivent leurs propres lignes. Ctrl+Maj+Z rétablit aussi, sans rien dire, bien qu'AutoCAD n'y associe rien.
 
 ## Questions
 

@@ -2,7 +2,7 @@
 title: "Befehl ABSTAND (DIST) in AutoCAD"
 description: "Wie ABSTAND (DIST, Alias AB) in AutoCAD funktioniert: der Abstand zwischen zwei Punkten mit Winkeln und Deltas in X, Y und Z, oder die Länge eines Punktzugs."
 figure: "ABSTAND entlang der Diagonale einer Platte von 100 mal 60: der Abstand, der Winkel in der XY-Ebene und die Deltas."
-sourceHash: "31fbe420bc43"
+sourceHash: "43624d8b3d78"
 ---
 
 ABSTAND (DIST) misst den Abstand zwischen zwei Punkten. Klicken, fangen oder geben Sie den ersten und den zweiten Punkt ein, und der Befehl schreibt in die Befehlszeile den Abstand, den Winkel in der XY-Ebene und den Winkel zu ihr sowie die Deltas in X, Y und Z, und endet. Jeder Punkt wird dort gemessen, wo er liegt, sein Z-Wert eingeschlossen, der Abstand ist also der wahre im Raum. Die Eingabetaste beim ersten Punkt beginnt beim zuletzt angegebenen Punkt, und beim zweiten misst sie zurück zum ersten. Die Zahlen folgen der Genauigkeit der Zeichnung, die Winkel AUPREC.

@@ -3,7 +3,7 @@ title: "AutoCAD AREA(면적) 명령"
 metaTitle: "오토캐드 면적(AREA) 구하기와 단축키 AA"
 description: "AutoCAD 면적(AREA, AA)으로 캐드 면적 구하기: 지정한 점이나 객체의 면적과 둘레, 면적 추가와 면적 빼기로 합계 계산. 브라우저에서 무료로 해 볼 수 있습니다."
 figure: "반지름 18인 구멍이 있는 100 x 60 판입니다. AREA가 판의 면적을 더하고 구멍의 면적을 뺀 다음 남은 합계를 표시합니다."
-sourceHash: "a8ad70c08b3a"
+sourceHash: "2ca9bb942d1e"
 ---
 
 AREA(면적) 명령은 닫힌 모양의 면적과 둘레를 측정합니다. 모서리 점으로 윤곽을 지정하거나 객체를 선택합니다. 첫 번째 모서리를 지정하고 이어서 다음 모서리를 지정하면, 두 번째부터 커서를 지나 닫힌 모양이 AutoCAD처럼 반투명한 녹색으로 채워집니다. Enter 키나 <Keyword id="Total" /> 옵션은 명령 프롬프트에 `Area = …, Perimeter = …`를 표시하고 끝냅니다. 세 번째 모서리 전의 Enter 키는 거부됩니다. <Keyword id="Add" /> 옵션과 <Keyword id="Subtract" /> 옵션으로 여러 모양의 합계를 계속 계산합니다. 숫자는 도면의 정밀도로 표시되며, 마지막으로 측정한 면적은 `'AREA`를 입력하여 다시 읽을 수 있습니다.

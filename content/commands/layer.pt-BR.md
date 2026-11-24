@@ -3,7 +3,7 @@ title: "Comando LAYER (CAMADA) no AutoCAD"
 metaTitle: "Layers no AutoCAD: comando LAYER (CAMADA)"
 description: "O LAYER do AutoCAD em português, CAMADA (alias CA): Gerenciador de propriedades de camadas, criar, excluir, desativar e bloquear layers. Experimente grátis."
 figure: "Três camadas, cada uma tornada atual antes de desenhar nela: as paredes em branco, uma porta em amarelo e um eixo em vermelho, traço e ponto."
-sourceHash: "429f8c52c2fa"
+sourceHash: "a822f8c95025"
 ---
 
 O LAYER, CAMADA no AutoCAD em português, abre o Gerenciador de propriedades de camadas, onde as camadas do desenho são criadas, nomeadas e configuradas. Como no AutoCAD, é uma paleta e não uma caixa de diálogo: fica aberta enquanto você desenha, aqui como uma guia do painel de paletas, até o <Command id="LAYERCLOSE" /> fechá-la, e digitado com um apóstrofo na frente dentro de outro comando, ele se abre sem encerrar esse comando. Todo objeto está numa camada, e a cor, o tipo de linha e a espessura de linha dele, quando são PorCamada, são os da camada. Os objetos novos vão para a camada atual.
@@ -22,7 +22,7 @@ CAMADA, com os aliases `CA`, `LAYER` e `DDLMODES`. Como no AutoCAD em português
 
 ### Como mudar um objeto de layer no AutoCAD?
 
-Selecione o objeto e escolha a camada na lista suspensa Camadas da barra superior: ele passa para ela num só passo de desfazer, e a camada atual continua a mesma. A linha Camada da paleta Propriedades faz o mesmo. Sem nada selecionado, a lista suspensa torna atual a camada escolhida.
+Selecione o objeto e escolha a camada na lista suspensa Camadas da faixa de opções (guia Padrão): ele passa para ela num só passo de desfazer, e a camada atual continua a mesma. A linha Camada da paleta Propriedades faz o mesmo. Sem nada selecionado, a lista suspensa torna atual a camada escolhida.
 
 ### Como apagar um layer no AutoCAD?
 

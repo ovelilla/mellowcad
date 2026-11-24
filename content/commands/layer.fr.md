@@ -2,7 +2,7 @@
 title: "Commande CALQUE (LAYER) dans AutoCAD"
 description: "CALQUE (LAYER, alias PL) d'AutoCAD en français : le Gestionnaire des propriétés des calques, créer, supprimer, désactiver et verrouiller. Essayez-le en ligne."
 figure: "Trois calques, chacun rendu courant avant de dessiner dessus : les murs en blanc, une porte en jaune, un axe en rouge avec le type de ligne CENTER."
-sourceHash: "429f8c52c2fa"
+sourceHash: "a822f8c95025"
 ---
 
 CALQUE (LAYER) ouvre le Gestionnaire des propriétés des calques, où les calques d'un dessin sont créés, nommés et réglés. Comme dans AutoCAD, c'est une palette, pas une boîte de dialogue : elle reste ouverte pendant que vous dessinez, ici comme un onglet du panneau des palettes, jusqu'à ce que <Command id="LAYERCLOSE" /> la ferme, et tapée avec une apostrophe devant à l'intérieur d'une autre commande, elle s'ouvre sans terminer cette commande. Chaque objet est sur un calque, et sa couleur, son type de ligne et son épaisseur de ligne, quand ils sont DuCalque, sont ceux du calque. Les nouveaux objets vont sur le calque courant.
@@ -21,7 +21,7 @@ CALQUE, avec les alias `PL`, `LAYER` et `DDLMODES`, puis Entrée ou la barre d'e
 
 ### Comment changer le calque d'un objet ?
 
-Sélectionnez l'objet, puis choisissez le calque dans la liste déroulante Calques de la barre supérieure : il y passe en une seule étape d'annulation, et le calque courant ne change pas. La ligne Calque de la palette Propriétés fait de même. Sans rien de sélectionné, la liste déroulante rend courant le calque choisi.
+Sélectionnez l'objet, puis choisissez le calque dans la liste déroulante Calques du ruban (onglet Début) : il y passe en une seule étape d'annulation, et le calque courant ne change pas. La ligne Calque de la palette Propriétés fait de même. Sans rien de sélectionné, la liste déroulante rend courant le calque choisi.
 
 ### Comment supprimer un calque dans AutoCAD ?
 

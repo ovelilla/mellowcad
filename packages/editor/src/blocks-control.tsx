@@ -92,7 +92,13 @@ export function BlocksControl({
  * Draws the block through the same scene pipeline the drawing uses, so a
  * thumbnail can never disagree with what inserting it produces.
  */
-function BlockThumbnail({ engine, id }: { engine: CadEngine; id: string }) {
+export function BlockThumbnail({
+  engine,
+  id,
+}: {
+  engine: CadEngine
+  id: string
+}): ReactElement {
   const ref = useRef<HTMLCanvasElement | null>(null)
 
   useEffect(() => {

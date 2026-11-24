@@ -32,7 +32,7 @@ Nothing is translated before this is settled; each answer, with its source, goes
    does, one Satori can draw for the share card, and its weight against the landing's budget.
 5. **Plurals.** Its CLDR categories (`Intl.PluralRules`): which counts English prints bare must be
    plurals in it (`i18n.md`, "Messages").
-6. **Length.** How much longer it runs than English: the landing at 360 px, the rail's tooltips,
+6. **Length.** How much longer it runs than English: the landing at 360 px, the ribbon (its panels at 1280, its tooltips),
    the palettes' labels, the status bar, the command line's chips.
 7. **Input (IME).** A layout that does not send latin letters (Ctrl shortcuts by `e.code`, as
    Arabic's), or composition (CJK): what the command line and the dynamic input must ignore while

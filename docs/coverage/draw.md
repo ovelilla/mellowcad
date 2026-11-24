@@ -350,7 +350,7 @@ CIRCLERAD (none while it is 0), 2P's `Specify first/second end point of circle's
 `Precise punto central para círculo o [3P/2P/Ttr (Tangente tangente radio)]`,
 `Precise radio de círculo o [Diámetro]`…, Ttr's radius `Precise radio del círculo`, table 20419,
 probe circle/p187, where POLYGON's is `Precise radio de círculo`, p188); Center-Radius,
-Center-Diameter, 2P, 3P (`3P` and `2P` typed whole: digits count as a keyword's capitals); the rail's
+Center-Diameter, 2P, 3P (`3P` and `2P` typed whole: digits count as a keyword's capitals); the ribbon's
 Center, Diameter, 2-Point and 3-Point run the ribbon's macros, `^C^C_circle`, `_circle \_d`,
 `_circle _2p`, `_circle _3p`: echoed `_circle`, the centre prompt answered `_2p` or `_3p` (Diameter:
 the radius prompt answered `_d` once the centre is given), the prompt that answer opens written on
@@ -425,7 +425,7 @@ words, and no marker shows over them), Quick Properties on a double-click of a c
 (desktop d11; Quick Properties is workspace.md's Missing, Palette panel), where on an ellipse the
 plain Tangent marker sits at Ttr (**unverified**: d13 shows it at the ellipse's top with the cursor
 at its end; here the point nearest the cursor), the marker at 2P's Perpendicular on a line (the foot
-from LASTPOINT; **unverified**, none here), the rail's Tan, Tan, Tan entry
+from LASTPOINT; **unverified**, none here), the ribbon's Tan, Tan, Tan entry
 (`_circle _3p _tan \_tan \_tan \`; typed it works)
 
 ### `ARC` / `A` · es `ARCO` / `A` · pt-BR `ARCO` / `A` · fr `ARC` / `A` · it `ARCO` / `AR` · de `BOGEN` / `B` · ru `ДУГА` / `Д` · pl `ŁUK` / `U` · cs `OBLOUK` / `O` · hu `ÍV` / `I`
@@ -440,7 +440,7 @@ from LASTPOINT; **unverified**, none here), the rail's Tan, Tan, Tan entry
 and at a centre mode's end
 `Precise punto final de arco (mantenga pulsada la tecla Ctrl para cambiar de dirección)`, table
 8423, `del arco` being Continue's, 405; probes arc/p01–p03, p109, p118); 3-point, Start-Center-End,
-Center-Start-End, stored counter-clockwise (p01–p03, p171); the rail's 3-Point, Start, Center, End
+Center-Start-End, stored counter-clockwise (p01–p03, p171); the ribbon's 3-Point, Start, Center, End
 and Center, Start, End run the ribbon's macros, `^C^C_arc`, `_arc \_c \`, `_arc _c`: echoed
 `_arc`, the second point or the start answered `_c`, the prompt it opens written on its line
 (desktop d03, d04); Enter afterwards repeats ARC by three points and U names it ARC (es ARCO; p101,
@@ -532,7 +532,7 @@ there (d04-2); the centre mode's endpoint of axis the same from the centre (**un
 unprobed, the same input function); a coordinate typed in it is the point, relative to the first,
 and the command line still answers the point, a number there a direct distance. WHY a box like
 LINE's: AutoCAD lays the length field on a dimension along the axis and the angle beside the
-cursor (d04-2). The rail's Axis, End, Center and Elliptical Arc run ELLIPSE as the ribbon's
+cursor (d04-2). The ribbon's Axis, End, Center and Elliptical Arc run ELLIPSE as the ribbon's
 macros do (acad.cuix `^C^C_ellipse`, `_ellipse _c`, `_ellipse _a`): echoed `_ellipse`, the mode
 answered at its first prompt, Enter repeating ELLIPSE and U and REDO naming it (p105, p107, p198);
 ELLIPSEC and ELLIPSEARC, which AutoCAD knows not (p05), stay typed names running the same macros.
@@ -622,7 +622,7 @@ also after an end tangent (p210, p219, p220, p221, p276). `_TAN` or
 on a circle or an arc is deferred: the end leaves along the circle's tangent where it is nearest
 the spline's end, pointing the pick's way, an end inside the circle taken too (p250, p262, p263,
 p270, p272, p273); the start tangent's is the ordinary one (p249, p267). `<a` at a next point holds
-it to that angle (desktop d03). The rail's Spline Fit and Spline CV run SPLINE as the ribbon's
+it to that angle (desktop d03). The ribbon's Spline Fit and Spline CV run SPLINE as the ribbon's
 macros do (acad.cuix, Home > Draw: `^C^C_^RSPLINE _M _FIT`, `^C^C_^RSPLINE _M _CV`): echoed
 `_spline`, the method answered, Enter repeating SPLINE in it and U naming SPLINE (p104, p142); they
 have no typed name, as AutoCAD's have none. Not transparent (p105). The object: Endpoint; Midpoint halfway along from its start, a closed one's too (p310–p312);
@@ -774,7 +774,7 @@ ELEVATION; it wears the current properties and THICKNESS (p04), and lies in the 
 DXF 50 the angle from the UCS's X to its plane's (330° drawn in UCS Z 30, p04), which turns its
 figure: drawn in UCS Z 30 a PDMODE 4 tick leans 30° left (p07, plotted). The ribbon's Multiple
 Points (Home ▸ Draw, expanded: acad.cuix `*^C^C_point `) starts it again each time it ends, echoed
-anew, until Escape; here the tool palette's Points drop-down. It shows the drawing's PDMODE and
+anew, until Escape; here its button in Draw's slide-out starts it once. It shows the drawing's PDMODE and
 PDSIZE (PTYPE's entry); MOVE, COPY, SCALE and STRETCH move it whole, ROTATE adds its angle to DXF
 50 and MIRROR reflects it (30° about the Y axis reads 150°: p06, so a point rotated +30 leans the
 other way, as AutoCAD's does: p07); BREAK says `Object can't be broken`, OFFSET `Cannot offset
@@ -2006,7 +2006,7 @@ cone 5 high), and a profile the taper cannot take makes nothing, silently (x06: 
 60° to 10). DELOBJ erases the profiles (3, its initial value; 1, 2), keeps them (0), or asks `Erase
 defining objects? [Yes/No] <Yes>:` when negative, the last answer its default (x07; es `¿Desea
 borrar los objetos de definición? [Sí/No]`, pt-BR `Apagar objetos definidos? [Sim/Não]`). One undo
-step. The rail's button runs the ribbon's macro `^C^C^R_extrude _MO _SO;` (acad.cuix ID_Extrude;
+step. Its button, 3D Tools' (block 4 of `docs/plans/autocad-ui.md`, §6), runs the ribbon's macro `^C^C^R_extrude _MO _SO;` (acad.cuix ID_Extrude;
 p400): `_extrude`, MOde answered `_MO` and `_SO` on the prompt's line, Enter afterwards the bare
 EXTRUDE, U `EXTRUDE GROUP`.
 
@@ -2050,7 +2050,7 @@ MASSPROP.
 **Implemented:** REVOLVE as 2027's console asks it (revolve/r01–r09, sweeps/p200–p267), in en, es and
 pt-BR: EXTRUDE's first line, its set as `Select objects to revolve or [MOde]:` (es `Designe objetos
 para revolución o [MOdo]`, pt-BR `Selecione objetos para revolução ou [MOdo]`), sifted as Enter closes
-it with `Cannot revolve an object of this type.` (r02), and its MOde; the rail runs the ribbon's
+it with `Cannot revolve an object of this type.` (r02), and its MOde; its button, 3D Tools' (block 4), runs the ribbon's
 `^C^C^R_revolve _MO _SO;` (acad.cuix ID_Revolve, p401), typed it asks as typed. Then `Specify axis
 start point or define axis by [Object/X/Y/Z] <Object>:` (es `Precise punto inicial del eje o defina el
 eje mediante`, pt-BR `Especificar ponto inicial para eixo ou definir eixo por`; FOO `Point or option
@@ -2244,8 +2244,8 @@ reference's colour, linetype or lineweight in AutoCAD; it is not modelled here (
 ### `INSERT` / `I`, `-INSERT` / `-I` · es `INSERT` / `IN`, `-INSERT` / `-IN` · pt-BR `INSERIR` / `I` / `INSERIRURL` / `INSERIRD`, `-INSERIR` / `-I` · fr `INSERER` / `I` / `INSERURL`, `-INSERER` / `-I` · it `INSER` / `IN` / `INSERURL`, `-INSER` / `-IN` · de `EINFÜGE` / `EIN` / `URLEINFÜGEN`, `-EINFÜGE` / `-E` · ru `ВСТАВИТЬ` / `В` / `УРЛВСТАВЬ` / `ДИАЛВСТ`, `-ВСТАВИТЬ` / `-В` · pl `WSTAW` / `W` / `WSTAWURL` / `ODWSTAW`, `-WSTAW` / `-W` · cs `VLOŽ` / `VL` / `VLOŽURL`, `-VLOŽ` / `-VL` · hu `BEILL` / `BE` / `URLBEILL`, `-BEILL` / `-BE`
 
 **Implemented:** INSERT opens the Blocks palette, as 2027's does, and writes nothing more (the
-console's `*Insert a block from the Blocks palette` is the console's, p05; desktop d06); the rail's
-Insert button runs it. A click on a block there asks -INSERT's point with the block chosen, writing
+console's `*Insert a block from the Blocks palette` is the console's, p05; desktop d06); the ribbon's
+Insert is a gallery of the drawing's blocks instead, a pick running -INSERT as the palette's. A click on a block there asks -INSERT's point with the block chosen, writing
 only the prompt line, and U and REDO name the step `-INSERT` (d06-6, d06-9). -INSERT's command line
 (aliases from the 2027 `acad.pgp` and console, p200, p201; Enter repeats it, `'-INSERT` is refused,
 p202): `Enter block name or [?] <B1>:` (spaces typed key by key, `AB CD` whole, desktop

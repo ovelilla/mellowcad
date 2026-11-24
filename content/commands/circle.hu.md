@@ -3,7 +3,7 @@ title: "Kör rajzolása az AutoCAD-ben: KÖR (CIRCLE) parancs"
 metaTitle: "Kör az AutoCAD-ben: KÖR (CIRCLE) parancs, 2P, 3P"
 description: "Kör rajzolása az AutoCAD-ben a KÖR (CIRCLE, K) paranccsal, promptról promptra: középpont és sugár vagy átmérő, 2P, 3P és Éés, két objektumot érintő kör."
 figure: "Három kör: középpont és sugár, egy átmérő két végpontja (2P), középpont és Átmérő."
-sourceHash: "62e25bc029f9"
+sourceHash: "3f6a42208e31"
 ---
 
 A KÖR (CIRCLE) parancs kört rajzol a középpontjából és a sugarából – beírva vagy a kör egy pontjával megadva –, vagy az első promptja által felkínált többi mód egyikével. A sugárnál adott Enter megismétli az utolsó kör méretét, amelyet a rajz megőriz. Amíg a sugarat adja meg, a középponttól a kurzorig borostyánszínű szaggatott vonal fut, átmérő megadásakor a körön túl is, ahogy az AutoCAD rajzolja. A kör az első pontja síkjában fekszik, az aktuális szinten, ha a pontnak nincs saját Z koordinátája.
@@ -28,7 +28,7 @@ A sugár promptjánál: helyette az átmérőt adja meg, beírva vagy pontként.
 
 ## Missing
 
-Az Éés vonalláncszakaszon, amelyet az AutoCAD elfogad, a MellowCAD pedig elutasít; az eszközpaletta Érintő, érintő, érintő eleme (a beírás, a 3P három Érintő tárgyraszterrel, működik); a Gyorstulajdonságok egy körre duplán kattintva.
+Az Éés vonalláncszakaszon, amelyet az AutoCAD elfogad, a MellowCAD pedig elutasít; a szalag Érintő, érintő, érintő eleme (a beírás, a 3P három Érintő tárgyraszterrel, működik); a Gyorstulajdonságok egy körre duplán kattintva.
 
 ## Questions
 

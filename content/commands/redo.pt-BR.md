@@ -3,7 +3,7 @@ title: "Comando REDO (REFAZER) no AutoCAD"
 metaTitle: "REDO (REFAZER) no AutoCAD: Ctrl+Y e REFAZERM"
 description: "Como funciona o REDO do AutoCAD em português, REFAZER: devolve o que o último D ou DESFAZER desfez, logo depois; REFAZERM e Ctrl+Y refazem passo a passo."
 figure: "Um furo desenhado numa placa, desfeito com o D e devolvido com o REFAZER."
-sourceHash: "be2e44b98ac0"
+sourceHash: "d88f63f885fd"
 ---
 
 O REDO, REFAZER no AutoCAD em português, reverte o último <Command id="U" /> ou <Command id="UNDO" />: o que ele desfez é desenhado de novo, por inteiro, então depois de um DESFAZER de cinco comandos o REFAZER devolve os cinco. Ele escreve os nomes dos comandos enquanto isso, e depois <Message id="everythingRedone" /> quando não sobra nada a refazer. Não pergunta nada e não tem opções.
@@ -14,7 +14,7 @@ O <Command id="MREDO" /> refaz passo a passo: pede um número de ações, ou <Ke
 
 ## Missing
 
-Ctrl+Shift+Z também refaz, em silêncio, embora o AutoCAD não associe nada a ele. Os botões Desfazer e Refazer da barra superior não escrevem nada no histórico, onde a barra de ferramentas de acesso rápido do AutoCAD escreve as suas linhas.
+Ctrl+Shift+Z também refaz, em silêncio, embora o AutoCAD não associe nada a ele. Os botões Desfazer e Refazer da barra de ferramentas de acesso rápido não escrevem nada no histórico, onde os do AutoCAD escrevem as suas linhas.
 
 ## Questions
 

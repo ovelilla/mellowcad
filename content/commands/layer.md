@@ -23,7 +23,7 @@ LAYDEL and the Layers panel's other tools: Make Object's Layer Current, Match La
 
 ### How do I change an object's layer?
 
-Select the object, then choose the layer in the Layers drop-down of the top bar: it moves there in one undo step, and the current layer stays as it was. The Properties palette's Layer row does the same. With nothing selected, the drop-down makes the layer chosen current.
+Select the object, then choose the layer in the ribbon's Layers drop-down (Home tab): it moves there in one undo step, and the current layer stays as it was. The Properties palette's Layer row does the same. With nothing selected, the drop-down makes the layer chosen current.
 
 ### How do I delete a layer in AutoCAD?
 

@@ -2,12 +2,12 @@
 title: "Befehl FARBE (COLOR) in AutoCAD"
 description: "So legt AutoCADs FARBE (COLOR, Alias FAR) die Farbe neuer Objekte fest: VonLayer, eine Indexfarbe nach Name oder Nummer, oder eine True Color in RGB. Testen."
 figure: "Eine Platte VonLayer gezeichnet, ihr Loch in Rot, ihre Bohrung in der True Color 0,128,255, dann FARBE zurück auf VonLayer gesetzt."
-sourceHash: "f0bfb2cf8fe7"
+sourceHash: "8f98a2a79cf5"
 ---
 
 FARBE (COLOR) legt die Farbe fest, mit der neue Objekte gezeichnet werden. AutoCAD öffnet das Dialogfeld Farbe wählen; MellowCAD hat noch keines, sodass FARBE die Befehlszeilenform ausführt, die AutoCAD auch hat, <Command id="-COLOR" />. Er fragt nach der Standardfarbe für Objekte und bietet die aktuelle an, `VONLAYER` in einer neuen Zeichnung: VonLayer bedeutet, dass jedes Objekt die Farbe seines Layers annimmt, und eine stattdessen gewählte Farbe ist die eigene des Objekts. Geben Sie die Nummer einer Indexfarbe von 1 bis 255 oder den Namen einer der ersten sieben ein, oder wählen Sie <Keyword id="Truecolor" />. Die Eingabetaste behält die aktuelle Farbe, und die Änderung ist ein Schritt, den <Command id="U" /> zurücknimmt.
 
-Ein Wort, das er nicht versteht, ergibt <Message id="colorRequired" />, und 0, eine negative Zahl oder eine über 255 <Message id="invalidColorNumber" />; er fragt erneut. Mit Apostroph innerhalb eines Befehls getippt, `'FARBE`, übernimmt jedes danach gezeichnete Objekt die neue Farbe: Jedes Segment eines <Command id="LINE" /> übernimmt die Farbe, die gilt, wenn es beginnt. FARBE legt nur fest, was als Nächstes kommt; die Eigenschaften-Palette oder die Farbliste der oberen Leiste ändert bereits gezeichnete Objekte.
+Ein Wort, das er nicht versteht, ergibt <Message id="colorRequired" />, und 0, eine negative Zahl oder eine über 255 <Message id="invalidColorNumber" />; er fragt erneut. Mit Apostroph innerhalb eines Befehls getippt, `'FARBE`, übernimmt jedes danach gezeichnete Objekt die neue Farbe: Jedes Segment eines <Command id="LINE" /> übernimmt die Farbe, die gilt, wenn es beginnt. FARBE legt nur fest, was als Nächstes kommt; die Eigenschaften-Palette oder die Farbliste der Multifunktionsleiste (Start › Eigenschaften) ändert bereits gezeichnete Objekte.
 
 ## Options
 
@@ -59,7 +59,7 @@ Das Dialogfeld Farbe wählen, Farbbücher und die HSL-Form. VonBlock. Transparen
 
 ### Wie ändere ich die Farbe eines Objekts in AutoCAD?
 
-Wählen Sie es aus und wählen Sie die Farbe in der Farbliste der oberen Leiste oder in der Zeile Farbe der Eigenschaften-Palette: Sie ändert sich in einem Schritt. Oder kopieren Sie die Farbe eines anderen Objekts mit <Command id="MATCHPROP" />. FARBE legt nur die Farbe der danach gezeichneten Objekte fest.
+Wählen Sie es aus und wählen Sie die Farbe in der Farbliste der Multifunktionsleiste (Start › Eigenschaften) oder in der Zeile Farbe der Eigenschaften-Palette: Sie ändert sich in einem Schritt. Oder kopieren Sie die Farbe eines anderen Objekts mit <Command id="MATCHPROP" />. FARBE legt nur die Farbe der danach gezeichneten Objekte fest.
 
 ### Was bedeutet VonLayer in AutoCAD?
 

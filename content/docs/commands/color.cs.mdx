@@ -4,12 +4,12 @@ metaTitle: "Barva objektů v AutoCADu: BARVA a DleHlad"
 description: "Jak nastavit barvu nových objektů v AutoCADu příkazem BARVA (COLOR, zkratka BAR): DleHlad, barva indexu názvem nebo číslem, nebo barva RGB. Vyzkoušejte zdarma."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Jak se jmenuje příkaz BARVA anglicky a jakou má zkratku?","answer":"Anglicky COLOR, v českém AutoCADu BARVA: zadejte BAR a stiskněte Enter nebo mezerník; funguje i DIABARVA. Anglické COL v českém AutoCADu nefunguje; celý název funguje také a _COLOR v AutoCADu v jakémkoli jazyce."},{"question":"Jak změnit barvu objektu v AutoCADu?","answer":"Vyberte ho a zvolte barvu v seznamu barev na horní liště nebo v řádku Barva palety Vlastnosti: změní se v jednom kroku. Nebo zkopírujte barvu jiného objektu příkazem KOPIEVLAST. BARVA nastaví jen barvu objektů nakreslených po něm."},{"question":"Co znamená DleHlad v AutoCADu?","answer":"Že objekt přebírá barvu své hladiny, takže změna barvy hladiny ve Správci vlastností hladin změní každý objekt DleHlad v této hladině. Je to výchozí hodnota, díky které jsou barvy výkresu uspořádané podle hladin: HLADINA."},{"question":"Jak používat barvy RGB v AutoCADu?","answer":"Zvolte Truecolor a zadejte tři hodnoty oddělené čárkami, například 0,128,255."}]
+faq: [{"question":"Jak se jmenuje příkaz BARVA anglicky a jakou má zkratku?","answer":"Anglicky COLOR, v českém AutoCADu BARVA: zadejte BAR a stiskněte Enter nebo mezerník; funguje i DIABARVA. Anglické COL v českém AutoCADu nefunguje; celý název funguje také a _COLOR v AutoCADu v jakémkoli jazyce."},{"question":"Jak změnit barvu objektu v AutoCADu?","answer":"Vyberte ho a zvolte barvu v seznamu barev na pásu karet (Výchozí › Vlastnosti) nebo v řádku Barva palety Vlastnosti: změní se v jednom kroku. Nebo zkopírujte barvu jiného objektu příkazem KOPIEVLAST. BARVA nastaví jen barvu objektů nakreslených po něm."},{"question":"Co znamená DleHlad v AutoCADu?","answer":"Že objekt přebírá barvu své hladiny, takže změna barvy hladiny ve Správci vlastností hladin změní každý objekt DleHlad v této hladině. Je to výchozí hodnota, díky které jsou barvy výkresu uspořádané podle hladin: HLADINA."},{"question":"Jak používat barvy RGB v AutoCADu?","answer":"Zvolte Truecolor a zadejte tři hodnoty oddělené čárkami, například 0,128,255."}]
 ---
 
 Příkaz BARVA (COLOR) nastaví barvu, kterou se kreslí nové objekty. AutoCAD otevře dialog Vybrat barvu; MellowCAD ho zatím nemá, takže BARVA spustí verzi pro příkazový řádek, kterou má i AutoCAD, `-BARVA`. Zeptá se na implicitní barvu objektu a nabídne aktuální, v novém výkresu `DLEHLAD`: DleHlad znamená, že každý objekt přebírá barvu své hladiny, a barva zvolená místo toho je vlastní barvou objektu. Zadejte číslo barvy indexu od 1 do 255 nebo název jedné z prvních sedmi, nebo zvolte `Truecolor`. Enter ponechá aktuální barvu a změna je krok, který `Z` vrátí zpět.
 
-Slovo, které nedokáže přečíst, vypíše `nalezeno 1`, a 0, záporné číslo nebo číslo nad 255 `Neplatné číslo barvy.`; výzva se zopakuje. Zadaný s apostrofem uvnitř příkazu, `'BARVA`, způsobí, že každý objekt nakreslený po něm převezme novou barvu: každý segment příkazu [`ÚSEČKA`](/docs/commands/line) převezme barvu aktuální v okamžiku, kdy začíná. BARVA nastaví jen to, co vznikne potom; již nakreslené objekty změní paleta Vlastnosti nebo seznam barev na horní liště.
+Slovo, které nedokáže přečíst, vypíše `nalezeno 1`, a 0, záporné číslo nebo číslo nad 255 `Neplatné číslo barvy.`; výzva se zopakuje. Zadaný s apostrofem uvnitř příkazu, `'BARVA`, způsobí, že každý objekt nakreslený po něm převezme novou barvu: každý segment příkazu [`ÚSEČKA`](/docs/commands/line) převezme barvu aktuální v okamžiku, kdy začíná. BARVA nastaví jen to, co vznikne potom; již nakreslené objekty změní paleta Vlastnosti nebo seznam barev na pásu karet (Výchozí › Vlastnosti).
 
 - **Příkaz:** `BARVA`
 - **Anglicky:** `COLOR`, zadávaný jako `_COLOR` v libovolném jazyce
@@ -75,7 +75,7 @@ Anglicky COLOR, v českém AutoCADu BARVA: zadejte `BAR` a stiskněte Enter nebo
 
 ### Jak změnit barvu objektu v AutoCADu?
 
-Vyberte ho a zvolte barvu v seznamu barev na horní liště nebo v řádku Barva palety Vlastnosti: změní se v jednom kroku. Nebo zkopírujte barvu jiného objektu příkazem [`KOPIEVLAST`](/docs/commands/matchprop). BARVA nastaví jen barvu objektů nakreslených po něm.
+Vyberte ho a zvolte barvu v seznamu barev na pásu karet (Výchozí › Vlastnosti) nebo v řádku Barva palety Vlastnosti: změní se v jednom kroku. Nebo zkopírujte barvu jiného objektu příkazem [`KOPIEVLAST`](/docs/commands/matchprop). BARVA nastaví jen barvu objektů nakreslených po něm.
 
 ### Co znamená DleHlad v AutoCADu?
 

@@ -28,7 +28,7 @@ import {
   rememberPalette,
 } from "./palette-layout"
 import { CommandLine } from "./command-line"
-import { ToolRail } from "./tool-rail"
+import { Ribbon } from "./ribbon"
 import { StatusBar, type StatusBarProps } from "./status-bar"
 import { UnitsDialog } from "./units-dialog"
 import { PointStyleDialog } from "./point-style-dialog"
@@ -108,7 +108,7 @@ export function helpUrl(help: HelpLinks, command: string | null): string {
  */
 export interface CadEditorComponents {
   readonly TitleBar?: ComponentType<TitleBarProps> | null
-  readonly ToolRail?: ComponentType<PieceProps> | null
+  readonly Ribbon?: ComponentType<PieceProps> | null
   readonly PalettePanel?: ComponentType<PieceProps> | null
   readonly CommandLine?: ComponentType<PieceProps> | null
   readonly StatusBar?: ComponentType<StatusBarProps> | null
@@ -240,8 +240,7 @@ function Workspace({
   // Every zone has its size before the engine mounts, so the canvas's box at
   // the first paint is already the final one: the landing's sheet grows into
   // it, and the first view is centred in it. The grid follows the page's
-  // direction: in a right-to-left page the tools are on the right and the
-  // palettes on the left.
+  // direction: in a right-to-left page the palettes are on the left.
   //
   // The frame is AutoCAD's, top to bottom (docs/plans/autocad-ui.md, §2.1):
   // the title bar, 32; the ribbon, 124 (its tab row and its panels); the
@@ -266,7 +265,7 @@ function Workspace({
       style={EDITOR_THEME_STYLE as React.CSSProperties}
     >
       <PortalContainerProvider container={portal}>
-        <main className="grid h-svh w-full grid-cols-[auto_minmax(0,1fr)_auto] grid-rows-[auto_auto_minmax(0,1fr)_auto_auto] overflow-hidden bg-card [grid-template-areas:'title_title_title'_'ribbon_ribbon_ribbon'_'tools_canvas_panel'_'command_command_command'_'status_status_status']">
+        <main className="grid h-svh w-full grid-cols-[minmax(0,1fr)_auto] grid-rows-[auto_auto_minmax(0,1fr)_auto_auto] overflow-hidden bg-card [grid-template-areas:'title_title'_'ribbon_ribbon'_'canvas_panel'_'command_command'_'status_status']">
           <EditorZones
             components={components}
             ready={ready ? { engine, state } : null}
@@ -365,7 +364,7 @@ export function EditorZones({
 }): ReactElement {
   const {
     TitleBar: Title = TitleBar,
-    ToolRail: Tools = ToolRail,
+    Ribbon: Tabs = Ribbon,
     PalettePanel: Palettes = PalettePanel,
     CommandLine: Command = CommandLine,
     StatusBar: Status = StatusBar,
@@ -375,8 +374,8 @@ export function EditorZones({
     DynamicInput: Input = DynamicInput,
   } = components
   // Clean Screen hides the palette panel (a palette opened meanwhile shows it
-  // again) and closes the ribbon, whose tools are the tool palette's until
-  // Home is built; neither is on at the first paint, as AutoCAD saves neither.
+  // again) and closes the ribbon; neither is on at the first paint, as
+  // AutoCAD saves neither.
   const clean = ready?.state.cleanScreen
   const ribbon = ready?.state.ribbon
   const commandLine = ready?.state.commandLine
@@ -400,23 +399,15 @@ export function EditorZones({
 
       {/* The ribbon whole, its tab row (24) and its panels (100), shown from
       the first paint as AutoCAD starts with it; RIBBONCLOSE and Clean Screen
-      take it away. Empty until its Home tab is built
-      (docs/plans/autocad-ui.md, §6, block 3). */}
-      <div
-        className={cn(
-          "box-content h-31 border-b [grid-area:ribbon]",
-          ribbon?.open === false && "hidden"
-        )}
-      />
-
-      {Tools && (
+      take it away. */}
+      {Tabs && (
         <div
           className={cn(
-            "box-content flex min-h-0 w-14.5 flex-col border-e p-1 [grid-area:tools]",
+            "box-content flex h-31 min-w-0 flex-col border-b [grid-area:ribbon]",
             ribbon?.open === false && "hidden"
           )}
         >
-          {ready && <Tools {...ready} />}
+          {ready && <Tabs {...ready} />}
         </div>
       )}
 

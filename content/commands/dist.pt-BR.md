@@ -3,7 +3,7 @@ title: "Medir distância no AutoCAD: comando DIST"
 metaTitle: "Medir distância no AutoCAD: comando DIST"
 description: "Como funciona o DIST (DI) do AutoCAD em português: a distância entre dois pontos com os ângulos e os deltas em X, Y e Z, ou o comprimento de vários trechos."
 figure: "O DIST ao longo da diagonal de uma placa de 100 por 60: a distância, o ângulo no plano XY e os deltas."
-sourceHash: "31fbe420bc43"
+sourceHash: "43624d8b3d78"
 ---
 
 O DIST mede a distância entre dois pontos. Indique, com ou sem snap a objetos, ou digite o primeiro ponto e o segundo, e ele escreve no prompt de comando a distância, o ângulo no plano XY e o ângulo a partir dele, e os deltas em X, Y e Z, e encerra. Cada ponto é medido onde está, com o seu Z, então a distância é a verdadeira no espaço. Enter no primeiro ponto parte do último ponto dado, e no segundo mede de volta até o primeiro. Os números seguem a precisão do desenho, e os ângulos o AUPREC.

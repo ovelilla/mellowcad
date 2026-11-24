@@ -4,7 +4,7 @@ metaTitle: "REDO in AutoCAD: command, Ctrl+Y and MREDO"
 description: "How AutoCAD's REDO works: it puts back what the last U or UNDO took, right after it; MREDO and Ctrl+Y redo step by step. Try it free in your browser."
 figure: "A hole drawn in a plate, taken back with U and put back with REDO."
 related: ["UNDO", "U", "MREDO"]
-coverage: "39a615ced84b"
+coverage: "d99cf8304bdf"
 ---
 
 REDO reverses the last <Command id="U" /> or <Command id="UNDO" />: what it took back is drawn again, all of it, so after an UNDO of five commands REDO puts back the five. It writes the commands' names as it does, then <Message id="everythingRedone" /> once nothing is left to redo. It asks nothing and has no options.
@@ -15,7 +15,7 @@ It works only right after the undo. Anywhere else it says <Message id="redoMustF
 
 ## Missing
 
-Ctrl+Shift+Z redoes too, silently, though AutoCAD binds nothing to it. The top bar's Undo and Redo buttons write nothing in the history, where AutoCAD's Quick Access Toolbar writes its own.
+Ctrl+Shift+Z redoes too, silently, though AutoCAD binds nothing to it. The Quick Access Toolbar's Undo and Redo buttons write nothing in the history, where AutoCAD's write their own.
 
 ## Questions
 

@@ -4,7 +4,8 @@
 
 `BLOCKSPALETTE` implements the Current Drawing tab only, as a tab of the modeless palette panel:
 thumbnails rendered through the real `SceneBuilder`, wildcard filter (`?` / `*`). INSERT (`I`, es
-`IN`) and the rail's Insert open it too, as 2027's INSERT does (desktop blocks/d06).
+`IN`) opens it too, as 2027's INSERT does (desktop blocks/d06); the ribbon's Insert is its
+gallery of blocks (`docs/coverage/workspace.md`, Ribbon).
 `'BLOCKSPALETTE` opens it inside a running command, which resumes at once (desktop
 workspace/d02-t). A click on a
 block asks `-INSERT Specify insertion point or [Scale/Rotate]:` with the block chosen, writing only

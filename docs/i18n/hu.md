@@ -145,6 +145,7 @@ more are key names and file types).
 
 | Area | English | Hungarian | Source | Verified |
 | --- | --- | --- | --- | --- |
+| Ribbon's Home tab | Home; Draw, Modify, Annotation, Layers, Block, Properties, Utilities, Clipboard; Pin | Kezdőlap; Rajz, Módosítás, Feliratozás, Fóliák, Blokk, Tulajdonságok, Segédprogramok, Vágólap; Kitűzés † | X ID_TabHome, ID_PanelDraw … RBN_00011049 and every button's and list member's uid (`ribbon.mjs --lang hu`, 2026-11-24); Pin † ours: AutoCAD's pin has no name, the word undoes acadres 49183 `Unpin` | no |
 | Status bar | Object Snap, Polar Tracking, Object Snap Tracking, Grid, Snap Mode | Tárgyraszter, Poláris követés, Tárgyraszterkövetés, Háló, Raszter mód | acadres 20020–20029 | yes |
 | Ribbon | Draw, Modify, Annotation, Block, Utilities, Clipboard | Rajz, Módosítás, Feliratozás, Blokk, Segédprogramok, Vágólap | the desktop (names/d00) | yes |
 | Tools | Line, Polyline, Move, Rotate, Trim, Copy, Mirror, Fillet, Stretch, Scale, Measure | Vonal, Vonallánc, Mozgatás, Elforgatás, Metszés, Másolás, Tükrözés, Lekerekítés, Nyújtás, Léptékezés, Mérés | the ribbon (names/d00) | yes |

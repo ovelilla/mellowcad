@@ -4,7 +4,7 @@ metaTitle: "Visszavonás az AutoCAD-ben: VISSZA (UNDO)"
 description: "Így működik az AutoCAD VISSZA (UNDO) parancsa: lépések vissza, Jel és Hátra, Kezdet és Vége, Vezérlés, és miben más, mint a T és a Ctrl+Z. Próbálja ki ingyen."
 before: "Alaplap két furattal és egy rajta átmenő vonallal, négy paranccsal rajzolva: TÉGL, kétszer KÖR és VONAL."
 figure: "VISSZA 2: az utolsó két parancs visszavonva, a vonal és a második furat, az alaplapon az első furat megmarad."
-sourceHash: "b4fed2178b6a"
+sourceHash: "5d2bca4366d1"
 ---
 
 A VISSZA (UNDO) parancs parancsokat von vissza. Egy lépés egy teljes parancs: mindaz, amit egy VONAL parancs rajzolt, egyszerre tűnik el, akárhány szakasza volt, és ugyanígy az is, amit egy parancs beállított, például a VTLÉPTÉK. A VISSZA parancs kiírja az aktuális beállításait, majd a visszavonandó műveletek számát vagy egy opciót kér; az Enter egyet von vissza. A visszavont parancsok nevét egy sorba írja ki, `KÖR VONAL`, és amikor elfogynak, ezt: <Message id="everythingUndone" />; ezután ezt: <Message id="nothingToUndo" />. Az a parancs is lépés, amely semmit sem változtatott, például a KOORD vagy a LISTA, és az is, amit a ZOOM és a TOL a nézettel tett.
@@ -39,7 +39,7 @@ Minden lépést visszavon az utolsó jelig, és vele együtt a jelet is. Ha ninc
 
 ## Missing
 
-Az Auto semmit sem fog össze, mert itt egyetlen menü sem futtat egynél több parancsot. Az Egyesít és a Fólia beállítás a böngésző munkamenetének végéig marad meg, míg az AutoCAD az egyik munkamenetből a másikba is megőrzi őket. A felső sáv Vissza és Előre gombja semmit sem ír az előzményekbe, míg az AutoCAD Gyorselérési eszköztára a sajátját beírja. A Ctrl+Shift+Z szó nélkül szintén újra végrehajt, pedig az AutoCAD-ben semmi sincs hozzárendelve.
+Az Auto semmit sem fog össze, mert itt egyetlen menü sem futtat egynél több parancsot. Az Egyesít és a Fólia beállítás a böngésző munkamenetének végéig marad meg, míg az AutoCAD az egyik munkamenetből a másikba is megőrzi őket. A Gyorselérési eszköztár Vissza és Előre gombja semmit sem ír az előzményekbe, míg az AutoCAD gombjai a sajátjukat beírják. A Ctrl+Shift+Z szó nélkül szintén újra végrehajt, pedig az AutoCAD-ben semmi sincs hozzárendelve.
 
 ## Questions
 

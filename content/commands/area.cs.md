@@ -3,7 +3,7 @@ title: "Výpočet plochy v AutoCADu: příkaz PLOCHA (AREA)"
 metaTitle: "Výpočet plochy v AutoCADu: PLOCHA (AREA)"
 description: "Jak spočítat plochu v AutoCADu příkazem PLOCHA (AREA, zkratka PL): plocha a obvod z bodů nebo objektu a součet s možnostmi Přičíst oblast a Odečíst oblast."
 figure: "Deska 100 na 60 s otvorem o poloměru 18: PLOCHA přičte plochu desky, odečte plochu otvoru a vypíše zbývající součet."
-sourceHash: "a8ad70c08b3a"
+sourceHash: "2ca9bb942d1e"
 ---
 
 Příkaz PLOCHA (AREA) měří plochu a obvod uzavřeného tvaru: buď takového, který obkreslíte jeho rohy, nebo vybraného objektu. Zadejte první roh, pak další: od druhého se tvar uzavřený přes kurzor vyplní průsvitnou zelenou, jak ho stínuje AutoCAD. Enter nebo <Keyword id="Total" /> vypíše na příkazovém řádku `Plocha = …, Obvod = …` a skončí; Enter před třetím rohem se odmítne. S možnostmi Přičíst oblast a Odečíst oblast vede průběžný součet přes několik tvarů. Čísla se vypisují s přesností výkresu a poslední změřenou plochu lze znovu přečíst zadáním `'PLOCHA`.

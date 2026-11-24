@@ -2,7 +2,7 @@
 title: "Polecenie ODLEG (DIST) w AutoCADzie"
 description: "Jak zmierzyć odległość w AutoCADzie poleceniem ODLEG (DIST, skrót ODL): między dwoma punktami, z kątami i przyrostami X, Y i Z, albo długość ciągu punktów."
 figure: "ODLEG wzdłuż przekątnej płytki 100 na 60: odległość, kąt w płaszczyźnie XY i przyrosty."
-sourceHash: "31fbe420bc43"
+sourceHash: "43624d8b3d78"
 ---
 
 Polecenie ODLEG (DIST) mierzy odległość między dwoma punktami. Wskaż (także z lokalizacją względem obiektu) lub wpisz pierwszy punkt i drugi, a polecenie wypisze w wierszu polecenia odległość, kąt w płaszczyźnie XY i kąt od tej płaszczyzny oraz przyrosty X, Y i Z, po czym się zakończy. Każdy punkt jest mierzony tam, gdzie leży, razem ze swoją współrzędną Z, więc odległość jest rzeczywista w przestrzeni. Enter przy pierwszym punkcie zaczyna od ostatnio podanego punktu, a przy drugim mierzy z powrotem do pierwszego. Liczby mają dokładność rysunku, a kąty – AUPREC.

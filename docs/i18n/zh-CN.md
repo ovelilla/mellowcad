@@ -75,6 +75,7 @@ MINSERT's Columns row 分栏 (ax26res 266).
 
 | Area | English | Chinese | Source |
 | --- | --- | --- | --- |
+| Ribbon's Home tab | Home; Draw, Modify, Annotation, Layers, Block, Properties, Utilities, Clipboard; Pin | 默认; 绘图, 修改, 注释, 图层, 块, 特性, 实用工具, 剪贴板; 固定 † | X ID_TabHome, ID_PanelDraw … RBN_00011049 and every button's and list member's uid (`ribbon.mjs --cuix` on the pack's acad.CUIX, 2026-11-24); Pin † ours: AutoCAD's pin has no name, the word undoes acadres 49183 `Unpin` |
 | Status bar | Model space; MODEL | 模型空间; 模型 | P acadres 21486, 20008 |
 | Status bar | Coordinates | 坐标 | P ax26res 4; X ID_PanelCoord |
 | Status bar | Grid; Snap mode; Snap; Grid Snap; Polar Snap | 栅格; 捕捉模式; 捕捉; 栅格捕捉; PolarSnap | P acadres 21453, 20021 (`捕捉模式(F9)` less the key), 21452; D dwgaidsRes 130:1109, 130:1106 |

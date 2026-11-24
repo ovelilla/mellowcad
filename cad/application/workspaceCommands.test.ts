@@ -415,6 +415,58 @@ describe("the ribbon's tab and drop-downs", () => {
   })
 })
 
+describe("the ribbon's buttons that run a command", () => {
+  // acad.cuix ID_Style `'_style`, ID_Ddim `'_dimstyle` (Home › Annotation's
+  // slide-out): transparent, as typed.
+  it("Text Style and Dimension Style run their macros, inside LINE too", () => {
+    const idle = createHarness()
+    const from = idle.commandLog().length
+    idle.runtime.runRibbonButton("textStyle")
+    expect(idle.commandLog().slice(from)).toEqual(["'_style"])
+    expect(idle.state().palette).toEqual({ open: true, tab: "styles" })
+    expect(idle.state().stylesTable).toBe("text")
+
+    const cad = createHarness()
+    written(cad, "LINE", "0,0")
+    const mark = cad.commandLog().length
+    cad.runtime.runRibbonButton("dimensionStyle")
+    expect(cad.state().stylesTable).toBe("dimension")
+    expect(cad.commandLog().slice(mark)).toEqual([
+      "Specify next point or [Undo]: '_dimstyle",
+      "Resuming LINE command.",
+    ])
+    expect(cad.activeToolId()).toBe("line")
+  })
+
+  // A chrome macro is a menu group (desktop workspace/d02–d05): U takes the
+  // button's step back, not the command drawn before it.
+  it("makes Text Style a step of its own, which U names", () => {
+    const cad = createHarness()
+    written(cad, "LINE", "0,0", "10,0", "")
+    cad.runtime.runRibbonButton("textStyle")
+    expect(written(cad, "U").at(-1)).toBe("GROUP 'STYLE")
+    expect(cad.entityCount).toBe(1)
+  })
+
+  // ID_Modify, the Properties panel's dialog launcher: Ctrl+1's macro.
+  it("the Properties launcher ends LINE, then runs PROPERTIES or PROPERTIESCLOSE", () => {
+    const cad = createHarness()
+    cad.runtime.setPaletteOpen(false)
+    written(cad, "LINE", "0,0")
+    const from = cad.commandLog().length
+
+    cad.runtime.runRibbonButton("properties")
+    expect(cad.commandLog().slice(from)).toEqual([
+      "Specify next point or [Undo]: *Cancel*",
+      "_properties",
+    ])
+    expect(cad.state().palette).toEqual({ open: true, tab: "properties" })
+    cad.runtime.runRibbonButton("properties")
+    expect(cad.commandLog().at(-1)).toBe("_propertiesclose")
+    expect(cad.state().palette.open).toBe(false)
+  })
+})
+
 describe("Ctrl+1", () => {
   it("shows and hides the Properties palette", () => {
     const cad = createHarness()
@@ -550,7 +602,7 @@ describe("the accelerators' macros", () => {
   })
 })
 
-describe("the tool palette's macros", () => {
+describe("the ribbon's macros", () => {
   // acad.cuix ID_AttdispNo/On/Of `'_attdisp _n` / `_on` / `_off`; probe
   // workspace/p313: `'_attdisp` at LINE's prompt asks `>>Enter attribute
   // visibility setting [Normal/ON/OFF] <Normal>:` and resumes LINE

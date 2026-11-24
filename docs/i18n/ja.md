@@ -58,6 +58,7 @@ style (`新しい図面ファイルを作成`). None of it was seen on the deskt
 
 | Area | English | Japanese | Source |
 | --- | --- | --- | --- |
+| Ribbon's Home tab | Home; Draw, Modify, Annotation, Layers, Block, Properties, Utilities, Clipboard; Pin | ホーム; 作成, 修正, 注釈, 画層, ブロック, プロパティ, ユーティリティ, クリップボード; ピン留め † | X ID_TabHome, ID_PanelDraw … RBN_00011049 and every button's and list member's uid (`ribbon.mjs --cuix` on the pack's acad.CUIX, 2026-11-24); Pin † ours: AutoCAD's pin has no name, the word undoes acadres 49183 `Unpin` |
 | Status bar | Model space; MODEL | モデル空間; モデル | P acadres 21395, 20008 |
 | Status bar | Coordinates | 座標 | † (ax26res 4 has 座標表示, a palette row) |
 | Status bar | Grid; Snap mode; Snap; Grid Snap; Polar Snap | グリッド; スナップ モード; スナップ; グリッド スナップ; PolarSnap | P acadres 21453, 20021, 21452; D dwgaidsRes 130:1109, 130:1106 |

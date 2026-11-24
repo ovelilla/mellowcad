@@ -3,7 +3,7 @@ title: "Rehacer en AutoCAD: comando REHACER (REDO)"
 metaTitle: "Rehacer en AutoCAD: REHACER, Ctrl+Y y MREHACER"
 description: "Cómo funciona REHACER (REDO) de AutoCAD en español: recupera lo que deshizo el último H o DESHACER, justo después; MREHACER y Ctrl+Y rehacen paso a paso."
 figure: "Un agujero dibujado en una placa, deshecho con H y recuperado con REHACER."
-sourceHash: "be2e44b98ac0"
+sourceHash: "d88f63f885fd"
 ---
 
 REHACER (REDO en inglés) invierte el último <Command id="U" /> o <Command id="UNDO" />: lo que deshizo se vuelve a dibujar, todo, así que tras un DESHACER de cinco comandos REHACER recupera los cinco. Escribe los nombres de los comandos a medida que lo hace, y después <Message id="everythingRedone" /> cuando ya no queda nada que rehacer. No pregunta nada y no tiene opciones.
@@ -14,7 +14,7 @@ Solo funciona justo después del deshacer. En cualquier otro momento dice <Messa
 
 ## Missing
 
-Ctrl+Mayús+Z también rehace, sin decir nada, aunque AutoCAD no le asigna nada. Los botones Deshacer y Rehacer de la barra superior no escriben nada en el historial, donde la barra de herramientas de acceso rápido de AutoCAD escribe lo suyo.
+Ctrl+Mayús+Z también rehace, sin decir nada, aunque AutoCAD no le asigna nada. Los botones Deshacer y Rehacer de la barra de herramientas de acceso rápido no escriben nada en el historial, donde los de AutoCAD escriben lo suyo.
 
 ## Questions
 

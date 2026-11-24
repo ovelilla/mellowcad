@@ -2,12 +2,12 @@
 title: "Commande COULEUR (COLOR) dans AutoCAD"
 description: "COULEUR (COLOR, alias CL) d'AutoCAD en français règle la couleur des nouveaux objets : DuCalque, couleur d'index par nom ou numéro, ou RVB. Essayez-le."
 figure: "Une plaque dessinée DuCalque, son trou en rouge, son alésage en couleur vraie 0,128,255, puis COULEUR remise à DuCalque."
-sourceHash: "f0bfb2cf8fe7"
+sourceHash: "8f98a2a79cf5"
 ---
 
 COULEUR (COLOR en anglais) définit la couleur avec laquelle les nouveaux objets sont dessinés. AutoCAD ouvre la boîte de dialogue Sélectionner une couleur ; MellowCAD n'en a pas encore, donc COULEUR lance la forme ligne de commande qu'AutoCAD a aussi, <Command id="-COLOR" />. Elle demande la couleur par défaut de l'objet, en proposant la couleur courante, `DUCALQUE` dans un nouveau dessin : DuCalque signifie que chaque objet prend la couleur de son calque, et une couleur choisie à la place est celle de l'objet lui-même. Tapez le numéro d'une couleur d'index, de 1 à 255, ou le nom de l'une des sept premières, ou choisissez <Keyword id="Truecolor" />. Entrée conserve la couleur courante, et le changement est une étape que <Command id="U" /> annule.
 
-Un mot qu'elle ne sait pas lire affiche <Message id="colorRequired" />, et 0, un nombre négatif ou un nombre supérieur à 255 <Message id="invalidColorNumber" /> ; la question revient. Tapée avec une apostrophe à l'intérieur d'une commande, `'COULEUR`, elle donne la nouvelle couleur à chaque objet dessiné ensuite : chaque segment de <Command id="LINE" /> prend la couleur courante au moment où il commence. COULEUR ne règle que ce qui suit ; la palette Propriétés ou la liste des couleurs de la barre supérieure modifie les objets déjà dessinés.
+Un mot qu'elle ne sait pas lire affiche <Message id="colorRequired" />, et 0, un nombre négatif ou un nombre supérieur à 255 <Message id="invalidColorNumber" /> ; la question revient. Tapée avec une apostrophe à l'intérieur d'une commande, `'COULEUR`, elle donne la nouvelle couleur à chaque objet dessiné ensuite : chaque segment de <Command id="LINE" /> prend la couleur courante au moment où il commence. COULEUR ne règle que ce qui suit ; la palette Propriétés ou la liste des couleurs du ruban (Début › Propriétés) modifie les objets déjà dessinés.
 
 ## Options
 
@@ -59,7 +59,7 @@ COULEUR, raccourci `CL`, puis Entrée ou la barre d'espace ; `COUL` et `DDCOLOR
 
 ### Comment changer la couleur d'un objet dans AutoCAD ?
 
-Sélectionnez-le et choisissez la couleur dans la liste des couleurs de la barre supérieure ou dans la ligne Couleur de la palette Propriétés : elle change en une seule étape. Ou copiez la couleur d'un autre objet avec <Command id="MATCHPROP" />. COULEUR ne règle que la couleur des objets dessinés après elle.
+Sélectionnez-le et choisissez la couleur dans la liste des couleurs du ruban (Début › Propriétés) ou dans la ligne Couleur de la palette Propriétés : elle change en une seule étape. Ou copiez la couleur d'un autre objet avec <Command id="MATCHPROP" />. COULEUR ne règle que la couleur des objets dessinés après elle.
 
 ### Que signifie DuCalque dans AutoCAD ?
 

@@ -2,7 +2,7 @@
 title: "Commande AIRE (AREA) dans AutoCAD"
 description: "Calculer une surface avec AIRE (AREA, alias AI) d'AutoCAD en français : aire et périmètre de points ou d'un objet, et un total. Essayez-le gratuitement."
 figure: "Une plaque de 100 sur 60 percée d'un trou de rayon 18 : AIRE ajoute l'aire de la plaque, soustrait celle du trou et écrit le total restant."
-sourceHash: "a8ad70c08b3a"
+sourceHash: "2ca9bb942d1e"
 ---
 
 AIRE (AREA en anglais) mesure l'aire et le périmètre d'une forme fermée, soit une forme que vous tracez par ses coins, soit un objet que vous désignez. Donnez le premier coin, puis les suivants : à partir du deuxième, la forme fermée par le curseur se remplit d'un vert translucide, comme AutoCAD l'ombre. Entrée ou <Keyword id="Total" /> écrit `Aire = …, Périmètre = …` à l'invite de commande et termine ; Entrée avant le troisième coin est refusée. Avec Ajouter une aire et Soustraire une aire, elle tient un total sur plusieurs formes. Les nombres sont écrits à la précision du dessin, et la dernière aire mesurée peut être relue en tapant `'AREA`, sa variable système.

@@ -2,7 +2,7 @@
 title: "Comando DIST in AutoCAD"
 description: "Misurare una distanza con DIST (DI) di AutoCAD in italiano: due punti, angoli e delta X, Y, Z, oppure una serie di punti. Provalo gratis online."
 figure: "DIST lungo la diagonale di una piastra di 100 per 60: la distanza, l'angolo nel piano XY e i delta."
-sourceHash: "31fbe420bc43"
+sourceHash: "43624d8b3d78"
 ---
 
 DIST misura la distanza tra due punti. Seleziona, aggancia o digita il primo punto e il secondo, e scrive nella riga di comando la distanza, l'angolo nel piano XY e l'angolo da esso, e i delta in X, Y e Z, poi termina. Ogni punto è misurato dov'è, con la sua Z, quindi la distanza è quella vera nello spazio. Invio al primo punto parte dall'ultimo punto indicato, e al secondo misura di nuovo fino al primo. I numeri seguono la precisione del disegno, e gli angoli AUPREC.

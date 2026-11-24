@@ -2,4 +2,4 @@
 "@mellowcad/editor": patch
 ---
 
-The tool palette's Annotation group offers Wipeout, where AutoCAD's Annotate tab has it (Markup panel).
+The ribbon's Draw slide-out offers Wipeout, where AutoCAD's Home tab has it.

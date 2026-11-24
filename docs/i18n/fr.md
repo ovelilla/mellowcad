@@ -42,6 +42,7 @@ editor's catalog: 94 of 267 by id, 77 by place, 96 ours.
 
 | Area | English | French | Source | Verified |
 | --- | --- | --- | --- | --- |
+| Ribbon's Home tab | Home; Draw, Modify, Annotation, Layers, Block, Properties, Utilities, Clipboard; Pin | Début; Dessin, Modification, Annotation, Calques, Bloc, Propriétés, Utilitaires, Presse-papiers; Épingler † | X ID_TabHome, ID_PanelDraw … RBN_00011049 and every button's and list member's uid (`ribbon.mjs --lang fr`, 2026-11-24); Pin † ours: AutoCAD's pin has no name, the word undoes acadres 49183 `Unpin` | no |
 | Object snaps | Endpoint, Midpoint, Center, Quadrant, Intersection, Apparent intersection, Nearest | Extrémité, Milieu, Centre, Quadrant, Intersection, Intersection projetée, Le plus proche | P acadres 70–79, 32997 | yes |
 | Status bar | Object snap, Polar tracking, Object snap tracking, Selection cycling, Clean screen, Dynamic input | Accrochage aux objets, Repérage polaire, Repérage d'accrochage aux objets, Cycle de sélection, Nettoyer écran, Saisie dynamique | P dwgaidsRes 5, 2; P acadres 25573, 20051; X XLS_6102 | yes |
 |  | MODEL, Model space, Grid, Grid Snap, Snap X spacing | OBJET, Espace objet, Grille, Accrochage à la grille, Espacement X de l'accrochage | P acadres 4122, 20008; D dwgaidsRes | yes |

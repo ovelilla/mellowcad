@@ -37,6 +37,7 @@ marks a choice between competing terms that a native review should settle first 
 
 | Area | English | Arabic |
 | --- | --- | --- |
+| Ribbon's Home tab | Home; Draw, Modify, Annotation, Layers, Block, Properties, Utilities, Clipboard; Pin | الرئيسية; رسم, تعديل, التعليقات التوضيحية, الطبقات, الكتلة, الخصائص, أدوات مساعدة, الحافظة; تثبيت † — ours, all of it (†): AutoCAD has no Arabic; the buttons' words from the engine's Arabic tool names |
 | Object snaps | Endpoint, Midpoint, Center, Intersection, Apparent intersection | نقطة النهاية، نقطة المنتصف، المركز، التقاطع، تقاطع ظاهري (C) |
 |  | Perpendicular, Tangent, Insertion, Extension, Parallel, Quadrant, Nearest | عمودي، مماس، الإدراج، الامتداد، موازٍ، الربع، الأقرب (C) |
 |  | None | لا شيء (M) |
@@ -155,7 +156,7 @@ marks a choice between competing terms that a native review should settle first 
 |  | Surface, mesh; Boolean operation | سطح، شبكة (M)؛ عملية بوليانية (L) † |
 |  | Loop, chain (of edges); tangent edges; round edge, rim | حلقة، سلسلة؛ حواف مماسة؛ الحافة الدائرية، طرف مستدير (L) |
 |  | Arrow grip; base surface (a chamfer's); modeling error | مقبض السهم؛ السطح الأساسي؛ خطأ في النمذجة (L) |
-|  | Solid editing (SOLIDEDIT's tool and rail group) | تحرير المجسمات (C) |
+|  | Solid editing (SOLIDEDIT's tool and ribbon panel) | تحرير المجسمات (C) |
 |  | Frustum; prism | جذع (جذع هرم، جذع مخروط)؛ منشور (M) |
 |  | Block reference; wildcards; backquote | مرجع كتلة (C)؛ أحرف البدل؛ علامة الاقتباس الخلفية (L) |
 |  | Attribute; tag, prompt, default value; mode (an attribute's); pickbox | سمة، سمات البلوك (C)؛ المعرّف، المطالبة، القيمة الافتراضية؛ الوضع؛ مربع التحديد (L) † — المعرّف as the palette's Tag; the dialogs (Attribute Definition, Edit Attributes) keep their English names, as Block Definition does |
@@ -203,7 +204,7 @@ marks a choice between competing terms that a native review should settle first 
 |  | The Layer control | قائمة الطبقات المنسدلة (L) — as LAYER's notes, not عنصر التحكم في الطبقات |
 |  | Conceptual (a caption's visual style); hidden lines removed | النمط المفاهيمي (L, as the landing's figures)؛ مع إزالة الخطوط المخفية (M) |
 |  | Leaders, layouts (the FAQ's DXF answer); a binary file; Open a DXF file (DXFIN) | خطوط الإشارة، التخطيطات (L) †؛ ثنائية (M)؛ فتح ملف ⁨DXF⁩ (L) |
-|  | Point (an object), points; Multiple Points, Divide, Measure (the tool palette); Point Style (PTYPE's dialog and its labels); Node (the object snap) | نقطة، نقاط (M)؛ نقاط متعددة، تقسيم، قياس (L)؛ نمط النقطة، حجم النقطة، تعيين الحجم نسبةً إلى الشاشة، بالوحدات المطلقة (L)؛ عقدة (C, the snap's usual name) |
+|  | Point (an object), points; Multiple Points, Divide, Measure (the ribbon's Draw panel); Point Style (PTYPE's dialog and its labels); Node (the object snap) | نقطة، نقاط (M)؛ نقاط متعددة، تقسيم، قياس (L)؛ نمط النقطة، حجم النقطة، تعيين الحجم نسبةً إلى الشاشة، بالوحدات المطلقة (L)؛ عقدة (C, the snap's usual name) |
 |  | Solid (a 2D solid, the object), 2D Solid (the tool) | مجسم ثنائي الأبعاد (L) † |
 |  | Wipeout (the object and the tool) | قناع، أقنعة (L, as the DXF pages' list) † |
 |  | Raster Image (the object, ax26res 307), an image (the DXF pages) | صورة نقطية، صور نقطية (L)؛ صورة (M) † |
@@ -289,7 +290,7 @@ available. Where one should look first, if one ever is, in this order:
    the catalogs of `4ffac941`): 154 keys of `cad/locales/ar.json`, above all the Properties
    palette's rows (114 of `interface.property`: splines, arrays, hatches, attributes, regions) and
    30 tool names, and 5 swept solid rows since (04/11/2026); in `packages/editor/src/locales/ar.json`, split from the site's catalog since,
-   the layer dialogs (`Layers.dialog`), the rail's flyouts and MTEXT's unsaved-changes dialog;
+   the layer dialogs (`Layers.dialog`), the ribbon's lists and MTEXT's unsaved-changes dialog;
    in `messages/ar.json`, 79 new keys (the docs' pages and shortcuts, `Docs.*`) and 18 rewritten
    (the FAQ, the Status section), and on 05/11/2026 the search texts (`Metadata`'s title and
    descriptions, the H1 and `Hero.lead`, the taglines) and the FAQ's 3D question (`Faq.q10`,

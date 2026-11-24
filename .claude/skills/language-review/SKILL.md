@@ -55,7 +55,7 @@ reviewed unread is a translation nobody checked. The "Use" pages' `sourceHash` w
 
 - List the keys each language runs longest against English: a throwaway script over the catalogs
   in the scratchpad, ratio and length, the editor's and the engine's `interface` first.
-- See them in place (skill `browser-verify`): the landing at 360 px, the rail's tooltips, the
+- See them in place (skill `browser-verify`): the landing at 360 px, the ribbon (its panels at 1280, its tooltips), the
   palettes' rows, the status bar, the command line's chips, the menus, in each language; a
   right-to-left one also for its left-to-right runs.
 - A cut or wrapped label is a finding. A project's word is shortened within the language's

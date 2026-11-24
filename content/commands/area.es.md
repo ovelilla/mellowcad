@@ -3,7 +3,7 @@ title: "Calcular áreas en AutoCAD: comando AREA"
 metaTitle: "Calcular áreas en AutoCAD: comando AREA"
 description: "Cómo funciona AREA (AA) de AutoCAD en español: el área y el perímetro de unos puntos o de un objeto, y un total con Añadir área y Sustraer área. Pruébalo."
 figure: "Una placa de 100 por 60 con un agujero de radio 18: AREA añade el área de la placa, resta la del agujero y escribe el total que queda."
-sourceHash: "a8ad70c08b3a"
+sourceHash: "2ca9bb942d1e"
 ---
 
 AREA mide el área y el perímetro de una forma cerrada, ya sea una que perfilas por sus esquinas o un objeto que designas. Precisa la primera esquina y después las siguientes: desde la segunda, la forma cerrada por el cursor se rellena de verde translúcido, como la sombrea AutoCAD. Intro o <Keyword id="Total" /> escriben `Área = …, Perímetro = …` en la solicitud de comando y terminan; Intro antes de la tercera esquina no se admite. Con Añadir área y Sustraer área lleva un total de varias formas. Los números se escriben a la precisión del dibujo, y la última área medida se puede volver a leer escribiendo `'AREA`.

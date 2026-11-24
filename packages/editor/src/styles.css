@@ -9,14 +9,6 @@
    designed for it — those added with its CLI later too. */
 @custom-variant dark (&);
 
-/* A window too short for the whole tool palette, which then folds its
-   Annotation, Block and Utilities sections into a drop-down each. In CSS, so
-   the palette has its final height at the first paint. Under the title bar
-   and the ribbon the whole palette, 776 px, fits from 1016 px of window: below
-   it, folded, and scrolled where even that is too tall. The palette goes when
-   the ribbon's Home tab comes (docs/plans/autocad-ui.md, §6, block 3). */
-@custom-variant short (@media (height < 1016px));
-
 /* The palette panel open, before the engine exists: what the head script
    wrote on the editor's root (packages/editor/src/palette-layout.ts), else the window's
    width. In CSS, so the canvas has its final box at the first paint. */

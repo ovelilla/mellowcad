@@ -3,7 +3,7 @@ title: "Capas en AutoCAD: CAPA (LAYER)"
 metaTitle: "Capas en AutoCAD: comando CAPA (LAYER)"
 description: "Cómo funciona CAPA (LAYER, alias CA) de AutoCAD en español: Administrador de propiedades de capas, crear, suprimir, desactivar y bloquear. Pruébalo gratis."
 figure: "Tres capas, cada una hecha actual antes de dibujar en ella: los muros en blanco, una puerta en amarillo y un eje en rojo de trazo y punto."
-sourceHash: "429f8c52c2fa"
+sourceHash: "a822f8c95025"
 ---
 
 CAPA (LAYER en inglés) abre el Administrador de propiedades de capas, donde se crean, se nombran y se ajustan las capas del dibujo. Como en AutoCAD, es una paleta y no un cuadro de diálogo: sigue abierta mientras dibujas, aquí como ficha del panel de paletas, hasta que la cierra <Command id="LAYERCLOSE" />, y escrita con un apóstrofo delante dentro de otro comando se abre sin terminarlo. Cada objeto está en una capa, y su color, su tipo de línea y su grosor de línea, cuando son PorCapa, son los de la capa. Los objetos nuevos van a la capa actual.
@@ -22,7 +22,7 @@ CAPA, con los alias `CA`, `LAYER` y `DDLMODES`. Como en AutoCAD en español, el 
 
 ### ¿Cómo cambio un objeto de capa?
 
-Designa el objeto y elige la capa en la lista desplegable Capas de la barra superior: pasa a ella en un solo paso de deshacer, y la capa actual sigue siendo la misma. La fila Capa de la paleta Propiedades hace lo mismo. Sin nada designado, la lista desplegable hace actual la capa elegida.
+Designa el objeto y elige la capa en la lista desplegable Capas de la cinta de opciones (ficha Inicio): pasa a ella en un solo paso de deshacer, y la capa actual sigue siendo la misma. La fila Capa de la paleta Propiedades hace lo mismo. Sin nada designado, la lista desplegable hace actual la capa elegida.
 
 ### ¿Cómo borro una capa en AutoCAD?
 

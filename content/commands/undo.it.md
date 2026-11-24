@@ -3,7 +3,7 @@ title: "Comando ANNULLA (UNDO) in AutoCAD"
 description: "Come funziona ANNULLA (UNDO) di AutoCAD in italiano: un numero di passi, Segno e Indietro, Inizio e Fine, e la differenza da U e Ctrl+Z. Provalo."
 before: "Una piastra con due fori e una linea che l'attraversa, disegnate da quattro comandi: RETTANGOLO, CERCHIO due volte e LINEA."
 figure: "ANNULLA 2: gli ultimi due comandi vengono annullati, la linea e il secondo foro, e la piastra conserva il suo primo foro."
-sourceHash: "b4fed2178b6a"
+sourceHash: "5d2bca4366d1"
 ---
 
 ANNULLA (UNDO) annulla comandi. Un passo è un intero comando: tutto ciò che ha disegnato una LINEA se ne va insieme, qualunque fosse il numero dei suoi segmenti, e così ciò che un comando ha impostato, come LTSCALE. ANNULLA scrive le sue impostazioni correnti, poi chiede il numero di operazioni da annullare o un'opzione; Invio ne annulla una. Scrive i nomi dei comandi annullati su una riga, `CERCHIO LINEA`, e <Message id="everythingUndone" /> quando finiscono; dopo, <Message id="nothingToUndo" />. Anche un comando che non ha cambiato nulla, come ID o LIST, è un passo, e lo è ciò che ZOOM e PAN hanno fatto alla vista.
@@ -38,7 +38,7 @@ Annulla ogni passo fino all'ultimo segno, e il segno con essi. Senza segno, chie
 
 ## Missing
 
-Auto non unisce nulla, dato che nessun menu qui esegue più di un comando. Combina e Layer durano per la sessione del browser, dove AutoCAD le conserva da una sessione all'altra. I pulsanti Annulla e Ripeti della barra superiore non scrivono nulla nella cronologia, dove la barra di accesso rapido di AutoCAD scrive la propria. Anche Ctrl+Maiusc+Z ripristina, in silenzio, anche se AutoCAD non vi associa nulla.
+Auto non unisce nulla, dato che nessun menu qui esegue più di un comando. Combina e Layer durano per la sessione del browser, dove AutoCAD le conserva da una sessione all'altra. I pulsanti Annulla e Ripeti della barra di accesso rapido non scrivono nulla nella cronologia, dove quelli di AutoCAD scrivono le proprie righe. Anche Ctrl+Maiusc+Z ripristina, in silenzio, anche se AutoCAD non vi associa nulla.
 
 ## Questions
 

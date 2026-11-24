@@ -4,7 +4,7 @@ metaTitle: "DIST in AutoCAD: measure distance, alias DI"
 description: "How AutoCAD's DIST (DI) works: the distance between two points with its angles and its X, Y and Z deltas, or the length of a run of points. Try it free online."
 figure: "DIST along a 100 by 60 plate's diagonal: the distance, the angle in the XY plane and the deltas."
 related: ["AREA", "ID", "LIST", "UNITS"]
-coverage: "35c7e8a81fd9"
+coverage: "ce3c71677a74"
 ---
 
 DIST measures the distance between two points. Pick, snap or type the first point and the second, and it writes at the command prompt the distance, the angle in the XY plane and the angle from it, and the deltas in X, Y and Z, then ends. Each point is measured where it is, its Z included, so the distance is the true one in space. Enter at the first point starts from the last point given, and at the second measures back to the first. The numbers follow the drawing's precision, and the angles AUPREC.

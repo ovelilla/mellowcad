@@ -2,7 +2,7 @@
 title: "Comando AREA in AutoCAD"
 description: "Come funziona AREA (alias AA) di AutoCAD in italiano: area e perimetro di punti indicati o di un oggetto, e un totale con Aggiungi e Sottrai. Provalo gratis."
 figure: "Una piastra 100 per 60 con un foro di raggio 18: AREA aggiunge l'area della piastra, sottrae quella del foro e scrive il totale rimasto."
-sourceHash: "a8ad70c08b3a"
+sourceHash: "2ca9bb942d1e"
 ---
 
 AREA misura l'area e il perimetro di una forma chiusa, che tu la delinei con i suoi angoli o la selezioni come oggetto. Indica il primo angolo, poi i successivi: dal secondo, la forma chiusa fino al cursore si riempie di verde traslucido, come in AutoCAD. Invio o <Keyword id="Total" /> scrive `Area = …, Perimetro = …` alla riga di comando e termina; Invio prima del terzo angolo è rifiutato. Con Aggiungi area e Sottrai area tiene un totale corrente su più forme. I numeri sono scritti alla precisione del disegno, e l'ultima area misurata si può rileggere digitando `'AREA`.

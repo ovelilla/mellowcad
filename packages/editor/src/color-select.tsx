@@ -34,6 +34,7 @@ export function ColorSelect({
   triggerClassName,
   disabled = false,
   below = false,
+  ribbon = false,
 }: {
   value: string | null
   /** The engine's names for the colours and for ByLayer. */
@@ -50,6 +51,11 @@ export function ColorSelect({
    * (`30`), not as the palette (`Color 30`).
    */
   below?: boolean
+  /**
+   * The ribbon's Object Color: its picker in the 20 px icon's place before
+   * the list, 22 high (docs/plans/autocad-ui.md, §2.3).
+   */
+  ribbon?: boolean
 }): ReactElement {
   const t = useEditorText("Properties")
   const place = below ? "bar" : "palette"
@@ -62,8 +68,34 @@ export function ColorSelect({
       .map((color) => [color, colorLabel(color, names, place)])
   )
 
+  const picker = (
+    <label
+      aria-disabled={disabled || undefined}
+      className={cn(
+        "relative inline-flex shrink-0 cursor-pointer items-center justify-center hover:bg-accent aria-disabled:pointer-events-none aria-disabled:opacity-50",
+        ribbon
+          ? "h-5.5 w-5 rounded-sm"
+          : "size-7 rounded-md border border-border"
+      )}
+      title={t("customColor")}
+    >
+      <Palette className="size-4 text-muted-foreground" />
+      <input
+        type="color"
+        disabled={disabled}
+        aria-label={t("customColor")}
+        value={custom ? colorRgb(custom) : "#ffffff"}
+        onChange={(event) => onValueChange(event.target.value)}
+        className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+      />
+    </label>
+  )
+
   return (
-    <div className={cn("flex items-center gap-1", className)}>
+    <div
+      className={cn("flex items-center", ribbon ? "gap-0" : "gap-1", className)}
+    >
+      {ribbon && picker}
       <Select
         items={labels}
         disabled={disabled}
@@ -104,23 +136,7 @@ export function ColorSelect({
         </SelectContent>
       </Select>
 
-      <label
-        aria-disabled={disabled || undefined}
-        className={cn(
-          "relative inline-flex size-7 shrink-0 cursor-pointer items-center justify-center rounded-md border border-border hover:bg-accent aria-disabled:pointer-events-none aria-disabled:opacity-50"
-        )}
-        title={t("customColor")}
-      >
-        <Palette className="size-4 text-muted-foreground" />
-        <input
-          type="color"
-          disabled={disabled}
-          aria-label={t("customColor")}
-          value={custom ? colorRgb(custom) : "#ffffff"}
-          onChange={(event) => onValueChange(event.target.value)}
-          className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-        />
-      </label>
+      {!ribbon && picker}
     </div>
   )
 }

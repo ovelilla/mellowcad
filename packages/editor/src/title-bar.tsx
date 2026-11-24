@@ -6,15 +6,12 @@ import {
   CheckIcon,
   ChevronRight,
   FilePlus,
-  FileText,
   FolderOpen,
   Globe,
-  Layers,
   LibraryBig,
   Loader2,
   Menu as MenuIcon,
   MessageSquare,
-  Paintbrush,
   PencilRuler,
   Redo2,
   Ruler,
@@ -29,14 +26,6 @@ import { type CadEngine, type PaletteTab } from "@mellowcad/engine"
 import type { EditorState } from "@mellowcad/react"
 import { cn } from "./utils"
 import { Button } from "./ui/button"
-import { Separator } from "./ui/separator"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "./ui/select"
 import {
   Tooltip,
   TooltipContent,
@@ -45,10 +34,6 @@ import {
 } from "./ui/tooltip"
 import { usePortalContainer } from "./ui/portal-container"
 
-import { ColorSelect } from "./color-select"
-import { LayerSwatch } from "./layers-control"
-import { LinetypeSelect } from "./linetype-select"
-import { LineweightSelect } from "./lineweight-select"
 import { IconAction, Panel } from "./toolbar-primitives"
 import { useEditorText } from "./editor-text"
 import type { PieceProps } from "./piece"
@@ -80,16 +65,11 @@ export interface TitleBarProps extends PieceProps {
   readonly feedback?: string
 }
 
-/** A drop-down of the bar: bordered, with no surface of its own. */
-const BAR_SELECT = "border-input bg-transparent shadow-none dark:bg-transparent"
-
 /**
  * AutoCAD's title bar: the application button and the Quick Access Toolbar at
  * AutoCAD's sizes, then the save state where AutoCAD's title names the
- * drawing. Until the ribbon's Home and View tabs are built, the Layers and
- * Properties panels and View's palette toggles follow them here. Every part
- * has a fixed width or truncates, so the row never grows with a layer's name
- * or the selection.
+ * drawing. Until the ribbon's View tab is built, its palette toggles follow
+ * them here. Every part has a fixed width, so the row never grows.
  */
 export function TitleBar({
   engine,
@@ -100,7 +80,6 @@ export function TitleBar({
 }: TitleBarProps): ReactElement {
   const t = useEditorText("TitleBar")
   const keys = useEditorText("Keys")
-  const layers = useEditorText("Layers")
   const styles = useEditorText("Styles")
   const blocks = useEditorText("Blocks")
   // The bar's buttons run acad.cuix's `^C^C` macros: the running command
@@ -177,28 +156,11 @@ export function TitleBar({
 
       <SaveStatus state={state} />
 
-      {/* The ribbon's parts of the bar, which RIBBONCLOSE and Clean Screen
-          close: the Layers and Properties panels and View's palette toggles.
-          The application menu and the Quick Access Toolbar stay. */}
+      {/* View's Palettes panel, which RIBBONCLOSE and Clean Screen close
+          with the ribbon, until block 4 of the plan's §6 builds the View
+          tab. The application menu and the Quick Access Toolbar stay. */}
       {state.ribbon.open && (
         <>
-          <Separator orientation="vertical" className="mx-0.5 h-6!" />
-
-          <Panel className="shrink-0 items-center">
-            <PaletteToggle
-              engine={engine}
-              state={state}
-              tab="layers"
-              icon={Layers}
-              label={layers("title")}
-            />
-            <LayerControl engine={engine} state={state} />
-          </Panel>
-
-          <Separator orientation="vertical" className="mx-0.5 h-6!" />
-
-          <PropertyControls engine={engine} state={state} />
-
           <Panel className="ms-auto shrink-0 items-center">
             <PaletteToggle
               engine={engine}
@@ -392,141 +354,6 @@ function SaveStatus({ state }: { state: EditorState }) {
         <span className="truncate">{saving ? t("saving") : t("saved")}</span>
       )}
     </span>
-  )
-}
-
-/**
- * The Layers panel's drop-down: the selection's layer, or the current one
- * with nothing selected. Choosing moves the selection there, or makes the
- * layer current — two steps either way.
- */
-function LayerControl({
-  engine,
-  state,
-}: {
-  engine: CadEngine
-  state: EditorState
-}) {
-  const t = useEditorText("TitleBar")
-  const properties = useEditorText("Properties")
-  const selected = state.selectionCount > 0
-  const value = selected ? state.selectionLayerId : state.currentLayerId
-  const items = Object.fromEntries(
-    state.layers.map((layer) => [layer.id, layer.name])
-  )
-  const colorOf = (id: string) =>
-    state.layers.find((layer) => layer.id === id)?.color
-
-  return (
-    <Select
-      items={items}
-      value={value}
-      onValueChange={(id) => {
-        if (id == null) return
-        engine.applyLayerControl(id)
-        engine.focusSurface()
-      }}
-    >
-      <SelectTrigger aria-label={t("layer")} className={cn(BAR_SELECT, "w-40")}>
-        <SelectValue placeholder={properties("varies")}>
-          {(id: string | null) =>
-            id === null ? null : (
-              <>
-                <LayerSwatch color={colorOf(id) ?? ""} />
-                <span className="truncate">{items[id]}</span>
-              </>
-            )
-          }
-        </SelectValue>
-      </SelectTrigger>
-      <SelectContent align="start" alignItemWithTrigger={false}>
-        {state.layers.map((layer) => (
-          <SelectItem key={layer.id} value={layer.id}>
-            <LayerSwatch color={layer.color} />
-            <span className="truncate">{layer.name}</span>
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
-  )
-}
-
-/**
- * The Properties panel: Match Properties, then the object colour, lineweight
- * and linetype. As the layer drop-down, each shows and changes the selection
- * when there is one, and otherwise the current setting new objects take
- * (CECOLOR, CELWEIGHT, CELTYPE). List closes it, as in the ribbon panel's
- * expanded part (acad.cuix's RBN_01740411, `^C^C_list`).
- */
-function PropertyControls({
-  engine,
-  state,
-}: {
-  engine: CadEngine
-  state: EditorState
-}) {
-  const t = useEditorText("TitleBar")
-  const selected = state.selectionCount > 0
-  const matchprop = state.tools.find((entry) => entry.id === "matchprop")
-  const list = state.tools.find((entry) => entry.id === "list")
-  const done = () => engine.focusSurface()
-
-  return (
-    <Panel className="shrink-0 items-center">
-      <IconAction
-        icon={Paintbrush}
-        label={matchprop?.label ?? "matchprop"}
-        shortcut={matchprop?.shortcut?.toUpperCase()}
-        side="bottom"
-        active={state.activeToolId === "matchprop"}
-        onClick={() => engine.setActiveTool("matchprop")}
-      />
-      <ColorSelect
-        below
-        value={selected ? state.selectionColor : state.currentColor}
-        names={state.names}
-        onValueChange={(value) => {
-          engine.applyColorControl(value)
-          done()
-        }}
-        ariaLabel={t("color")}
-        className="w-36"
-        triggerClassName={BAR_SELECT}
-      />
-      <LineweightSelect
-        below
-        includeByLayer
-        value={selected ? state.selectionLineweight : state.currentLineweight}
-        names={state.names}
-        onValueChange={(value) => {
-          engine.applyLineweightControl(value)
-          done()
-        }}
-        ariaLabel={t("lineweight")}
-        className={cn(BAR_SELECT, "w-28")}
-      />
-      <LinetypeSelect
-        below
-        includeByLayer
-        value={selected ? state.selectionLinetype : state.currentLinetype}
-        names={state.names}
-        linetypes={state.linetypes}
-        onValueChange={(value) => {
-          engine.applyLinetypeControl(value)
-          done()
-        }}
-        ariaLabel={t("linetype")}
-        className={cn(BAR_SELECT, "w-32")}
-      />
-      <IconAction
-        icon={FileText}
-        label={list?.label ?? "list"}
-        shortcut={list?.shortcut?.toUpperCase()}
-        side="bottom"
-        active={state.activeToolId === "list"}
-        onClick={() => engine.setActiveTool("list")}
-      />
-    </Panel>
   )
 }
 

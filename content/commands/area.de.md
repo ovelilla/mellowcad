@@ -2,7 +2,7 @@
 title: "Befehl FLÄCHE (AREA): Fläche messen in AutoCAD"
 description: "So arbeitet AutoCADs FLÄCHE (AREA, Alias FL): Fläche und Umfang von Punkten oder einem Objekt, und eine Summe mit Fläche addieren und subtrahieren."
 figure: "Eine Platte 100 mal 60 mit einem Loch mit Radius 18: FLÄCHE addiert die Fläche der Platte, subtrahiert die des Lochs und schreibt die verbleibende Summe."
-sourceHash: "a8ad70c08b3a"
+sourceHash: "2ca9bb942d1e"
 ---
 
 FLÄCHE (AREA) misst die Fläche und den Umfang einer geschlossenen Form, entweder einer, die Sie über ihre Ecken umreißen, oder eines Objekts, das Sie wählen. Geben Sie die erste Ecke an, dann die nächsten: Ab der zweiten füllt sich die durch den Cursor geschlossene Form durchscheinend grün, wie AutoCAD sie schattiert. Die Eingabetaste oder <Keyword id="Total" /> schreibt `Fläche = …, Umfang = …` in die Eingabeaufforderung und endet; die Eingabetaste vor der dritten Ecke wird abgelehnt. Mit Fläche addieren und Fläche subtrahieren führt sie eine Summe über mehrere Formen. Zahlen erscheinen mit der Genauigkeit der Zeichnung, und die zuletzt gemessene Fläche lässt sich mit `'AREA` wieder abrufen.

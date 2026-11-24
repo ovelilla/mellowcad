@@ -140,6 +140,7 @@ Punkt»), the ViewCube's faces from the desktop, 34 ours. The editor: by id from
 
 | Area | English | Polish | Source | Verified |
 | --- | --- | --- | --- | --- |
+| Ribbon's Home tab | Home; Draw, Modify, Annotation, Layers, Block, Properties, Utilities, Clipboard; Pin | Narzędzia główne; Rysuj, Zmień, Opis, Warstwy, Blok, Właściwości, Narzędzia, Schowek; Przypnij † | X ID_TabHome, ID_PanelDraw … RBN_00011049 and every button's and list member's uid (`ribbon.mjs --lang pl`, 2026-11-24); Pin † ours: AutoCAD's pin has no name, the word undoes acadres 49183 `Unpin` | no |
 | Status bar | Object Snap, Polar Tracking, Object Snap Tracking, Dynamic Input | Lokalizacja, Śledzenie biegunowe, Śledzenie lokalizacji, Wprowadzanie dynamiczne | acadres 20022–20051 | yes |
 | Ribbon | Draw, Modify, Annotation, Layers, Properties | Rysuj, Zmień, Opis, Warstwy, Właściwości | the desktop's ribbon | yes |
 | Palette | Weight, Elliptical | Waga (ax26res 70), Eliptyczna († where ax26res writes «Epliptyczna») | ax26res | partial |

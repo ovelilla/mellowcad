@@ -1,7 +1,8 @@
 # AutoCAD's interface: inventory and plan
 
 > **Status:** phase 0 (this inventory and plan) done on 2026-11-24; of phase 1, blocks 1 (the
-> engine) and 2 (the frame) done the same day, block 3 (Home) next; phases 2 to 6 not started.
+> engine), 2 (the frame) and 3 (Home) done the same day, block 4 (the other tabs) next, with no
+> push before it; phases 2 to 6 not started.
 > The brief is `docs/next-autocad-ui.md`; where its phases and this plan differ, this plan rules
 > (the brief says so) and the brief was corrected the same day.
 
@@ -144,7 +145,8 @@ does the same under a text that stays (Circle, Arc, Array, Text, Measure, Edit A
 a click only opens the list (Cut, Copy: one target, 35×22). The list drops below the button,
 left-aligned: each member a row of 38 with a
 32 px icon and its name, groups parted by a line (5), the member shown highlighted (Circle's: 137
-wide, six members in three groups, 254 high). After 2-Point was picked from Circle's list the
+wide, six members in three groups, 254 high); a small button's list is the same, rows of 38 with
+32 px icons (Rectangle's, `autocad-mouse/rect-list.png`). After 2-Point was picked from Circle's list the
 button drew 2-Point's icon over the same `Circle`, and ran it; **after a restart it was Center,
 Radius again**: the member is the session's, not the profile's. The button of a command that
 is running was not lit while it ran (Circle, the pointer over the drawing).
@@ -153,11 +155,20 @@ is running was not lit while it ran (Circle, the pointer over the drawing).
 button (Line's some 178×105, over the panel's title bar) with the name in bold, the description
 (`Creates straight line segments`), a rule, then the command line's icon and the command in bold
 (`LINE`) and, bold too, `Press F1 for more help`. The button under the pointer takes a faint
-frame.
+frame. After a longer rest, some four seconds more, the same panel grows into the extended tooltip:
+a paragraph under the description (`With LINE, you can create a series of contiguous line
+segments…`) and an illustration, before the rule (`autocad-mouse/tip-long.png`). A button pressed
+takes a fill darker than the panel inside a thin frame (`autocad-mouse/press-line.png`).
+
+**Insert** (Block, `AcInsertGalleryControl`) is one target, 38×72: it opens under it a gallery of
+the drawing's blocks (empty in a new drawing) and then Recent Blocks..., Favorite Blocks... and
+Blocks from Libraries..., rows of 21 (`autocad-mouse/insert-gal.png`).
 
 **A panel's slide-out** (a click on its title bar): the rows after the panel's break drop below
-it over the drawing, small controls on the same 24 px pitch, and the title bar moves under them
-with a push pin at its start. It closes on a click elsewhere unless pinned.
+it over the drawing, small controls on the same 24 px pitch starting 22 below where the title bar
+was (Draw's at y 158 and 182, its title at 136), a `Spacer` 4 wide, and the title bar moves under
+them with a push pin, 16×18, at its start. **It closes as soon as the pointer leaves it**, no
+click needed, unless pinned (`autocad-mouse/ds-a.png`: the pointer moved off, it was gone).
 
 **Minimize states**, by the button, in the order of the help's Cycle Through All. Its arrow's
 menu (rows of 22, under the arrow): Minimize to Tabs, Minimize to Panel Titles, Minimize to
@@ -464,14 +475,24 @@ Each closes with skill `finish-feature`. Each starts with the captures it still 
    Properties and the palette toggles stay in the title row after the Quick Access Toolbar. **The
    `tools` zone stays** (decision 6: each block leaves the editor whole, and the ribbon replaces
    the palette in one commit), folding below 1016 px of window and scrolling at 720.
-3. **Home**: Draw, Modify, Annotation, Layers, Block, Properties, Utilities and Clipboard in
-   AutoCAD's rows (`ribbon.mjs --tab Home --built` is the worklist), large and small buttons, the
-   split buttons with their behaviours, the slide-outs with their pin. It takes the title bar's
-   Layers and Properties groups, **and the `tools` zone goes** with the tool palette, the `short:`
-   variant and the slot `ToolRail`; the ribbon's zone becomes a slot. The command notes and the
-   pages of `content/docs/` that say "top bar" or "tool palette" are corrected here, in every
-   language, where the controls they name land (block 2 left them: the title bar is still the
-   row on top, and they would change twice), with the one coverage phrase tied to them, Undo's Missing in `docs/coverage/command-line.md` ("what the top bar's buttons write").
+3. **Home** (done 2026-11-24): Draw, Modify, Annotation, Layers, Block, Properties, Utilities and
+   Clipboard in AutoCAD's rows (`ribbon.mjs --tab Home --built`), large and small buttons, the
+   split buttons with their behaviours, the slide-outs with their pin; the title bar's Layers and
+   Properties groups moved into their panels, and the `tools` zone went with the tool palette, the
+   `short:` variant and the slot `ToolRail`; the ribbon's zone is the slot `Ribbon`. The command
+   notes and the pages of `content/docs/` that said "top bar" or "tool palette" say the ribbon, in
+   every language, with Undo's Missing in `docs/coverage/command-line.md`.
+   - **At 1280 Home does not fit** (decision 6): what is built is 1521 px wide in English, 1632 in
+     Spanish (AutoCAD's whole Home is 1760, and its panels fold from 1440). Until block 5 folds them,
+     the panels' row scrolls sideways under the wheel or a trackpad, with no bar to take its
+     height: at 1280 Properties, Utilities and Clipboard are past the edge. Nothing else of the
+     editor changes at 1280.
+   - **Left for block 4**, the tools the palette offered that Home does not hold
+     (`OTHER_TABS` in `packages/editor/src/ribbon-home.ts`, which `ribbon.test.ts` checks):
+     Continue, Baseline and Adjust Space (Annotate › Dimensions), the 3D primitives, EXTRUDE,
+     REVOLVE, PRESSPULL, the booleans, SLICE, Fillet and Chamfer Edge and the face edits (3D Tools).
+     TEXTEDIT loses its button for good: no panel of 2027 has one (its `^C^C_textedit` is the Text
+     toolbar's); it is typed, or a double-click on a text.
 4. **The other tabs**: Annotate, View (Palettes takes the title bar's toggles; Viewport Tools;
    Named Views; Visual Styles with the gallery, which answers the owner's request of 2026-11-10
    and takes `vscurrent` out of the commands without a button; Coordinates; Navigate), 3D Tools,
@@ -525,7 +546,7 @@ start of its phase and with the owner's word first (`gui.md`):
 
 | Phase | To capture |
 | ----- | ---------- |
-| 1 | a button pressed; an extended tooltip, if a longer rest shows one |
+| 1 | done 2026-11-24 (§2.3): a button pressed, the extended tooltip, a small button's list, a slide-out open, the Insert gallery |
 | 2 | the title bar's Help list, which neither UI Automation nor a click opened; the title with a saved drawing's name and path; the Open Documents list of the application menu |
 | 3 | a palette docked, anchored and auto-hidden, and its properties menu; New Text Style; each tab of Modify Dimension Style |
 | 4 | the status bar of a profile nobody has touched; the navigation bar under the pointer; the command line's history open |

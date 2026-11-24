@@ -9,7 +9,7 @@ coverage: "7ca086fd11b1"
 
 COLOR sets the colour new objects are drawn with. AutoCAD opens the Select Color dialog; MellowCAD has none yet, so COLOR runs the command-line form AutoCAD has too, <Command id="-COLOR" />. It asks for the default object colour, offering the current one, `BYLAYER` in a new drawing: ByLayer means each object takes its layer's colour, and a colour chosen instead is the object's own. Type an index colour's number, from 1 to 255, or the name of one of the first seven, or choose <Keyword id="Truecolor" />. Enter keeps the current colour, and the change is a step that <Command id="U" /> takes back.
 
-A word it cannot read says <Message id="colorRequired" />, and 0, a negative number or one past 255 <Message id="invalidColorNumber" />; it asks again. Typed with an apostrophe inside a command, `'COLOR`, each object drawn after it takes the new colour: each segment of a <Command id="LINE" /> takes the colour current as it starts. COLOR sets only what comes next; the Properties palette or the top bar's colour list changes objects already drawn.
+A word it cannot read says <Message id="colorRequired" />, and 0, a negative number or one past 255 <Message id="invalidColorNumber" />; it asks again. Typed with an apostrophe inside a command, `'COLOR`, each object drawn after it takes the new colour: each segment of a <Command id="LINE" /> takes the colour current as it starts. COLOR sets only what comes next; the Properties palette or the ribbon's colour list (Home › Properties) changes objects already drawn.
 
 ## Options
 
@@ -61,7 +61,7 @@ The Select Color dialog, Color Books and the HSL form. ByBlock. Transparency (CE
 
 ### How do I change the color of an object in AutoCAD?
 
-Select it and choose the colour in the top bar's colour list or in the Color row of the Properties palette: it changes in one step. Or copy another object's colour with <Command id="MATCHPROP" />. COLOR only sets the colour of objects drawn after it.
+Select it and choose the colour in the ribbon's colour list (Home › Properties) or in the Color row of the Properties palette: it changes in one step. Or copy another object's colour with <Command id="MATCHPROP" />. COLOR only sets the colour of objects drawn after it.
 
 ### What does ByLayer mean in AutoCAD?
 

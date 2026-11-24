@@ -3,8 +3,8 @@
 > **Estado:** en curso desde el 24/11/2026, agotada la cola de la visibilidad (`docs/next-seo.md`):
 > la fase 0 (inventario y plan) está hecha y su plan, `docs/plans/autocad-ui.md`, manda sobre las
 > fases de §4, que se corrigieron con él; de la fase 1 (el marco y el ribbon), los bloques 1
-> (el estado del ribbon en el motor) y 2 (el marco) del §6 del plan están hechos el 24/11 y sigue
-> el 3, Home, que quita la paleta de herramientas.
+> (el estado del ribbon en el motor), 2 (el marco) y 3 (Home, que quitó la paleta de herramientas)
+> del §6 del plan están hechos el 24/11; sigue el 4, las otras pestañas, sin push antes.
 > Acordado el 7/11/2026 por el dueño. Se borra cuando la última fase esté hecha; hasta entonces
 > cada fase cerrada se marca aquí.
 
@@ -139,8 +139,8 @@ que «Drafting & Annotation» tiene oculto y aquí se muestra: va con la fase 1 
 que el pedido se cumple primero por el ribbon, y la etiqueta del viewport llega en la fase 4. La
 lista ofrece solo los estilos construidos (2D Wireframe, Hidden,
 Conceptual: `docs/coverage/view.md`, VSCURRENT) y ejecuta VSCURRENT, como la de AutoCAD; quita
-`vscurrent` de la lista de comandos sin botón de `packages/editor/src/tool-rail.tsx` (o de la que
-la sustituya) con la galería, y la fila «the viewport controls' style menu» de su Missing con la
+`vscurrent` de los comandos sin botón (`TYPED` en `packages/editor/src/ribbon-home.ts`) con la
+galería, y la fila «the viewport controls' style menu» de su Missing con la
 etiqueta.
 
 ### Fase 5 — lo que le falta al ribbon

@@ -3,12 +3,12 @@ title: "Polecenie KOLOR (COLOR) w AutoCADzie"
 metaTitle: "Kolor obiektów w AutoCADzie: KOLOR i JakWarstwa"
 description: "Jak ustawić kolor nowych obiektów w AutoCADzie poleceniem KOLOR (COLOR, skrót KOL): JakWarstwa, kolor indeksowany po nazwie lub numerze albo kolor RGB."
 figure: "Płyta narysowana JakWarstwa, jej otwór na czerwono, jej wytoczenie w kolorze Truecolor 0,128,255, a potem KOLOR z powrotem na JakWarstwa."
-sourceHash: "f0bfb2cf8fe7"
+sourceHash: "8f98a2a79cf5"
 ---
 
 Polecenie KOLOR (COLOR) ustala kolor, którym rysowane są nowe obiekty. AutoCAD otwiera okno dialogowe Wybierz kolor; MellowCAD go jeszcze nie ma, więc KOLOR uruchamia formę wiersza polecenia, którą AutoCAD też ma, <Command id="-COLOR" />. Pyta o domyślny kolor obiektów, proponując bieżący, w nowym rysunku `JAKWARSTWA`: JakWarstwa oznacza, że każdy obiekt przyjmuje kolor swojej warstwy, a kolor wybrany zamiast tego jest własnym kolorem obiektu. Wpisz numer koloru indeksowanego, od 1 do 255, lub nazwę jednego z pierwszych siedmiu albo wybierz <Keyword id="Truecolor" />. Enter zachowuje bieżący kolor, a zmiana to krok, który cofa <Command id="U" />.
 
-Słowo, którego nie potrafi odczytać, daje komunikat <Message id="colorRequired" />, a 0, liczba ujemna lub większa niż 255 komunikat <Message id="invalidColorNumber" />; pytanie się powtarza. Wpisane z apostrofem wewnątrz polecenia, `'KOLOR`, sprawia, że każdy obiekt narysowany po nim przyjmuje nowy kolor: każdy segment polecenia <Command id="LINE" /> przyjmuje kolor bieżący w chwili, gdy się zaczyna. KOLOR ustala tylko to, co powstanie później; obiekty już narysowane zmienia paleta Właściwości lub lista kolorów na górnym pasku.
+Słowo, którego nie potrafi odczytać, daje komunikat <Message id="colorRequired" />, a 0, liczba ujemna lub większa niż 255 komunikat <Message id="invalidColorNumber" />; pytanie się powtarza. Wpisane z apostrofem wewnątrz polecenia, `'KOLOR`, sprawia, że każdy obiekt narysowany po nim przyjmuje nowy kolor: każdy segment polecenia <Command id="LINE" /> przyjmuje kolor bieżący w chwili, gdy się zaczyna. KOLOR ustala tylko to, co powstanie później; obiekty już narysowane zmienia paleta Właściwości lub lista kolorów na wstążce (Narzędzia główne › Właściwości).
 
 ## Options
 
@@ -60,7 +60,7 @@ Po angielsku COLOR, w polskim AutoCADzie KOLOR: wpisz `KOL`, potem naciśnij Ent
 
 ### Jak zmienić kolor obiektu w AutoCADzie?
 
-Zaznacz go i wybierz kolor z listy kolorów na górnym pasku albo w wierszu Kolor palety Właściwości: zmienia się w jednym kroku. Albo skopiuj kolor innego obiektu poleceniem <Command id="MATCHPROP" />. KOLOR ustala tylko kolor obiektów rysowanych po nim.
+Zaznacz go i wybierz kolor z listy kolorów na wstążce (Narzędzia główne › Właściwości) albo w wierszu Kolor palety Właściwości: zmienia się w jednym kroku. Albo skopiuj kolor innego obiektu poleceniem <Command id="MATCHPROP" />. KOLOR ustala tylko kolor obiektów rysowanych po nim.
 
 ### Co oznacza JakWarstwa w AutoCADzie?
 

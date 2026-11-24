@@ -152,7 +152,7 @@ with the area. The order puts first the commands whose review settles what the l
 | 21  | Inquiry          | DIST, AREA, ID                                                                                                           |                                                                                                                                                                                                                                    | done  |
 | 22  | View             | ZOOM, PAN, -PAN, PLAN, VPOINT, -VPOINT, VIEW, -VIEW, 3DORBIT, NAVVCUBE, VSCURRENT; the ViewCube, the viewport controls, the navigation bar, the wheel | the view and its undo                                                                                                                                                                                                              | done  |
 | 23  | UCS              | UCS, UCSICON, ELEV                                                                                                       |                                                                                                                                                                                                                                    | done  |
-| 24  | Workspace        | UNITS, AUPREC, SETVAR, CLEANSCREENON, CLEANSCREENOFF, RIBBON, RIBBONCLOSE; the status bar, the title bar, the tool palette, the palette panel, the shortcut menus | system variables typed as commands                                                                                                                                                                                                 | done  |
+| 24  | Workspace        | UNITS, AUPREC, SETVAR, CLEANSCREENON, CLEANSCREENOFF, RIBBON, RIBBONCLOSE; the status bar, the title bar, the ribbon, the palette panel, the shortcut menus | system variables typed as commands                                                                                                                                                                                                 | done  |
 | 25  | Clipboard, files | COPYCLIP, CUTCLIP, COPYBASE, PASTECLIP, NEW, QNEW, QSAVE, SAVEAS, OPEN                                                    |                                                                                                                                                                                                                                    | done  |
 | 26  | 3D primitives    | BOX, WEDGE, CYLINDER, CONE, SPHERE, TORUS, PYRAMID                                                                       | the solid object (its B-rep, 2D Wireframe and isolines, picking, snaps, transforms, file), a height or radius given with the mouse off the plan, the primitives' grips, palette rows, shared defaults and jig                   | done  |
 | 27  | Regions          | REGION, UNION, SUBTRACT, INTERSECT                                                                                       | the region object, the booleans of regions and solids, a composite solid's grip and palette                                                                                                                                        | done  |
@@ -209,7 +209,7 @@ above (`docs/plans/blocks-review.md`); it leaves ATTDIA, ATTREQ, AFLAGS, ATTMODE
 as variables to the Workspace review, and the Edit Attributes dialog's stand-in (ATTEDIT's box, BLOCKS-D90) to whichever review
 builds a dialog for it. The Dimensions review (`docs/plans/dimensions-review.md`) leaves angular
 chaining, dimension overrides and the Dimension Style Manager in `dimensions.md`'s Missing. The Inquiry
-review leaves the rail's other apostrophe macros (ATTDISP's, MATCHPROP's: `transparentMacro`) to
+review leaves the ribbon's other apostrophe macros (ATTDISP's, MATCHPROP's: `transparentMacro`) to
 the Workspace review. The View review (`docs/plans/view-review.md`) left UCS Restore's not-found
 words (`ucsUndefined`) and the `*TOP*` name after U to the UCS review, which settled them (UCS-D39,
 UCS-D43), and leaves AutoCAD's `<command> GROUP` undo names for the other toolbar and menu buttons
@@ -218,7 +218,7 @@ icon (`components/marketing/ucs-icon.tsx`, still the 2D colours) to the landing,
 Workspace review the other chrome menus' echo (2027's ViewCube menu writes its prompts without the
 answers, UCD-07) and every name prompt that may hold spaces (`takesSpaces`, UCD-05). The Workspace review
 (`docs/plans/workspace-review.md`) settled the variables typed by name and SETVAR, those the
-reviews before it left (the DIMxxx stay Missing: typed they make an override), and the rail's
+reviews before it left (the DIMxxx stay Missing: typed they make an override), and the ribbon's
 apostrophe macros, and on the desktop (WSD) the `<command> GROUP` undo names, the chrome menus'
 echo, the drafting toggles' echo and undo, MATCHPROP's button and the name prompts with spaces;
 it leaves the Default menu's Undo labels, Ctrl+9's confirmation and the ribbon's Move during a grip

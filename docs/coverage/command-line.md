@@ -11,11 +11,11 @@ behaviour, and every `<…>` and report follows the one the drawing has, the arr
 without their trailing zeros as AutoCAD writes them (`<6>`, `<-4.3514>`; arrays/p116, p130); the
 dynamic-input tooltip shows the question alone, up to its `or` (its keywords are the chips below
 it), or with its colon when it offers none. An alias is echoed as typed with the name it runs (`Command: l LINE`, es
-`Comando: l LINEA`); a command started from the tool palette is echoed as AutoCAD's ribbon macro
+`Comando: l LINEA`); a command started from the ribbon is echoed as AutoCAD's ribbon macro
 (`^C^C_line`) echoes it, `Command: _line` (desktop line/d19; every other button's macro is
 **unverified**), and is a command run: Enter at `Command:` repeats it (probes circle/p159, p191,
 p192), and it is a menu group U names `LINE GROUP` (es `LINEA GRUPO`; desktop workspace/d02; the
-other buttons by analogy, `CIRCLE GROUP`), a typed LINE staying `LINE`; the rail's Circle modes run the ribbon's macros, `_circle`
+other buttons by analogy, `CIRCLE GROUP`), a typed LINE staying `LINE`; the ribbon's Circle modes run the ribbon's macros, `_circle`
 and the mode answered at its prompt, the prompt that answer opens written on the answer's line as the
 desktop writes it (`Specify center point for circle or [3P/2P/Ttr (tan tan radius)]: _2p Specify
 first end point of circle's diameter: 0,0`, desktop circle/d01, d02; ARC's, `_arc` and `_c`,
@@ -450,5 +450,5 @@ writes; es from the table (`Ya se ha deshecho todo`, `Todo repetido`, `Nada que 
 **Missing:** what Auto joins (WHY: Auto makes one step of a menu macro's commands, and no menu here
 runs more than one), Combine
 and Layer from one session to the next (AutoCAD keeps them in the registry, as its console shows;
-here they last the session, as the running object snaps do); what the top bar's buttons write (nothing here; AutoCAD's are the Quick Access Toolbar's own, not
+here they last the session, as the running object snaps do); what the Quick Access Toolbar's Undo and Redo write (nothing here; AutoCAD's are the Quick Access Toolbar's own, not
 macros); Ctrl+Shift+Z still redoes, silently, though AutoCAD binds nothing to it

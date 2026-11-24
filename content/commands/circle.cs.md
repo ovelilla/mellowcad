@@ -3,7 +3,7 @@ title: "Kružnice v AutoCADu: příkaz KRUŽNICE (CIRCLE)"
 metaTitle: "Kružnice v AutoCADu: příkaz KRUŽNICE (CIRCLE)"
 description: "Jak nakreslit kružnici v AutoCADu příkazem KRUŽNICE (CIRCLE, zkratka KR): střed a poloměr nebo průměr, 2B, 3B a Ttr, kružnice tečná ke dvěma objektům."
 figure: "Tři kružnice: střed a poloměr, dva konce průměru (2B), střed a průměr."
-sourceHash: "62e25bc029f9"
+sourceHash: "3f6a42208e31"
 ---
 
 Příkaz KRUŽNICE (CIRCLE) nakreslí kružnici ze středu a poloměru, zadaného číslem nebo bodem na kružnici, nebo jedním z dalších způsobů, které nabízí jeho první výzva. Enter u poloměru zopakuje velikost poslední kružnice, uloženou pro výkres. Zatímco zadáváte poloměr, vede od středu ke kurzoru jantarová čárkovaná čára, při zadávání průměru až za obvod, jak ji kreslí AutoCAD. Kružnice leží v rovině svého prvního bodu, v aktuálním zdvihu, pokud bod nemá vlastní souřadnici Z.
@@ -28,7 +28,7 @@ Na výzvu k zadání poloměru: zadejte místo něj průměr, číslem nebo bode
 
 ## Missing
 
-Ttr na segmentu křivky, který AutoCAD přijme a MellowCAD odmítne; položka Tečna, tečna, tečna na paletě nástrojů (zadání tohoto způsobu, tedy 3B se třemi uchopeními Tečna, funguje); Rychlé vlastnosti po dvojitém kliknutí na kružnici.
+Ttr na segmentu křivky, který AutoCAD přijme a MellowCAD odmítne; položka Tečna, tečna, tečna na pásu karet (zadání tohoto způsobu, tedy 3B se třemi uchopeními Tečna, funguje); Rychlé vlastnosti po dvojitém kliknutí na kružnici.
 
 ## Questions
 

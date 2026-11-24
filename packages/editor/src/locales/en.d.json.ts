@@ -30,10 +30,6 @@ declare const source: {
     "undo": string
     "redo": string
     "commandLine": string
-    "layer": string
-    "color": string
-    "lineweight": string
-    "linetype": string
   }
   "NavigationBar": {
     "label": string
@@ -64,37 +60,105 @@ declare const source: {
       "right": string
     }
   }
-  "ToolRail": {
-    "flyouts": {
-      "circle": string
-      "arc": string
-      "ellipse": string
-      "spline": string
-      "rectangle": string
-      "trim": string
-      "fillet": string
-      "filletedge": string
-      "solideditextrude": string
-      "break": string
-      "pedit": string
-      "array": string
-      "text": string
-      "dimension": string
-      "dimchain": string
-      "attributes": string
-      "measure": string
-      "union": string
-      "box": string
-      "extrude": string
-      "point": string
+  "Ribbon": {
+    "tabs": {
+      "home": string
     }
-    "sections": {
+    "panels": {
       "draw": string
       "modify": string
       "annotation": string
+      "layers": string
       "block": string
+      "properties": string
       "utilities": string
+      "clipboard": string
     }
+    "items": {
+      "line": string
+      "polyline": string
+      "circle": string
+      "circlediameter": string
+      "circle2p": string
+      "circle3p": string
+      "arc": string
+      "arcsce": string
+      "arccse": string
+      "rectangle": string
+      "polygon": string
+      "ellipsecenter": string
+      "ellipse": string
+      "ellipsearc": string
+      "hatch": string
+      "splinefit": string
+      "splinecv": string
+      "xline": string
+      "ray": string
+      "point": string
+      "divide": string
+      "measuresegments": string
+      "region": string
+      "wipeout": string
+      "polyline3d": string
+      "move": string
+      "copy": string
+      "stretch": string
+      "rotate": string
+      "mirror": string
+      "scale": string
+      "trim": string
+      "extend": string
+      "fillet": string
+      "chamfer": string
+      "array": string
+      "arraypath": string
+      "arraypolar": string
+      "erase": string
+      "explode": string
+      "offset": string
+      "pedit": string
+      "splinedit": string
+      "break": string
+      "breakatpoint": string
+      "join": string
+      "mtext": string
+      "text": string
+      "dimlinear": string
+      "dimaligned": string
+      "dimangular": string
+      "dimradius": string
+      "dimdiameter": string
+      "textStyle": string
+      "dimensionStyle": string
+      "layerProperties": string
+      "insert": string
+      "block": string
+      "attedit": string
+      "attdef": string
+      "matchprop": string
+      "list": string
+      "measure": string
+      "measurearea": string
+      "id": string
+      "ptype": string
+      "paste": string
+      "cutclip": string
+      "copyclip": string
+      "copybase": string
+    }
+    "splits": {
+      "circle": string
+      "arc": string
+      "text": string
+      "array": string
+      "measure": string
+      "editAttributes": string
+    }
+    "layer": string
+    "color": string
+    "lineweight": string
+    "linetype": string
+    "pin": string
   }
   "CommandLine": {
     "label": string

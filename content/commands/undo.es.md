@@ -4,7 +4,7 @@ metaTitle: "Deshacer en AutoCAD: DESHACER, H y Ctrl+Z"
 description: "Cómo funciona DESHACER (UNDO) de AutoCAD en español: varios pasos atrás, Marca y Retorno, Inicio y Fin, Control, y en qué se diferencia de H y Ctrl+Z."
 before: "Una placa con dos agujeros y una línea que la cruza, dibujados con cuatro comandos: RECTANG, CIRCULO dos veces y LINEA."
 figure: "DESHACER 2: se deshacen los dos últimos comandos, la línea y el segundo agujero, y la placa conserva su primer agujero."
-sourceHash: "b4fed2178b6a"
+sourceHash: "5d2bca4366d1"
 ---
 
 DESHACER (UNDO en inglés) deshace comandos. Un paso es un comando entero: todo lo que dibujó una LINEA se va de una vez, tuviera los segmentos que tuviera, y lo mismo lo que fijó un comando, como ESCALATL. DESHACER escribe sus parámetros actuales y después pide el número de operaciones que deshacer o una opción; Intro deshace una. Escribe en una línea los nombres de los comandos que ha deshecho, `CIRCULO LINEA`, y <Message id="everythingUndone" /> cuando se le acaban; a partir de ahí, <Message id="nothingToUndo" />. Un comando que no cambió nada, como ID o LIST, también es un paso, y también lo es lo que ZOOM y ENCUADRE hicieron con la vista.
@@ -39,7 +39,7 @@ Deshace todos los pasos hasta la última marca, y la marca con ellos. Sin marca,
 
 ## Missing
 
-Auto no agrupa nada, ya que aquí ningún menú ejecuta más de un comando. Combinar y CApa duran lo que la sesión del navegador, donde AutoCAD los conserva de una sesión a otra. Los botones Deshacer y Rehacer de la barra superior no escriben nada en el historial, donde la barra de herramientas de acceso rápido de AutoCAD escribe lo suyo. Ctrl+Mayús+Z también rehace, sin decir nada, aunque AutoCAD no le asigna nada.
+Auto no agrupa nada, ya que aquí ningún menú ejecuta más de un comando. Combinar y CApa duran lo que la sesión del navegador, donde AutoCAD los conserva de una sesión a otra. Los botones Deshacer y Rehacer de la barra de herramientas de acceso rápido no escriben nada en el historial, donde los de AutoCAD escriben lo suyo. Ctrl+Mayús+Z también rehace, sin decir nada, aunque AutoCAD no le asigna nada.
 
 ## Questions
 

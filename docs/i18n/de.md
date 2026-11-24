@@ -141,6 +141,7 @@ rest ours, below. Changed from the proposal: `Gedreht` for a rotated dimension (
 
 | Area | English | German | Source | Verified |
 | --- | --- | --- | --- | --- |
+| Ribbon's Home tab | Home; Draw, Modify, Annotation, Layers, Block, Properties, Utilities, Clipboard; Pin | Start; Zeichnen, Ändern, Beschriftung, Layer, Block, Eigenschaften, Dienstprogramme, Zwischenablage; Anheften † | X ID_TabHome, ID_PanelDraw … RBN_00011049 and every button's and list member's uid (`ribbon.mjs --lang de`, 2026-11-24); Pin † ours: AutoCAD's pin has no name, the word undoes acadres 49183 `Unpin` | no |
 | Tools | Diameter circle, 2-Point circle, 3-Point circle; Start, Center, End arc; Center ellipse | Kreis Mittelpunkt, Durchmesser; Kreis 2 Punkte; Kreis 3 Punkte; Bogen Startpunkt, Mittelpunkt, Endpunkt; Ellipse Zentrum | ours, written out from the ribbon's abbreviations (`Mittel, Durchm`, `Startp, Mittelp, Endp`) | — |
 |  | Array | Reihe | the ribbon, seen on the desktop (Start tab, Ändern) | yes |
 |  | Change properties, Pan by points, Multiple redo, Linetype scale, Elevation | Eigenschaften ändern, Pan nach Punkten, Mehrfach wiederherstellen, Linientypfaktor, Erhebung | ours, from the neighbouring tables' words | — |

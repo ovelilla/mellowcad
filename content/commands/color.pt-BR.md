@@ -3,12 +3,12 @@ title: "Comando COLOR (COR) no AutoCAD"
 metaTitle: "Cor no AutoCAD: COLOR (COR), PorCamada e RGB"
 description: "Como o COLOR do AutoCAD em português, COR (alias C), define a cor de novos objetos: PorCamada, uma cor de índice por nome ou número ou RGB. Experimente grátis."
 figure: "Uma placa desenhada PorCamada, o furo em vermelho, o furo menor dentro dele na true color 0,128,255, e depois a COR de volta a PorCamada."
-sourceHash: "f0bfb2cf8fe7"
+sourceHash: "8f98a2a79cf5"
 ---
 
 O COLOR, COR no AutoCAD em português, define a cor com que os novos objetos são desenhados. O AutoCAD abre a caixa de diálogo Selecionar cor; o MellowCAD ainda não a tem, então o COR executa a forma de linha de comando que o AutoCAD também tem, <Command id="-COLOR" />. Ele pede a cor padrão dos objetos, oferecendo a atual, `PORCAMADA` num desenho novo: PorCamada quer dizer que cada objeto usa a cor da sua camada, e uma cor escolhida no lugar é a do próprio objeto. Digite o número de uma cor de índice, de 1 a 255, ou o nome de uma das sete primeiras, ou escolha <Keyword id="Truecolor" />. Enter mantém a cor atual, e a mudança é um passo que o <Command id="U" /> desfaz.
 
-Uma palavra que ele não entende mostra <Message id="colorRequired" />, e 0, um número negativo ou um acima de 255, <Message id="invalidColorNumber" />; ele pergunta de novo. Digitado com um apóstrofo dentro de um comando, `'COR`, cada objeto desenhado depois dele recebe a nova cor: cada segmento de um <Command id="LINE" /> recebe a cor atual quando começa. O COR só define o que vem depois; a paleta Propriedades ou a lista de cores da barra superior muda os objetos já desenhados.
+Uma palavra que ele não entende mostra <Message id="colorRequired" />, e 0, um número negativo ou um acima de 255, <Message id="invalidColorNumber" />; ele pergunta de novo. Digitado com um apóstrofo dentro de um comando, `'COR`, cada objeto desenhado depois dele recebe a nova cor: cada segmento de um <Command id="LINE" /> recebe a cor atual quando começa. O COR só define o que vem depois; a paleta Propriedades ou a lista de cores da faixa de opções (Padrão › Propriedades) muda os objetos já desenhados.
 
 ## Options
 
@@ -60,7 +60,7 @@ COR, com os aliases `C`, `COLOUR` e `CORDIAG`: no AutoCAD em português, `C` é 
 
 ### Como mudar a cor de um objeto no AutoCAD?
 
-Selecione-o e escolha a cor na lista de cores da barra superior ou na linha Cor da paleta Propriedades: ela muda num só passo. Ou copie a cor de outro objeto com o <Command id="MATCHPROP" />. O COR só define a cor dos objetos desenhados depois dele.
+Selecione-o e escolha a cor na lista de cores da faixa de opções (Padrão › Propriedades) ou na linha Cor da paleta Propriedades: ela muda num só passo. Ou copie a cor de outro objeto com o <Command id="MATCHPROP" />. O COR só define a cor dos objetos desenhados depois dele.
 
 ### O que significa PorCamada no AutoCAD?
 

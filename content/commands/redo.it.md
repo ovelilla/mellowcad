@@ -2,7 +2,7 @@
 title: "Comando RIPETI (REDO) in AutoCAD"
 description: "Come funziona RIPETI (REDO) di AutoCAD in italiano: ripristina ciò che l'ultimo U o ANNULLA ha annullato; MREDO e Ctrl+Y vanno passo per passo."
 figure: "Un foro disegnato in una piastra, annullato con U e ripristinato con RIPETI."
-sourceHash: "be2e44b98ac0"
+sourceHash: "d88f63f885fd"
 ---
 
 RIPETI (REDO) inverte l'ultimo <Command id="U" /> o <Command id="UNDO" />: ciò che aveva annullato viene disegnato di nuovo, per intero, così dopo un ANNULLA di cinque comandi RIPETI ripristina tutti e cinque. Scrive i nomi dei comandi mentre lo fa, poi <Message id="everythingRedone" /> quando non resta più nulla da ripristinare. Non chiede nulla e non ha opzioni.
@@ -13,7 +13,7 @@ Funziona solo subito dopo l'annullamento. In qualsiasi altro momento segnala <Me
 
 ## Missing
 
-Anche Ctrl+Maiusc+Z ripristina, in silenzio, anche se AutoCAD non vi associa nulla. I pulsanti Annulla e Ripeti della barra superiore non scrivono nulla nella cronologia, dove la barra di accesso rapido di AutoCAD scrive la propria.
+Anche Ctrl+Maiusc+Z ripristina, in silenzio, anche se AutoCAD non vi associa nulla. I pulsanti Annulla e Ripeti della barra di accesso rapido non scrivono nulla nella cronologia, dove quelli di AutoCAD scrivono le proprie righe.
 
 ## Questions
 

@@ -3,7 +3,7 @@ title: "AutoCAD の AREA[面積計算]コマンド"
 metaTitle: "AutoCAD 面積計算(AREA)の使い方と短縮コマンド AA"
 description: "AutoCAD で面積を求める AREA(AA)の使い方を解説します。指定した点やオブジェクトの面積と周長、Add と Subtract による面積の合計。ブラウザで無料で試せます。"
 figure: "半径 18 の穴がある 100 × 60 のプレート。AREA でプレートの面積を加算し、穴の面積を減算して、残りの合計を表示します。"
-sourceHash: "a8ad70c08b3a"
+sourceHash: "2ca9bb942d1e"
 ---
 
 AREA[面積計算]コマンドは、閉じた形状の面積と周長を計測します。形状は角を指定して囲むか、オブジェクトを選択します。最初の角を指定し、続けて次の角を指定します。2 つ目以降は、カーソルを通って閉じた形状が、AutoCAD と同じく半透明の緑色で塗られます。[Enter]または <Keyword id="Total" /> で、コマンド プロンプトに `Area = …, Perimeter = …` と表示して終了します。3 つ目の角の前に[Enter]を押しても受け付けられません。<Keyword id="Add" /> と <Keyword id="Subtract" /> を使うと、複数の形状の面積を累計できます。数値は図面の精度で表示され、最後に計測した面積は `'AREA` と入力すると読み出せます。

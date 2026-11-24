@@ -2,7 +2,7 @@
 title: "Comando LAYER in AutoCAD"
 description: "Come funziona LAYER (LA) di AutoCAD in italiano: le colonne del Gestore proprietà layer, Nuovo, Elimina e Imposta corrente, e come agiscono On e Bloccato."
 figure: "Tre layer, ciascuno reso corrente prima di disegnarvi: muri in bianco, una porta in giallo, un asse in rosso con il tipo di linea Center."
-sourceHash: "429f8c52c2fa"
+sourceHash: "a822f8c95025"
 ---
 
 LAYER apre il Gestore proprietà layer, dove i layer di un disegno vengono creati, nominati e impostati. Come in AutoCAD è una tavolozza, non una finestra di dialogo: resta aperta mentre disegni, qui come scheda del pannello delle tavolozze, finché <Command id="LAYERCLOSE" /> la chiude, e digitato con un apostrofo davanti dentro un altro comando, si apre senza terminare quel comando. Ogni oggetto sta su un layer, e il suo colore, il tipo di linea e lo spessore di linea, quando sono DaLayer, sono quelli del layer. I nuovi oggetti vanno sul layer corrente.
@@ -21,7 +21,7 @@ LAYER, come in inglese, alias `LA`, poi Invio o barra spaziatrice; anche `DDLMOD
 
 ### Come si cambia il layer di un oggetto?
 
-Seleziona l'oggetto, poi scegli il layer nell'elenco a discesa Layer della barra superiore: l'oggetto si sposta lì in un solo passo di annullamento, e il layer corrente resta com'era. La riga Layer della tavolozza Proprietà fa lo stesso. Senza nulla di selezionato, l'elenco a discesa rende corrente il layer scelto.
+Seleziona l'oggetto, poi scegli il layer nell'elenco a discesa Layer della barra multifunzione (scheda Inizio): l'oggetto si sposta lì in un solo passo di annullamento, e il layer corrente resta com'era. La riga Layer della tavolozza Proprietà fa lo stesso. Senza nulla di selezionato, l'elenco a discesa rende corrente il layer scelto.
 
 ### Come si elimina un layer in AutoCAD?
 

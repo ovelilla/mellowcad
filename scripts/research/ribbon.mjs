@@ -11,6 +11,9 @@
  *   node scripts/research/ribbon.mjs --lang es …           the Spanish file's words
  *   node scripts/research/ribbon.mjs --workspace WS_3DModeling
  *   node scripts/research/ribbon.mjs --qat                 the Quick Access Toolbar
+ *   node scripts/research/ribbon.mjs --cuix <file> …       a culture's acad.CUIX that is not
+ *                                                          installed, taken out of its language
+ *                                                          pack (open-pack.sh's 7zz)
  *   node scripts/research/ribbon.mjs --built …             marks what the engine has: `+` a
  *                                                          command of `cad/locales/en.json`, `-`
  *                                                          one it lacks; with --tabs, the count
@@ -39,7 +42,7 @@ const option = (name) => {
 }
 // English unless asked: the ribbon's structure is the same in every language's file.
 const culture = process.argv.includes("--lang") ? cultureOf(lang) : "en-US"
-const file = join(
+const file = option("--cuix") ?? join(
   INSTALL,
   "UserDataCache",
   culture.toLowerCase(),

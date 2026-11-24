@@ -10,11 +10,12 @@ const DIRS = ["packages/editor/src"]
 /**
  * A height or square size off the system (.claude/rules/ui.md, "Size"): every
  * control is 28 px (`h-7`, `size-7`), its icon 16 (`size-4`), a docked bar 36
- * (`h-9`). A 20, 22, 24, 32 or 40 px control, or an arbitrary one, is not,
- * unless it is AutoCAD's own measure, listed below with where it was taken.
+ * (`h-9`). A 20, 22, 24, 32 or 40 px control, AutoCAD's ribbon's 18, 35, 38,
+ * 72, 97 and 100, or an arbitrary one, is not, unless it is AutoCAD's own
+ * measure, listed below with where it was taken.
  */
 const OFF_SYSTEM =
-  /(?<=^|[\s"'`:])(?:min-h|h|size)-(?:5(?:\.5)?|6|8|9|10|11|12|31|\[[^\]]*\])(?=$|[\s"'`!])/g
+  /(?<=^|[\s"'`:])(?:min-h|h|size)-(?:4\.5|5(?:\.5)?|6|8(?:\.75)?|9(?:\.5)?|10|11|12|18|24\.25|25|31|\[[^\]]*\])(?=$|[\s"'`!])/g
 
 /** Each exception with its reason, file → exact match → why. */
 const ALLOWED: Record<string, Record<string, string>> = {
@@ -36,8 +37,27 @@ const ALLOWED: Record<string, Record<string, string>> = {
   "packages/editor/src/palette-panel.tsx": {
     "h-9": "the palette panel's tab bar, a bar like the others",
   },
-  "packages/editor/src/title-bar.tsx": {
-    "h-6": "the separators between the bar's groups, not a control",
+  // The ribbon at AutoCAD's measures (docs/plans/autocad-ui.md, §2.3: UI
+  // Automation's boxes at 1920×1080, research/ui/2026-11-24/autocad/
+  // uia-a-1920-tab-ID_TabHome.txt).
+  "packages/editor/src/ribbon.tsx": {
+    "h-6": "the tab row, AutoCAD's 24 (§2.1)",
+    "h-5": "a tab, AutoCAD's 20 on its row's foot (§2.1)",
+    "h-25": "the panels' row, AutoCAD's 100 (§2.1)",
+    "h-24.25": "a panel, AutoCAD's 97: 4, its rows' 72, 3 and its title bar",
+    "h-18": "a panel's rows and a large button, AutoCAD's 72 (§2.3)",
+    "h-4.5": "a panel's title bar and its dialog launcher, AutoCAD's 18 (§2.3)",
+    "h-5.5":
+      "a small button, a column's row and a combo, AutoCAD's 22 on a 24 px pitch (§2.3)",
+    "h-9.5":
+      "a large split button's icon, which runs, and a drop-down list's row: AutoCAD's 38 (§2.3)",
+    "h-8.75":
+      "a large split button's text and arrow, which list: AutoCAD's 35 (§2.3)",
+    "size-8": "a drop-down list's 32 px icon (§2.3)",
+  },
+  "packages/editor/src/color-select.tsx": {
+    "h-5.5":
+      "the ribbon's colour picker, in the place of AutoCAD's 20 × 22 icon before its combo (§2.3)",
   },
 }
 

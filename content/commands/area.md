@@ -4,7 +4,7 @@ metaTitle: "AREA in AutoCAD: measure, add and subtract area"
 description: "How AutoCAD's AREA (AA) works: the area and perimeter of points you pick or of an object, and a running total with Add area and Subtract area. Try it free."
 figure: "A 100 by 60 plate with a hole of radius 18: AREA adds the plate's area, subtracts the hole's, and writes the total left."
 related: ["DIST", "LIST", "HATCH", "UNITS"]
-coverage: "35c7e8a81fd9"
+coverage: "ce3c71677a74"
 ---
 
 AREA measures the area and the perimeter of a closed shape, either one you outline by its corners or an object you pick. Give the first corner, then the next ones: from the second, the shape closed through the cursor fills in translucent green, as AutoCAD shades it. Enter or <Keyword id="Total" /> writes `Area = …, Perimeter = …` at the command prompt and ends; Enter before the third corner is refused. With Add area and Subtract area it keeps a running total over several shapes. Numbers are written at the drawing's precision, and the last area measured can be read back by typing `'AREA`.

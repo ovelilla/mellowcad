@@ -251,10 +251,10 @@ returns `true`; `false` ends the command.
 
 ## Command shape
 
-- A command surfaced as several rail entries (CIRCLE, ARC, ELLIPSE) is **one class parameterised
+- A command surfaced as several ribbon entries (CIRCLE, ARC, ELLIPSE) is **one class parameterised
   by a mode, registered once per mode**. When AutoCAD's first prompt switches modes
   (`ELLIPSE … [Arc/Center]`), keep the constructed mode and a private `active` one that
-  `invokeOption` changes and `onActivate` / Escape reset. Dropping the keywords because the rail
+  `invokeOption` changes and `onActivate` / Escape reset. Dropping the keywords because the ribbon
   offers the variants is a fidelity bug.
 - A **dash command** that only takes its input differently (`-MTEXT`) is no tool: `runtimeCommands`
   starts the tool and switches its entry (`MTextTool.useCommandLine()`); the runtime heads the

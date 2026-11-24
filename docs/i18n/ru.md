@@ -141,6 +141,7 @@ resource, 98 by the row's place, 88 ours (10 of them `Keys`, the same as English
 
 | Area | English | Russian | Source | Verified |
 | --- | --- | --- | --- | --- |
+| Ribbon's Home tab | Home; Draw, Modify, Annotation, Layers, Block, Properties, Utilities, Clipboard; Pin | Главная; Рисование, Редактирование, Аннотации, Слои, Блок, Свойства, Утилиты, Буфер обмена; Закрепить † | X ID_TabHome, ID_PanelDraw … RBN_00011049 and every button's and list member's uid (`ribbon.mjs --lang ru`, 2026-11-24); Pin † ours: AutoCAD's pin has no name, the word undoes acadres 49183 `Unpin` | no |
 | Tools | Change properties, Pan by points, Multiple redo, System variables | Изменить свойства †, Панорамирование по точкам †, Многократное повторение †, Системные переменные † | ours, from the menus' and help strings' words | — |
 |  | Array | Массив | the ribbon, seen on the desktop | yes |
 | Descriptions | SNAP, DXFIN, DXFOUT, INSERT, PURGE, PROPERTIES, UNITS… | «Ограничение перемещения перекрестья заданным шагом привязки»… † | ours, in the nominal style of the cuix help strings | — |

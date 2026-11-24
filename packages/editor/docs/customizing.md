@@ -4,15 +4,14 @@ The editor is nine pieces round the drawing, in AutoCAD's frame: the title bar a
 then the ribbon's band, the drawing with its palettes, the command line and the status bar. Each
 piece is a slot of the `components` prop: give it a component of your own and it renders in the
 piece's place, or give it `null` and the piece is gone, with the room it took. The ribbon's band
-is not a slot yet: it holds nothing until the ribbon's tabs are built, and keeps its height while
-the ribbon is open (`RIBBONCLOSE` closes it, `RIBBON` brings it back).
+keeps its height while the ribbon is open (`RIBBONCLOSE` closes it, `RIBBON` brings it back).
 
 ## The pieces
 
 | Slot               | The piece                                                                   |
 | ------------------ | --------------------------------------------------------------------------- |
-| `TitleBar`         | Across the top: the application menu, Quick Access, layers and properties   |
-| `ToolRail`         | Down the start side: the tool palette                                       |
+| `TitleBar`         | Across the top: the application menu, Quick Access and the palette toggles  |
+| `Ribbon`           | Under it: the ribbon's Home tab, its panels of tools, layers and properties |
 | `PalettePanel`     | Down the end side: Properties, Layers, Blocks and Styles, as tabs           |
 | `CommandLine`      | Under the drawing: the command line and its history                         |
 | `StatusBar`        | Across the bottom: the coordinates, the drafting modes and Customization    |

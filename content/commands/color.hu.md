@@ -3,12 +3,12 @@ title: "Objektumszín az AutoCAD-ben: SZÍN (COLOR) parancs"
 metaTitle: "Objektumszín az AutoCAD-ben: SZÍN, Fólia szerint"
 description: "Az új objektumok színe az AutoCAD-ben a SZÍN (COLOR, S) paranccsal: Fólia szerint, indexszín névvel vagy számmal, vagy True Color RGB-ben. Próbálja ki ingyen."
 figure: "Fólia szerint rajzolt lemez, a lyuka vörösben, a furata 0,128,255 True Color színben, majd a SZÍN ismét Fólia szerint értékre állítva."
-sourceHash: "f0bfb2cf8fe7"
+sourceHash: "8f98a2a79cf5"
 ---
 
 A SZÍN (COLOR) parancs azt a színt állítja be, amellyel az új objektumok rajzolódnak. Az AutoCAD a Szín kiválasztása párbeszédpanelt nyitja meg; a MellowCAD-ben ez még nincs, így a SZÍN a parancssori változatot futtatja, amely az AutoCAD-ben is megvan: <Command id="-COLOR" />. Bekéri az alapértelmezett objektumszínt, az aktuálisat felkínálva, új rajzban a `FÓLIA` értéket: a Fólia szerint azt jelenti, hogy minden objektum a fóliája színét veszi fel, a helyette választott szín pedig az objektum saját színe. Írja be egy indexszín számát 1 és 255 között, vagy az első hét egyikének nevét, vagy válassza a <Keyword id="Truecolor" /> opciót. Az Enter megtartja az aktuális színt, a módosítás pedig egy lépés, amelyet a <Command id="U" /> parancs visszavon.
 
-Az olyan szóra, amelyet nem tud értelmezni, az üzenet <Message id="colorRequired" />, a 0-ra, a negatív számra vagy a 255-nél nagyobbra <Message id="invalidColorNumber" />; ezután újra kérdez. Egy parancson belül aposztróffal beírva, `'SZÍN` alakban, minden utána rajzolt objektum az új színt kapja: a <Command id="LINE" /> parancs minden szakasza azt a színt, amely az indulásakor aktuális. A SZÍN csak az ezután rajzolt objektumok színét állítja be; a már megrajzolt objektumokat a Tulajdonságok paletta vagy a felső sáv színlistája módosítja.
+Az olyan szóra, amelyet nem tud értelmezni, az üzenet <Message id="colorRequired" />, a 0-ra, a negatív számra vagy a 255-nél nagyobbra <Message id="invalidColorNumber" />; ezután újra kérdez. Egy parancson belül aposztróffal beírva, `'SZÍN` alakban, minden utána rajzolt objektum az új színt kapja: a <Command id="LINE" /> parancs minden szakasza azt a színt, amely az indulásakor aktuális. A SZÍN csak az ezután rajzolt objektumok színét állítja be; a már megrajzolt objektumokat a Tulajdonságok paletta vagy a szalag színlistája (Kezdőlap › Tulajdonságok) módosítja.
 
 ## Options
 
@@ -60,7 +60,7 @@ Angolul COLOR, a magyar AutoCAD-ben SZÍN: írja be az `S` vagy a `SZIN` rövid�
 
 ### Hogyan lehet módosítani egy objektum színét az AutoCAD-ben?
 
-Jelölje ki, és válassza ki a színt a felső sáv színlistájában vagy a Tulajdonságok paletta Szín sorában: egyetlen lépésben módosul. Vagy vegye át egy másik objektum színét a <Command id="MATCHPROP" /> paranccsal. A SZÍN csak az utána rajzolt objektumok színét állítja be.
+Jelölje ki, és válassza ki a színt a szalag színlistájában (Kezdőlap › Tulajdonságok) vagy a Tulajdonságok paletta Szín sorában: egyetlen lépésben módosul. Vagy vegye át egy másik objektum színét a <Command id="MATCHPROP" /> paranccsal. A SZÍN csak az utána rajzolt objektumok színét állítja be.
 
 ### Mit jelent a Fólia szerint az AutoCAD-ben?
 

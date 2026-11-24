@@ -3,12 +3,12 @@ title: "AutoCAD COLOR（颜色）命令"
 metaTitle: "CAD 颜色命令（COLOR）：ByLayer、真彩色与快捷键 COL"
 description: "CAD 颜色怎么设置？COLOR（快捷键 COL）设置新对象的颜色：ByLayer、按名称或编号指定的索引颜色，或 RGB 真彩色。在浏览器中免费试用。"
 figure: "以 ByLayer 绘制的板，其孔为红色，镗孔为真彩色 0,128,255，然后将 COLOR 设回 ByLayer。"
-sourceHash: "f0bfb2cf8fe7"
+sourceHash: "8f98a2a79cf5"
 ---
 
 COLOR（颜色）命令设置绘制新对象时使用的颜色。AutoCAD 打开“选择颜色”对话框；MellowCAD 还没有该对话框，因此 COLOR 运行 AutoCAD 同样具有的命令行形式 <Command id="-COLOR" />。命令要求输入默认对象颜色，并提供当前颜色，新图形中为 `BYLAYER`：ByLayer 表示每个对象采用其图层的颜色，而另外选择的颜色是对象自身的颜色。输入索引颜色的编号（1 到 255）或前七种颜色之一的名称，或选择 <Keyword id="Truecolor" />。按 Enter 键保留当前颜色；更改是一步，<Command id="U" /> 可以一步放弃。
 
-无法识别的词会显示 <Message id="colorRequired" />，0、负数或大于 255 的数会显示 <Message id="invalidColorNumber" />；然后再次询问。在其他命令中带撇号输入 `'COLOR`，此后绘制的每个对象都采用新颜色：<Command id="LINE" /> 的每一段采用开始绘制该段时的当前颜色。COLOR 只设置之后绘制的对象的颜色；已绘制的对象请用“特性”选项板或顶部栏的颜色列表更改。
+无法识别的词会显示 <Message id="colorRequired" />，0、负数或大于 255 的数会显示 <Message id="invalidColorNumber" />；然后再次询问。在其他命令中带撇号输入 `'COLOR`，此后绘制的每个对象都采用新颜色：<Command id="LINE" /> 的每一段采用开始绘制该段时的当前颜色。COLOR 只设置之后绘制的对象的颜色；已绘制的对象请用“特性”选项板或功能区的颜色列表（“默认”›“特性”）更改。
 
 ## Options
 
@@ -60,7 +60,7 @@ COLOR（颜色）命令设置绘制新对象时使用的颜色。AutoCAD 打开�
 
 ### CAD 怎么改变对象的颜色？
 
-选择对象，在顶部栏的颜色列表或“特性”选项板的“颜色”行中选择颜色：一步即完成更改。也可以用 <Command id="MATCHPROP" /> 复制另一个对象的颜色。COLOR 只设置之后绘制的对象的颜色。
+选择对象，在功能区的颜色列表（“默认”›“特性”）或“特性”选项板的“颜色”行中选择颜色：一步即完成更改。也可以用 <Command id="MATCHPROP" /> 复制另一个对象的颜色。COLOR 只设置之后绘制的对象的颜色。
 
 ### CAD 中 ByLayer 是什么意思？
 

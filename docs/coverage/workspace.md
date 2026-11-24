@@ -178,12 +178,11 @@ it (desktop workspace/d09); with Clean Screen on, RIBBON shows the ribbon and Cl
 (d12, d13). Not transparent: `'RIBBON` and `'RIBBONCLOSE` inside a command are refused, `** That
 command may not be invoked transparently **` (d09). The engine keeps, for the session, the tab in
 front and the member each drop-down shows (`state.ribbon`), as AutoCAD keeps the member for the
-session and not after a restart (`docs/plans/autocad-ui.md`, §2.3) — WHY the ribbon closed hides
-the ribbon's band, the tool palette and the title bar's Layers and Properties groups, the
-palette toggles with them: the ribbon's tabs are not built yet, and those stand in for them (`docs/plans/autocad-ui.md`, phase 1)
+session and not after a restart (`docs/plans/autocad-ui.md`, §2.3; the ribbon: below) — WHY the
+ribbon closed hides the title bar's palette toggles too: they are View's Palettes panel, which the
+title bar holds until the View tab is built (`docs/plans/autocad-ui.md`, §6, block 4)
 
-**Missing:** the ribbon's tabs (phase 1 of `docs/plans/autocad-ui.md`), its right-click menu's
-Close and Undock, docking and floating it
+**Missing:** its right-click menu's Close and Undock, docking and floating it
 
 ### F1 (Help)
 
@@ -219,14 +218,11 @@ tab's Connect panel's button, «Help us improve our products · Send feedback» 
 bar's Help list when the chrome has one, `docs/plans/autocad-ui.md`, F7. The Quick Access Toolbar
 in AutoCAD's order — New (QNEW), Open, Save, Save As, Undo, Redo —, each run as its command by its
 global name (`_QSAVE`), so it echoes (Drawing Units as the desktop's application menu runs it,
-`^C^C_UNITS`: see UNITS); the save state where AutoCAD's title names the drawing. After them, until
-the ribbon's tabs are built, the Home tab's Layers and Properties panels (`Object properties`,
-`Layers`) and at the end View's palette toggles: Styles, Blocks and the command line, which
-RIBBONCLOSE and Clean Screen hide as the ribbon's — WHY in the title bar: the ribbon's band is
-empty until its Home tab is built (`docs/plans/autocad-ui.md`, §6, blocks 3 and 4)
+`^C^C_UNITS`: see UNITS); the save state where AutoCAD's title names the drawing. At its end View's
+palette toggles, Styles, Blocks and the command line, which RIBBONCLOSE and Clean Screen hide as
+the ribbon's — WHY in the title bar: the View tab is block 4 of `docs/plans/autocad-ui.md`, §6
 
-**Missing:** the ribbon's tabs and panels and its minimize states (phase 1 of
-`docs/plans/autocad-ui.md`); the rest of the application menu and its layout (the 2027 desktop's:
+**Missing:** the rest of the application menu and its layout (the 2027 desktop's:
 New, Open, Save, Save As, Import, Export | Publish, Print, Drawing Utilities | Close, each but Save
 with a page of items, Units one of Drawing Utilities'; a search, the recent and open documents,
 Options and Exit; `docs/plans/autocad-ui.md`, §2.2), Undo's and Redo's lists (split buttons in
@@ -235,30 +231,62 @@ InfoCenter (Help ▾ comes with phase 2), the drawing's name in the title (the f
 know the open file's name), the file tabs (one drawing at a time) — WHY no window buttons
 (minimise, maximise, close): a page cannot draw its window's frame
 
-### Tool palette
+### Ribbon
 
-**Implemented:** the Home tab's Draw, Modify, Annotation, Block and Utilities panels as a palette of
-two columns (Continue/Baseline and Adjust Space from the Annotate tab): Circle, Arc,
-Rectangle/Polygon, Ellipse, Trim/Extend, Fillet/Chamfer and Array are drop-downs listing each
-member's icon, name and alias, as the ribbon's are, and Line, Polyline and Hatch single buttons;
-Break, Break at Point and Join (the expanded Modify panel) and Spline (the expanded Draw panel) have
-slots of their own; Dimension is the Annotation panel's Dimension drop-down (acad.cuix RibbonRoot:
-Linear, Aligned, Angular | Arc Length, Radius, Diameter | Ordinate, Jogged) with what is built;
-Ellipse keeps ELLIPSE's order (the help names Axis, End and Elliptical Arc, Center only as the
-command's option); Attributes ▾ holds Edit, Define and Display: Edit is the Block panel's Edit
-Attributes ▸ Single, `^C^C_eattedit` (ID_EAttEdit: EATTEDIT, advertised by its name; ATTEDIT stays
-typed), Define the expanded panel's Define Attributes, and Display ATTDISP, which the ribbon offers
-as the Attribute Display drop-down (ATTMODE; Home › Block's expanded part and Insert › Block),
-whose macros are transparent, `'_attdisp _n` / `_on` / `_off` (ID_AttdispNo/On/Of): run so, inside
-a running command too, which resumes (probe workspace/p313); Edit Text has a slot of its own
-(TEXTEDIT's `^C^C_textedit` is on the Text toolbar, not the ribbon); Utilities is Measure ▾
-(Distance and Area, as 2026 names them) and ID Point, `'_id` (the panel's expanded part); under
-1016 px of window (scrolled at 720) Annotation, Block and Utilities fold to one drop-down each, the ribbon's "Minimize to Panel Buttons" — WHY a palette: the ribbon's band is empty until Home is built (revoked by the owner on 2026-11-07: the chrome follows AutoCAD's layout, `docs/next-autocad-ui.md`)
+**Implemented:** the Home tab of Drafting & Annotation (`docs/plans/autocad-ui.md`, §2.3; acad.cuix's
+RibbonRoot, `node scripts/research/ribbon.mjs --tab Home --built`): its tab row, 24, and its panels,
+100, each 97 high (4, its rows' 72, 3 and a title bar of 18), with what the engine has in acad.cuix's
+rows and order — Draw, Modify, Annotation, Layers, Block, Properties, Utilities and Clipboard. Large
+buttons 72 high, a 32 px icon drawn for that size over their text on one line, or two parted at the
+space nearest its middle (Layer Properties, Match Properties); small ones 22 high, a 16 px icon with
+their text or alone, in columns of three on a 24 px pitch, 5 apart; the layer combo 208 × 22, the
+colour, lineweight and linetype ones 180 × 22 after a 20 px icon; every word AutoCAD's own in each
+language, read from that culture's acad.CUIX by its id (Arabic's ours, `docs/i18n/ar.md`). The split
+buttons keep acad.cuix's behaviour: SplitFollow (Rectangle, Ellipse, Hatch, Trim, Fillet,
+Dimension's Linear) shows and runs the member picked last, SplitFollowStaticText (Circle, Arc, Text,
+Array, Measure, Edit Attributes) does so under a text that stays, SplitNoFollow (Paste) always runs
+its first, DropDownFollow (Cut, Copy) shows the member picked last and a click only lists; two
+targets, the icon that runs (38 of a large button's 72) and the text with its arrow that lists (35),
+a small one's arrow 13 wide; the list under its button, each member a row of 38 with its 32 px icon
+and name, groups parted by a line, the member shown marked (a small button's list as a large one's:
+desktop 2026-11-24, `autocad-mouse/rect-list.png`); the member is the engine's for the session
+(`state.ribbon.members`), as AutoCAD keeps it until a restart. A panel's title bar with ▾ opens its
+slide-out over the drawing, its rows on the same pitch and the title bar under them with a push pin
+at its start; unpinned it closes as soon as the pointer leaves it (desktop 2026-11-24,
+`autocad-mouse/ds-a.png`), pinned it stays until its title bar, moved under the rows, closes it. Properties' dialog
+launcher runs `^C^C_properties` or `^C^C_propertiesclose`, as Ctrl+1; Text Style and Dimension Style
+`'_style` and `'_dimstyle`, transparent inside a command; Layer Properties opens and closes the Layer
+Properties Manager, lit while it is open; a running command's button is not lit, as AutoCAD's is not
+(§2.3, R15); Insert opens a gallery of the drawing's blocks (AcInsertGalleryControl), a pick starting
+-INSERT as the Blocks palette's does; after a button acts the drawing has the keys again. Hovered, a
+button takes a faint frame; pressed, a darker fill (desktop 2026-11-24,
+`autocad-mouse/press-line.png`) — WHY the panels' row scrolls sideways where Home does not fit (1521
+px whole in English, 1632 in Spanish, where AutoCAD's whole Home is 1760): the panels fold as the
+window narrows in block 5 of `docs/plans/autocad-ui.md`, §6; until then the wheel or a trackpad
+scrolls it — WHY ATTDISP's button in Block's slide-out where acad.cuix has the Attribute Display
+drop-down (ATTMODE; `'_attdisp _n` / `_on` / `_off`, ID_AttdispNo/On/Of, transparent: probe
+workspace/p313): those entries are ATTDISP's options, which the tool asks for — WHY Object Color's 20
+px icon is its colour picker: the list has no Select Color…, and the picker stands for it — WHY
+TEXTEDIT has no button: its `^C^C_textedit` is on the Text toolbar, on no ribbon panel of 2027; it is
+typed, or a double-click on a text
 
-**Missing:** DIM, Arc Length, Jogged and Ordinate in Dimension (the commands do not exist), the
-panels' other expanded tools, Edit Attributes ▸ Multiple (`^C^C_-attedit`, ID_AtteditGlo: -ATTEDIT
-is not built), the Attribute Display drop-down's three entries (Display asks ATTDISP's prompt
-instead)
+**Missing:** the Annotate, View, 3D Tools and Insert tabs (block 4 of `docs/plans/autocad-ui.md`,
+§6, before any push: Continue, Baseline, Adjust Space and the 3D tools wait for it), the minimize
+states and the fold (block 5), AutoCAD's tooltips — the name, a description, the command and `Press
+F1 for more help`, and after a longer rest the extended one, a paragraph and an illustration added
+(desktop 2026-11-24, `autocad-mouse/tip-long.png`; phase 5) —, the right-click menu (phase 5); Groups
+and View, with nothing built; what each panel lacks: Draw's Tan, Tan, Radius and Tan, Tan, Tan, Arc's
+seven other members and Continue, Gradient, Boundary, Helix, Donut and Revision Cloud; Modify's Set to
+ByLayer, Change Space, Lengthen, Edit Hatch, Edit Array, Align, Reverse, Copy Nested Objects, Delete
+Duplicate Objects and Draw Order; Annotation's Dimension (DIM), Arc Length, Ordinate, Jogged, the
+Multileaders drop-down, Table, the style combos (phase 3), Multileader Style and Table Style; Layers'
+small tools and the layer states; Block's Detect and Convert, Edit, Edit Attributes ▸ Multiple,
+Replace, Manage and Synchronize Attributes, Set Base Point, the Attribute Display drop-down's
+entries, the gallery's Recent, Favorite and Library blocks; Properties' Plot Style and Transparency;
+Utilities' Quick (MEASUREGEOM), Quick Select, Select All and Quick Calculator; Clipboard's Paste as
+Block, as Hyperlink, to Original Coordinates, Paste Special and Cut with Base Point; Layer
+Properties' echo (AcLayerCommandToggleButton has no macro: here it opens the palette with none,
+**unverified**)
 
 ### Palette panel
 
