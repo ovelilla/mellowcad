@@ -32,8 +32,7 @@ export const hu: EditorLocale = {
       "saved": "Mentve",
       "savedHint": "Mentve ezen az eszközön",
       "undo": "Vissza",
-      "redo": "Előre",
-      "commandLine": "Parancssor"
+      "redo": "Előre"
     },
     "NavigationBar": {
       "label": "Navigációs sáv",
@@ -71,7 +70,11 @@ export const hu: EditorLocale = {
     },
     "Ribbon": {
       "tabs": {
-        "home": "Kezdőlap"
+        "home": "Kezdőlap",
+        "insert": "Beszúrás",
+        "annotate": "Feliratozás",
+        "tools3d": "3D eszközök",
+        "view": "Nézet"
       },
       "panels": {
         "draw": "Rajz",
@@ -81,7 +84,20 @@ export const hu: EditorLocale = {
         "block": "Blokk",
         "properties": "Tulajdonságok",
         "utilities": "Segédprogramok",
-        "clipboard": "Vágólap"
+        "clipboard": "Vágólap",
+        "insertBlock": "Blokk",
+        "blockDefinition": "Blokk definiálása",
+        "text": "Szöveg",
+        "dimensions": "Méretek",
+        "markup": "Jelölő",
+        "viewportTools": "Nézetablakok eszközei",
+        "visualStyles": "Látványstílusok",
+        "coordinates": "Koordináták",
+        "palettes": "Paletták",
+        "navigate": "Navigálás",
+        "modeling": "Modellezés",
+        "solidEditing": "Szilárdtest szerkesztése",
+        "coordinates3d": "Koordináták"
       },
       "items": {
         "line": "Vonal",
@@ -153,7 +169,76 @@ export const hu: EditorLocale = {
         "paste": "Beillesztés",
         "cutclip": "Kivágás",
         "copyclip": "Másolás vágólapra",
-        "copybase": "Másolás bázisponttal"
+        "copybase": "Másolás bázisponttal",
+        "createBlock": "Blokk létrehozása",
+        "dimspace": "Tér módosítása",
+        "dimensionUpdate": "Frissítés",
+        "dimcontinue": "Folytatás",
+        "dimbaseline": "Bázisvonalas",
+        "ucsIcon": "FKR ikon",
+        "viewCube": "View Cube",
+        "ucs": "FKR",
+        "ucsWorld": "FKR, Világ",
+        "ucsX": "X",
+        "ucsY": "Y",
+        "ucsZ": "Z",
+        "ucsPrevious": "FKR, Előző",
+        "ucsOrigin": "Origó",
+        "ucsZAxis": "Z tengelyű vektor",
+        "ucs3Point": "3 pont",
+        "ucsView": "Nézet",
+        "ucsObject": "Objektum",
+        "ucsFace": "Lap",
+        "propertiesPalette": "Tulajdonságok",
+        "blocksPalette": "Blokkok",
+        "commandLine": "Parancssor",
+        "pan": "Eltolás",
+        "orbit": "Keringés",
+        "zoomExtents": "Terjedelem",
+        "zoomWindow": "Ablak",
+        "zoomPrevious": "Előző",
+        "zoomIn": "Nagyítás",
+        "zoomOut": "Kicsinyítés",
+        "box": "Téglatest",
+        "cylinder": "Henger",
+        "cone": "Kúp",
+        "sphere": "Gömb",
+        "pyramid": "Gúla",
+        "wedge": "Ék",
+        "torus": "Tórusz",
+        "extrude": "Kihúzás",
+        "revolve": "Megforgatás",
+        "presspull": "Tolás-húzás",
+        "filletedge": "Él lekerekítése",
+        "chamferedge": "Él letörése",
+        "slice": "Kettészelés",
+        "union": "Egyesítés",
+        "subtract": "Kivonás",
+        "intersect": "Metszetképzés",
+        "solideditextrude": "Lapok kihúzása",
+        "solidedittaper": "Lapok szűkítése",
+        "solideditmove": "Lapok mozgatása",
+        "solideditcopy": "Lapok másolása",
+        "solideditoffset": "Lapok eltolása",
+        "solideditrotate": "Lapok elforgatása",
+        "solideditdelete": "Lapok törlése",
+        "insertAttedit": "Egyetlen",
+        "defineAttributes": "Attribútumok definiálása",
+        "multilineText": "Bekezdéses szöveg",
+        "dimensionsLinear": "Hossz",
+        "dimensionsAligned": "Illesztett",
+        "dimensionsAngular": "Szög",
+        "dimensionsRadius": "Sugár",
+        "dimensionsDiameter": "Átmérő",
+        "axisX": "X",
+        "axisY": "Y",
+        "axisZ": "Z",
+        "view3d": "Nézet",
+        "world": "Világ",
+        "previous": "Előző",
+        "attModeNormal": "Attribútummegjelenítés megtartása",
+        "attModeOn": "Minden attribútum megjelenítése",
+        "attModeOff": "Minden attribútum elrejtése"
       },
       "splits": {
         "circle": "Kör",
@@ -161,13 +246,17 @@ export const hu: EditorLocale = {
         "text": "Szöveg",
         "array": "Kiosztás",
         "measure": "Mérés",
-        "editAttributes": "Attribútumok szerkesztése"
+        "editAttributes": "Attribútumok szerkesztése",
+        "editAttribute": "Attribútumok szerkesztése",
+        "rotateUcs": "FKR elforgatása",
+        "defineUcs": "FKR megadása"
       },
       "layer": "Fólia",
       "color": "Objektum színe",
       "lineweight": "Vonalvastagság",
       "linetype": "Vonaltípus",
-      "pin": "Kitűzés"
+      "pin": "Kitűzés",
+      "moreColors": "Több szín..."
     },
     "CommandLine": {
       "label": "Parancssor",
@@ -494,7 +583,6 @@ export const hu: EditorLocale = {
       "dimStyle": "Méretstílus",
       "dimStyleLabel": "A kijelölt objektumok méretstílusa",
       "varies": "*ELTÉRŐ*",
-      "customColor": "Felhasználói szín",
       "title": "Tulajdonságok",
       "objectType": "Objektumtípus",
       "currentLayerLabel": "Aktuális fólia",
@@ -512,7 +600,8 @@ export const hu: EditorLocale = {
           ]
         ],
         "close": "Bezárás"
-      }
+      },
+      "selectColor": "Szín kiválasztása..."
     },
     "MText": {
       "unsavedChanges": {

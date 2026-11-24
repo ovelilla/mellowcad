@@ -219,6 +219,11 @@ export const zhCN: EngineLocale = {
       "NWiso": "西北等轴测",
       "custom": "自定义视图"
     },
+    "visualStyle": {
+      "2dWireframe": "二维线框",
+      "hidden": "隐藏",
+      "conceptual": "概念"
+    },
     "viewCube": {
       "face": {
         "top": "俯视",

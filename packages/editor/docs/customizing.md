@@ -10,8 +10,8 @@ keeps its height while the ribbon is open (`RIBBONCLOSE` closes it, `RIBBON` bri
 
 | Slot               | The piece                                                                   |
 | ------------------ | --------------------------------------------------------------------------- |
-| `TitleBar`         | Across the top: the application menu, Quick Access and the palette toggles  |
-| `Ribbon`           | Under it: the ribbon's Home tab, its panels of tools, layers and properties |
+| `TitleBar`         | Across the top: the application menu, Quick Access and the save state       |
+| `Ribbon`           | Under it: the ribbon, Home, Insert, Annotate, 3D Tools and View             |
 | `PalettePanel`     | Down the end side: Properties, Layers, Blocks and Styles, as tabs           |
 | `CommandLine`      | Under the drawing: the command line and its history                         |
 | `StatusBar`        | Across the bottom: the coordinates, the drafting modes and Customization    |

@@ -145,7 +145,7 @@ point on X, an angle given by a point, Zdepth (p211, p213), nor Enter at Origin,
 at Face too; U the WCS's origin, but
 where a UCS made at the first prompt left it, REDO where the UCS left it (p163, p164); U after a
 run that changed nothing but moved it (OBject on nothing, Face's pick) the WCS's origin too (p166,
-p424). OBject on a 3D polyline says `3D Polyline object does not define a coordinate system` (es `El objeto polilínea 3D no define el sistema de coordenadas`, table 25596) and ends (3dpoly/p22); ZAxis Object refuses one as an object with no ends (**unverified**).
+p424). OBject on a 3D polyline says `3D Polyline object does not define a coordinate system` (es `El objeto polilínea 3D no define el sistema de coordenadas`, table 25596) and ends (3dpoly/p22); ZAxis Object refuses one as an object with no ends (**unverified**). Its ribbon buttons, View's and 3D Tools' Coordinates, run `^C^C_ucs` and their option (`_w`, `_x`, `_3`, …), a step U names `UCS GROUP` (`docs/coverage/workspace.md`, Ribbon).
 
 **Missing:** the listing's `Press ENTER to continue:` (the console pauses there; no page is
 long enough here), Group at OBject's picks (p325); Face's UCS on a solid's, surface's or mesh's face (there are none here: its
@@ -198,7 +198,7 @@ its lit side's colour, 3 px); `'UCSICON`, at the Command prompt or mid-command (
 also bare, `UCSICON`, its command being SIMBSCP), sets the system variable through SETVAR
 (workspace.md), as 2027's console asks it (ucs/p353–p356): `Enter new value for UCSICON <3>:` (es `Indique nuevo valor para UCSICON <3>`), 1 for the
 icon shown plus 2 for it at the origin (else `Requires an integer between 0 and 3.`), one undo step
-that U and REDO echo as `'UCSICON` (p430)
+that U and REDO echo as `'UCSICON` (p430) View › Viewport Tools' UCS Icon runs `_ucsicon` with `_off` or `_on` at its prompt, a step U names `UCSICON GROUP` (desktop, `research/ui/2026-11-24/block4`).
 
 **Missing:** All, Selectable, Properties (the UCS Icon dialog: the 2D style, size, line width,
 colour)

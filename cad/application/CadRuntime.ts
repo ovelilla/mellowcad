@@ -5,6 +5,7 @@ import { Vec3, planar, vec3, withZ, zOf } from "../geometry/Vec3"
 import { closestPointOnSegment } from "../geometry/primitives"
 import { CadDocument } from "../domain/Document"
 import {
+  AttributeDisplay,
   BlockId,
   Bounds,
   Entity,
@@ -48,6 +49,7 @@ import {
   parseNumber,
   unitSuffix,
   ViewCubeSetting,
+  VisualStyle,
 } from "../domain/units"
 import {
   DrawingFileError,
@@ -120,8 +122,10 @@ import { Command, CommandHistory, Step } from "./commands/Command"
 import type { UndoHistory } from "./tools/Tool"
 import {
   SessionSettingCommand,
+  SetAttributeDisplayCommand,
   UpdateSettingsCommand,
 } from "./commands/settingsCommands"
+import { UCS_ANSWERS, type RibbonButton } from "./ribbonButtons"
 import { ViewChangeCommand } from "./commands/viewCommands"
 import {
   AddLayerCommand,
@@ -6254,18 +6258,114 @@ export class CadRuntime extends Observable {
    * or, with the palette shown, `^C^C_propertiesclose` (its `$M=` on
    * OPMSTATE), as Ctrl+1.
    */
-  runRibbonButton(button: "textStyle" | "dimensionStyle" | "properties"): void {
-    if (button === "properties") {
-      const shown = this.paletteOpen && this.paletteTab === "properties"
-      this.runAccelerator(
-        shown ? "PROPERTIESCLOSE" : "PROPERTIES",
-        shown ? "_propertiesclose" : "_properties"
-      )
-      return
+  runRibbonButton(button: RibbonButton): void {
+    switch (button) {
+      case "properties": {
+        const shown = this.paletteOpen && this.paletteTab === "properties"
+        this.runAccelerator(
+          shown ? "PROPERTIESCLOSE" : "PROPERTIES",
+          shown ? "_propertiesclose" : "_properties"
+        )
+        return
+      }
+      case "textStyle":
+      case "dimensionStyle":
+        // A menu group, as every macro of the chrome: U names the group,
+        // never the command before it (desktop workspace/d02–d05).
+        this.runTransparentMacro(button === "textStyle" ? "STYLE" : "DIMSTYLE")
+        return
+      // Annotate › Dimensions' Update: ID_DimstyleA `^C^C_-dimstyle _apply`.
+      case "dimensionUpdate":
+        this.runMacroAnswering("-DIMSTYLE", "_-dimstyle", "_apply")
+        return
+      // View › Viewport Tools' UCS Icon (AcUcsiconToggleButton, no macro):
+      // `_ucsicon` echoed, then `_off` or `_on` at its prompt, a step U names
+      // `UCSICON GROUP` (UI Automation, research/ui/2026-11-24/block4).
+      case "ucsIcon":
+        this.runMacroAnswering(
+          "UCSICON",
+          "_ucsicon",
+          this.document.getSettings().ucsIcon.visible ? "_off" : "_on"
+        )
+        return
+      // Its View Cube (AcViewCubeToggleButton): no echo, NAVVCUBEDISPLAY
+      // between 3 and 1, a step U names `'NAVVCUBEDISPLAY` (block4).
+      case "viewCube":
+        this.setVariableFromChrome(
+          "NAVVCUBEDISPLAY",
+          this.document.getSettings().viewCube.visible ? 1 : 3
+        )
+        return
+      // 3D Tools' Extrude and Revolve: ID_Extrude2 `^C^C^R_extrude;` and
+      // ID_Revolve2 `^C^C^R_revolve;`, which answer no MOde, where the
+      // tools' own macro is 3D Modeling's Home (`_MO _SO`, ID_Extrude).
+      case "extrude":
+      case "revolve":
+        this.runAccelerator(button.toUpperCase(), `_${button}`)
+        return
+      default:
+        this.runMacroAnswering("UCS", "_ucs", UCS_ANSWERS[button])
     }
-    // A menu group, as every macro of the chrome: U names the group, never
-    // the command before it (desktop workspace/d02–d05).
-    this.runTransparentMacro(button === "textStyle" ? "STYLE" : "DIMSTYLE")
+  }
+
+  /**
+   * A `^C^C` macro that answers its command's first prompt (`^C^C_ucs _w`):
+   * the running command cancelled, the command echoed and run in a menu
+   * group, then the answer typed, as the desktop writes it.
+   */
+  private runMacroAnswering(
+    command: string,
+    echo: string,
+    answer: string
+  ): void {
+    this.runAccelerator(command, echo)
+    if (this.activeTool.id === "select") return
+    this.setCommandLineText(answer)
+    this.submitCommandLine()
+  }
+
+  /**
+   * A system variable a control of the chrome sets with no echo (the View
+   * Cube toggle, the Attribute Display drop-down): a step U names as the
+   * variable typed transparently, `'ATTMODE`, joining a running command's.
+   */
+  private setVariableFromChrome(name: string, value: number): void {
+    const variable = systemVariableNamed(name)
+    if (!variable || variable.type !== "integer" || !variable.set) return
+    if (variable.read(this.toolContext) === value) return
+    const change = variable.set(value, this.toolContext)
+    if (change) this.executeOutside(change, `'${variable.name}`)
+  }
+
+  /**
+   * The Visual Styles gallery (AcVisualStyleGalleryControl): a style picked
+   * runs VSCURRENT with no echo, the running command cancelled, a step U
+   * names `VSCURRENT GROUP` and regenerates on (`VSCURRENT GROUP
+   * Regenerating model.` back into 2D Wireframe); the pick itself says
+   * nothing, into 2D Wireframe neither (research/ui/2026-11-24/block4).
+   */
+  setVisualStyle(style: VisualStyle): void {
+    if (this.activeTool.id !== "select") this.cancelCommand()
+    if (this.document.getSettings().visualStyle === style) return
+    const [name] = this.text.commandNames("VSCURRENT")
+    // Marked before the step is pushed, which takes the mark with it.
+    this.history.markRegenerated()
+    this.executeOutside(
+      new UpdateSettingsCommand({ visualStyle: style }),
+      this.text.message("menuStep", { command: name })
+    )
+  }
+
+  /**
+   * The Attribute Display drop-down (AcATTMODEDataBoundDropDown) of Home's
+   * and Insert's Block panels: ATTMODE set with no echo and no
+   * regeneration said, a step U names `'ATTMODE` (block4). WHY not its
+   * entries' `'_attdisp _n` macros (ID_AttdispNo/On/Of): the desktop's
+   * drop-down echoes none of them.
+   */
+  setAttributeDisplay(display: AttributeDisplay): void {
+    if (this.document.getSettings().attributeDisplay === display) return
+    this.executeOutside(new SetAttributeDisplayCommand(display), "'ATTMODE")
   }
 
   purgeBlocks(ids?: readonly BlockId[]): number {
@@ -8401,6 +8501,9 @@ export class CadRuntime extends Observable {
         tab: this.ribbonTab,
         members: this.ribbonMembers,
       },
+      visualStyle: settings.visualStyle,
+      attributeDisplay: settings.attributeDisplay,
+      ucsIconOn: settings.ucsIcon.visible,
       commandOptions: options,
       commandOptionList:
         this.optionList !== null &&

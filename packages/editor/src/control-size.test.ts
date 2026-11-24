@@ -54,10 +54,8 @@ const ALLOWED: Record<string, Record<string, string>> = {
     "h-8.75":
       "a large split button's text and arrow, which list: AutoCAD's 35 (§2.3)",
     "size-8": "a drop-down list's 32 px icon (§2.3)",
-  },
-  "packages/editor/src/color-select.tsx": {
-    "h-5.5":
-      "the ribbon's colour picker, in the place of AutoCAD's 20 × 22 icon before its combo (§2.3)",
+    "size-12":
+      "a Visual Styles gallery cell's 48 px picture (research/ui/2026-11-24/block4)",
   },
 }
 

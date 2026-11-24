@@ -32,8 +32,7 @@ export const ko: EditorLocale = {
       "saved": "저장됨",
       "savedHint": "이 기기에 저장됨",
       "undo": "명령 취소",
-      "redo": "명령 복구",
-      "commandLine": "명령행"
+      "redo": "명령 복구"
     },
     "NavigationBar": {
       "label": "탐색 막대",
@@ -71,7 +70,11 @@ export const ko: EditorLocale = {
     },
     "Ribbon": {
       "tabs": {
-        "home": "홈"
+        "home": "홈",
+        "insert": "삽입",
+        "annotate": "주석",
+        "tools3d": "3D 도구",
+        "view": "뷰"
       },
       "panels": {
         "draw": "그리기",
@@ -81,7 +84,20 @@ export const ko: EditorLocale = {
         "block": "블록",
         "properties": "특성",
         "utilities": "유틸리티",
-        "clipboard": "클립보드"
+        "clipboard": "클립보드",
+        "insertBlock": "블록",
+        "blockDefinition": "블록 정의",
+        "text": "문자",
+        "dimensions": "치수",
+        "markup": "표식",
+        "viewportTools": "뷰포트 도구",
+        "visualStyles": "비주얼 스타일",
+        "coordinates": "좌표",
+        "palettes": "팔레트",
+        "navigate": "탐색",
+        "modeling": "모델링",
+        "solidEditing": "솔리드 편집",
+        "coordinates3d": "좌표"
       },
       "items": {
         "line": "선",
@@ -153,7 +169,76 @@ export const ko: EditorLocale = {
         "paste": "붙여넣기",
         "cutclip": "잘라내기",
         "copyclip": "클립 복사",
-        "copybase": "기준점을 사용하여 복사"
+        "copybase": "기준점을 사용하여 복사",
+        "createBlock": "블록 작성",
+        "dimspace": "공간 조정",
+        "dimensionUpdate": "업데이트",
+        "dimcontinue": "연속",
+        "dimbaseline": "기준선",
+        "ucsIcon": "UCS 아이콘",
+        "viewCube": "View Cube",
+        "ucs": "UCS",
+        "ucsWorld": "UCS, 표준",
+        "ucsX": "X",
+        "ucsY": "Y",
+        "ucsZ": "Z",
+        "ucsPrevious": "UCS, 이전",
+        "ucsOrigin": "원점",
+        "ucsZAxis": "Z 축 벡터",
+        "ucs3Point": "3점",
+        "ucsView": "뷰",
+        "ucsObject": "객체",
+        "ucsFace": "면",
+        "propertiesPalette": "특성",
+        "blocksPalette": "블록",
+        "commandLine": "명령행",
+        "pan": "초점이동",
+        "orbit": "궤도",
+        "zoomExtents": "범위",
+        "zoomWindow": "윈도우",
+        "zoomPrevious": "이전",
+        "zoomIn": "확대",
+        "zoomOut": "축소",
+        "box": "상자",
+        "cylinder": "원통",
+        "cone": "원추",
+        "sphere": "구",
+        "pyramid": "피라미드",
+        "wedge": "쐐기",
+        "torus": "토러스",
+        "extrude": "돌출",
+        "revolve": "회전",
+        "presspull": "눌러 당기기",
+        "filletedge": "모서리 모깎기",
+        "chamferedge": "모서리 모따기",
+        "slice": "슬라이스",
+        "union": "합집합",
+        "subtract": "차집합",
+        "intersect": "교집합",
+        "solideditextrude": "면 돌출",
+        "solidedittaper": "면 테이퍼",
+        "solideditmove": "면 이동",
+        "solideditcopy": "면 복사",
+        "solideditoffset": "면 간격띄우기",
+        "solideditrotate": "면 회전",
+        "solideditdelete": "면 삭제",
+        "insertAttedit": "단일",
+        "defineAttributes": "속성 정의",
+        "multilineText": "여러 줄 문자",
+        "dimensionsLinear": "선형",
+        "dimensionsAligned": "정렬",
+        "dimensionsAngular": "각도",
+        "dimensionsRadius": "반지름",
+        "dimensionsDiameter": "지름",
+        "axisX": "X",
+        "axisY": "Y",
+        "axisZ": "Z",
+        "view3d": "뷰",
+        "world": "표준",
+        "previous": "이전",
+        "attModeNormal": "속성 화면표시 유지",
+        "attModeOn": "모든 속성 표시",
+        "attModeOff": "모든 속성 숨기기"
       },
       "splits": {
         "circle": "원",
@@ -161,13 +246,17 @@ export const ko: EditorLocale = {
         "text": "문자",
         "array": "배열",
         "measure": "측정",
-        "editAttributes": "속성 편집"
+        "editAttributes": "속성 편집",
+        "editAttribute": "속성 편집",
+        "rotateUcs": "UCS 회전",
+        "defineUcs": "UCS 정의"
       },
       "layer": "도면층",
       "color": "객체 색상",
       "lineweight": "선가중치",
       "linetype": "선종류",
-      "pin": "고정"
+      "pin": "고정",
+      "moreColors": "추가 색상..."
     },
     "CommandLine": {
       "label": "명령행",
@@ -484,7 +573,6 @@ export const ko: EditorLocale = {
       "dimStyle": "치수 스타일",
       "dimStyleLabel": "선택한 객체의 치수 스타일",
       "varies": "*다양함*",
-      "customColor": "사용자 색상",
       "title": "특성",
       "objectType": "객체 유형",
       "currentLayerLabel": "현재 도면층",
@@ -502,7 +590,8 @@ export const ko: EditorLocale = {
           ]
         ],
         "close": "닫기"
-      }
+      },
+      "selectColor": "색상 선택..."
     },
     "MText": {
       "unsavedChanges": {

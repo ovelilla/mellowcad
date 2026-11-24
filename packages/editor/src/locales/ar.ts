@@ -32,8 +32,7 @@ export const ar: EditorLocale = {
       "saved": "محفوظ",
       "savedHint": "محفوظ على هذا الجهاز",
       "undo": "تراجع",
-      "redo": "إعادة",
-      "commandLine": "سطر الأوامر"
+      "redo": "إعادة"
     },
     "NavigationBar": {
       "label": "شريط التنقل",
@@ -71,7 +70,11 @@ export const ar: EditorLocale = {
     },
     "Ribbon": {
       "tabs": {
-        "home": "الرئيسية"
+        "home": "الرئيسية",
+        "insert": "إدراج",
+        "annotate": "تعليقات توضيحية",
+        "tools3d": "أدوات ثلاثية الأبعاد",
+        "view": "عرض"
       },
       "panels": {
         "draw": "رسم",
@@ -81,7 +84,20 @@ export const ar: EditorLocale = {
         "block": "الكتلة",
         "properties": "الخصائص",
         "utilities": "أدوات مساعدة",
-        "clipboard": "الحافظة"
+        "clipboard": "الحافظة",
+        "insertBlock": "الكتلة",
+        "blockDefinition": "تعريف الكتلة",
+        "text": "النص",
+        "dimensions": "الأبعاد",
+        "markup": "الترميز",
+        "viewportTools": "أدوات منفذ العرض",
+        "visualStyles": "الأنماط المرئية",
+        "coordinates": "الإحداثيات",
+        "palettes": "اللوحات",
+        "navigate": "التنقل",
+        "modeling": "النمذجة",
+        "solidEditing": "تحرير المجسمات",
+        "coordinates3d": "الإحداثيات"
       },
       "items": {
         "line": "خط",
@@ -153,7 +169,76 @@ export const ar: EditorLocale = {
         "paste": "لصق",
         "cutclip": "قص",
         "copyclip": "نسخ",
-        "copybase": "نسخ بنقطة أساس"
+        "copybase": "نسخ بنقطة أساس",
+        "createBlock": "إنشاء كتلة",
+        "dimspace": "ضبط المسافة",
+        "dimensionUpdate": "تحديث",
+        "dimcontinue": "متابعة",
+        "dimbaseline": "خط الأساس",
+        "ucsIcon": "أيقونة نظام الإحداثيات",
+        "viewCube": "مكعب العرض",
+        "ucs": "نظام إحداثيات المستخدم",
+        "ucsWorld": "نظام الإحداثيات، العام",
+        "ucsX": "X",
+        "ucsY": "Y",
+        "ucsZ": "Z",
+        "ucsPrevious": "نظام الإحداثيات، السابق",
+        "ucsOrigin": "نقطة الأصل",
+        "ucsZAxis": "متجه المحور Z",
+        "ucs3Point": "3 نقاط",
+        "ucsView": "المنظر",
+        "ucsObject": "كائن",
+        "ucsFace": "وجه",
+        "propertiesPalette": "الخصائص",
+        "blocksPalette": "الكتل",
+        "commandLine": "سطر الأوامر",
+        "pan": "تحريك",
+        "orbit": "مدار",
+        "zoomExtents": "الامتدادات",
+        "zoomWindow": "نافذة",
+        "zoomPrevious": "السابق",
+        "zoomIn": "تكبير",
+        "zoomOut": "تصغير",
+        "box": "صندوق",
+        "cylinder": "أسطوانة",
+        "cone": "مخروط",
+        "sphere": "كرة",
+        "pyramid": "هرم",
+        "wedge": "إسفين",
+        "torus": "طارة",
+        "extrude": "بثق",
+        "revolve": "تدوير حول محور",
+        "presspull": "ضغط/سحب",
+        "filletedge": "تقويس الحافة",
+        "chamferedge": "شطف الحافة",
+        "slice": "تقطيع",
+        "union": "اتحاد",
+        "subtract": "طرح",
+        "intersect": "تقاطع",
+        "solideditextrude": "بثق الأوجه",
+        "solidedittaper": "استدقاق الأوجه",
+        "solideditmove": "نقل الأوجه",
+        "solideditcopy": "نسخ الأوجه",
+        "solideditoffset": "إزاحة الأوجه",
+        "solideditrotate": "تدوير الأوجه",
+        "solideditdelete": "حذف الأوجه",
+        "insertAttedit": "مفرد",
+        "defineAttributes": "تعريف السمات",
+        "multilineText": "نص متعدد الأسطر",
+        "dimensionsLinear": "خطي",
+        "dimensionsAligned": "محاذٍ",
+        "dimensionsAngular": "زاوي",
+        "dimensionsRadius": "نصف القطر",
+        "dimensionsDiameter": "القطر",
+        "axisX": "X",
+        "axisY": "Y",
+        "axisZ": "Z",
+        "view3d": "المنظر",
+        "world": "العام",
+        "previous": "السابق",
+        "attModeNormal": "الاحتفاظ بعرض السمات",
+        "attModeOn": "عرض كل السمات",
+        "attModeOff": "إخفاء كل السمات"
       },
       "splits": {
         "circle": "دائرة",
@@ -161,13 +246,17 @@ export const ar: EditorLocale = {
         "text": "نص",
         "array": "مصفوفة",
         "measure": "قياس",
-        "editAttributes": "تحرير السمات"
+        "editAttributes": "تحرير السمات",
+        "editAttribute": "تحرير السمة",
+        "rotateUcs": "تدوير نظام الإحداثيات",
+        "defineUcs": "تعريف نظام الإحداثيات"
       },
       "layer": "الطبقة",
       "color": "لون الكائن",
       "lineweight": "وزن الخط",
       "linetype": "نوع الخط",
-      "pin": "تثبيت"
+      "pin": "تثبيت",
+      "moreColors": "مزيد من الألوان..."
     },
     "CommandLine": {
       "label": "سطر الأوامر",
@@ -503,7 +592,6 @@ export const ar: EditorLocale = {
       "dimStyle": "نمط البُعد",
       "dimStyleLabel": "نمط بُعد العناصر المحددة",
       "varies": "متنوع",
-      "customColor": "لون مخصص",
       "title": "الخصائص",
       "objectType": "نوع العنصر",
       "currentLayerLabel": "الطبقة الحالية",
@@ -521,7 +609,8 @@ export const ar: EditorLocale = {
           ]
         ],
         "close": "إغلاق"
-      }
+      },
+      "selectColor": "تحديد اللون..."
     },
     "MText": {
       "unsavedChanges": {

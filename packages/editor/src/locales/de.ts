@@ -32,8 +32,7 @@ export const de: EditorLocale = {
       "saved": "Gespeichert",
       "savedHint": "Auf diesem Gerät gespeichert",
       "undo": "Rückgängig",
-      "redo": "Wiederherstellen",
-      "commandLine": "Befehlszeile"
+      "redo": "Wiederherstellen"
     },
     "NavigationBar": {
       "label": "Navigationsleiste",
@@ -71,7 +70,11 @@ export const de: EditorLocale = {
     },
     "Ribbon": {
       "tabs": {
-        "home": "Start"
+        "home": "Start",
+        "insert": "Einfügen",
+        "annotate": "Beschriften",
+        "tools3d": "3D-Werkzeuge",
+        "view": "Ansicht"
       },
       "panels": {
         "draw": "Zeichnen",
@@ -81,7 +84,20 @@ export const de: EditorLocale = {
         "block": "Block",
         "properties": "Eigenschaften",
         "utilities": "Dienstprogramme",
-        "clipboard": "Zwischenablage"
+        "clipboard": "Zwischenablage",
+        "insertBlock": "Block",
+        "blockDefinition": "Blockdefinition",
+        "text": "Text",
+        "dimensions": "Bemaßungen",
+        "markup": "Markierung",
+        "viewportTools": "Ansichtsfenster-Werkzeuge",
+        "visualStyles": "Visuelle Stile",
+        "coordinates": "Koordinaten",
+        "palettes": "Paletten",
+        "navigate": "Navigieren",
+        "modeling": "Modellieren",
+        "solidEditing": "Volumenkörper bearbeiten",
+        "coordinates3d": "Koordinaten"
       },
       "items": {
         "line": "Linie",
@@ -153,7 +169,76 @@ export const de: EditorLocale = {
         "paste": "Einfügen",
         "cutclip": "Ausschneiden",
         "copyclip": "Ausschnitt kopieren",
-        "copybase": "Kopieren mit Basispunkt"
+        "copybase": "Kopieren mit Basispunkt",
+        "createBlock": "Block erstellen",
+        "dimspace": "Platz anpassen",
+        "dimensionUpdate": "Aktualisieren",
+        "dimcontinue": "Weiter",
+        "dimbaseline": "Basislinie",
+        "ucsIcon": "BKS- Symbol",
+        "viewCube": "View Cube",
+        "ucs": "BKS",
+        "ucsWorld": "BKS, Welt",
+        "ucsX": "X",
+        "ucsY": "Y",
+        "ucsZ": "Z",
+        "ucsPrevious": "BKS, vorher",
+        "ucsOrigin": "Ursprung",
+        "ucsZAxis": "Z-Achsen-Vektor",
+        "ucs3Point": "3 Punkte",
+        "ucsView": "Ansicht",
+        "ucsObject": "Objekt",
+        "ucsFace": "Fläche",
+        "propertiesPalette": "Eigenschaften",
+        "blocksPalette": "Blöcke",
+        "commandLine": "Befehlszeile",
+        "pan": "Pan",
+        "orbit": "Orbit",
+        "zoomExtents": "Grenzen",
+        "zoomWindow": "Fenster",
+        "zoomPrevious": "Vorher",
+        "zoomIn": "Größer",
+        "zoomOut": "Kleiner",
+        "box": "Quader",
+        "cylinder": "Zylinder",
+        "cone": "Kegel",
+        "sphere": "Kugel",
+        "pyramid": "Pyramide",
+        "wedge": "Keil",
+        "torus": "Torus",
+        "extrude": "Extrudieren",
+        "revolve": "Rotation",
+        "presspull": "Klicken und Ziehen",
+        "filletedge": "Kante abrunden",
+        "chamferedge": "Kante fasen",
+        "slice": "Kappen",
+        "union": "Vereinigung",
+        "subtract": "Differenz",
+        "intersect": "Schnittmenge",
+        "solideditextrude": "Flächen extrudieren",
+        "solidedittaper": "Flächen verjüngen",
+        "solideditmove": "Flächen verschieben",
+        "solideditcopy": "Flächen kopieren",
+        "solideditoffset": "Flächen versetzen",
+        "solideditrotate": "Flächen drehen",
+        "solideditdelete": "Flächen löschen",
+        "insertAttedit": "Einzeln",
+        "defineAttributes": "Attribute definieren",
+        "multilineText": "Mehrzeiliger Text",
+        "dimensionsLinear": "Linear",
+        "dimensionsAligned": "Ausgerichtet",
+        "dimensionsAngular": "Winkel",
+        "dimensionsRadius": "Radius",
+        "dimensionsDiameter": "Durchmesser",
+        "axisX": "X",
+        "axisY": "Y",
+        "axisZ": "Z",
+        "view3d": "Ansicht",
+        "world": "Welt",
+        "previous": "Vorher",
+        "attModeNormal": "Attributanzeige beibehalten",
+        "attModeOn": "Alle Attribute anzeigen",
+        "attModeOff": "Alle Attribute ausblenden"
       },
       "splits": {
         "circle": "Kreis",
@@ -161,13 +246,17 @@ export const de: EditorLocale = {
         "text": "Text",
         "array": "Reihe",
         "measure": "Messen",
-        "editAttributes": "Attribute bearbeiten"
+        "editAttributes": "Attribute bearbeiten",
+        "editAttribute": "Attribut bearbeiten",
+        "rotateUcs": "BKS drehen",
+        "defineUcs": "BKS definieren"
       },
       "layer": "Layer",
       "color": "Objektfarbe",
       "lineweight": "Linienstärke",
       "linetype": "Linientyp",
-      "pin": "Anheften"
+      "pin": "Anheften",
+      "moreColors": "Mehr Farben..."
     },
     "CommandLine": {
       "label": "Befehlszeile",
@@ -487,7 +576,6 @@ export const de: EditorLocale = {
       "dimStyle": "Bem-Stil",
       "dimStyleLabel": "Bemaßungsstil der ausgewählten Objekte",
       "varies": "*VARIIERT*",
-      "customColor": "Benutzerspezifische Farbe",
       "title": "Eigenschaften",
       "objectType": "Objekttyp",
       "currentLayerLabel": "Aktueller Layer",
@@ -505,7 +593,8 @@ export const de: EditorLocale = {
           ]
         ],
         "close": "Schließen"
-      }
+      },
+      "selectColor": "Farbe wählen..."
     },
     "MText": {
       "unsavedChanges": {

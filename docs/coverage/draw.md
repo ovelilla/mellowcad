@@ -2006,9 +2006,10 @@ cone 5 high), and a profile the taper cannot take makes nothing, silently (x06: 
 60° to 10). DELOBJ erases the profiles (3, its initial value; 1, 2), keeps them (0), or asks `Erase
 defining objects? [Yes/No] <Yes>:` when negative, the last answer its default (x07; es `¿Desea
 borrar los objetos de definición? [Sí/No]`, pt-BR `Apagar objetos definidos? [Sim/Não]`). One undo
-step. Its button, 3D Tools' (block 4 of `docs/plans/autocad-ui.md`, §6), runs the ribbon's macro `^C^C^R_extrude _MO _SO;` (acad.cuix ID_Extrude;
-p400): `_extrude`, MOde answered `_MO` and `_SO` on the prompt's line, Enter afterwards the bare
-EXTRUDE, U `EXTRUDE GROUP`.
+step. Its button, 3D Tools' Modeling, runs that tab's macro `^C^C^R_extrude;` (acad.cuix
+ID_Extrude2): `_extrude`, no MOde answered, U `EXTRUDE GROUP`; 3D Modeling's `^C^C^R_extrude _MO
+_SO;` (ID_Extrude, p400: MOde answered `_MO` and `_SO` on the prompt's line, Enter afterwards the
+bare EXTRUDE) is the tool's own, for the day that workspace's Home is built.
 
 The object, a 3D solid (file version 47), as ACIS builds it (x01, x09's MPDUMP): a side face for
 each edge, from the profile's last edge back (p316, p319: −X, +Y, +X, −Y for `RECTANG 0,0 10,20`;
@@ -2050,8 +2051,9 @@ MASSPROP.
 **Implemented:** REVOLVE as 2027's console asks it (revolve/r01–r09, sweeps/p200–p267), in en, es and
 pt-BR: EXTRUDE's first line, its set as `Select objects to revolve or [MOde]:` (es `Designe objetos
 para revolución o [MOdo]`, pt-BR `Selecione objetos para revolução ou [MOdo]`), sifted as Enter closes
-it with `Cannot revolve an object of this type.` (r02), and its MOde; its button, 3D Tools' (block 4), runs the ribbon's
-`^C^C^R_revolve _MO _SO;` (acad.cuix ID_Revolve, p401), typed it asks as typed. Then `Specify axis
+it with `Cannot revolve an object of this type.` (r02), and its MOde; its button, 3D Tools', runs that tab's
+`^C^C^R_revolve;` (acad.cuix ID_Revolve2), no MOde answered (3D Modeling's `^C^C^R_revolve _MO
+_SO;`, ID_Revolve, p401, is the tool's own), typed it asks as typed. Then `Specify axis
 start point or define axis by [Object/X/Y/Z] <Object>:` (es `Precise punto inicial del eje o defina el
 eje mediante`, pt-BR `Especificar ponto inicial para eixo ou definir eixo por`; FOO `Point or option
 keyword required.`): a point and `Specify axis endpoint:` (Enter, a keyword or `#30,10` `Invalid
@@ -2422,4 +2424,5 @@ grip on a reference (desktop d02-1); attribute rows editable in the Properties p
 anything else, `O` asking `OFf or ON?`; Normal / ON / OFF (ATTMODE, saved in the drawing, undoable),
 `Regenerating model.` when it changes, as AutoCAD 2027's console says it (p04, p334–p336;
 transparently `Regen queued.`); Enter keeps the setting; U writes `ATTDISP` alone, with no
-regeneration (p337)
+regeneration (p337). The ribbon's Attribute Display drop-down does not run it: it sets ATTMODE with no echo, a
+step U names `'ATTMODE`, as the desktop's (`docs/coverage/workspace.md`, Ribbon)

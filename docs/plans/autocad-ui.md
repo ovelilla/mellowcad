@@ -1,8 +1,8 @@
 # AutoCAD's interface: inventory and plan
 
 > **Status:** phase 0 (this inventory and plan) done on 2026-11-24; of phase 1, blocks 1 (the
-> engine), 2 (the frame) and 3 (Home) done the same day, block 4 (the other tabs) next, with no
-> push before it; phases 2 to 6 not started.
+> engine), 2 (the frame), 3 (Home) and 4 (the other tabs) done the same day, block 5 (minimize and
+> fold) next, before the push that ships the ribbon; phases 2 to 6 not started.
 > The brief is `docs/next-autocad-ui.md`; where its phases and this plan differ, this plan rules
 > (the brief says so) and the brief was corrected the same day.
 
@@ -213,7 +213,7 @@ count):
 | Home       | Draw 35 of 42, Modify 21 of 40, Annotation 9 of 21, Block 3 of 11, Properties 2 of 2 and its three combos, Utilities 2 of 10 and Measure, Clipboard 4 of 9; Layers has its button and the layer combo; Groups and View none |
 | Insert     | Block 1 of 5 (and the Insert gallery), Block Definition 2 of 7                              |
 | Annotate   | Text 2 of 6 and the style combo, Dimensions 9 of 25 and the style combo, Markup 1 of 4 (Wipeout) |
-| View       | Named Views 1 of 2; Viewport Tools' three toggles (UCS Icon, View Cube, Navigation Bar); Palettes' Properties, Blocks, Command Line and Layer Properties; hidden: Visual Styles (the gallery VSCURRENT answers), Coordinates 13 of 14, Navigate 13 of 17 |
+| View       | Named Views 1 of 2 (VIEW, whose View Manager is a dialog not built: block 4 draws nothing of it); Viewport Tools' three toggles (UCS Icon, View Cube, Navigation Bar); Palettes' Properties, Blocks, Command Line and Layer Properties; hidden: Visual Styles (the gallery VSCURRENT answers), Coordinates 13 of 14, Navigate 13 of 17 |
 | 3D Tools (hidden) | Modeling 9 of 23, Solid Editing 21 of 25, Coordinates 9 of 9                          |
 | Parametric, Manage, Output, Add-ins, Collaborate, Express Tools, Featured Apps | nothing |
 
@@ -487,8 +487,8 @@ Each closes with skill `finish-feature`. Each starts with the captures it still 
      the panels' row scrolls sideways under the wheel or a trackpad, with no bar to take its
      height: at 1280 Properties, Utilities and Clipboard are past the edge. Nothing else of the
      editor changes at 1280.
-   - **Left for block 4**, the tools the palette offered that Home does not hold
-     (`OTHER_TABS` in `packages/editor/src/ribbon-home.ts`, which `ribbon.test.ts` checks):
+   - **Left for block 4**, the tools the palette offered that Home does not hold (the list
+     `OTHER_TABS`, gone with block 4):
      Continue, Baseline and Adjust Space (Annotate › Dimensions), the 3D primitives, EXTRUDE,
      REVOLVE, PRESSPULL, the booleans, SLICE, Fillet and Chamfer Edge and the face edits (3D Tools).
      TEXTEDIT loses its button for good: no panel of 2027 has one (its `^C^C_textedit` is the Text
@@ -496,12 +496,12 @@ Each closes with skill `finish-feature`. Each starts with the captures it still 
    - **Reviewed 2026-11-24** (blocks 2 and 3: the diff against acad.cuix, the desktop's captures
      and the editor in Chrome); what it fixed is in its commit. What it leaves, each for the block
      named:
-     - **Block 4: the Attribute Display drop-down.** Block's slide-out holds acad.cuix's
+     - **Block 4: the Attribute Display drop-down** (done with it). Block's slide-out holds acad.cuix's
        `AcATTMODEDataBoundDropDown` (as Insert's Block panel does): three entries, `'_attdisp _n`,
        `_on` and `_off`, the one ATTMODE holds shown. Home's stand-in, one button that leaves the
        option to ATTDISP's prompt, is a gesture of ours nothing on the platform forces: build the
        drop-down, bound to ATTMODE, its three words each culture's acad.CUIX's.
-     - **Block 4: Object Color's picker.** The 20 px icon before the combo opens the browser's
+     - **Block 4: Object Color's picker** (done with it: `More Colors...`, read on the desktop). The 20 px icon before the combo opens the browser's
        colour picker; AutoCAD's icon is no target, and its list ends in a row that opens Select
        Color. The picker goes behind that last row (its wording on the ribbon read on the desktop
        first), in the ribbon and in the Properties palette, which share `ColorSelect`.
@@ -521,12 +521,28 @@ Each closes with skill `finish-feature`. Each starts with the captures it still 
        is closed by its title bar, and whether the pin outlives RIBBONCLOSE and Clean Screen (here
        it does not); Layer Properties' echo, and Modify's buttons with a grip hot
        (`docs/coverage/workspace.md`, Ribbon).
-4. **The other tabs**: Annotate, View (Palettes takes the title bar's toggles; Viewport Tools;
-   Named Views; Visual Styles with the gallery, which answers the owner's request of 2026-11-10
-   and takes `vscurrent` out of the commands without a button; Coordinates; Navigate), 3D Tools,
-   Insert. Before minimize and fold, so the tools the palette offered get their buttons back
-   first: **no push is asked for between block 3, which removes the palette, and this one**, when
-   every tool it offered has a button again.
+4. **The other tabs** (done 2026-11-24): Insert, Annotate, 3D Tools and View, in the workspace's
+   order after Home (`RIBBON_TABS`), every tool the palette offered with its button again. What
+   the desktop showed (UI Automation, `research/ui/2026-11-24/block4`) changed from what was
+   planned:
+   - **Attribute Display sets ATTMODE**, with no echo and a step U names `'ATTMODE`: the
+     drop-down runs none of its entries' `'_attdisp` macros, so ATTDISP went to the typed tools.
+   - **The View Cube toggle** sets NAVVCUBEDISPLAY with no echo (U `'NAVVCUBEDISPLAY`); UCS Icon
+     runs `_ucsicon _off`; the palette toggles echo nothing; the gallery's pick runs VSCURRENT
+     with no echo, U `VSCURRENT GROUP`.
+   - **Not drawn**: Named Views (VIEW here is -VIEW's presets; its View Manager is a dialog not
+     built), the Navigation Bar toggle (no NAVBARDISPLAY), a Styles toggle (View's Palettes has
+     none: the Styles palette waits for phase 3's dialogs, reached meanwhile by its tab, the style
+     buttons and launchers).
+   - **3D Tools' Extrude and Revolve** are ID_Extrude2 and ID_Revolve2, `^C^C^R_extrude;` with no
+     MOde answered: 3D Modeling's `_MO _SO` stays the tool's own.
+   - **The style combos** (Text, Dimensions) stay for phase 3, with the dialogs; Annotate has
+     their dialog launchers on its title bars.
+   - Left, each in `docs/coverage/workspace.md` (Ribbon): the palette toggles' undo step (`GROUP
+     LAYER`); the Define UCS list's `Icon` style; whether UCS Icon cancels a running command.
+   - **Found by its second reading, older than it** (for block 5): a drag in the browser's colour
+     picker applies the colour on every `input` event, a step each (`color-select.tsx`'s
+     `onChange`, as the swatch did); one pick should be one step, on the field's `change`.
 5. **Minimize and fold**: the four states, the button and its menu; the fold in the measured
    order, a folded panel opening whole under its button.
 6. **What it leaves false**, corrected in the same commits: `docs/coverage/workspace.md` (Top
@@ -574,7 +590,7 @@ start of its phase and with the owner's word first (`gui.md`):
 
 | Phase | To capture |
 | ----- | ---------- |
-| 1 | done 2026-11-24 (§2.3): a button pressed, the extended tooltip, a small button's list, a slide-out open, the Insert gallery |
+| 1 | done 2026-11-24 (§2.3): a button pressed, the extended tooltip, a small button's list, a slide-out open, the Insert gallery; block 4's toggles, gallery, Attribute Display and Object Color's list without the mouse (`research/ui/2026-11-24/block4`) |
 | 2 | the title bar's Help list, which neither UI Automation nor a click opened; the title with a saved drawing's name and path; the Open Documents list of the application menu |
 | 3 | a palette docked, anchored and auto-hidden, and its properties menu; New Text Style; each tab of Modify Dimension Style |
 | 4 | the status bar of a profile nobody has touched; the navigation bar under the pointer; the command line's history open |

@@ -219,6 +219,11 @@ export const en: EngineCatalog = {
       "NWiso": "NW Isometric",
       "custom": "Custom View"
     },
+    "visualStyle": {
+      "2dWireframe": "2D Wireframe",
+      "hidden": "Hidden",
+      "conceptual": "Conceptual"
+    },
     "viewCube": {
       "face": {
         "top": "TOP",

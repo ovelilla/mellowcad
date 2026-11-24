@@ -17,7 +17,16 @@ import {
   Copy,
   Ellipsis,
   Grip,
+  Hand,
+  Layers,
+  Maximize,
+  Axis3d,
+  Move3d,
   RulerDimensionLine,
+  Search,
+  Terminal,
+  ZoomIn,
+  ZoomOut,
   Cone,
   Donut,
   Globe,
@@ -66,6 +75,9 @@ import {
   ArcIcon,
   ArcStartCenterEndIcon,
   ArcCenterStartEndIcon,
+  AttModeNormalIcon,
+  AttModeOffIcon,
+  AttModeOnIcon,
   BlockIcon,
   BreakIcon,
   BreakAtPointIcon,
@@ -78,6 +90,7 @@ import {
   DimLinearIcon,
   DimRadiusIcon,
   DimSpaceIcon,
+  DimensionUpdateIcon,
   EllipseIcon,
   EllipseArcIcon,
   EllipseCenterIcon,
@@ -89,6 +102,20 @@ import {
   Polyline3dIcon,
   SplineCvIcon,
   StretchIcon,
+  Ucs3PointIcon,
+  UcsFaceIcon,
+  UcsObjectIcon,
+  UcsPreviousIcon,
+  UcsViewIcon,
+  UcsWorldIcon,
+  UcsXIcon,
+  UcsYIcon,
+  UcsZAxisIcon,
+  UcsZIcon,
+  Vs2dWireframeIcon,
+  VsConceptualIcon,
+  VsHiddenIcon,
+  ZoomPreviousIcon,
 } from "./icons"
 
 /** Each tool's 16 px icon, by its id in `state.tools`. */
@@ -190,6 +217,45 @@ export const TOOL_ICONS: Readonly<Record<string, LucideIcon>> = {
   cutclip: Scissors,
   copyclip: Copy,
   copybase: Clipboard,
+  // UCS: the axes of a coordinate system.
+  ucs: Axis3d,
+}
+
+/**
+ * The 16 px icon of each ribbon button that runs a command or one of its
+ * options rather than a tool, by the button's id. Pan, Zoom, Orbit, the
+ * command line and the layers are the glyphs the editor already shows them by
+ * (the navigation bar, the title bar, the palette panel).
+ */
+export const BUTTON_ICONS: Readonly<Record<string, LucideIcon>> = {
+  ucsWorld: UcsWorldIcon,
+  ucsX: UcsXIcon,
+  ucsY: UcsYIcon,
+  ucsZ: UcsZIcon,
+  ucsPrevious: UcsPreviousIcon,
+  // Origin moves the axes and keeps their direction: a translation.
+  ucsOrigin: Move3d,
+  ucsZAxis: UcsZAxisIcon,
+  ucs3Point: Ucs3PointIcon,
+  ucsView: UcsViewIcon,
+  ucsObject: UcsObjectIcon,
+  ucsFace: UcsFaceIcon,
+  dimensionUpdate: DimensionUpdateIcon,
+  commandLine: Terminal,
+  layerProperties: Layers,
+  pan: Hand,
+  orbit: Rotate3d,
+  zoomExtents: Maximize,
+  zoomWindow: Search,
+  zoomPrevious: ZoomPreviousIcon,
+  zoomIn: ZoomIn,
+  zoomOut: ZoomOut,
+  attModeNormal: AttModeNormalIcon,
+  attModeOn: AttModeOnIcon,
+  attModeOff: AttModeOffIcon,
+  vs2dWireframe: Vs2dWireframeIcon,
+  vsHidden: VsHiddenIcon,
+  vsConceptual: VsConceptualIcon,
 }
 
 /** A tool's 16 px icon, or a generic glyph for one that has none. */

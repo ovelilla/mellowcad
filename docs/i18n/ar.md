@@ -38,6 +38,7 @@ marks a choice between competing terms that a native review should settle first 
 | Area | English | Arabic |
 | --- | --- | --- |
 | Ribbon's Home tab | Home; Draw, Modify, Annotation, Layers, Block, Properties, Utilities, Clipboard; Pin | الرئيسية; رسم, تعديل, التعليقات التوضيحية, الطبقات, الكتلة, الخصائص, أدوات مساعدة, الحافظة; تثبيت † — ours, all of it (†): AutoCAD has no Arabic; the buttons' words from the engine's Arabic tool names |
+| Ribbon's other tabs | Insert, Annotate, 3D Tools, View; Retain Attribute Display, Display All Attributes, Hide All Attributes; More Colors...; Select Color...; 2D Wireframe, Hidden, Conceptual | إدراج, تعليقات توضيحية, أدوات ثلاثية الأبعاد, عرض; الاحتفاظ بعرض السمات, عرض كل السمات, إخفاء كل السمات; مزيد من الألوان...; تحديد اللون...; إطار سلكي ثنائي الأبعاد, مخفي, مفاهيمي † | † ours, as Home's: Arabic has no AutoCAD | no |
 | Object snaps | Endpoint, Midpoint, Center, Intersection, Apparent intersection | نقطة النهاية، نقطة المنتصف، المركز، التقاطع، تقاطع ظاهري (C) |
 |  | Perpendicular, Tangent, Insertion, Extension, Parallel, Quadrant, Nearest | عمودي، مماس، الإدراج، الامتداد، موازٍ، الربع، الأقرب (C) |
 |  | None | لا شيء (M) |

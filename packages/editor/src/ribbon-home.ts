@@ -1,8 +1,10 @@
+import type { RibbonButton, ZoomOption } from "@mellowcad/engine"
 import type { EditorMessages } from "./locales/types"
 
 type RibbonWords = EditorMessages["Ribbon"]
 export type PanelId = keyof RibbonWords["panels"]
 export type ItemId = keyof RibbonWords["items"]
+export type TabId = keyof RibbonWords["tabs"]
 type SplitText = keyof RibbonWords["splits"]
 
 /**
@@ -21,10 +23,23 @@ export type SplitBehaviour =
  */
 export type ControlSize = "large" | "small" | "icon"
 
-/** A drop-down's list: tool ids in acad.cuix's order, `null` its lines. */
+/** A drop-down's list: items in acad.cuix's order, `null` its lines. */
 type Members = readonly (ItemId | null)[]
 
+/**
+ * A toggle with no macro of its own, lit while what it shows is (acad.cuix's
+ * `Ac…ToggleButton`): View's UCS Icon and View Cube, and the palettes'.
+ */
+export type RibbonToggle =
+  | "ucsIcon"
+  | "viewCube"
+  | "propertiesPalette"
+  | "blocksPalette"
+  | "commandLine"
+  | "layerProperties"
+
 export type RibbonControl =
+  /** A button that runs its item's action (`actionOf`). */
   | { readonly kind: "tool"; readonly size: ControlSize; readonly tool: ItemId }
   | {
       readonly kind: "split"
@@ -33,7 +48,7 @@ export type RibbonControl =
       readonly size: ControlSize
       readonly behaviour: SplitBehaviour
       readonly members: Members
-      /** `followStaticText`'s text. */
+      /** `followStaticText`'s text, and a list-only one's name. */
       readonly text?: SplitText
     }
   /** A ribbon button that runs a command of its own: `runRibbonButton`. */
@@ -41,8 +56,11 @@ export type RibbonControl =
       readonly kind: "command"
       readonly button: "textStyle" | "dimensionStyle"
     }
-  /** ATTDISP's tool, under the engine's name for it. */
-  | { readonly kind: "engineTool"; readonly tool: string }
+  | {
+      readonly kind: "toggle"
+      readonly toggle: RibbonToggle
+      readonly size: ControlSize
+    }
   | { readonly kind: "layerProperties" }
   | { readonly kind: "layerCombo" }
   | {
@@ -50,6 +68,10 @@ export type RibbonControl =
       readonly property: "color" | "lineweight" | "linetype"
     }
   | { readonly kind: "insertGallery" }
+  /** The Attribute Display drop-down (AcATTMODEDataBoundDropDown): ATTMODE. */
+  | { readonly kind: "attributeDisplay"; readonly size: ControlSize }
+  /** The Visual Styles gallery (AcVisualStyleGalleryControl): VSCURRENT. */
+  | { readonly kind: "visualStyles" }
 
 /** A column of up to three small controls, one row each. */
 export interface RibbonColumn {
@@ -57,29 +79,148 @@ export interface RibbonColumn {
   readonly rows: readonly RibbonControl[]
 }
 
-/** The 4 px acad.cuix puts between a slide-out row's groups (its `Spacer`). */
+/**
+ * A sub-panel of acad.cuix (`RibbonRowPanel`) whose rows hold several small
+ * controls side by side, on the same 24 px pitch as a column's.
+ */
+export interface RibbonRows {
+  readonly kind: "rows"
+  readonly rows: readonly (readonly (RibbonControl | typeof SPACER)[])[]
+}
+
+export type RibbonSlot = RibbonControl | RibbonColumn | RibbonRows
+
+/** The 4 px acad.cuix puts between a row's groups (its `Spacer`). */
 export const SPACER = "spacer"
 
 export interface RibbonPanel {
   readonly id: PanelId
   /** What shows before the panel's break, left to right. */
-  readonly slots: readonly (RibbonControl | RibbonColumn)[]
+  readonly slots: readonly RibbonSlot[]
   /** What slides out from under it: rows of small controls. */
   readonly slideOut?: readonly (readonly (RibbonControl | typeof SPACER)[])[]
   /** The title bar's dialog launcher, and the button it is. */
-  readonly launcher?: "properties"
+  readonly launcher?: "properties" | "textStyle" | "dimensionStyle"
 }
 
-const tool = (id: ItemId, size: ControlSize = "icon"): RibbonControl => ({
+export interface RibbonTab {
+  readonly id: TabId
+  readonly panels: readonly RibbonPanel[]
+}
+
+/**
+ * What an item runs that is no tool of the same id: a ribbon button of the
+ * engine's (`runRibbonButton`), a member of the navigation bar's Zoom
+ * (`zoom`) or its Pan and Orbit (`navigate`), each with the tool it starts,
+ * so `ribbon.test.ts` can tell every tool has a button.
+ */
+export type RibbonAction =
+  | {
+      readonly kind: "button"
+      readonly button: RibbonButton
+      readonly tool: string
+    }
+  | { readonly kind: "zoom"; readonly option: ZoomOption }
+  | { readonly kind: "navigate"; readonly command: "PAN" | "3DORBIT" }
+
+const ucs = (button: RibbonButton): RibbonAction => ({
+  kind: "button",
+  button,
+  tool: "ucs",
+})
+
+/** The actions that are no tool, by the id their icons are drawn under. */
+export const ACTIONS: Readonly<Record<string, RibbonAction>> = {
+  dimensionUpdate: {
+    kind: "button",
+    button: "dimensionUpdate",
+    tool: "dashdimstyle",
+  },
+  ucsWorld: ucs("ucsWorld"),
+  ucsPrevious: ucs("ucsPrevious"),
+  ucsOrigin: ucs("ucsOrigin"),
+  ucsZAxis: ucs("ucsZAxis"),
+  ucs3Point: ucs("ucs3Point"),
+  ucsX: ucs("ucsX"),
+  ucsY: ucs("ucsY"),
+  ucsZ: ucs("ucsZ"),
+  ucsView: ucs("ucsView"),
+  ucsObject: ucs("ucsObject"),
+  ucsFace: ucs("ucsFace"),
+  extrude: { kind: "button", button: "extrude", tool: "extrude" },
+  revolve: { kind: "button", button: "revolve", tool: "revolve" },
+  pan: { kind: "navigate", command: "PAN" },
+  orbit: { kind: "navigate", command: "3DORBIT" },
+  zoomExtents: { kind: "zoom", option: "extents" },
+  zoomWindow: { kind: "zoom", option: "window" },
+  zoomPrevious: { kind: "zoom", option: "previous" },
+  zoomIn: { kind: "zoom", option: "in" },
+  zoomOut: { kind: "zoom", option: "out" },
+}
+
+/**
+ * Items another panel words otherwise than the action's own id, by the
+ * action they run: Insert's `Create Block` is BLOCK, Home's `Create`.
+ */
+const ITEM_ACTIONS: Partial<Record<ItemId, string>> = {
+  createBlock: "block",
+  insertAttedit: "attedit",
+  defineAttributes: "attdef",
+  multilineText: "mtext",
+  dimensionsLinear: "dimlinear",
+  dimensionsAligned: "dimaligned",
+  dimensionsAngular: "dimangular",
+  dimensionsRadius: "dimradius",
+  dimensionsDiameter: "dimdiameter",
+  world: "ucsWorld",
+  previous: "ucsPrevious",
+  axisX: "ucsX",
+  axisY: "ucsY",
+  axisZ: "ucsZ",
+  view3d: "ucsView",
+}
+
+/** What an item runs: a tool's id or one of `ACTIONS`. */
+export function actionOf(item: ItemId): string {
+  return ITEM_ACTIONS[item] ?? item
+}
+
+/** The tool an action starts. */
+export function toolOfAction(action: string): string {
+  const known = ACTIONS[action]
+  if (!known) return action
+  switch (known.kind) {
+    case "button":
+      return known.tool
+    case "zoom":
+      return "zoom"
+    case "navigate":
+      return known.command === "PAN" ? "pan" : "orbit"
+  }
+}
+
+/** What each toggle stands for, by the tool it is the button of. */
+const TOGGLE_TOOLS: Readonly<Partial<Record<RibbonToggle, string>>> = {
+  ucsIcon: "ucsicon",
+}
+
+export const tool = (
+  id: ItemId,
+  size: ControlSize = "icon"
+): RibbonControl => ({
   kind: "tool",
   size,
   tool: id,
 })
 
-const column = (...rows: RibbonControl[]): RibbonColumn => ({
+export const column = (...rows: RibbonControl[]): RibbonColumn => ({
   kind: "column",
   rows,
 })
+
+export const rows = (
+  ...lines: (readonly (RibbonControl | typeof SPACER)[])[]
+): RibbonRows => ({ kind: "rows", rows: lines })
 
 /**
  * The Home tab of Drafting & Annotation (`node scripts/research/ribbon.mjs
@@ -246,10 +387,9 @@ export const HOME: readonly RibbonPanel[] = [
         members: ["attedit"],
       }),
     ],
-    // WHY ATTDISP's button where acad.cuix has the Attribute Display
-    // drop-down: its three entries (ID_AttdispNo, On, Of) are ATTDISP's
-    // options, which the tool asks for (docs/coverage/workspace.md).
-    slideOut: [[tool("attdef"), { kind: "engineTool", tool: "attdisp" }]],
+    // Replace, Manage and Synchronize Attributes and Set Base Point are not
+    // built (docs/coverage/workspace.md).
+    slideOut: [[tool("attdef"), { kind: "attributeDisplay", size: "icon" }]],
   },
   {
     id: "properties",
@@ -313,11 +453,7 @@ export const HOME: readonly RibbonPanel[] = [
   },
 ]
 
-/**
- * Tools with no button on the ribbon, each typed (the views and the
- * coordinates until block 4 of the plan's §6 builds View's panels, which
- * AutoCAD's Drafting & Annotation hides).
- */
+/** Tools with no button on the ribbon, each typed, with the reason. */
 export const TYPED: ReadonlySet<string> = new Set([
   // Select has no button: it is where Escape leaves every command.
   "select",
@@ -348,29 +484,26 @@ export const TYPED: ReadonlySet<string> = new Set([
   "section",
   // SOLIDEDIT is typed: the ribbon offers its options, as the face buttons.
   "solidedit",
-  // Zoom, Pan and Orbit are the navigation bar's, the preset views the
-  // viewport controls'.
-  "zoom",
-  "pan",
+  // -PAN is typed: the ribbon's and the navigation bar's Pan are PAN's.
   "dashpan",
-  "orbit",
+  // VIEW is typed: here it is -VIEW's presets (the viewport controls' menu),
+  // and the ribbon's View Manager (`^C^C_view`) opens a dialog not built.
   "view",
+  // NAVVCUBE is typed: View's View Cube toggle sets NAVVCUBEDISPLAY, with no
+  // command (UI Automation, research/ui/2026-11-24/block4).
   "navvcube",
-  // -DIMSTYLE is typed; the Styles palette stands in for its manager.
-  "dashdimstyle",
+  // ATTDISP is typed: the Attribute Display drop-down sets ATTMODE with no
+  // command (block4), where its entries' macros would run ATTDISP.
+  "attdisp",
   // DIMHORIZONTAL, DIMVERTICAL and DIMROTATED are typed: no panel offers them.
   "dimhorizontal",
   "dimvertical",
   "dimrotated",
-  // UCS, UCSICON, PLAN, ELEV and VPOINT: View's Coordinates panel, which
-  // block 4 builds.
-  "ucs",
-  "ucsicon",
+  // PLAN, ELEV and VPOINT are typed: no panel of Drafting & Annotation, its
+  // hidden ones included, offers them.
   "plan",
   "elev",
   "vpoint",
-  // VSCURRENT is View's Visual Styles gallery, which block 4 builds.
-  "vscurrent",
   // REGEN and REGENALL are typed: no panel here offers them.
   "regen",
   "regenall",
@@ -402,58 +535,35 @@ export const TYPED: ReadonlySet<string> = new Set([
   "purge",
 ])
 
-/**
- * Tools the tool palette offered that Home does not hold: Annotate's
- * Dimensions panel and the 3D Tools tab, which block 4 of the plan's §6
- * builds before any push (docs/plans/autocad-ui.md). Empty once it has.
- */
-export const OTHER_TABS: ReadonlySet<string> = new Set([
-  "dimcontinue",
-  "dimbaseline",
-  "dimspace",
-  "box",
-  "cylinder",
-  "cone",
-  "sphere",
-  "pyramid",
-  "wedge",
-  "torus",
-  "extrude",
-  "revolve",
-  "presspull",
-  "union",
-  "subtract",
-  "intersect",
-  "slice",
-  "filletedge",
-  "chamferedge",
-  "solideditextrude",
-  "solidedittaper",
-  "solideditmove",
-  "solideditcopy",
-  "solideditoffset",
-  "solideditdelete",
-  "solideditrotate",
-])
-
 /** Every tool a control of `panels` runs, by id. */
 export function toolsOn(panels: readonly RibbonPanel[]): Set<string> {
   const out = new Set<string>()
-  const add = (control: RibbonControl | RibbonColumn | typeof SPACER) => {
+  const item = (id: ItemId) => out.add(toolOfAction(actionOf(id)))
+  const add = (control: RibbonSlot | typeof SPACER) => {
     if (control === SPACER) return
     switch (control.kind) {
       case "column":
         control.rows.forEach(add)
         break
-      case "tool":
-      case "engineTool":
-        out.add(control.tool)
+      case "rows":
+        control.rows.forEach((row) => row.forEach(add))
         break
+      case "tool":
+        item(control.tool)
+        break
+      case "toggle": {
+        const tool = TOGGLE_TOOLS[control.toggle]
+        if (tool) out.add(tool)
+        break
+      }
       case "split":
-        for (const member of control.members) if (member) out.add(member)
+        for (const member of control.members) if (member) item(member)
         break
       case "insertGallery":
         out.add("insert")
+        break
+      case "visualStyles":
+        out.add("vscurrent")
         break
     }
   }

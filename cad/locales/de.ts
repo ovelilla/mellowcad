@@ -219,6 +219,11 @@ export const de: EngineLocale = {
       "NWiso": "ISO-Ansicht NW",
       "custom": "Benutzerdefinierte Ansicht"
     },
+    "visualStyle": {
+      "2dWireframe": "2D-Drahtkörper",
+      "hidden": "Verdeckt",
+      "conceptual": "Konzeptuell"
+    },
     "viewCube": {
       "face": {
         "top": "OBEN",

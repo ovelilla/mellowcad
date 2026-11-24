@@ -1,6 +1,6 @@
 "use client"
 
-import type { ReactElement } from "react"
+import { useRef, type ReactElement } from "react"
 import { Palette } from "lucide-react"
 
 import {
@@ -15,16 +15,22 @@ import {
   Select,
   SelectContent,
   SelectItem,
+  SelectSeparator,
   SelectTrigger,
   SelectValue,
   type SelectFinalFocus,
 } from "./ui/select"
 import { useEditorText } from "./editor-text"
 
+/** The list's last row, which is no colour: it opens the picker. */
+const MORE = "more-colors"
+
 /**
- * A colour picker for the properties palette: AutoCAD's index colours as quick
- * choices, a leading "ByLayer" option, and a swatch that opens the native
- * colour dialog for anything else (standing in for AutoCAD's "Select Color…").
+ * A colour list for the Properties palette and the ribbon's Object Color:
+ * ByLayer, AutoCAD's index colours as quick choices, and last a row that
+ * opens the browser's colour picker for any other, standing in for
+ * AutoCAD's Select Color dialog (the ribbon's row `More Colors...`, the
+ * palette's `Select Color...`: docs/coverage/properties.md).
  */
 export function ColorSelect({
   value,
@@ -54,14 +60,17 @@ export function ColorSelect({
    */
   below?: boolean
   /**
-   * The ribbon's Object Color: its picker in the 20 px icon's place before
-   * the list, 22 high (docs/plans/autocad-ui.md, §2.3).
+   * The ribbon's Object Color: a 20 px icon before the list, which is no
+   * target, 22 high, and its last row worded as the ribbon's
+   * (docs/plans/autocad-ui.md, §2.3; research/ui/2026-11-24/block4).
    */
   ribbon?: boolean
   /** Where focus goes once the list has closed; the trigger, when omitted. */
   finalFocus?: SelectFinalFocus
 }): ReactElement {
   const t = useEditorText("Properties")
+  const ribbonText = useEditorText("Ribbon")
+  const picker = useRef<HTMLInputElement>(null)
   const place = below ? "bar" : "palette"
   const isStandard = STANDARD_COLORS.some((color) => color.value === value)
   const custom = value && value !== COLOR_BYLAYER && !isStandard ? value : null
@@ -72,40 +81,46 @@ export function ColorSelect({
       .map((color) => [color, colorLabel(color, names, place)])
   )
 
-  const picker = (
-    <label
-      aria-disabled={disabled || undefined}
-      className={cn(
-        "relative inline-flex shrink-0 cursor-pointer items-center justify-center hover:bg-accent aria-disabled:pointer-events-none aria-disabled:opacity-50",
-        ribbon
-          ? "h-5.5 w-5 rounded-sm"
-          : "size-7 rounded-md border border-border"
-      )}
-      title={t("customColor")}
-    >
-      <Palette className="size-4 text-muted-foreground" />
-      <input
-        type="color"
-        disabled={disabled}
-        aria-label={t("customColor")}
-        value={custom ? colorRgb(custom) : "#ffffff"}
-        onChange={(event) => onValueChange(event.target.value)}
-        className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-      />
-    </label>
+  // WHY a hidden field: only `<input type="color">` opens the browser's
+  // picker; the row asks it to (`showPicker`, in the pick's click), placed
+  // over the trigger so the picker opens beside the list.
+  const field = (
+    <input
+      ref={picker}
+      type="color"
+      tabIndex={-1}
+      aria-hidden
+      disabled={disabled}
+      value={custom ? colorRgb(custom) : "#ffffff"}
+      onChange={(event) => onValueChange(event.target.value)}
+      className="pointer-events-none absolute inset-0 size-full opacity-0"
+    />
   )
+  const openPicker = () => {
+    const input = picker.current
+    if (!input) return
+    if (typeof input.showPicker === "function") input.showPicker()
+    else input.click()
+  }
 
   return (
-    <div
-      className={cn("flex items-center", ribbon ? "gap-0" : "gap-1", className)}
-    >
-      {ribbon && picker}
+    <div className={cn("relative flex items-center", className)}>
+      {ribbon && (
+        <span
+          aria-hidden
+          className="flex w-5 shrink-0 justify-center text-muted-foreground"
+        >
+          <Palette className="size-4" />
+        </span>
+      )}
+      {field}
       <Select
         items={labels}
         disabled={disabled}
         value={value}
         onValueChange={(next) => {
-          if (next != null) onValueChange(next)
+          if (next === MORE) openPicker()
+          else if (next != null) onValueChange(next)
         }}
       >
         <SelectTrigger
@@ -138,10 +153,13 @@ export function ColorSelect({
               {labels[custom]}
             </SelectItem>
           )}
+          <SelectSeparator />
+          <SelectItem value={MORE}>
+            <Palette aria-hidden className="size-3 shrink-0" />
+            {ribbon ? ribbonText("moreColors") : t("selectColor")}
+          </SelectItem>
         </SelectContent>
       </Select>
-
-      {!ribbon && picker}
     </div>
   )
 }

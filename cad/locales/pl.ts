@@ -219,6 +219,11 @@ export const pl: EngineLocale = {
       "NWiso": "Izometryczny NW",
       "custom": "Widok niestandardowy"
     },
+    "visualStyle": {
+      "2dWireframe": "Model szkieletowy 2D",
+      "hidden": "Ukryty",
+      "conceptual": "Koncepcyjny"
+    },
     "viewCube": {
       "face": {
         "top": "GÓRA",

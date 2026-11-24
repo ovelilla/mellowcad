@@ -205,7 +205,7 @@ it open closes it and ends 3DORBIT, d04), orbiting about the selection only, per
 `Invalid option keyword.` for anything else (es `Opción no válida.`, p262–p264); saved in the
 drawing, NAVVCUBEDISPLAY 3 when on (off, 2027 writes 1 under 2D Wireframe, clearing only that
 visual style's bit, p262; here the cube is just hidden); an undo step U, REDO and MREDO name, Enter
-alone too (move/p238, view/p344, p367), which takes nothing back
+alone too (move/p238, view/p344, p367), which takes nothing back View › Viewport Tools' View Cube toggles NAVVCUBEDISPLAY with no echo, a step U names `'NAVVCUBEDISPLAY` (`docs/coverage/workspace.md`, Ribbon).
 
 **Missing:** Settings (the ViewCube Settings dialog; not offered, so the prompt lists `[ON/OFF]`
 where AutoCAD's lists `[ON/OFF/Settings]`, es `[ACT/DES/Parámetros]`, p262, p265), NAVVCUBEDISPLAY
@@ -251,7 +251,7 @@ as in 2D Wireframe, in its colours (p301, p302); a fillet's tangent edges are dr
 plan a cylinder or a cone shows its circle alone (p307); a solid on a layer that is off neither
 shows nor hides another (p309; frozen layers are not modelled). A click takes the solid whose face
 is nearest the viewer under it, never one by an edge a face hides (p314: 2D Wireframe takes the
-edge's solid), and the object snaps still find every edge (p313)
+edge's solid), and the object snaps still find every edge (p313) The ribbon's View › Visual Styles gallery sets the style with no echo, a step U names `VSCURRENT GROUP` (`docs/coverage/workspace.md`, Ribbon).
 
 **Missing:** Wireframe, Realistic, Shaded, shaded with Edges, shades of Gray, SKetchy, X-ray and
 Other (`Enter a visual style name or [?]:`, es `Indique un nombre de estilo visual o [?]`, pt-BR

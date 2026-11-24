@@ -219,6 +219,11 @@ export const ja: EngineLocale = {
       "NWiso": "北西アイソメ ビュー",
       "custom": "カスタム ビュー"
     },
+    "visualStyle": {
+      "2dWireframe": "2D ワイヤフレーム",
+      "hidden": "隠線処理",
+      "conceptual": "コンセプト"
+    },
     "viewCube": {
       "face": {
         "top": "上",

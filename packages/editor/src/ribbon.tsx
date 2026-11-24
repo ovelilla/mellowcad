@@ -9,6 +9,7 @@ import {
 } from "react"
 import { Menu } from "@base-ui/react/menu"
 import { Popover } from "@base-ui/react/popover"
+import { Tabs } from "@base-ui/react/tabs"
 import {
   ChevronDown,
   MoveDiagonal2,
@@ -44,20 +45,25 @@ import { BlockThumbnail } from "./blocks-control"
 import { drawingFocus } from "./drawing-focus"
 import { LinetypeIcon, LineweightIcon } from "./icons"
 import {
+  LARGE_BUTTON_ICONS,
   LARGE_TOOL_ICONS,
   LayerPropertiesLarge,
   type LargeIcon,
 } from "./large-icons"
-import { toolIcon } from "./tool-icons"
+import { BUTTON_ICONS, toolIcon } from "./tool-icons"
 import {
-  HOME,
+  ACTIONS,
   SPACER,
+  actionOf,
+  toolOfAction,
   type ControlSize,
   type ItemId,
-  type RibbonColumn,
   type RibbonControl,
   type RibbonPanel,
+  type RibbonSlot,
+  type RibbonToggle,
 } from "./ribbon-home"
+import { RIBBON_TABS } from "./ribbon-tabs"
 import { useEditorText } from "./editor-text"
 import type { PieceProps } from "./piece"
 
@@ -139,49 +145,62 @@ export function Ribbon({ engine, state }: PieceProps): ReactElement {
     toDrawing: drawingFocus(engine),
   }
 
+  // The tab in front is the engine's (`setRibbonTab`), so it outlives the
+  // piece, which unmounts while the ribbon is closed.
+  const front =
+    RIBBON_TABS.find((tab) => tab.id === state.ribbon.tab) ?? RIBBON_TABS[0]
+
   return (
     <TooltipProvider>
-      {/* The tab row: the tabs 20 high on its foot, the one in front on the
-      panels' surface. */}
-      <div role="tablist" className="flex h-6 items-end bg-background ps-1">
-        <button
-          type="button"
-          role="tab"
-          aria-selected
-          className="h-5 rounded-t-sm bg-card px-2.5 text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-          onClick={() => {
-            engine.setRibbonTab("home")
-            engine.focusSurface()
+      <Tabs.Root
+        value={front.id}
+        onValueChange={(value) => engine.setRibbonTab(String(value))}
+      >
+        {/* The tab row: the tabs 20 high on its foot, the one in front on
+        the panels' surface. */}
+        <Tabs.List className="flex h-6 items-end bg-background ps-1">
+          {RIBBON_TABS.map((tab) => (
+            <Tabs.Tab
+              key={tab.id}
+              value={tab.id}
+              // A click hands the keys back to the drawing; the arrow keys
+              // keep moving along the tabs.
+              onClick={(event) => {
+                if (event.detail > 0) engine.focusSurface()
+              }}
+              className="h-5 rounded-t-sm px-2.5 whitespace-nowrap text-muted-foreground outline-none hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/50 data-active:bg-card data-active:text-foreground"
+            >
+              {t(`tabs.${tab.id}`)}
+            </Tabs.Tab>
+          ))}
+        </Tabs.List>
+        {/* WHY it scrolls sideways: until the panels fold as the window
+        narrows (block 5 of the plan's §6), Home's built panels are wider
+        than a window of 1280 (docs/plans/autocad-ui.md, §6, decision 6);
+        the wheel or a trackpad scrolls it, Shift with the wheel, and no bar
+        takes the panels' height. */}
+        <Tabs.Panel
+          key={front.id}
+          value={front.id}
+          aria-label={t(`tabs.${front.id}`)}
+          className="flex h-25 scrollbar-none overflow-x-auto overflow-y-hidden pt-px outline-none"
+          onWheel={(event) => {
+            const row = event.currentTarget
+            const by = panelsScroll(
+              event,
+              event.target instanceof Node && row.contains(event.target),
+              getComputedStyle(row).direction === "rtl"
+            )
+            // Nothing written where the turn is the browser's: a write would
+            // cut its own sideways scroll short.
+            if (by !== 0) row.scrollLeft += by
           }}
         >
-          {t("tabs.home")}
-        </button>
-      </div>
-      {/* WHY it scrolls sideways: until the panels fold as the window
-      narrows (block 5 of the plan's §6), Home's built panels are wider than
-      a window of 1280 (docs/plans/autocad-ui.md, §6, decision 6); the
-      wheel or a trackpad scrolls it, Shift with the wheel, and no bar
-      takes the panels' height. */}
-      <div
-        role="tabpanel"
-        aria-label={t("tabs.home")}
-        className="flex h-25 scrollbar-none overflow-x-auto overflow-y-hidden pt-px"
-        onWheel={(event) => {
-          const row = event.currentTarget
-          const by = panelsScroll(
-            event,
-            event.target instanceof Node && row.contains(event.target),
-            getComputedStyle(row).direction === "rtl"
-          )
-          // Nothing written where the turn is the browser's: a write would
-          // cut its own sideways scroll short.
-          if (by !== 0) row.scrollLeft += by
-        }}
-      >
-        {HOME.map((panel) => (
-          <PanelView key={panel.id} panel={panel} ctx={ctx} />
-        ))}
-      </div>
+          {front.panels.map((panel) => (
+            <PanelView key={panel.id} panel={panel} ctx={ctx} />
+          ))}
+        </Tabs.Panel>
+      </Tabs.Root>
     </TooltipProvider>
   )
 }
@@ -202,19 +221,22 @@ function PanelView({ panel, ctx }: { panel: RibbonPanel; ctx: Context }) {
     ?.map((row) => row.filter((c) => c === SPACER || shows(c, ctx)))
     .filter((row) => row.some((c) => c !== SPACER))
 
-  // The Properties panel's dialog launcher, at the end of its title bar, the
-  // slide-out's too, which covers the panel's.
-  const launcher = panel.launcher === "properties" && (
+  // A panel's dialog launcher, at the end of its title bar, the slide-out's
+  // too, which covers the panel's: Properties' runs PROPERTIES as Ctrl+1,
+  // Text's and Dimensions' `'_style` and `'_dimstyle` (acad.cuix's ID_Style,
+  // ID_Ddim), named as AutoCAD's tooltips name them.
+  const button = panel.launcher
+  const launcherName =
+    button === "properties" ? name : button && ctx.text(button)
+  const launcher = button && (
     <Tooltip>
       <TooltipTrigger
         render={
           <button
             type="button"
-            aria-label={name}
+            aria-label={launcherName}
             className="flex h-4.5 w-3 items-end justify-center rounded-sm pb-0.5 outline-none hover:bg-muted hover:text-foreground"
-            onClick={() =>
-              ctx.act(() => ctx.engine.runRibbonButton("properties"))
-            }
+            onClick={() => ctx.act(() => ctx.engine.runRibbonButton(button))}
           >
             <MoveDiagonal2
               aria-hidden
@@ -223,7 +245,7 @@ function PanelView({ panel, ctx }: { panel: RibbonPanel; ctx: Context }) {
           </button>
         }
       />
-      <TooltipContent side="bottom">{name}</TooltipContent>
+      <TooltipContent side="bottom">{launcherName}</TooltipContent>
     </Tooltip>
   )
 
@@ -260,7 +282,16 @@ function PanelView({ panel, ctx }: { panel: RibbonPanel; ctx: Context }) {
               if (!next) setPinned(false)
             }}
           >
-            <Popover.Trigger className="flex flex-1 items-center justify-center gap-1 rounded-sm outline-none hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/50">
+            {/* A click focuses the title bar, whose next Space would close
+            the slide-out and repeat no command: the drawing takes the keys
+            back, the slide-out staying open (a popover closes on a press
+            elsewhere, not on focus leaving). */}
+            <Popover.Trigger
+              className="flex flex-1 items-center justify-center gap-1 rounded-sm outline-none hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/50"
+              onClick={(event) => {
+                if (event.detail > 0) ctx.engine.focusSurface()
+              }}
+            >
               {name}
               <ChevronDown aria-hidden className="size-3" />
             </Popover.Trigger>
@@ -343,76 +374,116 @@ function PanelView({ panel, ctx }: { panel: RibbonPanel; ctx: Context }) {
  * uia-a-1920-tab-ID_TabHome.txt): large buttons abut, a column sits 1 px
  * after a large one, and columns of small ones stand 5 apart.
  */
-function gapBetween(
-  before: RibbonControl | RibbonColumn,
-  after: RibbonControl | RibbonColumn
-): string {
-  if (before.kind === "column" && after.kind === "column") return "w-1.25"
-  if (before.kind === "column" || after.kind === "column") return "w-px"
+function gapBetween(before: RibbonSlot, after: RibbonSlot): string {
+  const stacked = (slot: RibbonSlot) =>
+    slot.kind === "column" || slot.kind === "rows"
+  if (stacked(before) && stacked(after)) return "w-1.25"
+  if (stacked(before) || stacked(after)) return "w-px"
   return "hidden"
 }
 
-function Slot({
-  slot,
-  ctx,
-}: {
-  slot: RibbonControl | RibbonColumn
-  ctx: Context
-}) {
-  if (slot.kind !== "column") return <Control control={slot} ctx={ctx} />
-  // Three rows on a 24 px pitch, the first 1 px below a large button's top.
-  return (
-    <div className="mt-px flex flex-col items-start gap-0.5">
-      {slot.rows.map((row, i) => (
-        <Control key={i} control={row} ctx={ctx} />
-      ))}
-    </div>
-  )
+function Slot({ slot, ctx }: { slot: RibbonSlot; ctx: Context }) {
+  if (slot.kind === "column") {
+    // Three rows on a 24 px pitch, the first 1 px below a large button's top.
+    return (
+      <div className="mt-px flex flex-col items-start gap-0.5">
+        {slot.rows.map((row, i) => (
+          <Control key={i} control={row} ctx={ctx} />
+        ))}
+      </div>
+    )
+  }
+  if (slot.kind === "rows") {
+    // A sub-panel's rows, each its controls side by side, on the same pitch.
+    return (
+      <div className="mt-px flex flex-col items-start gap-0.5">
+        {slot.rows.map((row, i) => (
+          <div key={i} className="flex h-5.5 items-center">
+            {row.map((control, c) =>
+              control === SPACER ? (
+                <span key={c} aria-hidden className="w-1" />
+              ) : (
+                <Control key={c} control={control} ctx={ctx} />
+              )
+            )}
+          </div>
+        ))}
+      </div>
+    )
+  }
+  return <Control control={slot} ctx={ctx} />
+}
+
+/** Whether the engine has what an item runs. */
+function hasAction(action: string, ctx: Context): boolean {
+  const tool = toolOfAction(action)
+  return ctx.state.tools.some((t) => t.id === tool)
 }
 
 /** Whether a control has what it runs: a tool the engine lacks shows none. */
 function shows(control: RibbonControl, ctx: Context): boolean {
-  const has = (id: string) => ctx.state.tools.some((tool) => tool.id === id)
   switch (control.kind) {
     case "tool":
-      return has(control.tool)
-    case "engineTool":
-      return has(control.tool)
+      return hasAction(actionOf(control.tool), ctx)
     case "split":
-      return control.members.some((m) => m !== null && has(m))
+      return control.members.some(
+        (m) => m !== null && hasAction(actionOf(m), ctx)
+      )
     default:
       return true
   }
 }
 
+/**
+ * Runs an item's action as its button does: a tool's start (`_line`), a
+ * button's macro, a member of the navigation bar's Zoom, or its Pan or Orbit.
+ */
+function runAction(engine: CadEngine, action: string): void {
+  const known = ACTIONS[action]
+  if (!known) engine.setActiveTool(action)
+  else if (known.kind === "button") engine.runRibbonButton(known.button)
+  else if (known.kind === "zoom") engine.zoom(known.option)
+  else engine.navigate(known.command)
+}
+
+/**
+ * The actions whose glyph is a direction in time, mirrored in a right-to-left
+ * page as Zoom Previous is on the navigation bar (.claude/rules/ui.md).
+ */
+const MIRRORED: ReadonlySet<string> = new Set(["zoomPrevious", "ucsPrevious"])
+const mirror = (action: string) =>
+  MIRRORED.has(action) ? "rtl:-scale-x-100" : undefined
+
+/** An action's 16 px glyph. */
+function smallIcon(action: string): LucideIcon {
+  return BUTTON_ICONS[action] ?? toolIcon(action)
+}
+
+/** An action's 32 px glyph. */
+function largeIcon(action: string): LargeIcon | undefined {
+  return LARGE_TOOL_ICONS[action] ?? LARGE_BUTTON_ICONS[action]
+}
+
+/** An action's 32 px glyph, drawn: a list's row, a large split's icon. */
+function LargeGlyph({ action }: { action: string }): ReactElement | null {
+  const icon = largeIcon(action)
+  return icon ? createElement(icon, { className: mirror(action) }) : null
+}
+
 function Control({ control, ctx }: { control: RibbonControl; ctx: Context }) {
   const { engine, state } = ctx
-  const shortcutOf = (id: string) =>
-    state.tools.find((tool) => tool.id === id)?.shortcut?.toUpperCase()
   if (!shows(control, ctx)) return null
 
   switch (control.kind) {
-    case "tool":
+    case "tool": {
+      const action = actionOf(control.tool)
       return (
         <ToolButton
           size={control.size}
-          icon={control.tool}
+          action={action}
           text={ctx.text(control.tool)}
-          shortcut={shortcutOf(control.tool)}
-          onClick={() => ctx.act(() => engine.setActiveTool(control.tool))}
-        />
-      )
-    case "engineTool": {
-      const label =
-        state.tools.find((tool) => tool.id === control.tool)?.label ??
-        control.tool
-      return (
-        <ToolButton
-          size="icon"
-          icon={control.tool}
-          text={label}
-          shortcut={shortcutOf(control.tool)}
-          onClick={() => ctx.act(() => engine.setActiveTool(control.tool))}
+          shortcut={shortcutOf(action, state)}
+          onClick={() => ctx.act(() => runAction(engine, action))}
         />
       )
     }
@@ -424,6 +495,8 @@ function Control({ control, ctx }: { control: RibbonControl; ctx: Context }) {
           onClick={() => ctx.act(() => engine.runRibbonButton(control.button))}
         />
       )
+    case "toggle":
+      return <ToggleButton toggle={control.toggle} ctx={ctx} />
     case "split":
       return <SplitButton control={control} ctx={ctx} />
     case "layerProperties":
@@ -434,19 +507,85 @@ function Control({ control, ctx }: { control: RibbonControl; ctx: Context }) {
       return <PropertyCombo property={control.property} ctx={ctx} />
     case "insertGallery":
       return <InsertGallery ctx={ctx} />
+    case "attributeDisplay":
+      return <AttributeDisplay size={control.size} ctx={ctx} />
+    case "visualStyles":
+      return <VisualStyles ctx={ctx} />
   }
+}
+
+/** A command's alias, as a tooltip shows it: a tool's own, or the one its action starts. */
+function shortcutOf(action: string, state: EditorState): string | undefined {
+  const tool = toolOfAction(action)
+  return state.tools.find((t) => t.id === tool)?.shortcut?.toUpperCase()
+}
+
+/**
+ * A toggle with no macro (acad.cuix's `Ac…ToggleButton`), lit while what it
+ * shows is: UCS Icon (`_ucsicon _off` / `_on`) and View Cube
+ * (NAVVCUBEDISPLAY), both the engine's buttons; the palettes', which open
+ * and fold the palette panel on theirs with no echo, as the desktop's do
+ * (research/ui/2026-11-24/block4); Command Line, Ctrl+9's window.
+ */
+function ToggleButton({ toggle, ctx }: { toggle: RibbonToggle; ctx: Context }) {
+  const { engine, state } = ctx
+  const keys = useEditorText("Keys")
+  const paletteShows = (tab: "properties" | "blocks" | "layers") =>
+    state.palette.open && state.palette.tab === tab
+  const [on, run]: [boolean, () => void] = (() => {
+    switch (toggle) {
+      case "ucsIcon":
+        return [state.ucsIconOn, () => engine.runRibbonButton("ucsIcon")]
+      case "viewCube":
+        return [
+          state.viewCube.visible,
+          () => engine.runRibbonButton("viewCube"),
+        ]
+      case "propertiesPalette":
+        return [
+          paletteShows("properties"),
+          () => engine.togglePalette("properties"),
+        ]
+      case "blocksPalette":
+        return [paletteShows("blocks"), () => engine.togglePalette("blocks")]
+      case "layerProperties":
+        return [paletteShows("layers"), () => engine.togglePalette("layers")]
+      case "commandLine":
+        return [state.commandLine.visible, () => engine.toggleCommandLine()]
+    }
+  })()
+  const text = ctx.text(toggle)
+  if (toggle === "commandLine" || toggle === "layerProperties") {
+    return (
+      <SmallButton
+        icon={BUTTON_ICONS[toggle] ?? toolIcon(toggle)}
+        label={text}
+        shortcut={toggle === "commandLine" ? keys("commandLine") : undefined}
+        pressed={on}
+        onClick={() => ctx.act(run)}
+      />
+    )
+  }
+  return (
+    <LargeButton
+      icon={LARGE_BUTTON_ICONS[toggle]}
+      text={text}
+      pressed={on}
+      onClick={() => ctx.act(run)}
+    />
+  )
 }
 
 /** A tool's button at its size: large, small with its text, or its icon alone. */
 function ToolButton({
   size,
-  icon,
+  action,
   text,
   shortcut,
   onClick,
 }: {
   size: ControlSize
-  icon: string
+  action: string
   text: string
   shortcut?: string
   onClick: () => void
@@ -454,7 +593,8 @@ function ToolButton({
   if (size === "large") {
     return (
       <LargeButton
-        icon={LARGE_TOOL_ICONS[icon]}
+        icon={largeIcon(action)}
+        mirrored={MIRRORED.has(action)}
         text={text}
         shortcut={shortcut}
         onClick={onClick}
@@ -463,7 +603,8 @@ function ToolButton({
   }
   return (
     <SmallButton
-      icon={toolIcon(icon)}
+      icon={smallIcon(action)}
+      mirrored={MIRRORED.has(action)}
       label={text}
       withText={size === "small"}
       shortcut={shortcut}
@@ -472,11 +613,11 @@ function ToolButton({
   )
 }
 
-/** A tool's 16 px icon, by its id: the member a split button shows. */
+/** An action's 16 px icon: the member a split button shows. */
 function ToolIcon({ id }: { id: string }): ReactElement {
-  return createElement(toolIcon(id), {
+  return createElement(smallIcon(id), {
     "aria-hidden": true,
-    className: "size-4",
+    className: cn("size-4", mirror(id)),
   })
 }
 
@@ -527,12 +668,15 @@ function Tip({
 /** A large button: 72 high, its 32 px icon over its text. */
 function LargeButton({
   icon: Icon,
+  mirrored = false,
   text,
   shortcut,
   pressed,
   onClick,
 }: {
   icon: LargeIcon | undefined
+  /** A glyph of direction in time, mirrored right to left. */
+  mirrored?: boolean
   text: string
   shortcut?: string
   pressed?: boolean
@@ -551,7 +695,7 @@ function LargeButton({
         )}
         onClick={onClick}
       >
-        {Icon && <Icon />}
+        {Icon && <Icon className={mirrored ? "rtl:-scale-x-100" : undefined} />}
         <span className="mt-0.5 flex flex-col items-center">
           {largeLines(text).map((line, i) => (
             <span key={i}>{line}</span>
@@ -565,15 +709,21 @@ function LargeButton({
 /** A small button, 22 high: its 16 px icon in a box of 24, and its text. */
 function SmallButton({
   icon: Icon,
+  mirrored = false,
   label,
   withText = false,
   shortcut,
+  pressed,
   onClick,
 }: {
   icon: LucideIcon
+  /** A glyph of direction in time, mirrored right to left. */
+  mirrored?: boolean
   label: string
   withText?: boolean
   shortcut?: string
+  /** A toggle's state: lit while on. */
+  pressed?: boolean
   onClick: () => void
 }) {
   return (
@@ -581,11 +731,20 @@ function SmallButton({
       <button
         type="button"
         aria-label={withText ? undefined : label}
-        className={cn(BUTTON, "h-5.5", withText ? cn("pe-1.5", WHOLE) : "w-6")}
+        aria-pressed={pressed}
+        className={cn(
+          BUTTON,
+          "h-5.5",
+          withText ? cn("pe-1.5", WHOLE) : "w-6",
+          pressed && LIT
+        )}
         onClick={onClick}
       >
         <span className="flex w-5.5 justify-center">
-          <Icon aria-hidden className="size-4" />
+          <Icon
+            aria-hidden
+            className={cn("size-4", mirrored && "rtl:-scale-x-100")}
+          />
         </span>
         {withText && label}
       </button>
@@ -609,7 +768,7 @@ function SplitButton({
   const { engine, state } = ctx
   const t = useEditorText("Ribbon.splits")
   const members = control.members.filter(
-    (m): m is ItemId => m === null || state.tools.some((tool) => tool.id === m)
+    (m): m is ItemId | null => m === null || hasAction(actionOf(m), ctx)
   )
   const tools = members.filter((m): m is ItemId => m !== null)
   const follows = control.behaviour !== "noFollow"
@@ -618,14 +777,12 @@ function SplitButton({
     follows && tools.includes(remembered as ItemId)
       ? (remembered as ItemId)
       : tools[0]
-  const shortcut = state.tools
-    .find((tool) => tool.id === shown)
-    ?.shortcut?.toUpperCase()
+  const shortcut = shortcutOf(actionOf(shown), state)
   const text = control.text ? t(control.text) : ctx.text(shown)
   const run = (id: ItemId) =>
     ctx.act(() => {
       if (follows) engine.setRibbonMember(control.id, id)
-      engine.setActiveTool(id)
+      runAction(engine, actionOf(id))
     })
 
   const list = (
@@ -639,16 +796,23 @@ function SplitButton({
   )
 
   if (control.behaviour === "dropDownFollow") {
-    // One target: the shown member's icon and the arrow, 35 × 22.
+    // One target: the shown member's icon and the arrow, 35 × 22, or with
+    // its text between them (3D Tools' Fillet Edge, `SmallWithText`).
+    const withText = control.size === "small"
     return (
       <Menu.Root>
         <Menu.Trigger
-          aria-label={ctx.text(shown)}
-          className={cn(BUTTON, "h-5.5 w-8.75")}
+          aria-label={withText ? undefined : text}
+          className={cn(
+            BUTTON,
+            "h-5.5",
+            withText ? cn("pe-1", WHOLE) : "w-8.75"
+          )}
         >
           <span className="flex w-5.5 justify-center">
-            <ToolIcon id={shown} />
+            <ToolIcon id={actionOf(shown)} />
           </span>
+          {withText && <span className="pe-1">{ctx.text(shown)}</span>}
           <ChevronDown aria-hidden className="size-2.5" />
         </Menu.Trigger>
         {list}
@@ -657,7 +821,6 @@ function SplitButton({
   }
 
   if (control.size === "large") {
-    const Icon = LARGE_TOOL_ICONS[shown]
     const lines = largeLines(text)
     // Two targets (§2.3): the icon, 38 high, runs; the text and its arrow,
     // 35, open the list. They share a pixel (`-mt-px`), as 38 and 35 do in
@@ -676,7 +839,7 @@ function SplitButton({
               )}
               onClick={() => run(shown)}
             >
-              {Icon && <Icon />}
+              <LargeGlyph action={actionOf(shown)} />
             </button>
           </Tip>
           <Menu.Trigger
@@ -720,7 +883,7 @@ function SplitButton({
             onClick={() => run(shown)}
           >
             <span className="flex w-5.5 justify-center">
-              <ToolIcon id={shown} />
+              <ToolIcon id={actionOf(shown)} />
             </span>
             {withText && text}
           </button>
@@ -780,7 +943,6 @@ function MemberList({
                 />
               )
             }
-            const Icon = LARGE_TOOL_ICONS[member]
             return (
               <Menu.Item
                 key={member}
@@ -789,7 +951,7 @@ function MemberList({
                 onClick={() => onPick(member)}
               >
                 <span className="flex size-8 shrink-0 items-center justify-center">
-                  {Icon && <Icon />}
+                  <LargeGlyph action={actionOf(member)} />
                 </span>
                 {ctx.text(member)}
               </Menu.Item>
@@ -972,6 +1134,11 @@ function InsertGallery({ ctx }: { ctx: Context }) {
           "h-18 min-w-9.5 flex-col justify-start px-0.5 pt-0.75",
           WHOLE_EVEN
         )}
+        // The drawing keeps the keys while the gallery is open, as after a
+        // slide-out's title bar.
+        onClick={(event) => {
+          if (event.detail > 0) engine.focusSurface()
+        }}
       >
         {Icon && <Icon />}
         <span className="mt-0.5">{text}</span>
@@ -979,7 +1146,12 @@ function InsertGallery({ ctx }: { ctx: Context }) {
       </Popover.Trigger>
       <Popover.Portal container={portal}>
         <Popover.Positioner side="bottom" align="start" className="z-50">
-          <Popover.Popup className={cn(POPUP, "w-60 p-1")}>
+          {/* No focus taken: the drawing keeps the keys while it is open. */}
+          <Popover.Popup
+            initialFocus={false}
+            finalFocus={false}
+            className={cn(POPUP, "w-60 p-1")}
+          >
             {state.blocks.length === 0 ? (
               <p className="px-2 py-4 text-center text-muted-foreground">
                 {blocks("empty")}
@@ -1006,6 +1178,151 @@ function InsertGallery({ ctx }: { ctx: Context }) {
                 ))}
               </div>
             )}
+          </Popover.Popup>
+        </Popover.Positioner>
+      </Popover.Portal>
+    </Popover.Root>
+  )
+}
+
+/** The Attribute Display drop-down's entries, in its list's order, by ATTMODE. */
+const ATTRIBUTE_DISPLAYS = [
+  ["normal", "attModeNormal"],
+  ["on", "attModeOn"],
+  ["off", "attModeOff"],
+] as const
+
+/**
+ * Attribute Display (AcATTMODEDataBoundDropDown), in Home's Block slide-out
+ * by its icon and in Insert's Block with its text: one target showing the
+ * entry ATTMODE holds, its list a row of 38 per entry; a pick sets ATTMODE
+ * (research/ui/2026-11-24/block4, 165 × 22 with its text).
+ */
+function AttributeDisplay({ size, ctx }: { size: ControlSize; ctx: Context }) {
+  const { engine, state } = ctx
+  const portal = usePortalContainer()
+  const current =
+    ATTRIBUTE_DISPLAYS.find(([mode]) => mode === state.attributeDisplay) ??
+    ATTRIBUTE_DISPLAYS[0]
+  const withText = size === "small"
+  const text = ctx.text(current[1])
+  return (
+    <Menu.Root>
+      <Menu.Trigger
+        aria-label={withText ? undefined : text}
+        className={cn(BUTTON, "h-5.5", withText ? cn("pe-1", WHOLE) : "w-8.75")}
+      >
+        <span className="flex w-5.5 justify-center">
+          <ToolIcon id={current[1]} />
+        </span>
+        {withText && <span className="pe-1">{text}</span>}
+        <ChevronDown aria-hidden className="size-2.5" />
+      </Menu.Trigger>
+      <Menu.Portal container={portal}>
+        <Menu.Positioner
+          side="bottom"
+          align="start"
+          sideOffset={1}
+          className="z-50"
+        >
+          <Menu.Popup className={cn(POPUP, "p-0.5")} finalFocus={ctx.toDrawing}>
+            {ATTRIBUTE_DISPLAYS.map(([mode, item]) => {
+              return (
+                <Menu.Item
+                  key={mode}
+                  data-current={mode === current[0] ? "" : undefined}
+                  className={LIST_ROW}
+                  onClick={() => engine.setAttributeDisplay(mode)}
+                >
+                  <span className="flex size-8 shrink-0 items-center justify-center">
+                    <LargeGlyph action={item} />
+                  </span>
+                  {ctx.text(item)}
+                </Menu.Item>
+              )
+            })}
+          </Menu.Popup>
+        </Menu.Positioner>
+      </Menu.Portal>
+    </Menu.Root>
+  )
+}
+
+/** The visual styles built, in the gallery's order (VSCURRENT's). */
+const VISUAL_STYLES = [
+  ["2dWireframe", "vs2dWireframe"],
+  ["hidden", "vsHidden"],
+  ["conceptual", "vsConceptual"],
+] as const
+
+/**
+ * The Visual Styles gallery (AcVisualStyleGalleryControl): a combo of 200 ×
+ * 22 showing the view's style, its gallery four cells of 82 × 70 across on an
+ * 84 pitch, each a picture over the style's name (research/ui/2026-11-24/
+ * block4). Only the styles VSCURRENT has are offered; a pick sets it with no
+ * echo. Save as a New Visual Style and the Visual Styles Manager are not
+ * built.
+ */
+function VisualStyles({ ctx }: { ctx: Context }) {
+  const { engine, state } = ctx
+  const t = useEditorText("Ribbon")
+  const portal = usePortalContainer()
+  const [open, setOpen] = useState(false)
+  const current =
+    VISUAL_STYLES.find(([style]) => style === state.visualStyle) ??
+    VISUAL_STYLES[0]
+
+  return (
+    <Popover.Root open={open} onOpenChange={setOpen}>
+      <Popover.Trigger
+        aria-label={`${t("panels.visualStyles")}: ${state.names.visualStyles[current[0]]}`}
+        className={cn(
+          COMBO,
+          "flex w-50 items-center gap-1 rounded-sm border ps-0.75 pe-1 outline-none hover:bg-muted focus-visible:border-ring aria-expanded:bg-muted"
+        )}
+        onClick={(event) => {
+          if (event.detail > 0) engine.focusSurface()
+        }}
+      >
+        <ToolIcon id={current[1]} />
+        <span className="min-w-0 flex-1 truncate text-start">
+          {state.names.visualStyles[current[0]]}
+        </span>
+        <ChevronDown aria-hidden className="size-2.5 text-muted-foreground" />
+      </Popover.Trigger>
+      <Popover.Portal container={portal}>
+        <Popover.Positioner side="bottom" align="start" className="z-50">
+          {/* No focus taken or given back: the drawing keeps the keys, as
+          after Insert's gallery. */}
+          <Popover.Popup
+            initialFocus={false}
+            finalFocus={false}
+            className={cn(POPUP, "p-px")}
+          >
+            <div className="grid w-83.5 grid-cols-4 gap-0.5">
+              {VISUAL_STYLES.map(([style, icon]) => {
+                return (
+                  <button
+                    key={style}
+                    type="button"
+                    aria-pressed={style === current[0]}
+                    className="flex h-17.5 min-w-0 flex-col items-center rounded-sm outline-none hover:bg-accent focus-visible:bg-accent aria-pressed:bg-active/15"
+                    onClick={() => {
+                      setOpen(false)
+                      engine.setVisualStyle(style)
+                      engine.focusSurface()
+                    }}
+                  >
+                    <span className="flex size-12 shrink-0 items-center justify-center">
+                      <LargeGlyph action={icon} />
+                    </span>
+                    <span className="w-full truncate text-center">
+                      {state.names.visualStyles[style]}
+                    </span>
+                  </button>
+                )
+              })}
+            </div>
           </Popover.Popup>
         </Popover.Positioner>
       </Popover.Portal>

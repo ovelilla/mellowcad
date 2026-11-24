@@ -29,7 +29,6 @@ declare const source: {
     "savedHint": string
     "undo": string
     "redo": string
-    "commandLine": string
   }
   "NavigationBar": {
     "label": string
@@ -63,6 +62,10 @@ declare const source: {
   "Ribbon": {
     "tabs": {
       "home": string
+      "insert": string
+      "annotate": string
+      "tools3d": string
+      "view": string
     }
     "panels": {
       "draw": string
@@ -73,6 +76,19 @@ declare const source: {
       "properties": string
       "utilities": string
       "clipboard": string
+      "insertBlock": string
+      "blockDefinition": string
+      "text": string
+      "dimensions": string
+      "markup": string
+      "viewportTools": string
+      "visualStyles": string
+      "coordinates": string
+      "palettes": string
+      "navigate": string
+      "modeling": string
+      "solidEditing": string
+      "coordinates3d": string
     }
     "items": {
       "line": string
@@ -145,6 +161,75 @@ declare const source: {
       "cutclip": string
       "copyclip": string
       "copybase": string
+      "createBlock": string
+      "dimspace": string
+      "dimensionUpdate": string
+      "dimcontinue": string
+      "dimbaseline": string
+      "ucsIcon": string
+      "viewCube": string
+      "ucs": string
+      "ucsWorld": string
+      "ucsX": string
+      "ucsY": string
+      "ucsZ": string
+      "ucsPrevious": string
+      "ucsOrigin": string
+      "ucsZAxis": string
+      "ucs3Point": string
+      "ucsView": string
+      "ucsObject": string
+      "ucsFace": string
+      "propertiesPalette": string
+      "blocksPalette": string
+      "commandLine": string
+      "pan": string
+      "orbit": string
+      "zoomExtents": string
+      "zoomWindow": string
+      "zoomPrevious": string
+      "zoomIn": string
+      "zoomOut": string
+      "box": string
+      "cylinder": string
+      "cone": string
+      "sphere": string
+      "pyramid": string
+      "wedge": string
+      "torus": string
+      "extrude": string
+      "revolve": string
+      "presspull": string
+      "filletedge": string
+      "chamferedge": string
+      "slice": string
+      "union": string
+      "subtract": string
+      "intersect": string
+      "solideditextrude": string
+      "solidedittaper": string
+      "solideditmove": string
+      "solideditcopy": string
+      "solideditoffset": string
+      "solideditrotate": string
+      "solideditdelete": string
+      "insertAttedit": string
+      "defineAttributes": string
+      "multilineText": string
+      "dimensionsLinear": string
+      "dimensionsAligned": string
+      "dimensionsAngular": string
+      "dimensionsRadius": string
+      "dimensionsDiameter": string
+      "axisX": string
+      "axisY": string
+      "axisZ": string
+      "view3d": string
+      "world": string
+      "previous": string
+      "attModeNormal": string
+      "attModeOn": string
+      "attModeOff": string
     }
     "splits": {
       "circle": string
@@ -153,12 +238,16 @@ declare const source: {
       "array": string
       "measure": string
       "editAttributes": string
+      "editAttribute": string
+      "rotateUcs": string
+      "defineUcs": string
     }
     "layer": string
     "color": string
     "lineweight": string
     "linetype": string
     "pin": string
+    "moreColors": string
   }
   "CommandLine": {
     "label": string
@@ -393,7 +482,6 @@ declare const source: {
     "dimStyle": string
     "dimStyleLabel": string
     "varies": string
-    "customColor": string
     "title": string
     "objectType": string
     "currentLayerLabel": string
@@ -406,6 +494,7 @@ declare const source: {
       "content": string
       "close": string
     }
+    "selectColor": string
   }
   "MText": {
     "unsavedChanges": {

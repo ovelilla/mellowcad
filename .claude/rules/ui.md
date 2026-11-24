@@ -207,7 +207,7 @@ the ribbon, the bottom row from phase 4. **28 px**, icons 16, for the rest one p
 
 - **A zone sizes its content** (`box-content`): its border lies outside those numbers. A border
   inside the box eats a pixel, every control lands on a half pixel and its icon blurs.
-- **In a bar every part has a whole width**: a text part (the palette toggles `w-24`, the save
+- **In a bar every part has a whole width**: a text part (the save
   state's slot `w-24`, there before the first save, Units `w-9`) gets a fixed one, or its fraction
   of a pixel pushes every icon after it off the pixel grid; the ribbon's round up (`WHOLE`).
 - Outside both systems, each for a reason: the ViewCube's Home, roll arrows and UCS menu
@@ -285,10 +285,11 @@ Each bar's AutoCAD order is in its component's header comment; touch and phones 
   (`openDrawingUnits`, `navigate`). A tool's button is `engine.setActiveTool(id)`, echoing `_line`,
   repeated by Enter, a menu group U names `LINE GROUP` (`cad-runtime.md`); a menu's own path is an
   engine method of its own (`openDrawingUnitsFromMenu`, `choosePolarAngle`).
-- **The ribbon** draws a tab from its data (`ribbon-home.ts`): acad.cuix's panels, rows and
-  drop-downs (`ribbon.mjs --built`), only what the engine has, its words each culture's acad.CUIX's.
-  A tool with no button is in `TYPED` with its WHY, or `OTHER_TABS` until its tab is built
-  (`ribbon.test.ts`). A drop-down's member is the engine's (`setRibbonMember`).
+- **The ribbon** draws its tabs from `RIBBON_TABS`: acad.cuix's panels, rows and drop-downs
+  (`ribbon.mjs --built`), only what the engine has, its words each culture's acad.CUIX's (or its
+  AcWindows resources'). A tool with no button is in `TYPED` with its WHY (`ribbon.test.ts`). What
+  a control shows is the engine's (`setRibbonTab`, `setRibbonMember`, `visualStyle`): the piece
+  unmounts while closed. A control with no macro does what the desktop's does, read there first.
 - **The dynamic input** is `pointer-events-none` and keyboard-driven — never clickable. A
   `paragraphs` field (MTEXT) is a textarea, never reselected when focus comes back; nor is a value
   field with text in it: keys typed on the drawing before the box had focus went into it. **A
@@ -309,7 +310,7 @@ A palette is a **tab of the palette panel** (until `docs/next-autocad-ui.md` rev
 a popover closes on the first click on the drawing. Which tab shows, and the Styles table
 (`state.stylesTable`), are `EngineState`, never `useState` — or typing `DIMSTYLE` cannot open it. A
 new palette is a `PaletteTab` (`PALETTE_TABS`), a command that calls `showPalette`, a branch in
-`PalettePanel` and, if the title bar has its trigger, a `PaletteToggle`.
+`PalettePanel` and, if View's Palettes panel has its toggle, a `RibbonToggle`.
 
 Anything that **draws drawing content** (a block thumbnail) asks the engine for a `Scene`
 (`engine.buildBlockPreview(...)`) and paints it with `CanvasScenePresenter`. Never walk entities in

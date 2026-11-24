@@ -32,8 +32,7 @@ export const fr: EditorLocale = {
       "saved": "Enregistré",
       "savedHint": "Enregistré sur cet appareil",
       "undo": "Annuler",
-      "redo": "Rétablir",
-      "commandLine": "Ligne de commande"
+      "redo": "Rétablir"
     },
     "NavigationBar": {
       "label": "Barre de navigation",
@@ -71,7 +70,11 @@ export const fr: EditorLocale = {
     },
     "Ribbon": {
       "tabs": {
-        "home": "Début"
+        "home": "Début",
+        "insert": "Insertion",
+        "annotate": "Annoter",
+        "tools3d": "Outils 3D",
+        "view": "Vue"
       },
       "panels": {
         "draw": "Dessin",
@@ -81,7 +84,20 @@ export const fr: EditorLocale = {
         "block": "Bloc",
         "properties": "Propriétés",
         "utilities": "Utilitaires",
-        "clipboard": "Presse-papiers"
+        "clipboard": "Presse-papiers",
+        "insertBlock": "Bloc",
+        "blockDefinition": "Définition de bloc",
+        "text": "Texte",
+        "dimensions": "Cotes",
+        "markup": "Annotation",
+        "viewportTools": "Outils de fenêtre",
+        "visualStyles": "Styles visuels",
+        "coordinates": "Coordonnées",
+        "palettes": "Palettes",
+        "navigate": "Navigation",
+        "modeling": "Modélisation",
+        "solidEditing": "Edition de solides",
+        "coordinates3d": "Coordonnées"
       },
       "items": {
         "line": "Ligne",
@@ -153,7 +169,76 @@ export const fr: EditorLocale = {
         "paste": "Coller",
         "cutclip": "Couper",
         "copyclip": "Copier dans presse-papiers",
-        "copybase": "Copier avec point de base"
+        "copybase": "Copier avec point de base",
+        "createBlock": "Créer un bloc",
+        "dimspace": "Ajuster l'espacement",
+        "dimensionUpdate": "Mettre à jour",
+        "dimcontinue": "Continuer",
+        "dimbaseline": "Ligne de base",
+        "ucsIcon": "Icône du SCU",
+        "viewCube": "View Cube",
+        "ucs": "SCU",
+        "ucsWorld": "SCU, Général",
+        "ucsX": "X",
+        "ucsY": "Y",
+        "ucsZ": "Z",
+        "ucsPrevious": "SCU, Précédent",
+        "ucsOrigin": "Origine",
+        "ucsZAxis": "Axe Z",
+        "ucs3Point": "3-points",
+        "ucsView": "Vue",
+        "ucsObject": "Objet",
+        "ucsFace": "Face",
+        "propertiesPalette": "Propriétés",
+        "blocksPalette": "Blocs",
+        "commandLine": "Ligne de commande",
+        "pan": "Panoramique",
+        "orbit": "Orbite",
+        "zoomExtents": "Etendu",
+        "zoomWindow": "Fenêtre",
+        "zoomPrevious": "Précédent",
+        "zoomIn": "Avant",
+        "zoomOut": "Arrière",
+        "box": "Boîte",
+        "cylinder": "Cylindre",
+        "cone": "Cône",
+        "sphere": "Sphère",
+        "pyramid": "Pyramide",
+        "wedge": "Biseau",
+        "torus": "Tore",
+        "extrude": "Extrusion",
+        "revolve": "Révolution",
+        "presspull": "Appuyer/tirer",
+        "filletedge": "Arête de raccord",
+        "chamferedge": "Arête de chanfrein",
+        "slice": "Section",
+        "union": "Union",
+        "subtract": "Soustraction",
+        "intersect": "Intersection",
+        "solideditextrude": "Extruder des faces",
+        "solidedittaper": "Effiler des faces",
+        "solideditmove": "Déplacer des faces",
+        "solideditcopy": "Copier des faces",
+        "solideditoffset": "Décaler des faces",
+        "solideditrotate": "Rotation des faces",
+        "solideditdelete": "Supprimer des faces",
+        "insertAttedit": "Unique",
+        "defineAttributes": "Définir des attributs",
+        "multilineText": "Texte multiligne",
+        "dimensionsLinear": "Linéaire",
+        "dimensionsAligned": "Alignée",
+        "dimensionsAngular": "Angulaire",
+        "dimensionsRadius": "Rayon",
+        "dimensionsDiameter": "Diamètre",
+        "axisX": "X",
+        "axisY": "Y",
+        "axisZ": "Z",
+        "view3d": "Vue",
+        "world": "Général",
+        "previous": "Précédent",
+        "attModeNormal": "Conserver l'affichage des attributs",
+        "attModeOn": "Afficher tous les attributs",
+        "attModeOff": "Masquer tous les attributs"
       },
       "splits": {
         "circle": "Cercle",
@@ -161,13 +246,17 @@ export const fr: EditorLocale = {
         "text": "Texte",
         "array": "Réseau",
         "measure": "Mesurer",
-        "editAttributes": "Modifier attributs"
+        "editAttributes": "Modifier attributs",
+        "editAttribute": "Editer les attributs",
+        "rotateUcs": "Faire pivoter le SCU",
+        "defineUcs": "Définir le SCU"
       },
       "layer": "Calque",
       "color": "Couleur de l'objet",
       "lineweight": "Epaisseur de ligne",
       "linetype": "Type de ligne",
-      "pin": "Épingler"
+      "pin": "Épingler",
+      "moreColors": "Plus de couleurs..."
     },
     "CommandLine": {
       "label": "Ligne de commande",
@@ -483,7 +572,6 @@ export const fr: EditorLocale = {
       "dimStyle": "Style de cote",
       "dimStyleLabel": "Style de cote des objets sélectionnés",
       "varies": "*VARIE*",
-      "customColor": "Couleur personnalisée",
       "title": "Propriétés",
       "objectType": "Type d'objet",
       "currentLayerLabel": "Calque courant",
@@ -501,7 +589,8 @@ export const fr: EditorLocale = {
           ]
         ],
         "close": "Fermer"
-      }
+      },
+      "selectColor": "Sélectionner une couleur..."
     },
     "MText": {
       "unsavedChanges": {

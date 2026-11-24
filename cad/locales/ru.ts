@@ -219,6 +219,11 @@ export const ru: EngineLocale = {
       "NWiso": "СЗ изометрия",
       "custom": "Пользовательский вид"
     },
+    "visualStyle": {
+      "2dWireframe": "2D-каркас",
+      "hidden": "Скрытие линий",
+      "conceptual": "Концептуальный"
+    },
     "viewCube": {
       "face": {
         "top": "Сверху",

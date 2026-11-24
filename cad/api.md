@@ -261,11 +261,22 @@ export declare class CadEngine {
     /**
      * A ribbon button that runs a command rather than a tool, as its acad.cuix
      * macro does: Text Style (`'_style`) and Dimension Style (`'_dimstyle`),
-     * transparent mid-command, and the Properties panel's dialog launcher,
-     * PROPERTIES or PROPERTIESCLOSE as Ctrl+1. A tool's button is
-     * {@link setActiveTool}.
+     * transparent mid-command; the Properties panel's dialog launcher,
+     * PROPERTIES or PROPERTIESCLOSE as Ctrl+1; Annotate's Update
+     * (`_-dimstyle _apply`); the UCS's buttons (`_ucs _w`, `_x`, …); and View's
+     * UCS Icon and View Cube toggles. A tool's button is {@link setActiveTool}.
      */
-    runRibbonButton(button: "textStyle" | "dimensionStyle" | "properties"): void;
+    runRibbonButton(button: RibbonButton): void;
+    /**
+     * The ribbon's Visual Styles gallery: the view's visual style, set as
+     * VSCURRENT sets it, with no echo, a step U names `VSCURRENT GROUP`.
+     */
+    setVisualStyle(style: VisualStyle): void;
+    /**
+     * The ribbon's Attribute Display drop-down: ATTMODE, with no echo, a step
+     * U names `'ATTMODE`.
+     */
+    setAttributeDisplay(display: AttributeDisplay): void;
     /**
      * A point of the state's screen space (the canvas's own pixels: the cursor,
      * the snap override menu, the cycling list) in the page's viewport, where a
@@ -936,6 +947,12 @@ export interface EngineNames {
     readonly colorNumbers: Readonly<Record<string, string>>;
     /** The preset views (`state.view.preset`), and `custom` for any other. */
     readonly views: Readonly<Record<ViewPreset | "custom", string>>;
+    /**
+     * The visual styles VSCURRENT sets, by `state.visualStyle`: the drawing's
+     * names for them, as the ribbon's Visual Styles gallery lists them (string
+     * tables 41794, 41445, 8027).
+     */
+    readonly visualStyles: Readonly<Record<VisualStyle, string>>;
     /** The ViewCube's face labels, by the faces of `state.viewCube`. */
     readonly viewCubeFaces: Readonly<Record<ViewCubeFace, string>>;
     /** The ViewCube's compass letters, by `state.viewCube`'s compass. */
@@ -1125,6 +1142,12 @@ export interface EngineState {
     readonly cleanScreen: CleanScreenUi;
     /** The ribbon (RIBBON, RIBBONCLOSE, Clean Screen). */
     readonly ribbon: RibbonUi;
+    /** The view's visual style (VSCURRENT): the ribbon's Visual Styles gallery shows it. */
+    readonly visualStyle: VisualStyle;
+    /** ATTMODE: what the Attribute Display drop-down shows. */
+    readonly attributeDisplay: AttributeDisplay;
+    /** Whether UCSICON is on: the ribbon's UCS Icon toggle is lit while it is. */
+    readonly ucsIconOn: boolean;
     /**
      * Command options (keywords) the active tool currently offers — AutoCAD's
      * `[Close/Undo]` prompt. The UI renders these as hint chips near the dynamic
@@ -1305,6 +1328,14 @@ export interface PropertyRow {
     /** Present when the value can be retyped to change the geometry. */
     readonly edit?: PropertyEdit;
 }
+
+export type { RibbonButton }
+/**
+ * A ribbon button that runs a command of its own rather than a tool, by the
+ * host's id for it (`CadEngine.runRibbonButton`): each is acad.cuix's macro
+ * or, for a toggle with none, what the desktop's does.
+ */
+export type RibbonButton = "textStyle" | "dimensionStyle" | "properties" | "dimensionUpdate" | "ucsIcon" | "viewCube" | "extrude" | "revolve" | UcsButton;
 
 export type { RibbonUi }
 /**
@@ -1548,6 +1579,10 @@ export type { TextStyleInfo }
 export interface TextStyleInfo extends TextStyle {
     readonly entityCount: number;
 }
+
+export type { UcsButton }
+/** The UCS's buttons, each `^C^C_ucs` and the option it answers. */
+export type UcsButton = "ucsWorld" | "ucsPrevious" | "ucsOrigin" | "ucsZAxis" | "ucs3Point" | "ucsX" | "ucsY" | "ucsZ" | "ucsView" | "ucsObject" | "ucsFace";
 
 export { VIEW_MENU }
 /** The preset views as the viewport controls' view menu lists them. */
@@ -2215,6 +2250,10 @@ export declare function themePalette(prefix?: string): (color: string) => string
 ### Drawing model
 
 ```ts
+export type { AttributeDisplay }
+/** ATTMODE: whether references show their attributes. */
+export type AttributeDisplay = "normal" | "on" | "off";
+
 export type { BlockDefinition }
 /**
  * A block definition: named geometry that can be placed any number of times by
@@ -2890,6 +2929,10 @@ export type { Vec3 }
 export interface Vec3 extends Vec2 {
     readonly z: number;
 }
+
+export type { VisualStyle }
+/** The visual styles built: AutoCAD's 2D Wireframe, Hidden and Conceptual. */
+export type VisualStyle = "2dWireframe" | "hidden" | "conceptual";
 ```
 
 ### Languages
@@ -4863,10 +4906,6 @@ export interface RectangularArray {
 }
 
 // domain/entityTypes.ts
-/** ATTMODE: whether references show their attributes. */
-export type AttributeDisplay = "normal" | "on" | "off";
-
-// domain/entityTypes.ts
 /** How a spline was made (SPLMETHOD): through fit points, or on control vertices. */
 export type SplineMethod = "fit" | "cv";
 
@@ -5073,10 +5112,6 @@ export interface SavedView {
     /** Unit vector square to it, drawn pointing up. */
     readonly up: Vec3;
 }
-
-// domain/units.ts
-/** The visual styles built: AutoCAD's 2D Wireframe, Hidden and Conceptual. */
-export type VisualStyle = "2dWireframe" | "hidden" | "conceptual";
 
 // domain/units.ts
 export interface DocumentSettings {

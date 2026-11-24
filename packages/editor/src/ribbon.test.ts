@@ -5,28 +5,32 @@ import { describe, expect, it } from "vitest"
 import type { CadEngine } from "@mellowcad/engine"
 import type { EditorState } from "@mellowcad/react"
 import { createHarness } from "../../../test/harness"
-import { LARGE_TOOL_ICONS } from "./large-icons"
-import { TOOL_ICONS } from "./tool-icons"
+import { LARGE_BUTTON_ICONS, LARGE_TOOL_ICONS } from "./large-icons"
+import { BUTTON_ICONS, TOOL_ICONS } from "./tool-icons"
 import { panelsScroll, Ribbon } from "./ribbon"
 import {
-  HOME,
-  OTHER_TABS,
+  ACTIONS,
   SPACER,
   TYPED,
+  actionOf,
   toolsOn,
-  type RibbonColumn,
   type RibbonControl,
+  type RibbonSlot,
 } from "./ribbon-home"
+import { RIBBON_TABS } from "./ribbon-tabs"
 
-/** Every control of Home, the columns' rows and the slide-outs' included. */
+const PANELS = RIBBON_TABS.flatMap((tab) => tab.panels)
+
+/** Every control of every tab, the columns' and rows' and slide-outs' too. */
 function controls(): RibbonControl[] {
   const out: RibbonControl[] = []
-  const add = (c: RibbonControl | RibbonColumn | typeof SPACER) => {
+  const add = (c: RibbonSlot | typeof SPACER) => {
     if (c === SPACER) return
     if (c.kind === "column") c.rows.forEach(add)
+    else if (c.kind === "rows") c.rows.forEach((row) => row.forEach(add))
     else out.push(c)
   }
-  for (const panel of HOME) {
+  for (const panel of PANELS) {
     panel.slots.forEach(add)
     panel.slideOut?.forEach((row) => row.forEach(add))
   }
@@ -38,59 +42,148 @@ const toolIds = () =>
     .state()
     .tools.map((tool) => tool.id)
 
-describe("the ribbon's Home tab", () => {
-  // No tool is dropped: the tool palette's fallback group is gone, so a new
-  // tool must find its panel or say why it is typed.
-  it("gives every tool a button, or says where it waits", () => {
-    const home = toolsOn(HOME)
-    const unplaced = toolIds().filter(
-      (id) => !home.has(id) && !TYPED.has(id) && !OTHER_TABS.has(id)
-    )
+/** The ribbon rendered with the engine's state, after `prepare`. */
+function renderRibbon(
+  prepare: (cad: ReturnType<typeof createHarness>) => void = () => {}
+) {
+  const cad = createHarness()
+  prepare(cad)
+  return renderToString(
+    createElement(Ribbon, {
+      engine: cad.runtime as unknown as CadEngine,
+      state: cad.state() as EditorState,
+    })
+  )
+}
+
+describe("the ribbon's tabs", () => {
+  // No tool is dropped: a new tool must find its panel or say why it is
+  // typed (the tool palette's fallback group is gone).
+  it("give every tool a button, or say why it is typed", () => {
+    const placed = toolsOn(PANELS)
+    const unplaced = toolIds().filter((id) => !placed.has(id) && !TYPED.has(id))
     expect(unplaced).toEqual([])
   })
 
-  it("keeps no tool in two places, nor one the engine lacks", () => {
+  it("keep no tool both typed and placed, nor one the engine lacks", () => {
     const tools = new Set(toolIds())
-    const home = toolsOn(HOME)
-    for (const id of [...TYPED, ...OTHER_TABS]) {
+    const placed = toolsOn(PANELS)
+    for (const id of TYPED) {
       expect(tools.has(id), id).toBe(true)
-      expect(home.has(id), id).toBe(false)
+      expect(placed.has(id), id).toBe(false)
     }
-    for (const id of home) expect(tools.has(id), id).toBe(true)
-    for (const id of TYPED) expect(OTHER_TABS.has(id), id).toBe(false)
+    for (const id of placed) expect(tools.has(id), id).toBe(true)
   })
 
   // Decision 5: a large button and a list's row draw the tool at 32.
-  it("draws each large button and each list's member at 32 px", () => {
+  it("draw each large button and each list's member at 32 px", () => {
+    const large = (action: string) =>
+      LARGE_TOOL_ICONS[action] ?? LARGE_BUTTON_ICONS[action]
+    const small = (action: string) => TOOL_ICONS[action] ?? BUTTON_ICONS[action]
     for (const control of controls()) {
-      if (control.kind === "tool" && control.size === "large")
-        expect(LARGE_TOOL_ICONS[control.tool], control.tool).toBeDefined()
-      if (control.kind === "tool" && control.size !== "large")
-        expect(TOOL_ICONS[control.tool], control.tool).toBeDefined()
+      if (control.kind === "tool") {
+        const action = actionOf(control.tool)
+        if (control.size === "large")
+          expect(large(action), action).toBeDefined()
+        else expect(small(action), action).toBeDefined()
+      }
       if (control.kind === "split")
         for (const member of control.members) {
           if (member === null) continue
-          expect(LARGE_TOOL_ICONS[member], member).toBeDefined()
+          const action = actionOf(member)
+          expect(large(action), action).toBeDefined()
           if (control.size !== "large")
-            expect(TOOL_ICONS[member], member).toBeDefined()
+            expect(small(action), action).toBeDefined()
         }
     }
+    for (const action of Object.keys(ACTIONS))
+      expect(small(action), action).toBeDefined()
+    // The toggles, Attribute Display's entries and the gallery's styles.
+    for (const icon of [
+      "ucsIcon",
+      "viewCube",
+      "propertiesPalette",
+      "blocksPalette",
+      "attModeNormal",
+      "attModeOn",
+      "attModeOff",
+      "vs2dWireframe",
+      "vsHidden",
+      "vsConceptual",
+    ])
+      expect(large(icon), icon).toBeDefined()
+    for (const icon of ["commandLine", "layerProperties", "attModeNormal"])
+      expect(small(icon), icon).toBeDefined()
+  })
+
+  it("show the engine's tab in front, Home by default", () => {
+    const panel = (html: string) =>
+      /<div[^>]*role="tabpanel"[^>]*>/.exec(html)?.[0]
+    expect(panel(renderRibbon())).toContain('aria-label="Home"')
+    const view = renderRibbon((cad) => cad.runtime.setRibbonTab("view"))
+    expect(panel(view)).toContain('aria-label="View"')
+    expect(view).toContain(">Palettes<")
+    expect(view).not.toContain(">Draw<")
+  })
+
+  // Drafting & Annotation's order, with 3D Tools shown (decision 4).
+  it("are Home, Insert, Annotate, 3D Tools and View, in that order", () => {
+    const tabs = [...renderRibbon().matchAll(/role="tab"[^>]*>([^<]+)</g)].map(
+      (m) => m[1]
+    )
+    expect(tabs).toEqual(["Home", "Insert", "Annotate", "3D Tools", "View"])
+  })
+})
+
+describe("View's toggles", () => {
+  it("light UCS Icon while UCSICON is on, View Cube while it shows", () => {
+    const lit = (html: string, name: string) =>
+      new RegExp(`aria-pressed="true"[^>]*>(?:(?!</button>).)*>${name}<`).test(
+        html
+      )
+    const on = renderRibbon((cad) => cad.runtime.setRibbonTab("view"))
+    expect(lit(on, "UCS")).toBe(true)
+    expect(lit(on, "View")).toBe(true)
+    const off = renderRibbon((cad) => {
+      cad.runtime.setRibbonTab("view")
+      cad.runtime.runRibbonButton("ucsIcon")
+      cad.runtime.runRibbonButton("viewCube")
+    })
+    expect(lit(off, "UCS")).toBe(false)
+    expect(lit(off, "View")).toBe(false)
+  })
+})
+
+describe("the Visual Styles gallery", () => {
+  it("shows the view's style by the drawing's name for it", () => {
+    const html = (style?: "hidden") =>
+      renderRibbon((cad) => {
+        cad.runtime.setRibbonTab("view")
+        if (style) cad.runtime.setVisualStyle(style)
+      })
+    expect(html()).toContain(">2D Wireframe<")
+    expect(html("hidden")).toContain(">Hidden<")
+  })
+})
+
+describe("Attribute Display", () => {
+  it("shows the entry ATTMODE holds", () => {
+    const html = (display?: "on") =>
+      renderRibbon((cad) => {
+        cad.runtime.setRibbonTab("insert")
+        if (display) cad.runtime.setAttributeDisplay(display)
+      })
+    expect(html()).toContain(">Retain Attribute Display<")
+    expect(html("on")).toContain(">Display All Attributes<")
   })
 })
 
 describe("a split button's member", () => {
-  /** Home rendered with the engine's state, its drop-downs' members set. */
-  function render(members: Record<string, string>) {
-    const cad = createHarness()
-    for (const [dropDown, member] of Object.entries(members))
-      cad.runtime.setRibbonMember(dropDown, member)
-    return renderToString(
-      createElement(Ribbon, {
-        engine: cad.runtime as unknown as CadEngine,
-        state: cad.state() as EditorState,
-      })
-    )
-  }
+  const render = (members: Record<string, string>) =>
+    renderRibbon((cad) => {
+      for (const [dropDown, member] of Object.entries(members))
+        cad.runtime.setRibbonMember(dropDown, member)
+    })
 
   it("is the first one until another is picked, for the session", () => {
     expect(render({})).toContain('aria-label="Rectangle"')

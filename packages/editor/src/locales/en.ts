@@ -32,8 +32,7 @@ export const en: EditorCatalog = {
       "saved": "Saved",
       "savedHint": "Saved on this device",
       "undo": "Undo",
-      "redo": "Redo",
-      "commandLine": "Command line"
+      "redo": "Redo"
     },
     "NavigationBar": {
       "label": "Navigation bar",
@@ -71,7 +70,11 @@ export const en: EditorCatalog = {
     },
     "Ribbon": {
       "tabs": {
-        "home": "Home"
+        "home": "Home",
+        "insert": "Insert",
+        "annotate": "Annotate",
+        "tools3d": "3D Tools",
+        "view": "View"
       },
       "panels": {
         "draw": "Draw",
@@ -81,7 +84,20 @@ export const en: EditorCatalog = {
         "block": "Block",
         "properties": "Properties",
         "utilities": "Utilities",
-        "clipboard": "Clipboard"
+        "clipboard": "Clipboard",
+        "insertBlock": "Block",
+        "blockDefinition": "Block Definition",
+        "text": "Text",
+        "dimensions": "Dimensions",
+        "markup": "Markup",
+        "viewportTools": "Viewport Tools",
+        "visualStyles": "Visual Styles",
+        "coordinates": "Coordinates",
+        "palettes": "Palettes",
+        "navigate": "Navigate",
+        "modeling": "Modeling",
+        "solidEditing": "Solid Editing",
+        "coordinates3d": "Coordinates"
       },
       "items": {
         "line": "Line",
@@ -153,7 +169,76 @@ export const en: EditorCatalog = {
         "paste": "Paste",
         "cutclip": "Cut",
         "copyclip": "Copy Clip",
-        "copybase": "Copy with Base Point"
+        "copybase": "Copy with Base Point",
+        "createBlock": "Create Block",
+        "dimspace": "Adjust Space",
+        "dimensionUpdate": "Update",
+        "dimcontinue": "Continue",
+        "dimbaseline": "Baseline",
+        "ucsIcon": "UCS Icon",
+        "viewCube": "View Cube",
+        "ucs": "UCS",
+        "ucsWorld": "UCS, World",
+        "ucsX": "X",
+        "ucsY": "Y",
+        "ucsZ": "Z",
+        "ucsPrevious": "UCS, Previous",
+        "ucsOrigin": "Origin",
+        "ucsZAxis": "Z-Axis Vector",
+        "ucs3Point": "3 Point",
+        "ucsView": "View",
+        "ucsObject": "Object",
+        "ucsFace": "Face",
+        "propertiesPalette": "Properties",
+        "blocksPalette": "Blocks",
+        "commandLine": "Command Line",
+        "pan": "Pan",
+        "orbit": "Orbit",
+        "zoomExtents": "Extents",
+        "zoomWindow": "Window",
+        "zoomPrevious": "Previous",
+        "zoomIn": "In",
+        "zoomOut": "Out",
+        "box": "Box",
+        "cylinder": "Cylinder",
+        "cone": "Cone",
+        "sphere": "Sphere",
+        "pyramid": "Pyramid",
+        "wedge": "Wedge",
+        "torus": "Torus",
+        "extrude": "Extrude",
+        "revolve": "Revolve",
+        "presspull": "Presspull",
+        "filletedge": "Fillet Edge",
+        "chamferedge": "Chamfer Edge",
+        "slice": "Slice",
+        "union": "Union",
+        "subtract": "Subtract",
+        "intersect": "Intersect",
+        "solideditextrude": "Extrude faces",
+        "solidedittaper": "Taper faces",
+        "solideditmove": "Move faces",
+        "solideditcopy": "Copy faces",
+        "solideditoffset": "Offset faces",
+        "solideditrotate": "Rotate faces",
+        "solideditdelete": "Delete faces",
+        "insertAttedit": "Single",
+        "defineAttributes": "Define Attributes",
+        "multilineText": "Multiline Text",
+        "dimensionsLinear": "Linear",
+        "dimensionsAligned": "Aligned",
+        "dimensionsAngular": "Angular",
+        "dimensionsRadius": "Radius",
+        "dimensionsDiameter": "Diameter",
+        "axisX": "X",
+        "axisY": "Y",
+        "axisZ": "Z",
+        "view3d": "View",
+        "world": "World",
+        "previous": "Previous",
+        "attModeNormal": "Retain Attribute Display",
+        "attModeOn": "Display All Attributes",
+        "attModeOff": "Hide All Attributes"
       },
       "splits": {
         "circle": "Circle",
@@ -161,13 +246,17 @@ export const en: EditorCatalog = {
         "text": "Text",
         "array": "Array",
         "measure": "Measure",
-        "editAttributes": "Edit Attributes"
+        "editAttributes": "Edit Attributes",
+        "editAttribute": "Edit Attribute",
+        "rotateUcs": "Rotate UCS",
+        "defineUcs": "Define UCS"
       },
       "layer": "Layer",
       "color": "Object color",
       "lineweight": "Lineweight",
       "linetype": "Linetype",
-      "pin": "Pin"
+      "pin": "Pin",
+      "moreColors": "More Colors..."
     },
     "CommandLine": {
       "label": "Command line",
@@ -483,7 +572,6 @@ export const en: EditorCatalog = {
       "dimStyle": "Dim style",
       "dimStyleLabel": "Dim style of the selected objects",
       "varies": "*VARIES*",
-      "customColor": "Custom color",
       "title": "Properties",
       "objectType": "Object type",
       "currentLayerLabel": "Current layer",
@@ -501,7 +589,8 @@ export const en: EditorCatalog = {
           ]
         ],
         "close": "Close"
-      }
+      },
+      "selectColor": "Select Color..."
     },
     "MText": {
       "unsavedChanges": {

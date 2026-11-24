@@ -1,4 +1,8 @@
-import { createLucideIcon, type LucideIcon } from "lucide-react"
+import {
+  createLucideIcon,
+  type LucideIcon,
+  type LucideIconNode,
+} from "lucide-react"
 
 /**
  * Custom CAD glyphs authored on lucide's 24px grid via {@link createLucideIcon},
@@ -370,4 +374,178 @@ export const LinetypeIcon: LucideIcon = createLucideIcon("Linetype", [
     },
   ],
   ["path", { d: "M3 18 H21", strokeDasharray: "1 3", key: "dotted" }],
+])
+
+/** The UCS tripod: Y up, X right, Z toward the viewer, from (10, 14). */
+const TRIPOD: LucideIconNode[] = [
+  ["path", { d: "M10 14 V3", key: "y" }],
+  ["path", { d: "M10 14 H21", key: "x" }],
+  ["path", { d: "M10 14 L3 21", key: "z" }],
+]
+
+/** World UCS: the axes, and the globe they belong to. */
+export const UcsWorldIcon: LucideIcon = createLucideIcon("UcsWorld", [
+  ["path", { d: "M3 3 V21 H21", key: "axes" }],
+  ["circle", { cx: "16", cy: "8", r: "5", key: "globe" }],
+  [
+    "path",
+    { d: "M16 3 A2.5 5 0 0 0 16 13 A2.5 5 0 0 0 16 3", key: "meridian" },
+  ],
+  ["path", { d: "M11 8 H21", key: "equator" }],
+])
+
+/** UCS X: the UCS turned round its X axis. */
+export const UcsXIcon: LucideIcon = createLucideIcon("UcsX", [
+  ...TRIPOD,
+  ["path", { d: "M16 9 A2.5 5 0 0 1 16 19", key: "turn" }],
+  ["path", { d: "M18 17 L16 19 L18 21", key: "head" }],
+])
+
+/** UCS Y: the UCS turned round its Y axis. */
+export const UcsYIcon: LucideIcon = createLucideIcon("UcsY", [
+  ...TRIPOD,
+  ["path", { d: "M10 4.5 A5 2.5 0 1 0 15 7", key: "turn" }],
+  ["path", { d: "M12.5 9.5 L15 7 L17.5 9.5", key: "head" }],
+])
+
+/** UCS Z: the UCS turned round its Z axis, X toward Y. */
+export const UcsZIcon: LucideIcon = createLucideIcon("UcsZ", [
+  ...TRIPOD,
+  ["path", { d: "M18 14 A8 8 0 0 0 10 6", key: "turn" }],
+  ["path", { d: "M12 4 L10 6 L12 8", key: "head" }],
+])
+
+/** Z Axis UCS: the origin and a point on the new Z axis. */
+export const UcsZAxisIcon: LucideIcon = createLucideIcon("UcsZAxis", [
+  ...TRIPOD,
+  ["circle", { cx: "10", cy: "14", ...DOT, key: "origin" }],
+  ["circle", { cx: "3", cy: "21", ...DOT, key: "zpoint" }],
+])
+
+/** 3 Point UCS: the origin, a point on X and one in the XY plane. */
+export const Ucs3PointIcon: LucideIcon = createLucideIcon("Ucs3Point", [
+  ["path", { d: "M3 3 V20 H21", key: "axes" }],
+  ["circle", { cx: "3", cy: "20", ...DOT, key: "origin" }],
+  ["circle", { cx: "15", cy: "20", ...DOT, key: "xpoint" }],
+  ["circle", { cx: "12", cy: "9", ...DOT, key: "ypoint" }],
+])
+
+/** UCS Previous: the axes, and the arrow back to the last one. */
+export const UcsPreviousIcon: LucideIcon = createLucideIcon("UcsPrevious", [
+  ["path", { d: "M3 11 V21 H13", key: "axes" }],
+  ["path", { d: "M13 2 L10 5 L13 8", key: "head" }],
+  ["path", { d: "M10 5 H16 A4.5 4.5 0 0 1 16 14 H15", key: "back" }],
+])
+
+/** View UCS: the axes square to the screen. */
+export const UcsViewIcon: LucideIcon = createLucideIcon("UcsView", [
+  ["path", { d: "M3 7 V3 H7", key: "c1" }],
+  ["path", { d: "M17 3 H21 V7", key: "c2" }],
+  ["path", { d: "M21 17 V21 H17", key: "c3" }],
+  ["path", { d: "M7 21 H3 V17", key: "c4" }],
+  ["path", { d: "M8 8 V16 H16", key: "axes" }],
+])
+
+/** Object UCS: the axes on an object, here at a circle's centre. */
+export const UcsObjectIcon: LucideIcon = createLucideIcon("UcsObject", [
+  ["circle", { cx: "9", cy: "15", r: "5", key: "object" }],
+  ["path", { d: "M9 15 H22", key: "x" }],
+  ["path", { d: "M9 15 V2", key: "y" }],
+  ["circle", { cx: "9", cy: "15", ...DOT, key: "origin" }],
+])
+
+/** Face UCS: the axes laid on a face of a solid. */
+export const UcsFaceIcon: LucideIcon = createLucideIcon("UcsFace", [
+  [
+    "path",
+    {
+      d: "M3 9 H15 V21 H3 Z",
+      fill: "currentColor",
+      fillOpacity: 0.2,
+      key: "face",
+    },
+  ],
+  ["path", { d: "M3 9 L9 3 H21 L15 9", key: "top" }],
+  ["path", { d: "M15 21 L21 15 V3", key: "side" }],
+  ["path", { d: "M6 18 V13", key: "y" }],
+  ["path", { d: "M6 18 H11", key: "x" }],
+])
+
+/** DIMSTYLE's Update: a dimension, and the arrow that refreshes it. */
+export const DimensionUpdateIcon: LucideIcon = createLucideIcon(
+  "DimensionUpdate",
+  [
+    ["path", { d: "M4 3 V11", key: "ext1" }],
+    ["path", { d: "M20 3 V11", key: "ext2" }],
+    ["path", { d: "M4 6 H20", key: "line" }],
+    ["path", { d: "M7 3 L4 6 L7 9", key: "head1" }],
+    ["path", { d: "M17 3 L20 6 L17 9", key: "head2" }],
+    ["path", { d: "M16 18 A4 4 0 1 1 12 14", key: "turn" }],
+    ["path", { d: "M10 12 L12 14 L10 16", key: "turnhead" }],
+  ]
+)
+
+/** A block with two attributes' values, the attribute display modes' ground. */
+const ATT_BLOCK: LucideIconNode = [
+  "rect",
+  { x: "3", y: "4", width: "18", height: "16", rx: "2", key: "block" },
+]
+
+/** ATTDISP Normal: the attributes as defined, the invisible one dashed. */
+export const AttModeNormalIcon: LucideIcon = createLucideIcon("AttModeNormal", [
+  ATT_BLOCK,
+  ["path", { d: "M7 9 H17", key: "first" }],
+  ["path", { d: "M7 15 H14", strokeDasharray: "2 2", key: "second" }],
+])
+
+/** ATTDISP On: every attribute shown. */
+export const AttModeOnIcon: LucideIcon = createLucideIcon("AttModeOn", [
+  ATT_BLOCK,
+  ["path", { d: "M7 9 H17", key: "first" }],
+  ["path", { d: "M7 15 H14", key: "second" }],
+])
+
+/** ATTDISP Off: every attribute hidden, the values struck. */
+export const AttModeOffIcon: LucideIcon = createLucideIcon("AttModeOff", [
+  ATT_BLOCK,
+  ["path", { d: "M7 9 H17", strokeWidth: "1.25", key: "first" }],
+  ["path", { d: "M7 15 H14", strokeWidth: "1.25", key: "second" }],
+  ["path", { d: "M6 17 L18 7", key: "strike" }],
+])
+
+const CUBE_FRONT = "M3 8 H16 V21 H3 Z"
+const CUBE_SEEN: LucideIconNode[] = [
+  ["path", { d: CUBE_FRONT, key: "front" }],
+  ["path", { d: "M3 8 L8 3 H21 L16 8", key: "top" }],
+  ["path", { d: "M16 21 L21 16 V3", key: "side" }],
+]
+
+/** 2D Wireframe: a cube drawn with every edge. */
+export const Vs2dWireframeIcon: LucideIcon = createLucideIcon("Vs2dWireframe", [
+  ["path", { d: CUBE_FRONT, key: "front" }],
+  ["path", { d: "M8 3 H21 V16 H8 Z", key: "back" }],
+  ["path", { d: "M3 8 L8 3", key: "e1" }],
+  ["path", { d: "M16 8 L21 3", key: "e2" }],
+  ["path", { d: "M16 21 L21 16", key: "e3" }],
+  ["path", { d: "M3 21 L8 16", key: "e4" }],
+])
+
+/** Hidden: the cube with only the edges seen. */
+export const VsHiddenIcon: LucideIcon = createLucideIcon("VsHidden", CUBE_SEEN)
+
+/** Conceptual: the cube with its faces shaded. */
+export const VsConceptualIcon: LucideIcon = createLucideIcon("VsConceptual", [
+  ...[CUBE_FRONT, "M3 8 L8 3 H21 L16 8 Z", "M16 8 L21 3 V16 L16 21 Z"].map(
+    (d, i): LucideIconNode => [
+      "path",
+      {
+        d,
+        fill: "currentColor",
+        fillOpacity: 0.2,
+        stroke: "none",
+        key: `shade${i}`,
+      },
+    ]
+  ),
+  ...CUBE_SEEN,
 ])

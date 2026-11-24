@@ -60,11 +60,13 @@ wording (skill `autocad-research`). How a tool is written: `.claude/rules/cad-to
    rewords text the change did not mean to.
 9. **The ribbon.** Its button where acad.cuix puts it (`node scripts/research/ribbon.mjs --built`
    finds the tab, panel, row, size and drop-down): a control in that tab's data
-   (`packages/editor/src/ribbon-home.ts`), its words from each culture's acad.CUIX in the editor's
-   catalog (`Ribbon.items`), its 16 px icon in `tool-icons.ts` and, for a large button or a list's
-   member, its 32 px drawing in `large-icons.ts`; or `TYPED` with its WHY for a tool no panel
-   offers (ZOOM, -PAN, MREDO), or `OTHER_TABS` while its tab is not built. **Enforced**:
-   `ribbon.test.ts` fails on a tool in none. (Every command commit.)
+   (`packages/editor/src/ribbon-home.ts` for Home, `ribbon-tabs.ts` for the others), its words from
+   each culture's acad.CUIX in the editor's catalog (`Ribbon.items`; a panel that words it otherwise
+   than another, an item of its own run through `actionOf`), its 16 px icon in `tool-icons.ts` and,
+   for a large button or a list's member, its 32 px drawing in `large-icons.ts`; or `TYPED` with
+   its WHY for a tool no panel offers (-PAN, MREDO, PLAN). A tab or panel with nothing built is not
+   drawn (plan decision 3). **Enforced**: `ribbon.test.ts` fails on a tool in none. (Every command
+   commit.)
 10. **What it creates.** A command that creates objects gives each the properties AutoCAD gives
     (`cad-tools.md`, "What a new object wears") and gets a row in `FROM_SCRATCH` or `DERIVED` of
     `cad/application/tools/currentProperties.test.ts`, or one of its lists (variant, pinned elsewhere,

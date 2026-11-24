@@ -193,8 +193,7 @@ export { TitleBar }
 /**
  * AutoCAD's title bar: the application button and the Quick Access Toolbar at
  * AutoCAD's sizes, then the save state where AutoCAD's title names the
- * drawing. Until the ribbon's View tab is built, its palette toggles follow
- * them here. Every part has a fixed width, so the row never grows.
+ * drawing. Every part has a fixed width, so the row never grows.
  */
 export declare function TitleBar(titleBarProps: TitleBarProps): ReactElement;
 

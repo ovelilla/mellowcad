@@ -1,8 +1,9 @@
 import { Listener } from "../shared/Observable"
 import { Vec2 } from "../geometry/Vec2"
 import { Layer, LayerNameRefusal } from "../domain/layers"
-import { EntityId, EntityProperty } from "../domain/entities"
-import { LengthUnit } from "../domain/units"
+import { AttributeDisplay, EntityId, EntityProperty } from "../domain/entities"
+import { LengthUnit, VisualStyle } from "../domain/units"
+import type { RibbonButton } from "../application/ribbonButtons"
 import { Scene } from "../scene/types"
 import { DimStyle } from "../domain/dimStyles"
 import { TextStyle } from "../domain/textStyles"
@@ -672,12 +673,29 @@ export class CadEngine {
   /**
    * A ribbon button that runs a command rather than a tool, as its acad.cuix
    * macro does: Text Style (`'_style`) and Dimension Style (`'_dimstyle`),
-   * transparent mid-command, and the Properties panel's dialog launcher,
-   * PROPERTIES or PROPERTIESCLOSE as Ctrl+1. A tool's button is
-   * {@link setActiveTool}.
+   * transparent mid-command; the Properties panel's dialog launcher,
+   * PROPERTIES or PROPERTIESCLOSE as Ctrl+1; Annotate's Update
+   * (`_-dimstyle _apply`); the UCS's buttons (`_ucs _w`, `_x`, …); and View's
+   * UCS Icon and View Cube toggles. A tool's button is {@link setActiveTool}.
    */
-  runRibbonButton(button: "textStyle" | "dimensionStyle" | "properties"): void {
+  runRibbonButton(button: RibbonButton): void {
     this.runtime.runRibbonButton(button)
+  }
+
+  /**
+   * The ribbon's Visual Styles gallery: the view's visual style, set as
+   * VSCURRENT sets it, with no echo, a step U names `VSCURRENT GROUP`.
+   */
+  setVisualStyle(style: VisualStyle): void {
+    this.runtime.setVisualStyle(style)
+  }
+
+  /**
+   * The ribbon's Attribute Display drop-down: ATTMODE, with no echo, a step
+   * U names `'ATTMODE`.
+   */
+  setAttributeDisplay(display: AttributeDisplay): void {
+    this.runtime.setAttributeDisplay(display)
   }
 
   /**

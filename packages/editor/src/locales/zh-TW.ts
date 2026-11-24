@@ -32,8 +32,7 @@ export const zhTW: EditorLocale = {
       "saved": "已儲存",
       "savedHint": "已儲存至此裝置",
       "undo": "退回",
-      "redo": "重做",
-      "commandLine": "指令行"
+      "redo": "重做"
     },
     "NavigationBar": {
       "label": "導覽列",
@@ -71,7 +70,11 @@ export const zhTW: EditorLocale = {
     },
     "Ribbon": {
       "tabs": {
-        "home": "常用"
+        "home": "常用",
+        "insert": "插入",
+        "annotate": "註解",
+        "tools3d": "3D 工具",
+        "view": "檢視"
       },
       "panels": {
         "draw": "繪製",
@@ -81,7 +84,20 @@ export const zhTW: EditorLocale = {
         "block": "圖塊",
         "properties": "性質",
         "utilities": "公用程式",
-        "clipboard": "剪貼簿"
+        "clipboard": "剪貼簿",
+        "insertBlock": "圖塊",
+        "blockDefinition": "圖塊定義",
+        "text": "文字",
+        "dimensions": "標註",
+        "markup": "標記",
+        "viewportTools": "視埠工具",
+        "visualStyles": "視覺型式",
+        "coordinates": "座標",
+        "palettes": "選項板",
+        "navigate": "導覽",
+        "modeling": "塑型",
+        "solidEditing": "實體編輯",
+        "coordinates3d": "座標"
       },
       "items": {
         "line": "線",
@@ -153,7 +169,76 @@ export const zhTW: EditorLocale = {
         "paste": "貼上",
         "cutclip": "剪下",
         "copyclip": "複本截取",
-        "copybase": "以基準點複製"
+        "copybase": "以基準點複製",
+        "createBlock": "建立 圖塊",
+        "dimspace": "標註空間",
+        "dimensionUpdate": "更新",
+        "dimcontinue": "連續式",
+        "dimbaseline": "基線式",
+        "ucsIcon": "UCS 圖示",
+        "viewCube": "View Cube",
+        "ucs": "UCS",
+        "ucsWorld": "UCS，世界",
+        "ucsX": "X",
+        "ucsY": "Y",
+        "ucsZ": "Z",
+        "ucsPrevious": "UCS，前一個",
+        "ucsOrigin": "原點",
+        "ucsZAxis": "Z 軸向量",
+        "ucs3Point": "三點",
+        "ucsView": "檢視",
+        "ucsObject": "物件",
+        "ucsFace": "面",
+        "propertiesPalette": "性質",
+        "blocksPalette": "圖塊",
+        "commandLine": "指令行",
+        "pan": "平移",
+        "orbit": "環轉",
+        "zoomExtents": "實際範圍",
+        "zoomWindow": "窗選",
+        "zoomPrevious": "前次",
+        "zoomIn": "拉近",
+        "zoomOut": "拉遠",
+        "box": "方塊",
+        "cylinder": "圓柱",
+        "cone": "圓錐",
+        "sphere": "圓球",
+        "pyramid": "角錐",
+        "wedge": "楔形塊",
+        "torus": "圓環",
+        "extrude": "擠出",
+        "revolve": "迴轉",
+        "presspull": "按拉",
+        "filletedge": "圓角邊",
+        "chamferedge": "倒角邊",
+        "slice": "切割",
+        "union": "聯集",
+        "subtract": "差集",
+        "intersect": "交集",
+        "solideditextrude": "擠出面",
+        "solidedittaper": "錐形面",
+        "solideditmove": "移動面",
+        "solideditcopy": "複製面",
+        "solideditoffset": "偏移面",
+        "solideditrotate": "旋轉面",
+        "solideditdelete": "刪除面",
+        "insertAttedit": "單一",
+        "defineAttributes": "定義 屬性",
+        "multilineText": "多行 文字",
+        "dimensionsLinear": "線性",
+        "dimensionsAligned": "對齊式",
+        "dimensionsAngular": "角度",
+        "dimensionsRadius": "半徑",
+        "dimensionsDiameter": "直徑",
+        "axisX": "X",
+        "axisY": "Y",
+        "axisZ": "Z",
+        "view3d": "視圖",
+        "world": "世界",
+        "previous": "前次",
+        "attModeNormal": "保留屬性顯示",
+        "attModeOn": "顯示所有屬性",
+        "attModeOff": "隱藏所有屬性"
       },
       "splits": {
         "circle": "圓",
@@ -161,13 +246,17 @@ export const zhTW: EditorLocale = {
         "text": "文字",
         "array": "陣列",
         "measure": "測量",
-        "editAttributes": "編輯屬性"
+        "editAttributes": "編輯屬性",
+        "editAttribute": "編輯屬性",
+        "rotateUcs": "旋轉 UCS",
+        "defineUcs": "定義 UCS"
       },
       "layer": "圖層",
       "color": "物件顏色",
       "lineweight": "線粗",
       "linetype": "線型",
-      "pin": "釘住"
+      "pin": "釘住",
+      "moreColors": "更多顏色..."
     },
     "CommandLine": {
       "label": "指令行",
@@ -485,7 +574,6 @@ export const zhTW: EditorLocale = {
       "dimStyle": "標註型式",
       "dimStyleLabel": "選取物件的標註型式",
       "varies": "*各種*",
-      "customColor": "自訂顏色",
       "title": "性質",
       "objectType": "物件類型",
       "currentLayerLabel": "目前的圖層",
@@ -503,7 +591,8 @@ export const zhTW: EditorLocale = {
           ]
         ],
         "close": "關閉"
-      }
+      },
+      "selectColor": "選取顏色..."
     },
     "MText": {
       "unsavedChanges": {

@@ -219,6 +219,11 @@ export const ko: EngineLocale = {
       "NWiso": "북서 등각투영",
       "custom": "사용자 뷰"
     },
+    "visualStyle": {
+      "2dWireframe": "2D 와이어프레임",
+      "hidden": "숨김",
+      "conceptual": "개념"
+    },
     "viewCube": {
       "face": {
         "top": "평면도",

@@ -27,6 +27,7 @@ import type { ObjectType } from "./EngineState"
 import type { SnapType } from "./snapping/types"
 import type { ViewPreset } from "./tools/viewPresets"
 import type { CompassLetter, ViewCubeFace } from "./viewCube"
+import type { VisualStyle } from "../domain/units"
 
 /** A span of a prompt: text, or the bracketed keyword list. */
 export interface PromptSegment {
@@ -66,6 +67,12 @@ export interface EngineNames {
   readonly colorNumbers: Readonly<Record<string, string>>
   /** The preset views (`state.view.preset`), and `custom` for any other. */
   readonly views: Readonly<Record<ViewPreset | "custom", string>>
+  /**
+   * The visual styles VSCURRENT sets, by `state.visualStyle`: the drawing's
+   * names for them, as the ribbon's Visual Styles gallery lists them (string
+   * tables 41794, 41445, 8027).
+   */
+  readonly visualStyles: Readonly<Record<VisualStyle, string>>
   /** The ViewCube's face labels, by the faces of `state.viewCube`. */
   readonly viewCubeFaces: Readonly<Record<ViewCubeFace, string>>
   /** The ViewCube's compass letters, by `state.viewCube`'s compass. */
@@ -245,6 +252,10 @@ export class EngineText {
         ])
       ),
       views: this.table(this.ui.view) as Record<ViewPreset | "custom", string>,
+      visualStyles: this.table(this.ui.visualStyle) as Record<
+        VisualStyle,
+        string
+      >,
       viewCubeFaces: this.table(this.ui.viewCube.face) as Record<
         ViewCubeFace,
         string

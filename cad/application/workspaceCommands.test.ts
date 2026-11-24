@@ -1030,3 +1030,109 @@ describe("the name prompts take spaces", () => {
     expect(cad.state().commandLine.takesSpaces).toBe(false)
   })
 })
+
+// Block 4 of docs/plans/autocad-ui.md: the other tabs' buttons, read on the
+// desktop by UI Automation (research/ui/2026-11-24/block4).
+describe("the ribbon's other tabs", () => {
+  /** What a run of `act` wrote in the history. */
+  function wrote(cad: CadHarness, act: () => void): string[] {
+    const from = cad.commandLog().length
+    act()
+    return cad.commandLog().slice(from)
+  }
+
+  // acad.cuix ID_UcsWorld `^C^C_ucs _w`: UCS echoed, World its answer, a
+  // menu group U names.
+  it("runs a UCS button as its macro, a step U names UCS GROUP", () => {
+    const cad = createHarness()
+    written(cad, "UCS", "0,0,5", "")
+    const lines = wrote(cad, () => cad.runtime.runRibbonButton("ucsWorld"))
+    expect(lines[0]).toBe("_ucs")
+    expect(lines.at(-1)).toMatch(/: _w$/)
+    expect(written(cad, "U").at(-1)).toBe("UCS GROUP")
+  })
+
+  // ID_UcsXAxRot `^C^C^R_ucs _x`: the axis's rotation is then asked.
+  it("leaves UCS X asking its angle", () => {
+    const cad = createHarness()
+    wrote(cad, () => cad.runtime.runRibbonButton("ucsX"))
+    expect(cad.activeToolId()).toBe("ucs")
+    expect(cad.state().commandLine.prompt).toMatch(/rotation angle about X/)
+  })
+
+  // ^C^C cancels the running command first.
+  it("cancels the running command, as ^C^C does", () => {
+    const cad = createHarness()
+    written(cad, "LINE", "0,0")
+    const lines = wrote(cad, () => cad.runtime.runRibbonButton("ucsPrevious"))
+    expect(lines).toContain("_ucs")
+    expect(lines.some((line) => /: _p$/.test(line))).toBe(true)
+    expect(cad.activeToolId()).not.toBe("line")
+  })
+
+  // ID_DimstyleA `^C^C_-dimstyle _apply`.
+  it("runs Update as -DIMSTYLE Apply", () => {
+    const cad = createHarness()
+    const lines = wrote(cad, () =>
+      cad.runtime.runRibbonButton("dimensionUpdate")
+    )
+    expect(lines[0]).toBe("_-dimstyle")
+    expect(lines.at(-1)).toMatch(/: _apply$/)
+    expect(cad.state().commandLine.prompt).toMatch(/Select objects:/)
+  })
+
+  // 3D Tools' ID_Extrude2 `^C^C^R_extrude;`: no MOde answered, where 3D
+  // Modeling's ID_Extrude answers `_MO _SO` (the tool's button macro).
+  it("runs 3D Tools' Extrude with no MOde answered", () => {
+    const cad = createHarness()
+    const lines = wrote(cad, () => cad.runtime.runRibbonButton("extrude"))
+    expect(lines[0]).toBe("_extrude")
+    expect(lines.join("\n")).not.toContain("_MO")
+    expect(cad.activeToolId()).toBe("extrude")
+    cad.escape()
+    expect(written(cad, "U").at(-1)).toBe("EXTRUDE GROUP")
+  })
+
+  // AcUcsiconToggleButton: `_ucsicon`, then `_off` or `_on`; U `UCSICON GROUP`.
+  it("toggles the UCS icon through UCSICON, echoed", () => {
+    const cad = createHarness()
+    expect(cad.state().ucsIconOn).toBe(true)
+    const lines = wrote(cad, () => cad.runtime.runRibbonButton("ucsIcon"))
+    expect(lines[0]).toBe("_ucsicon")
+    expect(lines.at(-1)).toMatch(/: _off$/)
+    expect(cad.state().ucsIconOn).toBe(false)
+    expect(written(cad, "U").at(-1)).toBe("UCSICON GROUP")
+    expect(cad.state().ucsIconOn).toBe(true)
+  })
+
+  // AcViewCubeToggleButton: no echo, NAVVCUBEDISPLAY 3 ↔ 1, U names it.
+  it("toggles the ViewCube with no echo, a step U names 'NAVVCUBEDISPLAY", () => {
+    const cad = createHarness()
+    expect(wrote(cad, () => cad.runtime.runRibbonButton("viewCube"))).toEqual(
+      []
+    )
+    expect(cad.state().viewCube.visible).toBe(false)
+    expect(written(cad, "U").at(-1)).toBe("'NAVVCUBEDISPLAY")
+    expect(cad.state().viewCube.visible).toBe(true)
+  })
+
+  // The gallery: no echo, into Hidden or back; U `VSCURRENT GROUP
+  // Regenerating model.` back into 2D Wireframe.
+  it("sets the visual style from the gallery with no echo", () => {
+    const cad = createHarness()
+    expect(wrote(cad, () => cad.runtime.setVisualStyle("hidden"))).toEqual([])
+    expect(cad.state().visualStyle).toBe("hidden")
+    expect(wrote(cad, () => cad.runtime.setVisualStyle("hidden"))).toEqual([])
+    expect(written(cad, "U").at(-1)).toBe("VSCURRENT GROUP Regenerating model.")
+    expect(cad.state().visualStyle).toBe("2dWireframe")
+  })
+
+  // AcATTMODEDataBoundDropDown: no echo, no regeneration said, U `'ATTMODE`.
+  it("sets ATTMODE from the Attribute Display drop-down", () => {
+    const cad = createHarness()
+    expect(wrote(cad, () => cad.runtime.setAttributeDisplay("on"))).toEqual([])
+    expect(cad.state().attributeDisplay).toBe("on")
+    expect(written(cad, "U").at(-1)).toBe("'ATTMODE")
+    expect(cad.state().attributeDisplay).toBe("normal")
+  })
+})

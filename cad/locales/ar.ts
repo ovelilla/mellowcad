@@ -219,6 +219,11 @@ export const ar: EngineLocale = {
       "NWiso": "متساوي القياس شمالي غربي",
       "custom": "منظر مخصص"
     },
+    "visualStyle": {
+      "2dWireframe": "إطار سلكي ثنائي الأبعاد",
+      "hidden": "مخفي",
+      "conceptual": "مفاهيمي"
+    },
     "viewCube": {
       "face": {
         "top": "أعلى",

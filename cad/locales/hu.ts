@@ -219,6 +219,11 @@ export const hu: EngineLocale = {
       "NWiso": "ÉNy-i izometrikus nézet",
       "custom": "Egyéni nézet"
     },
+    "visualStyle": {
+      "2dWireframe": "2D drótváz",
+      "hidden": "Takartvonalas",
+      "conceptual": "Koncepcionális"
+    },
     "viewCube": {
       "face": {
         "top": "FELÜL",

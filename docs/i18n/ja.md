@@ -59,6 +59,7 @@ style (`新しい図面ファイルを作成`). None of it was seen on the deskt
 | Area | English | Japanese | Source |
 | --- | --- | --- | --- |
 | Ribbon's Home tab | Home; Draw, Modify, Annotation, Layers, Block, Properties, Utilities, Clipboard; Pin | ホーム; 作成, 修正, 注釈, 画層, ブロック, プロパティ, ユーティリティ, クリップボード; ピン留め † | X ID_TabHome, ID_PanelDraw … RBN_00011049 and every button's and list member's uid (`ribbon.mjs --cuix` on the pack's acad.CUIX, 2026-11-24); Pin † ours: AutoCAD's pin has no name, the word undoes acadres 49183 `Unpin` |
+| Ribbon's other tabs | Insert, Annotate, 3D Tools, View; Retain Attribute Display, Display All Attributes, Hide All Attributes; More Colors...; Select Color...; 2D Wireframe, Hidden, Conceptual | 挿入, 注釈, 3D ツール, 表示; 属性表示指定通り, すべての属性を表示, ずべての属性を非表示; その他の色...; 色選択...; 2D ワイヤフレーム, 隠線処理, コンセプト | X ID_TabInsert, ID_TabAnnotate, ID_TAB_3D_TOOLS, ID_TabView, each panel's and button's uid (acad.CUIX by uid, 2026-11-24); AcWindows.resources.dll's BAML (`AcAttmode1/2/0`, `mMoreColorsLabel`); AcDimRes 318; tables 41794, 41445, 8027; `ずべての属性を非表示` is Autodesk's (for `すべて`), kept as written; the pack's files (`~/autocad-packs`) | no |
 | Status bar | Model space; MODEL | モデル空間; モデル | P acadres 21395, 20008 |
 | Status bar | Coordinates | 座標 | † (ax26res 4 has 座標表示, a palette row) |
 | Status bar | Grid; Snap mode; Snap; Grid Snap; Polar Snap | グリッド; スナップ モード; スナップ; グリッド スナップ; PolarSnap | P acadres 21453, 20021, 21452; D dwgaidsRes 130:1109, 130:1106 |

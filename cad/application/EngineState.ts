@@ -11,6 +11,7 @@ import {
   formatAngle,
   formatLength,
   unitSuffix,
+  VisualStyle,
 } from "../domain/units"
 import {
   ArrayKind,
@@ -76,6 +77,7 @@ import {
 import { objectArea } from "../domain/objectArea"
 import type {
   ArrayParameters,
+  AttributeDisplay,
   BlockLookup,
   DimensionKind,
   InsertEntity,
@@ -737,6 +739,12 @@ export interface EngineState {
   readonly cleanScreen: CleanScreenUi
   /** The ribbon (RIBBON, RIBBONCLOSE, Clean Screen). */
   readonly ribbon: RibbonUi
+  /** The view's visual style (VSCURRENT): the ribbon's Visual Styles gallery shows it. */
+  readonly visualStyle: VisualStyle
+  /** ATTMODE: what the Attribute Display drop-down shows. */
+  readonly attributeDisplay: AttributeDisplay
+  /** Whether UCSICON is on: the ribbon's UCS Icon toggle is lit while it is. */
+  readonly ucsIconOn: boolean
   /**
    * Command options (keywords) the active tool currently offers — AutoCAD's
    * `[Close/Undo]` prompt. The UI renders these as hint chips near the dynamic

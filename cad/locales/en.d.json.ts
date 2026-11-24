@@ -211,6 +211,11 @@ declare const source: {
       "NWiso": string
       "custom": string
     }
+    "visualStyle": {
+      "2dWireframe": string
+      "hidden": string
+      "conceptual": string
+    }
     "viewCube": {
       "face": {
         "top": string

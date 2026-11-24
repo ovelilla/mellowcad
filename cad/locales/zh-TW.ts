@@ -219,6 +219,11 @@ export const zhTW: EngineLocale = {
       "NWiso": "西北等角",
       "custom": "自訂視圖"
     },
+    "visualStyle": {
+      "2dWireframe": "2D 線架構",
+      "hidden": "隱藏",
+      "conceptual": "概念"
+    },
     "viewCube": {
       "face": {
         "top": "上",

@@ -8,21 +8,18 @@ import {
   FilePlus,
   FolderOpen,
   Globe,
-  LibraryBig,
   Loader2,
   Menu as MenuIcon,
   MessageSquare,
-  PencilRuler,
   Redo2,
   Ruler,
   Save,
   SaveAll,
-  Terminal,
   Undo2,
   type LucideIcon,
 } from "lucide-react"
 
-import { type CadEngine, type PaletteTab } from "@mellowcad/engine"
+import { type CadEngine } from "@mellowcad/engine"
 import type { EditorState } from "@mellowcad/react"
 import { cn } from "./utils"
 import { Button } from "./ui/button"
@@ -68,8 +65,7 @@ export interface TitleBarProps extends PieceProps {
 /**
  * AutoCAD's title bar: the application button and the Quick Access Toolbar at
  * AutoCAD's sizes, then the save state where AutoCAD's title names the
- * drawing. Until the ribbon's View tab is built, its palette toggles follow
- * them here. Every part has a fixed width, so the row never grows.
+ * drawing. Every part has a fixed width, so the row never grows.
  */
 export function TitleBar({
   engine,
@@ -80,8 +76,6 @@ export function TitleBar({
 }: TitleBarProps): ReactElement {
   const t = useEditorText("TitleBar")
   const keys = useEditorText("Keys")
-  const styles = useEditorText("Styles")
-  const blocks = useEditorText("Blocks")
   // The bar's buttons run acad.cuix's `^C^C` macros: the running command
   // cancelled, the macro echoed (`_qnew`).
   const run = (button: "new" | "open" | "save" | "saveAs") =>
@@ -155,40 +149,6 @@ export function TitleBar({
       </Panel>
 
       <SaveStatus state={state} />
-
-      {/* View's Palettes panel, which RIBBONCLOSE and Clean Screen close
-          with the ribbon, until block 4 of the plan's §6 builds the View
-          tab. The application menu and the Quick Access Toolbar stay. */}
-      {state.ribbon.open && (
-        <>
-          <Panel className="ms-auto shrink-0 items-center">
-            <PaletteToggle
-              engine={engine}
-              state={state}
-              tab="styles"
-              icon={PencilRuler}
-              label={styles("title")}
-            />
-            <PaletteToggle
-              engine={engine}
-              state={state}
-              tab="blocks"
-              icon={LibraryBig}
-              label={blocks("title")}
-            />
-            {/* Palette visibility, not a drafting mode — AutoCAD keeps this on
-            the View ribbon (Palettes panel), never on the status bar. */}
-            <IconAction
-              icon={Terminal}
-              label={t("commandLine")}
-              shortcut={keys("commandLine")}
-              side="bottom"
-              active={state.commandLine.visible}
-              onClick={() => engine.toggleCommandLine()}
-            />
-          </Panel>
-        </>
-      )}
     </TooltipProvider>
   )
 }
@@ -354,43 +314,5 @@ function SaveStatus({ state }: { state: EditorState }) {
         <span className="truncate">{saving ? t("saving") : t("saved")}</span>
       )}
     </span>
-  )
-}
-
-/**
- * A palette's trigger: opens the palette panel on it, or folds the panel when
- * it is the palette showing — the same panel the commands open (LAYER,
- * DIMSTYLE, BLOCKSPALETTE).
- */
-function PaletteToggle({
-  engine,
-  state,
-  tab,
-  icon: Icon,
-  label,
-}: {
-  engine: CadEngine
-  state: EditorState
-  tab: PaletteTab
-  icon: LucideIcon
-  label: string
-}) {
-  const active = state.palette.open && state.palette.tab === tab
-  return (
-    <Button
-      variant={active ? "active" : "ghost"}
-      aria-pressed={active}
-      // A whole width, as every part of the bar: a text one would leave what
-      // follows it on a fraction of a pixel. Button's own inset and gap leave
-      // the label the room pt-BR's «Camadas» needs.
-      className="w-24 justify-start"
-      onClick={() => {
-        engine.togglePalette(tab)
-        engine.focusSurface()
-      }}
-    >
-      <Icon data-icon="inline-start" className="shrink-0" />
-      <span className="truncate">{label}</span>
-    </Button>
   )
 }

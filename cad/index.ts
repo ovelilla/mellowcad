@@ -90,6 +90,7 @@ export { POLAR_ANGLE_MENU } from "./application/constraints/polarAngles"
 export { POINT_FILTERS, type PointFilterName } from "./application/pointFilter"
 export { VIEW_MENU, type ViewPreset } from "./application/tools/viewPresets"
 export { ZOOM_MENU, type ZoomOption } from "./application/tools/zoomMenu"
+export type { RibbonButton, UcsButton } from "./application/ribbonButtons"
 export type {
   CompassLetter,
   ViewCubeFace,
@@ -157,6 +158,7 @@ export type {
   EntityProperty,
   BlockDefinition,
   Bounds,
+  AttributeDisplay,
 } from "./domain/entities"
 export { entityDrawOrder } from "./domain/entities"
 export type { DocumentReader } from "./domain/Document"
@@ -207,6 +209,7 @@ export {
   formatAngle,
   unitsSampleOutput,
 } from "./domain/units"
+export type { VisualStyle } from "./domain/units"
 export { matchesWildcard } from "./shared/wildcard"
 export type { Vec2 } from "./geometry/Vec2"
 export type { Vec3 } from "./geometry/Vec3"

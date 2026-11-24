@@ -219,6 +219,11 @@ export const cs: EngineLocale = {
       "NWiso": "SZ iso",
       "custom": "Uživatelský pohled"
     },
+    "visualStyle": {
+      "2dWireframe": "2D drátový model",
+      "hidden": "Skrytý",
+      "conceptual": "Koncepční"
+    },
     "viewCube": {
       "face": {
         "top": "SHORA",

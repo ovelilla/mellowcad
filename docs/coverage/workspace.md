@@ -178,9 +178,7 @@ it (desktop workspace/d09); with Clean Screen on, RIBBON shows the ribbon and Cl
 (d12, d13). Not transparent: `'RIBBON` and `'RIBBONCLOSE` inside a command are refused, `** That
 command may not be invoked transparently **` (d09). The engine keeps, for the session, the tab in
 front and the member each drop-down shows (`state.ribbon`), as AutoCAD keeps the member for the
-session and not after a restart (`docs/plans/autocad-ui.md`, §2.3; the ribbon: below) — WHY the
-ribbon closed hides the title bar's palette toggles too: they are View's Palettes panel, which the
-title bar holds until the View tab is built (`docs/plans/autocad-ui.md`, §6, block 4)
+session and not after a restart (`docs/plans/autocad-ui.md`, §2.3; the ribbon: below)
 
 **Missing:** its right-click menu's Close and Undock, docking and floating it
 
@@ -218,9 +216,7 @@ tab's Connect panel's button, «Help us improve our products · Send feedback» 
 bar's Help list when the chrome has one, `docs/plans/autocad-ui.md`, F7. The Quick Access Toolbar
 in AutoCAD's order — New (QNEW), Open, Save, Save As, Undo, Redo —, each run as its command by its
 global name (`_QSAVE`), so it echoes (Drawing Units as the desktop's application menu runs it,
-`^C^C_UNITS`: see UNITS); the save state where AutoCAD's title names the drawing. At its end View's
-palette toggles, Styles, Blocks and the command line, which RIBBONCLOSE and Clean Screen hide as
-the ribbon's — WHY in the title bar: the View tab is block 4 of `docs/plans/autocad-ui.md`, §6
+`^C^C_UNITS`: see UNITS); the save state where AutoCAD's title names the drawing
 
 **Missing:** the rest of the application menu and its layout (the 2027 desktop's:
 New, Open, Save, Save As, Import, Export | Publish, Print, Drawing Utilities | Close, each but Save
@@ -233,7 +229,11 @@ know the open file's name), the file tabs (one drawing at a time) — WHY no win
 
 ### Ribbon
 
-**Implemented:** the Home tab of Drafting & Annotation (`docs/plans/autocad-ui.md`, §2.3; acad.cuix's
+**Implemented:** the tabs of Drafting & Annotation that hold something built, in its order —
+Home, Insert, Annotate, 3D Tools, View — the tab in front the engine's for the session
+(`state.ribbon.tab`), 3D Tools and View's Visual Styles, Coordinates and Navigate shown where the
+workspace hides them (WHY: no workspace switching nor the ribbon's Show Tabs and Show Panels here to
+reach them; `docs/plans/autocad-ui.md`, decision 4, R9). Home (`docs/plans/autocad-ui.md`, §2.3; acad.cuix's
 RibbonRoot, `node scripts/research/ribbon.mjs --tab Home --built`): its tab row, 24, and its panels,
 100, each 97 high (4, its rows' 72, 3 and a title bar of 18), with what the engine has in acad.cuix's
 rows and order — Draw, Modify, Annotation, Layers, Block, Properties, Utilities and Clipboard. Large
@@ -257,25 +257,48 @@ at its start; unpinned it closes as soon as the pointer leaves it (desktop 2026-
 ribbon closes (RIBBONCLOSE, Clean Screen: whatever the ribbon had open goes with it, and RIBBON brings it
 back with no panel pinned — whether AutoCAD keeps the pin across them is **unverified**). Properties' dialog
 launcher runs `^C^C_properties` or `^C^C_propertiesclose`, as Ctrl+1; Text Style and Dimension Style
-`'_style` and `'_dimstyle`, transparent inside a command; Layer Properties opens and closes the Layer
+`'_style` and `'_dimstyle`, transparent inside a command, as Annotate's Text and Dimensions
+launchers do (ID_Style, ID_Ddim); Layer Properties opens and closes the Layer
 Properties Manager, lit while it is open; a running command's button is not lit, as AutoCAD's is not
 (§2.3, R15); Insert opens a gallery of the drawing's blocks (AcInsertGalleryControl), a pick starting
--INSERT as the Blocks palette's does; after a button acts, a list is picked from or closed, or a
+-INSERT as the Blocks palette's does; Attribute Display (AcATTMODEDataBoundDropDown), by its icon
+in Block's slide-out and with its text on Insert, one target showing the entry ATTMODE holds —
+Retain Attribute Display, Display All Attributes, Hide All Attributes, each culture's
+AcWindows.resources.dll's words — a pick setting ATTMODE with no echo and no regeneration said, a
+step U names `'ATTMODE` (UI Automation, `research/ui/2026-11-24/block4`); Object Color's 20 px
+icon no target, its list's last row `More Colors...` (each culture's AcWindows.resources.dll)
+opening the browser's colour picker in the place of Select Color; after a button acts, a list is picked from or closed, or a
 slide-out's title bar closes it, the drawing has the keys again. Hovered, a
 button takes a faint frame; pressed, a darker fill (desktop 2026-11-24,
-`autocad-mouse/press-line.png`) — WHY the panels' row scrolls sideways where Home does not fit (1521
-px whole in English, 1632 in Spanish, where AutoCAD's whole Home is 1760): the panels fold as the
-window narrows in block 5 of `docs/plans/autocad-ui.md`, §6; until then the wheel or a trackpad
-scrolls it — WHY ATTDISP's button in Block's slide-out where acad.cuix has the Attribute Display
-drop-down (ATTMODE; `'_attdisp _n` / `_on` / `_off`, ID_AttdispNo/On/Of, transparent: probe
-workspace/p313): those entries are ATTDISP's options, which the tool asks for — WHY Object Color's 20
-px icon is its colour picker: the list has no Select Color…, and the picker stands for it — WHY
-TEXTEDIT has no button: its `^C^C_textedit` is on the Text toolbar, on no ribbon panel of 2027; it is
-typed, or a double-click on a text
+`autocad-mouse/press-line.png`). **Insert**: Block (Insert, Edit Attribute ▸ Single, Attribute
+Display) and Block Definition (Create Block, Define Attributes). **Annotate**: Text (Multiline Text ▸
+Single Line, SplitFollow), Dimensions in its three rows (Adjust Space; Update, `^C^C_-dimstyle
+_apply`; Linear ▾ and Continue ▾ with Baseline) and Markup (Wipeout); a panel's words its own where
+they differ from Home's (Japanese `長さ寸法`). **3D Tools**: Modeling (the solid primitives, Extrude
+and Revolve, these two as ID_Extrude2 and ID_Revolve2 run them, `^C^C^R_extrude;` with no MOde
+answered), Solid Editing (Presspull, Fillet Edge ▾ with Chamfer Edge, Slice, Union, Subtract,
+Intersect; the face edits in its slide-out) and Coordinates (World, the X, Y and Z drop-down, 3
+Point ▾ with Previous, View, Face and Object). **View**: Viewport Tools' UCS Icon, `_ucsicon` with
+`_off` or `_on` at its prompt, a step U names `UCSICON GROUP`, and View Cube, NAVVCUBEDISPLAY
+between 3 and 1 with no echo, a step U names `'NAVVCUBEDISPLAY`, each lit while it shows; Visual
+Styles' gallery, a combo of 200 × 22 with the view's style, its gallery cells of 82 × 70 on an 84
+pitch with the styles VSCURRENT has, a name wider than its cell cut as AutoCAD cuts `Shaded
+wi...` (Spanish `Estructura alámbrica 2D`), a pick setting it with no echo, the running command cancelled,
+a step U names `VSCURRENT GROUP` (`Regenerating model.` back into 2D Wireframe); Coordinates' UCS,
+World, Rotate UCS ▾ (X, Y, Z), Previous, Origin, Z-Axis Vector, 3 Point and Define UCS ▾ (View,
+Object, Face), each `^C^C_ucs` and its option, a step U names `UCS GROUP`; Palettes' Properties,
+Blocks, Command Line and Layer Properties, lit while theirs shows, with no echo, as the desktop's
+(block4); Navigate's Pan, Orbit and Zoom ▾ (Extents, Window, Previous, In, Out), the navigation
+bar's macros. Every word each culture's acad.CUIX's (Arabic's ours) — WHY the panels' row scrolls
+sideways where a tab does not fit (Home 1521 px whole in English, 1632 in Spanish, where AutoCAD's
+whole Home is 1760): the panels fold as the window narrows in block 5 of `docs/plans/autocad-ui.md`,
+§6; until then the wheel or a trackpad scrolls it — WHY TEXTEDIT has no button: its
+`^C^C_textedit` is on the Text toolbar, on no ribbon panel of 2027; it is typed, or a double-click
+on a text — WHY no Styles toggle: View's Palettes has none, the Styles palette (phase 3's dialogs)
+is reached by its tab, the Text Style and Dimension Style buttons and launchers, STYLE and DIMSTYLE
 
-**Missing:** the Annotate, View, 3D Tools and Insert tabs (block 4 of `docs/plans/autocad-ui.md`,
-§6, before any push: Continue, Baseline, Adjust Space and the 3D tools wait for it), the minimize
-states and the fold (block 5), AutoCAD's tooltips — the name, a description, the command and `Press
+**Missing:** the Parametric, Visualize, Manage, Output, Add-ins, Collaborate, Express Tools and
+Featured Apps tabs, nothing of theirs built; the minimize states and the fold (block 5), AutoCAD's tooltips — the name, a description, the command and `Press
 F1 for more help`, and after a longer rest the extended one, a paragraph and an illustration added
 (desktop 2026-11-24, `autocad-mouse/tip-long.png`; phase 5) —, the right-click menu (phase 5); Groups
 and View, with nothing built; what each panel lacks: Draw's Tan, Tan, Radius and Tan, Tan, Tan, Arc's
@@ -284,12 +307,29 @@ ByLayer, Change Space, Lengthen, Edit Hatch, Edit Array, Align, Reverse, Copy Ne
 Duplicate Objects and Draw Order; Annotation's Dimension (DIM), Arc Length, Ordinate, Jogged, the
 Multileaders drop-down, Table, the style combos (phase 3), Multileader Style and Table Style; Layers'
 small tools and the layer states; Block's Detect and Convert, Edit, Edit Attributes ▸ Multiple,
-Replace, Manage and Synchronize Attributes, Set Base Point, the Attribute Display drop-down's
-entries, the gallery's Recent, Favorite and Library blocks; Properties' Plot Style and Transparency;
+Replace, Manage and Synchronize Attributes, Set Base Point, the gallery's Recent, Favorite and Library blocks; Properties' Plot Style and Transparency;
 Utilities' Quick (MEASUREGEOM), Quick Select, Select All and Quick Calculator; Clipboard's Paste as
-Block, as Hyperlink, to Original Coordinates, Paste Special and Cut with Base Point; Layer
-Properties' echo (AcLayerCommandToggleButton has no macro: here it opens the palette with none,
-**unverified**); Modify's Move, Copy, Stretch, Rotate, Mirror and Scale with a grip hot (acad.cuix
+Block, as Hyperlink, to Original Coordinates, Paste Special and Cut with Base Point; Object
+Color's true colours and Index Colors rows; Insert's Detect and Convert, Edit Attribute ▸
+Multiple, Replace, Write Block, Manage Attributes, Block Editor, Set Base Point, Synchronize and
+the Reference, Import, Data, Linking & Extraction and Location panels; Annotate's Check Spelling,
+Text Align, Justify, Find Text, Text Height, Scale, the style and layer combos (phase 3),
+Dimension (DIM), Break, Jog Line, Inspect, Reassociate, Quick, Arc Length, Jogged, Ordinate, the
+slide-out's DIMTEDIT and DIMEDIT tools, Tolerance and Override, Revision Cloud, Centerlines,
+Leaders, Tables and Annotation Scaling; 3D Tools' Solid History, Polysolid, Loft, Sweep, the mesh
+primitives and surfaces, Offset Edge, Interfere, the body edits (Shell, Separate, Clean, Check), the
+edges' Extract, Imprint, Copy and Color and Color faces (SOLIDEDIT's Edge and Body), Surfaces,
+Mesh, Section and Selection, and Coordinates' UCS dialog launcher; View's Navigation Bar and Show
+Motion toggles (no NAVBARDISPLAY here), Named Views (its View Manager, `^C^C_view`, is a dialog,
+where VIEW here is -VIEW's presets), Model Viewports, Review, History, Interface, Visual Styles'
+edge, face and X-ray controls, Opacity, Smoothing, Save as a New Visual Style and the Visual Styles
+Manager, Coordinates' UCSICON drop-down, UCS Icon Properties, Named UCS and its combo, Palettes'
+other toggles and slide-out, Navigate's Back and Forward, Free and Continuous Orbit and Zoom's
+other members; Define UCS's list drawn as AutoCAD's `Icon` style (here its rows have names,
+**unverified** on the desktop); the palette toggles' undo step (U names `GROUP LAYER`, `GROUP
+BLOCKSPALETTE`, a bare `GROUP` after Properties closed: block4; none here); whether the UCS Icon
+toggle cancels a running command as `^C^C` would (here it does, **unverified**); Layer
+Properties' echo, none on the desktop either (block4); Modify's Move, Copy, Stretch, Rotate, Mirror and Scale with a grip hot (acad.cuix
 `$M=$(if,$(eq,$(substr,$(getvar,cmdnames),1,4),GRIP),_move,^C^C_move)`: the button answers the grip's
 prompt with its mode; here the button starts its command — the desktop's **unverified**)
 

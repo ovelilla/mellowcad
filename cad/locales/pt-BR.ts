@@ -219,6 +219,11 @@ export const ptBR: EngineLocale = {
       "NWiso": "Isométrico NO",
       "custom": "Vista personalizada"
     },
+    "visualStyle": {
+      "2dWireframe": "Estrutura de arame 2D",
+      "hidden": "Oculto",
+      "conceptual": "Conceitual"
+    },
     "viewCube": {
       "face": {
         "top": "SUPERIOR",

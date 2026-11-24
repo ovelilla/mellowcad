@@ -66,6 +66,7 @@ unverified there.
 | Area | English | Korean | Source |
 | --- | --- | --- | --- |
 | Ribbon's Home tab | Home; Draw, Modify, Annotation, Layers, Block, Properties, Utilities, Clipboard; Pin | 홈; 그리기, 수정, 주석, 도면층, 블록, 특성, 유틸리티, 클립보드; 고정 † | X ID_TabHome, ID_PanelDraw … RBN_00011049 and every button's and list member's uid (`ribbon.mjs --cuix` on the pack's acad.CUIX, 2026-11-24); Pin † ours: AutoCAD's pin has no name, the word undoes acadres 49183 `Unpin` |
+| Ribbon's other tabs | Insert, Annotate, 3D Tools, View; Retain Attribute Display, Display All Attributes, Hide All Attributes; More Colors...; Select Color...; 2D Wireframe, Hidden, Conceptual | 삽입, 주석, 3D 도구, 뷰; 속성 화면표시 유지, 모든 속성 표시, 모든 속성 숨기기; 추가 색상...; 색상 선택...; 2D 와이어프레임, 숨김, 개념 | X ID_TabInsert, ID_TabAnnotate, ID_TAB_3D_TOOLS, ID_TabView, each panel's and button's uid (acad.CUIX by uid, 2026-11-24); AcWindows.resources.dll's BAML (`AcAttmode1/2/0`, `mMoreColorsLabel`); AcDimRes 318; tables 41794, 41445, 8027; the pack's files (`~/autocad-packs`) | no |
 | Status bar | Model space; MODEL | 모형 공간; 모형 | P acadres 21486, 20008 |
 | Status bar | Coordinates | 좌표 | P ax26res 4; X ID_PanelCoord |
 | Status bar | Grid; Snap mode; Snap; Grid Snap; Polar Snap | 그리드; 스냅 모드; 스냅; 그리드 스냅; PolarSnap | P acadres 21453, 20021, 21452; D dwgaidsRes 130:1109, 130:1106 |

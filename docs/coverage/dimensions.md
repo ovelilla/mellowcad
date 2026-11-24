@@ -408,7 +408,7 @@ take says `Invalid option keyword.` and asks again (p11).
   dimension styles found.` (table AcDimRes 5300). The blank line under the heading is the table's;
   the console leaves it out.
 - U names the run `-DIMSTYLE` (es `-ACOESTIL`, p05). `'-DIMSTYLE` is refused: `** That command may
-  not be invoked transparently **` (p09).
+  not be invoked transparently **` (p09). Annotate › Dimensions' Update runs its Apply, `^C^C_-dimstyle _apply` (ID_DimstyleA).
 
 **Missing:**
 
