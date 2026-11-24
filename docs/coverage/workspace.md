@@ -190,8 +190,10 @@ panels beside them (`Object properties`, `Layers`), and at the end View's palett
 Blocks and the command line — WHY one 36 px row instead of the ribbon: a ribbon costs 70–150 px of
 height, which a wide screen is short of (revoked by the owner on 2026-11-07: the chrome follows AutoCAD's layout, `docs/next-autocad-ui.md`)
 
-**Missing:** the rest of the application menu and its whole order (**unverified**: the help
-documents Create, Open, Save and Units), Undo's and Redo's lists (split buttons in AutoCAD, plain
+**Missing:** the rest of the application menu and its layout (the 2027 desktop's: New, Open, Save,
+Save As, Import, Export | Publish, Print, Drawing Utilities | Close, each but Save with a page of
+items, Units one of Drawing Utilities'; a search, the recent and open documents, Options and Exit;
+`docs/plans/autocad-ui.md`, §2.2), Undo's and Redo's lists (split buttons in AutoCAD, plain
 buttons here), Plot and the Web & Mobile pair, the drawing's name in the title (the file port does
 not know the open file's name), the ribbon's tabs and its minimize states
 

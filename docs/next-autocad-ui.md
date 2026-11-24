@@ -75,9 +75,14 @@ editor, la tabla de diferencias y las fases. Lo que cambió respecto a lo acorda
   espacio de trabajo ni el menú «Show Tabs» para llegar a ellos.
 - **Dos fases nuevas**: la 5 (tooltips, el menú contextual del ribbon, personalizar el acceso
   rápido) y la 6 (pestañas contextuales: Hatch Creation, Text Editor, Array).
-- **Sin ratón**: el dueño trabajaba en el otro monitor y todo se midió por UI Automation. Lo que
-  pide el ratón (el menú de la aplicación, los tooltips, el cursor) queda apuntado en el §7 del
-  plan como el primer bloque de la fase que lo necesita.
+- **Dos pasadas por el escritorio** el mismo día: la primera sin ratón, por UI Automation, con el
+  dueño trabajando en el otro monitor; la segunda con el ratón, con su palabra, para el menú de
+  la aplicación, los menús contextuales, un tooltip, el cursor, los grips y los dos diálogos de
+  estilos. Lo poco que queda sin capturar (la lista Ayuda ▾, que no se abrió; una paleta
+  acoplada) está en el §7 del plan como el primer bloque de la fase que lo necesita.
+- **El botón de un comando en marcha no se queda encendido** en AutoCAD, y el último miembro de
+  un desplegable se recuerda solo durante la sesión (comprobado reiniciando): la fase 1 iguala
+  las dos cosas.
 
 Lo que se pidió, tal como se acordó: con la skill `autocad-research` (escritorio de AutoCAD 2027, espacio de trabajo «Drafting &
 Annotation», tema oscuro): capturas de cada zona a 1280×720 y 1920×1080, sus medidas, el orden
@@ -108,7 +113,8 @@ bloques y lo que deja falso, en el §6 del plan.
 
 ### Fase 2 — la barra de título
 
-El menú de la aplicación en la disposición y el orden de AutoCAD (tras capturarlo con el ratón),
+El menú de la aplicación en la disposición y el orden de AutoCAD (sus dos columnas y la página de
+cada entrada, capturadas en la fase 0),
 Undo y Redo como botones divididos con su lista, la lista Ayuda ▾ con Send Feedback, y el nombre
 del dibujo en el título.
 

@@ -10,10 +10,13 @@
   workspace Drafting & Annotation (`WSCURRENT`), dark theme (`COLORTHEME 0`), at 96 dpi: a pixel
   below is a CSS pixel. The window was placed at 1920×1080 and at 1280×720 (and nine widths
   between 1760 and 800 for the fold order).
-- **No mouse and no keys**: the owner was working on the other monitor. Everything was read and
-  driven through UI Automation (`acad.sh tree`, `acad.sh act`, `acad.sh place`, written for this
-  phase; `.claude/skills/autocad-research/gui.md`), captured from the screen with `acad.sh shot`,
-  and the palettes opened by command.
+- **A first pass with no mouse and no keys**, the owner working on the other monitor: everything
+  read and driven through UI Automation (`acad.sh tree`, `acad.sh act`, `acad.sh place`, written
+  for this phase; `.claude/skills/autocad-research/gui.md`), captured from the screen with
+  `acad.sh shot`, and the palettes opened by command. **A second pass with the mouse**, on the
+  owner's word the same day, for what the first could not open: the application menu, the
+  right-click menus, a tooltip, the crosshair, the grips, the viewport controls' menus, the two
+  style dialogs.
 - **The ribbon's definition** is `RibbonRoot.cui`, `WorkspaceRoot.cui` and `MenuGroup.cui` of the
   installed `acad.cuix`, printed by `node scripts/research/ribbon.mjs` (`--tab Home`, `--tabs`,
   `--panel <id>`, `--built` to mark what the engine has). The desktop agrees with it but for what
@@ -22,17 +25,18 @@
 - **The editor** was measured in Chrome at the same two sizes (skill `browser-verify`): each
   zone's box and every control's.
 - The captures, the UI Automation dumps and the editor's measures are in
-  `research/ui/2026-11-24/` (gitignored: Autodesk's interface is in them).
+  `research/ui/2026-11-24/` (gitignored: Autodesk's interface is in them), the second pass's in
+  its `autocad-mouse/`.
 
 **What this profile had changed from the shipped state**, so not taken as AutoCAD's default: the
 command line hidden (`CLISTATE 0`; shown for the captures and hidden again), dynamic input off
 (`DYNMODE 0`), the Properties palette open and floating. The Autodesk Assistant palette docked
 at the right is the profile's too, and nothing here stands in for it.
 
-**Not reached without the mouse** (the first block of the phase that needs each, §7): the
-application menu (its button is not in the UI Automation tree), tooltips and every hover state,
-the crosshair, the ribbon's and the Quick Access Toolbar's right-click menus, the ViewCube's
-menu.
+**Still not reached** (the first block of the phase that needs each, §7): the title bar's Help
+list, which opened neither through UI Automation nor on a click; a palette docked, anchored or
+auto-hidden; the title of a saved drawing; a profile known to be untouched, for the status bar's
+shipped set.
 
 ## 2. AutoCAD 2027, zone by zone
 
@@ -68,18 +72,53 @@ Connected, Help ▾, Support Assistant); minimise, maximise, close.
   New, Open, Save, Save As..., Plot, Undo, Redo, Batch Plot, Layer, Match Properties, Plot
   Preview, Properties, Render, Sheet Set Manager, Workspace — a separator, More Commands..., Show
   Menu Bar, Show Below the Ribbon.
-- The application menu was not opened (§1). The help gives its groups ("Create, open, or save a
-  file; audit, recover, and purge a file; print or publish a file; access the Options dialog box;
-  close the application") and that a double-click on the button closes the program.
+- A right-click on a Quick Access button (rows of 22): Remove from Quick Access Toolbar, Add
+  Separator, Customize Quick Access Toolbar, Show Quick Access Toolbar below the Ribbon.
+
+**The application menu** opens under its button, 424×593, in two columns:
+
+- On top, across the right column, a search field (`Search Commands`, 273×20). Above the left
+  column, two small toggles: Recent Documents and Open Documents (22×22 each).
+- **The left column**, 139 wide, each entry a row of 46 with a 32 px icon and its name, in two
+  targets: the name runs the command, an arrow of 20 at its end shows the entry's page (Save has
+  no arrow). In order, a line at each `|`: New, Open, Save, Save As, Import, Export | Publish,
+  Print, Drawing Utilities | Close.
+- **The right column** shows Recent Documents until an entry's page takes it: a heading, `By
+  Ordered List ▾` and a view list, then one row of 26 per file with its type's icon and a menu
+  button at its end.
+- **An entry's page** has a heading (Drawing Utilities': `Tools to maintain the drawing`) and its
+  items, each a 32 px icon, the name in bold and one to three lines of description, on a pitch
+  of some 61; it scrolls by an arrow at its foot.
+  - New: Drawing, Sheet Set.
+  - Open: Drawing, Sheet Set, DGN, Sample Files ▸.
+  - Save As: Drawing, Drawing Template, Drawing Standards, Other Formats, Save Layout as a
+    Drawing, DWG Convert.
+  - Import: PDF, DGN, Other Formats.
+  - Export: DWF, DWFx, 3D DWF, PDF, DGN, Other Formats.
+  - Publish: Send to 3D Print Service, Archive, eTransmit, Email, Share Drawing.
+  - Print: Plot, Batch Plot, Plot Preview, View Plot and Publish Details, Page Setup, 3D Print,
+    Manage Plotters, Manage Plot Styles.
+  - Drawing Utilities: Drawing Properties, DWG Compare, Units (`Control coordinate and angle
+    display formats and precision.`), Audit, Status, Purge, Recover ▸, Open the Drawing Recovery
+    Manager.
+  - Close: Current Drawing, All Drawings.
+- At the foot of the right column, two buttons: Options and Exit Autodesk AutoCAD 2027.
+- The help adds that a double-click on the button closes the program.
 
 ### 2.3 Ribbon
 
 **Tabs** of Drafting & Annotation, in order: Home, Insert, Annotate, Parametric, View, Manage,
 Output, Add-ins, Collaborate, Express Tools, Featured Apps. The workspace also holds, hidden, 3D
 Tools (between Parametric and View), Visualize and Automation; and inside View, hidden, the
-panels Visual Styles, Coordinates and Navigate. A right-click on the ribbon shows or hides tabs
-and panels (help, "About the Ribbon"). After the last tab, the minimize button (20×18) and its
-menu's arrow (10×18).
+panels Visual Styles, Coordinates and Navigate. After the last tab, the minimize button (20×18)
+and its menu's arrow (10×18).
+
+**A right-click on the ribbon** (rows of 24): Show Related Tool Palette Group, Tool Palette
+Group ▸ | Show Tabs ▸, Show Panels ▸ | Show Panel Titles (checked) | Undock, Close. Show Tabs
+lists every tab the workspace holds, each a check: Home, Insert, Annotate, Parametric, 3D Tools,
+Visualize, View, Manage, Output, Add-ins, Collaborate, Automation, Express Tools, Featured Apps.
+Show Panels lists the panels of the tab in front (on Home: Draw, Modify, Annotation, Layers,
+Block, Properties, Groups, Utilities, Clipboard, View).
 
 **Sizes.** A panel is 97 high: 72 of content, then its title bar, 18. In the content:
 
@@ -104,14 +143,25 @@ does the same under a text that stays (Circle, Arc, Array, Text, Measure, Edit A
 a click only opens the list (Cut, Copy: one target, 35×22). The list drops below the button,
 left-aligned: each member a row of 38 with a
 32 px icon and its name, groups parted by a line (5), the member shown highlighted (Circle's: 137
-wide, six members in three groups, 254 high).
+wide, six members in three groups, 254 high). After 2-Point was picked from Circle's list the
+button drew 2-Point's icon over the same `Circle`, and ran it; **after a restart it was Center,
+Radius again**: the member is the session's, not the profile's. The button of a command that
+is running was not lit while it ran (Circle, the pointer over the drawing).
+
+**A tooltip**, a second or so after the pointer rests on a button: a light panel under the
+button (Line's some 178×105, over the panel's title bar) with the name in bold, the description
+(`Creates straight line segments`), a rule, then the command line's icon and the command in bold
+(`LINE`) and, bold too, `Press F1 for more help`. The button under the pointer takes a faint
+frame.
 
 **A panel's slide-out** (a click on its title bar): the rows after the panel's break drop below
 it over the drawing, small controls on the same 24 px pitch, and the title bar moves under them
 with a push pin at its start. It closes on a click elsewhere unless pinned.
 
-**Minimize states**, by the button, in the order of the help's Cycle Through All (its menu:
-Minimize to Tabs, Minimize to Panel Titles, Minimize to Panel Buttons, Cycle Through All):
+**Minimize states**, by the button, in the order of the help's Cycle Through All. Its arrow's
+menu (rows of 22, under the arrow): Minimize to Tabs, Minimize to Panel Titles, Minimize to
+Panel Buttons | Cycle through All. RIBBONCLOSE takes the whole ribbon away (`RIBBONSTATE` 0) and
+RIBBON brings it back (1), neither asking anything:
 
 | State             | Ribbon below the title bar | Drawing area starts at | What shows                                    |
 | ----------------- | -------------------------- | ---------------------- | --------------------------------------------- |
@@ -122,7 +172,8 @@ Minimize to Tabs, Minimize to Panel Titles, Minimize to Panel Buttons, Cycle Thr
 
 **Folding as the window narrows** (Home; the content of the tab is 1760 wide whole). First panels
 shed text and width, then they fold, from the right, to a button 61 wide (a 32 px icon, the
-name, ▾) that opens the whole panel below it:
+name, ▾) that opens the whole panel below it, left-aligned with the button and **with its
+slide-out's rows already out**, the title bar at its foot:
 
 | Width | Draw | Modify | Annotation | Layers | Block | Properties | Groups | Utilities | Clipboard | View |
 | ----- | ---- | ------ | ---------- | ------ | ----- | ---------- | ------ | --------- | --------- | ---- |
@@ -161,17 +212,26 @@ A row of 26: a menu button (32×24), `Start`, one tab per open drawing with its 
 
 ### 2.5 Drawing area
 
-- **Viewport controls**, top left: `[–][Top][2D Wireframe]`, three labels, each a menu
-  (`docs/coverage/view.md`).
+- **Viewport controls**, top left: `[–][Top][2D Wireframe]`, three labels, each a menu; the one
+  under the pointer turns yellow. The menus are Windows' own, light, with rows of 22. `[–]`:
+  Restore Viewport, Viewport Configuration List ▸ | ViewCube, SteeringWheels, Navigation Bar
+  (checks). `[Top]`: `docs/coverage/view.md`. `[2D Wireframe]`: Custom Visual Styles ▸ | 2D
+  Wireframe (checked), Conceptual, Hidden, Realistic, Shaded, Shaded with edges, Shades of Gray,
+  Sketchy, Wireframe, X-ray | Visual Styles Manager...
 - **ViewCube**, top right: at rest only the cube, its ring with N, E, S, W and the `WCS ▾` menu
-  under it, translucent; its Home and roll arrows did not show without the pointer on it.
+  under it, translucent. With the pointer on it, opaque, and around it Home (top left), the two
+  roll arrows (top right), a triangle at each side of the face and the cube's menu arrow (bottom
+  right).
 - **Navigation bar**, under the ViewCube and linked to it: Full Navigation Wheel, Pan, Zoom
   Extents ▾, Orbit ▾, ShowMotion.
 - **UCS icon** at the bottom left; the MDI child's minimise, restore and close at the top right.
 - **Grips**: filled blue squares (`GRIPCOLOR 150`, `GRIPSIZE 5`: some 11 px across), a selected object
-  drawn with a light glow (`SELECTIONEFFECT 1`); a polyline's midpoint grips are bars. Hot 12,
-  hover 11, contour 251.
-- **Crosshair** not captured: `CURSORSIZE 5`, `PICKBOX 3`, `APERTURE 10`, `CURSORBADGE 2`.
+  drawn with a light glow (`SELECTIONEFFECT 1`); a polyline's midpoint grips are bars. Under the
+  pointer a grip turns pale red (`GRIPHOVER 11`) and, on a line's end, a light menu opens beside
+  it (Stretch, Lengthen); clicked it is red (`GRIPHOT 12`) and the stretch shows the line it will
+  be and a dashed orange band from the grip to the crosshair.
+- **Crosshair**: white, each arm some 64 px (`CURSORSIZE 5`, of a 2560 px screen), with a 7 px
+  box at its centre (`PICKBOX 3`); `APERTURE 10`, `CURSORBADGE 2`.
 
 ### 2.6 Command line
 
@@ -181,7 +241,10 @@ as wide as the drawing area: **one line, 27 high**, on a light bar. Left to righ
 (`Type a command` when idle), and at its end the history's arrow (15×25). The temporary prompt
 lines (`CLIPROMPTLINES 3`) appear above it over the drawing, each on its own translucent label.
 Closing it asks first (`Do you want to close the Command Line window?`, with `Always
-close…`).
+close…`). Customize's menu (rows of 22): Input Settings ▸, Lines of Prompt History, Input Search
+Options... | Transparency..., Options... Recent Commands lists the commands run, newest first,
+by their names in capitals (`CIRCLE`, `PROPERTIES`). It keeps the width it had when hidden: shown
+after the window had changed size, it ran past the window's edges.
 
 ### 2.7 Layout tabs and status bar
 
@@ -225,10 +288,24 @@ each as a combo in Annotation's slide-out and on the Annotate tab.
 ### 2.9 Menus, tooltips and dialogs
 
 - The shortcut menus were measured by the workspace review (`docs/coverage/workspace.md`).
-- A ribbon tooltip was not captured (hover). `acad.cuix` gives each button a title and a
-  description, and the macro its command.
-- No dialog was opened in this phase: UNITS, the point style and Save As were captured by their
-  own reviews (their coverage entries cite the probes).
+- A ribbon tooltip: §2.3. `acad.cuix` gives each button its title and description, and the
+  macro its command.
+- **A dialog is Windows' own, light, under the dark theme**: a white title bar with the
+  program's icon and a close button, grey groups, the buttons at the right or the foot.
+  - **Text Style** (616×407): `Current text style:` on top; at the left the Styles list, the
+    list's filter (`All styles`) and a preview (`AaBb123`); in the middle three groups — Font
+    (Font Name, Font Style, Use Big Font), Size (Annotative, Match text orientation to layout,
+    Height) and Effects (Upside down, Backwards, Vertical, Width Factor, Oblique Angle); at the
+    right Set Current, New..., Delete; at the foot Apply, Cancel, Help.
+  - **Dimension Style Manager** (521×373): `Current dimension style:`; the Styles list with
+    `List:` (`All styles`) and `Don't list styles in Xrefs` under it; `Preview of:` with the
+    drawing of a dimensioned part, and Description; at the right Set Current, New...,
+    Modify..., Override..., Compare...; at the foot Close, Help.
+  - **Modify Dimension Style** (566×523): the tabs Lines, Symbols and Arrows, Text, Fit, Primary
+    Units, Alternate Units, Tolerances, each with the same preview at its top right; OK, Cancel,
+    Help at the foot.
+- UNITS, the point style and Save As were captured by their own reviews (their coverage entries
+  cite the probes).
 
 ## 3. The editor today
 
@@ -265,7 +342,7 @@ in `docs/coverage/`, never a dead button.
 | F3 | The title names the program and the drawing | no title in the page; the tab's title is the site's | Revoked for the drawing's name once the file port knows it; until then `Drawing1.dwg`, as a new drawing's | 2 |
 | F4 | Quick Access: New, Open, Save, Save As, Plot, Undo ▾, Redo ▾, Customize ▾, Share | New, Open, Save, Save As, Undo, Redo, as 28 px buttons | Revoked: 24×22 on a 24 pitch. Plot and Share: Missing. Customize ▾: Missing (5) | 1, 2 |
 | F5 | Undo and Redo are split buttons with the list of steps | plain buttons | Revoked | 2 |
-| F6 | The application menu: its two columns, recent documents, Options and Exit | New, Open, Save, Save As, Drawing Units, the language, Send Feedback | Revoked in its order and layout, after its capture (§7); the language stays in it — Platform: AutoCAD is installed in one language and a page chooses its own | 2 |
+| F6 | The application menu: its two columns, recent documents, Options and Exit | New, Open, Save, Save As, Drawing Units, the language, Send Feedback | Revoked: the two columns of §2.2, an entry's page with icon, name and description, and what exists here in its place — New ▸ Drawing, Open ▸ Drawing, Save, Save As ▸ Drawing and Other Formats, Drawing Utilities ▸ Units. Import, Export, Publish, Print, Close, the search, the documents' lists, Options and Exit: Missing. The language stays in it — Platform: AutoCAD is installed in one language and a page chooses its own | 2 |
 | F7 | InfoCenter: search, sign-in, App Store, Help ▾ | nothing | Missing, but Help ▾: Revoked, with Help (F1's page) and Send Feedback, which leaves the application menu (acad.cuix `ID_SendFeedback` is the Help menu's; its place in the Help ▾ list is **unverified**, §7) | 2 |
 | F8 | File tabs: Start and one tab per drawing | none | Missing: one drawing at a time, no Start tab | — |
 
@@ -275,7 +352,7 @@ in `docs/coverage/`, never a dead button.
 | - | ------- | ---- | ----- | ----- |
 | R1 | Tools on the ribbon's tabs and panels | a palette of two columns at the left | Revoked | 1 |
 | R2 | Large buttons with their name, small ones in rows of three | every tool a 28 px icon | Revoked: AutoCAD's sizes (§2.3) | 1 |
-| R3 | A split button shows its last member; the list has 32 px icons and names | a menu of 16 px icons, names and aliases; the button shows the family's icon | Revoked | 1 |
+| R3 | A split button shows its last member; the list has 32 px icons and names | a menu of 16 px icons, names and aliases; the button shows the member picked last but only opens the menu | Revoked: two targets, one that runs the member and one that lists | 1 |
 | R4 | A panel's rarer tools in its slide-out, with a pin | every tool in the palette | Revoked | 1 |
 | R5 | Four minimize states, a button and its menu | none (under 700 px three groups fold to a menu) | Revoked | 1 |
 | R6 | Panels shed text and fold from the right as the window narrows | none | Revoked, in the measured order | 1 |
@@ -283,9 +360,11 @@ in `docs/coverage/`, never a dead button.
 | R8 | Styles, Blocks and the command line are toggled from View › Palettes | toggles at the end of the top bar | Revoked | 1 |
 | R9 | 3D Tools is a hidden tab of the workspace; 3D work has the 3D Modeling workspace | the 3D tools in the palette | Platform-like, for now: **the 3D Tools tab shows**, as do View's Visual Styles, Coordinates and Navigate — WHY: there is no workspace switching nor the ribbon's Show Tabs menu yet, and hidden they could not be reached | 1, 5 |
 | R10 | Contextual tabs (Hatch Creation, Text Editor, Array) while their command runs | the command's prompts only | Missing | 6 |
-| R11 | Tooltips: the name, a description, the command and `Press F1 for more help` | the name and the alias | Revoked after their capture (§7) | 5 |
+| R11 | Tooltips: the name, a description, the command and `Press F1 for more help` | the name and the alias | Revoked: §2.3's four parts, the description from the engine's catalog | 5 |
 | R12 | RIBBON and RIBBONCLOSE; Clean Screen closes the ribbon | neither command; Clean Screen hides the palette and the top bar's groups | Revoked | 1 |
-| R13 | The ribbon docks at a side or floats; a panel can be dragged off; right-click shows or hides tabs, panels and titles | — | Missing (Show Tabs and Show Panels: 5) | 5 |
+| R13 | The ribbon docks at a side or floats; a panel can be dragged off; right-click shows or hides tabs, panels and titles | — | Missing (Show Tabs, Show Panels and Show Panel Titles: 5; Undock and the tool palette groups stay Missing) | 5 |
+| R15 | A running command's button is not lit | the running tool's button is lit (`active`) | Revoked: the ribbon keeps the accent for what is a state (Layer Properties while its palette is open, a toggle) | 1 |
+| R16 | A split button's last member lasts the session, whichever tab or state the ribbon is in | kept in the flyout's component, lost when it unmounts | Revoked with R3: the engine's, for the session (decision 2) | 1 |
 | R14 | Tools with no ribbon button are typed (LEADER, SOLID, 3DFACE…) | the same, listed in `RAIL_EXCLUDED` | Equal; the list moves with the ribbon | 1 |
 
 ### The drawing area
@@ -293,17 +372,18 @@ in `docs/coverage/`, never a dead button.
 | # | AutoCAD | Here | Class | Phase |
 | - | ------- | ---- | ----- | ----- |
 | D1 | `[–][Top][2D Wireframe]` | `[Top]` | Revoked for the visual style's label and list (VSCURRENT: the owner's request of 2026-11-10, served first by the ribbon's gallery in phase 1); `[–]`: Missing (viewport configurations) | 4 |
-| D2 | The ViewCube's Home and roll arrows only with the pointer on it | always drawn | Revoked, after its hover capture (§7) | 4 |
+| D2 | The ViewCube's Home and roll arrows only with the pointer on it | always drawn | Revoked (§2.5) | 4 |
 | D3 | Navigation bar: Wheel, Pan, Zoom ▾, Orbit ▾, ShowMotion | Pan, Zoom ▾, Orbit | Missing: SteeringWheels, ShowMotion, Orbit's list | — |
 | D4 | The command line floats over the drawing | a row of its own under it | Revoked | 4 |
-| D5 | Grips 11 px, blue 150; a glow on what is selected | the engine's grips and highlight | To compare in phase 4 against a hover capture; none assumed | 4 |
+| D5 | Grips 11 px, blue 150, pale red under the pointer, red when hot; a glow on what is selected; a 7 px pickbox on arms of 64 | the engine's grips, highlight and crosshair | To compare in phase 4, side by side with §2.5's captures; no difference is assumed | 4 |
+| D6 | The viewport controls' and the grips' menus are Windows' own, light | the editor's dark menus | Kept: one scheme, and a page cannot draw the system's menus | — |
 
 ### The command line
 
 | # | AutoCAD | Here | Class | Phase |
 | - | ------- | ---- | ----- | ----- |
 | C1 | One floating line, 27 high, as wide as the drawing area | a docked row of 36, as wide as the window | Revoked | 4 |
-| C2 | Close, Customize and Recent Commands at its start | none | Revoked for close (with CTRL+9 back) and Recent Commands; Customize: Missing (input settings, lines of history, transparency) | 4 |
+| C2 | Close, Customize and Recent Commands at its start | none | Revoked for close (with CTRL+9 back) and Recent Commands; Customize: Missing (Input Settings, Lines of Prompt History, Input Search Options, Transparency, Options) | 4 |
 | C3 | `Type a command` when idle | `Command:` and a hint with aliases | Revoked: the hint is ours | 4 |
 | C4 | Temporary prompt lines as labels that fade | lines above the prompt that stay while the command runs | Revoked | 4 |
 | C5 | It docks at the top or bottom as a window of several lines | — | Missing | — |
@@ -332,7 +412,7 @@ in `docs/coverage/`, never a dead button.
 | P6 | Properties: PICKADD, Select Objects and Quick Select beside the list; categories that fold | the list and the rows | Revoked for folding; the three buttons: Missing | 3 |
 | P7 | STYLE and DIMSTYLE are modal dialogs; the ribbon has their combos | a Styles tab of the panel | Revoked: the two dialogs, and the combos in Home › Annotation's slide-out and on Annotate | 3 |
 | P8 | Quick Properties, Tool Palettes, DesignCenter, Sheet Set Manager… | — | Missing | — |
-| P9 | Dialogs: a title bar, the fields, OK / Cancel / Help at the bottom right | UNITS, point style, Save As, as their reviews left them | Compared one by one when phase 3 opens STYLE's and DIMSTYLE's | 3 |
+| P9 | A dialog is Windows' own: light, with the system's title bar | the editor's dark dialogs | Kept in colour (one scheme); each dialog's groups, order and buttons follow AutoCAD's, and UNITS, the point style and Save As are compared again when phase 3 builds the two of §2.9 | 3 |
 
 ### Kept from the platform, as the brief lists them
 
@@ -349,8 +429,9 @@ colour scheme. Each has its WHY in its coverage entry already.
    and a web form's are expected. `.claude/rules/ui.md` (Size) and `control-size.test.ts` take the
    new sizes in phase 1, from §2.3.
 2. **The ribbon's state is the engine's**, as the Styles table's is: whether it shows (RIBBON,
-   RIBBONCLOSE, Clean Screen), the tab, and the member each split button shows — so a contextual
-   tab can one day follow a command, and a button's echo and repeat stay the engine's. The
+   RIBBONCLOSE, Clean Screen), the tab, and the member each split button shows, which AutoCAD
+   keeps for the session and no longer (§2.3) — so a contextual tab can one day follow a
+   command, and a button's echo and repeat stay the engine's. The
    minimize state is the device's, as the palettes' fold is (`palette-layout.ts`'s way: read in
    the `<head>`, so the canvas's first box is its final one).
 3. **A tab or panel with nothing built is not drawn**; a panel is drawn with what it has, in
@@ -395,15 +476,15 @@ Each closes with skill `finish-feature`. Each starts with the captures it still 
 ### Phase 2 — the title bar
 
 The application menu in AutoCAD's layout and order, Undo's and Redo's lists, Help ▾ with Send
-Feedback, the drawing's name in the title and in the tab's. Starts with the desktop block for
-the application menu and the Help list (§7).
+Feedback, the drawing's name in the title and in the tab's. Starts with the Help list, which
+this phase could not open (§7).
 
 ### Phase 3 — the palettes and the style dialogs
 
 Properties, Layer Properties Manager and Blocks as palettes of their own (P1 to P6); STYLE and
 DIMSTYLE as AutoCAD's dialogs, with the ribbon's style combos (P7). The Styles tab and the
-single panel go. Starts with captures of the two dialogs and of a palette docked, anchored and
-auto-hidden.
+single panel go. Starts with captures of a palette docked, anchored and auto-hidden, and of the
+dialogs' other pages (New Text Style, and each tab of Modify Dimension Style).
 
 ### Phase 4 — the drawing area and the bottom row
 
@@ -424,15 +505,17 @@ the ribbon of phase 1 leaves room for a tab the engine opens.
 
 ## 7. Desktop blocks still owed
 
-With the owner's mouse (ask first: `gui.md`), each at the start of its phase:
+The second pass of 2026-11-24 took most of what needed the mouse. What is left, each at the
+start of its phase and with the owner's word first (`gui.md`):
 
 | Phase | To capture |
 | ----- | ---------- |
-| 1 | a ribbon tooltip and a button's hover, pressed and running looks; whether a split button's last member survives a restart; RIBBON and RIBBONCLOSE at the command line; a folded panel open; the minimize menu |
-| 2 | the application menu, every level; the Help ▾ list; the Quick Access Toolbar's right-click menu; the title with a saved drawing's name and path |
-| 3 | a palette docked, anchored and auto-hidden, and its properties menu; the Text Style dialog and the Dimension Style Manager with its tabs |
-| 4 | the crosshair and pickbox; a hot and a hovered grip; the ViewCube and the navigation bar under the pointer; the three viewport control menus; the command line's Customize and Recent Commands menus, its history open |
-| 5 | the ribbon's right-click menu; an extended tooltip |
+| 1 | a button pressed; an extended tooltip, if a longer rest shows one |
+| 2 | the title bar's Help list, which neither UI Automation nor a click opened; the title with a saved drawing's name and path; the Open Documents list of the application menu |
+| 3 | a palette docked, anchored and auto-hidden, and its properties menu; New Text Style; each tab of Modify Dimension Style |
+| 4 | the status bar of a profile nobody has touched; the navigation bar under the pointer; the command line's history open |
 
-Without the mouse, `acad.sh act` already opens a drop-down, a slide-out, the status bar's menus
-and Undo's list, and `acad.sh tree` reads their rows and sizes.
+Without the mouse, `acad.sh act` opens a drop-down, a slide-out, a folded panel, the status
+bar's menus, Undo's list and the command line's two menus, and `acad.sh tree` reads their rows
+and sizes; once a click has opened the application menu, `tree` reads it too, as a window of
+its own.

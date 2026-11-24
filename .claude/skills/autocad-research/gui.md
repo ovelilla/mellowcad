@@ -89,6 +89,18 @@ while the owner works in another window:
   where the profile left it, the owner's monitor included: read the foreground first
   (`place <hwnd> info`), hand it back after (`place <owner's hwnd> front`), and close a palette
   that landed on their screen at once.
+- **With the mouse** (the owner's word first): the application menu, once clicked open, is a
+  window of its own in `wins` and `tree` reads it, each entry's page too as the pointer rests on
+  the entry (`click x y none`); a right-click menu of the ribbon or the Quick Access Toolbar is in
+  the main window's tree. A tooltip wants AutoCAD in the foreground: a click in the drawing first
+  (hovering a menu's `Tool Palette Group` had handed it to a hidden window). The title bar's Help
+  list opened neither way.
+- **A dialog opens where the profile left it**, the owner's monitor included
+  (`place <dialog> info`): `place <dialog> at …` moves it, `dialog <hwnd> click <id>` presses its
+  buttons, `post` cancels it.
+- **The floating command line keeps the width it was hidden with**: shown after the window
+  changed size it ran off both edges, onto the other monitor. Show it at the size it will be
+  captured at, and hide it before resizing.
 - `shot` cannot write onto the WSL share (GDI+): let it save in its own folder and copy from the
   path it prints.
 - `node scripts/research/ribbon.mjs` prints a workspace's ribbon from `acad.cuix`: tabs, panels,
