@@ -28,6 +28,7 @@ export const de: EditorLocale = {
       "units": "Zeichnungseinheiten…",
       "language": "Sprache",
       "feedback": "Feedback senden",
+      "help": "Hilfe",
       "saving": "Wird gespeichert…",
       "saved": "Gespeichert",
       "savedHint": "Auf diesem Gerät gespeichert",

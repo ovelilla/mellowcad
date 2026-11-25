@@ -28,6 +28,7 @@ export const cs: EditorLocale = {
       "units": "Kreslicí jednotky…",
       "language": "Jazyk",
       "feedback": "Odeslat zpětnou vazbu",
+      "help": "Nápověda",
       "saving": "Probíhá ukládání…",
       "saved": "Uloženo",
       "savedHint": "Uloženo v tomto zařízení",

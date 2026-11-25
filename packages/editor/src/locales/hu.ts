@@ -28,6 +28,7 @@ export const hu: EditorLocale = {
       "units": "Rajzi mértékegységek…",
       "language": "Nyelv",
       "feedback": "Visszajelzés küldése",
+      "help": "Súgó",
       "saving": "Mentés…",
       "saved": "Mentve",
       "savedHint": "Mentve ezen az eszközön",

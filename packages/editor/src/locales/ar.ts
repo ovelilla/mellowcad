@@ -28,6 +28,7 @@ export const ar: EditorLocale = {
       "units": "وحدات الرسم…",
       "language": "اللغة",
       "feedback": "إرسال ملاحظات",
+      "help": "تعليمات",
       "saving": "جارٍ الحفظ…",
       "saved": "محفوظ",
       "savedHint": "محفوظ على هذا الجهاز",

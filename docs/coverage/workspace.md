@@ -191,8 +191,8 @@ for that command"): the running command's global name — a transparent one's in
 `CadEngineOptions.onHelp`); taken from a focused field too, as every function key. `/draw` opens
 the command's own page in the docs (`/docs/commands/offset`, in the page's language), its entry in
 the reference where it has none (`/docs/commands#line`) or, at rest, Getting started, in a tab of
-its own, as AutoCAD opens its Help in a browser. A host that
-shows no help leaves F1 to the browser. WHY a page may take it: Chrome's F1 is
+its own, as AutoCAD opens its Help in a browser; the title bar's Help button asks the same (Title
+bar). A host that shows no help leaves F1 to the browser. WHY a page may take it: Chrome's F1 is
 `IDC_HELP_PAGE_VIA_KEYBOARD`, not in `kReservedCommandIds` (`chrome/browser/ui/accelerator_table.cc`,
 main, 2026-10-30)
 
@@ -207,13 +207,16 @@ while RIBBONCLOSE or Clean Screen has closed it, then the drawing. In the title 
 button, 48 wide, flush at its start, and the Quick Access Toolbar's buttons at AutoCAD's 24×22 with
 16 px icons, one against the next from 56 px (UI Automation at 1280×720, 2026-11-24). The
 application menu: New, Open, Save, Save As, then Drawing Units, which the help files under Drawing
-Utilities > Units, the page's language, which AutoCAD has no menu for, and last Send Feedback,
-which opens the host's page in a new tab — the site's issue forms, filled in — where AutoCAD's
-opens its form on Autodesk's site: WHY in the application menu, AutoCAD 2027 has it as the Start
-tab's Connect panel's button, «Help us improve our products · Send feedback» (desktop,
-2026-11-07), and in the Help menu between Online Resources and Privacy Settings (acad.cuix
-`ID_SendFeedback`, `^C^C^P_ai_send_feedback ^P`), and neither exists here: it moves to the title
-bar's Help list when the chrome has one, `docs/plans/autocad-ui.md`, F7. The Quick Access Toolbar
+Utilities > Units, and the page's language, which AutoCAD has no menu for. InfoCenter's Help ▾ at
+the bar's end, a split button of 36 (the button 24, its arrow 12; AutoCAD's 13 shares a pixel,
+UI Automation 2026-11-24): the button asks for Help as F1 does (acad.cuix `ID_Help`, `'_help`),
+the running command's page or the start, and the command goes on; its list is acad.cuix's Help
+menu (`ID_MnHelp`) with what exists here — Help (F1), a line, Send Feedback (`ID_SendFeedback`),
+which opens the host's page in a new tab (the site's issue forms, filled in) where AutoCAD's
+opens its form on Autodesk's site. WHY the Help menu's items: InfoCenter's list opened neither
+through UI Automation nor on four clicks (desktop, 2026-11-24 and 2026-11-25), so its rows are
+**unverified**; the Help menu is the one AutoCAD's menu bar and its button share. WHY no echo of
+`'_help`: HELP is not a command here (F1, Missing). The Quick Access Toolbar
 in AutoCAD's order — New (QNEW), Open, Save, Save As, Undo, Redo —, each run as its command by its
 global name (`_QSAVE`), so it echoes (Drawing Units as the desktop's application menu runs it,
 `^C^C_UNITS`: see UNITS); the save state where AutoCAD's title names the drawing
@@ -223,7 +226,8 @@ New, Open, Save, Save As, Import, Export | Publish, Print, Drawing Utilities | C
 with a page of items, Units one of Drawing Utilities'; a search, the recent and open documents,
 Options and Exit; `docs/plans/autocad-ui.md`, §2.2), Undo's and Redo's lists (split buttons in
 AutoCAD, 36 wide, plain buttons of 24 here), Plot, Customize ▾ and Share, the title centred and
-InfoCenter (Help ▾ comes with phase 2), the drawing's name in the title (the file port does not
+the rest of InfoCenter (its search, sign-in, App Store, Stay Connected, Support Assistant) and of
+the Help list (Download Offline Help, Online Resources ▸, Privacy Settings, About), the drawing's name in the title (the file port does not
 know the open file's name), the file tabs (one drawing at a time) — WHY no window buttons
 (minimise, maximise, close): a page cannot draw its window's frame
 

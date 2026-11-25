@@ -28,6 +28,7 @@ export const ru: EditorLocale = {
       "units": "Единицы чертежа…",
       "language": "Язык",
       "feedback": "Обратная связь",
+      "help": "Справка",
       "saving": "Сохранение…",
       "saved": "Сохранено",
       "savedHint": "Сохранено на этом устройстве",

@@ -55,11 +55,14 @@ export interface CadEditorProps {
     layoutStorage?: LayoutStorage;
     /** The canvas cell's name for a page that transitions into it. */
     sheet?: SheetTransition;
-    /** Where F1 opens help; without it F1 is the browser's. */
+    /**
+     * Where F1 and the title bar's Help open help; without it F1 is the
+     * browser's and the title bar has no Help button.
+     */
     help?: HelpLinks;
     /**
-     * The page the application menu's Send Feedback opens, in a tab of its own:
-     * where the host's users report a problem. Without it, no Send Feedback.
+     * The page the title bar's Help list's Send Feedback opens, in a tab of its
+     * own: where the host's users report a problem. Without it, no Send Feedback.
      */
     feedback?: string;
     /** The pieces the host replaces or turns off; the rest are the editor's. */
@@ -238,7 +241,12 @@ export interface TitleBarProps extends PieceProps {
     readonly mark?: ReactNode;
     /** The application menu's languages; none, no Language submenu. */
     readonly languages?: readonly LanguageLink[];
-    /** The page the application menu's Send Feedback opens; none, no Send Feedback. */
+    /**
+     * Whether the host shows Help (`CadEditor`'s `help`), which the Help button
+     * asks for as F1 does; neither it nor `feedback`, no Help ▾.
+     */
+    readonly help?: boolean;
+    /** The page the Help list's Send Feedback opens; none, no Send Feedback. */
     readonly feedback?: string;
 }
 

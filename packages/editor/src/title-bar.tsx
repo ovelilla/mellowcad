@@ -4,7 +4,9 @@ import type { ReactElement, ReactNode } from "react"
 import { Menu } from "@base-ui/react/menu"
 import {
   CheckIcon,
+  ChevronDown,
   ChevronRight,
+  CircleQuestionMark,
   FilePlus,
   FolderOpen,
   Globe,
@@ -30,6 +32,7 @@ import {
   TooltipTrigger,
 } from "./ui/tooltip"
 import { usePortalContainer } from "./ui/portal-container"
+import { drawingFocus } from "./drawing-focus"
 
 import { IconAction, Panel } from "./toolbar-primitives"
 import { useEditorText } from "./editor-text"
@@ -58,7 +61,12 @@ export interface TitleBarProps extends PieceProps {
   readonly mark?: ReactNode
   /** The application menu's languages; none, no Language submenu. */
   readonly languages?: readonly LanguageLink[]
-  /** The page the application menu's Send Feedback opens; none, no Send Feedback. */
+  /**
+   * Whether the host shows Help (`CadEditor`'s `help`), which the Help button
+   * asks for as F1 does; neither it nor `feedback`, no Help ▾.
+   */
+  readonly help?: boolean
+  /** The page the Help list's Send Feedback opens; none, no Send Feedback. */
   readonly feedback?: string
 }
 
@@ -72,6 +80,7 @@ export function TitleBar({
   state,
   mark,
   languages = [],
+  help = false,
   feedback,
 }: TitleBarProps): ReactElement {
   const t = useEditorText("TitleBar")
@@ -86,12 +95,7 @@ export function TitleBar({
       {/* The Quick Access Toolbar's defaults in their order (New, Open, Save,
           Save As, …, Undo, Redo); Plot and the Web & Mobile pair do not exist
           here. */}
-      <ApplicationMenu
-        engine={engine}
-        mark={mark}
-        links={languages}
-        feedback={feedback}
-      />
+      <ApplicationMenu engine={engine} mark={mark} links={languages} />
       {/* WHY ms-1: AutoCAD's first Quick Access button starts 56 px from
           the edge, 8 after the application button. One button against the
           next, on a 24 px pitch. */}
@@ -149,25 +153,29 @@ export function TitleBar({
       </Panel>
 
       <SaveStatus state={state} />
+
+      {/* InfoCenter's Help ▾, at the bar's end: its search, sign-in, App
+          Store, Stay Connected and Support Assistant, and the window's own
+          buttons after it, do not exist here. */}
+      {(help || feedback) && (
+        <HelpMenu engine={engine} help={help} feedback={feedback} />
+      )}
     </TooltipProvider>
   )
 }
 
 /**
  * The application menu (AutoCAD's "A" button): the file commands, Drawing
- * Utilities' Units, the page's language, which AutoCAD has no menu for, and
- * Send Feedback, which it has elsewhere.
+ * Utilities' Units and the page's language, which AutoCAD has no menu for.
  */
 function ApplicationMenu({
   engine,
   mark,
   links,
-  feedback,
 }: {
   engine: CadEngine
   mark: ReactNode
   links: readonly LanguageLink[]
-  feedback: string | undefined
 }) {
   const portal = usePortalContainer()
   const t = useEditorText("TitleBar")
@@ -262,27 +270,106 @@ function ApplicationMenu({
                 </Menu.SubmenuRoot>
               </>
             )}
-            {/* WHY here: AutoCAD's Send Feedback is a button of the Start
-                tab's Connect panel and an item of the Help menu (acad.cuix
-                ID_SendFeedback), and the editor has neither; it moves to
-                the Start tab when the chrome has one
-                (docs/next-autocad-ui.md). AutoCAD opens its form on
-                Autodesk's site: here the host's page, in a tab of its own,
-                as F1's help, so the drawing stays open. */}
-            {feedback && (
-              <>
-                <Menu.Separator className="-mx-1 my-1 h-px bg-border" />
-                <Menu.LinkItem
-                  href={feedback}
-                  target="_blank"
-                  rel="noopener"
-                  closeOnClick
-                  className={MENU_ITEM}
+          </Menu.Popup>
+        </Menu.Positioner>
+      </Menu.Portal>
+    </Menu.Root>
+  )
+}
+
+/** A function key is literal in every language (.claude/rules/ui.md, Text). */
+const HELP_KEY = "F1"
+
+/**
+ * InfoCenter's Help ▾ (docs/plans/autocad-ui.md, F7): a split button of 36,
+ * the button 24 and its arrow 12 (AutoCAD's 13 shares a pixel with the
+ * button: UI Automation, 2026-11-24). The button asks for Help as F1 does
+ * (acad.cuix `ID_Help`, `'_help`); the list is acad.cuix's Help menu
+ * (`ID_MnHelp`) with what exists here: Help, then Send Feedback (`ID_SendFeedback`),
+ * Download Offline Help, Online Resources, Privacy Settings and About left
+ * out. WHY the Help menu's: InfoCenter's list opened neither through UI
+ * Automation nor on a click (2026-11-24 and 2026-11-25), and its button runs
+ * that menu's first item. Send Feedback opens the host's page in a tab of
+ * its own, as F1's help, where AutoCAD's opens its form on Autodesk's site.
+ */
+function HelpMenu({
+  engine,
+  help,
+  feedback,
+}: {
+  engine: CadEngine
+  help: boolean
+  feedback: string | undefined
+}) {
+  const portal = usePortalContainer()
+  const t = useEditorText("TitleBar")
+  return (
+    <Menu.Root>
+      {/* WHY me-1: the bar's last control, 4 px from its end, as the title
+          bar's buttons keep from the window's edge. */}
+      <div className="ms-auto me-1 flex shrink-0">
+        {help && (
+          <IconAction
+            icon={CircleQuestionMark}
+            label={t("help")}
+            shortcut={HELP_KEY}
+            side="bottom"
+            size="quick"
+            className="rounded-e-none"
+            onClick={() => {
+              engine.help()
+              engine.focusSurface()
+            }}
+          />
+        )}
+        <Menu.Trigger
+          render={
+            <Button
+              size="quick"
+              variant="ghost"
+              aria-label={t("help")}
+              className={cn(help ? "w-3 rounded-s-none" : "w-9")}
+            />
+          }
+        >
+          {!help && <CircleQuestionMark />}
+          <ChevronDown className="size-2.5" />
+        </Menu.Trigger>
+      </div>
+      <Menu.Portal container={portal}>
+        <Menu.Positioner
+          side="bottom"
+          align="end"
+          sideOffset={1}
+          className="z-50"
+        >
+          <Menu.Popup className={MENU_POPUP} finalFocus={drawingFocus(engine)}>
+            {help && (
+              <Menu.Item onClick={() => engine.help()} className={MENU_ITEM}>
+                <CircleQuestionMark />
+                {t("help")}
+                <kbd
+                  dir="ltr"
+                  className="ms-auto -me-6 font-mono text-muted-foreground"
                 >
-                  <MessageSquare />
-                  {t("feedback")}
-                </Menu.LinkItem>
-              </>
+                  {HELP_KEY}
+                </kbd>
+              </Menu.Item>
+            )}
+            {help && feedback && (
+              <Menu.Separator className="-mx-1 my-1 h-px bg-border" />
+            )}
+            {feedback && (
+              <Menu.LinkItem
+                href={feedback}
+                target="_blank"
+                rel="noopener"
+                closeOnClick
+                className={MENU_ITEM}
+              >
+                <MessageSquare />
+                {t("feedback")}
+              </Menu.LinkItem>
             )}
           </Menu.Popup>
         </Menu.Positioner>

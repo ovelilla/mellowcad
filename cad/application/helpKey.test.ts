@@ -48,3 +48,22 @@ describe("F1", () => {
     expect(h.press("F1")).toBe(false)
   })
 })
+
+// The title bar's Help (acad.cuix ID_Help, `'_help`): F1's question, from a
+// button, so the running command goes on.
+describe("the title bar's Help", () => {
+  it("asks what F1 asks and leaves the command running", () => {
+    const asked: (string | null)[] = []
+    const h = createHarness({ help: (command) => asked.push(command) })
+    h.runtime.help()
+    h.command("LINE").click(p(0, 0))
+    h.runtime.help()
+    expect(asked).toEqual([null, "LINE"])
+    expect(h.state().commandLine.command).toBe("LINE")
+  })
+
+  it("asks nothing of a host that shows no help", () => {
+    const h = createHarness()
+    expect(() => h.runtime.help()).not.toThrow()
+  })
+})

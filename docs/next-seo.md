@@ -491,6 +491,10 @@ el dueño dio a las sesiones el 6/11).
    **23/11, 22:36 UTC (sesión de la caja del sólido):** la tanda del día, 11 pedidas (`edit-dxf`
    en alemán, japonés y coreano, `/cs`, las guías de 2D a 3D, de coordenadas y de inicio en varios
    idiomas) hasta la cuota, en la duodécima: 1.664 en la cola.
+   **24/11, 22:53 UTC (sesión de la barra de título):** la tanda del día, 11 pedidas (los
+   comandos y la portada de la documentación en checo, guías de atajos, de coordenadas, de 2D a
+   3D y de la planta, `edit-dxf` en polaco y chino) hasta la cuota, en la duodécima (`/hu`):
+   1.781 en la cola, rehecha del sitemap.
 3. **Bing Webmaster Tools**: la clave responde ya en producción
    (`https://mellowcad.com/1eb5d0fec5dc99d5695b010f04667a07.txt`, 5/11); enviar el sitemap a IndexNow:
    `npm run indexnow` lista lo que enviaría y `npm run indexnow -- --send` lo envía (se niega si la

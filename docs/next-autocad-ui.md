@@ -5,8 +5,9 @@
 > fases de §4, que se corrigieron con él; la fase 1 (el marco y el ribbon) está hecha el 24/11,
 > sus cinco bloques del §6 del plan (el estado del ribbon en el motor, el marco, Home, las otras
 > pestañas, minimizar y plegar), el 2 y el 3 revisados ese día (la revisión corta con Fable de
-> §5); el push que publique el ribbon espera la palabra del dueño, y sigue la fase 2 (la barra de
-> título), que empieza capturando la lista Ayuda ▾ con el ratón.
+> §5); el push que publique el ribbon espera la palabra del dueño. La fase 2 (la barra de título)
+> está en curso desde el 25/11: su pasada por el escritorio hecha (la lista Ayuda ▾ no se abrió
+> ni con el ratón) y sus cuatro bloques en el §6 del plan, hecho el 1 (Ayuda ▾).
 > Acordado el 7/11/2026 por el dueño. Se borra cuando la última fase esté hecha; hasta entonces
 > cada fase cerrada se marca aquí.
 

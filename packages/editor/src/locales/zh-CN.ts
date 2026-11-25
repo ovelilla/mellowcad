@@ -28,6 +28,7 @@ export const zhCN: EditorLocale = {
       "units": "图形单位…",
       "language": "语言",
       "feedback": "发送反馈",
+      "help": "帮助",
       "saving": "正在保存…",
       "saved": "已保存",
       "savedHint": "已保存到此设备",

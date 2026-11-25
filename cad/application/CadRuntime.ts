@@ -3924,6 +3924,20 @@ export class CadRuntime extends Observable {
   }
 
   /**
+   * Help for the running command, or Help's start with none, as F1 (the
+   * Function Key Reference) and the title bar's Help (acad.cuix `ID_Help`,
+   * `'_help`, transparent) ask it of the host: a transparent command running
+   * inside another is the one asked about. WHY nothing echoed where the
+   * button's macro writes `'_help`: HELP is not a command here
+   * (`docs/coverage/workspace.md`, F1), so the button does what F1 does.
+   */
+  help(): void {
+    this.host.showHelp?.(
+      this.activeTool.id === "select" ? null : toolCommand(this.activeTool)
+    )
+  }
+
+  /**
    * What a tool's button advertises: the typed alias of the command it runs
    * ("L", "AR", "TR"), else the tool's own hint.
    */
@@ -7526,13 +7540,9 @@ export class CadRuntime extends Observable {
       this.setCommandHistoryOpen(false)
     }
 
-    // F1 is Help for the running command, or Help's start with none (the
-    // Function Key Reference); a transparent command running inside another
-    // is the one asked about. Only a host that shows help takes the key.
+    // Only a host that shows help takes F1.
     if (e.key === "F1" && this.host.showHelp) {
-      this.host.showHelp(
-        this.activeTool.id === "select" ? null : toolCommand(this.activeTool)
-      )
+      this.help()
       return true
     }
 

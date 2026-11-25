@@ -178,8 +178,8 @@ browser CAD app where AutoCAD's behaviour is the spec, not a suggestion_
 > desktop only.
 >
 > Feedback I'd value: does the landing tell you what this is in five seconds? Where did you get
-> stuck in the editor? A bug can also go straight to GitHub: Send Feedback, last in the editor's
-> menu, opens an issue with the version and browser filled in.
+> stuck in the editor? A bug can also go straight to GitHub: Send Feedback, in the Help list at the
+> end of the editor's title bar, opens an issue with the version and browser filled in.
 
 **In Spanish** (r/programacion within its 10 %, r/Arquitectura with the "Software" flair, forums
 and groups of architecture and engineering students; neutral Spanish). Título: _He hecho un CAD

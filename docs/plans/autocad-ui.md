@@ -2,7 +2,8 @@
 
 > **Status:** phase 0 (this inventory and plan) done on 2026-11-24; phase 1 done the same day,
 > its five blocks (the engine, the frame, Home, the other tabs, minimize and fold); the push that
-> ships the ribbon waits for the owner's word; phases 2 to 6 not started.
+> ships the ribbon waits for the owner's word; phase 2 under way since 2026-11-25 (its blocks in
+> §6); phases 3 to 6 not started.
 > The brief is `docs/next-autocad-ui.md`; where its phases and this plan differ, this plan rules
 > (the brief says so) and the brief was corrected the same day.
 
@@ -36,8 +37,8 @@ command line hidden (`CLISTATE 0`; shown for the captures and hidden again), dyn
 at the right is the profile's too, and nothing here stands in for it.
 
 **Still not reached** (the first block of the phase that needs each, §7): the title bar's Help
-list, which opened neither through UI Automation nor on a click; a palette docked, anchored or
-auto-hidden; the title of a saved drawing; a profile known to be untouched, for the status bar's
+list, which opened neither through UI Automation nor on a click (nor on four more, 2026-11-25);
+a palette docked, anchored or auto-hidden; a profile known to be untouched, for the status bar's
 shipped set.
 
 ## 2. AutoCAD 2027, zone by zone
@@ -68,8 +69,21 @@ Connected, Help ▾, Support Assistant); minimise, maximise, close.
 
 - A Quick Access button is **24×22** with a 16 px icon, on a 24 px pitch; Undo and Redo are split
   buttons, the button 24 and its arrow 13 (36 in all).
-- **Undo's arrow lists the steps**, newest first, one per row of 21 (23 pitch), named as U names
-  them (`Layerclose`, `Blockspalette`, `Properties`), with a caption below (`Undo 1 command`).
+- **Undo's arrow lists the steps**, newest first, one per row of 21 (23 pitch) in a popup 150
+  wide, the list at most 600 high (26 rows) and then a scroll bar of 17, the first row
+  highlighted, a caption of 28 below (`Undo 1 command`; acadres 4853 and 4855, `Undo %d
+  commands`). **A row names its step's command in the profile's language, as said, its first
+  letter capital and the rest small, without the dash** (`Line` for `L` and `_LINE`, `Layer` for
+  `-LAYER`, `Ltscale`, `Id`; es `Linea`, `Circulo`, `Capa`), a group UNDO BEgin and End made
+  `Group of commands` (4860, es `Grupo de comandos`), joined ZOOMs one `Zoom`, a mark `- Mark -`
+  (4861) as written (2026-11-25, `research/ui/2026-11-25`). **Redo's** lists what the undos took
+  back, the next to redo first, under `Redo 1 command` (4854, 4856; es `Repetir %d comando`).
+- **The buttons and the rows are macros** (console history, 2026-11-25): Undo runs `_.undo` and
+  answers `1`, the running command cancelled first (`*Cancel*`), so the line reads
+  `…<1>: 1 LINE`; its list's n-th row answers `n` (`3 LTSCALE ID COLOR Regenerating model.`);
+  Redo runs `_.mredo` and answers `1`, its n-th row `n` (`2 COLOR ID`).
+- **The title** of a saved drawing is its name alone, no path, and a change leaves it as it is
+  (`Planta baja.dwg`, no asterisk); the window's caption reads `… - [Planta baja.dwg]`.
 - **Customize ▾** (rows of 21): the caption `Customize Quick Access Toolbar`, then a list —
   New, Open, Save, Save As..., Plot, Undo, Redo, Batch Plot, Layer, Match Properties, Plot
   Preview, Properties, Render, Sheet Set Manager, Workspace — a separator, More Commands..., Show
@@ -87,7 +101,10 @@ Connected, Help ▾, Support Assistant); minimise, maximise, close.
   Print, Drawing Utilities | Close.
 - **The right column** shows Recent Documents until an entry's page takes it: a heading, `By
   Ordered List ▾` and a view list, then one row of 26 per file with its type's icon and a menu
-  button at its end.
+  button at its end. With Open Documents chosen: its icon and heading (`Open Documents`), the
+  view list, and one row of 26 per drawing open, its icon and name, in the order opened
+  (desktop, 2026-11-25, es; the menu 459 wide in Spanish, 424 in English: the right column takes
+  the longer words).
 - **An entry's page** has a heading (Drawing Utilities': `Tools to maintain the drawing`) and its
   items, each a 32 px icon, the name in bold and one to three lines of description, on a pitch
   of some 61; it scrolls by an arrow at its foot.
@@ -361,7 +378,7 @@ in `docs/coverage/`, never a dead button.
 | F4 | Quick Access: New, Open, Save, Save As, Plot, Undo ▾, Redo ▾, Customize ▾, Share | New, Open, Save, Save As, Undo, Redo, as 28 px buttons | Revoked: 24×22 on a 24 pitch. Plot and Share: Missing. Customize ▾: Missing (5) | 1, 2 |
 | F5 | Undo and Redo are split buttons with the list of steps | plain buttons | Revoked | 2 |
 | F6 | The application menu: its two columns, recent documents, Options and Exit | New, Open, Save, Save As, Drawing Units, the language, Send Feedback | Revoked: the two columns of §2.2, an entry's page with icon, name and description, and what exists here in its place — New ▸ Drawing, Open ▸ Drawing, Save, Save As ▸ Drawing and Other Formats, Drawing Utilities ▸ Units. Import, Export, Publish, Print, Close, the search, the documents' lists, Options and Exit: Missing. The language stays in it — Platform: AutoCAD is installed in one language and a page chooses its own | 2 |
-| F7 | InfoCenter: search, sign-in, App Store, Help ▾ | nothing | Missing, but Help ▾: Revoked, with Help (F1's page) and Send Feedback, which leaves the application menu (acad.cuix `ID_SendFeedback` is the Help menu's; its place in the Help ▾ list is **unverified**, §7) | 2 |
+| F7 | InfoCenter: search, sign-in, App Store, Help ▾ | nothing | Missing, but Help ▾: Revoked, with Help (F1's page) and Send Feedback, which leaves the application menu, in the order of acad.cuix's Help menu (`ID_MnHelp`; the list itself never opened, so **unverified**, §7) | 2 (block 1, done) |
 | F8 | File tabs: Start and one tab per drawing | none | Missing: one drawing at a time, no Start tab | — |
 
 ### The ribbon
@@ -573,8 +590,18 @@ Each closes with skill `finish-feature`. Each starts with the captures it still 
 ### Phase 2 — the title bar
 
 The application menu in AutoCAD's layout and order, Undo's and Redo's lists, Help ▾ with Send
-Feedback, the drawing's name in the title and in the tab's. Starts with the Help list, which
-this phase could not open (§7).
+Feedback, the drawing's name in the title and in the tab's. Its desktop pass is done (§7). Four
+blocks, a commit each, each leaving the editor whole:
+
+1. **Help ▾** (done 2026-11-25): the split button at the bar's end, F1's question from its
+   button, its list Help and Send Feedback, which leaves the application menu (F7).
+2. **The application menu** in §2.2's layout: the left column of entries with their pages, the
+   right column with Open Documents where AutoCAD shows Recent Documents, Options and Exit left
+   out; only what exists here, the rest in the coverage (F6).
+3. **Undo ▾ and Redo ▾**: split buttons with the steps listed as §2.2 names them, which needs the
+   history's steps in `EngineState`; the button and each row run `_.undo n` / `_.mredo n` (F5).
+4. **The drawing's name** in the title and in the tab's, from what the file port knows, else
+   `Drawing1.dwg` (F3).
 
 ### Phase 3 — the palettes and the style dialogs
 
@@ -608,7 +635,7 @@ start of its phase and with the owner's word first (`gui.md`):
 | Phase | To capture |
 | ----- | ---------- |
 | 1 | done 2026-11-24 (§2.3): a button pressed, the extended tooltip, a small button's list, a slide-out open, the Insert gallery; block 4's toggles, gallery, Attribute Display and Object Color's list without the mouse (`research/ui/2026-11-24/block4`) |
-| 2 | the title bar's Help list, which neither UI Automation nor a click opened; the title with a saved drawing's name and path; the Open Documents list of the application menu |
+| 2 | done 2026-11-25 (§2.2): Undo's and Redo's lists and what they run, the title of a saved drawing, the Open Documents list (`research/ui/2026-11-25`); the Help list opened on none of four clicks either, so its rows stay **unverified** |
 | 3 | a palette docked, anchored and auto-hidden, and its properties menu; New Text Style; each tab of Modify Dimension Style |
 | 4 | the status bar of a profile nobody has touched; the navigation bar under the pointer; the command line's history open |
 

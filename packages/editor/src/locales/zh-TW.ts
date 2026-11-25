@@ -28,6 +28,7 @@ export const zhTW: EditorLocale = {
       "units": "圖面單位…",
       "language": "語言",
       "feedback": "傳送回饋",
+      "help": "說明",
       "saving": "正在儲存…",
       "saved": "已儲存",
       "savedHint": "已儲存至此裝置",

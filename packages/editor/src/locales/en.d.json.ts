@@ -24,6 +24,7 @@ declare const source: {
     "units": string
     "language": string
     "feedback": string
+    "help": string
     "saving": string
     "saved": string
     "savedHint": string

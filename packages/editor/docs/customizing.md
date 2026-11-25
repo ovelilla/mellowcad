@@ -27,8 +27,8 @@ In a right-to-left page the start side is the right.
 ## Replacing a piece
 
 A replacement is handed what the piece is: `PieceProps`, the engine and its state, and for the
-title bar and the status bar what you gave `CadEditor` for them (`mark`, `languages` and
-`feedback`, the status bar's `storageKey`).
+title bar and the status bar what you gave `CadEditor` for them (`mark`, `languages`, `feedback`
+and whether there is `help`, the status bar's `storageKey`).
 
 ```tsx
 "use client"
@@ -108,12 +108,13 @@ objects and for unsaved text. The engine waits on their answer, so the editor al
 
 - **`mark`** is your product's glyph on the application menu's button, which shows a menu icon
   without it. The button is 48 × 32, as AutoCAD's: a mark of 20 px fits it.
-- **`feedback`** is the page Send Feedback opens, in a new tab: the last entry of the application
-  menu, named as AutoCAD names it in each language. Point it at wherever your users report a
-  problem (a form, an issue tracker, a `mailto:` link), with what you know already filled in.
-  Without `feedback`, the menu has no Send Feedback.
-- **`help`** is where F1 opens help, in a new tab, as AutoCAD does: `index` with no command running,
-  and `command` while one runs, with `{command}` replaced by its global name in lower case.
+- **`feedback`** is the page Send Feedback opens, in a new tab: an entry of the Help ▾ list at the
+  title bar's end, named as AutoCAD names it in each language. Point it at wherever your users
+  report a problem (a form, an issue tracker, a `mailto:` link), with what you know already filled
+  in. Without `feedback`, the list has no Send Feedback; without it and `help`, there is no Help ▾.
+- **`help`** is where F1 and the title bar's Help button open help, in a new tab, as AutoCAD does:
+  `index` with no command running, and `command` while one runs, with `{command}` replaced by its
+  global name in lower case.
 
   ```tsx
   <CadEditor help={{ index: "/help", command: "/help/commands#{command}" }} />

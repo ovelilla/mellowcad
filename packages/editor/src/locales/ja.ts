@@ -28,6 +28,7 @@ export const ja: EditorLocale = {
       "units": "単位管理…",
       "language": "言語",
       "feedback": "フィードバックを送信",
+      "help": "ヘルプ",
       "saving": "保存中…",
       "saved": "保存済み",
       "savedHint": "このデバイスに保存済み",

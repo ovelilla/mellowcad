@@ -40,6 +40,7 @@ marks a choice between competing terms that a native review should settle first 
 | Ribbon's Home tab | Home; Draw, Modify, Annotation, Layers, Block, Properties, Utilities, Clipboard; Pin | الرئيسية; رسم, تعديل, التعليقات التوضيحية, الطبقات, الكتلة, الخصائص, أدوات مساعدة, الحافظة; تثبيت † — ours, all of it (†): AutoCAD has no Arabic; the buttons' words from the engine's Arabic tool names |
 | Ribbon's other tabs | Insert, Annotate, 3D Tools, View; Retain Attribute Display, Display All Attributes, Hide All Attributes; More Colors...; Select Color...; 2D Wireframe, Hidden, Conceptual | إدراج, تعليقات توضيحية, أدوات ثلاثية الأبعاد, عرض; الاحتفاظ بعرض السمات, عرض كل السمات, إخفاء كل السمات; مزيد من الألوان...; تحديد اللون...; إطار سلكي ثنائي الأبعاد, مخفي, مفاهيمي † | † ours, as Home's: Arabic has no AutoCAD | no |
 | Ribbon's minimize button | Show Full Ribbon; Minimize to Tabs, Minimize to Panel Titles, Minimize to Panel Buttons, Cycle through All | إظهار الشريط كاملاً; تصغير إلى علامات التبويب, تصغير إلى عناوين اللوحات, تصغير إلى أزرار اللوحات, التنقل بين الكل † | † ours, as the rest of the ribbon's: Arabic has no AutoCAD | no |
+| Title bar's Help ▾ | Help; Send Feedback | تعليمات; إرسال ملاحظات † | † ours: Arabic has no AutoCAD; تعليمات is the word Arabic Windows gives its Help menu | no |
 | Object snaps | Endpoint, Midpoint, Center, Intersection, Apparent intersection | نقطة النهاية، نقطة المنتصف، المركز، التقاطع، تقاطع ظاهري (C) |
 |  | Perpendicular, Tangent, Insertion, Extension, Parallel, Quadrant, Nearest | عمودي، مماس، الإدراج، الامتداد، موازٍ، الربع، الأقرب (C) |
 |  | None | لا شيء (M) |
@@ -92,7 +93,6 @@ marks a choice between competing terms that a native review should settle first 
 |  | List | سرد (L) |
 |  | Region/Mass Properties | خصائص المنطقة/الكتلة (M) † — الكتلة is mass here and also a block |
 | Edit | Undo, Redo, Erase | تراجع، إعادة، حذف (M) |
-| Application menu | Send Feedback | إرسال ملاحظات (L) † — the phrase Arabic software gives Send feedback; إرسال تعليقات competes |
 | Clipboard | Copy, Cut, Paste, Copy with base point | نسخ، قص، لصق، نسخ بنقطة أساس (M) |
 | Selection | Window, Crossing | نافذة، تقاطع (L) † |
 | Properties | General, Geometry | عام، الهندسة (M) |

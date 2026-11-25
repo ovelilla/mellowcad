@@ -145,11 +145,14 @@ export interface CadEditorProps {
   layoutStorage?: LayoutStorage
   /** The canvas cell's name for a page that transitions into it. */
   sheet?: SheetTransition
-  /** Where F1 opens help; without it F1 is the browser's. */
+  /**
+   * Where F1 and the title bar's Help open help; without it F1 is the
+   * browser's and the title bar has no Help button.
+   */
   help?: HelpLinks
   /**
-   * The page the application menu's Send Feedback opens, in a tab of its own:
-   * where the host's users report a problem. Without it, no Send Feedback.
+   * The page the title bar's Help list's Send Feedback opens, in a tab of its
+   * own: where the host's users report a problem. Without it, no Send Feedback.
    */
   feedback?: string
   /** The pieces the host replaces or turns off; the rest are the editor's. */
@@ -305,6 +308,7 @@ function Workspace({
               ready={ready ? { engine, state } : null}
               mark={mark}
               languages={languages}
+              help={help !== undefined}
               feedback={feedback}
               statusBarKey={layoutStorage.statusBar}
               sheet={sheet}
@@ -381,6 +385,7 @@ export function EditorZones({
   ready,
   mark,
   languages,
+  help,
   feedback,
   statusBarKey,
   sheet,
@@ -391,6 +396,7 @@ export function EditorZones({
   ready: PieceProps | null
   mark?: ReactNode
   languages?: readonly LanguageLink[]
+  help?: boolean
   feedback?: string
   statusBarKey?: string
   sheet?: SheetTransition
@@ -426,6 +432,7 @@ export function EditorZones({
               {...ready}
               mark={mark}
               languages={languages}
+              help={help}
               feedback={feedback}
             />
           )}

@@ -213,6 +213,14 @@ export class CadEngine {
     this.runtime.redo()
   }
 
+  /**
+   * Asks the host for Help, as F1 does: the running command's page, or
+   * Help's start with none (`CadEngineOptions.onHelp`; without it, nothing).
+   */
+  help(): void {
+    this.runtime.help()
+  }
+
   zoomIn(): void {
     this.runtime.zoomIn()
   }
