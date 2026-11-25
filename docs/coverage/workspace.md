@@ -420,17 +420,33 @@ top, 22 high, a grip and the name in capitals, Close only under the pointer; its
 Close and ✓ Allow Docking; a double-click floats it where it was, a drag floats it under the
 pointer; several at one side stack in the column. The properties menu (adui26res.dll's
 PaletteOptionsMenu, each culture's words; Arabic ours): Move and Size (the pointer or the arrow
-keys, ended by a click or Enter, Escape putting it back), Close, ✓ Allow Docking. Where each
-shows, its size, the columns' widths and which were open are kept on this device, the columns
-laid out by the `<head>` script, so the drawing's first box is its final one — WHY inside the
+keys, ended by a click or Enter, Escape putting it back), Close, ✓ Allow Docking | Anchor Left <,
+Anchor Right > (in physical sides: right to left, Anchor Left still anchors at the left; greyed
+while docking is not allowed, and the side it is anchored at) | ✓ Auto-hide, Move and Size greyed
+while anchored. Anchored: a strip of 25 px at the drawing area's edge, outside that side's column,
+the drawing narrower by it, each anchored palette a tab with its name written upwards; the pointer
+on a tab, or the keyboard's focus, slides the palette out over the drawing, the drawing area's
+whole height and its own width, its vertical title bar against the strip, its tab darker; it goes
+back as soon as the pointer leaves both (or the focus, or Escape, the keys then on the drawing).
+Anchored is docked with auto-hide: the title bar's Auto-hide button (adui26res.dll 14), lit while
+on, docks an anchored palette and anchors a docked one (on the docked title bar, under the pointer
+with Close); its title bar dragged floats it. Floating with auto-hide it shrinks to its title bar,
+its whole height, on the edge it had; the pointer over it (or the focus in it, or its menu open)
+opens it whole, and it folds as soon as the pointer leaves. Where each shows, its size, auto-hide,
+the columns' widths and which were open are kept on this device, the columns and strips laid out
+by the `<head>` script, so the drawing's first box is its final one — WHY inside the
 drawing area: a palette cannot leave the page (plan §4, P3), and floating over the ribbon or the
 command line would hide what AutoCAD keeps clear; WHY the title bar stays at the inline end: the
 side AutoCAD's takes by where it floats is **unverified** (plan §2.8: moved by its window it
-stayed on the right)
+stayed on the right). **Unverified** (plan §2.8 captured one palette anchored at the right): how
+several tabs share a strip (here evenly, never shorter than a name), the order of a strip and a
+column at one side (here the strip outermost), what the properties menu greys while anchored,
+whether a drag to a side anchors a floating auto-hidden palette (here it docks, as the preview
+shows) and keeps a palette dragged out of its strip auto-hidden (here it does); AutoCAD's strip's
+grip at its top is not drawn
 
-**Missing:** Anchor Left and Anchor Right (the strip of 25 px), Auto-hide, Transparency, Rename
-Palette Set, resizing a docked palette's height against the one under it, Tool Palettes, Quick
-Properties (QPMODE −1: off by default)
+**Missing:** Transparency, Rename Palette Set, resizing a docked palette's height against the one
+under it, Tool Palettes, Quick Properties (QPMODE −1: off by default)
 
 ### Right button · SHORTCUTMENU
 

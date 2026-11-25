@@ -106,12 +106,13 @@ export interface HelpLinks {
 export { paletteLayoutScript }
 /**
  * The `<head>` script for the layout kept under `key` (`layoutStorage.palette`):
- * each docked column's width, from the palettes open when the page was left,
- * in plain ES5, as it runs before any bundle. The root does not exist yet, so a
- * MutationObserver waits for the parser to insert it: its callback is a
- * microtask, which runs before the frame that could paint the root. Without
- * the script (storage blocked, a script error) no column is laid out until
- * the editor's scripts run.
+ * each docked column's and anchored strip's width, from the palettes open when
+ * the page was left, in plain ES5, as it runs before any bundle: the widths
+ * the workspace lays out once the editor has mounted, the same. The root
+ * does not exist yet, so a MutationObserver waits for the parser to insert it:
+ * its callback is a microtask, which runs before the frame that could paint
+ * the root. Without the script (storage blocked, a script error) no column is
+ * laid out until the editor's scripts run.
  */
 export declare const paletteLayoutScript: (key: string) => string;
 
@@ -427,8 +428,9 @@ What the exports' types name. A host cannot import these names, but their shape 
  */
 export interface LayoutStorage {
     /**
-     * Where each palette shows (floating or docked), its size, the columns'
-     * widths and which palettes were open, also read by the `<head>` script.
+     * Where each palette shows (floating, docked or anchored), its size, the
+     * columns' widths and which palettes were open, also read by the `<head>`
+     * script.
      */
     readonly palette?: string;
     /** The status bar's Customization. */

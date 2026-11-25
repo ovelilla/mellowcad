@@ -3,7 +3,7 @@ title: "Paleta Vlastnosti v AutoCADu: příkaz VLASTNOSTI (PROPERTIES)"
 metaTitle: "Paleta Vlastnosti v AutoCADu (PROPERTIES)"
 description: "Jak funguje paleta Vlastnosti v AutoCADu (VLASTNOSTI, Ctrl+1): Obecné a Geometrie, *RŮZNÉ*, jeden typ objektů, aktuální nastavení. Vyzkoušejte online."
 figure: "Kružnice vybraná ve výzvě Příkaz, s viditelnými uzly, pak VLASTNOSTI: paleta se otevře vedle výkresu na řádcích kružnice."
-sourceHash: "396d741b1284"
+sourceHash: "70ec1a592dc6"
 ---
 
 Příkaz VLASTNOSTI (PROPERTIES) otevře paletu Vlastnosti. Stejně jako v AutoCADu je to paleta, ne dialog: zůstává otevřená, zatímco vybíráte a kreslíte, plovoucí nad výkresem nebo ukotvená u okraje, dokud ji nezavře <Command id="PROPERTIESCLOSE" />. Ctrl+1 ji ukáže a skryje a když příkaz zadáte s apostrofem, `'VLASTNOSTI`, otevře se uvnitř běžícího příkazu. Na začátku je zavřená, stejně jako v AutoCADu, a při další návštěvě se znovu otevře, pokud jste ji nechali otevřenou.
@@ -12,7 +12,7 @@ S vybranými objekty ukazuje jejich vlastnosti a jednu změníte tak, že v jej�
 
 ## Missing
 
-Měřítko typu čáry ve skupině Obecné pro několik objektů najednou nebo, když není nic vybráno, pro nové objekty (CELTSCALE); Styl vykreslování, Průhlednost, Hypertextový odkaz a Materiál. Řádky geometrie několika objektů jednoho typu najednou, obsah textu a hodnoty atributů zde upravovat nelze. Rychlý výběr, přepínač PICKADD a automatické skrývání.
+Měřítko typu čáry ve skupině Obecné pro několik objektů najednou nebo, když není nic vybráno, pro nové objekty (CELTSCALE); Styl vykreslování, Průhlednost, Hypertextový odkaz a Materiál. Řádky geometrie několika objektů jednoho typu najednou, obsah textu a hodnoty atributů zde upravovat nelze. Rychlý výběr a přepínač PICKADD.
 
 ## Questions
 

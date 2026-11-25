@@ -3,7 +3,7 @@ title: "Propriedades no AutoCAD: comando PROPRIEDADES (PROPERTIES)"
 metaTitle: "Paleta Propriedades no AutoCAD: PROPRIEDADES"
 description: "Como funciona a paleta PROPRIEDADES (PROPERTIES, Ctrl+1) do AutoCAD em português: linhas Geral e Geometria, *VARIA*, um tipo de objeto por vez. Experimente."
 figure: "Um círculo selecionado no prompt Comando, com os seus grips, e depois PROPRIEDADES: a paleta abre ao lado do desenho com as linhas do círculo."
-sourceHash: "396d741b1284"
+sourceHash: "70ec1a592dc6"
 ---
 
 O PROPERTIES, PROPRIEDADES no AutoCAD em português, abre a paleta Propriedades. Como no AutoCAD, é uma paleta, não uma caixa de diálogo: ela fica aberta enquanto você seleciona e desenha, flutuando sobre o desenho ou encaixada num lado, até que o <Command id="PROPERTIESCLOSE" /> a feche. Ctrl+1 a mostra e a esconde, e digitado com um apóstrofo na frente, `'PROPRIEDADES`, ele a abre dentro de um comando em andamento. Fechada no início, como no AutoCAD, ela volta a abrir na próxima visita se você a deixou aberta.
@@ -12,7 +12,7 @@ Com objetos selecionados, ela mostra as propriedades deles, e você muda uma dig
 
 ## Missing
 
-A escala do tipo de linha de Geral para vários objetos de uma vez ou, sem nenhum selecionado, para os novos (CELTSCALE); o estilo de plotagem, a transparência e o hiperlink de Geral, e o material. As linhas de geometria de vários objetos do mesmo tipo de uma vez, o conteúdo de um texto e os valores dos atributos não são editados aqui. Seleção rápida, a alternância de PICKADD e ocultar automaticamente.
+A escala do tipo de linha de Geral para vários objetos de uma vez ou, sem nenhum selecionado, para os novos (CELTSCALE); o estilo de plotagem, a transparência e o hiperlink de Geral, e o material. As linhas de geometria de vários objetos do mesmo tipo de uma vez, o conteúdo de um texto e os valores dos atributos não são editados aqui. Seleção rápida e a alternância de PICKADD.
 
 ## Questions
 

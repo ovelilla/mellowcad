@@ -3,7 +3,7 @@ title: "AutoCAD PROPERTIES（特性）命令"
 metaTitle: "CAD 特性选项板（PROPERTIES）：Ctrl+1 与快捷键 PR"
 description: "CAD 特性栏怎么调出来：AutoCAD PROPERTIES（特性，快捷键 PR，键盘快捷键 Ctrl+1）的“常规”和“几何图形”行、*多种*、按对象类型过滤、当前设置。在浏览器中免费在线试用。"
 figure: "在命令提示下选择一个圆，显示其夹点，然后执行 PROPERTIES：选项板在图形旁打开，显示圆的各行。"
-sourceHash: "396d741b1284"
+sourceHash: "70ec1a592dc6"
 ---
 
 PROPERTIES（特性）命令打开“特性”选项板。与 AutoCAD 一样，它是选项板而不是对话框：在选择和绘图时一直打开（浮动在图形上方或固定在一侧），直到 <Command id="PROPERTIESCLOSE" /> 将其关闭。Ctrl+1 显示和隐藏它；以撇号输入 `'PROPERTIES` 时，它在正在执行的命令中打开。与 AutoCAD 一样，它一开始是关闭的；如果离开时保持打开，下次访问时会再次打开。
@@ -12,7 +12,7 @@ PROPERTIES（特性）命令打开“特性”选项板。与 AutoCAD 一样，�
 
 ## Missing
 
-“常规”中多个对象同时选择时的线型比例，以及未选择对象时用于新对象的线型比例（CELTSCALE）；打印样式、透明度和超链接，以及材质。同时选择多个同类对象时的几何图形行、文字的内容和属性值，都不能在这里编辑。快速选择、PICKADD 切换按钮和自动隐藏。
+“常规”中多个对象同时选择时的线型比例，以及未选择对象时用于新对象的线型比例（CELTSCALE）；打印样式、透明度和超链接，以及材质。同时选择多个同类对象时的几何图形行、文字的内容和属性值，都不能在这里编辑。快速选择和 PICKADD 切换按钮。
 
 ## Questions
 

@@ -26,7 +26,8 @@ import { cn } from "./utils"
 import { EDITOR_ROOT_ATTRIBUTE, EDITOR_THEME_STYLE } from "./editor-root"
 import {
   applyPaletteColumns,
-  dockColumnWidth,
+  NO_COLUMNS,
+  paletteColumns,
   openAtLoad,
   PALETTE_LAYOUT,
   paletteLayoutAtLoad,
@@ -39,6 +40,7 @@ import {
   PaletteDock,
   PaletteDragOverlay,
   PaletteHostProvider,
+  PaletteStrip,
   paletteShows,
   type PaletteProps,
 } from "./palettes"
@@ -80,8 +82,9 @@ import type { PieceProps } from "./piece"
  */
 export interface LayoutStorage {
   /**
-   * Where each palette shows (floating or docked), its size, the columns'
-   * widths and which palettes were open, also read by the `<head>` script.
+   * Where each palette shows (floating, docked or anchored), its size, the
+   * columns' widths and which palettes were open, also read by the `<head>`
+   * script.
    */
   readonly palette?: string
   /** The status bar's Customization. */
@@ -267,9 +270,9 @@ function Workspace({
     if (root.current) applyRibbonLayout(root.current, ribbonLayout)
   }, [ribbonLayout])
 
-  // Each column's width, before the frame is painted: what the head script
-  // wrote, again, for a root rendered on the client, then the engine's open
-  // palettes and Clean Screen with the dragged widths.
+  // Each column's and strip's width, before the frame is painted: what the
+  // head script wrote, again, for a root rendered on the client, then the
+  // engine's open palettes and Clean Screen with the dragged widths.
   const palettes = state?.palettes
   const cleanScreen = state?.cleanScreen
   useLayoutEffect(() => {
@@ -278,10 +281,10 @@ function Workspace({
       palettes && cleanScreen
         ? (id: PaletteId) => paletteShows({ palettes, cleanScreen }, id)
         : (id: PaletteId) => paletteLayout.palettes[id].open
-    applyPaletteColumns(root.current, {
-      start: palettesOff ? 0 : dockColumnWidth(paletteLayout, "start", shows),
-      end: palettesOff ? 0 : dockColumnWidth(paletteLayout, "end", shows),
-    })
+    applyPaletteColumns(
+      root.current,
+      palettesOff ? NO_COLUMNS : paletteColumns(paletteLayout, shows)
+    )
   }, [paletteLayout, palettes, cleanScreen, palettesOff])
 
   // Which palettes are open is the engine's; it is kept with the layout, so
@@ -327,8 +330,9 @@ function Workspace({
   //
   // The editor is the page's main content: a landmark, so every control on
   // it sits in one (axe's region rule). The head script writes the docked
-  // columns' widths on the root before React hydrates (palette-layout.ts):
-  // the DOM wins.
+  // columns' and the anchored strips' widths on the root before React
+  // hydrates (palette-layout.ts): the DOM wins. A strip lies outside its
+  // side's column, at the frame's edge.
   return (
     <div
       ref={root}
@@ -357,7 +361,7 @@ function Workspace({
               },
             }}
           >
-            <main className="grid h-svh w-full grid-cols-[var(--palette-dock-start,0px)_minmax(0,1fr)_var(--palette-dock-end,0px)] grid-rows-[auto_auto_minmax(0,1fr)_auto_auto] overflow-hidden bg-card [grid-template-areas:'title_title_title'_'ribbon_ribbon_ribbon'_'dockStart_canvas_dockEnd'_'command_command_command'_'status_status_status']">
+            <main className="grid h-svh w-full grid-cols-[var(--palette-strip-start,0px)_var(--palette-dock-start,0px)_minmax(0,1fr)_var(--palette-dock-end,0px)_var(--palette-strip-end,0px)] grid-rows-[auto_auto_minmax(0,1fr)_auto_auto] overflow-hidden bg-card [grid-template-areas:'title_title_title_title_title'_'ribbon_ribbon_ribbon_ribbon_ribbon'_'stripStart_dockStart_canvas_dockEnd_stripEnd'_'command_command_command_command_command'_'status_status_status_status_status']">
               <EditorZones
                 components={components}
                 ready={ready ? { engine, state } : null}
@@ -485,6 +489,22 @@ export function EditorZones({
       </div>
     )
 
+  // The strip of the palettes anchored at that side, outside its column. WHY
+  // not clipped, and no stacking context of its own: the palette a tab
+  // slides out lies over the drawing and the floating palettes, while the
+  // strip stays under the command line's lists.
+  const strip = (side: "start" | "end") =>
+    Content && (
+      <div
+        className={cn(
+          "relative flex min-h-0 min-w-0",
+          side === "start" ? "[grid-area:stripStart]" : "[grid-area:stripEnd]"
+        )}
+      >
+        {ready && <PaletteStrip side={side} />}
+      </div>
+    )
+
   return (
     <PaletteHostProvider ready={ready} Content={Content ?? null}>
       {/* AutoCAD's title bar: the application button flush at the start,
@@ -526,6 +546,7 @@ export function EditorZones({
       option chips, the rollover tooltip — is positioned in this cell, which is exactly the
       canvas's box; the menus at the cursor convert to the viewport
       (`engine.clientFromScreen`). */}
+      {strip("start")}
       {dock("start")}
 
       <div
@@ -564,6 +585,7 @@ export function EditorZones({
       </div>
 
       {dock("end")}
+      {strip("end")}
 
       {/* One prompt line. Above the canvas in the stacking order: its
       history and suggestions open upwards over the drawing. */}

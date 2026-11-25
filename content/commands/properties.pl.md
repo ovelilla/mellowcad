@@ -3,7 +3,7 @@ title: "Paleta Właściwości w AutoCADzie: polecenie WŁAŚCIWOŚCI (PROPERTIES
 metaTitle: "Paleta Właściwości w AutoCADzie (PROPERTIES)"
 description: "Jak działa paleta Właściwości w AutoCADzie (WŁAŚCIWOŚCI, Ctrl+1): Ogólne i Geometria, *RÓŻNE*, jeden typ obiektów, bieżące ustawienia. Wypróbuj online."
 figure: "Okrąg wybrany, gdy żadne polecenie nie działa, z widocznymi uchwytami, potem WŁAŚCIWOŚCI: paleta otwiera się obok rysunku na wierszach okręgu."
-sourceHash: "396d741b1284"
+sourceHash: "70ec1a592dc6"
 ---
 
 Polecenie WŁAŚCIWOŚCI (PROPERTIES) otwiera paletę Właściwości. Jak w AutoCADzie jest to paleta, a nie okno dialogowe: zostaje otwarta, gdy wybierasz i rysujesz, swobodnie nad rysunkiem albo zadokowana z boku, dopóki nie zamknie jej polecenie <Command id="PROPERTIESCLOSE" />. Ctrl+1 ją pokazuje i ukrywa, a polecenie wpisane z apostrofem, `'WŁAŚCIWOŚCI`, otwiera ją w trakcie innego polecenia. Na początku jest zamknięta, jak w AutoCADzie, i otwiera się znowu przy następnej wizycie, jeśli zostawisz ją otwartą.
@@ -12,7 +12,7 @@ Gdy obiekty są wybrane, pokazuje ich właściwości, a każdą zmieniasz, wpisu
 
 ## Missing
 
-Skala rodzaju linii w grupie Ogólne dla kilku obiektów naraz albo, gdy nic nie jest wybrane, dla nowych obiektów (CELTSCALE); Styl wydruku, Przezroczystość i Hiperłącze oraz Materiał. Wierszy geometrii kilku obiektów jednego typu naraz, treści tekstu ani wartości atrybutów nie można tu edytować. Szybki wybór, przełącznik PICKADD i automatyczne ukrywanie.
+Skala rodzaju linii w grupie Ogólne dla kilku obiektów naraz albo, gdy nic nie jest wybrane, dla nowych obiektów (CELTSCALE); Styl wydruku, Przezroczystość i Hiperłącze oraz Materiał. Wierszy geometrii kilku obiektów jednego typu naraz, treści tekstu ani wartości atrybutów nie można tu edytować. Szybki wybór i przełącznik PICKADD.
 
 ## Questions
 

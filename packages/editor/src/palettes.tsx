@@ -2,7 +2,9 @@
 
 import {
   createContext,
+  Fragment,
   useContext,
+  useEffect,
   useLayoutEffect,
   useRef,
   useState,
@@ -13,6 +15,8 @@ import {
 import { ContextMenu } from "@base-ui/react/context-menu"
 import { Menu } from "@base-ui/react/menu"
 import {
+  ArrowLeftFromLine,
+  ArrowRightToLine,
   Check,
   GripVertical,
   Layers,
@@ -32,9 +36,11 @@ import { usePortalContainer } from "./ui/portal-container"
 import { TooltipProvider } from "./ui/tooltip"
 import { IconAction } from "./toolbar-primitives"
 import { drawingFocus } from "./drawing-focus"
-import { MENU_AT_CURSOR, MENU_ITEM } from "./snap-override-menu"
+import { MENU_AT_CURSOR, MENU_ITEM, SEPARATOR } from "./snap-override-menu"
 import { useEditorText } from "./editor-text"
 import {
+  anchoredAt,
+  anchorSide,
   clampDockWidth,
   dockedAt,
   DOCK_WIDTH,
@@ -314,11 +320,12 @@ export function FloatingPalettes(): ReactElement | null {
 
 /**
  * A floating palette: its content, and its vertical title bar on its inline
- * end — Close, the properties menu, the name written upwards in capitals and
- * its icon at the foot, as AutoCAD's (plan §2.8; whether the bar changes
- * side with where it floats is unverified there, and it stayed on the right
- * when the window was moved, so here it stays at the inline end). Its edges
- * size it.
+ * end (plan §2.8; whether the bar changes side with where it floats is
+ * unverified there, and it stayed on the right when the window was moved, so
+ * here it stays at the inline end). Its edges size it. With auto-hide it
+ * shrinks to its title bar, its whole height, on the edge it had, and opens
+ * whole while the pointer is over it (or the keys are in it, or its menu is
+ * open), folding as soon as it leaves.
  */
 function FloatingPalette({
   id,
@@ -329,14 +336,18 @@ function FloatingPalette({
   host: PaletteHost
   area: Area
 }): ReactElement {
-  const t = useEditorText("Palette")
   const { layout } = usePaletteLayout()
   const name = usePaletteName()(id)
+  const [element, setElement] = useState<HTMLElement | null>(null)
+  const hover = usePointerOver(element)
+  const focus = useFocusHeld<true>(element)
+  const focused = focus.held !== null
+  const [menuOpen, setMenuOpen] = useState(false)
   const { drag, Content, engine, state } = host
   const place = layout.palettes[id]
   const gesture = drag && drag.id === id ? drag : null
   const shown = fit(gesture ? gesture.to : boxOf(place), area)
-  const Icon = ICONS[id]
+  const folded = place.autoHide && !hover && !focused && !menuOpen && !gesture
 
   const begin = (
     event: React.PointerEvent,
@@ -364,47 +375,213 @@ function FloatingPalette({
 
   return (
     <section
+      ref={setElement}
       aria-label={name}
       onPointerDownCapture={() => host.raise(id)}
+      onFocus={(event) => focus.hold(true, event)}
       style={{
         insetInlineEnd: shown.end,
         top: shown.top,
-        width: shown.width,
+        width: folded ? undefined : shown.width,
         height: shown.height,
       }}
-      className="pointer-events-auto absolute isolate flex rounded-sm border bg-card shadow-lg"
+      className={cn(
+        "pointer-events-auto absolute isolate flex rounded-sm border bg-card shadow-lg",
+        // Opened over the others while the pointer is in it.
+        place.autoHide && !folded && "z-10"
+      )}
     >
-      <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
+      <div
+        className={cn(
+          "flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden",
+          folded && "hidden"
+        )}
+      >
         <Content engine={engine} state={state} palette={id} />
       </div>
-      <div
-        onPointerDown={(event) => {
-          if (!ownPress(event)) return
-          begin(event, "move", NO_EDGES)
+      <VerticalTitleBar
+        id={id}
+        host={host}
+        box={shown}
+        at="end"
+        border={!folded}
+        press={{
+          onPointerDown: (event) => begin(event, "move", NO_EDGES),
         }}
-        className="flex w-5.5 shrink-0 cursor-move touch-none flex-col items-center gap-0.5 border-s bg-muted/40 py-0.5 select-none"
-      >
-        <IconAction
-          icon={X}
-          label={t("close")}
-          size="palette"
-          side="inline-start"
-          onClick={() => {
-            engine.closePalette(id)
-            engine.focusSurface()
-          }}
-        />
-        <PaletteMenu id={id} host={host} box={shown} />
-        <span className="min-h-0 flex-1 overflow-hidden pt-1 whitespace-nowrap text-muted-foreground uppercase [writing-mode:sideways-lr]">
-          {name}
-        </span>
-        <Icon
-          aria-hidden
-          className="mb-1 size-4 shrink-0 text-muted-foreground"
-        />
-      </div>
-      <SizeEdges onBegin={(event, edges) => begin(event, "size", edges)} />
+        onMenuOpenChange={setMenuOpen}
+      />
+      {!folded && (
+        <SizeEdges onBegin={(event, edges) => begin(event, "size", edges)} />
+      )}
     </section>
+  )
+}
+
+/**
+ * Whether the pointer is over `element`, by the DOM's own enter and leave.
+ * WHY not React's: React counts a portalled popup — a menu, its backdrop, a
+ * drop-down's list — as inside what rendered it, so a palette whose menu or
+ * list closed over the drawing never heard the pointer leave, and stayed
+ * open; and it never heard it come back from the menu.
+ */
+function usePointerOver(element: HTMLElement | null): boolean {
+  const [over, setOver] = useState(false)
+  useEffect(() => {
+    if (!element) return
+    const enter = () => setOver(true)
+    const leave = () => setOver(false)
+    element.addEventListener("pointerenter", enter)
+    element.addEventListener("pointerleave", leave)
+    return () => {
+      element.removeEventListener("pointerenter", enter)
+      element.removeEventListener("pointerleave", leave)
+    }
+  }, [element])
+  return over
+}
+
+/**
+ * Which part of a palette holds the focus, its portalled popups included:
+ * * taken by React's `onFocus` (`hold`), let go by a focus that lands anywhere
+ * else in the editor. WHY not `onBlur`: a menu or a drop-down's list that
+ * closes is removed with the focus in it before the drawing is focused, and
+ * no blur reports the focus leaving, so the palette stayed open.
+ */
+function useFocusHeld<T>(element: HTMLElement | null): {
+  held: T | null
+  hold: (value: T, event: React.FocusEvent) => void
+  release: () => void
+} {
+  const [held, setHeld] = useState<T | null>(null)
+  const claimed = useRef<Event | null>(null)
+  const holding = held !== null
+  useEffect(() => {
+    const view = element?.ownerDocument.defaultView
+    if (!view || !holding) return
+    // WHY on the window: a focus bubbles there after React's own listener
+    // (on its root, at most the document) has run this part's `onFocus`.
+    // A listener before it, its update rendered in the microtask between
+    // the two, unmounted the slid-out palette under a focus moving into it.
+    const focusIn = (event: Event) => {
+      if (event !== claimed.current) setHeld(null)
+    }
+    view.addEventListener("focusin", focusIn)
+    return () => view.removeEventListener("focusin", focusIn)
+  }, [element, holding])
+  return {
+    held,
+    hold: (value, event) => {
+      claimed.current = event.nativeEvent
+      setHeld(value)
+    },
+    release: () => setHeld(null),
+  }
+}
+
+/**
+ * A palette's vertical title bar, at the side `at` of its content: Close,
+ * Auto-hide, the properties menu, the name written upwards in capitals and
+ * its icon at the foot, as AutoCAD's (plan §2.8; floating-left.png,
+ * anchored-right-open.png). A press on the bar itself, not on a button, is
+ * handed to `press`, which moves or floats the palette.
+ */
+function VerticalTitleBar({
+  id,
+  host,
+  box,
+  at,
+  border = true,
+  press,
+  onMenuOpenChange,
+}: {
+  id: PaletteId
+  host: PaletteHost
+  box: Box
+  at: "start" | "end"
+  border?: boolean
+  press: React.DOMAttributes<HTMLElement>
+  onMenuOpenChange: (open: boolean) => void
+}): ReactElement {
+  const t = useEditorText("Palette")
+  const name = usePaletteName()(id)
+  const { engine } = host
+  const Icon = ICONS[id]
+  // The popups open over the drawing, away from the bar's side.
+  const away = at === "end" ? "inline-start" : "inline-end"
+  return (
+    <div
+      {...press}
+      onPointerDown={(event) => {
+        if (event.button !== 0 || !ownPress(event)) return
+        press.onPointerDown?.(event)
+      }}
+      className={cn(
+        "flex w-5.5 shrink-0 cursor-move touch-none flex-col items-center gap-0.5 bg-muted/40 py-0.5 select-none",
+        border && (at === "end" ? "border-s" : "border-e")
+      )}
+    >
+      <IconAction
+        icon={X}
+        label={t("close")}
+        size="palette"
+        side={away}
+        onClick={() => {
+          engine.closePalette(id)
+          engine.focusSurface()
+        }}
+      />
+      <AutoHideButton id={id} host={host} side={away} />
+      <PaletteMenu
+        id={id}
+        host={host}
+        box={box}
+        side={away}
+        onOpenChange={onMenuOpenChange}
+      />
+      <span className="min-h-0 flex-1 overflow-hidden pt-1 whitespace-nowrap text-muted-foreground uppercase [writing-mode:sideways-lr]">
+        {name}
+      </span>
+      <Icon
+        aria-hidden
+        className="mb-1 size-4 shrink-0 text-muted-foreground"
+      />
+    </div>
+  )
+}
+
+/**
+ * The title bar's Auto-hide (adui26res.dll's string 14), lit while it is on:
+ * floating, the palette folds to its title bar; docked, it anchors to its
+ * side's strip; anchored, it docks again (plan §2.8).
+ */
+function AutoHideButton({
+  id,
+  host,
+  side,
+  className,
+}: {
+  id: PaletteId
+  host: PaletteHost
+  side: "inline-start" | "inline-end" | "bottom"
+  className?: string
+}): ReactElement {
+  const t = useEditorText("Palette")
+  const { layout, setLayout } = usePaletteLayout()
+  const on = layout.palettes[id].autoHide
+  return (
+    <IconAction
+      icon={on ? ArrowLeftFromLine : ArrowRightToLine}
+      label={t("autoHideButton")}
+      size="palette"
+      side={side}
+      active={on}
+      mirrored
+      className={className}
+      onClick={() => {
+        setLayout(placed(layout, id, { autoHide: !on }), true)
+        host.engine.focusSurface()
+      }}
+    />
   )
 }
 
@@ -468,26 +645,41 @@ function SizeEdges({
   )
 }
 
+/** The sign each Anchor entry ends with, a physical side's in any direction. */
+const ANCHOR_SIGN = { left: "<", right: ">" } as const
+
 /**
  * The title bar's properties menu (adui26res.dll's PaletteOptionsMenu, plan
- * §2.8): Move, Size, Close, Allow Docking, as AutoCAD orders them. Anchor
- * Left, Anchor Right, Auto-hide and Transparency are not built yet
+ * §2.8), as AutoCAD orders it: Move, Size, Close, Allow Docking | Anchor
+ * Left, Anchor Right | Auto-hide. Transparency is not built
  * (docs/coverage/workspace.md). WHY no tooltip: its trigger opens a popup.
  */
 function PaletteMenu({
   id,
   host,
   box,
+  side,
+  onOpenChange,
 }: {
   id: PaletteId
   host: PaletteHost
   box: Box
+  side: "inline-start" | "inline-end"
+  onOpenChange: (open: boolean) => void
 }): ReactElement {
   const t = useEditorText("Palette")
   const portal = usePortalContainer()
   const { layout, setLayout } = usePaletteLayout()
+  const rtl = useDirection() === "rtl"
   const { engine } = host
   const place = layout.palettes[id]
+  // Anchored, its place is the strip's: neither moved nor sized from here.
+  const anchored =
+    place.docked !== null && place.autoHide
+      ? (place.docked === "start") !== rtl
+        ? "left"
+        : "right"
+      : null
   const from = (kind: "move" | "size") =>
     kind === "move" ? { ...boxOf(place), ...at(box) } : box
   // WHY once the menu has closed: a modal menu leaves the page inert until
@@ -502,6 +694,7 @@ function PaletteMenu({
 
   return (
     <Menu.Root
+      onOpenChange={onOpenChange}
       onOpenChangeComplete={(open) => {
         if (open || !chosen) return
         setChosen(null)
@@ -528,19 +721,21 @@ function PaletteMenu({
         }
       />
       <Menu.Portal container={portal}>
-        <Menu.Positioner side="inline-start" align="start" className="z-50">
+        <Menu.Positioner side={side} align="start" className="z-50">
           <Menu.Popup
             finalFocus={drawingFocus(engine)}
             className={MENU_AT_CURSOR}
           >
             <Menu.Item
               className={MENU_ITEM}
+              disabled={anchored !== null}
               onClick={() => gesture("move", NO_EDGES)}
             >
               {t("move")}
             </Menu.Item>
             <Menu.Item
               className={MENU_ITEM}
+              disabled={anchored !== null}
               onClick={() =>
                 gesture("size", { ...NO_EDGES, start: true, bottom: true })
               }
@@ -555,12 +750,55 @@ function PaletteMenu({
             </Menu.Item>
             <AllowDockingItem
               checked={place.allowDocking}
+              // Docking disallowed, an anchored palette floats where it was.
               onChange={(allowDocking) =>
-                setLayout(placed(layout, id, { allowDocking }), true)
+                setLayout(
+                  placed(layout, id, {
+                    allowDocking,
+                    ...(!allowDocking && { docked: null }),
+                  }),
+                  true
+                )
               }
               Item={Menu.CheckboxItem}
               Indicator={Menu.CheckboxItemIndicator}
             />
+            <Menu.Separator className={SEPARATOR} />
+            {(["left", "right"] as const).map((physical) => (
+              <Menu.Item
+                key={physical}
+                className={MENU_ITEM}
+                disabled={!place.allowDocking || anchored === physical}
+                onClick={() =>
+                  setLayout(
+                    placed(layout, id, {
+                      docked: anchorSide(physical, rtl),
+                      autoHide: true,
+                    }),
+                    true
+                  )
+                }
+              >
+                {physical === "left" ? t("anchorLeft") : t("anchorRight")}
+                <span dir="ltr" aria-hidden className="absolute inset-e-3">
+                  {ANCHOR_SIGN[physical]}
+                </span>
+              </Menu.Item>
+            ))}
+            <Menu.Separator className={SEPARATOR} />
+            <Menu.CheckboxItem
+              checked={place.autoHide}
+              closeOnClick
+              onCheckedChange={(autoHide) =>
+                setLayout(placed(layout, id, { autoHide }), true)
+              }
+              className={MENU_ITEM}
+            >
+              {t("autoHide")}
+              <Menu.CheckboxItemIndicator className="absolute inset-e-2">
+                <Check className="size-4 text-primary" />
+              </Menu.CheckboxItemIndicator>
+            </Menu.CheckboxItem>
           </Menu.Popup>
         </Menu.Positioner>
       </Menu.Portal>
@@ -656,41 +894,9 @@ function DockedPalette({
   const portal = usePortalContainer()
   const name = usePaletteName()(id)
   const { layout, setLayout } = usePaletteLayout()
-  const rtl = useDirection() === "rtl"
-  const press = useRef<{ x: number; y: number } | null>(null)
+  const floatOut = useFloatOut(id, host)
   const { engine, state, Content } = host
   const place = layout.palettes[id]
-
-  // Floated under the pointer, which keeps it by its title bar, and dragged
-  // on: a release at a side docks it again.
-  const undock = (event: React.PointerEvent) => {
-    const rect = host.areaElement?.getBoundingClientRect()
-    if (!rect) return
-    const x = event.clientX
-    const y = event.clientY
-    const grab = { end: TITLE_GRAB, top: TITLE_GRAB }
-    const box = {
-      ...boxOf(place),
-      end: Math.max(0, (rtl ? x - rect.left : rect.right - x) - grab.end),
-      top: Math.max(0, y - rect.top - grab.top),
-    }
-    setLayout(placed(layout, id, { docked: null, ...at(box) }))
-    host.raise(id)
-    host.setDrag({
-      kind: "move",
-      id,
-      pointerId: event.pointerId,
-      start: { x, y },
-      from: box,
-      to: box,
-      edges: NO_EDGES,
-      grab,
-      before: layout,
-      target: null,
-      ctrl: event.ctrlKey,
-      pointer: { x, y },
-    })
-  }
 
   return (
     <section
@@ -701,33 +907,7 @@ function DockedPalette({
         <ContextMenu.Trigger
           render={
             <div
-              onPointerDown={(event) => {
-                if (event.button !== 0) return
-                if (!ownPress(event)) return
-                event.currentTarget.setPointerCapture(event.pointerId)
-                press.current = { x: event.clientX, y: event.clientY }
-              }}
-              onPointerMove={(event) => {
-                const start = press.current
-                if (
-                  !start ||
-                  Math.hypot(event.clientX - start.x, event.clientY - start.y) <
-                    UNDOCK_TRAVEL
-                )
-                  return
-                press.current = null
-                event.currentTarget.releasePointerCapture(event.pointerId)
-                undock(event)
-              }}
-              onPointerUp={() => {
-                press.current = null
-              }}
-              onPointerCancel={() => {
-                press.current = null
-              }}
-              onLostPointerCapture={() => {
-                press.current = null
-              }}
+              {...floatOut}
               onDoubleClick={(event) => {
                 if (!ownPress(event)) return
                 setLayout(placed(layout, id, { docked: null }), true)
@@ -741,6 +921,12 @@ function DockedPalette({
           <span className="min-w-0 flex-1 truncate text-muted-foreground uppercase">
             {name}
           </span>
+          <AutoHideButton
+            id={id}
+            host={host}
+            side="bottom"
+            className="opacity-0 group-hover:opacity-100 focus-visible:opacity-100"
+          />
           <IconAction
             icon={X}
             label={t("close")}
@@ -787,6 +973,255 @@ function DockedPalette({
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
         <Content engine={engine} state={state} palette={id} />
       </div>
+    </section>
+  )
+}
+
+/**
+ * A docked or anchored palette's title bar pressed and dragged past a few
+ * pixels: it floats under the pointer, which keeps it by its title bar, and
+ * is dragged on, so a release at a side docks it again. An anchored one
+ * keeps its auto-hide, as a floating palette has it.
+ */
+function useFloatOut(
+  id: PaletteId,
+  host: PaletteHost
+): Pick<
+  React.HTMLAttributes<HTMLElement>,
+  | "onPointerDown"
+  | "onPointerMove"
+  | "onPointerUp"
+  | "onPointerCancel"
+  | "onLostPointerCapture"
+> {
+  const { layout, setLayout } = usePaletteLayout()
+  const rtl = useDirection() === "rtl"
+  const press = useRef<{ x: number; y: number } | null>(null)
+  const place = layout.palettes[id]
+  const release = () => {
+    press.current = null
+  }
+
+  const undock = (event: React.PointerEvent) => {
+    const rect = host.areaElement?.getBoundingClientRect()
+    if (!rect) return
+    const x = event.clientX
+    const y = event.clientY
+    const grab = { end: TITLE_GRAB, top: TITLE_GRAB }
+    const box = {
+      ...boxOf(place),
+      end: Math.max(0, (rtl ? x - rect.left : rect.right - x) - grab.end),
+      top: Math.max(0, y - rect.top - grab.top),
+    }
+    setLayout(placed(layout, id, { docked: null, ...at(box) }))
+    host.raise(id)
+    host.setDrag({
+      kind: "move",
+      id,
+      pointerId: event.pointerId,
+      start: { x, y },
+      from: box,
+      to: box,
+      edges: NO_EDGES,
+      grab,
+      before: layout,
+      target: null,
+      ctrl: event.ctrlKey,
+      pointer: { x, y },
+    })
+  }
+
+  return {
+    onPointerDown: (event) => {
+      if (event.button !== 0 || !ownPress(event)) return
+      event.currentTarget.setPointerCapture(event.pointerId)
+      press.current = { x: event.clientX, y: event.clientY }
+    },
+    onPointerMove: (event) => {
+      const start = press.current
+      if (
+        !start ||
+        Math.hypot(event.clientX - start.x, event.clientY - start.y) <
+          UNDOCK_TRAVEL
+      )
+        return
+      press.current = null
+      event.currentTarget.releasePointerCapture(event.pointerId)
+      undock(event)
+    },
+    onPointerUp: release,
+    onPointerCancel: release,
+    onLostPointerCapture: release,
+  }
+}
+
+/**
+ * The strip of the palettes anchored at one side (plan §2.8,
+ * anchored-right-strip.png): 25 px down the drawing's edge, each palette a
+ * tab with its name written upwards. The pointer on a tab, or the keys,
+ * slide its palette out over the drawing; it goes back as soon as the
+ * pointer leaves both (or the keys, or Escape). How several tabs share the
+ * strip is unverified (one was captured, filling it): here evenly.
+ */
+export function PaletteStrip({
+  side,
+}: {
+  side: DockSide
+}): ReactElement | null {
+  const host = useContext(PaletteHostContext)
+  const { layout } = usePaletteLayout()
+  if (!host) return null
+  const anchored = anchoredAt(layout, side, (id) =>
+    paletteShows(host.state, id)
+  )
+  // WHY its tabs a component of their own: the strip going with its last
+  // palette drops what the pointer and the keys held, which no leave or
+  // blur reports once the strip is gone, so the next palette anchored there
+  // does not slide out unasked.
+  return anchored.length === 0 ? null : (
+    <StripTabs side={side} host={host} anchored={anchored} />
+  )
+}
+
+function StripTabs({
+  side,
+  host,
+  anchored,
+}: {
+  side: DockSide
+  host: PaletteHost
+  anchored: readonly PaletteId[]
+}): ReactElement {
+  const name = usePaletteName()
+  // The pointer over the strip or the palette slid out of it, by the DOM:
+  // `hovered` says which tab it came in by.
+  const [element, setElement] = useState<HTMLElement | null>(null)
+  const over = usePointerOver(element)
+  const [hovered, setHovered] = useState<PaletteId | null>(null)
+  const focus = useFocusHeld<PaletteId>(element)
+  const focused = focus.held
+  const [menu, setMenu] = useState<PaletteId | null>(null)
+  // A palette that left the strip under the pointer or with the keys in it
+  // is let go, or it would slide out unasked when anchored here again.
+  if (hovered !== null && !anchored.includes(hovered)) setHovered(null)
+  if (focused !== null && !anchored.includes(focused)) focus.release()
+  if (menu !== null && !anchored.includes(menu)) setMenu(null)
+  const out =
+    [menu, over ? hovered : null, focused].find(
+      (id): id is PaletteId => id !== null && anchored.includes(id)
+    ) ?? null
+
+  return (
+    <TooltipProvider>
+      <div
+        ref={setElement}
+        onKeyDown={(event) => {
+          // Its own keys, not a portalled menu's, which reach it through
+          // React too; nor a field's, whose Escape puts its value back.
+          const target = event.target as Element
+          if (event.key !== "Escape" || out === null) return
+          if (!event.currentTarget.contains(target)) return
+          if (event.defaultPrevented || target.closest("input, textarea"))
+            return
+          event.stopPropagation()
+          setHovered(null)
+          focus.release()
+          host.engine.focusSurface()
+        }}
+        className={cn(
+          "flex min-h-0 min-w-0 flex-1 flex-col bg-muted/40",
+          side === "start" ? "border-e" : "border-s"
+        )}
+      >
+        {anchored.map((id) => (
+          <Fragment key={id}>
+            <button
+              type="button"
+              aria-expanded={out === id}
+              onPointerEnter={() => setHovered(id)}
+              onPointerMove={() => setHovered(id)}
+              onFocus={(event) => focus.hold(id, event)}
+              onClick={(event) => {
+                // The pointer opened it; a click hands the keys back.
+                if (event.detail > 0) host.engine.focusSurface()
+              }}
+              className={cn(
+                // Never shorter than its name: the strip shares out what is left.
+                "flex flex-1 items-center justify-center py-1 whitespace-nowrap text-muted-foreground outline-none [writing-mode:sideways-lr] hover:text-foreground focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-inset",
+                out === id && "bg-card text-foreground"
+              )}
+            >
+              {name(id)}
+            </button>
+            {out === id && (
+              <SlidPalette
+                id={id}
+                host={host}
+                side={side}
+                // The keys in it hold it out, as the pointer does.
+                onFocus={(event) => focus.hold(id, event)}
+                onMenuOpenChange={(open) => setMenu(open ? id : null)}
+              />
+            )}
+          </Fragment>
+        ))}
+      </div>
+    </TooltipProvider>
+  )
+}
+
+/**
+ * An anchored palette slid out of its strip over the drawing: the drawing
+ * area's whole height and its own width, its vertical title bar against the
+ * strip (plan §2.8, anchored-right-open.png). Its title bar dragged floats
+ * it.
+ */
+function SlidPalette({
+  id,
+  host,
+  side,
+  onFocus,
+  onMenuOpenChange,
+}: {
+  id: PaletteId
+  host: PaletteHost
+  side: DockSide
+  onFocus: (event: React.FocusEvent) => void
+  onMenuOpenChange: (open: boolean) => void
+}): ReactElement {
+  const { layout } = usePaletteLayout()
+  const name = usePaletteName()(id)
+  const floatOut = useFloatOut(id, host)
+  const { engine, state, Content } = host
+  const place = layout.palettes[id]
+  const width = Math.min(place.width, host.area?.width ?? place.width)
+  const bar = (
+    <VerticalTitleBar
+      id={id}
+      host={host}
+      box={{ end: 0, top: 0, width, height: place.height }}
+      at={side === "start" ? "start" : "end"}
+      press={floatOut}
+      onMenuOpenChange={onMenuOpenChange}
+    />
+  )
+  return (
+    <section
+      aria-label={name}
+      onFocus={onFocus}
+      style={{ width }}
+      className={cn(
+        // Over the floating palettes; its strip stays under the command
+        // line's lists, which open upwards over the drawing.
+        "absolute inset-y-0 z-30 flex border bg-card shadow-lg",
+        side === "start" ? "inset-s-full" : "inset-e-full"
+      )}
+    >
+      {side === "start" && bar}
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
+        <Content engine={engine} state={state} palette={id} />
+      </div>
+      {side === "end" && bar}
     </section>
   )
 }
@@ -923,9 +1358,12 @@ export function PaletteDragOverlay(): ReactElement | null {
     if (commit) {
       if (drag.kind === "move" && drag.target) {
         const side = drag.target
+        // Docked, as the preview showed, even if it floated auto-hidden:
+        // anchoring is the menu's (whether AutoCAD's drag anchors an
+        // auto-hidden palette is unverified, docs/coverage/workspace.md).
         setLayout(
           {
-            ...placed(layout, drag.id, { docked: side }),
+            ...placed(layout, drag.id, { docked: side, autoHide: false }),
             dock: {
               ...layout.dock,
               [side]: layout.dock[side] ?? clampDockWidth(place.width),

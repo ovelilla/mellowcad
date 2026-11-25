@@ -577,6 +577,10 @@ declare const source: {
     "move": string
     "size": string
     "allowDocking": string
+    "anchorLeft": string
+    "anchorRight": string
+    "autoHide": string
+    "autoHideButton": string
     "ctrlPrevents": string
     "ctrlAllows": string
     "releasePrevents": string

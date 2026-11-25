@@ -646,9 +646,12 @@ dialogs need nothing of the new frame:
      Allow Docking), docked at either side by a drag (Ctrl turning Allow Docking round, adui26res
      17–20), a column per side with its splitter, its place, size and mode kept on the device and
      the columns read in the `<head>`; the single panel went in the same commit (P1, P3).
-   - **2b**: anchored to the 25 px strip at either side (Anchor Left, Anchor Right) and
-     auto-hidden, floating and docked (the title bar's button, the menu's Auto-hide), the strips
-     read in the `<head>` with the columns (P2).
+   - **2b** (done 2026-11-25): anchored to the 25 px strip at either side (Anchor Left, Anchor
+     Right, physical sides) and auto-hidden, floating and docked (the title bar's button, the
+     menu's Auto-hide; anchored is docked with `autoHide`), the strips outside the columns, read
+     in the `<head>` with them (P2). What one capture could not settle (several tabs, a strip
+     beside a column, the menu while anchored) is **unverified** in the Palettes entry of
+     `docs/coverage/workspace.md`.
 3. **What each palette holds**: the Layer Properties Manager's grid and toolbar (P4), Blocks' tabs
    at its edge and Options (P5), Properties' categories that fold (P6).
 4. **The ribbon's style combos**: Text Style and Dimension Style in Home › Annotation's slide-out

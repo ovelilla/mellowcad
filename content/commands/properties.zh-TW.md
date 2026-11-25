@@ -3,7 +3,7 @@ title: "AutoCAD PROPERTIES（性質）指令"
 metaTitle: "CAD 性質選項板（PROPERTIES）與快捷鍵 Ctrl+1"
 description: "AutoCAD PROPERTIES（性質，PR，Ctrl+1）選項板用法：「一般」與「幾何圖形」各列、*各種*、一次一種物件類型、目前的設定。可在瀏覽器中免費線上試用。"
 figure: "在「指令」提示下選取一個圓，顯示其掣點，再執行 PROPERTIES：選項板在圖面旁開啟，顯示該圓的各列。"
-sourceHash: "396d741b1284"
+sourceHash: "70ec1a592dc6"
 ---
 
 PROPERTIES（性質）指令開啟「性質」選項板。如同 AutoCAD，它是選項板而不是對話方塊：在選取和繪圖時都會保持開啟，浮動在圖面上方或固定在一側，直到以 <Command id="PROPERTIESCLOSE" /> 關閉。按 Ctrl+1 可顯示或隱藏它；加上單引號輸入 `'PROPERTIES`，可在執行中的指令內開啟。與 AutoCAD 一樣，一開始是關閉的；若離開時保持開啟，下次造訪時會再次開啟。
@@ -12,7 +12,7 @@ PROPERTIES（性質）指令開啟「性質」選項板。如同 AutoCAD，它�
 
 ## Missing
 
-「一般」中多個物件同時的線型比例，或未選取物件時新物件的線型比例（CELTSCALE）；出圖型式、透明度、超連結和材料。同一類型多個物件同時的幾何圖形各列、文字的內容和屬性值，無法在此編輯。快速選取、PICKADD 切換、自動隱藏。
+「一般」中多個物件同時的線型比例，或未選取物件時新物件的線型比例（CELTSCALE）；出圖型式、透明度、超連結和材料。同一類型多個物件同時的幾何圖形各列、文字的內容和屬性值，無法在此編輯。快速選取、PICKADD 切換。
 
 ## Questions
 

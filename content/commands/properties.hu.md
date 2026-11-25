@@ -3,7 +3,7 @@ title: "Tulajdonságok paletta az AutoCAD-ben: TULAJDONSÁGOK (PROPERTIES) paran
 metaTitle: "Tulajdonságok paletta AutoCAD-ben (PROPERTIES)"
 description: "Az AutoCAD Tulajdonságok palettája (TULAJDONSÁGOK, Ctrl+1): Általános és Geometria sorok, *ELTÉRŐ*, egyszerre egy objektumtípus, aktuális beállítások."
 figure: "Egy kör kiválasztva a Parancs promptnál, a fogói látszanak, majd TULAJDONSÁGOK: a paletta a rajz mellett nyílik meg a kör soraival."
-sourceHash: "396d741b1284"
+sourceHash: "70ec1a592dc6"
 ---
 
 A TULAJDONSÁGOK (PROPERTIES) parancs megnyitja a Tulajdonságok palettát. Ahogy az AutoCAD-ben, ez paletta, nem párbeszédpanel: nyitva marad, miközben kijelöl és rajzol, a rajz fölött lebegve vagy az egyik oldalra rögzítve, amíg a <Command id="PROPERTIESCLOSE" /> be nem zárja. A Ctrl+1 megjeleníti és elrejti, aposztróffal beírva, `'TULAJDONSÁGOK`, pedig egy futó parancson belül is megnyílik. Kezdetben zárva van, ahogy az AutoCAD-ben, és a következő látogatáskor újra megnyílik, ha nyitva hagyta.
@@ -12,7 +12,7 @@ Ha vannak kiválasztott objektumok, a tulajdonságaikat mutatja, és egy tulajdo
 
 ## Missing
 
-Az Általános csoport vonaltípus-léptéke egyszerre több objektumra, illetve kiválasztás nélkül az új objektumokra (CELTSCALE); a nyomtatási stílus, az átlátszóság, a hiperhivatkozás és az anyag. Egyszerre több azonos típusú objektum geometriai sorai, a szöveg tartalma és az attribútumértékek itt nem szerkeszthetők. A Gyors kijelölés, a PICKADD kapcsoló és az automatikus elrejtés.
+Az Általános csoport vonaltípus-léptéke egyszerre több objektumra, illetve kiválasztás nélkül az új objektumokra (CELTSCALE); a nyomtatási stílus, az átlátszóság, a hiperhivatkozás és az anyag. Egyszerre több azonos típusú objektum geometriai sorai, a szöveg tartalma és az attribútumértékek itt nem szerkeszthetők. A Gyors kijelölés és a PICKADD kapcsoló.
 
 ## Questions
 

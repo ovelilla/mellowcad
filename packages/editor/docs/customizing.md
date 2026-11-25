@@ -30,7 +30,7 @@ A replacement is handed what the piece is: `PieceProps`, the engine and its stat
 title bar and the status bar what you gave `CadEditor` for them (`mark`, `languages`, `feedback`
 and whether there is `help`, the status bar's `storageKey`). A `PaletteContent` is also handed
 `palette`, the palette it fills: `"properties"`, `"layers"` or `"blocks"`; each palette's frame,
-floating or docked at a side, stays the editor's.
+floating, docked or anchored at a side, stays the editor's.
 
 ```tsx
 "use client"

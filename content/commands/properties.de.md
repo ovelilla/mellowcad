@@ -2,7 +2,7 @@
 title: "Befehl EIGENSCHAFTEN (PROPERTIES) in AutoCAD"
 description: "Wie EIGENSCHAFTEN (PROPERTIES, Strg+1) in AutoCAD die Eigenschaftenpalette öffnet: Farbe, Layer, Geometrie, mehrere Objekte. Zum Testen im Browser."
 figure: "Ein Kreis, an der Eingabeaufforderung gewählt, seine Griffe sichtbar, dann EIGENSCHAFTEN: Die Palette öffnet sich neben der Zeichnung mit den Zeilen des Kreises."
-sourceHash: "396d741b1284"
+sourceHash: "70ec1a592dc6"
 ---
 
 EIGENSCHAFTEN (PROPERTIES) öffnet die Eigenschaftenpalette. Wie in AutoCAD ist sie eine Palette, kein Dialog: Sie bleibt geöffnet, während Sie wählen und zeichnen, schwebend über der Zeichnung oder an einer Seite fixiert, bis <Command id="PROPERTIESCLOSE" /> sie schließt. Strg+1 zeigt und verbirgt sie, und mit einem Apostroph eingegeben, `'EIGENSCHAFTEN`, öffnet sie sich innerhalb eines laufenden Befehls. Anfangs ist sie geschlossen, wie in AutoCAD, und beim nächsten Besuch öffnet sie sich wieder, wenn Sie sie offen gelassen haben.
@@ -11,7 +11,7 @@ Sind Objekte gewählt, zeigt sie deren Eigenschaften, und Sie ändern eine, inde
 
 ## Missing
 
-Der Linientypfaktor von Allgemein für mehrere Objekte auf einmal oder, wenn nichts gewählt ist, für neue Objekte (CELTSCALE); der Plotstil, die Transparenz und der Hyperlink sowie Material. Die Geometriezeilen mehrerer Objekte eines Typs auf einmal, der Inhalt eines Textes und Attributwerte lassen sich hier nicht bearbeiten. Schnellauswahl, der Schalter PICKADD und Automatisch ausblenden.
+Der Linientypfaktor von Allgemein für mehrere Objekte auf einmal oder, wenn nichts gewählt ist, für neue Objekte (CELTSCALE); der Plotstil, die Transparenz und der Hyperlink sowie Material. Die Geometriezeilen mehrerer Objekte eines Typs auf einmal, der Inhalt eines Textes und Attributwerte lassen sich hier nicht bearbeiten. Schnellauswahl und der Schalter PICKADD.
 
 ## Questions
 

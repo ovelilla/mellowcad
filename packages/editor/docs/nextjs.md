@@ -155,9 +155,9 @@ The editor sets `lang` and `dir` on its own root; the page's `<html>` is the lay
 
 ## The palettes at the first paint
 
-With `layoutStorage.palette`, the editor remembers where each palette shows, floating or docked
+With `layoutStorage.palette`, the editor remembers where each palette shows, floating, docked or anchored
 at a side, its size and which were open, and with `layoutStorage.ribbon` the ribbon's minimize
-state. The server cannot know any of them, and a docked palette takes its column's width off the
+state. The server cannot know any of them, and a docked or anchored palette takes its column's or strip's width off the
 drawing, so a script in the page's `<head>` for each lays it out from `localStorage` as the page
 is parsed, before anything is painted:
 

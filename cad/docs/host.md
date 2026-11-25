@@ -184,7 +184,7 @@ opens what it opens in AutoCAD:
 - `state.palettes` says which palettes are open (`properties`, `layers`, `blocks`, each apart,
   as AutoCAD's are); `showPalette`, `closePalette` and `togglePalette` open and close one.
   `state.cleanScreen.palettes` are those opened while Clean Screen is on: they show, the others
-  stay hidden until it is off. Where each shows, floating or docked, is the host's to lay out;
+  stay hidden until it is off. Where each shows, floating, docked or anchored, is the host's to lay out;
   the `palettes` option opens the ones it remembers at the start.
 - `state.styleDialog` is the style dialog STYLE or DIMSTYLE shows while it runs (`text`,
   `dimension`), each change made in it a step of that command; `setStyleDialog(null)` closes it

@@ -252,7 +252,7 @@ the ribbon, the bottom row from phase 4. **28 px**, icons 16, for the rest one p
 Each bar's AutoCAD order is in its component's header comment; touch and phones are out of scope.
 
 - **The workspace is a grid of named areas** (`CadEditor`), AutoCAD's frame (plan §2.1): `title`,
-  `ribbon`, `dockStart` · `canvas` · `dockEnd`, `command`, `status`. The ribbon zone goes while
+  `ribbon`, `stripStart` · `dockStart` · `canvas` · `dockEnd` · `stripEnd`, `command`, `status`. The ribbon zone goes while
   `state.ribbon.open` is false. A control goes into a zone, never absolutely over the drawing; the canvas
   takes what is left, so ZOOM Extents frames only what is visible.
 - **A piece a host may replace is a slot** of `CadEditorComponents` (`components`; `null` turns it
@@ -262,22 +262,20 @@ Each bar's AutoCAD order is in its component's header comment; touch and phones 
   size and border stay the editor's. A menu or dialog the engine opens and waits on is never a
   slot. `packages/editor/src/cad-editor.test.ts` renders the slots against a stand-in engine.
 - **Every zone has its size in CSS before the engine mounts** (the bars' `h-9`, the ribbon's
-  `h-31`, the palette columns' `--palette-dock-start`, `-end`), never from its content: the canvas's first box is its final one, which the landing's view transition
-  grows into and the first view is centred in. A zone that resizes with the work makes the drawing
-  jump. A size this device remembers is decided by the `<head>` script on the editor's root
-  as it is parsed (the columns, `data-ribbon`) and handed to the engine at build (`CadCanvas`'s
-  `palettes`), never after mount. Clean Screen is never on at the first paint (AutoCAD does not save it).
+  `h-31`, the palettes' `--palette-dock-*` and `--palette-strip-*`), never from its content: the
+  canvas's first box is its final one, which the landing's view transition grows into and the
+  first view is centred in. A size this device remembers is decided by the `<head>` script on the
+  editor's root as it is parsed (the palettes', `data-ribbon`) and handed to the engine at build
+  (`CadCanvas`'s `palettes`), never after mount. Clean Screen is never on at the first paint.
 - **The canvas cell** alone carries the host's `sheet` (`SHEET_TRANSITION`) and holds what is
   placed in the canvas's pixels (the dynamic input, at `state.dynamicInput.screen`). A popup
   anchored there is portalled and placed in the viewport, so its virtual anchor converts with
   `engine.clientFromScreen`; the raw state point lands off by the zones before the canvas.
 - **On the drawing only what AutoCAD puts there**: the viewport controls, the ViewCube with the
   navigation bar, the dynamic input, the rollover tooltip, the menus at the cursor, the floating
-  palettes. A new control finds its zone. What
-  sits there takes the pointer only where it is drawn: the ViewCube's column and SVG box are
-  `pointer-events-none` and only its buttons, zones, compass and triangles set
-  `pointer-events-auto` — ZOOM Extents frames up to 3 px from the edge, so a grip can land under
-  the cube's box and must stay pickable.
+  and the slid-out palettes. A new control finds its zone. What sits there takes the pointer only
+  where it is drawn (the ViewCube's box `pointer-events-none`, its parts `-auto`): ZOOM Extents
+  frames up to 3 px from the edge, so a grip under the cube's box must stay pickable.
 - **After acting in a palette or bar, focus returns to the drawing** (`engine.focusSurface()`) — a
   tab, a strip icon, a toggle, a pick in a drop-down — so the next key types a command. Arrow keys
   on tabs keep focus there (`event.detail > 0` tells a click).
@@ -310,8 +308,9 @@ Each bar's AutoCAD order is in its component's header comment; touch and phones 
 
 Each palette is a window of its own, never a popover: AutoCAD's are modeless, and
 a popover closes on the first click on the drawing. Which are open is `EngineState.palettes`,
-never `useState`, or typing `LAYER` could not open one; where each shows (floating, docked, its
-size) is the device's. A new palette is a `PaletteId` (`PALETTES`), a command that calls
+never `useState`, or typing `LAYER` could not open one; where each shows (floating, docked,
+anchored: docked with `autoHide`; its size) is the device's. Hover state lives in a
+component that unmounts with its node: no leave fires for a node gone. A new palette is a `PaletteId` (`PALETTES`), a command that calls
 `showPalette`, a branch in `PaletteContent`, its `PALETTE_SIZE` and, if View's Palettes panel has
 its toggle, a `RibbonToggle`.
 

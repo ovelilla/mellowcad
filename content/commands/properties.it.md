@@ -2,7 +2,7 @@
 title: "Comando PROPRIETA (PROPERTIES) in AutoCAD"
 description: "La tavolozza PROPRIETA (PROPERTIES, Ctrl+1) di AutoCAD in italiano: righe Generale e Geometria, *VARIE*, un tipo di oggetto alla volta. Provala online."
 figure: "Un cerchio selezionato alla richiesta Comando, con i grip visibili, poi PROPRIETA: la tavolozza si apre accanto al disegno sulle righe del cerchio."
-sourceHash: "396d741b1284"
+sourceHash: "70ec1a592dc6"
 ---
 
 PROPRIETA (PROPERTIES) apre la tavolozza Proprietà. Come in AutoCAD è una tavolozza, non una finestra di dialogo: resta aperta mentre selezioni e disegni, mobile sul disegno o ancorata a un lato, finché <Command id="PROPERTIESCLOSE" /> non la chiude. Ctrl+1 la mostra e la nasconde e, digitato con un apostrofo, `'PROPERTIES`, la apre all'interno di un comando in esecuzione. Chiusa all'inizio, come in AutoCAD, si riapre alla visita successiva se l'hai lasciata aperta.
@@ -11,7 +11,7 @@ Con degli oggetti selezionati ne mostra le proprietà e puoi cambiarne una digit
 
 ## Missing
 
-In Generale, Scala del tipo di linea per più oggetti insieme o, senza selezione, per i nuovi oggetti (CELTSCALE); Stile di stampa, Trasparenza e Collegamento ipertestuale, e Materiale. Le righe di geometria di più oggetti dello stesso tipo insieme, il contenuto di un testo e i valori degli attributi non si possono modificare qui. Selezione rapida, l'interruttore PICKADD e il nascondimento automatico.
+In Generale, Scala del tipo di linea per più oggetti insieme o, senza selezione, per i nuovi oggetti (CELTSCALE); Stile di stampa, Trasparenza e Collegamento ipertestuale, e Materiale. Le righe di geometria di più oggetti dello stesso tipo insieme, il contenuto di un testo e i valori degli attributi non si possono modificare qui. Selezione rapida e l'interruttore PICKADD.
 
 ## Questions
 

@@ -46,9 +46,11 @@ function canvasOf(props: Parameters<typeof CadEditor>[0] = {}) {
 const ZONES = [
   "title",
   "ribbon",
+  "stripStart",
   "dockStart",
   "canvas",
   "dockEnd",
+  "stripEnd",
   "command",
   "status",
 ]
@@ -114,7 +116,14 @@ describe("CadEditor's components", () => {
         components: { TitleBar: null, Ribbon: null, StatusBar: null },
       })
     )
-    expect(zones(html)).toEqual(["dockStart", "canvas", "dockEnd", "command"])
+    expect(zones(html)).toEqual([
+      "stripStart",
+      "dockStart",
+      "canvas",
+      "dockEnd",
+      "stripEnd",
+      "command",
+    ])
     expect(
       zones(renderToString(createElement(CadEditor, { components: NONE })))
     ).toEqual(["canvas"])

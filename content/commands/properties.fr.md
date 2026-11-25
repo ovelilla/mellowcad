@@ -2,7 +2,7 @@
 title: "Commande PROPRIETES (PROPERTIES) dans AutoCAD"
 description: "La palette PROPRIETES (PROPERTIES, Ctrl+1) d'AutoCAD en français : Général et Géométrie, *VARIE*, un type d'objet à la fois. Essayez-le en ligne."
 figure: "Un cercle sélectionné à l'invite Commande, ses poignées affichées, puis PROPRIETES : la palette s'ouvre à côté du dessin sur les lignes du cercle."
-sourceHash: "396d741b1284"
+sourceHash: "70ec1a592dc6"
 ---
 
 PROPRIETES (PROPERTIES) ouvre la palette Propriétés. Comme dans AutoCAD, c'est une palette, pas une boîte de dialogue : elle reste ouverte pendant que vous sélectionnez et dessinez, flottante sur le dessin ou ancrée sur un côté, jusqu'à ce que <Command id="PROPERTIESCLOSE" /> la ferme. Ctrl+1 l'affiche et la masque, et, tapée avec une apostrophe, `'PROPRIETES`, elle s'ouvre à l'intérieur d'une commande en cours. Fermée au départ, comme dans AutoCAD, elle se rouvre à votre visite suivante si vous l'avez laissée ouverte.
@@ -11,7 +11,7 @@ Avec des objets sélectionnés, elle montre leurs propriétés, et vous en chang
 
 ## Missing
 
-Dans Général, Echelle du type de ligne pour plusieurs objets à la fois ou, sans rien de sélectionné, pour les nouveaux (CELTSCALE) ; Style de tracé, Transparence et Lien hypertexte, et le matériau. Les lignes de géométrie de plusieurs objets d'un même type à la fois, le contenu d'un texte et les valeurs d'attributs ne se modifient pas ici. La Sélection rapide, le bouton PICKADD et le masquage automatique.
+Dans Général, Echelle du type de ligne pour plusieurs objets à la fois ou, sans rien de sélectionné, pour les nouveaux (CELTSCALE) ; Style de tracé, Transparence et Lien hypertexte, et le matériau. Les lignes de géométrie de plusieurs objets d'un même type à la fois, le contenu d'un texte et les valeurs d'attributs ne se modifient pas ici. La Sélection rapide et le bouton PICKADD.
 
 ## Questions
 
