@@ -10,11 +10,13 @@ export interface EditorValues {
   "TitleBar.redoCount": { count: number }
   "Viewport.view": { name: string }
   "ShortcutMenu.repeat": { command: string }
-  "Layers.setCurrentLabel": { name: string }
+  "Layers.withKey": { key: string; label: string }
+  "Layers.currentLayer": { name: string }
+  "Layers.status": { filter: string; shown: number; total: number }
+  "Layers.statusShort": { filter: string; shown: number; total: number }
   "Layers.colorLabel": { name: string }
   "Layers.linetypeLabel": { name: string }
   "Layers.lineweightLabel": { name: string }
-  "Layers.deleteLabel": { name: string }
   "Layers.renameLabel": { name: string }
   "Layers.dialog.nameInUse.instruction": { name: string }
   "TextStyle.current": { name: string }

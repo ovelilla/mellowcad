@@ -380,10 +380,20 @@
   },
   "Layers": {
     "title": "Layer",
-    "new": "Nuovo layer",
-    "setCurrentLabel": "Imposta {name} come layer corrente",
+    "newLayer": "Nuovo layer",
+    "deleteLayer": "Elimina layer",
+    "setCurrentLayer": "Imposta corrente",
+    "keys": {
+      "new": "N",
+      "delete": "E",
+      "setCurrent": "C"
+    },
+    "withKey": "{label} (Alt+{key})",
+    "currentLayer": "Layer corrente: {name}",
+    "all": "Tutti",
+    "status": "{filter}: {shown, number} layer visualizzato/i su un totale di {total, number} layer",
+    "statusShort": "{filter}: {shown, number} di {total, number} in totale",
     "current": "Layer corrente",
-    "setCurrent": "Imposta corrente",
     "colorLabel": "Colore di {name}",
     "color": "Colore del layer",
     "linetypeLabel": "Tipo di linea di {name}",
@@ -392,13 +402,9 @@
     "off": "Off",
     "unlocked": "Sbloccato",
     "locked": "Bloccato",
-    "deleteLabel": "Elimina layer {name}",
-    "delete": "Elimina layer",
     "rename": "Fare di nuovo clic sul nome del layer selezionato per rinominarlo",
     "renameLabel": "Rinomina layer {name}",
     "list": "Elenco layer",
-    "nextColumns": "Colonne successive",
-    "previousColumns": "Colonne precedenti",
     "dialog": {
       "close": "Chiudi",
       "notDeleted": {
@@ -442,8 +448,7 @@
       "lock": "Bloccato",
       "color": "Colore",
       "linetype": "Tipo di linea",
-      "lineweight": "Spessore linea",
-      "objects": "Oggetti"
+      "lineweight": "Spessore linea"
     }
   },
   "TextStyle": {

@@ -49,7 +49,7 @@ class FakeNode extends EventTarget {
     const tags = selector.includes("aria-modal")
       ? ["DIALOG"]
       : selector.includes('role="menu"')
-        ? ["MENU"]
+        ? ["MENU", ...(selector.includes('role="listbox"') ? ["LISTBOX"] : [])]
         : ["INPUT", "TEXTAREA", "SELECT"]
     return lineage(this).find((node) => tags.includes(node.tagName)) ?? null
   }
@@ -357,6 +357,20 @@ describe("CadEngine owning the document (the editor)", () => {
     expect(keyAt(page, item, "Enter").defaultPrevented).toBe(false)
     expect(keyAt(page, item, "ArrowDown").defaultPrevented).toBe(false)
     keyAt(page, item, "L")
+    expect(engine.getState().commandLine.buffer).toBe("")
+  })
+
+  // A drop-down's open list too (a layer's Linetype in the manager): its
+  // Enter repeated the U typed before, which took a new layer away.
+  it("leaves an open list its keys", () => {
+    const engine = editor()
+    const list = new FakeNode(page.document, "LISTBOX")
+    const option = new FakeNode(page.document, "DIV")
+    page.document.body.append(list.append(option))
+
+    expect(keyAt(page, option, "Enter").defaultPrevented).toBe(false)
+    expect(keyAt(page, option, "ArrowDown").defaultPrevented).toBe(false)
+    keyAt(page, option, "L")
     expect(engine.getState().commandLine.buffer).toBe("")
   })
 

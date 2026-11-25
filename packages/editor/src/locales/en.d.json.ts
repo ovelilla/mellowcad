@@ -381,10 +381,20 @@ declare const source: {
   }
   "Layers": {
     "title": string
-    "new": string
-    "setCurrentLabel": string
+    "newLayer": string
+    "deleteLayer": string
+    "setCurrentLayer": string
+    "keys": {
+      "new": string
+      "delete": string
+      "setCurrent": string
+    }
+    "withKey": string
+    "currentLayer": string
+    "all": string
+    "status": string
+    "statusShort": string
     "current": string
-    "setCurrent": string
     "colorLabel": string
     "color": string
     "linetypeLabel": string
@@ -393,13 +403,9 @@ declare const source: {
     "off": string
     "unlocked": string
     "locked": string
-    "deleteLabel": string
-    "delete": string
     "rename": string
     "renameLabel": string
     "list": string
-    "nextColumns": string
-    "previousColumns": string
     "dialog": {
       "close": string
       "notDeleted": {
@@ -444,7 +450,6 @@ declare const source: {
       "color": string
       "linetype": string
       "lineweight": string
-      "objects": string
     }
   }
   "TextStyle": {

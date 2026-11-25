@@ -425,15 +425,64 @@ export const ko: EditorLocale = {
     },
     "Layers": {
       "title": "도면층",
-      "new": "새 도면층",
-      "setCurrentLabel": [
+      "newLayer": "새 도면층",
+      "deleteLayer": "도면층 삭제",
+      "setCurrentLayer": "현재로 설정",
+      "keys": {
+        "new": "N",
+        "delete": "D",
+        "setCurrent": "C"
+      },
+      "withKey": [
+        [
+          "label"
+        ],
+        "(Alt+",
+        [
+          "key"
+        ],
+        ")"
+      ],
+      "currentLayer": [
+        "현재 도면층: ",
         [
           "name"
+        ]
+      ],
+      "all": "모두",
+      "status": [
+        [
+          "filter"
         ],
-        "을(를) 현재 도면층으로 설정"
+        ": ",
+        [
+          "shown",
+          4
+        ],
+        "개 도면층이 전체 ",
+        [
+          "total",
+          4
+        ],
+        "개 도면층 중에서 표시되었음"
+      ],
+      "statusShort": [
+        [
+          "filter"
+        ],
+        ": 총 ",
+        [
+          "total",
+          4
+        ],
+        "개 중 ",
+        [
+          "shown",
+          4
+        ],
+        "개"
       ],
       "current": "현재 도면층",
-      "setCurrent": "현재로 설정",
       "colorLabel": [
         [
           "name"
@@ -457,14 +506,6 @@ export const ko: EditorLocale = {
       "off": "끄기",
       "unlocked": "잠금해제",
       "locked": "잠금",
-      "deleteLabel": [
-        "도면층 ",
-        [
-          "name"
-        ],
-        " 삭제"
-      ],
-      "delete": "도면층 삭제",
       "rename": "선택한 도면층의 이름을 다시 클릭하면 이름을 바꿀 수 있습니다",
       "renameLabel": [
         "도면층 ",
@@ -474,8 +515,6 @@ export const ko: EditorLocale = {
         " 이름바꾸기"
       ],
       "list": "도면층 리스트",
-      "nextColumns": "다음 열",
-      "previousColumns": "이전 열",
       "dialog": {
         "close": "닫기",
         "notDeleted": {
@@ -525,8 +564,7 @@ export const ko: EditorLocale = {
         "lock": "잠금",
         "color": "색상",
         "linetype": "선종류",
-        "lineweight": "선가중치",
-        "objects": "객체"
+        "lineweight": "선가중치"
       }
     },
     "TextStyle": {

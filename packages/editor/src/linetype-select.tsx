@@ -36,6 +36,7 @@ export function LinetypeSelect({
   disabled = false,
   below = false,
   finalFocus,
+  tabIndex,
 }: {
   value: string | null
   /** The engine's names, for ByLayer. */
@@ -55,6 +56,8 @@ export function LinetypeSelect({
   below?: boolean
   /** Where focus goes once the list has closed; the trigger, when omitted. */
   finalFocus?: SelectFinalFocus
+  /** A grid's roving tab stop (the layer manager's). */
+  tabIndex?: number
 }): ReactElement {
   const t = useEditorText("Properties")
   // The closed trigger shows ByLayer in the page's language, a linetype by
@@ -72,7 +75,11 @@ export function LinetypeSelect({
         if (next != null) onValueChange(next)
       }}
     >
-      <SelectTrigger aria-label={ariaLabel} className={className}>
+      <SelectTrigger
+        aria-label={ariaLabel}
+        tabIndex={tabIndex}
+        className={className}
+      >
         <SelectValue placeholder={t("varies")} />
       </SelectTrigger>
       <SelectContent

@@ -24,10 +24,25 @@ read as 7); LAYER (and DDLMODES, acad.pgp in both languages) opens the Layer Pro
 as a modeless palette ("It can remain open as you work", LAYERDLGMODE 1), a window of its own,
 floating or docked (workspace.md, Palettes; `'LAYER` opens it inside a running command, which
 resumes at once, desktop workspace/d02-t), and LAYERCLOSE closes it, the other palettes left as
-they are; the manager's columns in the reference page's order — Status
-(the check mark on the current layer), Name, On, Lock, Color (the swatch and, for an index colour,
-its name in lower case, `white`, `red`, es `blanco`, `rojo`: d04-1, e02-1), Linetype, Lineweight —
-then the object count, scrolled sideways in the palette; the rows, and the Layers drop-down's, sorted
+they are; the manager laid out as AutoCAD's (plan §2.8) with what exists here: `Current layer: 0`
+(AcLayer's CurrentLayerStatusText) over its toolbar, New Layer, Delete Layer and Set Current in that
+order, each with its Alt key while the manager has the keyboard, as their tooltips say (AcLayer's
+tbbtnNewLayer_, tbbtnDeleteLayer_, tbbtnCurrentLayer_: `New Layer (Alt+N)`, es `Suprimir capa
+(Alt+U)`, de `Aktuell (Alt+A)`, ru `Создать слой (Alt+Д)`, each language its own letter); the grid's
+columns in AutoCAD's order (AcLayer's LayerDefaultColumnIndex_*), those the model has — Status (the
+check mark on the current layer, every other layer shown in use, as AutoCAD shows them while
+Indicate Layers in Use is off, its default: "all layers are indicated as containing objects in the
+Status column … by default", 2027 help), Name, On, Lock, Color (the swatch and, for an index colour,
+its name in lower case, `white`, `red`, es `blanco`, `rojo`: d04-1, e02-1), Linetype, Lineweight —,
+each keeping its width, the grid scrolled sideways in a narrower palette, floating, docked or slid
+out; under it the status line, `All: 4 layers displayed of 4 total layers` (AcLayer's
+OverallStatusText, the filter's name acdb26res 9050), or where the palette is too narrow for it
+AcLayer's shorter one, `All: 4 of 4 total` (OverallStatusText_Shortening); the keys in the grid: the
+arrows move between rows, selecting, and between cells, Home and End to a row's first and last
+cell (with Ctrl, the first and last row), Enter or Space press a cell's toggle or open its list, F2
+renames, Escape hands the keys to the drawing, as a letter does, which types a command, Delete
+does nothing (never ERASE's), and after each edit they are the drawing's (`ui.md`);
+the rows, and the Layers drop-down's, sorted
 by name whatever the case, re-sorted after a rename (d04-1, d04-9, d05-1); New makes `Layer1` (es
 `Capa1`) with the selected layer's colour, linetype and lineweight, its name open for editing, and
 leaves the current layer as it is (d04-4); Delete stays enabled and a layer it cannot delete — 0, the
@@ -92,7 +107,10 @@ English, as -LINETYPE's WHY); LAYDEL, LAYER as a step of its own, which the mana
 `'.-LAYER LAYER Regenerating model.`, d04-2; here LAYER makes no step), the drop-down's On / Freeze /
 Lock icons, Make Object's Layer Current, Match Layer, Layer Previous and the rest of the Layers
 panel, freezing, Freeze / Plot / Transparency / Plot Style / New VP Freeze / Description columns,
-column reordering, layer filters and the tree, the manager's settings dialog, LAYLOCKFADECTL
+column reordering and sorting by another column, the manager's filters (the filter tree with Invert,
+Search for layer, New Property Filter, New Group Filter), Layer States Manager, New Layer VP Frozen
+in All Viewports, Refresh (the usage it rescans is not shown: Indicate Layers in Use is off), Toggle
+Override Highlight and Settings (the Layer Settings dialog), none of them drawn, LAYLOCKFADECTL
 typed (here always 50: workspace.md, SETVAR's Missing), the task dialogs'
 look (here a dialog of the editor's with their words; their Show details is left out, the details
 shown), the new row placed under the selected one until it is renamed (here sorted at once),
@@ -104,7 +122,11 @@ layer 0's lineweight Default (p300: 370 -3; here 0.25 mm, Default is not modelle
 colour (here `30` and `10,20,30`, the ribbon's words: colors/d05 did not open it), the Arabic words (worded by the project, `docs/i18n/ar.md`),
 the drop-downs' answer to a set holding locked objects (only the palette's was probed, d03-5: the
 same here, PROPS-D61), the padlock and the faded look at `Select objects:` (seen only at
-`Command:`; here neither the padlock nor any fade but ERASE's)
+`Command:`; here neither the padlock nor any fade but ERASE's), the manager's keys on the desktop
+(the Alt keys are its tooltips', the arrows, Home, End, Enter and Delete in its grid this
+editor's), the
+width at which AutoCAD's status line takes its shorter wording (here when the longer one does not
+fit), Japanese `すべて(A)` (acdb26res 9050) in the status line (here `すべて`, its accelerator left out)
 
 ### Linetypes · `LTSCALE` / `LTS` · `LINETYPE` / `LT` / `LTYPE` / `DDLTYPE` · `-LINETYPE` / `-LT` / `-LTYPE` · es `ESCALATL` / `EC` · `TIPOLIN` / `TL` / `TLINEA` / `DDLTYPE` · `-TIPOLIN` / `-TL` / `-TLINEA` · pt-BR `ESCALATL` / `ETL` · `TIPOLINHA` / `TL` / `DDLTYPE` · `-TIPOLINHA` / `-TL` · fr `ECHLTP` / `ECT` · `TYPELIGNE` / `TL` / `TYPEL` / `DDLTYPE` · `-TYPELIGNE` / `-TL` / `-TYPEL` · it `SCALATL` / `CT` · `TLINEA` / `TL` / `TLIN` / `DDLTYPE` · `-TLINEA` / `-TL` / `-TLIN` · de `LTFAKTOR` / `LK` · `LINIENTYP` / `LT` / `LTYP` / `DDLTYPE` · `-LINIENTYP` / `-LT` / `-LTYP` · ru `ЛМАСШТАБ` / `ЛМ` · `ТИПЛИН` / `ТЛ` / `ДИАЛТИПЛИН` · `-ТИПЛИН` / `-ТЛ` · pl `RLSKALA` / `RLS` · `RODZLIN` / `RL` / `ODRODZLIN` · `-RODZLIN` / `-RL` · cs `TČMĚŘ` / `TCM` · `TYPČ` / `TC` / `DDLTYPE` / `DIATYPČ` · `-TYPČ` / `-TC` · hu `VTLÉPTÉK` / `VTL` · `VTÍPUS` / `VT` / `DPVTÍPUS` · `-VTÍPUS` / `-VT`
 

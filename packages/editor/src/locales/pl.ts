@@ -429,16 +429,63 @@ export const pl: EditorLocale = {
     },
     "Layers": {
       "title": "Warstwy",
-      "new": "Nowa warstwa",
-      "setCurrentLabel": [
-        "Ustaw warstwę ",
+      "newLayer": "Nowa warstwa",
+      "deleteLayer": "Usuń warstwę",
+      "setCurrentLayer": "Ustaw bieżącą",
+      "keys": {
+        "new": "N",
+        "delete": "U",
+        "setCurrent": "S"
+      },
+      "withKey": [
+        [
+          "label"
+        ],
+        " (Alt+",
+        [
+          "key"
+        ],
+        ")"
+      ],
+      "currentLayer": [
+        "Bieżąca warstwa: ",
         [
           "name"
+        ]
+      ],
+      "all": "Wszystko",
+      "status": [
+        [
+          "filter"
         ],
-        " jako bieżącą"
+        ": wyświetlono warstw ",
+        [
+          "shown",
+          4
+        ],
+        " z ogólnej liczby warstw: ",
+        [
+          "total",
+          4
+        ]
+      ],
+      "statusShort": [
+        [
+          "filter"
+        ],
+        ": ",
+        [
+          "shown",
+          4
+        ],
+        " z ",
+        [
+          "total",
+          4
+        ],
+        " łącznie"
       ],
       "current": "Bieżąca warstwa",
-      "setCurrent": "Ustaw bieżącą",
       "colorLabel": [
         "Kolor warstwy ",
         [
@@ -462,13 +509,6 @@ export const pl: EditorLocale = {
       "off": "Wyłączona",
       "unlocked": "Odblokowana",
       "locked": "Zablokowana",
-      "deleteLabel": [
-        "Usuń warstwę ",
-        [
-          "name"
-        ]
-      ],
-      "delete": "Usuń warstwę",
       "rename": "Kliknij ponownie nazwę wybranej warstwy, aby ją zmienić",
       "renameLabel": [
         "Zmień nazwę warstwy ",
@@ -477,8 +517,6 @@ export const pl: EditorLocale = {
         ]
       ],
       "list": "Lista warstw",
-      "nextColumns": "Następne kolumny",
-      "previousColumns": "Poprzednie kolumny",
       "dialog": {
         "close": "Zamknij",
         "notDeleted": {
@@ -528,8 +566,7 @@ export const pl: EditorLocale = {
         "lock": "Zamknięcie",
         "color": "Kolor",
         "linetype": "Rodzaj linii",
-        "lineweight": "Szerokość linii",
-        "objects": "Obiekty"
+        "lineweight": "Szerokość linii"
       }
     },
     "TextStyle": {

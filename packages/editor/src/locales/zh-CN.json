@@ -380,10 +380,20 @@
   },
   "Layers": {
     "title": "图层",
-    "new": "新图层",
-    "setCurrentLabel": "将 {name} 置为当前图层",
+    "newLayer": "新建图层",
+    "deleteLayer": "删除图层",
+    "setCurrentLayer": "置为当前",
+    "keys": {
+      "new": "N",
+      "delete": "D",
+      "setCurrent": "C"
+    },
+    "withKey": "{label} (Alt+{key})",
+    "currentLayer": "当前图层: {name}",
+    "all": "全部",
+    "status": "{filter}: 显示了 {shown, number} 个图层，共 {total, number} 个图层",
+    "statusShort": "{filter}: 第 {shown, number} 个，共 {total, number} 个",
     "current": "当前图层",
-    "setCurrent": "置为当前",
     "colorLabel": "{name} 的颜色",
     "color": "图层颜色",
     "linetypeLabel": "{name} 的线型",
@@ -392,13 +402,9 @@
     "off": "关",
     "unlocked": "解锁",
     "locked": "锁定",
-    "deleteLabel": "删除图层 {name}",
-    "delete": "删除图层",
     "rename": "再次单击选定图层的名称可将其重命名",
     "renameLabel": "重命名图层 {name}",
     "list": "图层列表",
-    "nextColumns": "下一组列",
-    "previousColumns": "上一组列",
     "dialog": {
       "close": "关闭",
       "notDeleted": {
@@ -442,8 +448,7 @@
       "lock": "锁定",
       "color": "颜色",
       "linetype": "线型",
-      "lineweight": "线宽",
-      "objects": "对象"
+      "lineweight": "线宽"
     }
   },
   "TextStyle": {

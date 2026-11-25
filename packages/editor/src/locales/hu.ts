@@ -425,16 +425,64 @@ export const hu: EditorLocale = {
     },
     "Layers": {
       "title": "Fóliák",
-      "new": "Új fólia",
-      "setCurrentLabel": [
-        "A(z) ",
+      "newLayer": "Új fólia",
+      "deleteLayer": "Fólia törlése",
+      "setCurrentLayer": "Aktuálissá tétel",
+      "keys": {
+        "new": "J",
+        "delete": "R",
+        "setCurrent": "A"
+      },
+      "withKey": [
+        [
+          "label"
+        ],
+        " (Alt+",
+        [
+          "key"
+        ],
+        ")"
+      ],
+      "currentLayer": [
+        "Aktuális fólia: ",
         [
           "name"
+        ]
+      ],
+      "all": "Mind",
+      "status": [
+        [
+          "filter"
         ],
-        " fólia aktuálissá tétele"
+        ": ",
+        [
+          "shown",
+          4
+        ],
+        " fólia megjelenítve, ",
+        [
+          "total",
+          4
+        ],
+        " fólia összesen"
+      ],
+      "statusShort": [
+        [
+          "filter"
+        ],
+        ": ",
+        [
+          "shown",
+          4
+        ],
+        " az összesből (",
+        [
+          "total",
+          4
+        ],
+        ")"
       ],
       "current": "Aktuális fólia",
-      "setCurrent": "Aktuálissá tétel",
       "colorLabel": [
         "A(z) ",
         [
@@ -461,14 +509,6 @@ export const hu: EditorLocale = {
       "off": "Ki",
       "unlocked": "Felszabadított",
       "locked": "Zárolt",
-      "deleteLabel": [
-        "A(z) ",
-        [
-          "name"
-        ],
-        " fólia törlése"
-      ],
-      "delete": "Fólia törlése",
       "rename": "A fólia átnevezéséhez kattintson ismét a kijelölt fólia nevére",
       "renameLabel": [
         "A(z) ",
@@ -478,8 +518,6 @@ export const hu: EditorLocale = {
         " fólia átnevezése"
       ],
       "list": "Fóliák listája",
-      "nextColumns": "Következő oszlopok",
-      "previousColumns": "Előző oszlopok",
       "dialog": {
         "close": "Bezárás",
         "notDeleted": {
@@ -529,8 +567,7 @@ export const hu: EditorLocale = {
         "lock": "Zárolás",
         "color": "Szín",
         "linetype": "Vonaltípus",
-        "lineweight": "Vonalvastagság",
-        "objects": "Objektumok"
+        "lineweight": "Vonalvastagság"
       }
     },
     "TextStyle": {

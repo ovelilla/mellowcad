@@ -429,16 +429,64 @@ export const it: EditorLocale = {
     },
     "Layers": {
       "title": "Layer",
-      "new": "Nuovo layer",
-      "setCurrentLabel": [
-        "Imposta ",
+      "newLayer": "Nuovo layer",
+      "deleteLayer": "Elimina layer",
+      "setCurrentLayer": "Imposta corrente",
+      "keys": {
+        "new": "N",
+        "delete": "E",
+        "setCurrent": "C"
+      },
+      "withKey": [
+        [
+          "label"
+        ],
+        " (Alt+",
+        [
+          "key"
+        ],
+        ")"
+      ],
+      "currentLayer": [
+        "Layer corrente: ",
         [
           "name"
+        ]
+      ],
+      "all": "Tutti",
+      "status": [
+        [
+          "filter"
         ],
-        " come layer corrente"
+        ": ",
+        [
+          "shown",
+          4
+        ],
+        " layer visualizzato/i su un totale di ",
+        [
+          "total",
+          4
+        ],
+        " layer"
+      ],
+      "statusShort": [
+        [
+          "filter"
+        ],
+        ": ",
+        [
+          "shown",
+          4
+        ],
+        " di ",
+        [
+          "total",
+          4
+        ],
+        " in totale"
       ],
       "current": "Layer corrente",
-      "setCurrent": "Imposta corrente",
       "colorLabel": [
         "Colore di ",
         [
@@ -462,13 +510,6 @@ export const it: EditorLocale = {
       "off": "Off",
       "unlocked": "Sbloccato",
       "locked": "Bloccato",
-      "deleteLabel": [
-        "Elimina layer ",
-        [
-          "name"
-        ]
-      ],
-      "delete": "Elimina layer",
       "rename": "Fare di nuovo clic sul nome del layer selezionato per rinominarlo",
       "renameLabel": [
         "Rinomina layer ",
@@ -477,8 +518,6 @@ export const it: EditorLocale = {
         ]
       ],
       "list": "Elenco layer",
-      "nextColumns": "Colonne successive",
-      "previousColumns": "Colonne precedenti",
       "dialog": {
         "close": "Chiudi",
         "notDeleted": {
@@ -528,8 +567,7 @@ export const it: EditorLocale = {
         "lock": "Bloccato",
         "color": "Colore",
         "linetype": "Tipo di linea",
-        "lineweight": "Spessore linea",
-        "objects": "Oggetti"
+        "lineweight": "Spessore linea"
       }
     },
     "TextStyle": {

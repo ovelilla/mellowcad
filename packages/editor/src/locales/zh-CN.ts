@@ -429,16 +429,64 @@ export const zhCN: EditorLocale = {
     },
     "Layers": {
       "title": "图层",
-      "new": "新图层",
-      "setCurrentLabel": [
-        "将 ",
+      "newLayer": "新建图层",
+      "deleteLayer": "删除图层",
+      "setCurrentLayer": "置为当前",
+      "keys": {
+        "new": "N",
+        "delete": "D",
+        "setCurrent": "C"
+      },
+      "withKey": [
+        [
+          "label"
+        ],
+        " (Alt+",
+        [
+          "key"
+        ],
+        ")"
+      ],
+      "currentLayer": [
+        "当前图层: ",
         [
           "name"
+        ]
+      ],
+      "all": "全部",
+      "status": [
+        [
+          "filter"
         ],
-        " 置为当前图层"
+        ": 显示了 ",
+        [
+          "shown",
+          4
+        ],
+        " 个图层，共 ",
+        [
+          "total",
+          4
+        ],
+        " 个图层"
+      ],
+      "statusShort": [
+        [
+          "filter"
+        ],
+        ": 第 ",
+        [
+          "shown",
+          4
+        ],
+        " 个，共 ",
+        [
+          "total",
+          4
+        ],
+        " 个"
       ],
       "current": "当前图层",
-      "setCurrent": "置为当前",
       "colorLabel": [
         [
           "name"
@@ -462,13 +510,6 @@ export const zhCN: EditorLocale = {
       "off": "关",
       "unlocked": "解锁",
       "locked": "锁定",
-      "deleteLabel": [
-        "删除图层 ",
-        [
-          "name"
-        ]
-      ],
-      "delete": "删除图层",
       "rename": "再次单击选定图层的名称可将其重命名",
       "renameLabel": [
         "重命名图层 ",
@@ -477,8 +518,6 @@ export const zhCN: EditorLocale = {
         ]
       ],
       "list": "图层列表",
-      "nextColumns": "下一组列",
-      "previousColumns": "上一组列",
       "dialog": {
         "close": "关闭",
         "notDeleted": {
@@ -528,8 +567,7 @@ export const zhCN: EditorLocale = {
         "lock": "锁定",
         "color": "颜色",
         "linetype": "线型",
-        "lineweight": "线宽",
-        "objects": "对象"
+        "lineweight": "线宽"
       }
     },
     "TextStyle": {

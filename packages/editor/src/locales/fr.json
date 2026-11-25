@@ -380,10 +380,20 @@
   },
   "Layers": {
     "title": "Calques",
-    "new": "Nouveau calque",
-    "setCurrentLabel": "Définir {name} comme calque courant",
+    "newLayer": "Nouveau calque",
+    "deleteLayer": "Supprimer calque",
+    "setCurrentLayer": "Définir courant",
+    "keys": {
+      "new": "N",
+      "delete": "S",
+      "setCurrent": "C"
+    },
+    "withKey": "{label} (Alt+{key})",
+    "currentLayer": "Calque courant: {name}",
+    "all": "Tous",
+    "status": "{filter}: {shown, number} calque(s) affiché(s) sur un total de {total, number} calque(s)",
+    "statusShort": "{filter}: {shown, number} de {total, number} au total",
     "current": "Calque courant",
-    "setCurrent": "Définir courant",
     "colorLabel": "Couleur de {name}",
     "color": "Couleur du calque",
     "linetypeLabel": "Type de ligne de {name}",
@@ -392,13 +402,9 @@
     "off": "Inactif",
     "unlocked": "Déverrouillé",
     "locked": "Verrouillé",
-    "deleteLabel": "Supprimer le calque {name}",
-    "delete": "Supprimer le calque",
     "rename": "Cliquez de nouveau sur le nom du calque sélectionné pour le renommer",
     "renameLabel": "Renommer le calque {name}",
     "list": "Liste des calques",
-    "nextColumns": "Colonnes suivantes",
-    "previousColumns": "Colonnes précédentes",
     "dialog": {
       "close": "Fermer",
       "notDeleted": {
@@ -442,8 +448,7 @@
       "lock": "Verrouiller",
       "color": "Couleur",
       "linetype": "Type de ligne",
-      "lineweight": "Epaisseur de ligne",
-      "objects": "Objets"
+      "lineweight": "Epaisseur de ligne"
     }
   },
   "TextStyle": {

@@ -328,8 +328,8 @@ scoped to `"document"`, a capture `pointerdown` and a `focusin`.
   keeps). Other Ctrl combos stay unforwarded: a global undo from a focused field desyncs the
   running tool, and Ctrl+C/X/V/A in a box or a layer name belong to that **text** — never widen
   `isGlobalShortcut` to the clipboard keys. Nothing inside a modal dialog
-  (`[role="dialog"][aria-modal="true"]`) or an open menu (`[role="menu"]`) reaches the runtime:
-  the Enter that chooses an item would repeat the last command, the arrows would recall commands.
+  (`[role="dialog"][aria-modal="true"]`), an open menu or list (`[role="menu"]`, `"listbox"`)
+  reaches the runtime: the Enter choosing an item would repeat the last command.
   **A Ctrl combo is read by its physical key** (`shortcutKey`): under Ctrl a key that is not a
   latin letter or digit is taken from `e.code`. Typed text never is.
 - `contextmenu`, because it fires on the button's _release_, when a portalled backdrop may be the
@@ -355,7 +355,7 @@ The defaults are safe in a page the engine does not own; the editor asks for the
 - The filter sits in the adapter **before** `runtime.keyDown`, like the editable rule. Never make
   the runtime scope-aware.
 - `mayTakeFocus(from)` is what the dynamic-input box asks before reclaiming focus after a render:
-  yes from anywhere in the editor but an open menu or modal dialog, only from the canvas, the scope
+  yes from anywhere in the editor but an open menu, list or modal dialog, only from the canvas, the scope
   or the active body for an embed — or an autosave finishing would yank focus from where the user
   tabbed.
 

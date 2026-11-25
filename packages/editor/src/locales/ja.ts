@@ -425,15 +425,63 @@ export const ja: EditorLocale = {
     },
     "Layers": {
       "title": "画層",
-      "new": "画層を新規作成",
-      "setCurrentLabel": [
+      "newLayer": "新規作成",
+      "deleteLayer": "画層を削除",
+      "setCurrentLayer": "現在に設定",
+      "keys": {
+        "new": "N",
+        "delete": "D",
+        "setCurrent": "C"
+      },
+      "withKey": [
+        [
+          "label"
+        ],
+        "(Alt+",
+        [
+          "key"
+        ],
+        ")"
+      ],
+      "currentLayer": [
+        "現在の画層: ",
         [
           "name"
+        ]
+      ],
+      "all": "すべて",
+      "status": [
+        [
+          "filter"
         ],
-        " を現在の画層に設定"
+        ": 表示されている画層 ",
+        [
+          "shown",
+          4
+        ],
+        " 個、画層の総数 ",
+        [
+          "total",
+          4
+        ],
+        " 個"
+      ],
+      "statusShort": [
+        [
+          "filter"
+        ],
+        ": 合計 ",
+        [
+          "shown",
+          4
+        ],
+        " / ",
+        [
+          "total",
+          4
+        ]
       ],
       "current": "現在の画層",
-      "setCurrent": "現在に設定",
       "colorLabel": [
         [
           "name"
@@ -457,14 +505,6 @@ export const ja: EditorLocale = {
       "off": "非表示",
       "unlocked": "ロック解除",
       "locked": "ロック",
-      "deleteLabel": [
-        "画層 ",
-        [
-          "name"
-        ],
-        " を削除"
-      ],
-      "delete": "画層を削除",
       "rename": "選択した画層の名前をもう一度クリックすると名前を変更できます",
       "renameLabel": [
         "画層 ",
@@ -474,8 +514,6 @@ export const ja: EditorLocale = {
         " の名前を変更"
       ],
       "list": "画層の一覧",
-      "nextColumns": "次の列",
-      "previousColumns": "前の列",
       "dialog": {
         "close": "閉じる",
         "notDeleted": {
@@ -525,8 +563,7 @@ export const ja: EditorLocale = {
         "lock": "ロック",
         "color": "色",
         "linetype": "線種",
-        "lineweight": "線の太さ",
-        "objects": "オブジェクト"
+        "lineweight": "線の太さ"
       }
     },
     "TextStyle": {

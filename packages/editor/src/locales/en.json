@@ -380,10 +380,20 @@
   },
   "Layers": {
     "title": "Layers",
-    "new": "New layer",
-    "setCurrentLabel": "Set {name} as current layer",
+    "newLayer": "New Layer",
+    "deleteLayer": "Delete Layer",
+    "setCurrentLayer": "Set Current",
+    "keys": {
+      "new": "N",
+      "delete": "D",
+      "setCurrent": "C"
+    },
+    "withKey": "{label} (Alt+{key})",
+    "currentLayer": "Current layer: {name}",
+    "all": "All",
+    "status": "{filter}: {shown, number} layers displayed of {total, number} total layers",
+    "statusShort": "{filter}: {shown, number} of {total, number} total",
     "current": "Current layer",
-    "setCurrent": "Set current",
     "colorLabel": "{name} color",
     "color": "Layer color",
     "linetypeLabel": "{name} linetype",
@@ -392,13 +402,9 @@
     "off": "Off",
     "unlocked": "Unlocked",
     "locked": "Locked",
-    "deleteLabel": "Delete layer {name}",
-    "delete": "Delete layer",
     "rename": "Click the selected layer's name again to rename it",
     "renameLabel": "Rename layer {name}",
     "list": "Layer list",
-    "nextColumns": "Next columns",
-    "previousColumns": "Previous columns",
     "dialog": {
       "close": "Close",
       "notDeleted": {
@@ -442,8 +448,7 @@
       "lock": "Lock",
       "color": "Color",
       "linetype": "Linetype",
-      "lineweight": "Lineweight",
-      "objects": "Objects"
+      "lineweight": "Lineweight"
     }
   },
   "TextStyle": {

@@ -1270,9 +1270,10 @@ export class CadEngine {
     // A modal dialog (UNITS) takes every key, as AutoCAD's do: its lists'
     // arrows and letters must not reach the command prompt.
     if (target?.closest(MODAL)) return
-    // So does an open menu: its arrows, Enter and letters are its own, or the
-    // arrows would recall commands and the Enter that chose an item would
-    // repeat the last one.
+    // So does an open menu or list: its arrows, Enter and letters are its
+    // own, or the arrows would recall commands and the Enter that chose an
+    // item would repeat the last one (an Enter picking a layer's linetype ran
+    // the U typed before).
     if (target?.closest(MENU)) return
     // Keys typed into editable UI (the dynamic-input box) belong to that field,
     // which handles its own Enter/Escape/typing — don't hijack them here. Two
@@ -1319,8 +1320,11 @@ const EDITABLE = 'input, textarea, select, [contenteditable="true"]'
 /** A modal dialog, which keeps its keys to itself. */
 const MODAL = '[role="dialog"][aria-modal="true"]'
 
-/** An open menu: the shortcut menu, the status bar's, the application menu. */
-const MENU = '[role="menu"]'
+/**
+ * An open menu (the shortcut menu, the status bar's, the application menu)
+ * or a drop-down's open list (a palette's Linetype, the ribbon's layers).
+ */
+const MENU = '[role="menu"], [role="listbox"]'
 
 /** Keys whose default action scrolls the page. */
 const SCROLL_KEYS = new Set([

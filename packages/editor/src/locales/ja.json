@@ -380,10 +380,20 @@
   },
   "Layers": {
     "title": "画層",
-    "new": "画層を新規作成",
-    "setCurrentLabel": "{name} を現在の画層に設定",
+    "newLayer": "新規作成",
+    "deleteLayer": "画層を削除",
+    "setCurrentLayer": "現在に設定",
+    "keys": {
+      "new": "N",
+      "delete": "D",
+      "setCurrent": "C"
+    },
+    "withKey": "{label}(Alt+{key})",
+    "currentLayer": "現在の画層: {name}",
+    "all": "すべて",
+    "status": "{filter}: 表示されている画層 {shown, number} 個、画層の総数 {total, number} 個",
+    "statusShort": "{filter}: 合計 {shown, number} / {total, number}",
     "current": "現在の画層",
-    "setCurrent": "現在に設定",
     "colorLabel": "{name} の色",
     "color": "画層の色",
     "linetypeLabel": "{name} の線種",
@@ -392,13 +402,9 @@
     "off": "非表示",
     "unlocked": "ロック解除",
     "locked": "ロック",
-    "deleteLabel": "画層 {name} を削除",
-    "delete": "画層を削除",
     "rename": "選択した画層の名前をもう一度クリックすると名前を変更できます",
     "renameLabel": "画層 {name} の名前を変更",
     "list": "画層の一覧",
-    "nextColumns": "次の列",
-    "previousColumns": "前の列",
     "dialog": {
       "close": "閉じる",
       "notDeleted": {
@@ -442,8 +448,7 @@
       "lock": "ロック",
       "color": "色",
       "linetype": "線種",
-      "lineweight": "線の太さ",
-      "objects": "オブジェクト"
+      "lineweight": "線の太さ"
     }
   },
   "TextStyle": {

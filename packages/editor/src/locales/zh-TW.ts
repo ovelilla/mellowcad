@@ -430,16 +430,64 @@ export const zhTW: EditorLocale = {
     },
     "Layers": {
       "title": "圖層",
-      "new": "新圖層",
-      "setCurrentLabel": [
-        "將 ",
+      "newLayer": "新圖層",
+      "deleteLayer": "刪除圖層",
+      "setCurrentLayer": "設為目前的",
+      "keys": {
+        "new": "N",
+        "delete": "D",
+        "setCurrent": "C"
+      },
+      "withKey": [
+        [
+          "label"
+        ],
+        " (Alt+",
+        [
+          "key"
+        ],
+        ")"
+      ],
+      "currentLayer": [
+        "目前的圖層: ",
         [
           "name"
+        ]
+      ],
+      "all": "全部",
+      "status": [
+        [
+          "filter"
         ],
-        " 設為目前的圖層"
+        ": 總共 ",
+        [
+          "total",
+          4
+        ],
+        " 個圖層，顯示 ",
+        [
+          "shown",
+          4
+        ],
+        " 個圖層"
+      ],
+      "statusShort": [
+        [
+          "filter"
+        ],
+        ": 第 ",
+        [
+          "shown",
+          4
+        ],
+        " 個，共 ",
+        [
+          "total",
+          4
+        ],
+        " 個"
       ],
       "current": "目前的圖層",
-      "setCurrent": "設為目前的",
       "colorLabel": [
         [
           "name"
@@ -463,13 +511,6 @@ export const zhTW: EditorLocale = {
       "off": "關閉",
       "unlocked": "解鎖",
       "locked": "已鎖住",
-      "deleteLabel": [
-        "刪除圖層 ",
-        [
-          "name"
-        ]
-      ],
-      "delete": "刪除圖層",
       "rename": "再按一下選取圖層的名稱即可更名",
       "renameLabel": [
         "更名圖層 ",
@@ -478,8 +519,6 @@ export const zhTW: EditorLocale = {
         ]
       ],
       "list": "圖層清單",
-      "nextColumns": "下一組欄",
-      "previousColumns": "上一組欄",
       "dialog": {
         "close": "關閉",
         "notDeleted": {
@@ -529,8 +568,7 @@ export const zhTW: EditorLocale = {
         "lock": "鎖住",
         "color": "顏色",
         "linetype": "線型",
-        "lineweight": "線粗",
-        "objects": "物件"
+        "lineweight": "線粗"
       }
     },
     "TextStyle": {

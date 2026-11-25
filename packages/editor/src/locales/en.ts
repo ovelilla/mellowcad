@@ -429,16 +429,64 @@ export const en: EditorCatalog = {
     },
     "Layers": {
       "title": "Layers",
-      "new": "New layer",
-      "setCurrentLabel": [
-        "Set ",
+      "newLayer": "New Layer",
+      "deleteLayer": "Delete Layer",
+      "setCurrentLayer": "Set Current",
+      "keys": {
+        "new": "N",
+        "delete": "D",
+        "setCurrent": "C"
+      },
+      "withKey": [
+        [
+          "label"
+        ],
+        " (Alt+",
+        [
+          "key"
+        ],
+        ")"
+      ],
+      "currentLayer": [
+        "Current layer: ",
         [
           "name"
+        ]
+      ],
+      "all": "All",
+      "status": [
+        [
+          "filter"
         ],
-        " as current layer"
+        ": ",
+        [
+          "shown",
+          4
+        ],
+        " layers displayed of ",
+        [
+          "total",
+          4
+        ],
+        " total layers"
+      ],
+      "statusShort": [
+        [
+          "filter"
+        ],
+        ": ",
+        [
+          "shown",
+          4
+        ],
+        " of ",
+        [
+          "total",
+          4
+        ],
+        " total"
       ],
       "current": "Current layer",
-      "setCurrent": "Set current",
       "colorLabel": [
         [
           "name"
@@ -462,13 +510,6 @@ export const en: EditorCatalog = {
       "off": "Off",
       "unlocked": "Unlocked",
       "locked": "Locked",
-      "deleteLabel": [
-        "Delete layer ",
-        [
-          "name"
-        ]
-      ],
-      "delete": "Delete layer",
       "rename": "Click the selected layer's name again to rename it",
       "renameLabel": [
         "Rename layer ",
@@ -477,8 +518,6 @@ export const en: EditorCatalog = {
         ]
       ],
       "list": "Layer list",
-      "nextColumns": "Next columns",
-      "previousColumns": "Previous columns",
       "dialog": {
         "close": "Close",
         "notDeleted": {
@@ -528,8 +567,7 @@ export const en: EditorCatalog = {
         "lock": "Lock",
         "color": "Color",
         "linetype": "Linetype",
-        "lineweight": "Lineweight",
-        "objects": "Objects"
+        "lineweight": "Lineweight"
       }
     },
     "TextStyle": {

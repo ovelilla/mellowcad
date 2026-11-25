@@ -429,16 +429,64 @@ export const cs: EditorLocale = {
     },
     "Layers": {
       "title": "Hladiny",
-      "new": "Nová hladina",
-      "setCurrentLabel": [
-        "Nastavit hladinu ",
+      "newLayer": "Nová hladina",
+      "deleteLayer": "Vymazat hladinu",
+      "setCurrentLayer": "Nastavit aktuální",
+      "keys": {
+        "new": "N",
+        "delete": "Z",
+        "setCurrent": "A"
+      },
+      "withKey": [
+        [
+          "label"
+        ],
+        " (Alt+",
+        [
+          "key"
+        ],
+        ")"
+      ],
+      "currentLayer": [
+        "Aktuální hladina: ",
         [
           "name"
+        ]
+      ],
+      "all": "Vše",
+      "status": [
+        [
+          "filter"
         ],
-        " jako aktuální"
+        ": zobrazeno ",
+        [
+          "shown",
+          4
+        ],
+        " hladin z celkem ",
+        [
+          "total",
+          4
+        ],
+        " hladin"
+      ],
+      "statusShort": [
+        [
+          "filter"
+        ],
+        ": ",
+        [
+          "shown",
+          4
+        ],
+        " z ",
+        [
+          "total",
+          4
+        ],
+        " celkem"
       ],
       "current": "Aktuální hladina",
-      "setCurrent": "Nastavit aktuální",
       "colorLabel": [
         "Barva hladiny ",
         [
@@ -462,13 +510,6 @@ export const cs: EditorLocale = {
       "off": "Vypnuto",
       "unlocked": "Odemknuto",
       "locked": "Uzamknuto",
-      "deleteLabel": [
-        "Odstranit hladinu ",
-        [
-          "name"
-        ]
-      ],
-      "delete": "Odstranit hladinu",
       "rename": "Hladinu přejmenujete dalším kliknutím na název vybrané hladiny",
       "renameLabel": [
         "Přejmenovat hladinu ",
@@ -477,8 +518,6 @@ export const cs: EditorLocale = {
         ]
       ],
       "list": "Seznam hladin",
-      "nextColumns": "Další sloupce",
-      "previousColumns": "Předchozí sloupce",
       "dialog": {
         "close": "Zavřít",
         "notDeleted": {
@@ -528,8 +567,7 @@ export const cs: EditorLocale = {
         "lock": "Zamknout",
         "color": "Barva",
         "linetype": "Typ čáry",
-        "lineweight": "Tloušťka čáry",
-        "objects": "Objekty"
+        "lineweight": "Tloušťka čáry"
       }
     },
     "TextStyle": {

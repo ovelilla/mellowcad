@@ -425,16 +425,64 @@ export const fr: EditorLocale = {
     },
     "Layers": {
       "title": "Calques",
-      "new": "Nouveau calque",
-      "setCurrentLabel": [
-        "Définir ",
+      "newLayer": "Nouveau calque",
+      "deleteLayer": "Supprimer calque",
+      "setCurrentLayer": "Définir courant",
+      "keys": {
+        "new": "N",
+        "delete": "S",
+        "setCurrent": "C"
+      },
+      "withKey": [
+        [
+          "label"
+        ],
+        " (Alt+",
+        [
+          "key"
+        ],
+        ")"
+      ],
+      "currentLayer": [
+        "Calque courant: ",
         [
           "name"
+        ]
+      ],
+      "all": "Tous",
+      "status": [
+        [
+          "filter"
         ],
-        " comme calque courant"
+        ": ",
+        [
+          "shown",
+          4
+        ],
+        " calque(s) affiché(s) sur un total de ",
+        [
+          "total",
+          4
+        ],
+        " calque(s)"
+      ],
+      "statusShort": [
+        [
+          "filter"
+        ],
+        ": ",
+        [
+          "shown",
+          4
+        ],
+        " de ",
+        [
+          "total",
+          4
+        ],
+        " au total"
       ],
       "current": "Calque courant",
-      "setCurrent": "Définir courant",
       "colorLabel": [
         "Couleur de ",
         [
@@ -458,13 +506,6 @@ export const fr: EditorLocale = {
       "off": "Inactif",
       "unlocked": "Déverrouillé",
       "locked": "Verrouillé",
-      "deleteLabel": [
-        "Supprimer le calque ",
-        [
-          "name"
-        ]
-      ],
-      "delete": "Supprimer le calque",
       "rename": "Cliquez de nouveau sur le nom du calque sélectionné pour le renommer",
       "renameLabel": [
         "Renommer le calque ",
@@ -473,8 +514,6 @@ export const fr: EditorLocale = {
         ]
       ],
       "list": "Liste des calques",
-      "nextColumns": "Colonnes suivantes",
-      "previousColumns": "Colonnes précédentes",
       "dialog": {
         "close": "Fermer",
         "notDeleted": {
@@ -524,8 +563,7 @@ export const fr: EditorLocale = {
         "lock": "Verrouiller",
         "color": "Couleur",
         "linetype": "Type de ligne",
-        "lineweight": "Epaisseur de ligne",
-        "objects": "Objets"
+        "lineweight": "Epaisseur de ligne"
       }
     },
     "TextStyle": {

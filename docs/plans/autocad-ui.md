@@ -652,8 +652,15 @@ dialogs need nothing of the new frame:
      in the `<head>` with them (P2). What one capture could not settle (several tabs, a strip
      beside a column, the menu while anchored) is **unverified** in the Palettes entry of
      `docs/coverage/workspace.md`.
-3. **What each palette holds**: the Layer Properties Manager's grid and toolbar (P4), Blocks' tabs
-   at its edge and Options (P5), Properties' categories that fold (P6).
+3. **What each palette holds**, a commit per palette:
+   - **3a** (done 2026-11-25): the Layer Properties Manager (P4): `Current layer:` over its
+     toolbar, New Layer, Delete Layer and Set Current with their Alt keys (AcLayer's tooltips),
+     the grid's columns the model has in AutoCAD's order, Status showing every layer in use (as
+     with Indicate Layers in Use off, its default), the status line, the grid scrolled sideways
+     and moved through by the keys; the object count, which AutoCAD has not, went. Filters, layer
+     states, New VP Freeze, Refresh, Toggle Override Highlight and Settings are Missing, undrawn.
+   - **3b**: Blocks' tabs at its edge and Options (P5).
+   - **3c**: Properties' categories that fold (P6).
 4. **The ribbon's style combos**: Text Style and Dimension Style in Home › Annotation's slide-out
    and on Annotate (P7).
 

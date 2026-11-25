@@ -430,16 +430,80 @@ export const ar: EditorLocale = {
     },
     "Layers": {
       "title": "الطبقات",
-      "new": "طبقة جديدة",
-      "setCurrentLabel": [
-        "تعيين ⁨",
+      "newLayer": "طبقة جديدة",
+      "deleteLayer": "حذف الطبقة",
+      "setCurrentLayer": "تعيين طبقةً حالية",
+      "keys": {
+        "new": "N",
+        "delete": "D",
+        "setCurrent": "C"
+      },
+      "withKey": [
+        [
+          "label"
+        ],
+        " (⁨Alt+",
+        [
+          "key"
+        ],
+        "⁩)"
+      ],
+      "currentLayer": [
+        "الطبقة الحالية: ⁨",
         [
           "name"
         ],
-        "⁩ طبقةً حالية"
+        "⁩"
+      ],
+      "all": "الكل",
+      "status": [
+        [
+          "filter"
+        ],
+        ": ",
+        [
+          "shown",
+          2,
+          {
+            "zero": "لا طبقات معروضة",
+            "one": "طبقة واحدة معروضة",
+            "two": "طبقتان معروضتان",
+            "few": [
+              0,
+              " طبقات معروضة"
+            ],
+            "many": [
+              0,
+              " طبقةً معروضة"
+            ],
+            "other": [
+              0,
+              " طبقة معروضة"
+            ]
+          }
+        ],
+        " من أصل ",
+        [
+          "total",
+          4
+        ]
+      ],
+      "statusShort": [
+        [
+          "filter"
+        ],
+        ": ",
+        [
+          "shown",
+          4
+        ],
+        " من أصل ",
+        [
+          "total",
+          4
+        ]
       ],
       "current": "الطبقة الحالية",
-      "setCurrent": "تعيين طبقةً حالية",
       "colorLabel": [
         "لون ⁨",
         [
@@ -466,14 +530,6 @@ export const ar: EditorLocale = {
       "off": "مخفية",
       "unlocked": "غير مقفلة",
       "locked": "مقفلة",
-      "deleteLabel": [
-        "حذف الطبقة ⁨",
-        [
-          "name"
-        ],
-        "⁩"
-      ],
-      "delete": "حذف الطبقة",
       "rename": "انقر اسم الطبقة المحددة مرة أخرى لإعادة تسميتها",
       "renameLabel": [
         "إعادة تسمية الطبقة ⁨",
@@ -483,8 +539,6 @@ export const ar: EditorLocale = {
         "⁩"
       ],
       "list": "قائمة الطبقات",
-      "nextColumns": "الأعمدة التالية",
-      "previousColumns": "الأعمدة السابقة",
       "dialog": {
         "close": "إغلاق",
         "notDeleted": {
@@ -534,8 +588,7 @@ export const ar: EditorLocale = {
         "lock": "قفل",
         "color": "اللون",
         "linetype": "نوع الخط",
-        "lineweight": "وزن الخط",
-        "objects": "العناصر"
+        "lineweight": "وزن الخط"
       }
     },
     "TextStyle": {

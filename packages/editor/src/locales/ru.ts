@@ -429,16 +429,62 @@ export const ru: EditorLocale = {
     },
     "Layers": {
       "title": "Слои",
-      "new": "Новый слой",
-      "setCurrentLabel": [
-        "Сделать слой ",
+      "newLayer": "Создать слой",
+      "deleteLayer": "Удалить слой",
+      "setCurrentLayer": "Установить",
+      "keys": {
+        "new": "Д",
+        "delete": "У",
+        "setCurrent": "С"
+      },
+      "withKey": [
+        [
+          "label"
+        ],
+        " (Alt+",
+        [
+          "key"
+        ],
+        ")"
+      ],
+      "currentLayer": [
+        "Текущий слой: ",
         [
           "name"
+        ]
+      ],
+      "all": "Все",
+      "status": [
+        [
+          "filter"
         ],
-        " текущим"
+        ": отображается слоев — ",
+        [
+          "shown",
+          4
+        ],
+        ", всего слоев — ",
+        [
+          "total",
+          4
+        ]
+      ],
+      "statusShort": [
+        [
+          "filter"
+        ],
+        ": ",
+        [
+          "shown",
+          4
+        ],
+        " из ",
+        [
+          "total",
+          4
+        ]
       ],
       "current": "Текущий слой",
-      "setCurrent": "Установить",
       "colorLabel": [
         "Цвет слоя ",
         [
@@ -462,13 +508,6 @@ export const ru: EditorLocale = {
       "off": "Откл",
       "unlocked": "Разблокировано",
       "locked": "Заблокировано",
-      "deleteLabel": [
-        "Удалить слой ",
-        [
-          "name"
-        ]
-      ],
-      "delete": "Удалить слой",
       "rename": "Щелкните имя выбранного слоя еще раз, чтобы переименовать его",
       "renameLabel": [
         "Переименовать слой ",
@@ -477,8 +516,6 @@ export const ru: EditorLocale = {
         ]
       ],
       "list": "Список слоев",
-      "nextColumns": "Следующие столбцы",
-      "previousColumns": "Предыдущие столбцы",
       "dialog": {
         "close": "Закрыть",
         "notDeleted": {
@@ -528,8 +565,7 @@ export const ru: EditorLocale = {
         "lock": "Блокировать",
         "color": "Цвет",
         "linetype": "Тип линий",
-        "lineweight": "Вес линий",
-        "objects": "Объекты"
+        "lineweight": "Вес линий"
       }
     },
     "TextStyle": {

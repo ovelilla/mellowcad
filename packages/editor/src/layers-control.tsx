@@ -11,10 +11,9 @@ import { Dialog } from "@base-ui/react/dialog"
 import {
   ArrowRight,
   Check,
-  ChevronLeft,
-  ChevronRight,
-  Eye,
-  EyeOff,
+  Layers,
+  Lightbulb,
+  LightbulbOff,
   Lock,
   LockOpen,
   Plus,
@@ -50,23 +49,39 @@ import { useEditorText } from "./editor-text"
 const RENAME_DELAY_MS = 400
 
 /**
- * The Layer Properties Manager, a palette of its own: the layer list
- * under its column headers in AutoCAD's order (Status, Name, On, Lock, Color,
- * Linetype, Lineweight; Freeze, Plot and the rest do not exist here), wider
- * than the panel and scrolled sideways as AutoCAD's docked manager is. A row
- * is selected with a click; Set Current — or a double-click on the row —
- * makes it the current layer, and New and Delete act beside it. A click on
- * the selected layer's name, or F2, renames it. The rows are sorted by name
- * (the engine's order), and what AutoCAD refuses or asks is one of its task
- * dialogs (`LayerDialog`).
+ * The grid's columns, in AutoCAD's order (Status, Name, On, Freeze, Lock,
+ * Plot, Color, Linetype, Lineweight, Transparency, New VP Freeze,
+ * Description: AcLayer's LayerDefaultColumnIndex_*), those the model has.
+ */
+const COLUMNS = [
+  "status",
+  "name",
+  "on",
+  "lock",
+  "color",
+  "linetype",
+  "lineweight",
+] as const
+const NAME_COLUMN = COLUMNS.indexOf("name")
+
+/** The manager's toolbar buttons and their Alt keys (AcLayer's tbbtn*_). */
+type ToolbarAction = "new" | "delete" | "setCurrent"
+
+/**
+ * The Layer Properties Manager, a palette of its own, laid out as AutoCAD's
+ * with what exists here: the current layer's name over the toolbar (New
+ * Layer, Delete Layer, Set Current, each with its Alt key while the manager
+ * has the keyboard), the grid, and the status line under it. The filter
+ * tree, its Invert, the search field and the buttons for filters, layer
+ * states, viewports, Refresh and Settings are not drawn (docs/coverage,
+ * Layers). The grid keeps its columns' widths and scrolls sideways under a
+ * narrower palette, as AutoCAD's docked manager does.
  *
- * At the panel's 280 px half the columns are out of sight, and a scroll bar
- * alone goes unnoticed (macOS hides it, a wheel only scrolls down), so the
- * sideways scroll shows itself: Name stays frozen, as AutoCAD's Freeze Column
- * keeps it, the columns snap against it, a chevron in the header row marks
- * each side that has more columns (the end's cut column fades out), and
- * the list is only as tall as its rows, so the scroll bar sits under the last
- * one rather than at the foot of the panel.
+ * A row is selected with a click or the arrow keys; Set Current — or a
+ * double-click on the row — makes it the current layer, and New and Delete
+ * act beside it. A click on the selected layer's name, or F2, renames it.
+ * The rows are sorted by name (the engine's order), and what AutoCAD refuses
+ * or asks is one of its task dialogs (`LayerDialog`).
  */
 export function LayersControl({
   engine,
@@ -77,14 +92,19 @@ export function LayersControl({
 }): ReactElement {
   const t = useEditorText("Layers")
   const [selectedId, setSelectedId] = useState<string | null>(null)
+  const [column, setColumn] = useState(NAME_COLUMN)
   const [renamingId, setRenamingId] = useState<string | null>(null)
   const [dialog, setDialog] = useState<LayerDialogKind | null>(null)
-  const { scrollRef, frozenRef, before, after, gutters, track, page } =
-    useSidewaysScroll()
+  const gridRef = useRef<HTMLTableElement>(null)
+  const forward = useDirection() === "rtl" ? -1 : 1
   const selected =
     state.layers.find((layer) => layer.id === selectedId) ??
     state.layers.find((layer) => layer.id === state.currentLayerId) ??
     state.layers[0]
+  const current = state.layers.find(
+    (layer) => layer.id === state.currentLayerId
+  )
+  const selectedIsCurrent = selected.id === state.currentLayerId
   const done = () => engine.focusSurface()
   const setCurrent = (id: string) => {
     engine.setCurrentLayer(id, "manager")
@@ -105,149 +125,222 @@ export function LayersControl({
     else if (refusal === "inUse") setDialog({ kind: refusal, name })
     else setDialog({ kind: refusal })
   }
+  const act: Record<ToolbarAction, () => void> = {
+    new: () => {
+      // Its name opens for editing, as AutoCAD's New Layer leaves it.
+      const id = engine.newLayer(selected.id)
+      setSelectedId(id)
+      setColumn(NAME_COLUMN)
+      setRenamingId(id)
+    },
+    // Never disabled: AutoCAD answers a refused delete with its task dialog
+    // (desktop d04-6).
+    delete: () => {
+      if (engine.removeLayer(selected.id)) {
+        setSelectedId(null)
+        done()
+      } else setDialog({ kind: "notDeleted" })
+    },
+    setCurrent: () => setCurrent(selected.id),
+  }
+  const keys: Record<ToolbarAction, string> = {
+    new: t("keys.new"),
+    delete: t("keys.delete"),
+    setCurrent: t("keys.setCurrent"),
+  }
+
+  /** Selects a row and puts the keyboard on one of its cells. */
+  const moveTo = (index: number, to: number) => {
+    const layer =
+      state.layers[Math.max(0, Math.min(index, state.layers.length - 1))]
+    const col = Math.max(0, Math.min(to, COLUMNS.length - 1))
+    setSelectedId(layer.id)
+    setColumn(col)
+    const cell = gridRef.current?.querySelector<HTMLElement>(
+      `tr[data-layer="${CSS.escape(layer.id)}"] > [data-cell="${col}"]`
+    )
+    const target = cell?.hasAttribute("tabindex")
+      ? cell
+      : cell?.querySelector<HTMLElement>("button, input")
+    target?.focus()
+  }
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col">
+    <div
+      // The keys the manager keeps, on its buttons and cells — not in a
+      // field, whose keys the engine leaves it, nor in a portalled list,
+      // whose keys reach it through React. WHY in the capture: React
+      // listens on its root (the document under Next), where the engine
+      // does too, so a stop while bubbling would leave the engine's
+      // listener on that same node to run.
+      onKeyDownCapture={(event) => {
+        const target = event.target as Element
+        if (!event.currentTarget.contains(target)) return
+        if (target.closest("input, textarea")) return
+        const plain = !event.altKey && !event.ctrlKey && !event.metaKey
+        if (event.key === "Escape") {
+          // The keys to the drawing; Escape goes on to the engine, which
+          // cancels as it would there.
+          engine.focusSurface()
+        } else if (plain && (event.key === "Enter" || event.key === " ")) {
+          // The control takes them as a click (its default action, kept),
+          // never the engine's Enter, which repeats the last command; a
+          // cell that is no control does nothing, nor scrolls.
+          event.stopPropagation()
+          if (!target.closest("button")) event.preventDefault()
+        } else if (event.key === "Delete" || event.key === "Backspace") {
+          // Never ERASE's: the selection in the drawing is not here.
+          event.preventDefault()
+          event.stopPropagation()
+        } else if (plain && event.key.length === 1) {
+          // A letter types a command, as on the drawing, where its Enter
+          // will then run it.
+          engine.focusSurface()
+        } else if (event.altKey && !event.ctrlKey && !event.metaKey) {
+          // AutoCAD's Alt keys (`&New Layer (Alt+N)`), each language its
+          // own letter.
+          const action = (Object.keys(keys) as ToolbarAction[]).find((key) =>
+            isAltKey(event, keys[key])
+          )
+          if (!action || (action === "setCurrent" && selectedIsCurrent)) return
+          event.preventDefault()
+          event.stopPropagation()
+          act[action]()
+        }
+      }}
+      className="flex min-h-0 flex-1 flex-col"
+    >
+      <div className="shrink-0 px-3 pt-1.5 break-words">
+        {t("currentLayer", { name: current?.name ?? "" })}
+      </div>
       <div
-        role="toolbar"
+        role="group"
         aria-label={t("title")}
-        className="flex shrink-0 items-center gap-1 border-b border-border/60 p-1"
+        className="flex shrink-0 items-center gap-1 px-2 py-1"
       >
         <ToolbarButton
-          label={t("new")}
-          onClick={() => {
-            // Its name opens for editing, as AutoCAD's New Layer leaves it.
-            const id = engine.newLayer(selected.id)
-            setSelectedId(id)
-            setRenamingId(id)
-          }}
+          label={t("newLayer")}
+          shortcut={t("withKey", { label: t("newLayer"), key: keys.new })}
+          altKey={keys.new}
+          onClick={act.new}
         >
           <Plus />
         </ToolbarButton>
-        {/* Never disabled: AutoCAD answers a refused delete with its task
-            dialog (desktop d04-6). */}
         <ToolbarButton
-          label={t("delete")}
-          onClick={() => {
-            if (engine.removeLayer(selected.id)) {
-              setSelectedId(null)
-              done()
-            } else setDialog({ kind: "notDeleted" })
-          }}
+          label={t("deleteLayer")}
+          shortcut={t("withKey", {
+            label: t("deleteLayer"),
+            key: keys.delete,
+          })}
+          altKey={keys.delete}
+          onClick={act.delete}
         >
           <Trash2 />
         </ToolbarButton>
         <ToolbarButton
-          label={t("setCurrent")}
-          disabled={selected.id === state.currentLayerId}
-          onClick={() => setCurrent(selected.id)}
+          label={t("setCurrentLayer")}
+          shortcut={t("withKey", {
+            label: t("setCurrentLayer"),
+            key: keys.setCurrent,
+          })}
+          altKey={keys.setCurrent}
+          disabled={selectedIsCurrent}
+          onClick={act.setCurrent}
         >
           <Check />
         </ToolbarButton>
       </div>
 
-      <div className="flex min-h-0 flex-1 flex-col">
-        <div className="relative flex min-h-0 flex-col">
-          {/* Focusable, so a click on a row gives the list the keyboard and
-              F2 renames there, as the help says; F2 elsewhere is the
-              history. Stopped here, it never reaches the engine's listener
-              on the document. */}
-          <div
-            ref={scrollRef}
-            tabIndex={-1}
-            onKeyDown={(event) => {
-              if (event.key !== "F2") return
-              event.preventDefault()
-              event.stopPropagation()
-              if (renamingId === null) startRename(selected)
-            }}
-            onScroll={track}
-            data-scrolled={before || undefined}
-            // Columns snap against the frozen Name, never cut in half by it.
-            style={{ scrollPaddingInlineStart: gutters.frozen }}
-            className="group/scroll min-h-0 snap-x snap-mandatory overflow-auto outline-none"
-          >
-            <table
-              aria-label={t("list")}
-              className="w-max min-w-full border-separate border-spacing-0"
-            >
-              <thead className="text-muted-foreground">
-                <tr>
-                  <Header className="w-8">{t("columns.status")}</Header>
-                  <Header
-                    ref={frozenRef}
-                    className={cn("w-32", FROZEN_HEADER, FROZEN_EDGE)}
-                  >
-                    {t("columns.name")}
-                  </Header>
-                  <Header className="w-9">{t("columns.on")}</Header>
-                  <Header className="w-9">{t("columns.lock")}</Header>
-                  <Header className="w-24">{t("columns.color")}</Header>
-                  <Header className="w-28">{t("columns.linetype")}</Header>
-                  <Header className="w-24">{t("columns.lineweight")}</Header>
-                  <Header className="w-14 text-end">
-                    {t("columns.objects")}
-                  </Header>
-                </tr>
-              </thead>
-              <tbody>
-                {state.layers.map((layer) => (
-                  <LayerRow
-                    key={layer.id}
-                    engine={engine}
-                    layer={layer}
-                    names={state.names}
-                    linetypes={state.linetypes}
-                    isCurrent={layer.id === state.currentLayerId}
-                    isSelected={layer.id === selected.id}
-                    renaming={layer.id === renamingId}
-                    onSelect={() => setSelectedId(layer.id)}
-                    onSetCurrent={() => setCurrent(layer.id)}
-                    onStartRename={() => startRename(layer)}
-                    onRename={(name) => rename(layer, name)}
-                    onTurnOffCurrent={() =>
-                      setDialog({ kind: "currentOff", id: layer.id })
-                    }
-                  />
-                ))}
-              </tbody>
-            </table>
-          </div>
-          {before && (
-            // On the frozen Name's header, whose end is empty: past it the
-            // chevron would cover the first visible column's name.
-            <ScrollCue
-              side="start"
-              label={t("previousColumns")}
-              style={{
-                insetInlineStart: Math.max(0, gutters.frozen - CUE_SIZE),
-              }}
-              onClick={() => {
-                page(-1)
-                done()
-              }}
-            />
-          )}
-          {after && (
-            <>
-              <div
-                aria-hidden
-                style={{ insetInlineEnd: gutters.end, bottom: gutters.bottom }}
-                className="pointer-events-none absolute top-0 z-30 w-8 bg-linear-to-l from-card rtl:bg-linear-to-r"
-              />
-              <ScrollCue
-                side="end"
-                label={t("nextColumns")}
-                style={{ insetInlineEnd: gutters.end }}
-                onClick={() => {
-                  page(1)
-                  done()
+      {/* The grid scrolls both ways inside the palette; its columns keep
+          their widths, never squeezed or cut. */}
+      <div className="min-h-0 flex-1 scroll-pt-7 overflow-auto border-y border-border/60">
+        <table
+          ref={gridRef}
+          role="grid"
+          aria-label={t("list")}
+          // In the capture, as the manager's keys (above).
+          onKeyDownCapture={(event) => {
+            const target = event.target as HTMLElement
+            // A portalled list's keys reach the grid through React: its own.
+            if (!event.currentTarget.contains(target)) return
+            if (target.closest("[data-rename]")) return
+            const row = state.layers.indexOf(selected)
+            const step: Record<string, () => void> = {
+              ArrowUp: () => moveTo(row - 1, column),
+              ArrowDown: () => moveTo(row + 1, column),
+              ArrowLeft: () => moveTo(row, column - forward),
+              ArrowRight: () => moveTo(row, column + forward),
+              Home: () => (event.ctrlKey ? moveTo(0, column) : moveTo(row, 0)),
+              End: () =>
+                event.ctrlKey
+                  ? moveTo(state.layers.length - 1, column)
+                  : moveTo(row, COLUMNS.length - 1),
+              // F2 renames there, as the help says; elsewhere it is the
+              // history.
+              F2: () => {
+                if (renamingId === null) startRename(selected)
+              },
+            }
+            const run = step[event.key]
+            if (!run || event.altKey) return
+            event.preventDefault()
+            event.stopPropagation()
+            run()
+          }}
+          className="w-max min-w-full border-separate border-spacing-0"
+        >
+          <thead className="text-muted-foreground">
+            <tr>
+              <Header>{t("columns.status")}</Header>
+              <Header className="min-w-32" sort="ascending">
+                {t("columns.name")}
+              </Header>
+              <Header>{t("columns.on")}</Header>
+              <Header>{t("columns.lock")}</Header>
+              <Header className="min-w-24">{t("columns.color")}</Header>
+              <Header className="min-w-28">{t("columns.linetype")}</Header>
+              <Header className="min-w-24">{t("columns.lineweight")}</Header>
+            </tr>
+          </thead>
+          <tbody>
+            {state.layers.map((layer) => (
+              <LayerRow
+                key={layer.id}
+                engine={engine}
+                layer={layer}
+                names={state.names}
+                linetypes={state.linetypes}
+                isCurrent={layer.id === state.currentLayerId}
+                isSelected={layer.id === selected.id}
+                column={layer.id === selected.id ? column : null}
+                renaming={layer.id === renamingId}
+                onSelect={(col) => {
+                  setSelectedId(layer.id)
+                  if (col !== null) setColumn(col)
                 }}
+                onSetCurrent={() => setCurrent(layer.id)}
+                onStartRename={() => startRename(layer)}
+                onRename={(name) => rename(layer, name)}
+                onTurnOffCurrent={() =>
+                  setDialog({ kind: "currentOff", id: layer.id })
+                }
               />
-            </>
-          )}
-        </div>
+            ))}
+          </tbody>
+        </table>
       </div>
+      <StatusLine
+        full={t("status", {
+          filter: t("all"),
+          shown: state.layers.length,
+          total: state.layers.length,
+        })}
+        short={t("statusShort", {
+          filter: t("all"),
+          shown: state.layers.length,
+          total: state.layers.length,
+        })}
+      />
       <LayerDialog
         dialog={dialog}
         onTurnOff={(id) => engine.updateLayer(id, { visible: false })}
@@ -258,122 +351,76 @@ export function LayersControl({
   )
 }
 
-/** The frozen Name column, opaque so the others scroll beneath it. */
-const FROZEN_HEADER = "start-0 z-20 snap-align-none"
-const FROZEN_CELL = "sticky start-0 z-1"
-
-/** The frozen column's edge, shadowed once a column has gone beneath it. */
-const FROZEN_EDGE =
-  "group-data-scrolled/scroll:shadow-[6px_0_6px_-6px_rgb(0_0_0/0.45)] rtl:group-data-scrolled/scroll:shadow-[-6px_0_6px_-6px_rgb(0_0_0/0.45)]"
-
 /**
- * Tracks the list's sideways scroll: whether columns lie before the visible
- * ones (gone under the frozen Name) or after them, and the widths the cues
- * are placed by — the frozen column's and the scroll bars'.
+ * Whether a key is Alt with the given letter: the character the layout
+ * types (Russian's `Д`), or a Latin letter's physical key, as Option types
+ * another character on a Mac.
  */
-function useSidewaysScroll() {
-  const scrollRef = useRef<HTMLDivElement>(null)
-  const frozenRef = useRef<HTMLTableCellElement>(null)
-  const forward = useDirection() === "rtl" ? -1 : 1
-  const [before, setBefore] = useState(false)
-  const [after, setAfter] = useState(false)
-  const [gutters, setGutters] = useState({ frozen: 0, end: 0, bottom: 0 })
-
-  const track = () => {
-    const el = scrollRef.current
-    if (!el) return
-    // Negative in a right-to-left page.
-    const offset = Math.abs(el.scrollLeft)
-    setBefore(offset > 0)
-    setAfter(offset + el.clientWidth < el.scrollWidth - 1)
-  }
-
-  /** Scrolls a page of columns towards the end (1) or the start (-1). */
-  const page = (towards: 1 | -1) => {
-    const el = scrollRef.current
-    if (!el) return
-    const visible = el.clientWidth - (frozenRef.current?.offsetWidth ?? 0)
-    el.scrollBy({ left: towards * forward * visible, behavior: "smooth" })
-  }
-
-  useLayoutEffect(() => {
-    const el = scrollRef.current
-    if (!el) return
-    const measure = () => {
-      track()
-      const frozen = frozenRef.current?.offsetWidth ?? 0
-      const end = el.offsetWidth - el.clientWidth
-      const bottom = el.offsetHeight - el.clientHeight
-      setGutters((g) =>
-        g.frozen === frozen && g.end === end && g.bottom === bottom
-          ? g
-          : { frozen, end, bottom }
-      )
-    }
-    measure()
-    // The table resizes with its rows and the language, the list with the
-    // panel; either can bring a scroll bar or take it away.
-    const observer = new ResizeObserver(measure)
-    observer.observe(el)
-    if (el.firstElementChild) observer.observe(el.firstElementChild)
-    return () => observer.disconnect()
-  }, [])
-
-  return { scrollRef, frozenRef, before, after, gutters, track, page }
+function isAltKey(event: React.KeyboardEvent, letter: string): boolean {
+  if (event.key.toLowerCase() === letter.toLowerCase()) return true
+  return (
+    /^[A-Za-z]$/.test(letter) && event.code === `Key${letter.toUpperCase()}`
+  )
 }
 
-/** The chevrons' side, in px: an icon button, as tall as the header row. */
-const CUE_SIZE = 28
-
-/** A chevron in the header row that scrolls a page of columns its way. */
-function ScrollCue({
-  side,
-  label,
-  style,
-  onClick,
+/**
+ * The status line under the grid, AutoCAD's `All: 2 layers displayed of 2
+ * total layers`; where the palette is too narrow for it, AcLayer's shorter
+ * wording (`OverallStatusText_Shortening`, `All: 2 of 2 total`).
+ */
+function StatusLine({
+  full,
+  short,
 }: {
-  side: "start" | "end"
-  label: string
-  style: React.CSSProperties
-  onClick: () => void
-}) {
-  const Chevron = side === "end" ? ChevronRight : ChevronLeft
+  full: string
+  short: string
+}): ReactElement {
+  const boxRef = useRef<HTMLDivElement>(null)
+  const fullRef = useRef<HTMLSpanElement>(null)
+  const [fits, setFits] = useState(true)
+  useLayoutEffect(() => {
+    const box = boxRef.current
+    const text = fullRef.current
+    if (!box || !text) return
+    const measure = () => setFits(text.offsetWidth <= box.clientWidth)
+    measure()
+    // The text too: it widens when the web font replaces the fallback.
+    const observer = new ResizeObserver(measure)
+    observer.observe(box)
+    observer.observe(text)
+    return () => observer.disconnect()
+  }, [full])
   return (
-    <Tooltip>
-      <TooltipTrigger
-        render={
-          <Button
-            size="icon"
-            variant="ghost"
-            aria-label={label}
-            onClick={onClick}
-            style={style}
-            className="absolute top-0 z-30 bg-card text-muted-foreground hover:text-foreground"
-          >
-            <Chevron className="rtl:-scale-x-100" />
-          </Button>
-        }
-      />
-      <TooltipContent side="top">{label}</TooltipContent>
-    </Tooltip>
+    <div className="shrink-0 px-3 py-1.5">
+      <div
+        ref={boxRef}
+        role="status"
+        className="relative overflow-hidden whitespace-nowrap"
+      >
+        <span ref={fullRef} aria-hidden className="invisible absolute">
+          {full}
+        </span>
+        {fits ? full : short}
+      </div>
+    </div>
   )
 }
 
 function Header({
-  ref,
   className,
+  sort,
   children,
 }: {
-  ref?: React.Ref<HTMLTableCellElement>
   className?: string
+  sort?: "ascending"
   children: React.ReactNode
 }) {
   return (
     <th
-      ref={ref}
       scope="col"
+      aria-sort={sort}
       className={cn(
-        "sticky top-0 z-10 h-7 snap-start border-b border-border/60 bg-card px-1.5 text-start text-ui whitespace-nowrap",
+        "sticky top-0 z-10 h-7 border-b border-border/60 bg-card px-1.5 text-start text-ui whitespace-nowrap",
         className
       )}
     >
@@ -384,11 +431,16 @@ function Header({
 
 function ToolbarButton({
   label,
+  shortcut,
+  altKey,
   disabled = false,
   onClick,
   children,
 }: {
   label: string
+  /** The tooltip, AutoCAD's: the label and its Alt key. */
+  shortcut: string
+  altKey: string
   disabled?: boolean
   onClick: () => void
   children: React.ReactNode
@@ -401,6 +453,7 @@ function ToolbarButton({
             size="icon"
             variant="ghost"
             aria-label={label}
+            aria-keyshortcuts={`Alt+${altKey}`}
             disabled={disabled}
             onClick={onClick}
           >
@@ -408,7 +461,7 @@ function ToolbarButton({
           </Button>
         }
       />
-      <TooltipContent side="bottom">{label}</TooltipContent>
+      <TooltipContent side="bottom">{shortcut}</TooltipContent>
     </Tooltip>
   )
 }
@@ -420,6 +473,7 @@ function LayerRow({
   linetypes,
   isCurrent,
   isSelected,
+  column,
   renaming,
   onSelect,
   onSetCurrent,
@@ -433,8 +487,11 @@ function LayerRow({
   linetypes: readonly Linetype[]
   isCurrent: boolean
   isSelected: boolean
+  /** The cell that is the grid's tab stop, on the selected row alone. */
+  column: number | null
   renaming: boolean
-  onSelect: () => void
+  /** Selects the row, and makes `column` the grid's cell when not null. */
+  onSelect: (column: number | null) => void
   onSetCurrent: () => void
   onStartRename: () => void
   onRename: (name: string | null) => void
@@ -442,20 +499,27 @@ function LayerRow({
   onTurnOffCurrent: () => void
 }) {
   const t = useEditorText("Layers")
-  const done = () => engine.focusSurface()
   const toDrawing = drawingFocus(engine)
-  // The row's tint, painted on the frozen cell's opaque ground: the row's own
-  // would show through the columns scrolled beneath it.
-  const frozen = cn(
-    FROZEN_CELL,
-    isSelected
-      ? "bg-accent"
-      : "bg-card group-hover/row:bg-linear-to-r group-hover/row:from-accent/40 group-hover/row:to-accent/40"
-  )
+  // After each edit the keyboard is the drawing's, a key's as a click's
+  // (ui.md); the arrows only move in the grid.
+  const done = () => engine.focusSurface()
+  const stop = (col: number) => (column === col ? 0 : -1)
+  const cell = (name: (typeof COLUMNS)[number]) => ({
+    role: "gridcell",
+    "data-cell": COLUMNS.indexOf(name),
+  })
 
   return (
     <tr
-      onClick={onSelect}
+      data-layer={layer.id}
+      onClick={() => onSelect(null)}
+      onFocus={(event) => {
+        if (!event.currentTarget.contains(event.target)) return
+        const at = (event.target as HTMLElement).closest<HTMLElement>(
+          "[data-cell]"
+        )
+        onSelect(at ? Number(at.dataset.cell) : null)
+      }}
       onDoubleClick={(event) => {
         // A double-click on a control of the row is that control's.
         if ((event.target as HTMLElement).closest("button, input, label"))
@@ -463,38 +527,43 @@ function LayerRow({
         onSetCurrent()
       }}
       aria-selected={isSelected}
-      className={cn(
-        "group/row h-7",
-        isSelected ? "bg-accent" : "hover:bg-accent/40"
-      )}
+      className={cn("h-7", isSelected ? "bg-accent" : "hover:bg-accent/40")}
     >
-      <td className="px-1.5">
-        {/* AutoCAD's check mark on the current layer, in the one accent. */}
-        <Check
-          aria-label={isCurrent ? t("current") : undefined}
-          aria-hidden={!isCurrent}
-          className={cn("size-4 text-active", !isCurrent && "invisible")}
-        />
+      <td
+        {...cell("status")}
+        tabIndex={stop(COLUMNS.indexOf("status"))}
+        className="px-1.5 outline-none focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:ring-inset"
+      >
+        {/* AutoCAD's check mark on the current layer, in the one accent;
+            every other layer shows as in use, as AutoCAD's does while
+            Indicate Layers in Use is off, its default. */}
+        {isCurrent ? (
+          <Check aria-label={t("current")} className="size-4 text-active" />
+        ) : (
+          <Layers aria-hidden className="size-4 text-muted-foreground" />
+        )}
       </td>
 
-      <td className={cn("max-w-32 px-0.5", frozen, FROZEN_EDGE)}>
+      <td {...cell("name")} className="px-0.5">
         <NameField
           name={layer.name}
           editing={renaming}
           selected={isSelected}
+          tabIndex={stop(COLUMNS.indexOf("name"))}
           onSetCurrent={onSetCurrent}
           onStartRename={onStartRename}
           onRename={onRename}
         />
       </td>
 
-      <td className="px-0.5">
+      <td {...cell("on")} className="px-0.5">
         <IconToggle
           onLabel={t("on")}
           offLabel={t("off")}
           on={layer.visible}
-          OnIcon={Eye}
-          OffIcon={EyeOff}
+          OnIcon={Lightbulb}
+          OffIcon={LightbulbOff}
+          tabIndex={stop(COLUMNS.indexOf("on"))}
           onToggle={() => {
             if (isCurrent && layer.visible) {
               onTurnOffCurrent()
@@ -506,13 +575,14 @@ function LayerRow({
         />
       </td>
 
-      <td className="px-0.5">
+      <td {...cell("lock")} className="px-0.5">
         <IconToggle
           onLabel={t("unlocked")}
           offLabel={t("locked")}
           on={!layer.locked}
           OnIcon={LockOpen}
           OffIcon={Lock}
+          tabIndex={stop(COLUMNS.indexOf("lock"))}
           onToggle={() => {
             engine.updateLayer(layer.id, { locked: !layer.locked })
             done()
@@ -520,21 +590,28 @@ function LayerRow({
         />
       </td>
 
-      <td className="px-1.5">
+      <td {...cell("color")} className="px-1.5">
         {/* The colour's name beside its swatch, as AutoCAD's manager writes
             it (`white`, `red`; desktop d04-1, es e02-1); a numbered or a true
             colour by its number or its RGB (`colorLabel`). */}
         <label
-          className="relative flex cursor-pointer items-center gap-1.5"
-          aria-label={t("colorLabel", { name: layer.name })}
+          className="relative flex cursor-pointer items-center gap-1.5 rounded-sm whitespace-nowrap has-[:focus-visible]:ring-3 has-[:focus-visible]:ring-ring/50"
           title={t("color")}
         >
           <LayerSwatch color={layer.color} />
-          <span className="truncate">
-            {colorLabel(layer.color, names, "layer")}
-          </span>
+          <span>{colorLabel(layer.color, names, "layer")}</span>
           <input
             type="color"
+            // The native `change` comes once the picker closes; React's
+            // onChange is each `input` on the way (one step all the same:
+            // UNDO's Layer folds consecutive layer edits).
+            ref={(input) => {
+              if (!input) return
+              input.addEventListener("change", done)
+              return () => input.removeEventListener("change", done)
+            }}
+            aria-label={t("colorLabel", { name: layer.name })}
+            tabIndex={stop(COLUMNS.indexOf("color"))}
             value={colorRgb(layer.color)}
             onChange={(event) =>
               engine.updateLayer(layer.id, { color: event.target.value })
@@ -544,25 +621,27 @@ function LayerRow({
         </label>
       </td>
 
-      <td className="px-0.5">
+      <td {...cell("linetype")} className="px-0.5">
         <LinetypeSelect
           value={layer.linetype}
           names={names}
           linetypes={linetypes}
+          tabIndex={stop(COLUMNS.indexOf("linetype"))}
           onValueChange={(linetype) => {
             engine.updateLayer(layer.id, { linetype })
             done()
           }}
           ariaLabel={t("linetypeLabel", { name: layer.name })}
           finalFocus={toDrawing}
-          className="w-28 border-0 bg-transparent px-1.5 text-foreground shadow-none hover:bg-accent/40 dark:bg-transparent"
+          className={CELL_SELECT}
         />
       </td>
 
-      <td className="px-0.5">
+      <td {...cell("lineweight")} className="px-0.5">
         <LineweightSelect
           value={layer.lineweight}
           names={names}
+          tabIndex={stop(COLUMNS.indexOf("lineweight"))}
           onValueChange={(lineweight) => {
             if (lineweight !== "ByLayer") {
               engine.updateLayer(layer.id, { lineweight })
@@ -571,31 +650,33 @@ function LayerRow({
           }}
           ariaLabel={t("lineweightLabel", { name: layer.name })}
           finalFocus={toDrawing}
-          className="w-24 border-0 bg-transparent px-1.5 text-foreground shadow-none hover:bg-accent/40 dark:bg-transparent"
+          className={CELL_SELECT}
         />
-      </td>
-
-      <td className="px-1.5 text-end font-mono text-muted-foreground tabular-nums">
-        {layer.entityCount}
       </td>
     </tr>
   )
 }
 
-/** An on/off icon toggle used for visibility and lock. */
+/** A drop-down in a cell: the cell's width, its value never cut. */
+const CELL_SELECT =
+  "w-full border-0 bg-transparent px-1.5 text-foreground shadow-none hover:bg-accent/40 dark:bg-transparent *:data-[slot=select-value]:line-clamp-none"
+
+/** An on/off icon toggle used for On and Lock. */
 function IconToggle({
   on,
   OnIcon,
   OffIcon,
   onLabel,
   offLabel,
+  tabIndex,
   onToggle,
 }: {
   on: boolean
-  OnIcon: typeof Eye
-  OffIcon: typeof Eye
+  OnIcon: typeof Lightbulb
+  OffIcon: typeof Lightbulb
   onLabel: string
   offLabel: string
+  tabIndex: number
   onToggle: () => void
 }) {
   const Icon = on ? OnIcon : OffIcon
@@ -607,6 +688,7 @@ function IconToggle({
             size="icon"
             variant="ghost"
             aria-label={on ? onLabel : offLabel}
+            tabIndex={tabIndex}
             onClick={onToggle}
             className={cn(
               "text-muted-foreground hover:text-foreground",
@@ -631,6 +713,7 @@ function NameField({
   name,
   editing,
   selected,
+  tabIndex,
   onSetCurrent,
   onStartRename,
   onRename,
@@ -638,6 +721,7 @@ function NameField({
   name: string
   editing: boolean
   selected: boolean
+  tabIndex: number
   onSetCurrent: () => void
   onStartRename: () => void
   onRename: (name: string | null) => void
@@ -646,6 +730,7 @@ function NameField({
   const pending = useRef<ReturnType<typeof setTimeout> | null>(null)
   // Escape unmounts the field: its blur must not commit what was typed.
   const cancelled = useRef(false)
+  const wasSelected = useRef(false)
 
   const cancelPending = () => {
     if (pending.current !== null) clearTimeout(pending.current)
@@ -657,6 +742,7 @@ function NameField({
     return (
       <input
         autoFocus
+        data-rename
         aria-label={t("renameLabel", { name })}
         defaultValue={name}
         onFocus={(event) => {
@@ -687,9 +773,16 @@ function NameField({
     <button
       type="button"
       title={t("rename")}
+      tabIndex={tabIndex}
+      // Whether the row was selected before this press: the focus the press
+      // brings selects it before the click comes.
+      onPointerDown={() => {
+        wasSelected.current = selected
+      }}
+      onBlur={cancelPending}
       onClick={(event) => {
         // Only a click on a row already selected renames it.
-        if (!selected || event.detail !== 1) return
+        if (!wasSelected.current || event.detail !== 1) return
         cancelPending()
         pending.current = setTimeout(() => {
           pending.current = null
@@ -701,7 +794,7 @@ function NameField({
         cancelPending()
         onSetCurrent()
       }}
-      className="block w-full cursor-default truncate rounded px-1 py-0.5 text-start"
+      className="block w-full cursor-default rounded px-1 py-0.5 text-start whitespace-nowrap outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
     >
       {name}
     </button>

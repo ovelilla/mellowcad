@@ -380,10 +380,20 @@
   },
   "Layers": {
     "title": "Camadas",
-    "new": "Nova camada",
-    "setCurrentLabel": "Definir {name} como camada atual",
+    "newLayer": "Nova camada",
+    "deleteLayer": "Excluir camada",
+    "setCurrentLayer": "Configurar atual",
+    "keys": {
+      "new": "N",
+      "delete": "D",
+      "setCurrent": "C"
+    },
+    "withKey": "{label} (Alt+{key})",
+    "currentLayer": "Camada atual: {name}",
+    "all": "Todos",
+    "status": "{filter}: {shown, number} camadas exibidas de {total, number} camadas totais",
+    "statusShort": "{filter}: {shown, number} de {total, number} total",
     "current": "Camada atual",
-    "setCurrent": "Definir atual",
     "colorLabel": "Cor de {name}",
     "color": "Cor da camada",
     "linetypeLabel": "Tipo de linha de {name}",
@@ -392,13 +402,9 @@
     "off": "Desativada",
     "unlocked": "Desbloqueada",
     "locked": "Bloqueada",
-    "deleteLabel": "Excluir a camada {name}",
-    "delete": "Excluir camada",
     "rename": "Clique de novo no nome da camada selecionada para renomeá-la",
     "renameLabel": "Renomear a camada {name}",
     "list": "Lista de camadas",
-    "nextColumns": "Próximas colunas",
-    "previousColumns": "Colunas anteriores",
     "dialog": {
       "close": "Fechar",
       "notDeleted": {
@@ -442,8 +448,7 @@
       "lock": "Bloquear",
       "color": "Cor",
       "linetype": "Tipo de linha",
-      "lineweight": "Espessura de linha",
-      "objects": "Objetos"
+      "lineweight": "Espessura de linha"
     }
   },
   "TextStyle": {

@@ -429,16 +429,63 @@ export const es: EditorLocale = {
     },
     "Layers": {
       "title": "Capas",
-      "new": "Nueva capa",
-      "setCurrentLabel": [
-        "Definir ",
+      "newLayer": "Nueva capa",
+      "deleteLayer": "Suprimir capa",
+      "setCurrentLayer": "Definir actual",
+      "keys": {
+        "new": "N",
+        "delete": "U",
+        "setCurrent": "C"
+      },
+      "withKey": [
+        [
+          "label"
+        ],
+        " (Alt+",
+        [
+          "key"
+        ],
+        ")"
+      ],
+      "currentLayer": [
+        "Capa actual: ",
         [
           "name"
+        ]
+      ],
+      "all": "Todas",
+      "status": [
+        [
+          "filter"
         ],
-        " como capa actual"
+        ": ",
+        [
+          "shown",
+          4
+        ],
+        " capas mostradas de ",
+        [
+          "total",
+          4
+        ],
+        " capas totales"
+      ],
+      "statusShort": [
+        [
+          "filter"
+        ],
+        ": ",
+        [
+          "shown",
+          4
+        ],
+        " de un total de ",
+        [
+          "total",
+          4
+        ]
       ],
       "current": "Capa actual",
-      "setCurrent": "Definir actual",
       "colorLabel": [
         "Color de ",
         [
@@ -462,13 +509,6 @@ export const es: EditorLocale = {
       "off": "Desactivada",
       "unlocked": "Desbloqueada",
       "locked": "Bloqueada",
-      "deleteLabel": [
-        "Suprimir la capa ",
-        [
-          "name"
-        ]
-      ],
-      "delete": "Suprimir capa",
       "rename": "Pulse otra vez el nombre de la capa designada para cambiarle el nombre",
       "renameLabel": [
         "Cambiar el nombre de la capa ",
@@ -477,8 +517,6 @@ export const es: EditorLocale = {
         ]
       ],
       "list": "Lista de capas",
-      "nextColumns": "Columnas siguientes",
-      "previousColumns": "Columnas anteriores",
       "dialog": {
         "close": "Cerrar",
         "notDeleted": {
@@ -528,8 +566,7 @@ export const es: EditorLocale = {
         "lock": "Bloquear",
         "color": "Color",
         "linetype": "Tipo de línea",
-        "lineweight": "Grosor de línea",
-        "objects": "Objetos"
+        "lineweight": "Grosor de línea"
       }
     },
     "TextStyle": {

@@ -429,16 +429,64 @@ export const ptBR: EditorLocale = {
     },
     "Layers": {
       "title": "Camadas",
-      "new": "Nova camada",
-      "setCurrentLabel": [
-        "Definir ",
+      "newLayer": "Nova camada",
+      "deleteLayer": "Excluir camada",
+      "setCurrentLayer": "Configurar atual",
+      "keys": {
+        "new": "N",
+        "delete": "D",
+        "setCurrent": "C"
+      },
+      "withKey": [
+        [
+          "label"
+        ],
+        " (Alt+",
+        [
+          "key"
+        ],
+        ")"
+      ],
+      "currentLayer": [
+        "Camada atual: ",
         [
           "name"
+        ]
+      ],
+      "all": "Todos",
+      "status": [
+        [
+          "filter"
         ],
-        " como camada atual"
+        ": ",
+        [
+          "shown",
+          4
+        ],
+        " camadas exibidas de ",
+        [
+          "total",
+          4
+        ],
+        " camadas totais"
+      ],
+      "statusShort": [
+        [
+          "filter"
+        ],
+        ": ",
+        [
+          "shown",
+          4
+        ],
+        " de ",
+        [
+          "total",
+          4
+        ],
+        " total"
       ],
       "current": "Camada atual",
-      "setCurrent": "Definir atual",
       "colorLabel": [
         "Cor de ",
         [
@@ -462,13 +510,6 @@ export const ptBR: EditorLocale = {
       "off": "Desativada",
       "unlocked": "Desbloqueada",
       "locked": "Bloqueada",
-      "deleteLabel": [
-        "Excluir a camada ",
-        [
-          "name"
-        ]
-      ],
-      "delete": "Excluir camada",
       "rename": "Clique de novo no nome da camada selecionada para renomeá-la",
       "renameLabel": [
         "Renomear a camada ",
@@ -477,8 +518,6 @@ export const ptBR: EditorLocale = {
         ]
       ],
       "list": "Lista de camadas",
-      "nextColumns": "Próximas colunas",
-      "previousColumns": "Colunas anteriores",
       "dialog": {
         "close": "Fechar",
         "notDeleted": {
@@ -528,8 +567,7 @@ export const ptBR: EditorLocale = {
         "lock": "Bloquear",
         "color": "Cor",
         "linetype": "Tipo de linha",
-        "lineweight": "Espessura de linha",
-        "objects": "Objetos"
+        "lineweight": "Espessura de linha"
       }
     },
     "TextStyle": {

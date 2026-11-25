@@ -380,10 +380,20 @@
   },
   "Layers": {
     "title": "Capas",
-    "new": "Nueva capa",
-    "setCurrentLabel": "Definir {name} como capa actual",
+    "newLayer": "Nueva capa",
+    "deleteLayer": "Suprimir capa",
+    "setCurrentLayer": "Definir actual",
+    "keys": {
+      "new": "N",
+      "delete": "U",
+      "setCurrent": "C"
+    },
+    "withKey": "{label} (Alt+{key})",
+    "currentLayer": "Capa actual: {name}",
+    "all": "Todas",
+    "status": "{filter}: {shown, number} capas mostradas de {total, number} capas totales",
+    "statusShort": "{filter}: {shown, number} de un total de {total, number}",
     "current": "Capa actual",
-    "setCurrent": "Definir actual",
     "colorLabel": "Color de {name}",
     "color": "Color de capa",
     "linetypeLabel": "Tipo de línea de {name}",
@@ -392,13 +402,9 @@
     "off": "Desactivada",
     "unlocked": "Desbloqueada",
     "locked": "Bloqueada",
-    "deleteLabel": "Suprimir la capa {name}",
-    "delete": "Suprimir capa",
     "rename": "Pulse otra vez el nombre de la capa designada para cambiarle el nombre",
     "renameLabel": "Cambiar el nombre de la capa {name}",
     "list": "Lista de capas",
-    "nextColumns": "Columnas siguientes",
-    "previousColumns": "Columnas anteriores",
     "dialog": {
       "close": "Cerrar",
       "notDeleted": {
@@ -442,8 +448,7 @@
       "lock": "Bloquear",
       "color": "Color",
       "linetype": "Tipo de línea",
-      "lineweight": "Grosor de línea",
-      "objects": "Objetos"
+      "lineweight": "Grosor de línea"
     }
   },
   "TextStyle": {

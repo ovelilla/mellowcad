@@ -380,10 +380,20 @@
   },
   "Layers": {
     "title": "Layer",
-    "new": "Neuer Layer",
-    "setCurrentLabel": "{name} als aktuellen Layer festlegen",
+    "newLayer": "Neuer Layer",
+    "deleteLayer": "Layer löschen",
+    "setCurrentLayer": "Aktuell",
+    "keys": {
+      "new": "N",
+      "delete": "L",
+      "setCurrent": "A"
+    },
+    "withKey": "{label} (Alt+{key})",
+    "currentLayer": "Aktueller Layer: {name}",
+    "all": "ALLE",
+    "status": "{filter}: {shown, number} Layer angezeigt von {total, number} Gesamtlayern",
+    "statusShort": "{filter}: {shown, number} von insgesamt {total, number}",
     "current": "Aktueller Layer",
-    "setCurrent": "Als aktuell festlegen",
     "colorLabel": "Farbe von {name}",
     "color": "Layerfarbe",
     "linetypeLabel": "Linientyp von {name}",
@@ -392,13 +402,9 @@
     "off": "Aus",
     "unlocked": "Ungesperrt",
     "locked": "Gesperrt",
-    "deleteLabel": "Layer {name} löschen",
-    "delete": "Layer löschen",
     "rename": "Erneut auf den Namen des ausgewählten Layers klicken, um ihn umzubenennen",
     "renameLabel": "Layer {name} umbenennen",
     "list": "Layerliste",
-    "nextColumns": "Nächste Spalten",
-    "previousColumns": "Vorherige Spalten",
     "dialog": {
       "close": "Schließen",
       "notDeleted": {
@@ -442,8 +448,7 @@
       "lock": "Sperre",
       "color": "Farbe",
       "linetype": "Linientyp",
-      "lineweight": "Linienstärke",
-      "objects": "Objekte"
+      "lineweight": "Linienstärke"
     }
   },
   "TextStyle": {

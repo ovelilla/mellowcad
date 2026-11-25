@@ -380,10 +380,20 @@
   },
   "Layers": {
     "title": "الطبقات",
-    "new": "طبقة جديدة",
-    "setCurrentLabel": "تعيين ⁨{name}⁩ طبقةً حالية",
+    "newLayer": "طبقة جديدة",
+    "deleteLayer": "حذف الطبقة",
+    "setCurrentLayer": "تعيين طبقةً حالية",
+    "keys": {
+      "new": "N",
+      "delete": "D",
+      "setCurrent": "C"
+    },
+    "withKey": "{label} (⁨Alt+{key}⁩)",
+    "currentLayer": "الطبقة الحالية: ⁨{name}⁩",
+    "all": "الكل",
+    "status": "{filter}: {shown, plural, zero {لا طبقات معروضة} one {طبقة واحدة معروضة} two {طبقتان معروضتان} few {# طبقات معروضة} many {# طبقةً معروضة} other {# طبقة معروضة}} من أصل {total, number}",
+    "statusShort": "{filter}: {shown, number} من أصل {total, number}",
     "current": "الطبقة الحالية",
-    "setCurrent": "تعيين طبقةً حالية",
     "colorLabel": "لون ⁨{name}⁩",
     "color": "لون الطبقة",
     "linetypeLabel": "نوع خط ⁨{name}⁩",
@@ -392,13 +402,9 @@
     "off": "مخفية",
     "unlocked": "غير مقفلة",
     "locked": "مقفلة",
-    "deleteLabel": "حذف الطبقة ⁨{name}⁩",
-    "delete": "حذف الطبقة",
     "rename": "انقر اسم الطبقة المحددة مرة أخرى لإعادة تسميتها",
     "renameLabel": "إعادة تسمية الطبقة ⁨{name}⁩",
     "list": "قائمة الطبقات",
-    "nextColumns": "الأعمدة التالية",
-    "previousColumns": "الأعمدة السابقة",
     "dialog": {
       "close": "إغلاق",
       "notDeleted": {
@@ -442,8 +448,7 @@
       "lock": "قفل",
       "color": "اللون",
       "linetype": "نوع الخط",
-      "lineweight": "وزن الخط",
-      "objects": "العناصر"
+      "lineweight": "وزن الخط"
     }
   },
   "TextStyle": {

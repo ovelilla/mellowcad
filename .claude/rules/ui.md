@@ -11,8 +11,8 @@ paths:
 
 > Verified against **@base-ui/react 1.9.0**, **cn 0.5.2**, **lucide-react 1.74.0**.
 
-**The layout follows AutoCAD 2027** (owner, 2026-11-07): the ribbon, the application menu, the
-palettes and the bars in AutoCAD's places, order and states, with our own icons and no Autodesk
+**The layout follows AutoCAD 2027** (owner, 2026-11-07): every zone in AutoCAD's place, order and
+state, with our own icons and no Autodesk
 mark. A size, a test or a WHY below that defends the current layout against AutoCAD's yields to it
 and changes in the same commit (`docs/next-autocad-ui.md`).
 
@@ -59,8 +59,8 @@ and `DrawEditor` takes it, deletes it, drops the query (a reload or a language l
 again) and opens it with the engine's `openFile`, as OPEN opens a pick: into the editor's own
 drawing, which it replaces.
 
-**`/draw#run=<script>` types a script** (an MCP answer's link; why each choice, in
-`lib/script-link.ts` and `lib/command-script.ts`): in one place of its own with its script
+**`/draw#run=<script>` types a script** (an MCP answer's link; the whys in
+`lib/script-link.ts`, `lib/command-script.ts`): in one place of its own with its script
 (`mellowcad:run:v1`, FROZEN), never the autosave, typed once per script through the MCP server's
 own `runScript`, so the link draws what the server drew. It wins over `?drawing=` and `?open=`;
 the language links keep it.
@@ -223,7 +223,7 @@ the ribbon, the bottom row from phase 4. **28 px**, icons 16, for the rest one p
   stacking context that traps a z-index set inside it.
 - A `Portal` takes `container={usePortalContainer()}` (ESLint): in Base UI's default, `<body>`, the
   root's tokens, `dir` and `lang` miss the popup.
-- Radix's asChild is the `render` prop (`<Tooltip.Trigger render={<Button …/>} />`).
+- Radix's asChild is the `render` prop.
 - `Select.Root` needs `items` (a value→label record) for the closed trigger to show the label, not
   the raw value. `onValueChange` can deliver `null`: guard before committing. A drop-down in a bar
   passes `below` (`alignItemWithTrigger` off), or its list covers its trigger.
@@ -243,6 +243,8 @@ the ribbon, the bottom row from phase 4. **28 px**, icons 16, for the rest one p
   dialog: `finalFocus={false}` and `focusSurface` on `onOpenChangeComplete`.
 - **React hands a portalled popup's events to what rendered it**: an ancestor's `onWheel` too,
   a palette's title bar's drag (`ownPress`).
+- **React listens on its root (Next's `document`), as the engine does**: a key a palette keeps
+  stops in `onKeyDownCapture`, or the engine's runs it too.
 - `Panel` (`toolbar-primitives.tsx`) does **not** forward props: `<PopoverTrigger render={<Panel>…} />`
   drops the click handler and the popover silently never opens. Render the `Button` as the trigger
   and wrap the whole `Popover` in the `Panel`.
@@ -318,9 +320,9 @@ Anything that **draws drawing content** (a block thumbnail) asks the engine for 
 (`engine.buildBlockPreview(...)`) and paints it with `CanvasScenePresenter`. Never walk entities in
 a component: a preview built a second way can disagree with the drawing.
 
-A popover that remains (a status-bar menu) closes on a click on the canvas, and the canvas handler
-runs _before_ the dismiss — a guard on "is the command still running?" already reads false. What
-must stay up while one draws belongs in a palette.
+A popover that remains (a status-bar menu) closes on a click on the canvas after the canvas
+handler ran: a guard on "is the command still running?" reads false. What must stay up while one
+draws is a palette.
 
 ## Icons
 

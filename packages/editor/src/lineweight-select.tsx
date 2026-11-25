@@ -37,6 +37,7 @@ export function LineweightSelect({
   disabled = false,
   below = false,
   finalFocus,
+  tabIndex,
 }: {
   value: number | "ByLayer" | null
   /** The engine's name for ByLayer. */
@@ -54,6 +55,8 @@ export function LineweightSelect({
   below?: boolean
   /** Where focus goes once the list has closed; the trigger, when omitted. */
   finalFocus?: SelectFinalFocus
+  /** A grid's roving tab stop (the layer manager's). */
+  tabIndex?: number
 }): ReactElement {
   const t = useEditorText("Properties")
   return (
@@ -65,7 +68,9 @@ export function LineweightSelect({
         ...Object.fromEntries(
           LINEWEIGHTS.map((lineweight) => [
             String(lineweight),
-            lineweightLabel(lineweight),
+            // A value with its unit, isolated left to right: an Arabic page
+            // read `mm 0.25` (ui.md, "Right to left").
+            `⁦${lineweightLabel(lineweight)}⁩`,
           ])
         ),
       }}
@@ -78,7 +83,11 @@ export function LineweightSelect({
         )
       }}
     >
-      <SelectTrigger aria-label={ariaLabel} className={className}>
+      <SelectTrigger
+        aria-label={ariaLabel}
+        tabIndex={tabIndex}
+        className={className}
+      >
         <SelectValue placeholder={t("varies")} />
       </SelectTrigger>
       <SelectContent
@@ -95,7 +104,7 @@ export function LineweightSelect({
         {LINEWEIGHTS.map((lineweight) => (
           <SelectItem key={lineweight} value={String(lineweight)}>
             <LineweightPreview millimetres={lineweight} />
-            {lineweightLabel(lineweight)}
+            <span dir="ltr">{lineweightLabel(lineweight)}</span>
           </SelectItem>
         ))}
       </SelectContent>

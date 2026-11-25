@@ -425,15 +425,63 @@ export const de: EditorLocale = {
     },
     "Layers": {
       "title": "Layer",
-      "new": "Neuer Layer",
-      "setCurrentLabel": [
+      "newLayer": "Neuer Layer",
+      "deleteLayer": "Layer löschen",
+      "setCurrentLayer": "Aktuell",
+      "keys": {
+        "new": "N",
+        "delete": "L",
+        "setCurrent": "A"
+      },
+      "withKey": [
+        [
+          "label"
+        ],
+        " (Alt+",
+        [
+          "key"
+        ],
+        ")"
+      ],
+      "currentLayer": [
+        "Aktueller Layer: ",
         [
           "name"
+        ]
+      ],
+      "all": "ALLE",
+      "status": [
+        [
+          "filter"
         ],
-        " als aktuellen Layer festlegen"
+        ": ",
+        [
+          "shown",
+          4
+        ],
+        " Layer angezeigt von ",
+        [
+          "total",
+          4
+        ],
+        " Gesamtlayern"
+      ],
+      "statusShort": [
+        [
+          "filter"
+        ],
+        ": ",
+        [
+          "shown",
+          4
+        ],
+        " von insgesamt ",
+        [
+          "total",
+          4
+        ]
       ],
       "current": "Aktueller Layer",
-      "setCurrent": "Als aktuell festlegen",
       "colorLabel": [
         "Farbe von ",
         [
@@ -457,14 +505,6 @@ export const de: EditorLocale = {
       "off": "Aus",
       "unlocked": "Ungesperrt",
       "locked": "Gesperrt",
-      "deleteLabel": [
-        "Layer ",
-        [
-          "name"
-        ],
-        " löschen"
-      ],
-      "delete": "Layer löschen",
       "rename": "Erneut auf den Namen des ausgewählten Layers klicken, um ihn umzubenennen",
       "renameLabel": [
         "Layer ",
@@ -474,8 +514,6 @@ export const de: EditorLocale = {
         " umbenennen"
       ],
       "list": "Layerliste",
-      "nextColumns": "Nächste Spalten",
-      "previousColumns": "Vorherige Spalten",
       "dialog": {
         "close": "Schließen",
         "notDeleted": {
@@ -525,8 +563,7 @@ export const de: EditorLocale = {
         "lock": "Sperre",
         "color": "Farbe",
         "linetype": "Linientyp",
-        "lineweight": "Linienstärke",
-        "objects": "Objekte"
+        "lineweight": "Linienstärke"
       }
     },
     "TextStyle": {

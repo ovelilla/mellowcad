@@ -380,10 +380,20 @@
   },
   "Layers": {
     "title": "Warstwy",
-    "new": "Nowa warstwa",
-    "setCurrentLabel": "Ustaw warstwę {name} jako bieżącą",
+    "newLayer": "Nowa warstwa",
+    "deleteLayer": "Usuń warstwę",
+    "setCurrentLayer": "Ustaw bieżącą",
+    "keys": {
+      "new": "N",
+      "delete": "U",
+      "setCurrent": "S"
+    },
+    "withKey": "{label} (Alt+{key})",
+    "currentLayer": "Bieżąca warstwa: {name}",
+    "all": "Wszystko",
+    "status": "{filter}: wyświetlono warstw {shown, number} z ogólnej liczby warstw: {total, number}",
+    "statusShort": "{filter}: {shown, number} z {total, number} łącznie",
     "current": "Bieżąca warstwa",
-    "setCurrent": "Ustaw bieżącą",
     "colorLabel": "Kolor warstwy {name}",
     "color": "Kolor warstwy",
     "linetypeLabel": "Rodzaj linii warstwy {name}",
@@ -392,13 +402,9 @@
     "off": "Wyłączona",
     "unlocked": "Odblokowana",
     "locked": "Zablokowana",
-    "deleteLabel": "Usuń warstwę {name}",
-    "delete": "Usuń warstwę",
     "rename": "Kliknij ponownie nazwę wybranej warstwy, aby ją zmienić",
     "renameLabel": "Zmień nazwę warstwy {name}",
     "list": "Lista warstw",
-    "nextColumns": "Następne kolumny",
-    "previousColumns": "Poprzednie kolumny",
     "dialog": {
       "close": "Zamknij",
       "notDeleted": {
@@ -442,8 +448,7 @@
       "lock": "Zamknięcie",
       "color": "Kolor",
       "linetype": "Rodzaj linii",
-      "lineweight": "Szerokość linii",
-      "objects": "Obiekty"
+      "lineweight": "Szerokość linii"
     }
   },
   "TextStyle": {

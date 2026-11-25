@@ -380,10 +380,20 @@
   },
   "Layers": {
     "title": "Fóliák",
-    "new": "Új fólia",
-    "setCurrentLabel": "A(z) {name} fólia aktuálissá tétele",
+    "newLayer": "Új fólia",
+    "deleteLayer": "Fólia törlése",
+    "setCurrentLayer": "Aktuálissá tétel",
+    "keys": {
+      "new": "J",
+      "delete": "R",
+      "setCurrent": "A"
+    },
+    "withKey": "{label} (Alt+{key})",
+    "currentLayer": "Aktuális fólia: {name}",
+    "all": "Mind",
+    "status": "{filter}: {shown, number} fólia megjelenítve, {total, number} fólia összesen",
+    "statusShort": "{filter}: {shown, number} az összesből ({total, number})",
     "current": "Aktuális fólia",
-    "setCurrent": "Aktuálissá tétel",
     "colorLabel": "A(z) {name} fólia színe",
     "color": "Fólia színe",
     "linetypeLabel": "A(z) {name} fólia vonaltípusa",
@@ -392,13 +402,9 @@
     "off": "Ki",
     "unlocked": "Felszabadított",
     "locked": "Zárolt",
-    "deleteLabel": "A(z) {name} fólia törlése",
-    "delete": "Fólia törlése",
     "rename": "A fólia átnevezéséhez kattintson ismét a kijelölt fólia nevére",
     "renameLabel": "A(z) {name} fólia átnevezése",
     "list": "Fóliák listája",
-    "nextColumns": "Következő oszlopok",
-    "previousColumns": "Előző oszlopok",
     "dialog": {
       "close": "Bezárás",
       "notDeleted": {
@@ -442,8 +448,7 @@
       "lock": "Zárolás",
       "color": "Szín",
       "linetype": "Vonaltípus",
-      "lineweight": "Vonalvastagság",
-      "objects": "Objektumok"
+      "lineweight": "Vonalvastagság"
     }
   },
   "TextStyle": {
