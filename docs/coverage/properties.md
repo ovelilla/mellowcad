@@ -21,14 +21,13 @@ están bloqueados y no se pueden actualizar.` / `Número de objetos eliminados d
 selección:`, `AcTaskDialogs.resources.dll`'s TaskDialog_181); layer 0 and a new layer are index colour 7, white, Continuous (p300), drawn in the
 screen's foreground as an object set to 7 is (a drawing saved before stored `#e2e8f0` for them,
 read as 7); LAYER (and DDLMODES, acad.pgp in both languages) opens the Layer Properties Manager
-as a modeless palette ("It can remain open as you work", LAYERDLGMODE 1), a tab of the palette
-panel (`'LAYER` opens it inside a running command, which resumes at once, desktop workspace/d02-t),
-and LAYERCLOSE closes it — WHY folding the panel only while Layers is the tab shown:
-AutoCAD's palettes are separate windows, here they share one panel, so closing the layer manager
-leaves another palette where it is; the manager's columns in the reference page's order — Status
+as a modeless palette ("It can remain open as you work", LAYERDLGMODE 1), a window of its own,
+floating or docked (workspace.md, Palettes; `'LAYER` opens it inside a running command, which
+resumes at once, desktop workspace/d02-t), and LAYERCLOSE closes it, the other palettes left as
+they are; the manager's columns in the reference page's order — Status
 (the check mark on the current layer), Name, On, Lock, Color (the swatch and, for an index colour,
 its name in lower case, `white`, `red`, es `blanco`, `rojo`: d04-1, e02-1), Linetype, Lineweight —
-then the object count, scrolled sideways in the panel; the rows, and the Layers drop-down's, sorted
+then the object count, scrolled sideways in the palette; the rows, and the Layers drop-down's, sorted
 by name whatever the case, re-sorted after a rename (d04-1, d04-9, d05-1); New makes `Layer1` (es
 `Capa1`) with the selected layer's colour, linetype and lineweight, its name open for editing, and
 leaves the current layer as it is (d04-4); Delete stays enabled and a layer it cannot delete — 0, the
@@ -377,17 +376,16 @@ says it and counts it, p13b); CHANGE, whose Properties asks the same prompt with
 changes it (the console's database changes only as it ends, p21; here nothing changes before Enter)
 
 ### Properties palette · `PROPERTIES` / `PR` / `CH` / `MO` · `PROPERTIESCLOSE` · es `PROPIEDADES` / `PR` · `CERPROP` · pt-BR `PROPRIEDADES` / `ALT` / `PROPS` / `ALTPROPD` / `MODIFICARD` · `FECHARPROP` / `FPROP` · fr `PROPRIETES` / `PROP` / `PROPS` / `DDCHPROP` / `DDMODIFY` · `FERMERPROPRIETES` / `FRPROP` · it `PROPRIETA` / `PR` / `PRO` / `PROP` / `CH` / `DDCHPROP` / `DDMODIFY` · `CHIUDIPROP` / `CPR` · de `EIGENSCHAFTEN` · `EIGSCHLIESS` · ru `ОКНОСВ` / `ИЗ` / `ДИАЛСВОЙ` / `ДИАЛИЗМ` · `ОКНОСВЗАКР` / `ОСЗ` · pl `WŁAŚCIWOŚCI` / `CE` · `WŁAŚCIWOŚCIZAMKNIJ` / `CZ` · cs `VLASTNOSTI` / `VLA` / `VLAST` / `VT` · `ZAVŘIVL` / `VLZAV` · hu `TULAJDONSÁGOK` / `TUL` / `TVA` / `MD` · `TULAJDONSÁGOKBEZÁR` / `TBZ`
-**Implemented:** PROPERTIES opens the Properties palette, a tab of the modeless palette panel, and
-PROPERTIESCLOSE closes it while it is the tab shown (as LAYERCLOSE); PR, CH and MO are the aliases
+**Implemented:** PROPERTIES opens the Properties palette, a modeless window of its own, floating
+or docked (workspace.md, Palettes), and PROPERTIESCLOSE closes it, the other palettes left as they
+are (as LAYERCLOSE); PR, CH and MO are the aliases
 of Autodesk's shortcut guide (the 2026 help names only PR, in both languages; in Spanish CH is
 CHAFLAN), and Ctrl+1 shows and hides it as acad.cuix's `^C^C_properties` /
 `^C^C_propertiesclose` (ID_Modify): the running command cancelled, then PROPERTIES or
 PROPERTIESCLOSE run, echoed `_properties` (desktop workspace/d04), a group U names `GROUP
 PROPERTIES` / `GROUP PROPERTIESCLOSE` (d04), a preselection kept; `'PROPERTIES` opens it inside a
-running command, which resumes at once (d02-5); WHY at the inline end: the 2026 help
-documents no default side ("docked to either side of the drawing window"), and AutoCAD does not show
-the palette at first start ("not displayed by default"); here it is open from 1600 px of window,
-folded below, and the panel's width and fold are remembered; the object type drop-down at its top —
+running command, which resumes at once (d02-5); closed at first start, as AutoCAD's ("not
+displayed by default"), and open again on the next visit if it was left open; the object type drop-down at its top —
 `All (n)` and one entry per type with its count, the types by count, most first (`All (10)`,
 `Line (4)`, `Block Reference (3)`, `Circle (2)`, `Array (Rectangular) (1)`, desktop d06-2; es
 `Todos (7)`, `Línea (3)`, `Referencia a bloque (2)`, `Círculo (1)`, `Matriz (rectangular) (1)`,
@@ -456,4 +454,4 @@ text content, editing attribute values, MTEXT's rotation in the UCS
 (AutoCAD shows that one row there), a dimension's Z, the Normal rows on the other
 types (**unverified** which ones AutoCAD shows), the drop-down's order for types of one count (the
 order picked here, **unverified**), `Modify Property`'s Spanish name (the English words here,
-**unverified**: no Spanish palette edit was probed), Quick Select, Toggle PICKADD, the Auto-hide and Allow Docking options, floating the palette; a 3D polyline's 3D Visualization group (Material) and its Fit/Smooth's Quadratic and Cubic (es `Cuadrática`, `Cúbica`: ax26res.dll's `None;Quadratic;Cubic`), editable there, which a polyline PEDIT's Spline curve fitted would show (None here: the words are not in the catalogs yet); a fitted 2D polyline's palette, which AutoCAD titles `2D Polyline` (es `Polilínea 2D`) and gives a Fit/Smooth row, `Curve fit` after PEDIT's Fit (es `Ajuste de curva`; ax26res.dll's `None;Curve fit;Quadratic;Cubic`), and Area 302.5533 for an open one (desktop pedit/d02-4; inquiry.md), and its vertex rows (the frame's here)
+**unverified**: no Spanish palette edit was probed), Quick Select, Toggle PICKADD, the Auto-hide option; a 3D polyline's 3D Visualization group (Material) and its Fit/Smooth's Quadratic and Cubic (es `Cuadrática`, `Cúbica`: ax26res.dll's `None;Quadratic;Cubic`), editable there, which a polyline PEDIT's Spline curve fitted would show (None here: the words are not in the catalogs yet); a fitted 2D polyline's palette, which AutoCAD titles `2D Polyline` (es `Polilínea 2D`) and gives a Fit/Smooth row, `Curve fit` after PEDIT's Fit (es `Ajuste de curva`; ax26res.dll's `None;Curve fit;Quadratic;Cubic`), and Area 302.5533 for an open one (desktop pedit/d02-4; inquiry.md), and its vertex rows (the frame's here)

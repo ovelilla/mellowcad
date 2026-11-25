@@ -311,7 +311,7 @@ describe("CadEngine owning the document (the editor)", () => {
     expect(keyAt(page, page.search, "0", true).defaultPrevented).toBe(true)
     expect(engine.getState().cleanScreen.active).toBe(true)
     expect(keyAt(page, page.search, "1", true).defaultPrevented).toBe(true)
-    expect(engine.getState().palette.tab).toBe("properties")
+    expect(engine.getState().palettes.properties).toBe(true)
     // Ctrl+L, Ortho as F8 (acad.cuix `^O`): Chrome does not reserve it.
     expect(keyAt(page, page.search, "l", true).defaultPrevented).toBe(true)
     expect(engine.getState().orthoActive).toBe(false)

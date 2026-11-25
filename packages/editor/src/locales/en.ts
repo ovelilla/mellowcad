@@ -697,9 +697,15 @@ export const en: EditorCatalog = {
       }
     },
     "Palette": {
-      "label": "Palettes",
-      "fold": "Fold the palettes",
-      "unfold": "Show the palettes",
+      "layers": "Layer Properties Manager",
+      "close": "Close",
+      "options": "Properties",
+      "move": "Move",
+      "size": "Size",
+      "allowDocking": "Allow Docking",
+      "ctrlPrevents": "Press the Ctrl key to prevent docking.",
+      "ctrlAllows": "Press the Ctrl key to allow docking.",
+      "releasePrevents": "Release the Ctrl key to prevent docking.",
       "resize": "Palette width"
     },
     "PointStyle": {

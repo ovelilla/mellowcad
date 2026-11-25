@@ -272,7 +272,7 @@ describe("MATCHPROP and the palettes, transparent on the desktop", () => {
     "opens %s's palette and resumes LINE (d02-5, d02-t)",
     (typed, tab) => {
       const cad = lineThen(cad0(), typed)
-      expect(cad.state().palette).toEqual({ open: true, tab })
+      expect(cad.state().palettes[tab]).toBe(true)
       expect(cad.commandLog().slice(-2)).toEqual([
         `Specify next point or [Undo]: ${typed}`,
         "Resuming LINE command.",

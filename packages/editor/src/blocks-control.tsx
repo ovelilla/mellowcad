@@ -14,7 +14,7 @@ import { useEditorText } from "./editor-text"
 const THUMBNAIL_PX = 64
 
 /**
- * AutoCAD's Blocks palette, Current Drawing tab, a tab of the palette panel:
+ * AutoCAD's Blocks palette, Current Drawing tab, a palette of its own:
  * the blocks defined in the drawing shown as previews, filtered by name, and
  * inserted by "clicking and placing them" — which starts -INSERT with the
  * block already chosen, so the insertion point, scale and rotation are

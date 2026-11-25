@@ -2,7 +2,7 @@
 title: "Befehl KREIS (CIRCLE) in AutoCAD"
 description: "Wie KREIS (CIRCLE, Alias K) in AutoCAD funktioniert: Mittelpunkt und Radius oder Durchmesser, 2P, 3P und TTR, ein Kreis tangential an zwei Objekten."
 figure: "Drei Kreise: Mittelpunkt und Radius, die zwei Enden eines Durchmessers (2P), Mittelpunkt und Durchmesser."
-sourceHash: "3f6a42208e31"
+sourceHash: "ba17b79c10cc"
 ---
 
 KREIS (CIRCLE) zeichnet einen Kreis aus seinem Mittelpunkt und seinem Radius, eingegeben oder durch einen Punkt auf dem Kreis angegeben, oder auf eine der anderen Arten, die seine erste Eingabeaufforderung anbietet. Die Eingabetaste beim Radius übernimmt die Größe des letzten Kreises, die für die Zeichnung beibehalten wird. Während Sie den Radius angeben, verläuft eine bernsteinfarbene gestrichelte Linie vom Mittelpunkt zum Cursor, beim Durchmesser über den Rand hinaus, wie AutoCAD sie zeichnet. Der Kreis liegt in der Ebene seines ersten Punkts, auf der aktuellen Erhebung, wenn der Punkt kein eigenes Z hat.

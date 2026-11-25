@@ -177,20 +177,21 @@ export interface SaveAsChoice {
   readonly dxf: DxfSaveSettings
 }
 
-/** The palette panel's tabs, in their order. */
-export const PALETTE_TABS = ["properties", "layers", "blocks"] as const
+/**
+ * The palettes, each a window of its own: Properties, the Layer Properties
+ * Manager and Blocks.
+ */
+export const PALETTES = ["properties", "layers", "blocks"] as const
 
-export type PaletteTab = (typeof PALETTE_TABS)[number]
+export type PaletteId = (typeof PALETTES)[number]
 
 /**
- * The docked palette panel: which palette it shows and whether it is open or
- * folded to its strip. Modeless, as AutoCAD's palettes are: nothing on the
- * drawing closes it, only its own button, its tab's trigger or a CLOSE command.
+ * Which palettes are open, each apart, as AutoCAD's are (OPMSTATE, the
+ * layer manager's, BLOCKSPALETTE's). Modeless: nothing on the drawing closes
+ * one, only its own Close, its trigger or its CLOSE command. Where and how
+ * each shows (floating, docked) is the host's, kept on the device.
  */
-export interface PaletteUi {
-  readonly open: boolean
-  readonly tab: PaletteTab
-}
+export type PalettesUi = Readonly<Record<PaletteId, boolean>>
 
 /**
  * An object type of the Properties palette's drop-down: an entity's, but an
@@ -387,12 +388,15 @@ export interface CommandOptionUi {
 /** Clean Screen: what it hides is the host's chrome, so the host hides it. */
 export interface CleanScreenUi {
   /**
-   * CLEANSCREENSTATE: the palette panel hidden. The ribbon it closes is
+   * CLEANSCREENSTATE: the open palettes hidden. The ribbon it closes is
    * {@link RibbonUi.open}'s.
    */
   readonly active: boolean
-  /** A palette was opened while it is on: the palette panel shows again. */
-  readonly palette: boolean
+  /**
+   * The palettes opened while it is on, in the order they were: these show,
+   * the others stay hidden until it is off.
+   */
+  readonly palettes: readonly PaletteId[]
 }
 
 /**
@@ -730,8 +734,8 @@ export interface EngineState {
   readonly styleDialog: StyleDialog | null
   /** Every block defined in the drawing (the Blocks palette's Current tab). */
   readonly blocks: ReadonlyArray<BlockInfo>
-  /** The palette panel: open or folded, and the palette it shows. */
-  readonly palette: PaletteUi
+  /** Which palettes are open. */
+  readonly palettes: PalettesUi
   /** Whether the Drawing Units dialog (UNITS) is showing. */
   readonly unitsDialog: boolean
   /** Whether the Point Style dialog (PTYPE) is showing. */

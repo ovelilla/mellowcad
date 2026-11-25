@@ -719,9 +719,15 @@ export const ar: EditorLocale = {
       }
     },
     "Palette": {
-      "label": "اللوحات",
-      "fold": "طيّ اللوحات",
-      "unfold": "إظهار اللوحات",
+      "layers": "مدير خصائص الطبقات",
+      "close": "إغلاق",
+      "options": "الخصائص",
+      "move": "نقل",
+      "size": "الحجم",
+      "allowDocking": "السماح بالإرساء",
+      "ctrlPrevents": "اضغط مفتاح ⁨Ctrl⁩ لمنع الإرساء.",
+      "ctrlAllows": "اضغط مفتاح ⁨Ctrl⁩ للسماح بالإرساء.",
+      "releasePrevents": "حرّر مفتاح ⁨Ctrl⁩ لمنع الإرساء.",
       "resize": "عرض اللوحات"
     },
     "PointStyle": {

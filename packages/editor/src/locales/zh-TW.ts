@@ -699,9 +699,15 @@ export const zhTW: EditorLocale = {
       }
     },
     "Palette": {
-      "label": "選項板",
-      "fold": "收闔選項板",
-      "unfold": "顯示選項板",
+      "layers": "圖層性質管理員",
+      "close": "關閉",
+      "options": "性質",
+      "move": "移動",
+      "size": "大小",
+      "allowDocking": "允許停靠",
+      "ctrlPrevents": "按住 Ctrl 以避免固定。",
+      "ctrlAllows": "按住 Ctrl 以允許固定。",
+      "releasePrevents": "放開 Ctrl 以避免固定。",
       "resize": "選項板寬度"
     },
     "PointStyle": {

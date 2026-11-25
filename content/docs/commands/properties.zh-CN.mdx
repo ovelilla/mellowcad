@@ -4,10 +4,10 @@ metaTitle: "CAD 特性选项板（PROPERTIES）：Ctrl+1 与快捷键 PR"
 description: "CAD 特性栏怎么调出来：AutoCAD PROPERTIES（特性，快捷键 PR，键盘快捷键 Ctrl+1）的“常规”和“几何图形”行、*多种*、按对象类型过滤、当前设置。在浏览器中免费在线试用。"
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"CAD 特性快捷键是什么？","answer":"Ctrl+1，再按一次会隐藏选项板。输入命令时：PR、CH 或 MO，然后按 Enter 键或空格键。也可以输入完整的命令名；在任何语言版本的 AutoCAD 中都可以使用 _PROPERTIES。"},{"question":"CAD 特性栏不见了怎么调出来？","answer":"按 Ctrl+1 或输入 PR：选项板会重新显示，作为图形旁选项板面板中的一个选项卡。选项板显示时按 Ctrl+1 会将其隐藏，它通常就是这样不见的。"},{"question":"CAD 怎么同时修改多个对象的特性？","answer":"全部选中，然后修改相应的行：所有选中的对象都会使用新值。值不同的行显示 *多种*，直到为其设置值。若只想修改其中的圆，可以在顶部的下拉列表中选择该类型。"},{"question":"CAD 中 PROPERTIES 和 MATCHPROP 有什么区别？","answer":"PROPERTIES 显示和设置所选对象的值。MATCHPROP 将这些值从一个对象复制到其他对象，无需输入数值。"}]
+faq: [{"question":"CAD 特性快捷键是什么？","answer":"Ctrl+1，再按一次会隐藏选项板。输入命令时：PR、CH 或 MO，然后按 Enter 键或空格键。也可以输入完整的命令名；在任何语言版本的 AutoCAD 中都可以使用 _PROPERTIES。"},{"question":"CAD 特性栏不见了怎么调出来？","answer":"按 Ctrl+1 或输入 PR：选项板会在原来的位置重新显示，浮动或固定在图形一侧。选项板显示时按 Ctrl+1 会将其隐藏，它通常就是这样不见的。"},{"question":"CAD 怎么同时修改多个对象的特性？","answer":"全部选中，然后修改相应的行：所有选中的对象都会使用新值。值不同的行显示 *多种*，直到为其设置值。若只想修改其中的圆，可以在顶部的下拉列表中选择该类型。"},{"question":"CAD 中 PROPERTIES 和 MATCHPROP 有什么区别？","answer":"PROPERTIES 显示和设置所选对象的值。MATCHPROP 将这些值从一个对象复制到其他对象，无需输入数值。"}]
 ---
 
-PROPERTIES（特性）命令打开“特性”选项板。与 AutoCAD 一样，它是选项板而不是对话框：在选择和绘图时一直在图形旁打开（这里作为选项板面板中的一个选项卡），直到 `PROPERTIESCLOSE` 将其关闭。Ctrl+1 显示和隐藏它；以撇号输入 `'PROPERTIES` 时，它在正在执行的命令中打开。窗口较宽时，它从一开始就是打开的。
+PROPERTIES（特性）命令打开“特性”选项板。与 AutoCAD 一样，它是选项板而不是对话框：在选择和绘图时一直打开（浮动在图形上方或固定在一侧），直到 `PROPERTIESCLOSE` 将其关闭。Ctrl+1 显示和隐藏它；以撇号输入 `'PROPERTIES` 时，它在正在执行的命令中打开。与 AutoCAD 一样，它一开始是关闭的；如果离开时保持打开，下次访问时会再次打开。
 
 选择对象后，它显示这些对象的特性，在相应的行中输入或选择新值即可修改。最前面是“常规”，顺序与 AutoCAD 相同：颜色、图层、线型、线宽和厚度，所选对象的值不同时显示 `*多种*`。下面是每种类型自己的行：直线的起点和端点、长度和角度；圆的圆心、半径、直径、周长和面积；圆弧的、椭圆的、多段线的顶点和宽度、样条曲线的点、文字的、块参照的行。坐标使用当前 UCS，只用于显示的行（例如直线的长度）呈灰色。顶部的下拉列表列出“全部”以及每种类型及其数量：选择一种即可只查看和编辑该类型。未选择任何对象时，“常规”显示当前图层、颜色、线型和线宽，可以在这里为新对象设置它们。每次编辑都是一步，可以用 `U` 放弃。
 
@@ -24,7 +24,7 @@ PROPERTIES（特性）命令打开“特性”选项板。与 AutoCAD 一样，�
 
 ## 尚不支持的功能 [#missing]
 
-“常规”中多个对象同时选择时的线型比例，以及未选择对象时用于新对象的线型比例（CELTSCALE）；打印样式、透明度和超链接，以及材质。同时选择多个同类对象时的几何图形行、文字的内容和属性值，都不能在这里编辑。快速选择、PICKADD 切换按钮、自动隐藏，以及选项板的固定和浮动。
+“常规”中多个对象同时选择时的线型比例，以及未选择对象时用于新对象的线型比例（CELTSCALE）；打印样式、透明度和超链接，以及材质。同时选择多个同类对象时的几何图形行、文字的内容和属性值，都不能在这里编辑。快速选择、PICKADD 切换按钮和自动隐藏。
 
 [功能及尚缺部分详解（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#properties-palette--properties--pr--ch--mo--propertiesclose--es-propiedades--pr--cerprop--pt-br-propriedades--alt--props--altpropd--modificard--fecharprop--fprop--fr-proprietes--prop--props--ddchprop--ddmodify--fermerproprietes--frprop--it-proprieta--pr--pro--prop--ch--ddchprop--ddmodify--chiudiprop--cpr--de-eigenschaften--eigschliess--ru-окносв--из--диалсвой--диализм--окносвзакр--осз--pl-właściwości--ce--właściwościzamknij--cz--cs-vlastnosti--vla--vlast--vt--zavřivl--vlzav--hu-tulajdonságok--tul--tva--md--tulajdonságokbezár--tbz)
 
@@ -36,7 +36,7 @@ Ctrl+1，再按一次会隐藏选项板。输入命令时：`PR`、`CH` 或 `MO`
 
 ### CAD 特性栏不见了怎么调出来？
 
-按 Ctrl+1 或输入 `PR`：选项板会重新显示，作为图形旁选项板面板中的一个选项卡。选项板显示时按 Ctrl+1 会将其隐藏，它通常就是这样不见的。
+按 Ctrl+1 或输入 `PR`：选项板会在原来的位置重新显示，浮动或固定在图形一侧。选项板显示时按 Ctrl+1 会将其隐藏，它通常就是这样不见的。
 
 ### CAD 怎么同时修改多个对象的特性？
 

@@ -693,9 +693,15 @@ export const fr: EditorLocale = {
       }
     },
     "Palette": {
-      "label": "Palettes",
-      "fold": "Réduire les palettes",
-      "unfold": "Afficher les palettes",
+      "layers": "Gestionnaire des propriétés des calques",
+      "close": "Fermer",
+      "options": "Propriétés",
+      "move": "Déplacer",
+      "size": "Taille",
+      "allowDocking": "Autoriser ancrage",
+      "ctrlPrevents": "Appuyez sur la touche Ctrl pour empêcher l'ancrage.",
+      "ctrlAllows": "Appuyez sur la touche Ctrl pour autoriser l'ancrage.",
+      "releasePrevents": "Relâchez la touche Ctrl pour empêcher l'ancrage.",
       "resize": "Largeur des palettes"
     },
     "PointStyle": {

@@ -39,6 +39,9 @@ const VARIANTS = {
     // pitch; the application button, 48 across the bar's 32.
     quick: "h-5.5 w-6",
     application: "h-8 w-12",
+    // A palette's title bar, AutoCAD's 22 across (docs/plans/autocad-ui.md,
+    // §2.8): its buttons 22 square, icon 16, on a 24 px pitch.
+    palette: "size-5.5",
     // The ViewCube's own, drawn on it at its scale: outside the system.
     cube: "h-6 gap-1 px-2 [&_svg:not([class*='size-'])]:size-3",
     "icon-cube": "size-6 [&_svg:not([class*='size-'])]:size-3",

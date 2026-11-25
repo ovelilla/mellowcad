@@ -51,10 +51,10 @@ import { HostTitleBar } from "./host-title-bar"
 
 // A server component may hand the editor a client component (`HostTitleBar`
 // comes from a "use client" module) or `null`, never a function of its own:
-// the title bar is the host's, and the palette panel is gone with its zone.
+// the title bar is the host's, and the palettes are gone with their columns.
 export default function Page() {
   return (
-    <CadEditor components={{ TitleBar: HostTitleBar, PalettePanel: null }} />
+    <CadEditor components={{ TitleBar: HostTitleBar, PaletteContent: null }} />
   )
 }
 ```
@@ -153,12 +153,13 @@ export default async function Page({
 The editor sets `lang` and `dir` on its own root; the page's `<html>` is the layout's to set. See
 [Languages](languages.md).
 
-## The palette panel at the first paint
+## The palettes at the first paint
 
-With `layoutStorage.palette`, the editor remembers the palette panel's width and whether it is
-folded, and with `layoutStorage.ribbon` the ribbon's minimize state. The server cannot know any of
-them, so a script in the page's `<head>` for each lays it out from `localStorage` as the page is
-parsed, before anything is painted:
+With `layoutStorage.palette`, the editor remembers where each palette shows, floating or docked
+at a side, its size and which were open, and with `layoutStorage.ribbon` the ribbon's minimize
+state. The server cannot know any of them, and a docked palette takes its column's width off the
+drawing, so a script in the page's `<head>` for each lays it out from `localStorage` as the page
+is parsed, before anything is painted:
 
 ```tsx
 import { paletteLayoutScript, ribbonLayoutScript } from "@mellowcad/editor"

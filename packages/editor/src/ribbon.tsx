@@ -26,7 +26,7 @@ import {
   type LucideIcon,
 } from "lucide-react"
 
-import type { CadEngine } from "@mellowcad/engine"
+import type { CadEngine, PaletteId } from "@mellowcad/engine"
 import type { EditorState } from "@mellowcad/react"
 import { cn } from "./utils"
 import {
@@ -49,6 +49,7 @@ import { LineweightSelect } from "./lineweight-select"
 import { LayerSwatch } from "./layers-control"
 import { BlockThumbnail } from "./blocks-control"
 import { drawingFocus } from "./drawing-focus"
+import { paletteShows } from "./palettes"
 import { LinetypeIcon, LineweightIcon } from "./icons"
 import {
   LARGE_BUTTON_ICONS,
@@ -1052,14 +1053,13 @@ function shortcutOf(action: string, state: EditorState): string | undefined {
  * A toggle with no macro (acad.cuix's `Ac…ToggleButton`), lit while what it
  * shows is: UCS Icon (`_ucsicon _off` / `_on`) and View Cube
  * (NAVVCUBEDISPLAY), both the engine's buttons; the palettes', which open
- * and fold the palette panel on theirs with no echo, as the desktop's do
+ * and close each its own with no echo, as the desktop's do
  * (research/ui/2026-11-24/block4); Command Line, Ctrl+9's window.
  */
 function ToggleButton({ toggle, ctx }: { toggle: RibbonToggle; ctx: Context }) {
   const { engine, state } = ctx
   const keys = useEditorText("Keys")
-  const paletteShows = (tab: "properties" | "blocks" | "layers") =>
-    state.palette.open && state.palette.tab === tab
+  const shows = (id: PaletteId) => paletteShows(state, id)
   const [on, run]: [boolean, () => void] = (() => {
     switch (toggle) {
       case "ucsIcon":
@@ -1070,14 +1070,11 @@ function ToggleButton({ toggle, ctx }: { toggle: RibbonToggle; ctx: Context }) {
           () => engine.runRibbonButton("viewCube"),
         ]
       case "propertiesPalette":
-        return [
-          paletteShows("properties"),
-          () => engine.togglePalette("properties"),
-        ]
+        return [shows("properties"), () => engine.togglePalette("properties")]
       case "blocksPalette":
-        return [paletteShows("blocks"), () => engine.togglePalette("blocks")]
+        return [shows("blocks"), () => engine.togglePalette("blocks")]
       case "layerProperties":
-        return [paletteShows("layers"), () => engine.togglePalette("layers")]
+        return [shows("layers"), () => engine.togglePalette("layers")]
       case "commandLine":
         return [state.commandLine.visible, () => engine.toggleCommandLine()]
     }
@@ -1497,7 +1494,7 @@ function MemberList({
  */
 function LayerPropertiesButton({ ctx }: { ctx: Context }) {
   const { engine, state } = ctx
-  const open = state.palette.open && state.palette.tab === "layers"
+  const open = paletteShows(state, "layers")
   return (
     <LargeButton
       icon={LayerPropertiesLarge}

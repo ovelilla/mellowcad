@@ -225,7 +225,7 @@ export const TOOL_ICONS: Readonly<Record<string, LucideIcon>> = {
  * The 16 px icon of each ribbon button that runs a command or one of its
  * options rather than a tool, by the button's id. Pan, Zoom, Orbit, the
  * command line and the layers are the glyphs the editor already shows them by
- * (the navigation bar, the title bar, the palette panel).
+ * (the navigation bar, the title bar, the palettes).
  */
 export const BUTTON_ICONS: Readonly<Record<string, LucideIcon>> = {
   ucsWorld: UcsWorldIcon,

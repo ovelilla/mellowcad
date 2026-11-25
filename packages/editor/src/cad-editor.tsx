@@ -2,6 +2,7 @@
 
 import {
   useEffect,
+  useEffectEvent,
   useLayoutEffect,
   useRef,
   useState,
@@ -13,6 +14,8 @@ import {
 import {
   type CadEngine,
   createLocalStorageDrawingStore,
+  PALETTES,
+  type PaletteId,
   type DrawingStore,
   type EngineLocale,
 } from "@mellowcad/engine"
@@ -22,11 +25,24 @@ import { PortalContainerProvider } from "./ui/portal-container"
 import { cn } from "./utils"
 import { EDITOR_ROOT_ATTRIBUTE, EDITOR_THEME_STYLE } from "./editor-root"
 import {
-  applyPaletteLayout,
+  applyPaletteColumns,
+  dockColumnWidth,
+  openAtLoad,
+  PALETTE_LAYOUT,
   paletteLayoutAtLoad,
-  PALETTE_WIDTH,
-  rememberPalette,
+  rememberPalettes,
+  type PaletteLayout,
 } from "./palette-layout"
+import { PaletteLayoutProvider } from "./palette-layout-context"
+import {
+  FloatingPalettes,
+  PaletteDock,
+  PaletteDragOverlay,
+  PaletteHostProvider,
+  paletteShows,
+  type PaletteProps,
+} from "./palettes"
+import { PaletteContent } from "./palette-content"
 import {
   applyRibbonLayout,
   rememberRibbon,
@@ -46,7 +62,6 @@ import { LockedObjectsDialog } from "./locked-objects-dialog"
 import { UnsavedTextDialog } from "./unsaved-text-dialog"
 import { DynamicInput } from "./dynamic-input"
 import { RolloverTooltip } from "./rollover-tooltip"
-import { PalettePanel, PaletteResizeHandle } from "./palette-panel"
 import { ViewCube } from "./view-cube"
 import { NavigationBar } from "./navigation-bar"
 import { ViewportControls } from "./viewport-controls"
@@ -64,7 +79,10 @@ import type { PieceProps } from "./piece"
  * users: renaming it orphans what they saved.
  */
 export interface LayoutStorage {
-  /** The palette panel's width and fold, also read by the `<head>` script. */
+  /**
+   * Where each palette shows (floating or docked), its size, the columns'
+   * widths and which palettes were open, also read by the `<head>` script.
+   */
   readonly palette?: string
   /** The status bar's Customization. */
   readonly statusBar?: string
@@ -123,7 +141,11 @@ export function helpUrl(help: HelpLinks, command: string | null): string {
 export interface CadEditorComponents {
   readonly TitleBar?: ComponentType<TitleBarProps> | null
   readonly Ribbon?: ComponentType<PieceProps> | null
-  readonly PalettePanel?: ComponentType<PieceProps> | null
+  /**
+   * What each palette holds, handed which one (`palette`); its frame is the
+   * editor's. `null` turns the palettes off, their columns too.
+   */
+  readonly PaletteContent?: ComponentType<PaletteProps> | null
   readonly CommandLine?: ComponentType<PieceProps> | null
   readonly StatusBar?: ComponentType<StatusBarProps> | null
   readonly ViewportControls?: ComponentType<PieceProps> | null
@@ -223,14 +245,15 @@ function Workspace({
   const [portal, setPortal] = useState<HTMLDivElement | null>(null)
   const root = useRef<HTMLDivElement>(null)
   const ready = engine && state
-  const paletteOpen = state?.palette.open ?? null
-  // The width the head script laid out. Nothing renders it before the engine
-  // exists, so the server's default never meets the client's.
-  const [paletteWidth, setPaletteWidth] = useState(() =>
+  // Where each palette shows, as the head script read it. Nothing renders a
+  // palette before the engine exists, so the server's default never meets
+  // the client's.
+  const [paletteLayout, setPaletteLayout] = useState<PaletteLayout>(() =>
     typeof window === "undefined"
-      ? PALETTE_WIDTH.initial
-      : paletteLayoutAtLoad(paletteKey).width
+      ? PALETTE_LAYOUT
+      : paletteLayoutAtLoad(paletteKey)
   )
+  const palettesOff = components.PaletteContent === null
 
   // The ribbon's minimize state, as the head script laid it out.
   const [ribbonLayout, setRibbonLayout] = useState<RibbonLayout>(() =>
@@ -239,33 +262,54 @@ function Workspace({
       : ribbonLayoutAtLoad(ribbonKey)
   )
 
-  // What the head script wrote, again: a root rendered on the client never
-  // met the script.
-  useLayoutEffect(() => {
-    if (root.current)
-      applyPaletteLayout(root.current, paletteLayoutAtLoad(paletteKey))
-  }, [paletteKey])
-
   // The ribbon's zone takes its height before the frame is painted.
   useLayoutEffect(() => {
     if (root.current) applyRibbonLayout(root.current, ribbonLayout)
   }, [ribbonLayout])
 
-  // From then on the engine's open state and the dragged width drive the
-  // same CSS, before the frame is painted.
+  // Each column's width, before the frame is painted: what the head script
+  // wrote, again, for a root rendered on the client, then the engine's open
+  // palettes and Clean Screen with the dragged widths.
+  const palettes = state?.palettes
+  const cleanScreen = state?.cleanScreen
   useLayoutEffect(() => {
-    if (paletteOpen === null || !root.current) return
-    applyPaletteLayout(root.current, { open: paletteOpen, width: paletteWidth })
-  }, [paletteOpen, paletteWidth])
+    if (!root.current) return
+    const shows =
+      palettes && cleanScreen
+        ? (id: PaletteId) => paletteShows({ palettes, cleanScreen }, id)
+        : (id: PaletteId) => paletteLayout.palettes[id].open
+    applyPaletteColumns(root.current, {
+      start: palettesOff ? 0 : dockColumnWidth(paletteLayout, "start", shows),
+      end: palettesOff ? 0 : dockColumnWidth(paletteLayout, "end", shows),
+    })
+  }, [paletteLayout, palettes, cleanScreen, palettesOff])
 
-  // The fold is remembered once it changes, so until the user folds or
-  // opens the panel the window's width decides.
-  const firstOpen = useRef<boolean | null>(null)
+  // Which palettes are open is the engine's; it is kept with the layout, so
+  // the next visit opens them again, as AutoCAD reopens its palettes.
+  const keep = (layout: PaletteLayout) =>
+    rememberPalettes(
+      paletteKey,
+      palettes
+        ? {
+            ...layout,
+            palettes: Object.fromEntries(
+              PALETTES.map((id) => [
+                id,
+                { ...layout.palettes[id], open: palettes[id] },
+              ])
+            ) as PaletteLayout["palettes"],
+          }
+        : layout
+    )
+  // An effect event, as a move or a resize keeps itself: only the open
+  // palettes changing is kept here.
+  const keepOpen = useEffectEvent(() => keep(paletteLayout))
+  const firstPalettes = useRef<typeof palettes | null>(null)
   useEffect(() => {
-    if (paletteOpen === null) return
-    if (firstOpen.current === null) firstOpen.current = paletteOpen
-    else rememberPalette(paletteKey, { open: paletteOpen })
-  }, [paletteOpen, paletteKey])
+    if (!palettes) return
+    if (firstPalettes.current === null) firstPalettes.current = palettes
+    else keepOpen()
+  }, [palettes])
 
   // Every zone has its size before the engine mounts, so the canvas's box at
   // the first paint is already the final one: the landing's sheet grows into
@@ -282,9 +326,9 @@ function Workspace({
   // control lands on a half pixel, which blurs its icon.
   //
   // The editor is the page's main content: a landmark, so every control on
-  // it sits in one (axe's region rule). The head script writes the palette's
-  // layout on the root before React hydrates (lib/palette-layout.ts): the
-  // DOM wins.
+  // it sits in one (axe's region rule). The head script writes the docked
+  // columns' widths on the root before React hydrates (palette-layout.ts):
+  // the DOM wins.
   return (
     <div
       ref={root}
@@ -304,67 +348,72 @@ function Workspace({
             },
           }}
         >
-          <main className="grid h-svh w-full grid-cols-[minmax(0,1fr)_auto] grid-rows-[auto_auto_minmax(0,1fr)_auto_auto] overflow-hidden bg-card [grid-template-areas:'title_title'_'ribbon_ribbon'_'canvas_panel'_'command_command'_'status_status']">
-            <EditorZones
-              components={components}
-              ready={ready ? { engine, state } : null}
-              mark={mark}
-              languages={languages}
-              help={help !== undefined}
-              feedback={feedback}
-              statusBarKey={layoutStorage.statusBar}
-              sheet={sheet}
-              canvas={
-                // The editor is the page: it takes every key, which the engine
-                // leaves to whoever asks. The drawing is geometry: it never
-                // mirrors, whatever the page.
-                <CadCanvas
-                  store={store}
-                  scope="document"
-                  locale={engineLocale}
-                  paletteOpen={() => paletteLayoutAtLoad(paletteKey).open}
-                  // AutoCAD opens its help in a browser: here, a tab of its own.
-                  onHelp={
-                    help &&
-                    ((command) => {
-                      window.open(helpUrl(help, command), "_blank", "noopener")
-                    })
-                  }
-                  onEngine={(next) => {
-                    setEngine(next)
-                    onEngine?.(next)
-                  }}
-                  dir="ltr"
-                  className="absolute inset-0 h-full w-full touch-none outline-none"
-                  aria-label={t("canvas")}
-                />
-              }
-              paletteHandle={
-                state?.palette.open && (
-                  <PaletteResizeHandle
-                    width={paletteWidth}
-                    onResize={setPaletteWidth}
-                    onCommit={(width) => rememberPalette(paletteKey, { width })}
+          <PaletteLayoutProvider
+            value={{
+              layout: paletteLayout,
+              setLayout: (layout, remember = false) => {
+                setPaletteLayout(layout)
+                if (remember) keep(layout)
+              },
+            }}
+          >
+            <main className="grid h-svh w-full grid-cols-[var(--palette-dock-start,0px)_minmax(0,1fr)_var(--palette-dock-end,0px)] grid-rows-[auto_auto_minmax(0,1fr)_auto_auto] overflow-hidden bg-card [grid-template-areas:'title_title_title'_'ribbon_ribbon_ribbon'_'dockStart_canvas_dockEnd'_'command_command_command'_'status_status_status']">
+              <EditorZones
+                components={components}
+                ready={ready ? { engine, state } : null}
+                mark={mark}
+                languages={languages}
+                help={help !== undefined}
+                feedback={feedback}
+                statusBarKey={layoutStorage.statusBar}
+                sheet={sheet}
+                canvas={
+                  // The editor is the page: it takes every key, which the engine
+                  // leaves to whoever asks. The drawing is geometry: it never
+                  // mirrors, whatever the page.
+                  <CadCanvas
+                    store={store}
+                    scope="document"
+                    locale={engineLocale}
+                    palettes={() => openAtLoad(paletteLayoutAtLoad(paletteKey))}
+                    // AutoCAD opens its help in a browser: here, a tab of its own.
+                    onHelp={
+                      help &&
+                      ((command) => {
+                        window.open(
+                          helpUrl(help, command),
+                          "_blank",
+                          "noopener"
+                        )
+                      })
+                    }
+                    onEngine={(next) => {
+                      setEngine(next)
+                      onEngine?.(next)
+                    }}
+                    dir="ltr"
+                    className="absolute inset-0 h-full w-full touch-none outline-none"
+                    aria-label={t("canvas")}
                   />
-                )
-              }
-            />
+                }
+              />
 
-            {ready && (
-              <>
-                <ShortcutMenu engine={engine} state={state} />
-                <SnapOverrideMenu engine={engine} state={state} />
-                <SelectionCyclingList engine={engine} state={state} />
-                <UnitsDialog engine={engine} state={state} />
-                <PointStyleDialog engine={engine} state={state} />
-                <TextStyleDialog engine={engine} state={state} />
-                <DimStyleDialog engine={engine} state={state} />
-                <SaveAsDialog engine={engine} state={state} />
-                <LockedObjectsDialog engine={engine} state={state} />
-                <UnsavedTextDialog engine={engine} state={state} />
-              </>
-            )}
-          </main>
+              {ready && (
+                <>
+                  <ShortcutMenu engine={engine} state={state} />
+                  <SnapOverrideMenu engine={engine} state={state} />
+                  <SelectionCyclingList engine={engine} state={state} />
+                  <UnitsDialog engine={engine} state={state} />
+                  <PointStyleDialog engine={engine} state={state} />
+                  <TextStyleDialog engine={engine} state={state} />
+                  <DimStyleDialog engine={engine} state={state} />
+                  <SaveAsDialog engine={engine} state={state} />
+                  <LockedObjectsDialog engine={engine} state={state} />
+                  <UnsavedTextDialog engine={engine} state={state} />
+                </>
+              )}
+            </main>
+          </PaletteLayoutProvider>
         </RibbonLayoutProvider>
       </PortalContainerProvider>
       {/* The popups mount here, inside the root, so its tokens, `dir` and
@@ -394,7 +443,6 @@ export function EditorZones({
   statusBarKey,
   sheet,
   canvas,
-  paletteHandle,
 }: {
   components: CadEditorComponents
   ready: PieceProps | null
@@ -405,12 +453,11 @@ export function EditorZones({
   statusBarKey?: string
   sheet?: SheetTransition
   canvas: ReactNode
-  paletteHandle: ReactNode
 }): ReactElement {
   const {
     TitleBar: Title = TitleBar,
     Ribbon: Tabs = Ribbon,
-    PalettePanel: Palettes = PalettePanel,
+    PaletteContent: Content = PaletteContent,
     CommandLine: Command = CommandLine,
     StatusBar: Status = StatusBar,
     ViewportControls: Viewport = ViewportControls,
@@ -418,15 +465,28 @@ export function EditorZones({
     NavigationBar: Navigation = NavigationBar,
     DynamicInput: Input = DynamicInput,
   } = components
-  // Clean Screen hides the palette panel (a palette opened meanwhile shows it
-  // again) and closes the ribbon; neither is on at the first paint, as
-  // AutoCAD saves neither.
-  const clean = ready?.state.cleanScreen
+  // Clean Screen hides the palettes (one opened meanwhile shows) and closes
+  // the ribbon; it is not on at the first paint, as AutoCAD does not save it.
   const ribbon = ready?.state.ribbon
   const commandLine = ready?.state.commandLine
 
+  // A column of docked palettes at the drawing's side: its width is CSS,
+  // read off the root (palette-layout.ts), the head script's before the
+  // engine exists, the open palettes' after — the same box either way.
+  const dock = (side: "start" | "end") =>
+    Content && (
+      <div
+        className={cn(
+          "flex min-h-0 min-w-0 overflow-hidden",
+          side === "start" ? "[grid-area:dockStart]" : "[grid-area:dockEnd]"
+        )}
+      >
+        {ready && <PaletteDock side={side} />}
+      </div>
+    )
+
   return (
-    <>
+    <PaletteHostProvider ready={ready} Content={Content ?? null}>
       {/* AutoCAD's title bar: the application button flush at the start,
       as the window's own frame has it, and the Quick Access Toolbar. */}
       {Title && (
@@ -466,6 +526,8 @@ export function EditorZones({
       option chips, the rollover tooltip — is positioned in this cell, which is exactly the
       canvas's box; the menus at the cursor convert to the viewport
       (`engine.clientFromScreen`). */}
+      {dock("start")}
+
       <div
         id={sheet?.id}
         className="relative min-h-0 min-w-0 bg-[#0b0f14] [grid-area:canvas]"
@@ -495,28 +557,13 @@ export function EditorZones({
                 {Navigation && <Navigation {...ready} />}
               </div>
             )}
+
+            {Content && <FloatingPalettes />}
           </>
         )}
       </div>
 
-      {/* Its width is CSS, read off the root (lib/palette-layout.ts): the
-      head script's answer before the engine exists, the engine's open
-      state and the dragged width after — the same box either way. */}
-      {Palettes && (
-        <div
-          className={cn(
-            "box-content flex min-h-0 w-9 border-s [grid-area:panel] palette-open:w-(--palette-width)",
-            clean?.active && !clean.palette && "hidden"
-          )}
-        >
-          {ready && (
-            <>
-              {paletteHandle}
-              <Palettes {...ready} />
-            </>
-          )}
-        </div>
-      )}
+      {dock("end")}
 
       {/* One prompt line. Above the canvas in the stacking order: its
       history and suggestions open upwards over the drawing. */}
@@ -537,6 +584,8 @@ export function EditorZones({
           {ready && <Status {...ready} storageKey={statusBarKey} />}
         </div>
       )}
-    </>
+
+      {Content && <PaletteDragOverlay />}
+    </PaletteHostProvider>
   )
 }

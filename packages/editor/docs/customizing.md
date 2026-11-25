@@ -14,7 +14,7 @@ with `useRibbonLayout()`.
 | ------------------ | --------------------------------------------------------------------------- |
 | `TitleBar`         | Across the top: the application menu, Quick Access and the save state       |
 | `Ribbon`           | Under it: the ribbon, Home, Insert, Annotate, 3D Tools and View             |
-| `PalettePanel`     | Down the end side: Properties, Layers and Blocks, as tabs                   |
+| `PaletteContent`   | What Properties, the Layer Properties Manager and Blocks each hold          |
 | `CommandLine`      | Under the drawing: the command line and its history                         |
 | `StatusBar`        | Across the bottom: the coordinates, the drafting modes and Customization    |
 | `ViewportControls` | On the drawing, top start corner: `[Top]`, the preset views                 |
@@ -28,7 +28,9 @@ In a right-to-left page the start side is the right.
 
 A replacement is handed what the piece is: `PieceProps`, the engine and its state, and for the
 title bar and the status bar what you gave `CadEditor` for them (`mark`, `languages`, `feedback`
-and whether there is `help`, the status bar's `storageKey`).
+and whether there is `help`, the status bar's `storageKey`). A `PaletteContent` is also handed
+`palette`, the palette it fills: `"properties"`, `"layers"` or `"blocks"`; each palette's frame,
+floating or docked at a side, stays the editor's.
 
 ```tsx
 "use client"
@@ -69,7 +71,7 @@ export function MyTitleBar({ engine, state }: TitleBarProps) {
 ## Removing a piece
 
 ```tsx
-<CadEditor components={{ PalettePanel: null, NavigationBar: null }} />
+<CadEditor components={{ PaletteContent: null, NavigationBar: null }} />
 ```
 
 A piece set to `null` is gone from the first paint, and the drawing takes its room. A slot you
@@ -137,7 +139,7 @@ objects and for unsaved text. The engine waits on their answer, so the editor al
 - **`layoutStorage`** names the `localStorage` keys under which this browser remembers the palette
   panel's width and fold (`palette`), the ribbon's minimize state (`ribbon`) and what the status
   bar shows (`statusBar`). A part without a key is not remembered. On a page rendered on a server,
-  `palette` and `ribbon` need [their layout scripts](nextjs.md#the-palette-panel-at-the-first-paint)
+  `palette` and `ribbon` need [their layout scripts](nextjs.md#the-palettes-at-the-first-paint)
   too, or the panel and the ribbon show as they start until the scripts run, then change.
 - **`sheet`** gives the drawing's cell an `id` and a `view-transition-name`, for a page that grows
   into the editor with a view transition.

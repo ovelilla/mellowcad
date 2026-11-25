@@ -2,7 +2,7 @@
 title: "Comando CERCHIO (CIRCLE) in AutoCAD"
 description: "Come funziona CERCHIO (CIRCLE, alias C) di AutoCAD in italiano: centro e raggio o Diametro, 2P, 3P e Ttr, un cerchio tangente a due oggetti. Provalo."
 figure: "Tre cerchi: centro e raggio, i due estremi di un diametro (2P), centro e Diametro."
-sourceHash: "3f6a42208e31"
+sourceHash: "ba17b79c10cc"
 ---
 
 CERCHIO disegna un cerchio dal suo centro e dal suo raggio, digitato o dato con un punto sul cerchio, oppure in uno degli altri modi che la sua prima richiesta propone. Invio al raggio ripete la dimensione dell'ultimo cerchio, conservata per il disegno. Mentre dai il raggio, una linea tratteggiata ambra va dal centro al cursore, oltre il bordo quando dai il diametro, come la disegna AutoCAD. Il cerchio giace nel piano del suo primo punto, alla quota corrente se il punto non ha una Z propria.

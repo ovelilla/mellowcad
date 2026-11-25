@@ -570,9 +570,15 @@
     }
   },
   "Palette": {
-    "label": "Paletas",
-    "fold": "Recolher as paletas",
-    "unfold": "Mostrar as paletas",
+    "layers": "Gerenciador de propriedades de camada",
+    "close": "Fechar",
+    "options": "Propriedades",
+    "move": "Mover",
+    "size": "Tamanho",
+    "allowDocking": "Permitir encaixe",
+    "ctrlPrevents": "Pressione a tecla 'Ctrl' para evitar o encaixe.",
+    "ctrlAllows": "Pressione a tecla Ctrl para permitir o encaixe.",
+    "releasePrevents": "Solte a tecla Ctrl para evitar o encaixe.",
     "resize": "Largura das paletas"
   },
   "PointStyle": {

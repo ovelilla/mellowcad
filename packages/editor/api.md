@@ -30,7 +30,11 @@ export type { CadEditorComponents }
 export interface CadEditorComponents {
     readonly TitleBar?: ComponentType<TitleBarProps> | null;
     readonly Ribbon?: ComponentType<PieceProps> | null;
-    readonly PalettePanel?: ComponentType<PieceProps> | null;
+    /**
+     * What each palette holds, handed which one (`palette`); its frame is the
+     * editor's. `null` turns the palettes off, their columns too.
+     */
+    readonly PaletteContent?: ComponentType<PaletteProps> | null;
     readonly CommandLine?: ComponentType<PieceProps> | null;
     readonly StatusBar?: ComponentType<StatusBarProps> | null;
     readonly ViewportControls?: ComponentType<PieceProps> | null;
@@ -101,13 +105,13 @@ export interface HelpLinks {
 
 export { paletteLayoutScript }
 /**
- * The `<head>` script for the layout kept under `key`:
- * {@link paletteLayoutAtLoad} and {@link applyPaletteLayout} in plain ES5, as
- * it runs before any bundle. The root does not exist yet, so a
+ * The `<head>` script for the layout kept under `key` (`layoutStorage.palette`):
+ * each docked column's width, from the palettes open when the page was left,
+ * in plain ES5, as it runs before any bundle. The root does not exist yet, so a
  * MutationObserver waits for the parser to insert it: its callback is a
  * microtask, which runs before the frame that could paint the root. Without
- * the script (storage blocked, a script error) the zone's CSS still decides
- * by the window's width, so the canvas keeps its final box.
+ * the script (storage blocked, a script error) no column is laid out until
+ * the editor's scripts run.
  */
 export declare const paletteLayoutScript: (key: string) => string;
 
@@ -153,15 +157,19 @@ export { NavigationBar }
  */
 export declare function NavigationBar(pieceProps: PieceProps): ReactElement;
 
-export { PalettePanel }
+export { PaletteContent }
 /**
- * The palette panel (the `panel` zone): Properties, Layers and Blocks as
- * tabs of one docked palette, modeless like AutoCAD's — a click on the
- * drawing never closes it, so one can draw with the layer manager open or
- * insert one block after another. Open, it shows the tab's palette; folded,
- * a strip of the tabs' icons, each of which opens the panel on its palette.
+ * What a palette holds: Properties, the Layer Properties Manager or Blocks.
+ * The frame round it — its title bar, floating or docked, its size — is the
+ * editor's, as a zone is.
  */
-export declare function PalettePanel(pieceProps: PieceProps): ReactElement;
+export declare function PaletteContent(paletteProps: PaletteProps): ReactElement;
+
+export type { PaletteProps }
+/** What a palette's content is handed: a piece's props and which palette. */
+export interface PaletteProps extends PieceProps {
+    readonly palette: PaletteId;
+}
 
 export type { PieceProps }
 /**
@@ -418,7 +426,10 @@ What the exports' types name. A host cannot import these names, but their shape 
  * users: renaming it orphans what they saved.
  */
 export interface LayoutStorage {
-    /** The palette panel's width and fold, also read by the `<head>` script. */
+    /**
+     * Where each palette shows (floating or docked), its size, the columns'
+     * widths and which palettes were open, also read by the `<head>` script.
+     */
     readonly palette?: string;
     /** The status bar's Customization. */
     readonly statusBar?: string;

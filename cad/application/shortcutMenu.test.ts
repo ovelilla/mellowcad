@@ -160,11 +160,10 @@ describe("the Edit menu", () => {
   it("opens the Properties palette", () => {
     const cad = createHarness({ entities: [lineOf(p(0, 0), p(100, 0))] })
     cad.selectAll()
-    cad.runtime.setPaletteOpen(false)
 
     cad.rightClick(CLEAR)
     cad.runtime.chooseShortcutMenuAction("properties")
-    expect(cad.state().palette).toEqual({ open: true, tab: "properties" })
+    expect(cad.state().palettes.properties).toBe(true)
   })
   it("offers Dimension Style over dimensions alone, and puts them on one in a step (desktop dimensions/d07-1)", () => {
     const cad = createHarness({

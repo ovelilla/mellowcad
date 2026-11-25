@@ -4,7 +4,7 @@ import { ConstraintType } from "./constraints/types"
 import { abbreviationOf } from "../i18n/keywords"
 import { KEYWORD_IDS } from "../locales/keywordIds"
 import type { EngineLocale } from "../locales/types"
-import type { DynamicInputFieldUi, EngineState } from "./EngineState"
+import type { DynamicInputFieldUi, EngineState, PaletteId } from "./EngineState"
 import type {
   Clipboard,
   DrawingStore,
@@ -105,6 +105,8 @@ export interface CadDriverOptions {
   readonly store?: DrawingStore | null
   /** The language the engine speaks; English when left out. */
   readonly locale?: EngineLocale
+  /** The palettes open at the start (`CadRuntimeOptions.palettes`). */
+  readonly palettes?: readonly PaletteId[]
   /** File save/open. Absent means the host offers none (SSR, headless). */
   readonly files?: FileTransport | null
   readonly clipboard?: Clipboard | null
@@ -138,7 +140,7 @@ export class CadDriver {
       options.store ?? null,
       options.files ?? null,
       this.clipboard,
-      { locale: options.locale }
+      { locale: options.locale, palettes: options.palettes }
     )
     this.runtime.setViewSize(options.width ?? 1000, options.height ?? 800)
     this.runtime.snapping.setActive(options.snap ?? false)

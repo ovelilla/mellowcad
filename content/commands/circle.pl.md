@@ -3,7 +3,7 @@ title: "Okrąg w AutoCADzie: polecenie OKRĄG (CIRCLE)"
 metaTitle: "Okrąg w AutoCADzie: polecenie OKRĄG (CIRCLE)"
 description: "Jak narysować okrąg w AutoCADzie poleceniem OKRĄG (CIRCLE, skrót O): środek i promień lub średnica, 2P, 3P i Ssr, okrąg styczny do dwóch obiektów."
 figure: "Trzy okręgi: środek i promień, dwa końce średnicy (2P) oraz środek i średnica."
-sourceHash: "3f6a42208e31"
+sourceHash: "ba17b79c10cc"
 ---
 
 Polecenie OKRĄG (CIRCLE) rysuje okrąg na podstawie środka i promienia, wpisanego lub podanego punktem na okręgu, albo jednym z innych sposobów, które proponuje jego pierwszy monit. Enter przy promieniu powtarza rozmiar ostatniego okręgu, zapamiętany w rysunku. Gdy podajesz promień, od środka do kursora biegnie bursztynowa przerywana linia, a przy podawaniu średnicy wychodzi poza okrąg, tak jak rysuje ją AutoCAD. Okrąg leży w płaszczyźnie swojego pierwszego punktu, na bieżącym poziomie, jeśli punkt nie ma własnej współrzędnej Z.

@@ -826,13 +826,13 @@ describe("the blocks palette", () => {
 
   it("is closed until BLOCKSPALETTE opens it", () => {
     const cad = withBlocks()
-    expect(cad.state().palette.open).toBe(false)
+    expect(cad.state().palettes.blocks).toBe(false)
 
     cad.command("BLOCKSPALETTE")
-    expect(cad.state().palette).toEqual({ open: true, tab: "blocks" })
+    expect(cad.state().palettes.blocks).toBe(true)
 
     cad.runtime.togglePalette("blocks")
-    expect(cad.state().palette.open).toBe(false)
+    expect(cad.state().palettes.blocks).toBe(false)
   })
 
   it("stays open through one insertion after another", () => {
@@ -844,7 +844,7 @@ describe("the blocks palette", () => {
     cad.runtime.insertBlock("DOOR")
     cad.click(p(500, 0)).enter().enter().enter()
 
-    expect(cad.state().palette).toEqual({ open: true, tab: "blocks" })
+    expect(cad.state().palettes.blocks).toBe(true)
     expect(
       cad
         .entities()

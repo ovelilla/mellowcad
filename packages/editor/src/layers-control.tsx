@@ -50,7 +50,7 @@ import { useEditorText } from "./editor-text"
 const RENAME_DELAY_MS = 400
 
 /**
- * The Layer Properties Manager, a tab of the palette panel: the layer list
+ * The Layer Properties Manager, a palette of its own: the layer list
  * under its column headers in AutoCAD's order (Status, Name, On, Lock, Color,
  * Linetype, Lineweight; Freeze, Plot and the rest do not exist here), wider
  * than the panel and scrolled sideways as AutoCAD's docked manager is. A row

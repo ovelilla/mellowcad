@@ -26,6 +26,8 @@ const ALLOWED: Record<string, Record<string, string>> = {
       "a Quick Access button, AutoCAD's 24 × 22 on a 24 px pitch (docs/plans/autocad-ui.md, §2.2)",
     "h-8":
       "the application button, AutoCAD's 48 across its title bar's 32 (§2.2)",
+    "size-5.5":
+      "a palette's title bar button, AutoCAD's bar 22 across (docs/plans/autocad-ui.md, §2.8), on a 24 px pitch",
   },
   "packages/editor/src/cad-editor.tsx": {
     "h-8": "the title bar, AutoCAD's 32 (docs/plans/autocad-ui.md, §2.1)",
@@ -46,8 +48,9 @@ const ALLOWED: Record<string, Record<string, string>> = {
     "h-5.25":
       "a row of Undo's or Redo's list, AutoCAD's 21 on a pitch of 23 (§2.2, research/ui/2026-11-24/autocad/uia-pop-undo-list.txt)",
   },
-  "packages/editor/src/palette-panel.tsx": {
-    "h-9": "the palette panel's tab bar, a bar like the others",
+  "packages/editor/src/palettes.tsx": {
+    "h-5.5":
+      "a docked palette's title bar, AutoCAD's 22 high (docs/plans/autocad-ui.md, §2.8)",
   },
   // The ribbon at AutoCAD's measures (docs/plans/autocad-ui.md, §2.3: UI
   // Automation's boxes at 1920×1080, research/ui/2026-11-24/autocad/
@@ -86,6 +89,7 @@ const BUTTON_SIZES: Record<string, RegExp> = {
   "icon-flyout": /\bh-7 w-3\.5\b/,
   quick: /\bh-5\.5 w-6\b/,
   application: /\bh-8 w-12\b/,
+  palette: /\bsize-5\.5\b/,
   cube: /\bh-6\b/,
   "icon-cube": /\bsize-6\b/,
 }

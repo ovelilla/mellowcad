@@ -624,7 +624,7 @@ describe("-INSERT asks as AutoCAD 2027", () => {
       const cad = withB1()
       answer(cad, name)
       expect(cad.activeToolId(), name).toBe("select")
-      expect(cad.state().palette).toEqual({ open: true, tab: "blocks" })
+      expect(cad.state().palettes.blocks).toBe(true)
       // Nothing after the echo: the console's `*Insert a block from the
       // Blocks palette` is not written on the desktop (d06-1).
       expect(cad.commandLog().at(-1)).toBe(name === "I" ? "I INSERT" : "INSERT")
@@ -644,7 +644,7 @@ describe("-INSERT asks as AutoCAD 2027", () => {
       const cad = withB1(es)
       answer(cad, name)
       expect(cad.activeToolId(), name).toBe("select")
-      expect(cad.state().palette).toEqual({ open: true, tab: "blocks" })
+      expect(cad.state().palettes.blocks).toBe(true)
     }
   })
 
@@ -653,7 +653,7 @@ describe("-INSERT asks as AutoCAD 2027", () => {
     cad.runtime.setActiveTool("insert")
 
     expect(cad.activeToolId()).toBe("select")
-    expect(cad.state().palette).toEqual({ open: true, tab: "blocks" })
+    expect(cad.state().palettes.blocks).toBe(true)
   })
 
   it("is repeated by Enter, and refused transparently (probe blocks/p202)", () => {

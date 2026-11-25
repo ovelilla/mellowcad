@@ -112,7 +112,7 @@ describe("Clean Screen", () => {
   it("Ctrl+0 turns it on and off", () => {
     const cad = createHarness()
 
-    expect(cad.state().cleanScreen).toEqual({ active: false, palette: false })
+    expect(cad.state().cleanScreen).toEqual({ active: false, palettes: [] })
     expect(cad.press("0", { ctrlKey: true })).toBe(true)
     expect(cad.state().cleanScreen.active).toBe(true)
     cad.press("0", { ctrlKey: true })
@@ -136,21 +136,37 @@ describe("Clean Screen", () => {
     expect(cad.state().cleanScreen.active).toBe(false)
   })
 
-  it("shows the palette panel again when a palette is opened", () => {
-    const cad = createHarness()
+  it("hides the open palettes, and shows one opened while it is on", () => {
+    const cad = createHarness({ palettes: ["properties", "blocks"] })
     cad.command("CLEANSCREENON")
+    expect(cad.state().cleanScreen).toEqual({ active: true, palettes: [] })
+    expect(cad.state().palettes).toEqual({
+      properties: true,
+      layers: false,
+      blocks: true,
+    })
 
     cad.command("LAYER")
-    expect(cad.state().cleanScreen).toEqual({ active: true, palette: true })
-
-    cad.command("LAYERCLOSE")
-    expect(cad.state().cleanScreen).toEqual({ active: true, palette: false })
-
+    expect(cad.state().cleanScreen).toEqual({
+      active: true,
+      palettes: ["layers"],
+    })
     cad.command("PROPERTIES")
+    cad.command("LAYERCLOSE")
+    expect(cad.state().cleanScreen).toEqual({
+      active: true,
+      palettes: ["properties"],
+    })
+
+    // Off, every open palette shows again; on again, none.
     cad.command("CLEANSCREENOFF")
     cad.command("CLEANSCREENON")
-    expect(cad.state().cleanScreen.palette).toBe(false)
-    expect(cad.state().palette.open).toBe(true)
+    expect(cad.state().cleanScreen.palettes).toEqual([])
+    expect(cad.state().palettes).toEqual({
+      properties: true,
+      layers: false,
+      blocks: true,
+    })
   })
 
   // probe workspace/p306: `_CLEANSCREENON`, `_U` writes `CLEANSCREENON` (es
@@ -456,7 +472,6 @@ describe("the ribbon's buttons that run a command", () => {
   // ID_Modify, the Properties panel's dialog launcher: Ctrl+1's macro.
   it("the Properties launcher ends LINE, then runs PROPERTIES or PROPERTIESCLOSE", () => {
     const cad = createHarness()
-    cad.runtime.setPaletteOpen(false)
     written(cad, "LINE", "0,0")
     const from = cad.commandLog().length
 
@@ -465,10 +480,10 @@ describe("the ribbon's buttons that run a command", () => {
       "Specify next point or [Undo]: *Cancel*",
       "_properties",
     ])
-    expect(cad.state().palette).toEqual({ open: true, tab: "properties" })
+    expect(cad.state().palettes.properties).toBe(true)
     cad.runtime.runRibbonButton("properties")
     expect(cad.commandLog().at(-1)).toBe("_propertiesclose")
-    expect(cad.state().palette.open).toBe(false)
+    expect(cad.state().palettes.properties).toBe(false)
   })
 })
 
@@ -477,13 +492,17 @@ describe("Ctrl+1", () => {
     const cad = createHarness()
 
     expect(cad.press("1", { ctrlKey: true })).toBe(true)
-    expect(cad.state().palette).toEqual({ open: true, tab: "properties" })
+    expect(cad.state().palettes.properties).toBe(true)
     cad.press("1", { ctrlKey: true })
-    expect(cad.state().palette.open).toBe(false)
+    expect(cad.state().palettes.properties).toBe(false)
 
     cad.command("LAYER")
     cad.press("1", { ctrlKey: true })
-    expect(cad.state().palette).toEqual({ open: true, tab: "properties" })
+    expect(cad.state().palettes).toEqual({
+      properties: true,
+      layers: true,
+      blocks: false,
+    })
   })
 })
 
@@ -535,13 +554,12 @@ describe("the accelerators' macros", () => {
   // ^C^C_propertiesclose,^C^C_properties)`
   it("Ctrl+1 ends LINE, then runs PROPERTIES or PROPERTIESCLOSE", () => {
     const cad = inLine()
-    cad.runtime.setPaletteOpen(false)
 
     expect(pressed(cad, "1")).toEqual([CANCEL, "_properties"])
     expect(cad.activeToolId()).toBe("select")
-    expect(cad.state().palette).toEqual({ open: true, tab: "properties" })
+    expect(cad.state().palettes.properties).toBe(true)
     expect(pressed(cad, "1")).toEqual(["_propertiesclose"])
-    expect(cad.state().palette.open).toBe(false)
+    expect(cad.state().palettes.properties).toBe(false)
   })
 
   // ID_CmdLine: `$M=$(if,$(and,$(>,$(getvar,clistate),0)),

@@ -3,7 +3,7 @@ import { EDITOR_ROOT_ATTRIBUTE } from "./editor-root"
 /**
  * The ribbon's minimize state and what its button does, kept on the device
  * as AutoCAD keeps them in the profile (docs/plans/autocad-ui.md, decision
- * 2), and decided before the first paint as the palette panel's fold is
+ * 2), and decided before the first paint as the docked palettes' columns are
  * (`palette-layout.ts`): the ribbon's zone is 124, 86, 45 or 24 high by the
  * state, so an inline script in the layout's `<head>`
  * ({@link ribbonLayoutScript}) writes it on the editor's root as the parser

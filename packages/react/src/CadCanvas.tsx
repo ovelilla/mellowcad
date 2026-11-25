@@ -11,6 +11,7 @@ import {
   CadEngine,
   type DrawingStore,
   type EngineLocale,
+  type PaletteId,
 } from "@mellowcad/engine"
 
 /**
@@ -31,10 +32,10 @@ export interface CadCanvasProps extends Omit<
   /** The engine's language; English when absent. */
   readonly locale?: EngineLocale
   /**
-   * Whether the palette panel starts open, asked when the engine is built:
-   * by then the page knows what it laid out before the engine existed.
+   * The palettes open at the start, asked when the engine is built: by then
+   * the page knows what it laid out before the engine existed.
    */
-  readonly paletteOpen?: () => boolean
+  readonly palettes?: () => readonly PaletteId[]
   /** Shows a command's help on F1; see `CadEngineOptions.onHelp`. */
   readonly onHelp?: (command: string | null) => void
   /** Handed the engine once it is built, and `null` once it is disposed. */
@@ -48,14 +49,13 @@ export interface CadCanvasProps extends Omit<
  * `useEditorState(engine)` and calls the engine's methods.
  */
 export function CadCanvas(props: CadCanvasProps): ReactElement {
-  const { store, scope, locale, paletteOpen, onHelp, onEngine, ...canvas } =
-    props
+  const { store, scope, locale, palettes, onHelp, onEngine, ...canvas } = props
   const ref = useRef<HTMLCanvasElement | null>(null)
   const options = useRef<EngineMount>({
     store,
     scope,
     locale,
-    paletteOpen,
+    palettes,
     onHelp,
     onEngine,
   })
@@ -70,13 +70,13 @@ export function CadCanvas(props: CadCanvasProps): ReactElement {
 
 type EngineMount = Pick<
   CadCanvasProps,
-  "store" | "scope" | "locale" | "paletteOpen" | "onHelp" | "onEngine"
+  "store" | "scope" | "locale" | "palettes" | "onHelp" | "onEngine"
 >
 
 /** Builds the engine on `canvas` and hands it out; the returned cleanup disposes it. */
 export function mountEngine(
   canvas: HTMLCanvasElement,
-  { store, scope, locale, paletteOpen, onHelp, onEngine }: EngineMount
+  { store, scope, locale, palettes, onHelp, onEngine }: EngineMount
 ): () => void {
   const engine = new CadEngine(canvas, {
     ...(store && { store: store() }),
@@ -84,7 +84,7 @@ export function mountEngine(
       ? { scope }
       : scope?.current && { scope: scope.current }),
     ...(locale && { locale }),
-    ...(paletteOpen && { paletteOpen: paletteOpen() }),
+    ...(palettes && { palettes: palettes() }),
     ...(onHelp && { onHelp }),
   })
   onEngine?.(engine)

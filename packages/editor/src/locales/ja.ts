@@ -695,9 +695,15 @@ export const ja: EditorLocale = {
       }
     },
     "Palette": {
-      "label": "パレット",
-      "fold": "パレットを折りたたむ",
-      "unfold": "パレットを表示",
+      "layers": "画層プロパティ管理",
+      "close": "閉じる",
+      "options": "プロパティ",
+      "move": "移動",
+      "size": "サイズ",
+      "allowDocking": "ドッキングを許可",
+      "ctrlPrevents": "ドッキングさせたくない場合は［Ctrl］キーを押してください。",
+      "ctrlAllows": "ドッキングさせたい場合は［Ctrl］キーを押してください。",
+      "releasePrevents": "ドッキングしたくない場合は、［Ctrl］キーを放してください。",
       "resize": "パレットの幅"
     },
     "PointStyle": {

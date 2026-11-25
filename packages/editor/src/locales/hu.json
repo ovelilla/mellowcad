@@ -570,9 +570,15 @@
     }
   },
   "Palette": {
-    "label": "Paletták",
-    "fold": "Paletták összecsukása",
-    "unfold": "Paletták megjelenítése",
+    "layers": "Fóliatulajdonság-kezelő",
+    "close": "Bezárás",
+    "options": "Tulajdonságok",
+    "move": "Mozgatás",
+    "size": "Átméretezés",
+    "allowDocking": "Rögzítés engedélyezése",
+    "ctrlPrevents": "A rögzítés elkerüléséhez nyomja meg a Ctrl billentyűt.",
+    "ctrlAllows": "Nyomja le a Ctrl billentyűt a rögzítés engedélyezéséhez.",
+    "releasePrevents": "Engedje fel a Ctrl billentyűt a rögzítés megakadályozásához.",
     "resize": "Paletta szélessége"
   },
   "PointStyle": {

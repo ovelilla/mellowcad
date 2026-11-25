@@ -422,7 +422,7 @@ Tangent or Perpendicular typed
 
 **Missing:** Ttr on polyline segments (AutoCAD takes them, p313; refused here with the starred
 words, and no marker shows over them), Quick Properties on a double-click of a circle at `Command:`
-(desktop d11; Quick Properties is workspace.md's Missing, Palette panel), where on an ellipse the
+(desktop d11; Quick Properties is workspace.md's Missing, Palettes), where on an ellipse the
 plain Tangent marker sits at Ttr (**unverified**: d13 shows it at the ellipse's top with the cursor
 at its end; here the point nearest the cursor), the marker at 2P's Perpendicular on a line (the foot
 from LASTPOINT; **unverified**, none here), the ribbon's Tan, Tan, Tan entry

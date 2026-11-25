@@ -697,9 +697,15 @@ export const it: EditorLocale = {
       }
     },
     "Palette": {
-      "label": "Tavolozze",
-      "fold": "Comprimi le tavolozze",
-      "unfold": "Mostra le tavolozze",
+      "layers": "Gestore proprietà layer",
+      "close": "Chiudi",
+      "options": "Proprietà",
+      "move": "Sposta",
+      "size": "Dimensioni",
+      "allowDocking": "Consenti ancoraggio",
+      "ctrlPrevents": "Premere il tasto Ctrl per impedire l'ancoraggio.",
+      "ctrlAllows": "Premere il tasto Ctrl per consentire l'ancoraggio.",
+      "releasePrevents": "Rilasciare il tasto Ctrl per impedire l'ancoraggio.",
       "resize": "Larghezza delle tavolozze"
     },
     "PointStyle": {

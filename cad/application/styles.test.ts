@@ -605,7 +605,7 @@ describe("the style dialogs", () => {
 
     cad.command("STYLE")
     expect(cad.state().styleDialog).toBe("text")
-    expect(cad.state().palette.open).toBe(false)
+    expect(Object.values(cad.state().palettes)).not.toContain(true)
   })
 
   it("answer to acad.pgp's DST, DIMSTY, DDIM and DDSTYLE, es DCOTA and ESTILODD", () => {

@@ -3,7 +3,7 @@ title: "Círculo en AutoCAD: comando CIRCULO (CIRCLE)"
 metaTitle: "Círculo en AutoCAD: comando CIRCULO (CIRCLE)"
 description: "Cómo funciona CIRCULO (CIRCLE, alias C) de AutoCAD en español, solicitud a solicitud: centro y radio o Diámetro, 2P, 3P y Ttr. Pruébalo gratis online."
 figure: "Tres círculos: centro y radio, los dos extremos de un diámetro (2P), y centro y Diámetro."
-sourceHash: "3f6a42208e31"
+sourceHash: "ba17b79c10cc"
 ---
 
 CIRCULO (CIRCLE en inglés) dibuja un círculo a partir de su centro y su radio, escrito o dado por un punto del círculo, o de cualquiera de las otras formas que ofrece su primera solicitud. Intro en el radio repite el tamaño del último círculo, que se guarda para el dibujo. Mientras das el radio, una línea discontinua ámbar va del centro al cursor, y pasa del borde cuando das el diámetro, como la dibuja AutoCAD. El círculo queda en el plano de su primer punto, a la elevación actual si el punto no tiene una Z propia.

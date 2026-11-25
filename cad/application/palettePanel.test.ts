@@ -17,12 +17,15 @@ import {
 import type { InsertEntity } from "../domain/entities"
 import { es } from "../locales/es"
 
-describe("the palette panel", () => {
-  it("starts folded on Properties unless the host opens it", () => {
-    expect(createHarness().state().palette).toEqual({
-      open: false,
-      tab: "properties",
-    })
+describe("the palettes", () => {
+  const CLOSED = { properties: false, layers: false, blocks: false }
+
+  // acad.cuix's "Drafting & Annotation" shows none (`Display="no"`).
+  it("start closed unless the host opens some", () => {
+    expect(createHarness().state().palettes).toEqual(CLOSED)
+    expect(
+      createHarness({ palettes: ["layers", "blocks"] }).state().palettes
+    ).toEqual({ properties: false, layers: true, blocks: true })
   })
 
   it.each([
@@ -36,10 +39,10 @@ describe("the palette panel", () => {
     ["_PROPERTIES", "properties"],
     // acad.pgp: `DDLMODES, *LAYER`.
     ["DDLMODES", "layers"],
-  ])("%s opens it on its palette", (command, tab) => {
+  ] as const)("%s opens its palette, the others as they are", (command, id) => {
     const cad = createHarness()
     cad.command(command)
-    expect(cad.state().palette).toEqual({ open: true, tab })
+    expect(cad.state().palettes).toEqual({ ...CLOSED, [id]: true })
   })
 
   it.each([
@@ -52,58 +55,75 @@ describe("the palette panel", () => {
     // es acad.pgp: `LAYER, *CAPA` and `DDLMODES, *CAPA`.
     ["LAYER", "layers"],
     ["DDLMODES", "layers"],
-  ])("%s opens it in Spanish", (command, tab) => {
+  ] as const)("%s opens it in Spanish", (command, id) => {
     const cad = createHarness({ locale: es })
     cad.command(command)
-    expect(cad.state().palette).toEqual({ open: true, tab })
+    expect(cad.state().palettes[id]).toBe(true)
   })
 
-  it("LAYERCLOSE and PROPERTIESCLOSE fold it only while their palette shows", () => {
+  it("are open together, and LAYERCLOSE and PROPERTIESCLOSE close each its own", () => {
     const cad = createHarness()
     cad.command("LAYER")
-    cad.command("PROPERTIESCLOSE")
-    expect(cad.state().palette).toEqual({ open: true, tab: "layers" })
-    cad.command("LAYERCLOSE")
-    expect(cad.state().palette).toEqual({ open: false, tab: "layers" })
-
     cad.command("PROPERTIES")
+    cad.command("BLOCKSPALETTE")
+    expect(cad.state().palettes).toEqual({
+      properties: true,
+      layers: true,
+      blocks: true,
+    })
+
     cad.command("LAYERCLOSE")
-    expect(cad.state().palette).toEqual({ open: true, tab: "properties" })
+    expect(cad.state().palettes).toEqual({
+      properties: true,
+      layers: false,
+      blocks: true,
+    })
     cad.command("PROPERTIESCLOSE")
-    expect(cad.state().palette).toEqual({ open: false, tab: "properties" })
+    expect(cad.state().palettes).toEqual({ ...CLOSED, blocks: true })
+    cad.command("LAYERCLOSE")
+    expect(cad.state().palettes).toEqual({ ...CLOSED, blocks: true })
   })
 
   it.each([
-    ["CERRARCAPA", "CAPA"],
-    ["CERPROP", "PROPIEDADES"],
-    ["_LAYERCLOSE", "_LAYER"],
-    ["_PROPERTIESCLOSE", "_PROPERTIES"],
-  ])("%s closes it in Spanish", (close, open) => {
+    ["CERRARCAPA", "CAPA", "layers"],
+    ["CERPROP", "PROPIEDADES", "properties"],
+    ["_LAYERCLOSE", "_LAYER", "layers"],
+    ["_PROPERTIESCLOSE", "_PROPERTIES", "properties"],
+  ] as const)("%s closes it in Spanish", (close, open, id) => {
     const cad = createHarness({ locale: es })
     cad.command(open)
     cad.command(close)
-    expect(cad.state().palette.open).toBe(false)
+    expect(cad.state().palettes[id]).toBe(false)
   })
 
-  it("is modeless: drawing with the layer manager open leaves it open", () => {
+  it("are modeless: drawing with the layer manager open leaves it open", () => {
     const cad = createHarness()
     cad.command("LA")
     cad.command("LINE").click(p(0, 0)).click(p(100, 0)).enter()
 
     const end = cad.only<LineEntity>("line").end
     expect([end.x, end.y]).toEqual([100, expect.closeTo(0)])
-    expect(cad.state().palette).toEqual({ open: true, tab: "layers" })
+    expect(cad.state().palettes.layers).toBe(true)
 
     cad.click(p(500, 500))
-    expect(cad.state().palette).toEqual({ open: true, tab: "layers" })
+    expect(cad.state().palettes.layers).toBe(true)
   })
 
-  it("its fold button reopens the palette it last showed", () => {
-    const cad = createHarness()
-    cad.command("BLOCKSPALETTE")
-    cad.runtime.setPaletteOpen(false)
-    cad.runtime.setPaletteOpen(true)
-    expect(cad.state().palette).toEqual({ open: true, tab: "blocks" })
+  it("a trigger closes its palette while it shows, else opens it", () => {
+    const cad = createHarness({ palettes: ["properties"] })
+    cad.runtime.togglePalette("blocks")
+    expect(cad.state().palettes).toEqual({
+      properties: true,
+      layers: false,
+      blocks: true,
+    })
+    cad.runtime.togglePalette("properties")
+    expect(cad.state().palettes).toEqual({ ...CLOSED, blocks: true })
+    // Hidden by Clean Screen it does not show: the trigger shows it.
+    cad.command("CLEANSCREENON")
+    cad.runtime.togglePalette("blocks")
+    expect(cad.state().palettes.blocks).toBe(true)
+    expect(cad.state().cleanScreen.palettes).toEqual(["blocks"])
   })
 })
 

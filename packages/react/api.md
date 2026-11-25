@@ -30,10 +30,10 @@ export interface CadCanvasProps extends Omit<CanvasHTMLAttributes<HTMLCanvasElem
     /** The engine's language; English when absent. */
     readonly locale?: EngineLocale;
     /**
-     * Whether the palette panel starts open, asked when the engine is built:
-     * by then the page knows what it laid out before the engine existed.
+     * The palettes open at the start, asked when the engine is built: by then
+     * the page knows what it laid out before the engine existed.
      */
-    readonly paletteOpen?: () => boolean;
+    readonly palettes?: () => readonly PaletteId[];
     /** Shows a command's help on F1; see `CadEngineOptions.onHelp`. */
     readonly onHelp?: (command: string | null) => void;
     /** Handed the engine once it is built, and `null` once it is disposed. */

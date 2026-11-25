@@ -130,6 +130,7 @@ Autodesk's follow Taiwan: Columns 行數, Rows 列 (ax26res 1189, 1194), MINSERT
 | Layers | Layer - Rename; The selected layer cannot be renamed.; The following layers cannot be renamed:; Layer 0 | 圖層 - 更名; 無法更名選取的圖層。; 無法更名以下圖層:; 圖層 0 | T AcTaskDialogs 88 |
 | Layers | Layer - Name Already Exists; The name, {name}, is already in use.; You will need to enter a different name. | 圖層 - 名稱已存在 † (after `%ObjectName% - 名稱已存在`); 名稱 {name} 已在使用。; 將需要輸入其他名稱。 | T AcTaskDialogs S4 |
 | Layers | Invalid characters in layer name.; The following characters are not valid in layer names: | 圖層名稱中存在無效字元。; 以下字元在圖層名稱中無效: | N AcLayer |
+| Palettes' frame | Layer Properties Manager (its title bar); Close, Properties (the title bar's buttons); Move, Size, Close, Allow Docking (its properties menu); the three Ctrl hints while it is dragged | 圖層性質管理員; 關閉, 性質; 移動, 大小, 關閉, 允許停靠; 按住 Ctrl 以避免固定。 按住 Ctrl 以允許固定。 放開 Ctrl 以避免固定。 | X WorkspaceRoot XLS_00014402 (acad.CUIX); adui26res.dll 61536, 15, MENU 134 (PaletteOptionsMenu: 32775, 32776, 32774, 32778), 17, 19, 20 (the 2027.1 update's acadlp.adix) |
 | Dialogs | Drawing Units; Length; Type; Precision; Decimal; Insertion scale; Sample output | 圖面單位; 長度; 類型; 精確度; 十進位; 插入比例; 示範輸出 | D unitsRes 500; P unitsRes 28 |
 | Dialogs | Units to scale inserted content:; Millimeters; Centimeters; Meters | 調整插入內容之比例的單位:; 公釐; 公分; 公尺 | D unitsRes 500:1011; P acadres 3404–3406 |
 | Dialogs | Save Drawing As; File name:; Files of type:; Tools; Options…; Save | 圖面另存成; 檔名:; 檔案類型:; 工具; 選項…; 儲存 | P acadres 21405; D acadres 131:13008, 131:13009 |

@@ -570,9 +570,15 @@
     }
   },
   "Palette": {
-    "label": "Palety",
-    "fold": "Zwiń palety",
-    "unfold": "Pokaż palety",
+    "layers": "Menedżer właściwości warstw",
+    "close": "Zamknij",
+    "options": "Właściwości",
+    "move": "Przesuń",
+    "size": "Rozmiar",
+    "allowDocking": "Dozwolone dokowanie",
+    "ctrlPrevents": "Naciśnij klawisz Ctrl, aby zapobiec zamocowaniu.",
+    "ctrlAllows": "Naciśnij klawisz Ctrl, aby pozwolić zadokować.",
+    "releasePrevents": "Zwolnij klawisz Ctrl, aby zapobiec zamocowaniu.",
     "resize": "Szerokość palety"
   },
   "PointStyle": {

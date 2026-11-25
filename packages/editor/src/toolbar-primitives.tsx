@@ -13,8 +13,9 @@ export type Side =
 
 /**
  * An icon button with a tooltip — the atom every toolbar region is built from:
- * a square of 28 px, as every control is (.claude/rules/ui.md, "Size"), or a
- * Quick Access button at AutoCAD's 24 × 22 (`size="quick"`).
+ * a square of 28 px, as every control is (.claude/rules/ui.md, "Size"), a
+ * Quick Access button at AutoCAD's 24 × 22 (`size="quick"`) or a palette's
+ * title bar button at its 22 (`size="palette"`).
  */
 export function IconAction({
   icon: Icon,
@@ -43,7 +44,7 @@ export function IconAction({
    */
   mirrored?: boolean
   side?: Side
-  size?: "icon" | "quick"
+  size?: "icon" | "quick" | "palette"
   className?: string
 }): ReactElement {
   return (

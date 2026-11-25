@@ -63,8 +63,8 @@ Its engine options are read once, when the engine is built, as the engine's own 
   that also holds the host's controls, or `"document"` for the whole page; none, its canvas. See
   [Keys, the wheel and focus](../../cad/docs/host.md#keys-the-wheel-and-focus).
 - `locale` is the engine's language (`@mellowcad/engine/locales/<tag>`); none, English.
-- `paletteOpen` says whether a palette panel starts open, for a host that lays one out before the
-  engine exists.
+- `palettes` says which palettes start open, for a host that lays them out before the engine
+  exists (what it remembers).
 - `onHelp` is F1's help, handed the running command's global name or `null`; none, F1 is the
   browser's.
 

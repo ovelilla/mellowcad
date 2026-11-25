@@ -345,13 +345,12 @@ export declare class CadEngine {
     setStyleDialog(dialog: StyleDialog | null): void;
     /** The name New would give a style copied from `basedOn`, unmade. */
     proposedStyleName(table: StyleDialog, basedOn?: string): string;
-    /** Opens the palette panel on one of its palettes. */
-    showPalette(tab: PaletteTab): void;
-    /** Folds the palette panel; with a tab, only while that palette shows. */
-    closePalette(tab?: PaletteTab): void;
-    /** A palette's trigger: opens the panel on it, or folds it if it shows. */
-    togglePalette(tab: PaletteTab): void;
-    setPaletteOpen(open: boolean): void;
+    /** Opens a palette, the others as they are. */
+    showPalette(id: PaletteId): void;
+    /** Closes a palette, the others as they are: its Close. */
+    closePalette(id: PaletteId): void;
+    /** A palette's trigger: closes it while it shows, else opens it. */
+    togglePalette(id: PaletteId): void;
     setUnitsDialog(open: boolean): void;
     /** Shows or hides the Point Style dialog; closing it ends PTYPE. */
     setPointStyleDialog(open: boolean): void;
@@ -472,10 +471,11 @@ export interface CadEngineOptions {
      */
     readonly locale?: EngineLocale;
     /**
-     * Whether the palette panel starts open, so the engine agrees with what the
-     * host laid out before it existed. Folded when left out.
+     * The palettes open at the start, so the engine agrees with what the host
+     * laid out before it existed (what this device remembers). None when left
+     * out.
      */
-    readonly paletteOpen?: boolean;
+    readonly palettes?: readonly PaletteId[];
     /**
      * Shows a command's help, AutoCAD's F1: the global name of the command
      * running, or `null` for the help's start. Without it F1 is the browser's.
@@ -681,6 +681,8 @@ export interface CadDriverOptions {
     readonly store?: DrawingStore | null;
     /** The language the engine speaks; English when left out. */
     readonly locale?: EngineLocale;
+    /** The palettes open at the start (`CadRuntimeOptions.palettes`). */
+    readonly palettes?: readonly PaletteId[];
     /** File save/open. Absent means the host offers none (SSR, headless). */
     readonly files?: FileTransport | null;
     readonly clipboard?: Clipboard | null;
@@ -736,12 +738,15 @@ export type { CleanScreenUi }
 /** Clean Screen: what it hides is the host's chrome, so the host hides it. */
 export interface CleanScreenUi {
     /**
-     * CLEANSCREENSTATE: the palette panel hidden. The ribbon it closes is
+     * CLEANSCREENSTATE: the open palettes hidden. The ribbon it closes is
      * {@link RibbonUi.open}'s.
      */
     readonly active: boolean;
-    /** A palette was opened while it is on: the palette panel shows again. */
-    readonly palette: boolean;
+    /**
+     * The palettes opened while it is on, in the order they were: these show,
+     * the others stay hidden until it is off.
+     */
+    readonly palettes: readonly PaletteId[];
 }
 
 export type { CommandLineEntry }
@@ -1152,8 +1157,8 @@ export interface EngineState {
     readonly styleDialog: StyleDialog | null;
     /** Every block defined in the drawing (the Blocks palette's Current tab). */
     readonly blocks: ReadonlyArray<BlockInfo>;
-    /** The palette panel: open or folded, and the palette it shows. */
-    readonly palette: PaletteUi;
+    /** Which palettes are open. */
+    readonly palettes: PalettesUi;
     /** Whether the Drawing Units dialog (UNITS) is showing. */
     readonly unitsDialog: boolean;
     /** Whether the Point Style dialog (PTYPE) is showing. */
@@ -1228,27 +1233,28 @@ export type { ObjectType }
  */
 export type ObjectType = EntityType | `${ArrayKind}Array` | `${DimensionKind}Dimension` | "minsert";
 
-export { PALETTE_TABS }
-/** The palette panel's tabs, in their order. */
-export declare const PALETTE_TABS: readonly [
+export type { PaletteId }
+export type PaletteId = (typeof PALETTES)[number];
+
+export { PALETTES }
+/**
+ * The palettes, each a window of its own: Properties, the Layer Properties
+ * Manager and Blocks.
+ */
+export declare const PALETTES: readonly [
     "properties",
     "layers",
     "blocks"
 ];
 
-export type { PaletteTab }
-export type PaletteTab = (typeof PALETTE_TABS)[number];
-
-export type { PaletteUi }
+export type { PalettesUi }
 /**
- * The docked palette panel: which palette it shows and whether it is open or
- * folded to its strip. Modeless, as AutoCAD's palettes are: nothing on the
- * drawing closes it, only its own button, its tab's trigger or a CLOSE command.
+ * Which palettes are open, each apart, as AutoCAD's are (OPMSTATE, the
+ * layer manager's, BLOCKSPALETTE's). Modeless: nothing on the drawing closes
+ * one, only its own Close, its trigger or its CLOSE command. Where and how
+ * each shows (floating, docked) is the host's, kept on the device.
  */
-export interface PaletteUi {
-    readonly open: boolean;
-    readonly tab: PaletteTab;
-}
+export type PalettesUi = Readonly<Record<PaletteId, boolean>>;
 
 export { POINT_FILTERS }
 /**

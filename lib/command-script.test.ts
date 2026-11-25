@@ -102,11 +102,11 @@ describe("a command that opens a dialog box", () => {
     // engine: a palette shown, or a dialog the host would draw.
     const opening = commandCatalog().filter(({ id }) => {
       const cad = new CadDriver()
-      const before = cad.state().palette
+      const before = cad.state().palettes
       cad.keyIn(id)
       const state = cad.state()
       const opens =
-        state.palette !== before ||
+        state.palettes !== before ||
         state.unitsDialog ||
         state.pointStyleDialog ||
         state.styleDialog !== null ||

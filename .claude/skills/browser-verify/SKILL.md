@@ -106,8 +106,10 @@ not overlap one another nor cut the canvas but for what AutoCAD puts there; the 
 its row's `scrollWidth` against its `clientWidth`, which scrolls until the fold (block 5); the canvas's box at the first paint (scripts off: the context's
 `javaScriptEnabled: false`) against its box after mount; RIBBONCLOSE and RIBBON typed, the ribbon's
 zone gone and back; and after `ZOOM` `E` every drawn extreme inside the canvas. Every icon button
-starts on a whole pixel, the ribbon's after a text too (`WHOLE`), in every language (a text tab of
-the palette panel may not: its width is its text's). The type is audited as
+starts on a whole pixel, the ribbon's after a text too (`WHOLE`), in every language. The
+palettes: each floating, dragged to either side to dock, its menu, Move and Size, and their place
+after a reload, the first paint with the bundles blocked (the `<head>` script alone; scripts off
+run none). The type is audited as
 `.claude/rules/ui.md` ("Type") says.
 
 ## Navigation and view transitions

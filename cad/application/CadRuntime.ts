@@ -210,7 +210,7 @@ import {
   SaveAsDialog,
   ObjectType,
   RolloverUi,
-  PaletteTab,
+  PaletteId,
   SelectionScope,
   ShortcutMenuAction,
   ShortcutMenuEntry,
@@ -345,11 +345,12 @@ export interface CadRuntimeOptions {
    */
   readonly locale?: EngineLocale
   /**
-   * Whether the palette panel starts open. A host decides it before the
-   * engine exists (from the window's width or what it remembers), so the
-   * engine adopts the host's answer rather than reaching one of its own.
+   * The palettes open at the start: what the host remembers was open, as
+   * AutoCAD reopens the palettes it closed with. A host lays them out before
+   * the engine exists, so the engine adopts its answer. None when left out,
+   * as "Drafting & Annotation" opens none (acad.cuix, `Display="no"`).
    */
-  readonly paletteOpen?: boolean
+  readonly palettes?: readonly PaletteId[]
 }
 
 /**
@@ -635,9 +636,8 @@ export class CadRuntime extends Observable {
   private ucsIconShown = true
   // The style dialog STYLE or DIMSTYLE shows while it runs.
   private styleDialog: StyleDialog | null = null
-  // The palette panel: open or folded, and the palette it shows.
-  private paletteOpen: boolean
-  private paletteTab: PaletteTab = "properties"
+  // Which palettes are open, each apart.
+  private palettesOpen: Record<PaletteId, boolean>
   // The Properties palette's object type filter; null is All.
   private propertiesFilter: ObjectType | null = null
   // The Properties palette's current vertex of a polyline (its Vertex row).
@@ -663,10 +663,10 @@ export class CadRuntime extends Observable {
   private commandLineVisible = true
   // Whether the command history is expanded above the prompt (F2).
   private commandHistoryOpen = false
-  // Clean Screen (CLEANSCREENSTATE, not saved), and whether a palette was
-  // opened while it is on, which shows the palette panel again.
+  // Clean Screen (CLEANSCREENSTATE, not saved), and the palettes opened
+  // while it is on, which show again.
   private cleanScreen = false
-  private cleanScreenPalette = false
+  private cleanScreenPalettes: readonly PaletteId[] = []
   // The ribbon (RIBBONSTATE, not saved), the tab in front and the member each
   // drop-down shows, all the session's; whether it was open when Clean Screen
   // came on, which CLEANSCREENOFF puts back; and, while Clean Screen's step
@@ -823,7 +823,11 @@ export class CadRuntime extends Observable {
   ) {
     super()
     this.language = engineText(options.locale)
-    this.paletteOpen = options.paletteOpen ?? false
+    this.palettesOpen = {
+      properties: options.palettes?.includes("properties") ?? false,
+      layers: options.palettes?.includes("layers") ?? false,
+      blocks: options.palettes?.includes("blocks") ?? false,
+    }
     this.host = host
     this.files = files
     this.clipboard = clipboard
@@ -3231,7 +3235,7 @@ export class CadRuntime extends Observable {
   private applyCleanScreen(on: boolean): void {
     if (this.cleanScreen === on) return
     this.cleanScreen = on
-    this.cleanScreenPalette = false
+    this.cleanScreenPalettes = []
     if (on) this.ribbonBeforeCleanScreen = this.ribbonOpen
     const ribbon = on ? false : this.ribbonBeforeCleanScreen
     if (ribbon !== this.ribbonOpen) {
@@ -6235,43 +6239,45 @@ export class CadRuntime extends Observable {
   }
 
   /**
-   * Opens the palette panel on `tab` (LAYER, PROPERTIES, BLOCKSPALETTE…). With
-   * Clean Screen on, the panel shows again, as a palette opened then does.
+   * Opens a palette (LAYER, PROPERTIES, BLOCKSPALETTE…), the others as they
+   * are. With Clean Screen on it shows, as a palette opened then does, while
+   * the ones Clean Screen hid stay hidden.
    */
-  showPalette(tab: PaletteTab): void {
-    if (this.cleanScreen && !this.cleanScreenPalette) {
-      this.cleanScreenPalette = true
+  showPalette(id: PaletteId): void {
+    if (this.cleanScreen && !this.cleanScreenPalettes.includes(id)) {
+      this.cleanScreenPalettes = [...this.cleanScreenPalettes, id]
       this.invalidateState()
     }
-    if (this.paletteOpen && this.paletteTab === tab) return
-    this.paletteOpen = true
-    this.paletteTab = tab
+    if (this.palettesOpen[id]) return
+    this.palettesOpen = { ...this.palettesOpen, [id]: true }
     this.invalidateState()
   }
 
   /**
-   * Folds the palette panel. With a tab, only while that palette is the one
-   * shown, as LAYERCLOSE closes the layer manager and leaves another palette
-   * where it is.
+   * Closes one palette (its Close, LAYERCLOSE, PROPERTIESCLOSE), the others
+   * as they are.
    */
-  closePalette(tab?: PaletteTab): void {
-    if (!this.paletteOpen) return
-    if (tab !== undefined && tab !== this.paletteTab) return
-    this.paletteOpen = false
-    this.cleanScreenPalette = false
+  closePalette(id: PaletteId): void {
+    if (!this.palettesOpen[id]) return
+    this.palettesOpen = { ...this.palettesOpen, [id]: false }
+    this.cleanScreenPalettes = this.cleanScreenPalettes.filter(
+      (shown) => shown !== id
+    )
     this.invalidateState()
   }
 
-  /** A palette's trigger: opens the panel on it, or folds it if it is showing. */
-  togglePalette(tab: PaletteTab): void {
-    if (this.paletteOpen && this.paletteTab === tab) this.closePalette()
-    else this.showPalette(tab)
+  /** A palette's trigger: closes it while it shows, else opens it. */
+  togglePalette(id: PaletteId): void {
+    if (this.paletteShows(id)) this.closePalette(id)
+    else this.showPalette(id)
   }
 
-  /** The panel's own fold button: opens it on the palette it last showed. */
-  setPaletteOpen(open: boolean): void {
-    if (open) this.showPalette(this.paletteTab)
-    else this.closePalette()
+  /** Open and not hidden by Clean Screen. */
+  private paletteShows(id: PaletteId): boolean {
+    return (
+      this.palettesOpen[id] &&
+      (!this.cleanScreen || this.cleanScreenPalettes.includes(id))
+    )
   }
 
   /**
@@ -6367,7 +6373,7 @@ export class CadRuntime extends Observable {
   runRibbonButton(button: RibbonButton): void {
     switch (button) {
       case "properties": {
-        const shown = this.paletteOpen && this.paletteTab === "properties"
+        const shown = this.paletteShows("properties")
         this.runAccelerator(
           shown ? "PROPERTIESCLOSE" : "PROPERTIES",
           shown ? "_propertiesclose" : "_properties"
@@ -8602,7 +8608,7 @@ export class CadRuntime extends Observable {
         this.document.getBlocks(),
         this.document.getEntities()
       ),
-      palette: { open: this.paletteOpen, tab: this.paletteTab },
+      palettes: this.palettesOpen,
       unitsDialog: this.unitsDialog,
       pointStyleDialog: this.pointStyleDialog,
       saveAsDialog: this.saveAsDialog,
@@ -8610,7 +8616,7 @@ export class CadRuntime extends Observable {
       unsavedTextDialog: this.unsavedTextDialog,
       cleanScreen: {
         active: this.cleanScreen,
-        palette: this.cleanScreenPalette,
+        palettes: this.cleanScreenPalettes,
       },
       ribbon: {
         open: this.ribbonOpen,

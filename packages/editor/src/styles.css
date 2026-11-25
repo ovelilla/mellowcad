@@ -9,20 +9,6 @@
    designed for it — those added with its CLI later too. */
 @custom-variant dark (&);
 
-/* The palette panel open, before the engine exists: what the head script
-   wrote on the editor's root (packages/editor/src/palette-layout.ts), else the window's
-   width. In CSS, so the canvas has its final box at the first paint. */
-@custom-variant palette-open {
-  [data-mellowcad-editor][data-palette="open"] & {
-    @slot;
-  }
-  @media (width >= 1600px) {
-    [data-mellowcad-editor]:not([data-palette]) & {
-      @slot;
-    }
-  }
-}
-
 /* The ribbon minimized, before the engine exists and after: what the head
    script or the workspace wrote on the editor's root (ribbon-layout.ts). In
    CSS, so the canvas has its final box at the first paint. */
@@ -127,8 +113,6 @@
    :root: its popups mount inside it (usePortalContainer). `--active`, the
    grips' blue, is written there from THEME.grip. */
 [data-mellowcad-editor] {
-  /* The palette panel's width until one is remembered (PALETTE_WIDTH.initial). */
-  --palette-width: 280px;
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);

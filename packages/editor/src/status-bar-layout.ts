@@ -2,7 +2,7 @@
  * Which tools the status bar shows: its Customization menu, AutoCAD's
  * right-most button ("Specifies what command buttons to display on the status
  * bar"). AutoCAD keeps the choice in the user's profile, not in the drawing,
- * so here it is this device's, like the palette panel's width
+ * so here it is this device's, like the palettes' places
  * (`palette-layout.ts`), under the host's key (`layoutStorage.statusBar`;
  * with none, it is not remembered). The bar has its height whatever it shows,
  * so the choice is read after mount: it never moves the canvas.

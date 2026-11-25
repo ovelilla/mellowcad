@@ -4,10 +4,10 @@ metaTitle: "PROPERTIES in AutoCAD: the palette, Ctrl+1, PR"
 description: "How AutoCAD's PROPERTIES palette (PR, Ctrl+1) works: General and Geometry rows, *VARIES*, one object type at a time, the current settings. Try it free online."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"What is the shortcut for PROPERTIES in AutoCAD?","answer":"Ctrl+1, which also hides the palette again. Typed: PR, CH or MO, then Enter or Space. The full name works too, and _PROPERTIES in any language of AutoCAD."},{"question":"The Properties palette has disappeared: how do I get it back?","answer":"Press Ctrl+1 or type PR: the palette shows again, as a tab of the palette panel beside the drawing. Ctrl+1 pressed while it shows hides it, which is often how it went."},{"question":"How do I change the properties of several objects at once?","answer":"Select them all, then change the row: every selected object takes the new value. A row whose values differ says *VARIES* until you set it. To change only the circles, say, among them, choose that type in the drop-down at the top."},{"question":"What is the difference between PROPERTIES and MATCHPROP?","answer":"PROPERTIES shows and sets the values of the objects selected. MATCHPROP copies them from one object to others, without typing a value."}]
+faq: [{"question":"What is the shortcut for PROPERTIES in AutoCAD?","answer":"Ctrl+1, which also hides the palette again. Typed: PR, CH or MO, then Enter or Space. The full name works too, and _PROPERTIES in any language of AutoCAD."},{"question":"The Properties palette has disappeared: how do I get it back?","answer":"Press Ctrl+1 or type PR: the palette shows again where you left it, floating or docked at the drawing's side. Ctrl+1 pressed while it shows hides it, which is often how it went."},{"question":"How do I change the properties of several objects at once?","answer":"Select them all, then change the row: every selected object takes the new value. A row whose values differ says *VARIES* until you set it. To change only the circles, say, among them, choose that type in the drop-down at the top."},{"question":"What is the difference between PROPERTIES and MATCHPROP?","answer":"PROPERTIES shows and sets the values of the objects selected. MATCHPROP copies them from one object to others, without typing a value."}]
 ---
 
-PROPERTIES opens the Properties palette. As in AutoCAD it is a palette, not a dialog: it stays open beside the drawing, here as a tab of the palette panel, while you select and draw, until `PROPERTIESCLOSE` closes it. Ctrl+1 shows and hides it, and typed with an apostrophe, `'PROPERTIES`, it opens inside a running command. On a wide window it is open from the start.
+PROPERTIES opens the Properties palette. As in AutoCAD it is a palette, not a dialog: it stays open while you select and draw, floating over the drawing or docked at its side, until `PROPERTIESCLOSE` closes it. Ctrl+1 shows and hides it, and typed with an apostrophe, `'PROPERTIES`, it opens inside a running command. Closed at first, as in AutoCAD, it opens again on your next visit if you left it open.
 
 With objects selected, it shows their properties, and you change one by typing or choosing a new value in its row. General comes first, in AutoCAD's order: Color, Layer, Linetype, Lineweight and Thickness, `*VARIES*` where the selected objects differ. Below it each type's own rows: a line's start and end points, length and angle; a circle's centre, radius, diameter, circumference and area; an arc's, an ellipse's, a polyline's vertices and widths, a spline's points, a text's, a block reference's. Coordinates are in the current UCS, and rows that only report, such as a line's Length, are greyed. The drop-down at the top lists `All` and each type with its count: choose one to see and edit only that type. With nothing selected, General shows the current layer, colour, linetype and lineweight, which you set there for new objects. Each edit is one step that `U` takes back.
 
@@ -24,7 +24,7 @@ The engine draws it and writes its history as you would type it: the prompts in 
 
 ## What it does not do yet [#missing]
 
-General's Linetype scale for several objects at once or, with none selected, for new ones (CELTSCALE); Plot style, Transparency and Hyperlink, and Material. The geometry rows of several objects of one type at once, a text's contents and attribute values cannot be edited here. Quick Select, the PICKADD toggle, auto-hide, docking and floating the palette.
+General's Linetype scale for several objects at once or, with none selected, for new ones (CELTSCALE); Plot style, Transparency and Hyperlink, and Material. The geometry rows of several objects of one type at once, a text's contents and attribute values cannot be edited here. Quick Select, the PICKADD toggle and auto-hide.
 
 [What it does and still lacks, in detail (in English)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#properties-palette--properties--pr--ch--mo--propertiesclose--es-propiedades--pr--cerprop--pt-br-propriedades--alt--props--altpropd--modificard--fecharprop--fprop--fr-proprietes--prop--props--ddchprop--ddmodify--fermerproprietes--frprop--it-proprieta--pr--pro--prop--ch--ddchprop--ddmodify--chiudiprop--cpr--de-eigenschaften--eigschliess--ru-окносв--из--диалсвой--диализм--окносвзакр--осз--pl-właściwości--ce--właściwościzamknij--cz--cs-vlastnosti--vla--vlast--vt--zavřivl--vlzav--hu-tulajdonságok--tul--tva--md--tulajdonságokbezár--tbz)
 
@@ -36,7 +36,7 @@ Ctrl+1, which also hides the palette again. Typed: `PR`, `CH` or `MO`, then Ente
 
 ### The Properties palette has disappeared: how do I get it back?
 
-Press Ctrl+1 or type `PR`: the palette shows again, as a tab of the palette panel beside the drawing. Ctrl+1 pressed while it shows hides it, which is often how it went.
+Press Ctrl+1 or type `PR`: the palette shows again where you left it, floating or docked at the drawing's side. Ctrl+1 pressed while it shows hides it, which is often how it went.
 
 ### How do I change the properties of several objects at once?
 

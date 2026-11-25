@@ -698,9 +698,15 @@ export const zhCN: EditorLocale = {
       }
     },
     "Palette": {
-      "label": "选项板",
-      "fold": "折叠选项板",
-      "unfold": "显示选项板",
+      "layers": "图层特性管理器",
+      "close": "关闭",
+      "options": "特性",
+      "move": "移动",
+      "size": "大小",
+      "allowDocking": "允许固定",
+      "ctrlPrevents": "按 Ctrl 键可防止固定窗口。",
+      "ctrlAllows": "按 Ctrl 键允许固定窗口。",
+      "releasePrevents": "松开 Ctrl 键可防止固定窗口。",
       "resize": "选项板宽度"
     },
     "PointStyle": {

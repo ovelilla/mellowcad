@@ -709,9 +709,15 @@ export const cs: EditorLocale = {
       }
     },
     "Palette": {
-      "label": "Palety",
-      "fold": "Sbalit palety",
-      "unfold": "Zobrazit palety",
+      "layers": "Správce vlastností hladiny",
+      "close": "Zavřít",
+      "options": "Vlastnosti",
+      "move": "Posunout",
+      "size": "Velikost",
+      "allowDocking": "Povolit ukotvení",
+      "ctrlPrevents": "stisknutím klávesy Ctrl zabráníte ukotvení.",
+      "ctrlAllows": "Stisknutím klávesy Ctrl povolíte ukotvování.",
+      "releasePrevents": "Uvolněním klávesy Ctrl zabráníte ukotvení.",
       "resize": "Šířka palety"
     },
     "PointStyle": {

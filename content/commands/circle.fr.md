@@ -2,7 +2,7 @@
 title: "Commande CERCLE (CIRCLE) dans AutoCAD"
 description: "Comment fonctionne CERCLE (CIRCLE, alias C) d'AutoCAD en français, invite par invite : centre et rayon ou Diamètre, 2P, 3P et Ttr. Essayez-le gratuitement."
 figure: "Trois cercles : centre et rayon, deux extrémités d'un diamètre (2P), centre et Diamètre."
-sourceHash: "3f6a42208e31"
+sourceHash: "ba17b79c10cc"
 ---
 
 CERCLE (CIRCLE en anglais) dessine un cercle à partir de son centre et de son rayon, tapé ou donné par un point du cercle, ou de l'une des autres manières que propose sa première invite. Entrée au rayon reprend la taille du dernier cercle, conservée pour le dessin. Pendant que vous donnez le rayon, une ligne en pointillés ambre va du centre au curseur, et dépasse le bord quand vous donnez le diamètre, comme AutoCAD la dessine. Le cercle se trouve dans le plan de son premier point, à l'élévation courante si le point n'a pas de Z propre.

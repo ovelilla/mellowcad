@@ -43,7 +43,15 @@ function canvasOf(props: Parameters<typeof CadEditor>[0] = {}) {
   return canvases[0]
 }
 
-const ZONES = ["title", "ribbon", "canvas", "panel", "command", "status"]
+const ZONES = [
+  "title",
+  "ribbon",
+  "dockStart",
+  "canvas",
+  "dockEnd",
+  "command",
+  "status",
+]
 
 /** The grid areas a render lays out, in document order. */
 const zones = (html: string) =>
@@ -51,7 +59,8 @@ const zones = (html: string) =>
 
 const engine = {} as CadEngine
 const state = {
-  cleanScreen: { active: false, palette: false },
+  cleanScreen: { active: false, palettes: [] },
+  palettes: { properties: false, layers: false, blocks: false },
   ribbon: { open: true, tab: "home", members: {} },
   commandLine: { visible: true, buffer: "" },
   rollover: null,
@@ -61,7 +70,7 @@ const state = {
 const NONE: Required<CadEditorComponents> = {
   TitleBar: null,
   Ribbon: null,
-  PalettePanel: null,
+  PaletteContent: null,
   CommandLine: null,
   StatusBar: null,
   ViewportControls: null,
@@ -90,7 +99,6 @@ function renderZones(components: CadEditorComponents) {
       languages: [],
       statusBarKey: "status-key",
       canvas: createElement("canvas"),
-      paletteHandle: null,
     })
   )
 }
@@ -106,7 +114,7 @@ describe("CadEditor's components", () => {
         components: { TitleBar: null, Ribbon: null, StatusBar: null },
       })
     )
-    expect(zones(html)).toEqual(["canvas", "panel", "command"])
+    expect(zones(html)).toEqual(["dockStart", "canvas", "dockEnd", "command"])
     expect(
       zones(renderToString(createElement(CadEditor, { components: NONE })))
     ).toEqual(["canvas"])
@@ -158,7 +166,6 @@ describe("CadEditor's ribbon", () => {
           state: { ...state, ribbon: { ...state.ribbon, open } },
         },
         canvas: null,
-        paletteHandle: null,
       })
     )
 

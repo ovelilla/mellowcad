@@ -638,11 +638,17 @@ dialogs need nothing of the new frame:
    Style, the Dimension Style Manager with Create New Dimension Style and the New and Modify pages,
    each run by its command while it shows (one undo step), with what a style has here; the Styles
    tab leaves the panel (P7, P9 for these two).
-2. **The palettes' frame**: Properties, Layer Properties Manager and Blocks each a palette of its
-   own, open by the engine (`state.palette` per palette), floating inside the page by default,
-   docked to either side (a column per side, its splitter), anchored to a 25 px strip, auto-hidden,
-   its properties menu (§2.8), its place, size and mode kept on the device and read in the
-   `<head>`; the single panel goes in the same commit (P1, P2, P3).
+2. **The palettes' frame**, in two commits, each leaving the editor whole:
+   - **2a** (done 2026-11-25): Properties, Layer Properties Manager and Blocks each a palette of
+     its own, open or closed apart by the engine (`state.palettes`; none open at first, as
+     acad.cuix's "Drafting & Annotation"), floating inside the drawing area at §2.8's sizes, its
+     vertical title bar, Move and Size by its edges and by its properties menu (Move, Size, Close,
+     Allow Docking), docked at either side by a drag (Ctrl turning Allow Docking round, adui26res
+     17–20), a column per side with its splitter, its place, size and mode kept on the device and
+     the columns read in the `<head>`; the single panel went in the same commit (P1, P3).
+   - **2b**: anchored to the 25 px strip at either side (Anchor Left, Anchor Right) and
+     auto-hidden, floating and docked (the title bar's button, the menu's Auto-hide), the strips
+     read in the `<head>` with the columns (P2).
 3. **What each palette holds**: the Layer Properties Manager's grid and toolbar (P4), Blocks' tabs
    at its edge and Options (P5), Properties' categories that fold (P6).
 4. **The ribbon's style combos**: Text Style and Dimension Style in Home › Annotation's slide-out

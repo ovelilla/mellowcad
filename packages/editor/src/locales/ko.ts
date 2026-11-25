@@ -695,9 +695,15 @@ export const ko: EditorLocale = {
       }
     },
     "Palette": {
-      "label": "팔레트",
-      "fold": "팔레트 접기",
-      "unfold": "팔레트 표시",
+      "layers": "도면층 특성 관리자",
+      "close": "닫기",
+      "options": "특성",
+      "move": "이동",
+      "size": "크기",
+      "allowDocking": "고정 허용",
+      "ctrlPrevents": "Ctrl 키를 눌러 고정 해제하십시오.",
+      "ctrlAllows": "Ctrl 키를 눌러 고정을 허용하십시오.",
+      "releasePrevents": "Ctrl 키를 놓아 고정되는 것을 방지합니다.",
       "resize": "팔레트 폭"
     },
     "PointStyle": {

@@ -50,8 +50,8 @@ export type {
   DimStyleInfo,
   BlockInfo,
   StyleDialog,
-  PaletteTab,
-  PaletteUi,
+  PaletteId,
+  PalettesUi,
   CleanScreenUi,
   RibbonUi,
   PropertiesUi,
@@ -74,7 +74,7 @@ export type {
   SaveFileType,
   DxfSaveSettings,
 } from "./application/EngineState"
-export { PALETTE_TABS, SAVE_FILE_TYPES } from "./application/EngineState"
+export { PALETTES, SAVE_FILE_TYPES } from "./application/EngineState"
 export { saveFileName } from "./application/runtimeFiles"
 export type {
   CommandLineEntry,

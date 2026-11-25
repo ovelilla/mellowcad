@@ -12,7 +12,8 @@ import { pathToFileURL } from "node:url"
 
 /**
  * The resource directory of a PE file: `entries(directory)` lists a directory's `{ id, offset }`,
- * `data(entry)` the file offset of a leaf's bytes. dialogs.mjs reads it too.
+ * `data(entry)` the file offset of a leaf's bytes, `name(id)` a named entry's name. dialogs.mjs
+ * and menus.mjs read it too.
  */
 export function resources(dll) {
   const pe = readFileSync(dll)
@@ -53,7 +54,14 @@ export function resources(dll) {
   const isDirectory = (offset) => (offset & 0x80000000) !== 0
   const below = (offset) => offset & 0x7fffffff
   const data = (leaf) => offsetOf(pe.readUInt32LE(root + leaf.offset))
-  return { pe, entries, isDirectory, below, data }
+  // A named entry (menus.mjs's `PaletteOptionsMenu`): its id's high bit set,
+  // the rest the offset of a length-prefixed UTF-16 string.
+  const name = (id) => {
+    if ((id & 0x80000000) === 0) return null
+    const at = root + (id & 0x7fffffff)
+    return pe.toString("utf16le", at + 2, at + 2 + pe.readUInt16LE(at) * 2)
+  }
+  return { pe, entries, isDirectory, below, data, name }
 }
 
 export function stringTable(dll) {

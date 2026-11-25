@@ -2,10 +2,10 @@
 title: "Hladiny v AutoCADu: příkaz HLADINA (LAYER)"
 description: "Jak pracovat s hladinami v AutoCADu: příkaz HLADINA (LAYER, zkratka HL), Správce vlastností hladin, vytvoření, odstranění, vypnutí a uzamknutí hladiny."
 figure: "Tři hladiny, každá nastavená jako aktuální před kreslením v ní: zdi bíle, dveře žlutě, osa červeně s typem čáry Center."
-sourceHash: "a822f8c95025"
+sourceHash: "b13df1920169"
 ---
 
-Příkaz HLADINA (LAYER) otevře Správce vlastností hladin, ve kterém se hladiny výkresu vytvářejí, pojmenovávají a nastavují. Stejně jako v AutoCADu je to paleta, ne dialog: zůstává otevřená, zatímco kreslíte, zde jako karta panelu palet, dokud ji nezavře příkaz <Command id="LAYERCLOSE" />, a když ho zadáte s apostrofem uvnitř jiného příkazu, otevře se, aniž by ten příkaz ukončil. Každý objekt leží v nějaké hladině a jeho barva, typ čáry a tloušťka čáry, pokud jsou DleHlad, jsou ty, které má hladina. Nové objekty se umisťují do aktuální hladiny.
+Příkaz HLADINA (LAYER) otevře Správce vlastností hladin, ve kterém se hladiny výkresu vytvářejí, pojmenovávají a nastavují. Stejně jako v AutoCADu je to paleta, ne dialog: zůstává otevřená, zatímco kreslíte, plovoucí nad výkresem nebo ukotvená u okraje, dokud ji nezavře příkaz <Command id="LAYERCLOSE" />, a když ho zadáte s apostrofem uvnitř jiného příkazu, otevře se, aniž by ten příkaz ukončil. Každý objekt leží v nějaké hladině a jeho barva, typ čáry a tloušťka čáry, pokud jsou DleHlad, jsou ty, které má hladina. Nové objekty se umisťují do aktuální hladiny.
 
 Každá hladina je jeden řádek se sloupci v pořadí AutoCADu: Stav, se zatržítkem u aktuální hladiny, pak Název, Zap, Zamknout, Barva, Typ čáry a Tloušťka čáry a počet objektů v hladině; řádky jsou seřazené podle názvu. Tlačítko Nová hladina přidá hladinu s barvou, typem čáry a tloušťkou čáry vybrané hladiny, s názvem připraveným k přepsání, a aktuální hladinu nezmění. Nastavit aktuální nebo poklepání na řádek udělá hladinu aktuální. Kliknutí na název vybrané hladiny nebo F2 ji přejmenuje; název, který už existuje nebo obsahuje znaky, které AutoCAD zakazuje, se odmítne, stejně jako přejmenování hladiny 0. Tlačítko Odstranit hladinu ji odstraní, nikdy však hladinu 0, aktuální hladinu ani hladinu s objekty: dialog Hladina – neodstraněna, stejný jako v AutoCADu, uvede, kterou. Každá změna ve správci je krok, který vrátí <Command id="U" />, po sobě jdoucí změny společně. Na příkazovém řádku dělá totéž bez palety -HLADINA, s výzvami AutoCADu, i ve skriptech.
 

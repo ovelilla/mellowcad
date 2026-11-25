@@ -15,7 +15,7 @@ import {
 import {
   EngineState,
   ObjectType,
-  PaletteTab,
+  PaletteId,
   SaveAsChoice,
   SelectionScope,
   ShortcutMenuAction,
@@ -76,10 +76,11 @@ export interface CadEngineOptions {
    */
   readonly locale?: EngineLocale
   /**
-   * Whether the palette panel starts open, so the engine agrees with what the
-   * host laid out before it existed. Folded when left out.
+   * The palettes open at the start, so the engine agrees with what the host
+   * laid out before it existed (what this device remembers). None when left
+   * out.
    */
-  readonly paletteOpen?: boolean
+  readonly palettes?: readonly PaletteId[]
   /**
    * Shows a command's help, AutoCAD's F1: the global name of the command
    * running, or `null` for the help's start. Without it F1 is the browser's.
@@ -142,7 +143,7 @@ export class CadEngine {
       options.store ?? null,
       createBrowserFileTransport(canvas.ownerDocument),
       createBrowserClipboard(),
-      { locale: options.locale, paletteOpen: options.paletteOpen }
+      { locale: options.locale, palettes: options.palettes }
     )
 
     this.attachEvents()
@@ -845,23 +846,19 @@ export class CadEngine {
     return this.runtime.proposedStyleName(table, basedOn)
   }
 
-  /** Opens the palette panel on one of its palettes. */
-  showPalette(tab: PaletteTab): void {
-    this.runtime.showPalette(tab)
+  /** Opens a palette, the others as they are. */
+  showPalette(id: PaletteId): void {
+    this.runtime.showPalette(id)
   }
 
-  /** Folds the palette panel; with a tab, only while that palette shows. */
-  closePalette(tab?: PaletteTab): void {
-    this.runtime.closePalette(tab)
+  /** Closes a palette, the others as they are: its Close. */
+  closePalette(id: PaletteId): void {
+    this.runtime.closePalette(id)
   }
 
-  /** A palette's trigger: opens the panel on it, or folds it if it shows. */
-  togglePalette(tab: PaletteTab): void {
-    this.runtime.togglePalette(tab)
-  }
-
-  setPaletteOpen(open: boolean): void {
-    this.runtime.setPaletteOpen(open)
+  /** A palette's trigger: closes it while it shows, else opens it. */
+  togglePalette(id: PaletteId): void {
+    this.runtime.togglePalette(id)
   }
 
   setUnitsDialog(open: boolean): void {

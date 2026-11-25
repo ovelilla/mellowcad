@@ -698,9 +698,15 @@ export const de: EditorLocale = {
       }
     },
     "Palette": {
-      "label": "Paletten",
-      "fold": "Paletten einklappen",
-      "unfold": "Paletten anzeigen",
+      "layers": "Layereigenschaften-Manager",
+      "close": "Schließen",
+      "options": "Eigenschaften",
+      "move": "Verschieben",
+      "size": "Größe",
+      "allowDocking": "Fixieren zulassen",
+      "ctrlPrevents": "STRG-Taste drücken, um Fixieren zu verhindern.",
+      "ctrlAllows": "Drücken Sie die Strg-Taste, um das Fixieren zu erlauben.",
+      "releasePrevents": "Strg-Taste freigeben, um das Fixieren zu verhindern.",
       "resize": "Palettenbreite"
     },
     "PointStyle": {

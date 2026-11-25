@@ -571,9 +571,15 @@ declare const source: {
     }
   }
   "Palette": {
-    "label": string
-    "fold": string
-    "unfold": string
+    "layers": string
+    "close": string
+    "options": string
+    "move": string
+    "size": string
+    "allowDocking": string
+    "ctrlPrevents": string
+    "ctrlAllows": string
+    "releasePrevents": string
     "resize": string
   }
   "PointStyle": {

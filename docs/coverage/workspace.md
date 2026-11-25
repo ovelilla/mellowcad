@@ -144,7 +144,7 @@ too, p161) and PolarSnap with a negative POLARDIST stepping by its size (d08) ho
 
 ### `CLEANSCREENON` / `CLEANSCREENOFF` / Ctrl+0 · es `LIMPIAPANTACT` / `LIMPIAPANTDES` · pt-BR `TELALIMPAATIV` / `TELALIMPADESAT` · fr `NETECRANACTIF` / `NETECRANINACTIF` · it `ATTSCHINT` / `DISATTSCHINT` · de `BILDSCHBEREIN` / `BILDSCHBERAUS` · ru `ЧИСТЭКРВКЛ` / `ЧИСТЭКРОТКЛ` · pl `CZYŚĆEKRANWŁ` / `CZYŚĆEKRANWYŁ` · cs `ČISTÁOBRAZOVKAANO` / `ČISTÁOBRAZOVKANE` · hu `TISZTAKÉPERNYŐBE` / `TISZTAKÉPERNYŐKI`
 
-**Implemented:** hides the palette panel and closes the ribbon (RIBBONSTATE 0: see RIBBON) and
+**Implemented:** hides the open palettes and closes the ribbon (RIBBONSTATE 0: see RIBBON) and
 keeps the application menu, the Quick Access Toolbar, the command line and the status bar ("Clean
 screen does not hide the Quick Access toolbar, the command window, or the status bar"); off, it
 puts the ribbon back as it was when Clean Screen came on, whatever RIBBON or RIBBONCLOSE did
@@ -159,8 +159,8 @@ the steps here are those. Ctrl+0 is acad.cuix's `^C^C_CleanScreenON` /
 `^C^C_CleanScreenOFF` (ID_CleanScreen, by CLEANSCREENSTATE): the running command cancelled, then
 the command run, echoed so (desktop workspace/d04), a group U names `CLEANSCREENON GROUP`; the
 status bar's Clean Screen (es Limpiar pantalla) toggles it with no echo, a step U names
-`CLEANSCREENON` (d01; see Status bar); a palette opened meanwhile (LAYER, Ctrl+1) shows the
-panel again (**unverified**); not saved (CLEANSCREENSTATE, read only by SETVAR, is Not-saved), so a reload starts without it;
+`CLEANSCREENON` (d01; see Status bar); a palette opened meanwhile (LAYER, Ctrl+1) shows, the
+others staying hidden until it is off (**unverified**); not saved (CLEANSCREENSTATE, read only by SETVAR, is Not-saved), so a reload starts without it;
 CLEANSCREENOPTIONS, sometimes cited, is BricsCAD's. Typed, each is an undo step U names as invoked
 (es string tables 52590, 52589) and U and REDO toggle back, one that changes nothing too (probes
 workspace/p306, p316, in the console, which has no ribbon: with one open, the ribbon's steps
@@ -398,17 +398,39 @@ or Escape — **unverified**: without the mouse neither the menu nor the popups 
 `$M=$(if,$(eq,$(substr,$(getvar,cmdnames),1,4),GRIP),_move,^C^C_move)`: the button answers the grip's
 prompt with its mode; here the button starts its command — the desktop's **unverified**)
 
-### Palette panel
+### Palettes
 
-**Implemented:** Properties, Layers and Blocks as tabs of one modeless panel at the inline
-end (AutoCAD's are separate modeless palettes: LAYERDLGMODE 1, "It can remain open as you work"),
-open from 1600 px of window and folded below to a strip of their icons, its width (280 to 480 px)
-and its fold remembered on this device, as AutoCAD keeps them in the profile; LAYER, PROPERTIES
-and BLOCKSPALETTE open it on their tab (STYLE and DIMSTYLE open their dialogs, `docs/coverage/dimensions.md`) — WHY one docked panel: floating palettes
-covered the drawing, and as popovers the first click on it closed them (revoked by the owner on 2026-11-07: the chrome follows AutoCAD's layout, `docs/next-autocad-ui.md`)
+**Implemented:** Properties, the Layer Properties Manager and Blocks, each a modeless window of its
+own (LAYERDLGMODE 1: "It can remain open as you work"), open or closed apart: LAYER, PROPERTIES
+and BLOCKSPALETTE open theirs and leave the others as they are, LAYERCLOSE and PROPERTIESCLOSE
+close theirs, View › Palettes' toggles and Ctrl+1 each its own; none open at first, as "Drafting &
+Annotation" opens none (acad.cuix's WorkspaceRoot, `Display="no"`), and the ones open when the
+page was left open again (AutoCAD's profile). Clean Screen hides every open palette and shows one
+opened while it is on; off, they show again. Floating at first, at the drawing's inline-end top at
+AutoCAD's sizes (Properties 360×720, the Layer Properties Manager 650×350, Blocks 430×560; plan
+§2.8), each offset by a title bar from the one before, shrunk to fit a smaller drawing; its
+vertical title bar on its inline end — Close, the properties menu, the name upwards in capitals,
+its icon at the foot —, dragged to move it, its edges and corners to size it, the one pressed
+last in front. Dragged with its pointer within 24 px of the drawing's side it docks there (a
+column per side, mirrored right to left), AutoCAD's hint under the pointer (adui26res.dll 17, 19,
+20: `Press the Ctrl key to prevent docking.`, `Press the Ctrl key to allow docking.`, `Release the
+Ctrl key to prevent docking.`), Ctrl held turning Allow Docking round; docked, the drawing
+narrower by the column and its 4 px splitter, which sizes it (240 to 800); its title bar along its
+top, 22 high, a grip and the name in capitals, Close only under the pointer; its right-click menu
+Close and ✓ Allow Docking; a double-click floats it where it was, a drag floats it under the
+pointer; several at one side stack in the column. The properties menu (adui26res.dll's
+PaletteOptionsMenu, each culture's words; Arabic ours): Move and Size (the pointer or the arrow
+keys, ended by a click or Enter, Escape putting it back), Close, ✓ Allow Docking. Where each
+shows, its size, the columns' widths and which were open are kept on this device, the columns
+laid out by the `<head>` script, so the drawing's first box is its final one — WHY inside the
+drawing area: a palette cannot leave the page (plan §4, P3), and floating over the ribbon or the
+command line would hide what AutoCAD keeps clear; WHY the title bar stays at the inline end: the
+side AutoCAD's takes by where it floats is **unverified** (plan §2.8: moved by its window it
+stayed on the right)
 
-**Missing:** floating, docking anywhere, auto-hide and anchoring, Tool Palettes, Quick Properties
-(QPMODE −1: off by default)
+**Missing:** Anchor Left and Anchor Right (the strip of 25 px), Auto-hide, Transparency, Rename
+Palette Set, resizing a docked palette's height against the one under it, Tool Palettes, Quick
+Properties (QPMODE −1: off by default)
 
 ### Right button · SHORTCUTMENU
 
