@@ -19,7 +19,7 @@ import {
   SaveAsChoice,
   SelectionScope,
   ShortcutMenuAction,
-  StylesPanelTab,
+  StyleDialog,
 } from "../application/EngineState"
 import {
   DrawingStore,
@@ -835,8 +835,14 @@ export class CadEngine {
     this.runtime.setSelectionTextStyle(id)
   }
 
-  setStylesTable(table: StylesPanelTab): void {
-    this.runtime.setStylesTable(table)
+  /** Shows or hides a style dialog; closed, its STYLE or DIMSTYLE run ends. */
+  setStyleDialog(dialog: StyleDialog | null): void {
+    this.runtime.setStyleDialog(dialog)
+  }
+
+  /** The name New would give a style copied from `basedOn`, unmade. */
+  proposedStyleName(table: StyleDialog, basedOn?: string): string {
+    return this.runtime.proposedStyleName(table, basedOn)
   }
 
   /** Opens the palette panel on one of its palettes. */

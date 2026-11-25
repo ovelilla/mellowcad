@@ -1,6 +1,6 @@
 import type { CadRuntime } from "./CadRuntime"
 import { CommandDefinition, TOOL_COMMANDS } from "./CommandLine"
-import type { CommandOptionUi, StylesPanelTab } from "./EngineState"
+import type { CommandOptionUi, StyleDialog } from "./EngineState"
 import {
   promptString,
   type AnswerForm,
@@ -22,6 +22,7 @@ import { TextTool } from "./tools/TextTool"
 import { AttEditTool } from "./tools/AttEditTool"
 import { HatchTool } from "./tools/HatchTool"
 import { UnitsTool } from "./tools/UnitsTool"
+import { StyleDialogTool } from "./tools/StyleDialogTool"
 
 /**
  * The commands built here that AutoCAD's console runs transparently (2023's;
@@ -211,23 +212,6 @@ export function registerCommands(
       void runtime.pasteFromClipboard()
     },
   })
-  // Both open the Styles palette on their own table, standing in for AutoCAD's
-  // Dimension Style Manager and Text Style dialog. WHY not the Text Style
-  // dialog: the palette tab already hosts DIMSTYLE's table, and replacing it
-  // is a change of the palette panel's own (TEXT-D58, dimensions.md Missing).
-  const showStyles = (table: StylesPanelTab) => {
-    runtime.setStylesTable(table)
-    runtime.showPalette("styles")
-  }
-  register({ id: "DIMSTYLE", run: () => showStyles("dimension") })
-  register({
-    id: "STYLE",
-    run: () => {
-      // The Text Style dialog drops a preselection (text/p160, desktop d07).
-      runtime.selection.clear()
-      showStyles("text")
-    },
-  })
   // No alias: Autodesk's shortcut guide lists none for BLOCKSPALETTE, and B
   // and I are already BLOCK and INSERT.
   register({ id: "BLOCKSPALETTE", run: () => runtime.showPalette("blocks") })
@@ -250,6 +234,18 @@ export function registerCommands(
   // UNITS runs while the Drawing Units dialog, which the host draws, shows.
   const units = () => new UnitsTool((open) => runtime.setUnitsDialog(open))
   register({ id: "UNITS", makeTool: units, run: () => startTool(units()) })
+  // STYLE and DIMSTYLE run while their dialogs show. The Text Style dialog
+  // drops a preselection (text/p160, desktop d07); the manager keeps it.
+  const show = (dialog: StyleDialog | null) => runtime.setStyleDialog(dialog)
+  const style = () =>
+    new StyleDialogTool("style", show, () => runtime.selection.clear())
+  const dimstyle = () => new StyleDialogTool("dimstyle", show)
+  register({ id: "STYLE", makeTool: style, run: () => startTool(style()) })
+  register({
+    id: "DIMSTYLE",
+    makeTool: dimstyle,
+    run: () => startTool(dimstyle()),
+  })
   register({ id: "CLEANSCREENON", run: () => runtime.cleanScreenStep(true) })
   register({ id: "CLEANSCREENOFF", run: () => runtime.cleanScreenStep(false) })
   register({ id: "RIBBON", run: () => runtime.ribbonStep(true) })

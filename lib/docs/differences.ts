@@ -97,14 +97,6 @@ export const DIFFERENCES: readonly {
         file: "docs/coverage/properties.md",
         quote: "-LINETYPE, which LINETYPE runs too (WHY: the Linetype Manager does not exist)",
       },
-      {
-        file: "docs/coverage/dimensions.md",
-        quote: "DIMSTYLE opens the Styles palette's dimension table instead",
-      },
-      {
-        file: "docs/coverage/dimensions.md",
-        quote: "STYLE opens the Styles palette's text table instead",
-      },
     ],
   },
   {

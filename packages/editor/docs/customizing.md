@@ -14,7 +14,7 @@ with `useRibbonLayout()`.
 | ------------------ | --------------------------------------------------------------------------- |
 | `TitleBar`         | Across the top: the application menu, Quick Access and the save state       |
 | `Ribbon`           | Under it: the ribbon, Home, Insert, Annotate, 3D Tools and View             |
-| `PalettePanel`     | Down the end side: Properties, Layers, Blocks and Styles, as tabs           |
+| `PalettePanel`     | Down the end side: Properties, Layers and Blocks, as tabs                   |
 | `CommandLine`      | Under the drawing: the command line and its history                         |
 | `StatusBar`        | Across the bottom: the coordinates, the drafting modes and Customization    |
 | `ViewportControls` | On the drawing, top start corner: `[Top]`, the preset views                 |

@@ -2,7 +2,7 @@
 title: "Commande COTLIN (DIMLINEAR) dans AutoCAD"
 description: "Cotation dans AutoCAD en français : COTLIN (DIMLINEAR, alias LI), deux origines ou un objet, puis la ligne de cote, horizontale ou verticale. Essayez-le."
 figure: "Un rectangle coté deux fois : son côté supérieur par ses deux coins, son côté droit par Entrée et sa désignation."
-sourceHash: "e48a0a6f18c9"
+sourceHash: "711a0bfcb4de"
 ---
 
 COTLIN (DIMLINEAR en anglais) mesure la distance entre deux points selon X ou selon Y et la dessine sous forme de cote : deux lignes d'attache, une ligne de cote avec ses flèches, et la mesure au-dessus. Vous donnez le premier et le second point d'origine des lignes d'attache, puis la position de la ligne de cote, et l'endroit où vous la placez choisit la direction, comme dans AutoCAD : au-dessus ou au-dessous des deux points, elle mesure horizontalement ; à côté d'eux, verticalement. Appuyez plutôt sur Entrée à la première invite et désignez une ligne, un arc, un segment de polyligne ou un cercle : ses deux extrémités, ou le diamètre du cercle, sont les origines. La ligne de commande indique alors la mesure, et la commande se termine.
@@ -51,4 +51,4 @@ Les cotes de MellowCAD ne sont pas encore associatives, comme l'indique <Message
 
 ### Comment changer la taille du texte et des flèches des cotes ?
 
-Dans le style de cote, comme dans AutoCAD : <Command id="DIMSTYLE" /> (`CST`) ouvre les styles de cote, ici dans la palette Styles, là où AutoCAD a le Gestionnaire des styles de cote. La hauteur du texte, la taille des flèches, l'échelle générale et les décimales du style courant s'y règlent, et toutes les cotes de ce style suivent.
+Dans le style de cote, comme dans AutoCAD : <Command id="DIMSTYLE" /> (`CST`) ouvre le Gestionnaire des styles de cote. La hauteur du texte, la taille des flèches, l'échelle générale et les décimales du style courant s'y règlent, et toutes les cotes de ce style suivent.

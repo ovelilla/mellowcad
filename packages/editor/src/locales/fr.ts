@@ -528,65 +528,101 @@ export const fr: EditorLocale = {
         "objects": "Objets"
       }
     },
-    "Styles": {
-      "title": "Styles",
-      "dimension": "Cote",
-      "text": "Texte",
+    "TextStyle": {
+      "title": "Style de texte",
       "current": [
-        "Courant : ",
-        [
-          "value",
-          [
-            "name"
-          ]
-        ]
-      ],
-      "new": "Nouveau",
-      "setCurrent": [
-        "Définir ",
-        [
-          "name"
-        ],
-        " comme courant"
-      ],
-      "rename": [
-        "Renommer ",
+        "Style de texte courant: ",
         [
           "name"
         ]
       ],
-      "delete": [
-        "Supprimer ",
+      "styles": "Styles:",
+      "allStyles": "Tous les styles",
+      "stylesInUse": "Styles en cours d'utilisation",
+      "font": "Police",
+      "fontName": "Nom de police:",
+      "size": "Taille",
+      "height": "Hauteur",
+      "setCurrent": "Définir courant",
+      "new": "Nouveau...",
+      "delete": "Effacer",
+      "apply": "Appliquer",
+      "cancel": "Annuler",
+      "close": "Fermer",
+      "newTitle": "Nouveau style de texte",
+      "styleName": "Nom de style:",
+      "ok": "OK"
+    },
+    "DimStyle": {
+      "title": "Gestionnaire des styles de cote",
+      "current": [
+        "Style de cote courant: ",
         [
           "name"
         ]
       ],
+      "styles": "Styles:",
+      "list": "Liste:",
+      "allStyles": "Tous les styles",
+      "stylesInUse": "Styles en cours d'utilisation",
+      "setCurrent": "Définir courant",
+      "new": "Nouveau...",
+      "modify": "Modifier...",
+      "close": "Fermer",
+      "menuSetCurrent": "Définir courant",
+      "rename": "Renommer",
+      "delete": "Supprimer",
+      "createTitle": "Nouveau style de cote",
+      "newStyleName": "Nouveau style:",
+      "startWith": "Commencer par:",
+      "continue": "Continuer",
+      "cancel": "Annuler",
+      "newTitle": [
+        "Nouveau style de cote: ",
+        [
+          "name"
+        ]
+      ],
+      "modifyTitle": [
+        "Modifier le style de cote: ",
+        [
+          "name"
+        ]
+      ],
+      "ok": "OK",
       "lines": "Lignes",
-      "baselineSpacing": "Espacement des lignes de base",
-      "extendBeyond": "Etendre au-delà des lignes de cote",
-      "offsetFromOrigin": "Décalage de l'origine",
       "symbolsAndArrows": "Symboles et flèches",
-      "arrowSize": "Taille de la flèche",
-      "centerMark": "Taille de la marque centrale",
-      "textGroup": "Texte",
-      "textHeight": "Hauteur du texte",
-      "offsetFromDimLine": "Décalage de la ligne de cote",
+      "text": "Texte",
       "fit": "Ajuster",
-      "overallScale": "Utiliser l'échelle générale de",
-      "drawDimLineBetween": "Tracer ligne de cote entre lignes d'attache",
       "primaryUnits": "Unités principales",
+      "dimensionLines": "Lignes de cote",
+      "baselineSpacing": "Espacement des lignes de base:",
+      "extensionLines": "Lignes d'attache",
+      "extendBeyondDimLines": "Etendre au-delà des lignes de cote:",
+      "offsetFromOrigin": "Décalage de l'origine:",
+      "arrowheads": "Pointes de flèche",
+      "arrowSize": "Taille de la flèche:",
+      "centerMarks": "Marques de centre",
+      "none": "Aucune",
+      "mark": "Marque",
+      "textAppearance": "Apparence du texte",
+      "textHeight": "Hauteur du texte:",
+      "textPlacement": "Position du texte",
+      "offsetFromDimLine": "Décalage de la ligne de cote:",
+      "scaleForFeatures": "Echelle des objets de cote",
+      "useOverallScale": "Utiliser l'échelle générale de:",
+      "fineTuning": "Ajustement",
+      "drawDimLine": "Tracer ligne de cote entre lignes d'attache",
+      "linearDimensions": "Cotes linéaires",
       "precision": "Précision",
-      "angularPrecision": "Précision angulaire",
-      "decimalSeparator": "Séparateur décimal",
+      "decimalSeparator": "Séparateur décimal:",
       "comma": "',' (Virgule)",
       "period": "'.' (Point)",
       "space": "' ' (Espace)",
-      "suppressTrailingZeros": "Supprimer les zéros de fin",
-      "yes": "Oui",
-      "no": "Non",
-      "size": "Taille",
-      "height": "Hauteur",
-      "heightHint": "Une hauteur de 0 la laisse libre : TEXTE la demande à chaque fois."
+      "zeroSuppression": "Suppression des zéros",
+      "trailing": "De fin",
+      "angularDimensions": "Cotes angulaires",
+      "angularPrecision": "Précision:"
     },
     "Blocks": {
       "title": "Blocs",

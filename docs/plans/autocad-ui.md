@@ -3,7 +3,8 @@
 > **Status:** phase 0 (this inventory and plan) done on 2026-11-24; phase 1 done the same day,
 > its five blocks (the engine, the frame, Home, the other tabs, minimize and fold); the push that
 > ships the ribbon waits for the owner's word; phase 2 done on 2026-11-25, its four blocks (§6);
-> phases 3 to 6 not started.
+> phase 3 started on 2026-11-25, its desktop pass and block 1 (the style dialogs) done; phases 4
+> to 6 not started.
 > The brief is `docs/next-autocad-ui.md`; where its phases and this plan differ, this plan rules
 > (the brief says so) and the brief was corrected the same day.
 
@@ -38,8 +39,7 @@ at the right is the profile's too, and nothing here stands in for it.
 
 **Still not reached** (the first block of the phase that needs each, §7): the title bar's Help
 list, which opened neither through UI Automation nor on a click (nor on four more, 2026-11-25);
-a palette docked, anchored or auto-hidden; a profile known to be untouched, for the status bar's
-shipped set.
+a profile known to be untouched, for the status bar's shipped set.
 
 ## 2. AutoCAD 2027, zone by zone
 
@@ -308,7 +308,28 @@ One row of 33. At its start the layout tabs: a menu button (32×24), `Model`, `L
 Each is a window of its own, floating where it was left, with a **vertical title bar** on its
 outer edge: close, auto-hide and a properties menu at the top, the name written upwards
 (`PROPERTIES`, `LAYER PROPERTIES MANAGER`, `BLOCKS`) and its icon at the foot. Docking,
-anchoring and auto-hide were not exercised (§7).
+anchoring and auto-hide, captured on 2026-11-25 with the mouse (Properties, at 2560×1392;
+`research/ui/2026-11-25/phase3`):
+
+- **The properties menu** (the title bar's third button), 182 wide, rows of 22: Move, Size,
+  Close | ✓ Allow Docking | Anchor Left <, Anchor Right > | Auto-hide, Transparency...
+  (adui26res.dll's `PaletteOptionsMenu`, each culture's words there).
+- **Floating, auto-hidden**: the palette shrinks to its title bar, 22 wide and its whole height,
+  on the edge it had (`floating autohide`); the pointer over it opens it whole at once, and it
+  folds again as soon as the pointer leaves.
+- **Anchored** (Anchor Right): a strip of 25 down the drawing area's edge, the drawing narrower by
+  it, each anchored palette a tab with its name written upwards (`anchored-right-strip.png`); the
+  pointer on a tab slides the palette out over the drawing, the drawing area's whole height and
+  its own width (360), its vertical title bar against the strip (`anchored-right-open.png`).
+  Anchored is docked with auto-hide: its auto-hide button docks it.
+- **Docked**: the palette takes the side, the drawing narrower by its width and a 4 px splitter
+  that resizes it; its title bar turns horizontal along its top, 22 high, a grip and its name in
+  capitals, and auto-hide and close show only under the pointer (`docked-right.png`,
+  `docked-title-hover.png`); its right-click menu is Close and ✓ Allow Docking alone; a
+  double-click on it floats it again where it was. Docked with no width it kept 0 (the splitter
+  alone) until dragged.
+- Whether a floating palette's title bar changes side with where it floats: moved by its window
+  (not dragged) it stayed on the right, **unverified**.
 
 | Palette                  | Size as found | Layout                                                                 |
 | ------------------------ | ------------- | ---------------------------------------------------------------------- |
@@ -327,6 +348,7 @@ each as a combo in Annotation's slide-out and on the Annotate tab.
   macro its command.
 - **A dialog is Windows' own, light, under the dark theme**: a white title bar with the
   program's icon and a close button, grey groups, the buttons at the right or the foot.
+  - **New Text Style** (298×113): `Style Name:` with `style1` selected, OK and Cancel.
   - **Text Style** (616×407): `Current text style:` on top; at the left the Styles list, the
     list's filter (`All styles`) and a preview (`AaBb123`); in the middle three groups — Font
     (Font Name, Font Style, Use Big Font), Size (Annotative, Match text orientation to layout,
@@ -338,7 +360,8 @@ each as a combo in Annotation's slide-out and on the Annotate tab.
     Modify..., Override..., Compare...; at the foot Close, Help.
   - **Modify Dimension Style** (566×523): the tabs Lines, Symbols and Arrows, Text, Fit, Primary
     Units, Alternate Units, Tolerances, each with the same preview at its top right; OK, Cancel,
-    Help at the foot.
+    Help at the foot. Each page, read without the mouse (`phase3/dimmod-0.png` to `-6.png` and
+    their UI Automation dumps): two columns of framed groups, the preview top right.
 - UNITS, the point style and Save As were captured by their own reviews (their coverage entries
   cite the probes).
 
@@ -607,8 +630,23 @@ blocks, a commit each, each leaving the editor whole, built 1, 4, 2, 3:
 
 Properties, Layer Properties Manager and Blocks as palettes of their own (P1 to P6); STYLE and
 DIMSTYLE as AutoCAD's dialogs, with the ribbon's style combos (P7). The Styles tab and the
-single panel go. Starts with captures of a palette docked, anchored and auto-hidden, and of the
-dialogs' other pages (New Text Style, and each tab of Modify Dimension Style).
+single panel go. Its desktop pass is done (§7). Blocks, a commit each, each leaving the editor
+whole, in this order — the single panel can go only once nothing else lives in it, and the
+dialogs need nothing of the new frame:
+
+1. **STYLE and DIMSTYLE as dialogs** (done 2026-11-25): the Text Style dialog with New Text
+   Style, the Dimension Style Manager with Create New Dimension Style and the New and Modify pages,
+   each run by its command while it shows (one undo step), with what a style has here; the Styles
+   tab leaves the panel (P7, P9 for these two).
+2. **The palettes' frame**: Properties, Layer Properties Manager and Blocks each a palette of its
+   own, open by the engine (`state.palette` per palette), floating inside the page by default,
+   docked to either side (a column per side, its splitter), anchored to a 25 px strip, auto-hidden,
+   its properties menu (§2.8), its place, size and mode kept on the device and read in the
+   `<head>`; the single panel goes in the same commit (P1, P2, P3).
+3. **What each palette holds**: the Layer Properties Manager's grid and toolbar (P4), Blocks' tabs
+   at its edge and Options (P5), Properties' categories that fold (P6).
+4. **The ribbon's style combos**: Text Style and Dimension Style in Home › Annotation's slide-out
+   and on Annotate (P7).
 
 ### Phase 4 — the drawing area and the bottom row
 
@@ -636,7 +674,7 @@ start of its phase and with the owner's word first (`gui.md`):
 | ----- | ---------- |
 | 1 | done 2026-11-24 (§2.3): a button pressed, the extended tooltip, a small button's list, a slide-out open, the Insert gallery; block 4's toggles, gallery, Attribute Display and Object Color's list without the mouse (`research/ui/2026-11-24/block4`) |
 | 2 | done 2026-11-25 (§2.2): Undo's and Redo's lists and what they run, the title of a saved drawing, the Open Documents list (`research/ui/2026-11-25`); the Help list opened on none of four clicks either, so its rows stay **unverified** |
-| 3 | a palette docked, anchored and auto-hidden, and its properties menu; New Text Style; each tab of Modify Dimension Style |
+| 3 | done 2026-11-25 (§2.8, §2.9): a palette docked, anchored and auto-hidden and its properties menu with the mouse; New Text Style and each tab of Modify Dimension Style without it (`research/ui/2026-11-25/phase3`) |
 | 4 | the status bar of a profile nobody has touched; the navigation bar under the pointer; the command line's history open |
 
 Without the mouse, `acad.sh act` opens a drop-down, a slide-out, a folded panel, the status

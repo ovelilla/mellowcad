@@ -447,41 +447,81 @@ declare const source: {
       "objects": string
     }
   }
-  "Styles": {
+  "TextStyle": {
     "title": string
-    "dimension": string
-    "text": string
     "current": string
-    "new": string
+    "styles": string
+    "allStyles": string
+    "stylesInUse": string
+    "font": string
+    "fontName": string
+    "size": string
+    "height": string
     "setCurrent": string
+    "new": string
+    "delete": string
+    "apply": string
+    "cancel": string
+    "close": string
+    "newTitle": string
+    "styleName": string
+    "ok": string
+  }
+  "DimStyle": {
+    "title": string
+    "current": string
+    "styles": string
+    "list": string
+    "allStyles": string
+    "stylesInUse": string
+    "setCurrent": string
+    "new": string
+    "modify": string
+    "close": string
+    "menuSetCurrent": string
     "rename": string
     "delete": string
+    "createTitle": string
+    "newStyleName": string
+    "startWith": string
+    "continue": string
+    "cancel": string
+    "newTitle": string
+    "modifyTitle": string
+    "ok": string
     "lines": string
-    "baselineSpacing": string
-    "extendBeyond": string
-    "offsetFromOrigin": string
     "symbolsAndArrows": string
-    "arrowSize": string
-    "centerMark": string
-    "textGroup": string
-    "textHeight": string
-    "offsetFromDimLine": string
+    "text": string
     "fit": string
-    "overallScale": string
-    "drawDimLineBetween": string
     "primaryUnits": string
+    "dimensionLines": string
+    "baselineSpacing": string
+    "extensionLines": string
+    "extendBeyondDimLines": string
+    "offsetFromOrigin": string
+    "arrowheads": string
+    "arrowSize": string
+    "centerMarks": string
+    "none": string
+    "mark": string
+    "textAppearance": string
+    "textHeight": string
+    "textPlacement": string
+    "offsetFromDimLine": string
+    "scaleForFeatures": string
+    "useOverallScale": string
+    "fineTuning": string
+    "drawDimLine": string
+    "linearDimensions": string
     "precision": string
-    "angularPrecision": string
     "decimalSeparator": string
     "comma": string
     "period": string
     "space": string
-    "suppressTrailingZeros": string
-    "yes": string
-    "no": string
-    "size": string
-    "height": string
-    "heightHint": string
+    "zeroSuppression": string
+    "trailing": string
+    "angularDimensions": string
+    "angularPrecision": string
   }
   "Blocks": {
     "title": string

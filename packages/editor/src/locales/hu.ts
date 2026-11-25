@@ -533,67 +533,101 @@ export const hu: EditorLocale = {
         "objects": "Objektumok"
       }
     },
-    "Styles": {
-      "title": "Stílusok",
-      "dimension": "Méretezés",
-      "text": "Szöveg",
+    "TextStyle": {
+      "title": "Szövegstílus",
       "current": [
-        "Aktuális: ",
+        "Aktuális szövegstílus: ",
         [
-          "value",
-          [
-            "name"
-          ]
+          "name"
         ]
       ],
-      "new": "Új",
-      "setCurrent": [
-        "A(z) ",
+      "styles": "Stílusok:",
+      "allStyles": "Minden stílus",
+      "stylesInUse": "Használatban lévő stílusok",
+      "font": "Betűtípus",
+      "fontName": "Betűtípus neve:",
+      "size": "Méret",
+      "height": "Magasság",
+      "setCurrent": "Aktuálissá tétel",
+      "new": "Új...",
+      "delete": "Törlés",
+      "apply": "Alkalmaz",
+      "cancel": "Mégse",
+      "close": "Bezárás",
+      "newTitle": "Új szövegstílus",
+      "styleName": "Stílusnév:",
+      "ok": "OK"
+    },
+    "DimStyle": {
+      "title": "Méretstílus-kezelő",
+      "current": [
+        "Aktuális méretstílus: ",
         [
           "name"
-        ],
-        " aktuálissá tétele"
+        ]
       ],
-      "rename": [
-        "A(z) ",
+      "styles": "Stílusok:",
+      "list": "Szűrőlista:",
+      "allStyles": "Minden stílus",
+      "stylesInUse": "Felhasznált stílusok",
+      "setCurrent": "Aktuális",
+      "new": "Új...",
+      "modify": "Módosítás...",
+      "close": "Bezárás",
+      "menuSetCurrent": "Aktuális",
+      "rename": "Átnevezés",
+      "delete": "Törlés",
+      "createTitle": "Új méretstílus létrehozása",
+      "newStyleName": "Új stílus neve:",
+      "startWith": "Alapja:",
+      "continue": "Folytatás",
+      "cancel": "Mégse",
+      "newTitle": [
+        "Új méretstílus: ",
         [
           "name"
-        ],
-        " átnevezése"
+        ]
       ],
-      "delete": [
-        "A(z) ",
+      "modifyTitle": [
+        "Méretstílus módosítása: ",
         [
           "name"
-        ],
-        " törlése"
+        ]
       ],
+      "ok": "OK",
       "lines": "Vonalak",
-      "baselineSpacing": "Méretvonalak távolsága",
-      "extendBeyond": "Túlnyúlás a méretvonalakon",
-      "offsetFromOrigin": "Eltolás a kezdőponttól",
       "symbolsAndArrows": "Jelek és nyilak",
-      "arrowSize": "Nyílfej mérete",
-      "centerMark": "Középjel mérete",
-      "textGroup": "Szöveg",
-      "textHeight": "Szöveg magassága",
-      "offsetFromDimLine": "Eltolás a méretvonaltól",
+      "text": "Szöveg",
       "fit": "Illesztés",
-      "overallScale": "Globális lépték használata",
-      "drawDimLineBetween": "Méretvonal a segédvonalak között",
       "primaryUnits": "Elsődleges mértékegységek",
-      "precision": "Pontosság",
-      "angularPrecision": "Szögpontosság",
-      "decimalSeparator": "Tizedesjel",
+      "dimensionLines": "Méretvonalak",
+      "baselineSpacing": "Méretvonalak távolsága:",
+      "extensionLines": "Segédvonalak",
+      "extendBeyondDimLines": "Túlnyúlás a méretvonalakon:",
+      "offsetFromOrigin": "Eltolás a kezdőponttól:",
+      "arrowheads": "Nyílfejek",
+      "arrowSize": "Nyílfej mérete:",
+      "centerMarks": "Középjelek",
+      "none": "Nincs",
+      "mark": "Jel",
+      "textAppearance": "Szöveg megjelenése",
+      "textHeight": "Szöveg magassága:",
+      "textPlacement": "Szöveg elhelyezése",
+      "offsetFromDimLine": "Eltolás a méretvonaltól:",
+      "scaleForFeatures": "Méretobjektumok léptéke",
+      "useOverallScale": "Globális lépték használata:",
+      "fineTuning": "Finomhangolás",
+      "drawDimLine": "Méretvonal a segédvonalak között",
+      "linearDimensions": "Hosszméretek",
+      "precision": "Pontosság:",
+      "decimalSeparator": "Tizedesjel:",
       "comma": "',' (Vessző)",
       "period": "'.' (Pont)",
       "space": "' ' (Szóköz)",
-      "suppressTrailingZeros": "Számvégi nullák elhagyása",
-      "yes": "Igen",
-      "no": "Nem",
-      "size": "Méret",
-      "height": "Magasság",
-      "heightHint": "Ha a magasság 0, nincs rögzítve, így a SZÖVEG parancs minden alkalommal bekéri."
+      "zeroSuppression": "Nullák elnyomása",
+      "trailing": "Hátul",
+      "angularDimensions": "Szögméretek",
+      "angularPrecision": "Pontosság:"
     },
     "Blocks": {
       "title": "Blokkok",

@@ -3,7 +3,7 @@ title: "Wymiarowanie od bazy w AutoCADzie: polecenie WYMBAZA (DIMBASELINE)"
 metaTitle: "Wymiarowanie od bazy w AutoCADzie: WYMBAZA"
 description: "Jak wymiarować od jednej bazy w AutoCADzie poleceniem WYMBAZA (DIMBASELINE, skrót WB): kolejne początki, odstęp, Wybierz i Cofaj. Wypróbuj za darmo online."
 figure: "Profil schodkowy zwymiarowany 30 od lewej krawędzi, potem 70 i 100 od tej samej krawędzi, każdy wymiar o linię dalej."
-sourceHash: "cd7902f90b59"
+sourceHash: "619fc0d438e9"
 ---
 
 Polecenie WYMBAZA (DIMBASELINE) rysuje wymiary mierzone od jednej linii pomocniczej, czyli bazy: każdy biegnie od pierwszej linii pomocniczej ostatniego wymiaru do następnego podanego punktu, a jego linia wymiarowa leży o krok dalej. Zaczyna od ostatniego wymiaru liniowego lub wyrównanego utworzonego od otwarcia rysunku, dlatego zwykle następuje po poleceniu <Command id="DIMLINEAR" /> lub <Command id="DIMALIGNED" />; gdy takiego nie ma, pyta, od którego zacząć. Wiersz polecenia podaje każdą wartość w chwili utworzenia wymiaru. Enter przy monicie o początek wybiera <Keyword id="Select" />, a Enter przy monicie wyboru wymiaru kończy polecenie, podobnie jak Esc.
@@ -32,7 +32,7 @@ Po angielsku DIMBASELINE, w polskim AutoCADzie WYMBAZA: wpisz `WB` lub `WYMBA`, 
 
 ### Jak zmienić odstęp między wymiarami od bazy?
 
-To „Odstępy między liniami bazowymi” stylu wymiarowania: polecenie <Command id="DIMSTYLE" /> (`WST`) otwiera style w palecie „Style”, gdzie to ustawienie jest w grupie „Linie”, jak w AutoCADzie. Wymiary już narysowane zostają na swoich miejscach; polecenie <Command id="DIMSPACE" /> rozmieszcza je ponownie, w równych odstępach.
+To „Odstępy między liniami bazowymi” stylu wymiarowania: polecenie <Command id="DIMSTYLE" /> (`WST`) otwiera Menedżer stylów wymiarowania, gdzie to ustawienie jest na karcie „Linie”, jak w AutoCADzie. Wymiary już narysowane zostają na swoich miejscach; polecenie <Command id="DIMSPACE" /> rozmieszcza je ponownie, w równych odstępach.
 
 ### Jak zacząć od innego wymiaru?
 

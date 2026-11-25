@@ -3,7 +3,7 @@ title: "AutoCAD DIMBASELINE（基線式）標註指令"
 metaTitle: "CAD 基線式標註（DIMBASELINE）用法與快捷鍵 DBA"
 description: "AutoCAD 的 DIMBASELINE（DBA）如何從同一條基準線堆疊標註，依提示逐步說明：下一個原點、間距、選取與退回。可在瀏覽器中免費試用。"
 figure: "階梯形輪廓從左邊緣標註 30，再從同一邊緣標註 70 與 100，每個標註都比前一個更往外一層。"
-sourceHash: "cd7902f90b59"
+sourceHash: "619fc0d438e9"
 ---
 
 DIMBASELINE（基線式）指令繪製的標註都從同一條延伸線（基準）開始測量：每個標註從上一個標註的第一條延伸線，量到指定的下一個點，其標註線比前一個更往外一個間距。它從開啟圖面後最後建立的線性或對齊式標註開始，因此通常接在 <Command id="DIMLINEAR" /> 或 <Command id="DIMALIGNED" /> 之後；若沒有這樣的標註，則會詢問要從哪一個開始。指令行會在建立每個標註時顯示其測量值。在原點提示下按 Enter 會選擇 <Keyword id="Select" />，在該提示下再按 Enter 即結束指令，與按 Esc 相同。
@@ -32,7 +32,7 @@ DIMBASELINE（基線式）指令繪製的標註都從同一條延伸線（基準
 
 ### 如何變更基線式標註的間距？
 
-即標註型式的基準線間距：<Command id="DIMSTYLE" />（`D`）會在「型式」選項板中開啟標註型式，該設定與 AutoCAD 一樣位於「線」之下。已繪製的標註保持原位；<Command id="DIMSPACE" /> 可以重新平均調整其間距。
+即標註型式的基準線間距：<Command id="DIMSTYLE" />（`D`）會開啟「標註型式管理員」，該設定與 AutoCAD 一樣位於「線」頁籤上。已繪製的標註保持原位；<Command id="DIMSPACE" /> 可以重新平均調整其間距。
 
 ### 如何從另一個標註開始？
 

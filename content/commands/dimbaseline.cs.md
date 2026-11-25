@@ -3,7 +3,7 @@ title: "Kótování od základny v AutoCADu: příkaz KÓTYZÁKL (DIMBASELINE)"
 metaTitle: "Kótování od základny v AutoCADu: KÓTYZÁKL"
 description: "Jak v AutoCADu kótovat od jedné základny příkazem KÓTYZÁKL (DIMBASELINE, zkratka KZA): další počátky, rozestup, Vybrat a Zpět. Vyzkoušejte zdarma online."
 figure: "Stupňovitý profil okótovaný 30 od levé hrany, pak 70 a 100 od téže hrany, každá kóta o čáru dál."
-sourceHash: "cd7902f90b59"
+sourceHash: "619fc0d438e9"
 ---
 
 Příkaz KÓTYZÁKL (DIMBASELINE) kreslí kóty, které všechny měří od jedné vynášecí čáry, základny: každá vede od první vynášecí čáry poslední kóty k dalšímu zadanému bodu a její kótovací čára leží o krok dál. Začíná od poslední lineární nebo šikmé kóty vytvořené od otevření výkresu, a proto obvykle následuje po příkazu <Command id="DIMLINEAR" /> nebo <Command id="DIMALIGNED" />; když žádná taková není, zeptá se, od které začít. Příkazový řádek vypíše každou naměřenou hodnotu, jakmile kóta vznikne. Enter u výzvy k zadání počátku zvolí <Keyword id="Select" /> a Enter u výzvy k výběru kóty příkaz ukončí, stejně jako Esc.
@@ -32,7 +32,7 @@ Anglicky DIMBASELINE, v české verzi AutoCADu KÓTYZÁKL: zadejte `KZA` nebo `K
 
 ### Jak změnit rozestup kót od základny?
 
-Je to „Odsazení základny“ kótovacího stylu: příkaz <Command id="DIMSTYLE" /> (`KSL`) otevře styly v paletě Styly, kde je toto nastavení ve skupině „Čáry“, jako v AutoCADu. Už nakreslené kóty zůstanou na svých místech; příkaz <Command id="DIMSPACE" /> je znovu rozmístí v pravidelných rozestupech.
+Je to „Odsazení základny“ kótovacího stylu: příkaz <Command id="DIMSTYLE" /> (`KSL`) otevře Správce kótovacího stylu, kde je toto nastavení na kartě „Čáry“, jako v AutoCADu. Už nakreslené kóty zůstanou na svých místech; příkaz <Command id="DIMSPACE" /> je znovu rozmístí v pravidelných rozestupech.
 
 ### Jak začít od jiné kóty?
 

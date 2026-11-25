@@ -341,7 +341,10 @@ export declare class CadEngine {
     setCurrentTextStyle(id: string): void;
     removeTextStyle(id: string): boolean;
     setSelectionTextStyle(id: string): void;
-    setStylesTable(table: StylesPanelTab): void;
+    /** Shows or hides a style dialog; closed, its STYLE or DIMSTYLE run ends. */
+    setStyleDialog(dialog: StyleDialog | null): void;
+    /** The name New would give a style copied from `basedOn`, unmade. */
+    proposedStyleName(table: StyleDialog, basedOn?: string): string;
     /** Opens the palette panel on one of its palettes. */
     showPalette(tab: PaletteTab): void;
     /** Folds the palette panel; with a tab, only while that palette shows. */
@@ -1142,8 +1145,11 @@ export interface EngineState {
     readonly dimStyles: ReadonlyArray<DimStyleInfo>;
     /** The style new dimensions are created with. */
     readonly currentDimStyleId: DimStyleId;
-    /** Which style table the Styles palette shows. */
-    readonly stylesTable: StylesPanelTab;
+    /**
+     * The style dialog showing, while STYLE or DIMSTYLE runs, or null. The
+     * host draws it; closing it ends the command.
+     */
+    readonly styleDialog: StyleDialog | null;
     /** Every block defined in the drawing (the Blocks palette's Current tab). */
     readonly blocks: ReadonlyArray<BlockInfo>;
     /** The palette panel: open or folded, and the palette it shows. */
@@ -1227,8 +1233,7 @@ export { PALETTE_TABS }
 export declare const PALETTE_TABS: readonly [
     "properties",
     "layers",
-    "blocks",
-    "styles"
+    "blocks"
 ];
 
 export type { PaletteTab }
@@ -1600,9 +1605,12 @@ export declare enum SnapType {
     Nearest = "nearest"
 }
 
-export type { StylesPanelTab }
-/** Which of the two style tables the manager is showing. */
-export type StylesPanelTab = "dimension" | "text";
+export type { StyleDialog }
+/**
+ * The style dialog showing: STYLE's Text Style dialog or DIMSTYLE's
+ * Dimension Style Manager.
+ */
+export type StyleDialog = "text" | "dimension";
 
 export type { TextStyleInfo }
 /**

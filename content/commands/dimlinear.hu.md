@@ -3,7 +3,7 @@ title: "Méretezés az AutoCAD-ben: MÉRETHOSSZ (DIMLINEAR) parancs"
 metaTitle: "Méretezés az AutoCAD-ben: MÉRETHOSSZ parancs"
 description: "Méretezés az AutoCAD MÉRETHOSSZ (DIMLINEAR, MHO) parancsával: két kezdőpont vagy egy objektum, majd a vízszintes vagy függőleges méretvonal. Próbálja ki ingyen."
 figure: "Kétszer méretezett téglalap: a felső éle a két sarkával, a jobb éle Enterrel és az élre kattintva."
-sourceHash: "e48a0a6f18c9"
+sourceHash: "711a0bfcb4de"
 ---
 
 A MÉRETHOSSZ (DIMLINEAR) parancs két pont távolságát méri az X vagy az Y tengely mentén, és méretként rajzolja meg: két segédvonal, egy méretvonal a nyílfejeivel és fölötte a mért érték. Adja meg az első és a második segédvonal kezdőpontját, majd a méretvonal helyét; ahogy az AutoCAD-ben, az elhelyezés határozza meg az irányt: a két pont fölött vagy alatt vízszintesen mér, mellettük függőlegesen. Ehelyett az első promptnál nyomja meg az Enter billentyűt, és válasszon ki egy vonalat, ívet, vonalláncszakaszt vagy kört: a két végpontja, illetve a kör átmérője adja a kezdőpontokat. Ezután a parancssor kiírja a mért értéket, és a parancs véget ér.
@@ -52,4 +52,4 @@ A MellowCAD méretei még nem asszociatívak, ahogy a <Message id="nonAssociativ
 
 ### Hogyan lehet módosítani a méretszöveg és a nyilak méretét?
 
-A méretstílusban, ahogy az AutoCAD-ben: a <Command id="DIMSTYLE" /> (`D`) parancs megnyitja a méretstílusokat, itt a Stílusok palettán, az AutoCAD-ben a Méretstílus-kezelőben. Itt állítható be az aktuális stílus szövegmagassága, nyílmérete, teljes léptéke és tizedesjegyei, és az adott stílusú összes méret ezeket követi.
+A méretstílusban, ahogy az AutoCAD-ben: a <Command id="DIMSTYLE" /> (`D`) parancs megnyitja a Méretstílus-kezelőt. Itt állítható be az aktuális stílus szövegmagassága, nyílmérete, teljes léptéke és tizedesjegyei, és az adott stílusú összes méret ezeket követi.

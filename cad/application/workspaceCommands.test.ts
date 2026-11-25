@@ -423,14 +423,17 @@ describe("the ribbon's buttons that run a command", () => {
     const from = idle.commandLog().length
     idle.runtime.runRibbonButton("textStyle")
     expect(idle.commandLog().slice(from)).toEqual(["'_style"])
-    expect(idle.state().palette).toEqual({ open: true, tab: "styles" })
-    expect(idle.state().stylesTable).toBe("text")
+    expect(idle.state().styleDialog).toBe("text")
 
     const cad = createHarness()
     written(cad, "LINE", "0,0")
     const mark = cad.commandLog().length
     cad.runtime.runRibbonButton("dimensionStyle")
-    expect(cad.state().stylesTable).toBe("dimension")
+    expect(cad.state().styleDialog).toBe("dimension")
+    expect(cad.commandLog().slice(mark)).toEqual([
+      "Specify next point or [Undo]: '_dimstyle",
+    ])
+    cad.runtime.setStyleDialog(null)
     expect(cad.commandLog().slice(mark)).toEqual([
       "Specify next point or [Undo]: '_dimstyle",
       "Resuming LINE command.",
@@ -439,12 +442,14 @@ describe("the ribbon's buttons that run a command", () => {
   })
 
   // A chrome macro is a menu group (desktop workspace/d02–d05): U takes the
-  // button's step back, not the command drawn before it.
+  // button's step back, not the command drawn before it. STYLE runs while its
+  // dialog shows, so the group holds its step, named as 'ZOOM's is.
   it("makes Text Style a step of its own, which U names", () => {
     const cad = createHarness()
     written(cad, "LINE", "0,0", "10,0", "")
     cad.runtime.runRibbonButton("textStyle")
-    expect(written(cad, "U").at(-1)).toBe("GROUP 'STYLE")
+    cad.runtime.setStyleDialog(null)
+    expect(written(cad, "U").at(-1)).toBe("'STYLE GROUP")
     expect(cad.entityCount).toBe(1)
   })
 

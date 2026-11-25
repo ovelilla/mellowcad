@@ -3,16 +3,16 @@ title: "Styl wymiarowania w AutoCADzie: polecenie WYMSTYL (DIMSTYLE)"
 metaTitle: "Styl wymiarowania w AutoCADzie: WYMSTYL"
 description: "Jak ustawić styl wymiarowania w AutoCADzie: WYMSTYL (DIMSTYLE, skrót WST), style od ISO-25, wysokość tekstu, strzałki, skala i jednostki. Wypróbuj online."
 figure: "Wymiary narysowane w ISO-25, bieżącym stylu: strzałki, tekst nad linią i przecinek jako separator dziesiętny."
-sourceHash: "a363c0740c11"
+sourceHash: "7bcae870d3ae"
 ---
 
-Polecenie WYMSTYL (DIMSTYLE) zarządza stylami wymiarowania rysunku: nazwanymi zestawami ustawień – rozmiar strzałki, wysokość tekstu, globalna skala, jednostki i reszta – które każdy wymiar bierze ze swojego stylu. Nowy rysunek zaczyna z bieżącym stylem ISO-25, metrycznym stylem, od którego zaczyna też AutoCAD. Tam, gdzie AutoCAD otwiera okno dialogowe Menedżer stylów wymiarowania, polecenie WYMSTYL otwiera tutaj tabelę wymiarów w palecie „Style” – karcie panelu palet, który pozostaje otwarty podczas rysowania; polecenie <Command id="STYLE" /> otwiera tę samą paletę na stylach tekstu.
+Polecenie WYMSTYL (DIMSTYLE) zarządza stylami wymiarowania rysunku: nazwanymi zestawami ustawień – rozmiar strzałki, wysokość tekstu, globalna skala, jednostki i reszta – które każdy wymiar bierze ze swojego stylu. Nowy rysunek zaczyna z bieżącym stylem ISO-25, metrycznym stylem, od którego zaczyna też AutoCAD. Polecenie WYMSTYL otwiera Menedżer stylów wymiarowania, jak w AutoCADzie; wpisane z apostrofem wewnątrz innego polecenia, `'WYMSTYL`, otwiera go bez kończenia tamtego polecenia.
 
-Paleta wyświetla listę stylów, z zaznaczonym bieżącym. „Nowy” tworzy kopię wybranego stylu, nazwaną od niego, i czyni ją bieżącą; nazwę stylu zmienia się na liście, a nazwa już używana jest odrzucana. Nie można usunąć ISO-25, stylu bieżącego ani stylu w użyciu. Pod listą ustawienia wybranego stylu są zgrupowane pod nazwami kart menedżera: „Linie” (odstępy między liniami bazowymi, przedłużenie poza linię wymiarową, odsunięcie od początku), „Symbole i strzałki” (rozmiar strzałki, rozmiar znacznika środka), „Tekst” (wysokość tekstu, odsunięcie od linii wymiarowej), „Dopasowanie” (globalny współczynnik skali i to, czy między liniami pomocniczymi rysowana jest linia wymiarowa) oraz „Jednostki podstawowe” (dokładność, separator dziesiętny, pomijanie zer końcowych, dokładność kątów). Zmiana od razu przerysowuje każdy wymiar w tym stylu. Każda zmiana, a także każdy nowy styl, zmiana nazwy, usunięcie i zmiana stylu bieżącego, to krok, który cofa polecenie <Command id="U" />.
+Menedżer podaje bieżący styl i wyświetla listę stylów, wszystkich albo tylko używanych. „Ustaw bieżący” czyni wybrany styl bieżącym. „Nowy...” pyta o nazwę, proponując `Kopia` z nazwą stylu, od którego zaczyna, a potem otwiera ustawienia nowego stylu; staje się on bieżący po zamknięciu menedżera. „Zmień...” otwiera ustawienia wybranego stylu na kartach menedżera: „Linie” (odstępy między liniami bazowymi, przedłużenie poza linię wymiarową, odsunięcie od początku), „Symbole i strzałki” (rozmiar strzałki, znaczniki środka), „Tekst” (wysokość tekstu, odsunięcie od linii wymiarowej), „Dopasowanie” (globalny współczynnik skali i to, czy między liniami pomocniczymi rysowana jest linia wymiarowa) oraz „Jednostki podstawowe” (dokładność, separator dziesiętny, pomijanie zer końcowych, dokładność kątów). „OK” je stosuje, a każdy wymiar w tym stylu jest od razu przerysowywany. Kliknięcie stylu prawym przyciskiem myszy zmienia jego nazwę lub go usuwa; nazwa już używana jest odrzucana, a ISO-25, stylu bieżącego ani stylu w użyciu nie można usunąć. Wszystko, co zrobisz w menedżerze, to jeden krok, który cofa polecenie <Command id="U" />.
 
 ## Missing
 
-Samo okno dialogowe Menedżer stylów wymiarowania: paleta nie ma podglądu, filtra listy, przycisków „Nadpisz” i „Porównaj” ani opisu, nie ma podstylów dla jednego rodzaju wymiarów, kart „Jednostki alternatywne” i „Tolerancje”, a ustawienia są tylko te wymienione wyżej. Zmienna wymiarowa wpisana w wierszu polecenia, na przykład DIMSCALE, nie tworzy nadpisania bieżącego stylu. Nowy rysunek ma tylko ISO-25, bez stylów Standard i Annotative, które w AutoCADzie ma także nowy rysunek metryczny.
+Podgląd menedżera, opis, przyciski „Nadpisz” i „Porównaj”; nie ma podstylów dla jednego rodzaju wymiarów, kart „Jednostki alternatywne” i „Tolerancje”, a ustawienia są tylko te wymienione wyżej. Zmienna wymiarowa wpisana w wierszu polecenia, na przykład DIMSCALE, nie tworzy nadpisania bieżącego stylu. Nowy rysunek ma tylko ISO-25, bez stylów Standard i Annotative, które w AutoCADzie ma także nowy rysunek metryczny.
 
 ## Questions
 
@@ -22,16 +22,16 @@ DIMSTYLE. W polskim AutoCADzie jego skróty to `WST`, `WYMST` i `ODWYM`: wpisz j
 
 ### Jak zmienić wielkość tekstu wymiarów w AutoCADzie?
 
-Wybierz styl w palecie i zmień „Wysokość tekstu” w grupie „Tekst” albo „Globalny współczynnik skali” w grupie „Dopasowanie”, który mnoży każdy rozmiar stylu, strzałki i odsunięcia razem z tekstem. Każdy wymiar w tym stylu jest od razu przerysowywany. Aby zmienić tylko niektóre wymiary, nadaj im osobny styl.
+Wybierz styl w menedżerze, naciśnij „Zmień...” i zmień „Wysokość tekstu” na karcie „Tekst” albo „Globalny wsp. skali” na karcie „Dopasowanie”, który mnoży każdy rozmiar stylu, strzałki i odsunięcia razem z tekstem. Każdy wymiar w tym stylu jest od razu przerysowywany. Aby zmienić tylko niektóre wymiary, nadaj im osobny styl.
 
 ### Jak zastosować styl wymiarowania do istniejących wymiarów?
 
-Wybierz wymiary i wskaż styl w wierszu „Styl wymiarowania” palety „Właściwości” albo kliknij je prawym przyciskiem myszy i wybierz go w menu „Styl wymiarowania”: w obu przypadkach to jeden krok cofania. Nowe wymiary biorą styl bieżący, który zmienia przycisk „Ustaw bieżący” w palecie.
+Wybierz wymiary i wskaż styl w wierszu „Styl wymiarowania” palety „Właściwości” albo kliknij je prawym przyciskiem myszy i wybierz go w menu „Styl wymiarowania”: w obu przypadkach to jeden krok cofania. Nowe wymiary biorą styl bieżący, który zmienia przycisk „Ustaw bieżący” w menedżerze.
 
 ### Jak zmienić separator dziesiętny w wymiarach?
 
-ISO-25 pisze przecinek, na przykład `82,5`. W grupie „Jednostki podstawowe” ustaw „Separator dziesiętny” na kropkę lub spację; są tam też „Dokładność” i pomijanie zer końcowych. Wiersz polecenia nadal podaje zmierzoną wartość z kropką, tak jak w AutoCADzie.
+ISO-25 pisze przecinek, na przykład `82,5`. Na karcie „Jednostki podstawowe” ustaw „Separator dziesiętny” na kropkę lub spację; są tam też „Dokładność” i pomijanie zer końcowych. Wiersz polecenia nadal podaje zmierzoną wartość z kropką, tak jak w AutoCADzie.
 
 ### Jak utworzyć nowy styl wymiarowania?
 
-Wybierz styl, od którego chcesz zacząć, i naciśnij „Nowy”: kopia jest nazwana od niego, staje się bieżąca i jest gotowa do zmiany nazwy i ustawień. Każdy wymiar narysowany od tej chwili ją przyjmuje.
+Naciśnij „Nowy...”, nadaj mu nazwę i wybierz styl, od którego zaczyna, a potem „Kontynuuj”: otwierają się jego ustawienia, a „OK” go tworzy. Staje się bieżący po zamknięciu menedżera, a każdy wymiar narysowany od tej chwili go przyjmuje.

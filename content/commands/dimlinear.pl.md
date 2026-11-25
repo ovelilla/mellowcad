@@ -3,7 +3,7 @@ title: "Wymiarowanie w AutoCADzie: polecenie WYMLINIOWY (DIMLINEAR)"
 metaTitle: "Wymiarowanie w AutoCADzie: polecenie WYMLINIOWY"
 description: "Jak wymiarować w AutoCADzie poleceniem WYMLINIOWY (DIMLINEAR, skrót WL): dwa punkty lub obiekt, potem linia wymiarowa, pozioma lub pionowa. Wypróbuj online."
 figure: "Prostokąt zwymiarowany dwa razy: górna krawędź przez jej dwa narożniki, prawa przez Enter i wskazanie krawędzi."
-sourceHash: "e48a0a6f18c9"
+sourceHash: "711a0bfcb4de"
 ---
 
 Polecenie WYMLINIOWY (DIMLINEAR) mierzy odległość między dwoma punktami wzdłuż X lub wzdłuż Y i rysuje ją jako wymiar: dwie linie pomocnicze, linię wymiarową z grotami strzałek i zmierzoną wartość nad nią. Podajesz początek pierwszej i drugiej linii pomocniczej, potem położenie linii wymiarowej, a to położenie wybiera kierunek, jak w AutoCADzie: nad dwoma punktami lub pod nimi wymiar jest poziomy, obok nich – pionowy. Możesz też nacisnąć Enter przy pierwszym monicie i wskazać linię, łuk, segment polilinii lub okrąg: jego dwa końce albo średnica okręgu są początkami linii pomocniczych. Wiersz polecenia podaje wtedy zmierzoną wartość i polecenie się kończy.
@@ -52,4 +52,4 @@ Wymiary MellowCAD nie są jeszcze skojarzone, jak mówi <Message id="nonAssociat
 
 ### Jak zmienić wielkość tekstu i strzałek wymiaru?
 
-W stylu wymiarowania, jak w AutoCADzie: polecenie <Command id="DIMSTYLE" /> (`WST`) otwiera style wymiarowania, tutaj w palecie „Style”, a w AutoCADzie w Menedżerze stylów wymiarowania. Ustawia się tam wysokość tekstu, rozmiar strzałki, globalną skalę i miejsca dziesiętne bieżącego stylu, a stosują się do nich wszystkie wymiary w tym stylu.
+W stylu wymiarowania, jak w AutoCADzie: polecenie <Command id="DIMSTYLE" /> (`WST`) otwiera Menedżer stylów wymiarowania. Ustawia się tam wysokość tekstu, rozmiar strzałki, globalną skalę i miejsca dziesiętne bieżącego stylu, a stosują się do nich wszystkie wymiary w tym stylu.

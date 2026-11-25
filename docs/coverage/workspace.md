@@ -357,8 +357,7 @@ from the right), never seen on what is built here, so **unverified**. The panels
 scrolls; each level's width is measured in the page's language and rounded where the browser has
 no `calc-size` (Firefox and Safari **unverified**) — WHY TEXTEDIT has no button: its
 `^C^C_textedit` is on the Text toolbar, on no ribbon panel of 2027; it is typed, or a double-click
-on a text — WHY no Styles toggle: View's Palettes has none, the Styles palette (phase 3's dialogs)
-is reached by its tab, the Text Style and Dimension Style buttons and launchers, STYLE and DIMSTYLE
+on a text
 
 **Missing:** the Parametric, Visualize, Manage, Output, Add-ins, Collaborate, Express Tools and
 Featured Apps tabs, nothing of theirs built; AutoCAD's tooltips — the name, a description, the command and `Press
@@ -401,11 +400,11 @@ prompt with its mode; here the button starts its command — the desktop's **unv
 
 ### Palette panel
 
-**Implemented:** Properties, Layers, Blocks and Styles as tabs of one modeless panel at the inline
+**Implemented:** Properties, Layers and Blocks as tabs of one modeless panel at the inline
 end (AutoCAD's are separate modeless palettes: LAYERDLGMODE 1, "It can remain open as you work"),
 open from 1600 px of window and folded below to a strip of their icons, its width (280 to 480 px)
-and its fold remembered on this device, as AutoCAD keeps them in the profile; LAYER, PROPERTIES,
-DIMSTYLE, STYLE and BLOCKSPALETTE open it on their tab — WHY one docked panel: floating palettes
+and its fold remembered on this device, as AutoCAD keeps them in the profile; LAYER, PROPERTIES
+and BLOCKSPALETTE open it on their tab (STYLE and DIMSTYLE open their dialogs, `docs/coverage/dimensions.md`) — WHY one docked panel: floating palettes
 covered the drawing, and as popovers the first click on it closed them (revoked by the owner on 2026-11-07: the chrome follows AutoCAD's layout, `docs/next-autocad-ui.md`)
 
 **Missing:** floating, docking anywhere, auto-hide and anchoring, Tool Palettes, Quick Properties

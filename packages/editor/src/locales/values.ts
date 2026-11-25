@@ -17,10 +17,10 @@ export interface EditorValues {
   "Layers.deleteLabel": { name: string }
   "Layers.renameLabel": { name: string }
   "Layers.dialog.nameInUse.instruction": { name: string }
-  "Styles.current": { value: RichTag; name: string }
-  "Styles.setCurrent": { name: string }
-  "Styles.rename": { name: string }
-  "Styles.delete": { name: string }
+  "TextStyle.current": { name: string }
+  "DimStyle.current": { name: string }
+  "DimStyle.newTitle": { name: string }
+  "DimStyle.modifyTitle": { name: string }
   "Blocks.references": { count: number; name: string }
   "Properties.lockedObjects.content": { count: number }
 }

@@ -43,4 +43,4 @@ Two parallel lines, or the same line picked twice, make no angle: <Message id="d
 
 ### How do I change the decimals of an angle dimension?
 
-In the dimension style: <Command id="DIMSTYLE" /> (`D`) opens it in the Styles palette, where Primary units' angular precision sets them, 0 in ISO-25. Every angular dimension in that style follows.
+In the dimension style: <Command id="DIMSTYLE" /> (`D`) opens the Dimension Style Manager, where the Primary Units tab's angular precision sets them, 0 in ISO-25. Every angular dimension in that style follows.

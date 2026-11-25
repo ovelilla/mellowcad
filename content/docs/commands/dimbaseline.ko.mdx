@@ -4,7 +4,7 @@ metaTitle: "오토캐드 기준선 치수(DIMBASELINE) 사용법과 단축키 DB
 description: "AutoCAD 기준선 치수(DIMBASELINE, DBA)로 한 기준선에서 치수를 쌓는 방법을 프롬프트 순서대로 설명합니다: 다음 원점, 간격, 선택, 명령 취소. 브라우저에서 무료로 해 볼 수 있습니다."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"오토캐드 기준선 치수 단축키는 무엇입니까?","answer":"DBA를 입력하고 Enter 키나 Space 키를 누릅니다. 전체 명령 이름을 입력해도 되며, AutoCAD의 어느 언어 버전에서든 _DIMBASELINE도 됩니다."},{"question":"기준선 치수의 간격을 바꾸려면 어떻게 합니까?","answer":"치수 스타일의 기준선 간격입니다. DIMSTYLE 명령(D)이 스타일 팔레트에서 스타일을 열며, AutoCAD와 같이 선 아래에 있습니다. 이미 그린 치수는 위치를 유지합니다. DIMSPACE 명령으로 다시 같은 간격으로 맞춥니다."},{"question":"다른 치수에서 시작하려면 어떻게 합니까?","answer":"첫 번째 프롬프트에서 Enter 키를 누르거나 Select 옵션을 선택하고, 잴 기준이 되는 치수보조선 가까이에서 치수를 선택합니다. 새 치수가 모두 그곳에서 시작합니다."},{"question":"기준선 치수(DIMBASELINE)와 연속 치수(DIMCONTINUE)의 차이는 무엇입니까?","answer":"DIMBASELINE은 모든 치수를 같은 치수보조선에서 재며, 각 치수를 한 줄씩 바깥쪽에 놓습니다. DIMCONTINUE 명령은 치수를 한 줄에 끝과 끝을 이어 놓으며, 각 치수는 앞 치수가 끝난 곳에서 시작합니다."}]
+faq: [{"question":"오토캐드 기준선 치수 단축키는 무엇입니까?","answer":"DBA를 입력하고 Enter 키나 Space 키를 누릅니다. 전체 명령 이름을 입력해도 되며, AutoCAD의 어느 언어 버전에서든 _DIMBASELINE도 됩니다."},{"question":"기준선 치수의 간격을 바꾸려면 어떻게 합니까?","answer":"치수 스타일의 기준선 간격입니다. DIMSTYLE 명령(D)이 치수 스타일 관리자를 열며, AutoCAD와 같이 선 탭에 있습니다. 이미 그린 치수는 위치를 유지합니다. DIMSPACE 명령으로 다시 같은 간격으로 맞춥니다."},{"question":"다른 치수에서 시작하려면 어떻게 합니까?","answer":"첫 번째 프롬프트에서 Enter 키를 누르거나 Select 옵션을 선택하고, 잴 기준이 되는 치수보조선 가까이에서 치수를 선택합니다. 새 치수가 모두 그곳에서 시작합니다."},{"question":"기준선 치수(DIMBASELINE)와 연속 치수(DIMCONTINUE)의 차이는 무엇입니까?","answer":"DIMBASELINE은 모든 치수를 같은 치수보조선에서 재며, 각 치수를 한 줄씩 바깥쪽에 놓습니다. DIMCONTINUE 명령은 치수를 한 줄에 끝과 끝을 이어 놓으며, 각 치수는 앞 치수가 끝난 곳에서 시작합니다."}]
 ---
 
 DIMBASELINE(기준선) 명령은 모두 같은 치수보조선, 즉 기준선에서 재는 치수를 그립니다. 각 치수는 마지막 치수의 첫 번째 치수보조선에서 지정하는 다음 점까지 재며, 치수선은 한 단계씩 바깥쪽에 놓입니다. 도면을 연 뒤에 마지막으로 만든 선형 치수나 정렬 치수에서 시작하므로, 보통 [`DIMLINEAR`](/docs/commands/dimlinear)나 [`DIMALIGNED`](/docs/commands/dimaligned) 명령 다음에 씁니다. 그런 치수가 없으면 어느 치수에서 시작할지 묻습니다. 치수를 만들 때마다 명령행에 측정값이 표시됩니다. 원점 프롬프트에서 Enter 키를 누르면 `Select` 옵션이 선택되고, 거기서 Enter 키를 누르면 Esc 키와 같이 명령이 끝납니다.
@@ -46,7 +46,7 @@ DIMBASELINE(기준선) 명령은 모두 같은 치수보조선, 즉 기준선에
 
 ### 기준선 치수의 간격을 바꾸려면 어떻게 합니까?
 
-치수 스타일의 기준선 간격입니다. [`DIMSTYLE`](/docs/commands/dimstyle) 명령(`D`)이 스타일 팔레트에서 스타일을 열며, AutoCAD와 같이 선 아래에 있습니다. 이미 그린 치수는 위치를 유지합니다. [`DIMSPACE`](/docs/commands/dimspace) 명령으로 다시 같은 간격으로 맞춥니다.
+치수 스타일의 기준선 간격입니다. [`DIMSTYLE`](/docs/commands/dimstyle) 명령(`D`)이 치수 스타일 관리자를 열며, AutoCAD와 같이 선 탭에 있습니다. 이미 그린 치수는 위치를 유지합니다. [`DIMSPACE`](/docs/commands/dimspace) 명령으로 다시 같은 간격으로 맞춥니다.
 
 ### 다른 치수에서 시작하려면 어떻게 합니까?
 

@@ -538,67 +538,105 @@ export const ar: EditorLocale = {
         "objects": "العناصر"
       }
     },
-    "Styles": {
-      "title": "الأنماط",
-      "dimension": "الأبعاد",
-      "text": "النص",
+    "TextStyle": {
+      "title": "نمط النص",
       "current": [
-        "الحالي: ",
-        [
-          "value",
-          [
-            "name"
-          ]
-        ]
-      ],
-      "new": "جديد",
-      "setCurrent": [
-        "تعيين ⁨",
-        [
-          "name"
-        ],
-        "⁩ نمطًا حاليًا"
-      ],
-      "rename": [
-        "إعادة تسمية ⁨",
+        "نمط النص الحالي: ⁨",
         [
           "name"
         ],
         "⁩"
       ],
-      "delete": [
-        "حذف ⁨",
+      "styles": "الأنماط:",
+      "allStyles": "كل الأنماط",
+      "stylesInUse": "الأنماط المستخدمة",
+      "font": "خط الكتابة",
+      "fontName": "اسم خط الكتابة:",
+      "size": "الحجم",
+      "height": "الارتفاع",
+      "setCurrent": "تعيين حاليًا",
+      "new": "جديد...",
+      "delete": "حذف",
+      "apply": "تطبيق",
+      "cancel": "إلغاء",
+      "close": "إغلاق",
+      "newTitle": "نمط نص جديد",
+      "styleName": "اسم النمط:",
+      "ok": "موافق"
+    },
+    "DimStyle": {
+      "title": "مدير أنماط الأبعاد",
+      "current": [
+        "نمط البُعد الحالي: ⁨",
         [
           "name"
         ],
         "⁩"
       ],
+      "styles": "الأنماط:",
+      "list": "القائمة:",
+      "allStyles": "كل الأنماط",
+      "stylesInUse": "الأنماط المستخدمة",
+      "setCurrent": "تعيين حاليًا",
+      "new": "جديد...",
+      "modify": "تعديل...",
+      "close": "إغلاق",
+      "menuSetCurrent": "تعيين حاليًا",
+      "rename": "إعادة تسمية",
+      "delete": "حذف",
+      "createTitle": "إنشاء نمط بُعد جديد",
+      "newStyleName": "اسم النمط الجديد:",
+      "startWith": "البدء من:",
+      "continue": "متابعة",
+      "cancel": "إلغاء",
+      "newTitle": [
+        "نمط بُعد جديد: ⁨",
+        [
+          "name"
+        ],
+        "⁩"
+      ],
+      "modifyTitle": [
+        "تعديل نمط البُعد: ⁨",
+        [
+          "name"
+        ],
+        "⁩"
+      ],
+      "ok": "موافق",
       "lines": "الخطوط",
-      "baselineSpacing": "تباعد خطوط الأساس",
-      "extendBeyond": "الامتداد بعد خطوط الأبعاد",
-      "offsetFromOrigin": "الإزاحة عن نقطة الأصل",
       "symbolsAndArrows": "الرموز والأسهم",
-      "arrowSize": "حجم السهم",
-      "centerMark": "حجم علامة المركز",
-      "textGroup": "النص",
-      "textHeight": "ارتفاع النص",
-      "offsetFromDimLine": "الإزاحة عن خط البُعد",
+      "text": "النص",
       "fit": "الملاءمة",
-      "overallScale": "استخدام مقياس عام قدره",
-      "drawDimLineBetween": "رسم خط البُعد بين خطوط الامتداد",
       "primaryUnits": "الوحدات الأساسية",
+      "dimensionLines": "خطوط الأبعاد",
+      "baselineSpacing": "تباعد خطوط الأساس:",
+      "extensionLines": "خطوط الامتداد",
+      "extendBeyondDimLines": "الامتداد بعد خطوط الأبعاد:",
+      "offsetFromOrigin": "الإزاحة عن نقطة الأصل:",
+      "arrowheads": "رؤوس الأسهم",
+      "arrowSize": "حجم السهم:",
+      "centerMarks": "علامات المركز",
+      "none": "لا شيء",
+      "mark": "علامة",
+      "textAppearance": "مظهر النص",
+      "textHeight": "ارتفاع النص:",
+      "textPlacement": "موضع النص",
+      "offsetFromDimLine": "الإزاحة عن خط البُعد:",
+      "scaleForFeatures": "مقياس عناصر البُعد",
+      "useOverallScale": "استخدام مقياس عام قدره:",
+      "fineTuning": "ضبط دقيق",
+      "drawDimLine": "رسم خط البُعد بين خطوط الامتداد",
+      "linearDimensions": "الأبعاد الخطية",
       "precision": "الدقة",
-      "angularPrecision": "الدقة الزاوية",
-      "decimalSeparator": "الفاصل العشري",
+      "decimalSeparator": "الفاصل العشري:",
       "comma": "',' (فاصلة)",
       "period": "'.' (نقطة)",
       "space": "' ' (مسافة)",
-      "suppressTrailingZeros": "حذف الأصفار اللاحقة",
-      "yes": "نعم",
-      "no": "لا",
-      "size": "الحجم",
-      "height": "الارتفاع",
-      "heightHint": "الارتفاع 0 يتركه حرًا، فيسأل ⁨TEXT⁩ عنه في كل مرة."
+      "zeroSuppression": "حذف الأصفار",
+      "trailing": "اللاحقة",
+      "angularDimensions": "الأبعاد الزاوية",
+      "angularPrecision": "الدقة:"
     },
     "Blocks": {
       "title": "الكتل",

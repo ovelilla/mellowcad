@@ -3,7 +3,7 @@ title: "Bázisvonalas méretezés az AutoCAD-ben: MÉRETBVONAL (DIMBASELINE) par
 metaTitle: "Bázisvonalas méretezés: MÉRETBVONAL parancs"
 description: "Méretezés egy bázisvonalról az AutoCAD-ben a MÉRETBVONAL (DIMBASELINE, MBA) paranccsal: a következő kezdőpontok, a távolság, a Kijelöl és a Vissza. Próbálja ki."
 figure: "Egy lépcsős profil 30-as mérete a bal élétől, majd 70 és 100 ugyanattól az éltől, mindegyik egy vonallal kijjebb."
-sourceHash: "cd7902f90b59"
+sourceHash: "619fc0d438e9"
 ---
 
 A MÉRETBVONAL (DIMBASELINE) parancs olyan méreteket rajzol, amelyek mind ugyanattól a segédvonaltól, a bázistól mérnek: mindegyik az utolsó méret első segédvonalától a következő megadott pontig tart, a méretvonala egy lépéssel kijjebb. Az utolsó hossz- vagy illesztett méretből indul, amely a rajz megnyitása óta készült, így többnyire a <Command id="DIMLINEAR" /> vagy a <Command id="DIMALIGNED" /> parancsot követi; ha nincs ilyen, megkérdezi, melyikből induljon. A parancssor minden mért értéket kiír, ahogy elkészül. A kezdőpont promptjánál az Enter a <Keyword id="Select" /> opciót választja, a Kijelöl promptjánál pedig az Enter befejezi a parancsot, ahogy az Esc.
@@ -32,7 +32,7 @@ Angolul DIMBASELINE, a magyar AutoCAD-ben MÉRETBVONAL: írja be az `MBA` vagy a
 
 ### Hogyan lehet módosítani a bázisvonalas méretek távolságát?
 
-A méretstílus Méretvonalak távolsága beállítása adja meg: a <Command id="DIMSTYLE" /> (`D`) a Stílusok palettán nyitja meg a stílusokat, ahol a Vonalak csoportban található, ahogy az AutoCAD-ben. A már megrajzolt méretek a helyükön maradnak; a <Command id="DIMSPACE" /> parancs újra, egyenletesen elrendezi őket.
+A méretstílus Méretvonalak távolsága beállítása adja meg: a <Command id="DIMSTYLE" /> (`D`) megnyitja a Méretstílus-kezelőt, ahol a Vonalak lapon található, ahogy az AutoCAD-ben. A már megrajzolt méretek a helyükön maradnak; a <Command id="DIMSPACE" /> parancs újra, egyenletesen elrendezi őket.
 
 ### Hogyan lehet egy másik méretből indulni?
 

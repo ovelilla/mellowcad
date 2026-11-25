@@ -3,7 +3,7 @@ title: "AutoCAD DIMBASELINE（基线）标注命令"
 metaTitle: "CAD 基线标注命令（DIMBASELINE）用法与快捷键 DBA"
 description: "CAD 基线标注怎么用：按提示顺序讲解 AutoCAD 的 DIMBASELINE（快捷键 DBA）如何从同一基线逐个标注，包括下一个原点、间距、选择和放弃。在浏览器中免费试用。"
 figure: "阶梯形轮廓从左边标注 30，再从同一条边标注 70 和 100，每个标注向外移一行。"
-sourceHash: "cd7902f90b59"
+sourceHash: "619fc0d438e9"
 ---
 
 DIMBASELINE（基线）命令绘制从同一条尺寸界线（即基线）测量的一组标注：每个标注从上一个标注的第一条尺寸界线量到指定的下一个点，其尺寸线比上一个向外移一个间距。命令从打开图形以来最后创建的线性或对齐标注开始，因此通常接在 <Command id="DIMLINEAR" /> 或 <Command id="DIMALIGNED" /> 之后使用；如果没有这样的标注，命令会询问从哪个标注开始。每创建一个标注，命令行都会显示其测量值。在原点提示下按 Enter 键选择 <Keyword id="Select" />，在该提示下再按 Enter 键结束命令，与按 Esc 键相同。
@@ -32,7 +32,7 @@ DIMBASELINE（基线）命令绘制从同一条尺寸界线（即基线）测量
 
 ### CAD 基线标注的间距怎么调整？
 
-间距是标注样式中的基线间距：<Command id="DIMSTYLE" />（`D`）在“样式”选项板中打开标注样式，与 AutoCAD 相同，该设置位于“线”下。已绘制的标注保持原位；<Command id="DIMSPACE" /> 可以重新均匀调整它们的间距。
+间距是标注样式中的基线间距：<Command id="DIMSTYLE" />（`D`）打开“标注样式管理器”，与 AutoCAD 相同，该设置位于“线”选项卡上。已绘制的标注保持原位；<Command id="DIMSPACE" /> 可以重新均匀调整它们的间距。
 
 ### CAD 怎么从另一个标注开始基线标注？
 

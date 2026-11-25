@@ -53,4 +53,4 @@ MellowCAD's dimensions are not associative yet, as <Message id="nonAssociativeDi
 
 ### How do I change the size of the dimension text and arrows?
 
-In the dimension style, as in AutoCAD: <Command id="DIMSTYLE" /> (`D`) opens the dimension styles, in the Styles palette here where AutoCAD has the Dimension Style Manager. The current style's text height, arrow size, overall scale and decimals are set there, and every dimension in that style follows.
+In the dimension style, as in AutoCAD: <Command id="DIMSTYLE" /> (`D`) opens the Dimension Style Manager. The current style's text height, arrow size, overall scale and decimals are set there, and every dimension in that style follows.

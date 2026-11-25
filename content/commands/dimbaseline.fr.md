@@ -2,7 +2,7 @@
 title: "Commande COTLIGN (DIMBASELINE) dans AutoCAD"
 description: "Cotes de ligne de base dans AutoCAD en français : COTLIGN (DIMBASELINE, alias COTL) les empile depuis une même base, invite par invite. Essayez-le gratuitement."
 figure: "Un profil en escalier coté 30 depuis son bord gauche, puis 70 et 100 depuis le même bord, chaque cote une ligne plus loin."
-sourceHash: "cd7902f90b59"
+sourceHash: "619fc0d438e9"
 ---
 
 COTLIGN (DIMBASELINE en anglais) dessine des cotes qui mesurent toutes à partir d'une même ligne d'attache, la base : chacune va de la première ligne d'attache de la dernière cote au point suivant que vous donnez, sa ligne de cote un cran plus loin. Elle part de la dernière cote linéaire ou alignée créée depuis l'ouverture du dessin, si bien qu'elle suit généralement <Command id="DIMLINEAR" /> ou <Command id="DIMALIGNED" /> ; s'il n'y en a aucune, elle demande de quelle cote partir. La ligne de commande indique chaque mesure dès qu'elle est faite. Entrée à l'invite de l'origine choisit <Keyword id="Select" />, et Entrée à cette invite termine la commande, comme Echap.
@@ -31,7 +31,7 @@ COTLIGN, raccourci `COTL`, puis Entrée ou la barre d'espace. Comme dans AutoCAD
 
 ### Comment changer l'espacement des cotes de ligne de base ?
 
-C'est l'espacement des lignes de base du style de cote : <Command id="DIMSTYLE" /> (`CST`) ouvre les styles dans la palette Styles, où il se trouve sous Lignes, comme dans AutoCAD. Les cotes déjà dessinées gardent leur place ; <Command id="DIMSPACE" /> les espace de nouveau, régulièrement.
+C'est l'espacement des lignes de base du style de cote : <Command id="DIMSTYLE" /> (`CST`) ouvre le Gestionnaire des styles de cote, où il se trouve sur l'onglet Lignes, comme dans AutoCAD. Les cotes déjà dessinées gardent leur place ; <Command id="DIMSPACE" /> les espace de nouveau, régulièrement.
 
 ### Comment partir d'une autre cote ?
 

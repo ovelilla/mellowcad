@@ -3,12 +3,12 @@ title: "Commande STYLE dans AutoCAD : styles de texte"
 description: "Comment STYLE (alias S) d'AutoCAD gère les styles de texte : nouveau, renommer, supprimer, définir courant, hauteur fixe, et leur effet sur TEXTE et TEXTMULT."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Quel est le raccourci de la commande STYLE ?","answer":"S, puis Entrée ou la barre d'espace ; DDSTYLE aussi. Dans AutoCAD en français, ST est STYLETABLEAU. _STYLE fonctionne quelle que soit la langue d'AutoCAD."},{"question":"Comment changer le style de texte dans AutoCAD ?","answer":"Pour le nouveau texte, rendez le style courant dans la palette Styles qu'ouvre STYLE, ou avec l'option Style de TEXTE. Pour le texte déjà écrit, sélectionnez-le et choisissez le style dans la ligne Style de la palette Propriétés."},{"question":"Comment changer la police d'un style de texte ?","answer":"Dans AutoCAD, dans Nom de la police de la boîte de dialogue Style de texte. Pas encore ici : chaque style est dessiné en Arial, et un style ne se distingue que par son nom et sa hauteur."},{"question":"Pourquoi TEXTE ne demande pas la hauteur ?","answer":"Le style courant a sa propre hauteur. Mettez sa hauteur à 0 dans la palette Styles et TEXTE redemande la hauteur, en proposant la dernière utilisée."}]
+faq: [{"question":"Quel est le raccourci de la commande STYLE ?","answer":"S, puis Entrée ou la barre d'espace ; DDSTYLE aussi. Dans AutoCAD en français, ST est STYLETABLEAU. _STYLE fonctionne quelle que soit la langue d'AutoCAD."},{"question":"Comment changer le style de texte dans AutoCAD ?","answer":"Pour le nouveau texte, rendez le style courant avec Définir courant dans la boîte de dialogue qu'ouvre STYLE, ou avec l'option Style de TEXTE. Pour le texte déjà écrit, sélectionnez-le et choisissez le style dans la ligne Style de la palette Propriétés."},{"question":"Comment changer la police d'un style de texte ?","answer":"Dans AutoCAD, dans Nom de la police de la boîte de dialogue Style de texte. Pas encore ici : chaque style est dessiné en Arial, et un style ne se distingue que par son nom et sa hauteur."},{"question":"Pourquoi TEXTE ne demande pas la hauteur ?","answer":"Le style courant a sa propre hauteur. Mettez sa hauteur à 0 dans la boîte de dialogue Style de texte, puis Appliquer, et TEXTE redemande la hauteur, en proposant la dernière utilisée."}]
 ---
 
-STYLE gère les styles de texte du dessin : ce avec quoi un texte est écrit. Chaque texte, texte multiligne et attribut a un style, et les nouveaux prennent le style courant, Standard dans un nouveau dessin. Le STYLE d'AutoCAD ouvre la boîte de dialogue Style de texte ; MellowCAD n'en a pas encore, et STYLE ouvre donc la table des textes de la palette Styles, où se trouvent aussi les styles de cote de [`COTSTYLE`](/docs/commands/dimstyle). Une sélection faite avant la commande est abandonnée, comme la boîte de dialogue l'abandonne, et `'STYLE`, tapé avec une apostrophe à l'intérieur d'une commande, s'ouvre sans terminer celle-ci.
+STYLE gère les styles de texte du dessin : ce avec quoi un texte est écrit. Chaque texte, texte multiligne et attribut a un style, et les nouveaux prennent le style courant, Standard dans un nouveau dessin. STYLE ouvre la boîte de dialogue Style de texte, comme dans AutoCAD. Une sélection faite avant la commande est abandonnée, comme la boîte de dialogue l'abandonne, et `'STYLE`, tapé avec une apostrophe à l'intérieur d'une commande, s'ouvre sans terminer celle-ci, qui reprend une fois la boîte de dialogue fermée.
 
-La table liste les styles, le style courant marqué. Nouveau crée une copie du style sélectionné, nommée `style1`, `style2`… selon le premier nom libre, et la rend courante. Définir courant rend un style courant ; son nom peut être retapé, et un nom déjà utilisé, en majuscules comme en minuscules, est refusé, comme AutoCAD le refuse. Supprimer retire un style, mais jamais Standard, le style courant ni un style utilisé. Hauteur donne à un style une hauteur fixe : 0, la valeur par défaut, la laisse libre, si bien que [`TEXTE`](/docs/commands/text) en demande une à chaque fois ; avec une hauteur fixée, TEXTE ne la demande pas. Chaque modification est une étape que `U` défait. Avec des textes sélectionnés, la ligne Style de la palette Propriétés leur donne un autre style, en une seule étape.
+La boîte de dialogue indique le style courant et liste les styles, tous ou seulement ceux en cours d'utilisation. Nouveau... demande un nom, en proposant `style1`, `style2`… le premier libre, et crée une copie du style sélectionné, courante. Définir courant rend courant le style sélectionné ; F2 modifie son nom, et un nom déjà utilisé, en majuscules comme en minuscules, est refusé, comme AutoCAD le refuse. Effacer retire un style, mais jamais Standard, le style courant ni un style utilisé. Hauteur donne à un style une hauteur fixe, appliquée par Appliquer : 0, la valeur par défaut, la laisse libre, si bien que [`TEXTE`](/docs/commands/text) en demande une à chaque fois ; avec une hauteur fixée, TEXTE ne la demande pas. Annuler abandonne une hauteur non appliquée, et devient Fermer dès que quelque chose a changé. Tout ce qui est fait dans la boîte de dialogue est une seule étape que `U` défait. Avec des textes sélectionnés, la ligne Style de la palette Propriétés leur donne un autre style, en une seule étape.
 
 - **Commande :** `STYLE`
 - **Alias :** `S`, `DDSTYLE`
@@ -23,7 +23,7 @@ Le moteur la dessine et écrit son historique tel que vous le taperiez : les in
 
 ## Ce qu'elle ne fait pas encore [#missing]
 
-La boîte de dialogue Style de texte et son aperçu : STYLE ouvre à la place la palette Styles. La police, son style et la grande police, le facteur de largeur, l'angle oblique, et les effets Renversé, Reflété et Vertical : chaque style est dessiné en Arial, droit, avec une largeur de 1. Les styles annotatifs, et le style annotatif qu'un nouveau dessin d'AutoCAD contient à côté de Standard. `-STYLE`, qui demande tout sur la ligne de commande.
+L'aperçu de la boîte de dialogue. La police, son style et la grande police, le facteur de largeur, l'angle oblique, et les effets Renversé, Reflété et Vertical : chaque style est dessiné en Arial, droit, avec une largeur de 1. Les styles annotatifs, et le style annotatif qu'un nouveau dessin d'AutoCAD contient à côté de Standard. `-STYLE`, qui demande tout sur la ligne de commande.
 
 [Ce qu'elle fait et ce qui lui manque, en détail (en anglais)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#style--st--ddstyle--es-estilo--est--estilodd--pt-br-estilo--et--ddstyle--fr-style--s--ddstyle--it-stile--st--ddstile--de-stil--sti--ddstyle--ru-стиль--ст--диалстиль--pl-styl--st--odstyl--cs-písmo--psm--diapísmo--hu-stílus--st--dpstílus)
 
@@ -35,7 +35,7 @@ La boîte de dialogue Style de texte et son aperçu : STYLE ouvre à la place l
 
 ### Comment changer le style de texte dans AutoCAD ?
 
-Pour le nouveau texte, rendez le style courant dans la palette Styles qu'ouvre STYLE, ou avec l'option `Style` de [`TEXTE`](/docs/commands/text). Pour le texte déjà écrit, sélectionnez-le et choisissez le style dans la ligne Style de la palette Propriétés.
+Pour le nouveau texte, rendez le style courant avec Définir courant dans la boîte de dialogue qu'ouvre STYLE, ou avec l'option `Style` de [`TEXTE`](/docs/commands/text). Pour le texte déjà écrit, sélectionnez-le et choisissez le style dans la ligne Style de la palette Propriétés.
 
 ### Comment changer la police d'un style de texte ?
 
@@ -43,7 +43,7 @@ Dans AutoCAD, dans Nom de la police de la boîte de dialogue Style de texte. Pas
 
 ### Pourquoi TEXTE ne demande pas la hauteur ?
 
-Le style courant a sa propre hauteur. Mettez sa hauteur à 0 dans la palette Styles et [`TEXTE`](/docs/commands/text) redemande la hauteur, en proposant la dernière utilisée.
+Le style courant a sa propre hauteur. Mettez sa hauteur à 0 dans la boîte de dialogue Style de texte, puis Appliquer, et [`TEXTE`](/docs/commands/text) redemande la hauteur, en proposant la dernière utilisée.
 
 ## Commandes associées [#related]
 

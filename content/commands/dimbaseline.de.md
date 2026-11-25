@@ -2,7 +2,7 @@
 title: "Befehl BEMBASISL (DIMBASELINE) in AutoCAD"
 description: "Wie BEMBASISL (DIMBASELINE, Alias BMB) in AutoCAD Bemaßungen von einer Basislinie aus stapelt: nächste Ursprünge, Abstand, Wählen und Zurück."
 figure: "Ein gestuftes Profil, 30 von seiner linken Kante bemaßt, dann 70 und 100 von derselben Kante, jede eine Linie weiter außen."
-sourceHash: "cd7902f90b59"
+sourceHash: "619fc0d438e9"
 ---
 
 BEMBASISL (DIMBASELINE) zeichnet Bemaßungen, die alle von einer Maßhilfslinie aus messen, der Basis: Jede verläuft von der ersten Maßhilfslinie der letzten Bemaßung zum nächsten Punkt, den Sie angeben, ihre Maßlinie einen Schritt weiter außen. Er beginnt bei der zuletzt erzeugten linearen oder ausgerichteten Bemaßung, seit die Zeichnung geöffnet wurde, folgt also meist auf <Command id="DIMLINEAR" /> oder <Command id="DIMALIGNED" />; ohne eine fragt er, von welcher er ausgehen soll. Die Befehlszeile meldet jedes Maß, sobald es erzeugt ist. Die Eingabetaste bei der Eingabeaufforderung des Ursprungs wählt <Keyword id="Select" />, und die Eingabetaste dort beendet den Befehl, wie Esc.
@@ -31,7 +31,7 @@ Eine Bemaßung ist nicht assoziativ: Die Bemaßungen folgen den Objekten, die si
 
 ### Wie ändere ich den Abstand der Basislinienbemaßungen?
 
-Er ist der Basislinienabstand des Bemaßungsstils: <Command id="DIMSTYLE" /> (`D`) öffnet die Stile in der Palette Stile, wo er wie in AutoCAD unter Linien steht. Bereits gezeichnete Bemaßungen behalten ihre Plätze; <Command id="DIMSPACE" /> ordnet sie wieder gleichmäßig an.
+Er ist der Basislinienabstand des Bemaßungsstils: <Command id="DIMSTYLE" /> (`D`) öffnet den Bemaßungsstil-Manager, wo er wie in AutoCAD auf der Registerkarte Linien steht. Bereits gezeichnete Bemaßungen behalten ihre Plätze; <Command id="DIMSPACE" /> ordnet sie wieder gleichmäßig an.
 
 ### Wie beginne ich bei einer anderen Bemaßung?
 

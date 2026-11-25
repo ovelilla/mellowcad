@@ -127,8 +127,11 @@ import {
   overriddenDimStyle,
 } from "../domain/dimStyles"
 
-/** Which of the two style tables the manager is showing. */
-export type StylesPanelTab = "dimension" | "text"
+/**
+ * The style dialog showing: STYLE's Text Style dialog or DIMSTYLE's
+ * Dimension Style Manager.
+ */
+export type StyleDialog = "text" | "dimension"
 
 /**
  * The Save Drawing As dialog's Files of type, in AutoCAD's order (desktop
@@ -175,12 +178,7 @@ export interface SaveAsChoice {
 }
 
 /** The palette panel's tabs, in their order. */
-export const PALETTE_TABS = [
-  "properties",
-  "layers",
-  "blocks",
-  "styles",
-] as const
+export const PALETTE_TABS = ["properties", "layers", "blocks"] as const
 
 export type PaletteTab = (typeof PALETTE_TABS)[number]
 
@@ -725,8 +723,11 @@ export interface EngineState {
   readonly dimStyles: ReadonlyArray<DimStyleInfo>
   /** The style new dimensions are created with. */
   readonly currentDimStyleId: DimStyleId
-  /** Which style table the Styles palette shows. */
-  readonly stylesTable: StylesPanelTab
+  /**
+   * The style dialog showing, while STYLE or DIMSTYLE runs, or null. The
+   * host draws it; closing it ends the command.
+   */
+  readonly styleDialog: StyleDialog | null
   /** Every block defined in the drawing (the Blocks palette's Current tab). */
   readonly blocks: ReadonlyArray<BlockInfo>
   /** The palette panel: open or folded, and the palette it shows. */

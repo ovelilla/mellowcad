@@ -140,19 +140,17 @@ Autodesk's follow Taiwan: Columns 行數, Rows 列 (ax26res 1189, 1194), MINSERT
 | Dialogs | Point display images | 點顯示影像 † | † |
 | Dialogs | Properties - Locked objects; One or more selected objects are locked…; Number of objects removed… | 性質 - 鎖住的物件; 一個或多個選取的物件已鎖住，無法更新。; 從選集中移除的物件數目: {count, number} | T AcTaskDialogs 181 |
 | Dialogs | Multiline Text - Unsaved Changes; Do you want to save your text changes?; Yes; No; Cancel | 多行文字 - 未儲存的變更; 是否要儲存文字變更？; 是; 否; 取消 | T AcTaskDialogs 3 |
-| Dim styles | Styles; Lines; Symbols and arrows; Text; Fit; Primary units | 型式; 線; 符號與箭頭; 文字; 填入; 主要單位 | P AcDimRes 6000–6003, 6013 |
-| Dim styles | Baseline spacing; Extend beyond dim lines; Offset from origin; Offset from dim line | 基準線間距; 延伸至標註線外; 自原點偏移; 自標註線偏移 | D AcDimRes 302, 303 |
-| Dim styles | Use overall scale of; Draw dim line between ext lines | 使用整體比例; 在延伸線之間繪製標註線 | D AcDimRes 305 |
-| Dim styles | Precision; Angular precision; Decimal separator; Suppress trailing zeros | 精確度; 角度精確度; 小數分隔符號; 抑制結尾零 | D AcDimRes 307:2713; P ax26res 220, 149, 235 |
-| Dim styles | ',' (Comma); '.' (Period); ' ' (Space) | 「,」(逗點); 「.」(小數點); 「 」(空格) | P acdb26res 6151, 6150, 6152 |
-| Dim styles | Current:; New | 目前的:; 新建 | D acfilterres 101:1035; D AcDimRes 101:11612 |
-| Text styles | Size; Height; the height hint | 大小; 高度; 高度為 0 表示不固定，TEXT 指令每次都會提示指定高度。 † | N AcCustomize; P acopmRes 145 |
+| Text style | Text Style; Current text style:; Styles:; All styles; Styles in use; Font; Font Name:; Size; Height; Set Current; New...; Delete; Apply; Cancel; Close; New Text Style; Style Name:; OK | 文字型式; 目前的文字型式:; 型式:; 所有型式; 使用中型式; 字體; 字體名稱:; 大小; 高度; 設為目前的; 新建...; 刪除; 套用; 取消; 關閉; 新文字型式; 型式名稱:; 確定 | D acadres 515 (title, 33884, 967, 2098, 920, 2097, 33886, 1258, 1257, 1259, 915, 917), 306 (2105, 1); P acadres 9038, 9039, 9033, 5835 (Close, what Cancel becomes after Apply) |
+| Dim styles | Dimension Style Manager; Current dimension style:; Styles:; List:; All styles; Styles in use; Set Current; New...; Modify...; Close; Set current; Rename; Delete (the manager, its list's menu) | 標註型式管理員; 目前的標註型式:; 型式:; 列示:; 所有型式; 使用中型式; 設為目前的; 新建...; 修改...; 關閉; 設為目前的; 更名; 刪除 | D AcDimRes 701 (title, 3018, 3010, 3033, 3027, 3028, 1); P AcDimRes 5601, 5610, 5611; the Styles list's shortcut menu, AcDimRes MENU 706 (0xA5A4, 0xA5A1, 0xA5A2) |
+| Dim styles | Create New Dimension Style; New Style Name:; Start With:; Continue; Cancel; New Dimension Style:; Modify Dimension Style:; OK; Lines; Symbols and Arrows; Text; Fit; Primary Units (Create New, New and Modify, their tabs) | 建立新標註型式; 新型式名稱:; 起始於:; 繼續; 取消; 新標註型式:; 修改標註型式:; 確定; 線; 符號與箭頭; 文字; 填入; 主要單位 | D AcDimRes 702 (title, 3003, 3005, 3045, 2), 304:1; P AcDimRes 5609, 5608, 6000–6003, 6013 |
+| Dim styles | Dimension lines; Baseline spacing:; Extension lines; Extend beyond dim lines:; Offset from origin:; Arrowheads; Arrow size:; Center marks; None; Mark; Text appearance; Text height:; Text placement; Offset from dim line:; Scale for dimension features; Use overall scale of:; Fine tuning; Draw dim line between ext lines; Linear dimensions; Precision; Decimal separator:; Zero suppression; Trailing; Angular dimensions; Precision: (the tabs' groups and labels) | 標註線; 基準線間距:; 延伸線; 延伸至標註線外:; 自原點偏移:; 箭頭; 箭頭大小:; 中心標記; 無; 標記; 文字外觀; 文字高度:; 文字位置; 自標註線偏移:; 標註特徵的比例; 使用整體比例:; 微調; 在延伸線之間繪製標註線; 線性標註; 精確度; 小數分隔符號:; 零抑制; 結尾; 角度標註; 精確度: | D AcDimRes 302 (2563, 2567, 2569, 2574, 2575), 301 (2570, 2579, 2571, 2702, 2703), 303 (2619, 2622, 2628, 2626), 305 (2590, 2682, 2591, 2687), 307 (2592, 2713, 2596, 2602, 2653, 2603, 2606) |
+| Dim styles | ',' (Comma); '.' (Period); ' ' (Space) (the Decimal separator list) | 「,」(逗點); 「.」(小數點); 「 」(空格) | P acdb26res 6151, 6150, 6152 |
 | Blocks | Blocks; the filter, its label, the empty and no-match texts; {count} in drawing | 圖塊; 篩選（可使用 ? 和 *）†, 篩選圖塊 †, 未定義任何圖塊。請先繪製物件，再執行 BLOCK 指令。†, 沒有符合篩選的圖塊。†; 圖面中有 # 個 † | X XLS_1707 |
 | Palettes | Palettes; Fold; Show; Palette width | 選項板; 收闔選項板 †; 顯示選項板 †; 選項板寬度 † | X ID_PanelPalettes; P acadres 5974 (寬度); N AcLayer (收闔圖層篩選) |
 
 Also ours (†): the canvas's name 繪製區 (after acadres 7015:1861's 繪製區中的快顯功能表); the messages
 composed from sourced words: `將 {name} 設為目前的圖層`, `{name} 的顏色/線型/線粗`, `刪除圖層 {name}`,
-`更名圖層 {name}`, `將 {name} 設為目前的`, `更名 {name}`, `刪除 {name}`. 更名 is Autodesk's rename
+`更名圖層 {name}`. 更名 is Autodesk's rename
 (the task dialogs' 圖層 - 更名), 欄 Taiwan's table column (行 is Autodesk's for an array's). Dialog
 labels drop the accelerator and keep the half-width colon the resource writes after it
 (`檔名(&N):` → `檔名:`); a label English writes without a colon takes none. `Repeat {command}`

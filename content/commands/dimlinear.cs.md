@@ -3,7 +3,7 @@ title: "Kótování v AutoCADu: příkaz KÓTYPŘÍM (DIMLINEAR)"
 metaTitle: "Kótování v AutoCADu: příkaz KÓTYPŘÍM"
 description: "Jak v AutoCADu kótovat příkazem KÓTYPŘÍM (DIMLINEAR, zkratka KPM): dva body nebo objekt, pak kótovací čára, vodorovná nebo svislá. Vyzkoušejte zdarma online."
 figure: "Obdélník okótovaný dvakrát: horní hrana jejími dvěma rohy, pravá hrana přes Enter a výběr hrany."
-sourceHash: "e48a0a6f18c9"
+sourceHash: "711a0bfcb4de"
 ---
 
 Příkaz KÓTYPŘÍM (DIMLINEAR) měří vzdálenost mezi dvěma body podél X nebo podél Y a kreslí ji jako kótu: dvě vynášecí čáry, kótovací čáru se šipkami a naměřenou hodnotu nad ní. Zadáte počátek první a druhé vynášecí čáry, pak umístění kótovací čáry, a to umístění určí směr, jako v AutoCADu: nad dvěma body nebo pod nimi měří vodorovně, vedle nich svisle. Můžete také u první výzvy stisknout Enter a vybrat úsečku, oblouk, segment křivky nebo kružnici: počátky jsou pak jeho dva konce, u kružnice její průměr. Příkazový řádek pak vypíše naměřenou hodnotu a příkaz skončí.
@@ -52,4 +52,4 @@ Kóty v MellowCAD zatím nejsou asociativní, jak říká <Message id="nonAssoci
 
 ### Jak změnit velikost textu a šipek kóty?
 
-V kótovacím stylu, jako v AutoCADu: příkaz <Command id="DIMSTYLE" /> (`KSL`) otevře kótovací styly, zde v paletě Styly, v AutoCADu ve Správci kótovacích stylů. Nastavíte tam výšku textu, velikost šipky, celkové měřítko a desetinná místa aktuálního stylu a řídí se jimi každá kóta v tomto stylu.
+V kótovacím stylu, jako v AutoCADu: příkaz <Command id="DIMSTYLE" /> (`KSL`) otevře Správce kótovacího stylu. Nastavíte tam výšku textu, velikost šipky, celkové měřítko a desetinná místa aktuálního stylu a řídí se jimi každá kóta v tomto stylu.

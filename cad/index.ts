@@ -49,7 +49,7 @@ export type {
   TextStyleInfo,
   DimStyleInfo,
   BlockInfo,
-  StylesPanelTab,
+  StyleDialog,
   PaletteTab,
   PaletteUi,
   CleanScreenUi,

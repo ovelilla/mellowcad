@@ -3,7 +3,7 @@ title: "Comando DIMBASELINE (COTALINBASE) no AutoCAD"
 metaTitle: "Cota de linha de base no AutoCAD: COTALINBASE"
 description: "Como funciona o DIMBASELINE do AutoCAD em português, COTALINBASE (atalho CLB): cotas a partir de uma mesma base e o espaçamento. Experimente grátis."
 figure: "Um perfil em degraus cotado 30 a partir do lado esquerdo, e depois 70 e 100 a partir do mesmo lado, cada uma numa linha mais afastada."
-sourceHash: "cd7902f90b59"
+sourceHash: "619fc0d438e9"
 ---
 
 O DIMBASELINE, COTALINBASE no AutoCAD em português, desenha cotas que medem todas a partir de uma mesma linha de extensão, a base: cada uma vai da primeira linha de extensão da última cota até o próximo ponto que você especifica, com a linha de cota um espaçamento mais afastada. Ele parte da última cota linear ou alinhada feita desde que o desenho foi aberto, por isso costuma vir depois do <Command id="DIMLINEAR" /> ou do <Command id="DIMALIGNED" />; sem nenhuma, pergunta de qual partir. A linha de comando diz cada medida assim que ela é feita. Enter no prompt da origem escolhe <Keyword id="Select" />, e Enter ali encerra o comando, como Esc.
@@ -32,7 +32,7 @@ COTALINBASE, com os aliases `CLB` e `DIMBASE`. Como no AutoCAD em português, o 
 
 ### Como mudar o espaçamento das cotas de linha de base?
 
-É o espaçamento da linha de base do estilo de cota: o <Command id="DIMSTYLE" /> (`EC`) abre os estilos na paleta Estilos, onde ele fica em Linhas, como no AutoCAD. As cotas já desenhadas ficam onde estão; o <Command id="DIMSPACE" /> as espaça de novo por igual.
+É o espaçamento da linha de base do estilo de cota: o <Command id="DIMSTYLE" /> (`EC`) abre o Gerenciador de estilo de cota, onde ele fica na guia Linhas, como no AutoCAD. As cotas já desenhadas ficam onde estão; o <Command id="DIMSPACE" /> as espaça de novo por igual.
 
 ### Como partir de outra cota?
 

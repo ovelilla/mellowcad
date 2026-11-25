@@ -3,7 +3,7 @@ title: "Cotas no AutoCAD: comando COTALINEAR (DIMLINEAR)"
 metaTitle: "Cota linear no AutoCAD: COTALINEAR (DIMLINEAR)"
 description: "Como cotar no AutoCAD em português com o COTALINEAR (DIMLINEAR, atalho CLI): duas origens ou um objeto e a linha, horizontal ou vertical. Experimente grátis."
 figure: "Um retângulo cotado duas vezes: o lado de cima pelos dois cantos, o da direita com Enter e selecionando-o."
-sourceHash: "e48a0a6f18c9"
+sourceHash: "711a0bfcb4de"
 ---
 
 O DIMLINEAR, COTALINEAR no AutoCAD em português, mede a distância entre dois pontos em X ou em Y e a desenha como uma cota: duas linhas de extensão, uma linha de cota com as suas setas e a medida acima dela. Você especifica a origem da primeira e da segunda linha de extensão e depois a localização da linha de cota, e onde você a coloca escolhe a direção, como no AutoCAD: acima ou abaixo dos dois pontos, ele mede na horizontal; ao lado deles, na vertical. Se você pressionar Enter no primeiro prompt, seleciona uma linha, um arco, um segmento de polilinha ou um círculo: as duas pontas dele, ou o diâmetro do círculo, são as origens. A linha de comando diz então a medida, e o comando termina.
@@ -52,4 +52,4 @@ Porque as cotas do MellowCAD ainda não são associativas, como diz <Message id=
 
 ### Como mudar o tamanho do texto e das setas da cota?
 
-No estilo de cota, como no AutoCAD: o <Command id="DIMSTYLE" /> (`EC`) abre os estilos de cota, aqui na paleta Estilos, onde o AutoCAD tem o Gerenciador de estilos de cota. Ali se definem a altura do texto, o tamanho da seta, a escala global e as casas decimais do estilo atual, e todas as cotas desse estilo acompanham.
+No estilo de cota, como no AutoCAD: o <Command id="DIMSTYLE" /> (`EC`) abre o Gerenciador de estilo de cota. Ali se definem a altura do texto, o tamanho da seta, a escala global e as casas decimais do estilo atual, e todas as cotas desse estilo acompanham.

@@ -2,7 +2,7 @@
 title: "Comando DIMLBASE (DIMBASELINE) in AutoCAD"
 description: "Come DIMLBASE (DIMBASELINE, alias DBA) di AutoCAD impila le quote da una linea base: origini, spaziatura, Seleziona e Annulla. Provalo."
 figure: "Un profilo a gradini quotato 30 dal suo bordo sinistro, poi 70 e 100 dallo stesso bordo, ciascuna una linea più in fuori."
-sourceHash: "cd7902f90b59"
+sourceHash: "619fc0d438e9"
 ---
 
 DIMLBASE disegna quote che misurano tutte da una stessa linea di estensione, la base: ognuna va dalla prima linea di estensione dell'ultima quota al punto successivo che dai, con la sua linea di quota un passo più all'esterno. Parte dall'ultima quota lineare o allineata creata da quando il disegno è stato aperto, quindi di solito segue <Command id="DIMLINEAR" /> o <Command id="DIMALIGNED" />; se non ce n'è, chiede da quale partire. La riga di comando indica ogni misura man mano che è creata. Invio alla richiesta dell'origine sceglie <Keyword id="Select" />, e Invio lì termina il comando, come fa Esc.
@@ -31,7 +31,7 @@ Una quota non è associativa: le quote non seguono gli oggetti che misurano. Una
 
 ### Come si cambia la spaziatura delle quote da linea base?
 
-È la spaziatura base dello stile di quota: <Command id="DIMSTYLE" /> (`D`) apre gli stili nella tavolozza Stili, dove si trova sotto Linee, come in AutoCAD. Le quote già disegnate conservano il loro posto; <Command id="DIMSPACE" /> le spazia di nuovo, in modo uniforme.
+È la spaziatura base dello stile di quota: <Command id="DIMSTYLE" /> (`D`) apre Gestione stili di quota, dove si trova nella scheda Linee, come in AutoCAD. Le quote già disegnate conservano il loro posto; <Command id="DIMSPACE" /> le spazia di nuovo, in modo uniforme.
 
 ### Come si parte da un'altra quota?
 

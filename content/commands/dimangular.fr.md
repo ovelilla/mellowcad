@@ -2,7 +2,7 @@
 title: "Commande COTANG (DIMANGULAR) dans AutoCAD"
 description: "Cotation angulaire dans AutoCAD en français : COTANG (DIMANGULAR, alias CAN), deux lignes, un arc, un cercle ou trois points, puis l'arc. Essayez-le."
 figure: "Deux lignes qui se rejoignent à 30 degrés : chaque ligne désignée, puis l'arc de cote placé entre elles."
-sourceHash: "30943abd60f6"
+sourceHash: "840b14037eda"
 ---
 
 COTANG (DIMANGULAR en anglais) cote un angle avec un arc pour ligne de cote. Ce que vous désignez en premier décide de la suite, comme dans AutoCAD : une ligne fait demander une deuxième ligne, deux segments d'une même polyligne compris ; un arc est mesuré d'une extrémité à l'autre autour de son centre ; un cercle, du point où vous l'avez désigné à un deuxième point que vous donnez ; et Entrée fait demander à la place le sommet de l'angle, puis ses deux extrémités. Placez ensuite l'arc : l'endroit où vous le mettez choisit l'angle mesuré. Entre deux lignes, c'est celui de leurs quatre secteurs qui le contient ; sinon, l'angle ou, de l'autre côté de ses côtés, l'angle rentrant au-delà de 180°. La ligne de commande indique la mesure en degrés, et la commande se termine.
@@ -41,4 +41,4 @@ Deux lignes parallèles, ou la même ligne désignée deux fois, ne forment pas 
 
 ### Comment changer les décimales d'une cote angulaire ?
 
-Dans le style de cote : <Command id="DIMSTYLE" /> (`CST`) l'ouvre dans la palette Styles, où la précision angulaire des Unités principales les règle, 0 dans ISO-25. Toutes les cotes angulaires de ce style suivent.
+Dans le style de cote : <Command id="DIMSTYLE" /> (`CST`) ouvre le Gestionnaire des styles de cote, où la précision angulaire de l'onglet Unités principales les règle, 0 dans ISO-25. Toutes les cotes angulaires de ce style suivent.

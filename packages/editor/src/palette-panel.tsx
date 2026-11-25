@@ -7,7 +7,6 @@ import {
   ChevronsRight,
   Layers,
   LibraryBig,
-  PencilRuler,
   SlidersHorizontal,
   type LucideIcon,
 } from "lucide-react"
@@ -21,7 +20,6 @@ import { PALETTE_WIDTH, clampPaletteWidth } from "./palette-layout"
 import { BlocksControl } from "./blocks-control"
 import { LayersControl } from "./layers-control"
 import { PropertiesPanel } from "./properties-panel"
-import { StylesControl } from "./styles-control"
 import { IconAction } from "./toolbar-primitives"
 import { useEditorText } from "./editor-text"
 import type { PieceProps } from "./piece"
@@ -30,7 +28,6 @@ const TAB_ICONS: Record<PaletteTab, LucideIcon> = {
   properties: SlidersHorizontal,
   layers: Layers,
   blocks: LibraryBig,
-  styles: PencilRuler,
 }
 
 /** The catalog section that names each palette (its `title`). */
@@ -38,12 +35,11 @@ const TAB_SECTIONS = {
   properties: "Properties",
   layers: "Layers",
   blocks: "Blocks",
-  styles: "Styles",
 } as const
 
 /**
- * The palette panel (the `panel` zone): Properties, Layers, Blocks and Styles
- * as tabs of one docked palette, modeless like AutoCAD's — a click on the
+ * The palette panel (the `panel` zone): Properties, Layers and Blocks as
+ * tabs of one docked palette, modeless like AutoCAD's — a click on the
  * drawing never closes it, so one can draw with the layer manager open or
  * insert one block after another. Open, it shows the tab's palette; folded,
  * a strip of the tabs' icons, each of which opens the panel on its palette.
@@ -144,7 +140,6 @@ export function PalettePanel({ engine, state }: PieceProps): ReactElement {
             )}
             {id === "layers" && <LayersControl engine={engine} state={state} />}
             {id === "blocks" && <BlocksControl engine={engine} state={state} />}
-            {id === "styles" && <StylesControl engine={engine} state={state} />}
           </Tabs.Panel>
         ))}
       </Tabs.Root>

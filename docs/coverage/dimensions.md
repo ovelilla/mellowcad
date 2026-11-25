@@ -10,7 +10,7 @@
   with its symbol (`R50 TYP`, p320, p329). The command line writes it with a point and no trailing
   zeros, an angle's too and no degree sign: `Dimension text = 12.5`, Text's `<12.5>`, `<90>` (p01,
   p15, p342, p359, p366). A style's separator (`,`, `.`, space) and trailing zeros are set in
-  the Styles palette's Primary units; a file before version 34 reads ISO-25's.
+  the Dimension Style Manager's Primary Units; a file before version 34 reads ISO-25's.
 - **Grips** as AutoCAD's (desktop d01-1): a linear or aligned one's two origins, its dimension
   line's two ends and its text; a radius's centre, rim point and text; a diameter's two rim points
   and text; an angular one's vertex, two endpoints, a point on its arc and text. The text's grip is
@@ -343,29 +343,40 @@ is drawn and edited as AutoCAD's and saves back (DXFIN's entry, clipboard-and-fi
 
 ### `DIMSTYLE` / `D` / `DIMSTY` / `DST` / `DDIM` · es `ACOESTIL` / `ACES` / `ACOEST` / `AES` / `DCOTA` · pt-BR `ESTILOCOTA` / `EC` / `DIMSTY` · fr `COTSTYLE` / `CST` / `CSTY` / `DDIM` · it `DIMSTILE` / `D` / `DST` / `DDIM` · de `BEMSTIL` · ru `РЗМСТИЛЬ` / `РСТ` / `ДИАЛРАЗМ` · pl `WYMSTYL` / `WST` / `WYMST` / `ODWYM` · cs `KÓTYSTYL` / `KSL` / `KOTYSL` / `DIAKÓTY` · hu `MÉRETSTÍLUS` / `D` / `MSTIL` / `MST` / `DPMÉRET`
 
-**Implemented:** style manager, set current, New with Start-With copy and auto-name (`Copy of
-ISO-25`), rename, delete guarded against in-use/current, edit Lines/Symbols and Arrows/Text/Fit/
-Primary Units (Precision, Decimal separator, Suppress trailing zeros, Angular precision), assign per
-selection (the Properties palette's drop-down and the Edit menu's Dimension Style ▸: one undo
-step). Every creation, edit, rename, deletion and current-style change is undone by U, which names
-it `DIMSTYLE` (`ACOESTIL` in Spanish, unverified) and puts the current style back (desktop d05;
--DIMSTYLE's U, p05); one made mid-command joins that command's step (DSY-01). Names are case-blind:
-a new `iso-25` is `iso-25 (2)`, and a rename onto a name in use is refused at the prompt with `A
-dimension style named "X" already exists.` / `*Invalid*` (tables 21392, 26367, the text style's
-wording, text/p323).
+**Implemented:** the Dimension Style Manager, a modal dialog DIMSTYLE runs while it shows (desktop
+d05-1, `research/ui/2026-11-25/phase3/dimstyle-manager.png`): `Current dimension style:`, the
+Styles list sorted by name, its right-click menu Set current, Rename, Delete (AcDimRes' menu; a
+name is also edited by F2 or a second press on it, **unverified**), List's All styles / Styles in
+use (the current style counted in use, **unverified**), Set Current, New..., Modify... and Close.
+New... opens Create New Dimension Style (d05-2): New Style Name, `Copy of` the Start With style
+until typed over, Start With, Continue and Cancel; Continue opens New Dimension Style: <name>,
+Modify... Modify Dimension Style: <name>, on the pages Lines (Baseline spacing; Extend beyond dim
+lines, Offset from origin), Symbols and Arrows (Arrow size; Center marks None or Mark with its
+size), Text (Text height; Offset from dim line), Fit (Use overall scale of; Draw dim line between
+ext lines) and Primary Units (Precision, Decimal separator, Zero suppression's Trailing; the
+angular Precision), each tab's words AcDimRes' (`phase3/dimmod-0.png` to `-6.png`); OK applies
+the page's changes in one, Cancel drops them; the style New made is current once the manager
+closes (d05-4). ISO-25, the current style and one in use are not deleted. Assign per selection
+(the Properties palette's drop-down and the Edit menu's Dimension Style ▸: one undo step). A run of
+the manager, with everything made in it, is one step U names `DIMSTYLE` (`ACOESTIL` in Spanish,
+unverified) and puts the current style back (desktop d05; -DIMSTYLE's U, p05); `'DIMSTYLE` runs
+inside a command, which resumes as the manager closes, and a change made there joins that
+command's step (DSY-01). Names are case-blind: a new `iso-25` is `iso-25 (2)`, and a rename onto a
+name in use is refused at the prompt with `A dimension style named "X" already exists.` /
+`*Invalid*` (tables 21392, 26367, the text style's wording, text/p323), there behind a dialog
+that renamed it, where the desktop's message is **unverified** (STYLE's too).
 
 **Missing:**
 
-- **The Dimension Style Manager.** DIMSTYLE opens the Styles palette's dimension table instead
-  (TEXT-D58, DIMS-D10). The dialog (d05-1, d05-4): `Current dimension style: ISO-25`, the Styles
-  list (Annotative with its icon, then ISO-25), the List filter (All styles) and `Don't list styles
-  in Xrefs`, Preview of the selected style, its Description, Set Current, New…, Modify…,
-  Override…, Compare…, Close, Help. New… opens Create New Dimension Style (d05-2): New Style Name
-  (`Copy of ISO-25`), Start With, Annotative, Use for (All dimensions), Continue / Cancel / Help;
-  Continue opens New Dimension Style: Copy of ISO-25 (d05-3) on its tabs Lines, Symbols and
-  Arrows, Text, Fit, Primary Units, Alternate Units, Tolerances, with a preview, OK / Cancel /
-  Help. The style made is current once the manager closes (d05-4).
-- Override, Compare, "Use For" sub-styles, Description, the All/In-use filter.
+- The manager's Preview of: and its drawing, the pages' preview, Description, Override...,
+  Compare..., `Don't list styles in Xrefs` and Help; Create New Dimension Style's Annotative and
+  Use for (a style's sub-styles); the pages' other settings (Color, Linetype, Lineweight,
+  Suppress, Extend beyond ticks, Fixed length extension lines; the arrowheads, Center marks' Line,
+  Dimension Break, Arc length symbol, the jogs; Text style, colours, frame, placement and alignment;
+  Fit options and Text placement; Unit format, Round off, Prefix, Suffix, Measurement scale,
+  Leading zeros, the angular format and zeros), and the Alternate Units and Tolerances pages.
+- Whether the desktop asks before a page's changes are dropped, or keeps the manager's list
+  selection on the style a page changed: **unverified**.
 - **Dimension overrides.** A DIMxxx variable typed as a command (`DIMSCALE`, `DIMTXT`) sets an
   override of the current style, which U takes back naming the variable (p06), and -DIMSTYLE then
   says `Current dimension overrides:` with each one (p06); not modelled (DIMS-D9: the variables
@@ -421,12 +432,20 @@ take says `Invalid option keyword.` and asks again (p11).
 
 ### `STYLE` / `ST` / `DDSTYLE` · es `ESTILO` / `EST` / `ESTILODD` · pt-BR `ESTILO` / `ET` / `DDSTYLE` · fr `STYLE` / `S` / `DDSTYLE` · it `STILE` / `ST` / `DDSTILE` · de `STIL` / `STI` / `DDSTYLE` · ru `СТИЛЬ` / `СТ` / `ДИАЛСТИЛЬ` · pl `STYL` / `ST` / `ODSTYL` · cs `PÍSMO` / `PSM` / `DIAPÍSMO` · hu `STÍLUS` / `ST` / `DPSTÍLUS`
 
-**Implemented:** text-style manager (the Styles palette's text table), set current, assign per
-selection (the drop-down: one undo step over every text, TEXT-D46), delete guarded against
-in-use/current; every style draws in Arial (Standard's font), measured from its advance widths.
-Every creation, edit, deletion and current-style change is undone by U, which names it `STYLE`
-(`ESTILO` in Spanish, unverified) and puts TEXTSTYLE back (desktop d07; -STYLE's U, text/p320); one
-made mid-command joins that command's step. Names are unique and case-blind (`STANDARD` is
+**Implemented:** the Text Style dialog, modal, which STYLE runs while it shows (desktop d07-1,
+`research/ui/2026-11-25/phase3/text-style.png`): `Current text style:`, the Styles list sorted by
+name (a name edited by F2 or a second press on it: the desktop's is **unverified**), its filter
+All styles / Styles in use, Font's Font Name (Arial, the only font, shown greyed), Size's Height,
+Set Current, New..., Delete, Apply and Cancel, which reads Close once something changed. A height
+typed waits for Apply; the next style picked, Set Current and New apply it first (the desktop
+asks: **unverified**); Cancel drops it. New... opens New Text Style (d07-2,
+`phase3/new-text-style.png`): Style Name with the name New proposes, OK, Cancel. Standard, the
+current style and one in use are not deleted. Assign per selection (the drop-down: one undo step
+over every text, TEXT-D46); every style draws in Arial (Standard's font), measured from its
+advance widths. A run of the dialog, with everything made in it, is one step U names `STYLE`
+(`ESTILO` in Spanish, unverified) and puts TEXTSTYLE back (desktop d07; -STYLE's U, text/p320);
+`'STYLE` runs inside a command, which resumes as the dialog closes, and a change made there joins
+that command's step. Names are unique and case-blind (`STANDARD` is
 Standard, p324): a new name in use gets ` (2)`, and a rename onto one, any case, is refused at the
 prompt with `A text style named "X" already exists.` / `*Invalid*` (es `Ya existe un estilo de texto
 con el nombre "X".` / `*No válido*`; p323, p336). New proposes `style1`, `style2`…, the first free
@@ -435,12 +454,9 @@ a preselection, as the dialog does (p160, d07).
 
 **Missing:**
 
-- **The Text Style dialog.** STYLE opens the Styles palette's text table instead (TEXT-D58: WHY,
-  the palette tab already hosts DIMSTYLE's table, and replacing it is a change of the palette panel
-  of its own, the Workspace review's). The dialog (d07-1): the Styles list with its All styles
-  filter and a preview; Font Name, Font Style, Use Big Font; Size: Annotative, Match text
-  orientation to layout, Height; Effects: Upside down, Backwards, Vertical, Width Factor, Oblique
-  Angle; Set Current, New…, Delete, Apply, Cancel (Close once applied), Help.
+- The dialog's preview (`AaBb123`), Font Style, Use Big Font, Size's Annotative and Match text
+  orientation to layout, the Effects group (Upside down, Backwards, Vertical, Width Factor,
+  Oblique Angle) and Help (d07-1).
 - **-STYLE**, and STYLE typed in the console, which asks the same (p310–p322): `Enter name of text
   style or [?] <Standard>:` (`New style.` / `Existing style. Full font name = Arial`), `Specify font
   name or font filename (for SHX) <txt>:`, `Specify height of text or [Annotative] <0.0000>:`,
@@ -455,7 +471,7 @@ a preselection, as the dialog does (p160, d07).
 
 **DIMSTYLE variables honoured**: DIMTXT, DIMASZ, DIMEXE, DIMEXO, DIMGAP, DIMDEC, DIMSCALE, DIMDLI,
 DIMCEN (positive/mark branch), DIMADEC, DIMDSEP, DIMZIN (8, trailing zeros), DIMTOFL (a radial
-dimension's line outside; the Styles palette's Fit, a file before version 35 reads On).
+dimension's line outside; the manager's Fit page, a file before version 35 reads On).
 **Not modelled**: DIMCEN negative (centrelines), DIMATFIT (text-fit logic), DIMASSOC,
 DIMZIN's other bits, DIMAZIN (0: an angle keeps its zeros), DIMTMOVE (always 0),
 DIMCONTINUEMODE (always 1: the base's style and layer), DIMAUNIT, DIMTXSTY height override, DIMPOST

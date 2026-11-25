@@ -592,22 +592,24 @@ describe("the text style drop-down (STY-02, TEXT-D46)", () => {
   })
 })
 
-describe("the style managers", () => {
-  it("open from the DIMSTYLE and STYLE commands, each on its table", () => {
+describe("the style dialogs", () => {
+  it("open from the DIMSTYLE and STYLE commands, each its own", () => {
     const cad = createHarness()
-    expect(cad.state().palette.open).toBe(false)
+    expect(cad.state().styleDialog).toBeNull()
 
     cad.command("DIMSTYLE")
-    expect(cad.state().palette).toEqual({ open: true, tab: "styles" })
-    expect(cad.state().stylesTable).toBe("dimension")
+    expect(cad.state().styleDialog).toBe("dimension")
+    expect(cad.activeToolId()).toBe("dimstyle")
+    cad.runtime.setStyleDialog(null)
+    expect(cad.activeToolId()).toBe("select")
 
     cad.command("STYLE")
-    expect(cad.state().palette).toEqual({ open: true, tab: "styles" })
-    expect(cad.state().stylesTable).toBe("text")
+    expect(cad.state().styleDialog).toBe("text")
+    expect(cad.state().palette.open).toBe(false)
   })
 
   it("answer to acad.pgp's DST, DIMSTY, DDIM and DDSTYLE, es DCOTA and ESTILODD", () => {
-    for (const [locale, table, names] of [
+    for (const [locale, dialog, names] of [
       [undefined, "dimension", ["DST", "DIMSTY", "DDIM"]],
       [undefined, "text", ["DDSTYLE"]],
       [es, "dimension", ["DCOTA"]],
@@ -615,10 +617,8 @@ describe("the style managers", () => {
     ] as const) {
       for (const name of names) {
         const cad = createHarness({ locale })
-        cad.runtime.setStylesTable(table === "text" ? "dimension" : "text")
         cad.command(name)
-        expect([name, cad.state().stylesTable]).toEqual([name, table])
-        expect(cad.state().palette.open).toBe(true)
+        expect([name, cad.state().styleDialog]).toEqual([name, dialog])
       }
     }
   })
@@ -630,15 +630,33 @@ describe("the style managers", () => {
     cad.select("L1")
     cad.command("STYLE")
     expect(cad.selectedIds()).toEqual([])
-    expect(cad.state().palette).toEqual({ open: true, tab: "styles" })
+    expect(cad.state().styleDialog).toBe("text")
   })
 
-  it("fold when their trigger is pressed while they show", () => {
+  // Desktop d05, d07: what the dialog changes, U takes back at once, naming
+  // the command.
+  it("make every change of one session a single step U names", () => {
     const cad = createHarness()
-    cad.runtime.togglePalette("styles")
-    expect(cad.state().palette).toEqual({ open: true, tab: "styles" })
-    cad.runtime.togglePalette("styles")
-    expect(cad.state().palette).toEqual({ open: false, tab: "styles" })
+    cad.command("DIMSTYLE")
+    const id = cad.runtime.createDimStyle("Plans", "ISO-25")
+    cad.runtime.updateDimStyle(id, { arrowSize: 5 })
+    cad.runtime.setCurrentDimStyle(id)
+    cad.runtime.setStyleDialog(null)
+
+    expect(written(cad, "U").at(-1)).toBe("DIMSTYLE")
+    expect(cad.state().dimStyles.map((style) => style.name)).toEqual(["ISO-25"])
+    expect(cad.state().currentDimStyleId).toBe("ISO-25")
+  })
+
+  it("propose New's name without making the style (d05-2, d07-2)", () => {
+    const cad = createHarness()
+    expect(cad.runtime.proposedStyleName("dimension", "ISO-25")).toBe(
+      "Copy of ISO-25"
+    )
+    expect(cad.runtime.proposedStyleName("text")).toBe("style1")
+    cad.runtime.createTextStyle()
+    expect(cad.runtime.proposedStyleName("text")).toBe("style2")
+    expect(cad.state().dimStyles).toHaveLength(1)
   })
 
   it("DIMSCALE still edits the current style's overall scale", () => {

@@ -3,7 +3,7 @@ title: "Cota de línea base en AutoCAD: ACOLINEABASE (DIMBASELINE)"
 metaTitle: "Cotas de línea base en AutoCAD: ACOLINEABASE"
 description: "Cómo funciona ACOLINEABASE (DIMBASELINE, alias ACOLINE) de AutoCAD en español: cotas desde una misma base y su intervalo. Pruébalo gratis online."
 figure: "Un perfil escalonado acotado 30 desde su lado izquierdo, y después 70 y 100 desde el mismo lado, cada una en una línea más alejada."
-sourceHash: "cd7902f90b59"
+sourceHash: "619fc0d438e9"
 ---
 
 ACOLINEABASE (DIMBASELINE en inglés) dibuja cotas que miden todas desde una misma línea de referencia, la base: cada una va de la primera línea de referencia de la última cota al siguiente punto que precisas, con su línea de cota un intervalo más alejada. Empieza desde la última cota lineal o alineada hecha desde que se abrió el dibujo, así que suele ir después de <Command id="DIMLINEAR" /> o <Command id="DIMALIGNED" />; si no hay ninguna, pregunta desde cuál empezar. La línea de comandos dice cada medida en cuanto se hace. Intro en la solicitud del origen elige <Keyword id="Select" />, e Intro allí termina el comando, como Esc.
@@ -32,7 +32,7 @@ ACOLINEABASE, con el alias `ACOLINE`. Como en AutoCAD en español, el nombre ing
 
 ### ¿Cómo cambio la separación de las cotas de línea base?
 
-Es el intervalo de línea base del estilo de cota: <Command id="DIMSTYLE" /> (`ACES`) abre los estilos en la paleta Estilos, donde está en Líneas, como en AutoCAD. Las cotas ya dibujadas mantienen su sitio; <Command id="DIMSPACE" /> las vuelve a espaciar por igual.
+Es el intervalo de línea base del estilo de cota: <Command id="DIMSTYLE" /> (`ACES`) abre el Administrador de estilos de cota, donde está en la ficha Líneas, como en AutoCAD. Las cotas ya dibujadas mantienen su sitio; <Command id="DIMSPACE" /> las vuelve a espaciar por igual.
 
 ### ¿Cómo empiezo desde otra cota?
 

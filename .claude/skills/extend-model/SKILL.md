@@ -103,9 +103,9 @@ Colour, linetype and lineweight are structural twins: copy the closest one (colo
 
 A new **style setting** owes: the field with its metric default on the style, a branch in
 `clampDimStyle`, a tolerant read with a `DRAWING_FILE_VERSION` bump, a fold into `scaledDimStyle`
-if it is a plotted size, and a control in `packages/editor/src/styles-control.tsx` **under the heading
-AutoCAD files it under** (Lines, Symbols and arrows, Text, Fit, Primary units): users look for a
-setting where they were taught to.
+if it is a plotted size, and a control in `packages/editor/src/dim-style-dialog.tsx` **on the page and
+in the group AutoCAD files it under** (Lines, Symbols and Arrows, Text, Fit, Primary Units; AcDimRes'
+dialogs 301–308), its words that culture's: users look for a setting where they were taught to.
 
 ## An object snap type
 

@@ -3,7 +3,7 @@ title: "Comando DIMANGULAR (COTAANG) no AutoCAD"
 metaTitle: "Cota angular no AutoCAD: DIMANGULAR (COTAANG)"
 description: "Como cotar um ângulo com o DIMANGULAR do AutoCAD, COTAANG em português (atalho CANG): duas linhas, um arco, um círculo ou três pontos. Experimente grátis."
 figure: "Duas linhas que se encontram a 30 graus: cada linha selecionada e depois o arco de cota colocado entre elas."
-sourceHash: "30943abd60f6"
+sourceHash: "840b14037eda"
 ---
 
 O DIMANGULAR, COTAANG no AutoCAD em português, cota um ângulo com um arco como linha de cota. O que você seleciona primeiro decide o resto, como no AutoCAD: uma linha pede uma segunda linha, também dois segmentos de uma mesma polilinha; um arco é medido de ponta a ponta em torno do centro; um círculo, do ponto onde você o selecionou até um segundo ponto que você especifica; e Enter pede, em vez disso, o vértice do ângulo e depois os dois pontos finais. Em seguida você coloca o arco, e onde o coloca escolhe o ângulo medido: entre duas linhas, o dos quatro setores que o contém; nos outros casos, o ângulo ou, do outro lado dos seus lados, o ângulo maior que 180°. A linha de comando diz a medida em graus, e o comando termina.
@@ -42,4 +42,4 @@ Duas linhas paralelas, ou a mesma linha selecionada duas vezes, não formam âng
 
 ### Como mudar as casas decimais de uma cota angular?
 
-No estilo de cota: o <Command id="DIMSTYLE" /> (`EC`) o abre na paleta Estilos, onde quem as define é a precisão angular de Unidades primárias, 0 no ISO-25. Todas as cotas angulares desse estilo acompanham.
+No estilo de cota: o <Command id="DIMSTYLE" /> (`EC`) abre o Gerenciador de estilo de cota, onde quem as define é a precisão angular da guia Unidades primárias, 0 no ISO-25. Todas as cotas angulares desse estilo acompanham.

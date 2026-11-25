@@ -2,7 +2,7 @@
 title: "Comando DIMANGOLO (DIMANGULAR) in AutoCAD"
 description: "Come DIMANGOLO (DIMANGULAR, alias DAN) di AutoCAD misura gli angoli: due linee, un arco, un cerchio o tre punti, poi dove va l'arco. Provalo gratis nel browser."
 figure: "Due linee che si incontrano a 30 gradi: ogni linea selezionata, poi l'arco di quota posizionato tra esse."
-sourceHash: "30943abd60f6"
+sourceHash: "840b14037eda"
 ---
 
 DIMANGOLO quota un angolo con un arco come linea di quota. Ciò che selezioni per primo decide il resto, come in AutoCAD: una linea chiede una seconda linea, anche due segmenti di una stessa polilinea; un arco è misurato da un estremo all'altro attorno al suo centro; un cerchio, dal punto in cui lo hai selezionato a un secondo punto che dai; e Invio chiede invece il vertice dell'angolo, poi i suoi due estremi. Poi posiziona l'arco: dove lo metti sceglie l'angolo misurato. Tra due linee è quello dei loro quattro settori che lo contiene; altrimenti l'angolo o, attraverso i suoi lati, l'angolo concavo oltre 180°. La riga di comando indica la misura in gradi, e il comando termina.
@@ -41,4 +41,4 @@ Due linee parallele, o la stessa linea selezionata due volte, non fanno alcun an
 
 ### Come si cambiano i decimali di una quota angolare?
 
-Nello stile di quota: <Command id="DIMSTYLE" /> (`D`) lo apre nella tavolozza Stili, dove la precisione angolare di Unità primarie li imposta, 0 in ISO-25. Ogni quota angolare in quello stile li segue.
+Nello stile di quota: <Command id="DIMSTYLE" /> (`D`) apre Gestione stili di quota, dove la precisione angolare della scheda Unità primarie li imposta, 0 in ISO-25. Ogni quota angolare in quello stile li segue.

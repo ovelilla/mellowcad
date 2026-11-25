@@ -4,7 +4,7 @@ metaTitle: "DIMBASELINE in AutoCAD: baseline dimensions"
 description: "How AutoCAD's DIMBASELINE (DBA) stacks dimensions from one base line, prompt by prompt: next origins, spacing, Select and Undo. Try it free in your browser."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"What is the shortcut for DIMBASELINE in AutoCAD?","answer":"DBA, then Enter or Space. The full name works too, and _DIMBASELINE in any language of AutoCAD."},{"question":"How do I change the spacing of baseline dimensions?","answer":"It is the dimension style's baseline spacing: DIMSTYLE (D) opens the styles in the Styles palette, where it is under Lines, as in AutoCAD. Dimensions already drawn keep their places; DIMSPACE spaces them again, evenly."},{"question":"How do I start from another dimension?","answer":"Press Enter at the first prompt, or choose Select, and pick the dimension near the extension line to measure from: every new dimension starts there."},{"question":"What is the difference between DIMBASELINE and DIMCONTINUE?","answer":"DIMBASELINE measures every dimension from the same extension line, each on a line further out. DIMCONTINUE puts them end to end on one line, each from where the last one ended."}]
+faq: [{"question":"What is the shortcut for DIMBASELINE in AutoCAD?","answer":"DBA, then Enter or Space. The full name works too, and _DIMBASELINE in any language of AutoCAD."},{"question":"How do I change the spacing of baseline dimensions?","answer":"It is the dimension style's baseline spacing: DIMSTYLE (D) opens the Dimension Style Manager, where it is on the Lines tab, as in AutoCAD. Dimensions already drawn keep their places; DIMSPACE spaces them again, evenly."},{"question":"How do I start from another dimension?","answer":"Press Enter at the first prompt, or choose Select, and pick the dimension near the extension line to measure from: every new dimension starts there."},{"question":"What is the difference between DIMBASELINE and DIMCONTINUE?","answer":"DIMBASELINE measures every dimension from the same extension line, each on a line further out. DIMCONTINUE puts them end to end on one line, each from where the last one ended."}]
 ---
 
 DIMBASELINE draws dimensions that all measure from one extension line, the base: each goes from the first extension line of the last dimension to the next point you give, its dimension line one step further out. It starts from the last linear or aligned dimension made since the drawing was opened, so it usually follows [`DIMLINEAR`](/docs/commands/dimlinear) or [`DIMALIGNED`](/docs/commands/dimaligned); with none, it asks which to start from. The command line says each measurement as it is made. Enter at the origin prompt chooses `Select`, and Enter there ends the command, as Escape does.
@@ -46,7 +46,7 @@ A dimension is not associative: the dimensions do not follow the objects they me
 
 ### How do I change the spacing of baseline dimensions?
 
-It is the dimension style's baseline spacing: [`DIMSTYLE`](/docs/commands/dimstyle) (`D`) opens the styles in the Styles palette, where it is under Lines, as in AutoCAD. Dimensions already drawn keep their places; [`DIMSPACE`](/docs/commands/dimspace) spaces them again, evenly.
+It is the dimension style's baseline spacing: [`DIMSTYLE`](/docs/commands/dimstyle) (`D`) opens the Dimension Style Manager, where it is on the Lines tab, as in AutoCAD. Dimensions already drawn keep their places; [`DIMSPACE`](/docs/commands/dimspace) spaces them again, evenly.
 
 ### How do I start from another dimension?
 

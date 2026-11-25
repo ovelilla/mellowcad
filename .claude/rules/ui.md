@@ -301,16 +301,15 @@ Each bar's AutoCAD order is in its component's header comment; touch and phones 
   allows (not while another field is being typed in). **A key an IME composes with is the
   IME's** (`isImeKey`): every field that answers Enter or Escape returns on it first, or the Enter
   that confirms a Japanese conversion commits the field.
-- **A dialog** only where AutoCAD has one (UNITS): engine state, opened by the command, applied as
-  one undo step through the engine. No command palette (Ctrl+K): the command line is that. No
+- **A dialog** only where AutoCAD has one (UNITS, STYLE): engine state, opened by the command that
+  runs while it shows, so all it changes is that command's one undo step. No command palette (Ctrl+K): the command line is that. No
   product or meta copy in the editor: that is the landing's.
 
 ## Palettes that show drawing content
 
 A palette is a **tab of the palette panel** (until phase 3), never a popover: AutoCAD's palettes are modeless, and
-a popover closes on the first click on the drawing. Which tab shows, and the Styles table
-(`state.stylesTable`), are `EngineState`, never `useState` — or typing `DIMSTYLE` cannot open it. A
-new palette is a `PaletteTab` (`PALETTE_TABS`), a command that calls `showPalette`, a branch in
+a popover closes on the first click on the drawing. Which tab shows is `EngineState`, never
+`useState` — or typing `LAYER` cannot open it. A new palette is a `PaletteTab` (`PALETTE_TABS`), a command that calls `showPalette`, a branch in
 `PalettePanel` and, if View's Palettes panel has its toggle, a `RibbonToggle`.
 
 Anything that **draws drawing content** (a block thumbnail) asks the engine for a `Scene`

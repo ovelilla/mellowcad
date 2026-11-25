@@ -3,7 +3,7 @@ title: "Acotar en AutoCAD: ACOLINEAL (DIMLINEAR)"
 metaTitle: "Acotar en AutoCAD: comando ACOLINEAL (DIMLINEAR)"
 description: "Cómo acotar en AutoCAD en español con ACOLINEAL (DIMLINEAR, alias ACOLIN): dos orígenes o un objeto y la línea, horizontal o vertical. Pruébalo gratis online."
 figure: "Un rectángulo acotado dos veces: su lado superior por sus dos esquinas, el derecho con Intro y designándolo."
-sourceHash: "e48a0a6f18c9"
+sourceHash: "711a0bfcb4de"
 ---
 
 ACOLINEAL (DIMLINEAR en inglés) mide la distancia entre dos puntos en X o en Y y la dibuja como una cota: dos líneas de referencia, una línea de cota con sus flechas y la medida encima. Precisas el origen de la primera y de la segunda línea de referencia y después la ubicación de la línea de cota, y donde la colocas elige la dirección, como en AutoCAD: por encima o por debajo de los dos puntos mide en horizontal; a su lado, en vertical. Si en la primera solicitud pulsas Intro, designas una línea, un arco, un segmento de polilínea o un círculo: sus dos extremos, o el diámetro del círculo, son los orígenes. La línea de comandos dice entonces la medida, y el comando termina.
@@ -52,4 +52,4 @@ Porque las cotas de MellowCAD aún no son asociativas, como dice <Message id="no
 
 ### ¿Cómo cambio el tamaño del texto y las flechas de las cotas?
 
-En el estilo de cota, como en AutoCAD: <Command id="DIMSTYLE" /> (`ACES`) abre los estilos de cota, aquí en la paleta Estilos, donde AutoCAD tiene el Administrador de estilos de cota. Allí se fijan la altura de texto, el tamaño de flecha, la escala general y los decimales del estilo actual, y todas las cotas de ese estilo los siguen.
+En el estilo de cota, como en AutoCAD: <Command id="DIMSTYLE" /> (`ACES`) abre el Administrador de estilos de cota. Allí se fijan la altura de texto, el tamaño de flecha, la escala general y los decimales del estilo actual, y todas las cotas de ese estilo los siguen.

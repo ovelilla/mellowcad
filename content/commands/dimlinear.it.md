@@ -2,7 +2,7 @@
 title: "Comando DIMLINEARE (DIMLINEAR) in AutoCAD"
 description: "Come quotare in AutoCAD con DIMLINEARE (DIMLINEAR, alias DLI): due origini o un oggetto, poi la linea, orizzontale o verticale. Provalo."
 figure: "Un rettangolo quotato due volte: il lato superiore dai suoi due angoli, il lato destro con Invio e una selezione su di esso."
-sourceHash: "e48a0a6f18c9"
+sourceHash: "711a0bfcb4de"
 ---
 
 DIMLINEARE misura la distanza tra due punti lungo X o lungo Y e la disegna come quota: due linee di estensione, una linea di quota con le sue punte di freccia, e la misura sopra di essa. Indica le origini della prima e della seconda linea di estensione, poi la posizione della linea di quota: dove la posizioni sceglie la direzione, come in AutoCAD: sopra o sotto i due punti misura in orizzontale, di lato in verticale. Premi invece Invio alla prima richiesta e seleziona una linea, un arco, un segmento di polilinea o un cerchio: i suoi due estremi, o il diametro del cerchio, sono le origini. La riga di comando dice poi la misura, e il comando termina.
@@ -51,4 +51,4 @@ Le quote di MellowCAD non sono ancora associative, come mostra <Message id="nonA
 
 ### Come si cambia la dimensione del testo e delle frecce di una quota?
 
-Nello stile di quota, come in AutoCAD: <Command id="DIMSTYLE" /> (`D`) apre gli stili di quota, nella tavolozza Stili qui dove AutoCAD ha Gestione stili di quota. L'altezza del testo, la dimensione delle frecce, la scala globale e i decimali dello stile corrente si impostano lì, e ogni quota in quello stile li segue.
+Nello stile di quota, come in AutoCAD: <Command id="DIMSTYLE" /> (`D`) apre Gestione stili di quota. L'altezza del testo, la dimensione delle frecce, la scala globale e i decimali dello stile corrente si impostano lì, e ogni quota in quello stile li segue.

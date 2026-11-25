@@ -39,6 +39,8 @@ import { Ribbon } from "./ribbon"
 import { StatusBar, type StatusBarProps } from "./status-bar"
 import { UnitsDialog } from "./units-dialog"
 import { PointStyleDialog } from "./point-style-dialog"
+import { TextStyleDialog } from "./text-style-dialog"
+import { DimStyleDialog } from "./dim-style-dialog"
 import { SaveAsDialog } from "./save-as-dialog"
 import { LockedObjectsDialog } from "./locked-objects-dialog"
 import { UnsavedTextDialog } from "./unsaved-text-dialog"
@@ -355,6 +357,8 @@ function Workspace({
                 <SelectionCyclingList engine={engine} state={state} />
                 <UnitsDialog engine={engine} state={state} />
                 <PointStyleDialog engine={engine} state={state} />
+                <TextStyleDialog engine={engine} state={state} />
+                <DimStyleDialog engine={engine} state={state} />
                 <SaveAsDialog engine={engine} state={state} />
                 <LockedObjectsDialog engine={engine} state={state} />
                 <UnsavedTextDialog engine={engine} state={state} />

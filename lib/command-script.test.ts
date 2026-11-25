@@ -109,6 +109,7 @@ describe("a command that opens a dialog box", () => {
         state.palette !== before ||
         state.unitsDialog ||
         state.pointStyleDialog ||
+        state.styleDialog !== null ||
         state.saveAsDialog !== null
       cad.dispose()
       return opens

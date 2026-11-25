@@ -153,6 +153,7 @@ import { PasteTool } from "./tools/PasteTool"
 import { SystemVariableTool } from "./tools/SystemVariableTool"
 import { UnitsTool } from "./tools/UnitsTool"
 import { PointStyleTool } from "./tools/PointStyleTool"
+import { StyleDialogTool } from "./tools/StyleDialogTool"
 import { SaveAsTool } from "./tools/SaveAsTool"
 import { formatVariable, systemVariableNamed } from "./systemVariables"
 import { directionFromUcsHeading, headingInUcs } from "./tools/ucsHeading"
@@ -214,7 +215,7 @@ import {
   ShortcutMenuAction,
   ShortcutMenuEntry,
   ShortcutMenuMode,
-  StylesPanelTab,
+  StyleDialog,
 } from "./EngineState"
 import {
   buildShortcutMenu,
@@ -632,8 +633,8 @@ export class CadRuntime extends Observable {
   private applyingDraftingModes = false
   /** Whether this host shows the UCS icon at all; UCSICON decides where. */
   private ucsIconShown = true
-  // Which style table the Styles palette shows.
-  private stylesTable: StylesPanelTab = "dimension"
+  // The style dialog STYLE or DIMSTYLE shows while it runs.
+  private styleDialog: StyleDialog | null = null
   // The palette panel: open or folded, and the palette it shows.
   private paletteOpen: boolean
   private paletteTab: PaletteTab = "properties"
@@ -6094,9 +6095,8 @@ export class CadRuntime extends Observable {
 
   /**
    * One of the Dimension Style Manager's edits, a step U names `DIMSTYLE`
-   * (desktop d05; -DIMSTYLE's is `-DIMSTYLE`, p05). WHY the dialog's name for
-   * the Styles palette: it stands in for that dialog (TEXT-D58). Mid-command
-   * it joins that command's step.
+   * (desktop d05; -DIMSTYLE's is `-DIMSTYLE`, p05). Made from the manager, it
+   * joins DIMSTYLE's run; from elsewhere mid-command, that command's step.
    */
   private dimStyleStep(command: Command): void {
     this.executeOutside(command, this.text.commandNames("DIMSTYLE")[0])
@@ -6159,9 +6159,8 @@ export class CadRuntime extends Observable {
 
   /**
    * One of the Text Style dialog's edits, a step U names `STYLE` (desktop
-   * d07; -STYLE's is `-STYLE`, text/p320). WHY the dialog's name for the
-   * Styles palette: it stands in for that dialog (TEXT-D58). Mid-command, a
-   * TEXT's Style option, it joins that command's step.
+   * d07; -STYLE's is `-STYLE`, text/p320). Made from the dialog, it joins
+   * STYLE's run; mid-command, a TEXT's Style option, that command's step.
    */
   private styleStep(command: Command): void {
     this.executeOutside(command, this.text.commandNames("STYLE")[0])
@@ -6207,10 +6206,31 @@ export class CadRuntime extends Observable {
     this.invalidateState()
   }
 
-  /** Which style table the Styles palette shows. */
-  setStylesTable(table: StylesPanelTab): void {
-    if (this.stylesTable === table) return
-    this.stylesTable = table
+  /**
+   * The name New would give a style copied from `basedOn`, unmade: what the
+   * Create New Dimension Style dialog's New Style Name (`Copy of ISO-25`,
+   * d05-2) and New Text Style's Style Name (`style1`, d07-2) start with.
+   */
+  proposedStyleName(table: StyleDialog, basedOn?: string): string {
+    return table === "dimension"
+      ? newDimStyle(this.document, undefined, basedOn, (base) =>
+          this.text.copyName(base)
+        ).name
+      : newTextStyle(this.document, undefined, basedOn, (n) =>
+          this.text.defaultTextStyleName(n)
+        ).name
+  }
+
+  /**
+   * Shows or hides a style dialog. Closed, it ends the STYLE or DIMSTYLE run
+   * it belongs to, resuming a command `'STYLE` interrupted.
+   */
+  setStyleDialog(dialog: StyleDialog | null): void {
+    if (this.styleDialog === dialog) return
+    this.styleDialog = dialog
+    if (dialog === null && this.activeTool instanceof StyleDialogTool) {
+      this.returnToNeutralTool()
+    }
     this.invalidateState()
   }
 
@@ -8577,7 +8597,7 @@ export class CadRuntime extends Observable {
         this.document.getEntities()
       ),
       currentDimStyleId: this.document.getCurrentDimStyleId(),
-      stylesTable: this.stylesTable,
+      styleDialog: this.styleDialog,
       blocks: buildBlockInfos(
         this.document.getBlocks(),
         this.document.getEntities()

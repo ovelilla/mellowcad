@@ -532,65 +532,101 @@ export const zhCN: EditorLocale = {
         "objects": "对象"
       }
     },
-    "Styles": {
-      "title": "样式",
-      "dimension": "标注",
-      "text": "文字",
+    "TextStyle": {
+      "title": "文字样式",
       "current": [
-        "当前: ",
-        [
-          "value",
-          [
-            "name"
-          ]
-        ]
-      ],
-      "new": "新建",
-      "setCurrent": [
-        "将 ",
-        [
-          "name"
-        ],
-        " 置为当前"
-      ],
-      "rename": [
-        "重命名 ",
+        "当前文字样式: ",
         [
           "name"
         ]
       ],
-      "delete": [
-        "删除 ",
+      "styles": "样式:",
+      "allStyles": "所有样式",
+      "stylesInUse": "正在使用的样式",
+      "font": "字体",
+      "fontName": "字体名:",
+      "size": "大小",
+      "height": "高度",
+      "setCurrent": "置为当前",
+      "new": "新建...",
+      "delete": "删除",
+      "apply": "应用",
+      "cancel": "取消",
+      "close": "关闭",
+      "newTitle": "新建文字样式",
+      "styleName": "样式名:",
+      "ok": "确定"
+    },
+    "DimStyle": {
+      "title": "标注样式管理器",
+      "current": [
+        "当前标注样式: ",
         [
           "name"
         ]
       ],
+      "styles": "样式:",
+      "list": "列出:",
+      "allStyles": "所有样式",
+      "stylesInUse": "正在使用的样式",
+      "setCurrent": "置为当前",
+      "new": "新建...",
+      "modify": "修改...",
+      "close": "关闭",
+      "menuSetCurrent": "置为当前",
+      "rename": "重命名",
+      "delete": "删除",
+      "createTitle": "创建新标注样式",
+      "newStyleName": "新样式名:",
+      "startWith": "基础样式:",
+      "continue": "继续",
+      "cancel": "取消",
+      "newTitle": [
+        "新建标注样式: ",
+        [
+          "name"
+        ]
+      ],
+      "modifyTitle": [
+        "修改标注样式: ",
+        [
+          "name"
+        ]
+      ],
+      "ok": "确定",
       "lines": "线",
-      "baselineSpacing": "基线间距",
-      "extendBeyond": "超出尺寸线",
-      "offsetFromOrigin": "起点偏移量",
       "symbolsAndArrows": "符号和箭头",
-      "arrowSize": "箭头大小",
-      "centerMark": "圆心标记大小",
-      "textGroup": "文字",
-      "textHeight": "文字高度",
-      "offsetFromDimLine": "从尺寸线偏移",
+      "text": "文字",
       "fit": "调整",
-      "overallScale": "使用全局比例",
-      "drawDimLineBetween": "在尺寸界线之间绘制尺寸线",
       "primaryUnits": "主单位",
-      "precision": "精度",
-      "angularPrecision": "角度精度",
-      "decimalSeparator": "小数分隔符",
+      "dimensionLines": "尺寸线",
+      "baselineSpacing": "基线间距:",
+      "extensionLines": "尺寸界线",
+      "extendBeyondDimLines": "超出尺寸线:",
+      "offsetFromOrigin": "起点偏移量:",
+      "arrowheads": "箭头",
+      "arrowSize": "箭头大小:",
+      "centerMarks": "圆心标记",
+      "none": "无",
+      "mark": "标记",
+      "textAppearance": "文字外观",
+      "textHeight": "文字高度:",
+      "textPlacement": "文字位置",
+      "offsetFromDimLine": "从尺寸线偏移:",
+      "scaleForFeatures": "标注特征比例",
+      "useOverallScale": "使用全局比例:",
+      "fineTuning": "优化",
+      "drawDimLine": "在尺寸界线之间绘制尺寸线",
+      "linearDimensions": "线性标注",
+      "precision": "精度:",
+      "decimalSeparator": "小数分隔符:",
       "comma": "“,” (逗点)",
       "period": "“.” (句点)",
       "space": "“ ” (空格)",
-      "suppressTrailingZeros": "消去后续零",
-      "yes": "是",
-      "no": "否",
-      "size": "大小",
-      "height": "高度",
-      "heightHint": "高度为 0 表示不固定，TEXT 命令每次都会提示指定高度。"
+      "zeroSuppression": "消零",
+      "trailing": "后续",
+      "angularDimensions": "角度标注",
+      "angularPrecision": "精度:"
     },
     "Blocks": {
       "title": "块",

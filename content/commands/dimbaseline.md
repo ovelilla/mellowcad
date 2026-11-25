@@ -33,7 +33,7 @@ A dimension is not associative: the dimensions do not follow the objects they me
 
 ### How do I change the spacing of baseline dimensions?
 
-It is the dimension style's baseline spacing: <Command id="DIMSTYLE" /> (`D`) opens the styles in the Styles palette, where it is under Lines, as in AutoCAD. Dimensions already drawn keep their places; <Command id="DIMSPACE" /> spaces them again, evenly.
+It is the dimension style's baseline spacing: <Command id="DIMSTYLE" /> (`D`) opens the Dimension Style Manager, where it is on the Lines tab, as in AutoCAD. Dimensions already drawn keep their places; <Command id="DIMSPACE" /> spaces them again, evenly.
 
 ### How do I start from another dimension?
 

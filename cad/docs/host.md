@@ -182,8 +182,11 @@ The engine keeps track of the chrome AutoCAD's commands open, so that typing `LA
 opens what it opens in AutoCAD:
 
 - `state.palette` says whether the palette panel is open and which palette it shows
-  (`properties`, `layers`, `blocks`, `styles`); `showPalette`, `closePalette` and `togglePalette`
+  (`properties`, `layers`, `blocks`); `showPalette`, `closePalette` and `togglePalette`
   change it.
+- `state.styleDialog` is the style dialog STYLE or DIMSTYLE shows while it runs (`text`,
+  `dimension`), each change made in it a step of that command; `setStyleDialog(null)` closes it
+  and ends the command, and `proposedStyleName` is the name New would give a style.
 - `state.unitsDialog`, `state.lockedObjectsDialog` and `state.unsavedTextDialog` are dialogs to
   show; `setUnitsDialog(false)`, `closeLockedObjectsDialog()` and `answerUnsavedText(answer)` close
   them.

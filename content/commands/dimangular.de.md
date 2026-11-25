@@ -2,7 +2,7 @@
 title: "Befehl BEMWINKEL (DIMANGULAR) in AutoCAD"
 description: "So bemaßt AutoCADs BEMWINKEL (DIMANGULAR, Alias BMWIN) Winkel: zwei Linien, ein Bogen, ein Kreis oder drei Punkte, dann die Lage des Bogens."
 figure: "Zwei Linien, die sich unter 30 Grad treffen: jede Linie gewählt, dann der Bemaßungsbogen dazwischen platziert."
-sourceHash: "30943abd60f6"
+sourceHash: "840b14037eda"
 ---
 
 BEMWINKEL (DIMANGULAR) bemaßt einen Winkel mit einem Bogen als Maßlinie. Was Sie zuerst wählen, entscheidet über den Rest, wie in AutoCAD: Eine Linie verlangt eine zweite Linie, auch zwei Segmente einer Polylinie; ein Bogen wird von Ende zu Ende um seinen Mittelpunkt gemessen; ein Kreis vom gewählten Punkt darauf bis zu einem zweiten Punkt, den Sie angeben; und die Eingabetaste verlangt stattdessen den Scheitelpunkt des Winkels, dann seine beiden Endpunkte. Platzieren Sie dann den Bogen: Die Lage des Bogens bestimmt den gemessenen Winkel. Zwischen zwei Linien ist es der ihrer vier Sektoren, der ihn enthält; sonst der Winkel oder, über seine Schenkel hinweg, der überstumpfe Winkel über 180°. Die Befehlszeile meldet das Maß in Grad, und der Befehl endet.
@@ -41,4 +41,4 @@ Zwei parallele Linien, oder dieselbe Linie zweimal gewählt, ergeben keinen Wink
 
 ### Wie ändere ich die Dezimalstellen einer Winkelbemaßung?
 
-Im Bemaßungsstil: <Command id="DIMSTYLE" /> (`D`) öffnet ihn in der Palette Stile, wo die Winkelgenauigkeit der Primäreinheiten sie festlegt, 0 in ISO-25. Jede Winkelbemaßung in diesem Stil folgt ihr.
+Im Bemaßungsstil: <Command id="DIMSTYLE" /> (`D`) öffnet den Bemaßungsstil-Manager, wo die Winkelgenauigkeit der Registerkarte Primäreinheiten sie festlegt, 0 in ISO-25. Jede Winkelbemaßung in diesem Stil folgt ihr.

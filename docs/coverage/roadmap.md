@@ -192,7 +192,6 @@ at `Select objects:` or a single object's pick off the screen still finds (BRP-0
 for the `Select objects:` area. EXPLODE's texts from an MTEXT now stand where AutoCAD's do, MTEXT laid out by
 ink (EXP-06 closed by TXO-03: `docs/plans/text-review.md`); ATTDEF's Current line still writes es
 `SIZ` where TEXT's writes `SI` (TXT-08), and attributes share TEXT's layout: for the Blocks review.
-The Styles palette stands in for AutoCAD's Text Style and Dimension Style dialogs (TEXT-D58), and
 TEXTSIZE, TEXTSTYLE and the DIMxxx variables (which AutoCAD makes dimension overrides, DSY-04,
 dimensions/p06: `docs/plans/dimensions-review.md`) are not typable: for the Workspace review.
 The anonymous

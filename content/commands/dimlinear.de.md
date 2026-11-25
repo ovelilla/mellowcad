@@ -2,7 +2,7 @@
 title: "Befehl BEMLINEAR (DIMLINEAR) in AutoCAD"
 description: "Wie BEMLINEAR (DIMLINEAR, Alias BMLIN) in AutoCAD bemaßt: zwei Ursprünge oder ein Objekt, dann die Maßlinie, horizontal oder vertikal."
 figure: "Ein Rechteck, zweimal bemaßt: seine Oberkante durch ihre zwei Ecken, seine rechte Kante durch die Eingabetaste und eine Auswahl darauf."
-sourceHash: "e48a0a6f18c9"
+sourceHash: "711a0bfcb4de"
 ---
 
 BEMLINEAR (DIMLINEAR) misst den Abstand zwischen zwei Punkten entlang X oder entlang Y und zeichnet ihn als Bemaßung: zwei Maßhilfslinien, eine Maßlinie mit ihren Pfeilspitzen und das Maß darüber. Sie geben den ersten und den zweiten Ursprung der Maßhilfslinien an, dann die Lage der Maßlinie, und die Lage der Maßlinie bestimmt die Richtung, wie in AutoCAD: über oder unter den beiden Punkten wird horizontal gemessen, daneben vertikal. Drücken Sie stattdessen bei der ersten Eingabeaufforderung die Eingabetaste und wählen Sie eine Linie, einen Bogen, ein Polyliniensegment oder einen Kreis: Seine zwei Enden oder der Durchmesser des Kreises sind die Ursprünge. Die Befehlszeile meldet dann das Maß, und der Befehl endet.
@@ -51,4 +51,4 @@ Die Bemaßungen von MellowCAD sind noch nicht assoziativ, wie <Message id="nonAs
 
 ### Wie ändere ich die Größe von Bemaßungstext und Pfeilen?
 
-Im Bemaßungsstil, wie in AutoCAD: <Command id="DIMSTYLE" /> (`D`) öffnet die Bemaßungsstile, hier in der Palette Stile, wo AutoCAD den Bemaßungsstil-Manager hat. Dort werden Texthöhe, Pfeilgröße, Gesamtskalierung und Dezimalstellen des aktuellen Stils festgelegt, und jede Bemaßung in diesem Stil übernimmt sie.
+Im Bemaßungsstil, wie in AutoCAD: <Command id="DIMSTYLE" /> (`D`) öffnet den Bemaßungsstil-Manager. Dort werden Texthöhe, Pfeilgröße, Gesamtskalierung und Dezimalstellen des aktuellen Stils festgelegt, und jede Bemaßung in diesem Stil übernimmt sie.

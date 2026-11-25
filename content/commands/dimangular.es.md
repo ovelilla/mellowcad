@@ -3,7 +3,7 @@ title: "Acotar ángulos en AutoCAD: ACOANGULAR (DIMANGULAR)"
 metaTitle: "Acotar ángulos en AutoCAD: comando ACOANGULAR"
 description: "Cómo acotar un ángulo con ACOANGULAR (DIMANGULAR, alias ACOANG) de AutoCAD en español: dos líneas, un arco, un círculo o tres puntos. Pruébalo gratis online."
 figure: "Dos líneas que se cortan a 30 grados: cada línea designada y después el arco de cota colocado entre ellas."
-sourceHash: "30943abd60f6"
+sourceHash: "840b14037eda"
 ---
 
 ACOANGULAR (DIMANGULAR en inglés) acota un ángulo con un arco como línea de cota. Lo que designas primero decide el resto, como en AutoCAD: una línea pide una segunda línea, también dos segmentos de una misma polilínea; un arco se mide de extremo a extremo alrededor de su centro; un círculo, desde el punto donde lo designaste hasta un segundo punto que precisas; e Intro pide en su lugar el vértice del ángulo y después sus dos puntos finales. Luego colocas el arco, y donde lo pones elige el ángulo medido: entre dos líneas, el de los cuatro sectores que lo contiene; en los demás casos, el ángulo o, al otro lado de sus lados, el ángulo mayor de 180°. La línea de comandos dice la medida en grados, y el comando termina.
@@ -42,4 +42,4 @@ Dos líneas paralelas, o la misma línea designada dos veces, no forman ningún 
 
 ### ¿Cómo cambio los decimales de una cota angular?
 
-En el estilo de cota: <Command id="DIMSTYLE" /> (`ACES`) lo abre en la paleta Estilos, donde los fija la precisión angular de Unidades principales, 0 en ISO-25. Todas las cotas angulares de ese estilo la siguen.
+En el estilo de cota: <Command id="DIMSTYLE" /> (`ACES`) abre el Administrador de estilos de cota, donde los fija la precisión angular de la ficha Unidades principales, 0 en ISO-25. Todas las cotas angulares de ese estilo la siguen.

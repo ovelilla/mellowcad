@@ -155,8 +155,8 @@ export declare function NavigationBar(pieceProps: PieceProps): ReactElement;
 
 export { PalettePanel }
 /**
- * The palette panel (the `panel` zone): Properties, Layers, Blocks and Styles
- * as tabs of one docked palette, modeless like AutoCAD's — a click on the
+ * The palette panel (the `panel` zone): Properties, Layers and Blocks as
+ * tabs of one docked palette, modeless like AutoCAD's — a click on the
  * drawing never closes it, so one can draw with the layer manager open or
  * insert one block after another. Open, it shows the tab's palette; folded,
  * a strip of the tabs' icons, each of which opens the panel on its palette.

@@ -532,65 +532,101 @@ export const en: EditorCatalog = {
         "objects": "Objects"
       }
     },
-    "Styles": {
-      "title": "Styles",
-      "dimension": "Dimension",
-      "text": "Text",
+    "TextStyle": {
+      "title": "Text Style",
       "current": [
-        "Current: ",
-        [
-          "value",
-          [
-            "name"
-          ]
-        ]
-      ],
-      "new": "New",
-      "setCurrent": [
-        "Set ",
-        [
-          "name"
-        ],
-        " current"
-      ],
-      "rename": [
-        "Rename ",
+        "Current text style: ",
         [
           "name"
         ]
       ],
-      "delete": [
-        "Delete ",
+      "styles": "Styles:",
+      "allStyles": "All styles",
+      "stylesInUse": "Styles in use",
+      "font": "Font",
+      "fontName": "Font Name:",
+      "size": "Size",
+      "height": "Height",
+      "setCurrent": "Set Current",
+      "new": "New...",
+      "delete": "Delete",
+      "apply": "Apply",
+      "cancel": "Cancel",
+      "close": "Close",
+      "newTitle": "New Text Style",
+      "styleName": "Style Name:",
+      "ok": "OK"
+    },
+    "DimStyle": {
+      "title": "Dimension Style Manager",
+      "current": [
+        "Current dimension style: ",
         [
           "name"
         ]
       ],
+      "styles": "Styles:",
+      "list": "List:",
+      "allStyles": "All styles",
+      "stylesInUse": "Styles in use",
+      "setCurrent": "Set Current",
+      "new": "New...",
+      "modify": "Modify...",
+      "close": "Close",
+      "menuSetCurrent": "Set current",
+      "rename": "Rename",
+      "delete": "Delete",
+      "createTitle": "Create New Dimension Style",
+      "newStyleName": "New Style Name:",
+      "startWith": "Start With:",
+      "continue": "Continue",
+      "cancel": "Cancel",
+      "newTitle": [
+        "New Dimension Style: ",
+        [
+          "name"
+        ]
+      ],
+      "modifyTitle": [
+        "Modify Dimension Style: ",
+        [
+          "name"
+        ]
+      ],
+      "ok": "OK",
       "lines": "Lines",
-      "baselineSpacing": "Baseline spacing",
-      "extendBeyond": "Extend beyond dim lines",
-      "offsetFromOrigin": "Offset from origin",
-      "symbolsAndArrows": "Symbols and arrows",
-      "arrowSize": "Arrow size",
-      "centerMark": "Center mark size",
-      "textGroup": "Text",
-      "textHeight": "Text height",
-      "offsetFromDimLine": "Offset from dim line",
+      "symbolsAndArrows": "Symbols and Arrows",
+      "text": "Text",
       "fit": "Fit",
-      "overallScale": "Use overall scale of",
-      "drawDimLineBetween": "Draw dim line between ext lines",
-      "primaryUnits": "Primary units",
+      "primaryUnits": "Primary Units",
+      "dimensionLines": "Dimension lines",
+      "baselineSpacing": "Baseline spacing:",
+      "extensionLines": "Extension lines",
+      "extendBeyondDimLines": "Extend beyond dim lines:",
+      "offsetFromOrigin": "Offset from origin:",
+      "arrowheads": "Arrowheads",
+      "arrowSize": "Arrow size:",
+      "centerMarks": "Center marks",
+      "none": "None",
+      "mark": "Mark",
+      "textAppearance": "Text appearance",
+      "textHeight": "Text height:",
+      "textPlacement": "Text placement",
+      "offsetFromDimLine": "Offset from dim line:",
+      "scaleForFeatures": "Scale for dimension features",
+      "useOverallScale": "Use overall scale of:",
+      "fineTuning": "Fine tuning",
+      "drawDimLine": "Draw dim line between ext lines",
+      "linearDimensions": "Linear dimensions",
       "precision": "Precision",
-      "angularPrecision": "Angular precision",
-      "decimalSeparator": "Decimal separator",
+      "decimalSeparator": "Decimal separator:",
       "comma": "',' (Comma)",
       "period": "'.' (Period)",
       "space": "' ' (Space)",
-      "suppressTrailingZeros": "Suppress trailing zeros",
-      "yes": "Yes",
-      "no": "No",
-      "size": "Size",
-      "height": "Height",
-      "heightHint": "A height of 0 leaves it free, so TEXT asks for one each time."
+      "zeroSuppression": "Zero suppression",
+      "trailing": "Trailing",
+      "angularDimensions": "Angular dimensions",
+      "angularPrecision": "Precision:"
     },
     "Blocks": {
       "title": "Blocks",

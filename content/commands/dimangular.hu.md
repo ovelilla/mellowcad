@@ -3,7 +3,7 @@ title: "Méretezés az AutoCAD-ben: szögméret, MÉRETSZÖG (DIMANGULAR) paranc
 metaTitle: "Méretezés az AutoCAD-ben: szögméret, MÉRETSZÖG"
 description: "Szög méretezése az AutoCAD-ben a MÉRETSZÖG (DIMANGULAR, MSZ) paranccsal: két vonal, egy ív, egy kör vagy három pont, majd a méretív helye. Próbálja ki ingyen."
 figure: "Két vonal, amelyek 30 fokban találkoznak: mindkét vonal kijelölve, majd a méretív elhelyezve közöttük."
-sourceHash: "30943abd60f6"
+sourceHash: "840b14037eda"
 ---
 
 A MÉRETSZÖG (DIMANGULAR) parancs egy szöget méretez, méretvonalként egy ívvel. Ahogy az AutoCAD-ben, az első kijelölés dönti el a folytatást: egy vonal után egy második vonalat kér – egy vonallánc két szakasza is megfelel –; az ívet végponttól végpontig, a középpontja körül méri; a kört a kijelölési ponttól egy megadandó második pontig; az Enter pedig ehelyett a szög csúcspontját, majd a két szárvégpontját kéri. Ezután helyezze el az ívet: a helye dönti el, melyik szöget méri. Két vonal között a négy szögtartományuk közül azt, amelyikben elhelyezi; egyébként a szöget, vagy a szárain túl a 180°-nál nagyobb konkáv szöget. A parancssor fokban kiírja a mért értéket, és a parancs befejeződik.
@@ -42,4 +42,4 @@ Két párhuzamos vonal, vagy kétszer kijelölt ugyanaz a vonal, nem zár be sz�
 
 ### Hogyan lehet módosítani egy szögméret tizedesjegyeit?
 
-A méretstílusban: a <Command id="DIMSTYLE" /> (`D`) a Stílusok palettán nyitja meg, ahol az Elsődleges mértékegységek csoport Szögpontosság értéke állítja be, ISO-25-ben 0. Az adott stílusú összes szögméret követi.
+A méretstílusban: a <Command id="DIMSTYLE" /> (`D`) megnyitja a Méretstílus-kezelőt, ahol az Elsődleges mértékegységek lap Szögpontosság értéke állítja be, ISO-25-ben 0. Az adott stílusú összes szögméret követi.
