@@ -3,7 +3,7 @@ title: "AutoCAD REDO（重做）命令"
 metaTitle: "CAD 重做命令（REDO）：Ctrl+Y 与 MREDO"
 description: "CAD 重做怎么用：AutoCAD REDO（重做）在 U 或 UNDO 之后立即恢复被放弃的内容；MREDO 和 Ctrl+Y 逐步重做，以及 REDO 为什么不起作用。在浏览器中免费试用。"
 figure: "在板上绘制一个孔，用 U 放弃，再用 REDO 恢复。"
-sourceHash: "d88f63f885fd"
+sourceHash: "6017450979c2"
 ---
 
 REDO（重做）命令恢复上一次 <Command id="U" /> 或 <Command id="UNDO" /> 放弃的内容：被放弃的内容全部重新绘制出来，因此在 UNDO 放弃五个命令之后，REDO 会恢复这五个命令。它在执行时写出这些命令的名称，没有可重做的内容后提示 <Message id="everythingRedone" />。它不询问任何内容，也没有选项。
@@ -14,7 +14,7 @@ REDO（重做）命令恢复上一次 <Command id="U" /> 或 <Command id="UNDO" 
 
 ## Missing
 
-Ctrl+Shift+Z 也会重做，并且不输出任何内容，而 AutoCAD 没有为它指定任何功能。快速访问工具栏中的“放弃”和“重做”按钮不在历史记录中写入任何内容，而 AutoCAD 的这两个按钮会写入自己的内容。
+Ctrl+Shift+Z 也会重做，并且不输出任何内容，而 AutoCAD 没有为它指定任何功能。
 
 ## Questions
 

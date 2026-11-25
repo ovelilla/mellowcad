@@ -48,7 +48,43 @@ export const zhTW: EditorLocale = {
       "saved": "已儲存",
       "savedHint": "已儲存至此裝置",
       "undo": "退回",
-      "redo": "重做"
+      "redo": "重做",
+      "undoCount": [
+        [
+          "count",
+          2,
+          {
+            "=1": [
+              "退回 ",
+              0,
+              " 指令"
+            ],
+            "other": [
+              "退回 ",
+              0,
+              " 指令"
+            ]
+          }
+        ]
+      ],
+      "redoCount": [
+        [
+          "count",
+          2,
+          {
+            "=1": [
+              "重做 ",
+              0,
+              " 指令"
+            ],
+            "other": [
+              "重做 ",
+              0,
+              " 指令"
+            ]
+          }
+        ]
+      ]
     },
     "NavigationBar": {
       "label": "導覽列",

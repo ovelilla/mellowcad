@@ -45,6 +45,8 @@ declare const source: {
     "savedHint": string
     "undo": string
     "redo": string
+    "undoCount": string
+    "redoCount": string
   }
   "NavigationBar": {
     "label": string

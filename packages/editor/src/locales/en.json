@@ -43,7 +43,9 @@
     "saved": "Saved",
     "savedHint": "Saved on this device",
     "undo": "Undo",
-    "redo": "Redo"
+    "redo": "Redo",
+    "undoCount": "{count, plural, =1 {Undo # command} other {Undo # commands}}",
+    "redoCount": "{count, plural, =1 {Redo # command} other {Redo # commands}}"
   },
   "NavigationBar": {
     "label": "Navigation bar",

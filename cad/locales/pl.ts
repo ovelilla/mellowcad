@@ -5088,6 +5088,8 @@ export const pl: EngineLocale = {
       "markEncountered": "Napotkano znacznik",
       "startOfGroup": "Napotkano początek grupy.\nAby wracać dalej należy wprowadzić COFAJ Koniec.",
       "undoGroup": "GRUPA",
+      "undoListGroup": "Grupa poleceń",
+      "undoListMark": "- Znak -",
       "dropGeometryStep": "UPELEM GRUPA",
       "menuStep": [
         [

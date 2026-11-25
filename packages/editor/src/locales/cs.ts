@@ -48,7 +48,43 @@ export const cs: EditorLocale = {
       "saved": "Uloženo",
       "savedHint": "Uloženo v tomto zařízení",
       "undo": "Zpět",
-      "redo": "Znova"
+      "redo": "Znova",
+      "undoCount": [
+        [
+          "count",
+          2,
+          {
+            "=1": [
+              "Zpět ",
+              0,
+              " příkaz"
+            ],
+            "other": [
+              "Zpět ",
+              0,
+              " příkazů"
+            ]
+          }
+        ]
+      ],
+      "redoCount": [
+        [
+          "count",
+          2,
+          {
+            "=1": [
+              "Znova ",
+              0,
+              " příkaz"
+            ],
+            "other": [
+              "Znova ",
+              0,
+              " příkazů"
+            ]
+          }
+        ]
+      ]
     },
     "NavigationBar": {
       "label": "Panel navigace",

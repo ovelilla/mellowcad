@@ -4949,6 +4949,8 @@ export const hu: EngineLocale = {
       "markEncountered": "Vissza jelet talált",
       "startOfGroup": "Csoport kezdetet talált.\nTovábbi visszalépéshez a VISSZA VÉge parancsot kell megadni.",
       "undoGroup": "CSOPORT",
+      "undoListGroup": "Parancsok csoportja",
+      "undoListMark": "- Jel -",
       "dropGeometryStep": "DROPGEOM CSOPORT",
       "menuStep": [
         [

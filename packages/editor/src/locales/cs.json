@@ -43,7 +43,9 @@
     "saved": "Uloženo",
     "savedHint": "Uloženo v tomto zařízení",
     "undo": "Zpět",
-    "redo": "Znova"
+    "redo": "Znova",
+    "undoCount": "{count, plural, =1 {Zpět # příkaz} other {Zpět # příkazů}}",
+    "redoCount": "{count, plural, =1 {Znova # příkaz} other {Znova # příkazů}}"
   },
   "NavigationBar": {
     "label": "Panel navigace",

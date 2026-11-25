@@ -6,6 +6,8 @@ export type RichTag = (chunks: ReactNode) => ReactNode
 
 /** What each message takes, by its dotted key; one absent takes nothing. */
 export interface EditorValues {
+  "TitleBar.undoCount": { count: number }
+  "TitleBar.redoCount": { count: number }
   "Viewport.view": { name: string }
   "ShortcutMenu.repeat": { command: string }
   "Layers.setCurrentLabel": { name: string }

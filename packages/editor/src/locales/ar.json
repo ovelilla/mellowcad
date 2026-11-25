@@ -43,7 +43,9 @@
     "saved": "محفوظ",
     "savedHint": "محفوظ على هذا الجهاز",
     "undo": "تراجع",
-    "redo": "إعادة"
+    "redo": "إعادة",
+    "undoCount": "{count, plural, =1 {تراجع عن # أمر} other {تراجع عن # أوامر}}",
+    "redoCount": "{count, plural, =1 {إعادة # أمر} other {إعادة # أوامر}}"
   },
   "NavigationBar": {
     "label": "شريط التنقل",

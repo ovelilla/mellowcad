@@ -5,7 +5,7 @@ description: "How AutoCAD's UNDO works: a number of steps back, Mark and Back, B
 before: "A plate with two holes and a line across it, drawn by four commands: RECTANG, CIRCLE twice and LINE."
 figure: "UNDO 2: the last two commands are taken back, the line and the second hole, and the plate keeps its first hole."
 related: ["U", "REDO", "MREDO", "ERASE"]
-coverage: "d99cf8304bdf"
+coverage: "2e5c5be124ac"
 ---
 
 UNDO takes back commands. A step is a whole command: everything one LINE drew goes at once, however many segments it had, and so does whatever a command set, such as LTSCALE. UNDO writes its current settings, then asks for the number of operations to undo or an option; Enter takes back one. It writes the names of the commands it took back on one line, `CIRCLE LINE`, and <Message id="everythingUndone" /> when it runs out; after that, <Message id="nothingToUndo" />. A command that changed nothing, such as ID or LIST, is a step too, and so is what ZOOM and PAN did to the view.
@@ -40,7 +40,7 @@ Takes back every step to the last mark, and the mark with them. With no mark, it
 
 ## Missing
 
-Auto joins nothing, as no menu here runs more than one command. Combine and Layer last the browser session, where AutoCAD keeps them from one session to the next. The Quick Access Toolbar's Undo and Redo buttons write nothing in the history, where AutoCAD's write their own. Ctrl+Shift+Z redoes too, silently, though AutoCAD binds nothing to it.
+Auto joins nothing, as no menu here runs more than one command. Combine and Layer last the browser session, where AutoCAD keeps them from one session to the next. Ctrl+Shift+Z redoes too, silently, though AutoCAD binds nothing to it.
 
 ## Questions
 

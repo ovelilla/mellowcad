@@ -4957,6 +4957,8 @@ export const ptBR: EngineLocale = {
       "markEncountered": "Marca encontrada",
       "startOfGroup": "Início de grupo encontrado.\nÉ necessário digitar DESFAZER FIM para prosseguir.",
       "undoGroup": "GRUPO",
+      "undoListGroup": "Grupo de comandos",
+      "undoListMark": "- Marca -",
       "dropGeometryStep": "DROPGEOM GRUPO",
       "menuStep": [
         [

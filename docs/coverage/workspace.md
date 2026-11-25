@@ -205,7 +205,19 @@ that one); a command named in the command line but not run yet; offline Help
 32 px, then the ribbon's band, 124 (its tab row and its panels), shown from the first paint and gone
 while RIBBONCLOSE or Clean Screen has closed it, then the drawing. In the title bar the application
 button, 48 wide, flush at its start, and the Quick Access Toolbar's buttons at AutoCAD's 24×22 with
-16 px icons, one against the next from 56 px (UI Automation at 1280×720, 2026-11-24). The
+16 px icons, one against the next from 56 px (UI Automation at 1280×720, 2026-11-24). Undo and Redo are
+split buttons of 36, the button 24 and its arrow 12 (AutoCAD's 13 shares a pixel): the button runs
+`_.undo` or `_.mredo` answered 1 (see U); the arrow lists the steps, the next first, each a row of
+21 on a pitch of 23 named as AutoCAD 2027's list names them (desktop 2026-11-25, `research/ui/2026-11-25`):
+the command that made it as U names it, without its dash or apostrophe, its first letter capital
+and the rest small (`Line` for `L` and `_LINE`, `Layer` for `-LAYER`, es `Linea`, `Capa`), joined
+ZOOMs by the first (`Zoom`), a group UNDO BEgin and End made `Group of commands` (acadres 4860), a
+mark `- Mark -` (4861), Undo's as far as an open group's start, a running command's work one row, the step the macro's cancel leaves; the list 600 high at most, then
+scrolled; the pointer or the focus on a row takes it and every row above, which the caption under
+the list counts (4853–4856, `Undo 2 commands`), and choosing it runs the macro answered with that
+count. **Unverified**: what a step U names by where it was made (`Grip Edit`, `LINE GROUP`) or by
+nothing (CECOLOR from a drop-down: an empty row here) is called in the list, which the desktop pass
+did not reach without the mouse; the list here starts under its arrow, AutoCAD's under its button. The
 application menu in AutoCAD 2027's two columns (plan §2.2, AcWindows.resources.dll's items, words
 and descriptions): on the left New, Open, Save, Save As, a line, Drawing Utilities, each a row of 46
 with its 32 px glyph, a long name wrapped in two lines as AutoCAD's (a word wider than its box
@@ -246,8 +258,7 @@ the rest of each page (New ▸ Sheet Set; Open ▸ Sheet Set, DGN, Sample Files;
 Template, Drawing Standards, Save Layout as a Drawing, DWG Convert; Drawing Utilities ▸ Drawing
 Properties, DWG Compare, Audit, Status, Purge, Recover, the Drawing Recovery Manager), the search,
 Recent Documents (WHY Open Documents in its place: a page cannot reopen a file it was handed) and
-the toggles and view list over the documents, Options and Exit, a double-click on the button; Undo's and Redo's lists (split buttons in
-AutoCAD, 36 wide, plain buttons of 24 here), Plot, Customize ▾ and Share, the program's name before the drawing's (WHY: Autodesk's mark, and the
+the toggles and view list over the documents, Options and Exit, a double-click on the button; Plot, Customize ▾ and Share, the program's name before the drawing's (WHY: Autodesk's mark, and the
 editor names no host), the rest of InfoCenter (its search, sign-in, App Store, Stay Connected, Support Assistant) and of
 the Help list (Download Offline Help, Online Resources ▸, Privacy Settings, About), the drawing's
 name after a reload (the auto-save keeps the drawing, not its file's name: it comes back as

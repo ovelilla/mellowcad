@@ -5168,6 +5168,8 @@ export const ru: EngineLocale = {
       "markEncountered": "Найдена метка",
       "startOfGroup": "Найдено начало группы.\nДля продолжения введите \"ОТМЕНИТЬ КОНЕЦ\".",
       "undoGroup": "ГРУППА",
+      "undoListGroup": "Группа команд",
+      "undoListMark": "- Метка -",
       "dropGeometryStep": "DROPGEOM ГРУППА",
       "menuStep": [
         [

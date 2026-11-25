@@ -372,8 +372,11 @@ command is acad.cuix's `_u` typed at its prompt and written so
 previous line segment is undone because you are still in the Line Command"), a refusal where the
 prompt has no Undo (`Invalid point.` at LINE's first point, `Requires numeric distance or second
 point.` at `Length of line:`; desktop d09, probes p103, p115); from the Quick Access Toolbar the
-running command ends first and goes whole ("Click Undo on the Quick Access toolbar to cancel the
-entire series of line segments"); U (a command of its own, es `H`) writes what it took back, as
+running command is cancelled first and goes whole ("Click Undo on the Quick Access toolbar to cancel
+the entire series of line segments"): its Undo runs `_.undo` answered 1 and the n-th row of its list
+n, its Redo `_.mredo` answered 1 and the n-th row n (desktop 2026-11-25, `*Cancel*`, `_.undo`,
+`…<1>: 1 LINE`; written here on lines of their own, as typed, where the desktop's history joined
+`_.undo` and `Current settings` on one: unverified whether its window does); U (a command of its own, es `H`) writes what it took back, as
 AutoCAD 2023's console does: the command's name as echoed (`LINE` for `L`, `-LAYER`, `AUPREC`),
 `LTSCALE Regenerating model.` for one that regenerated (LINE with a transparent LTSCALE in it too,
 and -VIEW, VPOINT and PLAN only when they turned the line of sight, never ZOOM: view/p337, p339,
@@ -450,5 +453,4 @@ writes; es from the table (`Ya se ha deshecho todo`, `Todo repetido`, `Nada que 
 **Missing:** what Auto joins (WHY: Auto makes one step of a menu macro's commands, and no menu here
 runs more than one), Combine
 and Layer from one session to the next (AutoCAD keeps them in the registry, as its console shows;
-here they last the session, as the running object snaps do); what the Quick Access Toolbar's Undo and Redo write (nothing here; AutoCAD's are the Quick Access Toolbar's own, not
-macros); Ctrl+Shift+Z still redoes, silently, though AutoCAD binds nothing to it
+here they last the session, as the running object snaps do); Ctrl+Shift+Z still redoes, silently, though AutoCAD binds nothing to it

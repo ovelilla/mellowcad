@@ -3,7 +3,7 @@ title: "Befehl ZLÖSCH (REDO) in AutoCAD: Wiederherstellen"
 metaTitle: "Befehl ZLÖSCH (REDO) in AutoCAD"
 description: "Wie ZLÖSCH (REDO) in AutoCAD wiederherstellt, was das letzte Z oder ZURÜCK zurückgenommen hat: nur direkt danach, MZLÖSCH und Strg+Y. Zum Testen."
 figure: "Eine in einer Platte gezeichnete Bohrung, mit Z zurückgenommen und mit ZLÖSCH wiederhergestellt."
-sourceHash: "d88f63f885fd"
+sourceHash: "6017450979c2"
 ---
 
 ZLÖSCH (REDO) macht das letzte <Command id="U" /> oder <Command id="UNDO" /> rückgängig: Was es zurückgenommen hat, wird wieder gezeichnet, alles davon, sodass ZLÖSCH nach einem ZURÜCK von fünf Befehlen die fünf wiederherstellt. Er schreibt dabei die Namen der Befehle, dann <Message id="everythingRedone" />, sobald nichts mehr wiederherzustellen ist. Er fragt nichts und hat keine Optionen.
@@ -14,7 +14,7 @@ Er funktioniert nur direkt nach dem Zurücknehmen. Sonst meldet er <Message id="
 
 ## Missing
 
-Strg+Umschalt+Z stellt ebenfalls wieder her, still, obwohl AutoCAD nichts darauf legt. Die Schaltflächen Rückgängig und Wiederherstellen des Schnellzugriff-Werkzeugkastens schreiben nichts in den Verlauf, wo die von AutoCAD ihre eigenen Zeilen schreiben.
+Strg+Umschalt+Z stellt ebenfalls wieder her, still, obwohl AutoCAD nichts darauf legt.
 
 ## Questions
 

@@ -4174,6 +4174,8 @@ export const en: EngineCatalog = {
       "markEncountered": "Mark encountered",
       "startOfGroup": "Start of Group encountered.\nMust enter UNDO END to go back further.",
       "undoGroup": "GROUP",
+      "undoListGroup": "Group of commands",
+      "undoListMark": "- Mark -",
       "dropGeometryStep": "DROPGEOM GROUP",
       "menuStep": [
         [

@@ -43,7 +43,9 @@
     "saved": "Enregistré",
     "savedHint": "Enregistré sur cet appareil",
     "undo": "Annuler",
-    "redo": "Rétablir"
+    "redo": "Rétablir",
+    "undoCount": "{count, plural, =1 {Annuler la commande #} other {Annuler les commandes #}}",
+    "redoCount": "{count, plural, =1 {Rétablir la commande #} other {Rétablir les commandes #}}"
   },
   "NavigationBar": {
     "label": "Barre de navigation",

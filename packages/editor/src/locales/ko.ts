@@ -48,7 +48,39 @@ export const ko: EditorLocale = {
       "saved": "저장됨",
       "savedHint": "이 기기에 저장됨",
       "undo": "명령 취소",
-      "redo": "명령 복구"
+      "redo": "명령 복구",
+      "undoCount": [
+        [
+          "count",
+          2,
+          {
+            "=1": [
+              0,
+              "개의 명령을 명령 취소"
+            ],
+            "other": [
+              0,
+              "개의 명령을 명령 취소"
+            ]
+          }
+        ]
+      ],
+      "redoCount": [
+        [
+          "count",
+          2,
+          {
+            "=1": [
+              0,
+              "개의 명령을 명령 복구"
+            ],
+            "other": [
+              0,
+              "개의 명령을 명령 복구"
+            ]
+          }
+        ]
+      ]
     },
     "NavigationBar": {
       "label": "탐색 막대",

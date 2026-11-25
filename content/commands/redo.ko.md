@@ -3,7 +3,7 @@ title: "AutoCAD REDO(명령 복구) 명령"
 metaTitle: "오토캐드 명령 복구(REDO)와 Ctrl+Y, MREDO"
 description: "AutoCAD REDO(명령 복구, 캐드 리두)는 직전의 U나 UNDO가 되돌린 것을 바로 다시 복구합니다. MREDO와 Ctrl+Y는 한 단계씩 복구합니다. 브라우저에서 무료로 해 볼 수 있습니다."
 figure: "판에 그린 구멍을 U로 되돌리고 REDO로 다시 복구합니다."
-sourceHash: "d88f63f885fd"
+sourceHash: "6017450979c2"
 ---
 
 REDO(명령 복구) 명령은 직전의 <Command id="U" />나 <Command id="UNDO" />를 반대로 되돌립니다. 그 명령이 되돌린 것이 모두 다시 그려지므로, 명령 다섯 개를 UNDO로 되돌린 뒤에는 REDO가 다섯 개를 모두 복구합니다. 복구하면서 명령 이름을 쓰고, 더 복구할 것이 없으면 <Message id="everythingRedone" />라는 메시지를 표시합니다. 아무것도 묻지 않으며 옵션이 없습니다.
@@ -14,7 +14,7 @@ REDO(명령 복구) 명령은 직전의 <Command id="U" />나 <Command id="UNDO"
 
 ## Missing
 
-Ctrl+Shift+Z도 아무 표시 없이 복구하지만, AutoCAD는 이 키에 아무것도 지정하지 않습니다. 신속 접근 도구막대의 명령 취소와 명령 복구 버튼은 명령 사용 내역에 아무것도 쓰지 않지만, AutoCAD의 버튼은 자체 내용을 씁니다.
+Ctrl+Shift+Z도 아무 표시 없이 복구하지만, AutoCAD는 이 키에 아무것도 지정하지 않습니다.
 
 ## Questions
 

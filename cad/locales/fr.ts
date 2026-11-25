@@ -4959,6 +4959,8 @@ export const fr: EngineLocale = {
       "markEncountered": "Marque rencontrée",
       "startOfGroup": "Départ du groupe rencontré.\nVous devez entrer ANNULER Fin pour remonter davantage.",
       "undoGroup": "GROUPE",
+      "undoListGroup": "Groupe de commandes",
+      "undoListMark": "- Marque -",
       "dropGeometryStep": "DROPGEOM GROUPE",
       "menuStep": [
         [

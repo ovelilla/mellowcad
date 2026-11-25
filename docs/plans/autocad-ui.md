@@ -2,8 +2,8 @@
 
 > **Status:** phase 0 (this inventory and plan) done on 2026-11-24; phase 1 done the same day,
 > its five blocks (the engine, the frame, Home, the other tabs, minimize and fold); the push that
-> ships the ribbon waits for the owner's word; phase 2 under way since 2026-11-25 (its blocks in
-> §6); phases 3 to 6 not started.
+> ships the ribbon waits for the owner's word; phase 2 done on 2026-11-25, its four blocks (§6);
+> phases 3 to 6 not started.
 > The brief is `docs/next-autocad-ui.md`; where its phases and this plan differ, this plan rules
 > (the brief says so) and the brief was corrected the same day.
 
@@ -376,7 +376,7 @@ in `docs/coverage/`, never a dead button.
 | F2 | The window's own title bar with minimise, maximise and close | none: the browser's window | Platform — a page cannot draw the window's frame; the row is kept for the application button, the Quick Access Toolbar and the title | 1 |
 | F3 | The title names the program and the drawing | no title in the page; the tab's title is the site's | Revoked for the drawing's name once the file port knows it; until then `Drawing1.dwg`, as a new drawing's | 2 (block 4, done) |
 | F4 | Quick Access: New, Open, Save, Save As, Plot, Undo ▾, Redo ▾, Customize ▾, Share | New, Open, Save, Save As, Undo, Redo, as 28 px buttons | Revoked: 24×22 on a 24 pitch. Plot and Share: Missing. Customize ▾: Missing (5) | 1, 2 |
-| F5 | Undo and Redo are split buttons with the list of steps | plain buttons | Revoked | 2 |
+| F5 | Undo and Redo are split buttons with the list of steps | plain buttons | Revoked | 2 (block 3, done) |
 | F6 | The application menu: its two columns, recent documents, Options and Exit | New, Open, Save, Save As, Drawing Units, the language, Send Feedback | Revoked: the two columns of §2.2, an entry's page with icon, name and description, and what exists here in its place — New ▸ Drawing, Open ▸ Drawing, Save, Save As ▸ Drawing and Other Formats, Drawing Utilities ▸ Units. Import, Export, Publish, Print, Close, the search, the documents' lists, Options and Exit: Missing. The language stays in it — Platform: AutoCAD is installed in one language and a page chooses its own | 2 (block 2, done) |
 | F7 | InfoCenter: search, sign-in, App Store, Help ▾ | nothing | Missing, but Help ▾: Revoked, with Help (F1's page) and Send Feedback, which leaves the application menu, in the order of acad.cuix's Help menu (`ID_MnHelp`; the list itself never opened, so **unverified**, §7) | 2 (block 1, done) |
 | F8 | File tabs: Start and one tab per drawing | none | Missing: one drawing at a time, no Start tab | — |
@@ -599,7 +599,7 @@ blocks, a commit each, each leaving the editor whole, built 1, 4, 2, 3:
    right column with Open Documents where AutoCAD shows Recent Documents, Options and Exit left
    out; only what exists here, the rest in the coverage (F6) Done 2026-11-25, third.
 3. **Undo ▾ and Redo ▾**: split buttons with the steps listed as §2.2 names them, which needs the
-   history's steps in `EngineState`; the button and each row run `_.undo n` / `_.mredo n` (F5).
+   history's steps in `EngineState`; the button and each row run `_.undo n` / `_.mredo n` (F5) Done 2026-11-25, last.
 4. **The drawing's name** in the title and in the tab's, from what the file port knows, else
    `Drawing1.dwg` (F3). Done 2026-11-25, second: the Open Documents list of block 2 shows it.
 

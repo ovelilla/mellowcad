@@ -43,7 +43,9 @@
     "saved": "保存済み",
     "savedHint": "このデバイスに保存済み",
     "undo": "元に戻す",
-    "redo": "やり直し"
+    "redo": "やり直し",
+    "undoCount": "{count, plural, =1 {# 個のコマンドを元に戻す} other {# 個のコマンドを元に戻す}}",
+    "redoCount": "{count, plural, =1 {# 個のコマンドをやり直す} other {# 個のコマンドをやり直す}}"
   },
   "NavigationBar": {
     "label": "ナビゲーション バー",

@@ -2773,6 +2773,8 @@ declare const source: {
       "markEncountered": string
       "startOfGroup": string
       "undoGroup": string
+      "undoListGroup": string
+      "undoListMark": string
       "dropGeometryStep": string
       "menuStep": string
       "emptyMenuStep": string

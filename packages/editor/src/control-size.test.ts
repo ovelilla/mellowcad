@@ -43,6 +43,8 @@ const ALLOWED: Record<string, Record<string, string>> = {
   "packages/editor/src/title-bar.tsx": {
     "size-8":
       "the application menu's 32 px glyphs, each entry's and each page item's (docs/plans/autocad-ui.md, §2.2)",
+    "h-5.25":
+      "a row of Undo's or Redo's list, AutoCAD's 21 on a pitch of 23 (§2.2, research/ui/2026-11-24/autocad/uia-pop-undo-list.txt)",
   },
   "packages/editor/src/palette-panel.tsx": {
     "h-9": "the palette panel's tab bar, a bar like the others",

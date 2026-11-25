@@ -4974,6 +4974,8 @@ export const de: EngineLocale = {
       "markEncountered": "Markierung gefunden",
       "startOfGroup": "Gruppenanfang gefunden.\nZURÜCK ENDE eingeben, um weiter zurückzugehen.",
       "undoGroup": "GRUPPE",
+      "undoListGroup": "Befehlsgruppe",
+      "undoListMark": "- Markierung -",
       "dropGeometryStep": "DROPGEOM GRUPPE",
       "menuStep": [
         [

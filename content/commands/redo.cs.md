@@ -3,7 +3,7 @@ title: "Příkaz ZNOVA (REDO) v AutoCADu: obnovení vrácených změn"
 metaTitle: "Příkaz ZNOVA (REDO) v AutoCADu"
 description: "Jak funguje příkaz ZNOVA (REDO) v AutoCADu: obnoví to, co vrátil poslední Z nebo ZPĚT, hned po něm; NZNOVA a Ctrl+Y obnovují krok po kroku. Vyzkoušejte online."
 figure: "Otvor nakreslený v desce, vrácený příkazem Z a obnovený příkazem ZNOVA."
-sourceHash: "d88f63f885fd"
+sourceHash: "6017450979c2"
 ---
 
 Příkaz ZNOVA (REDO) obrátí poslední <Command id="U" /> nebo <Command id="UNDO" />: co vrátil, se znovu nakreslí, všechno, takže po vrácení pěti příkazů příkazem ZPĚT příkaz ZNOVA obnoví všech pět. Přitom vypisuje názvy příkazů a pak <Message id="everythingRedone" />, jakmile už nic obnovit nelze. Na nic se neptá a nemá žádné možnosti.
@@ -14,7 +14,7 @@ Funguje jen hned po vrácení. Kdekoli jinde vypíše <Message id="redoMustFollo
 
 ## Missing
 
-Ctrl+Shift+Z také obnovuje, potichu, ačkoli AutoCAD této zkratce nic nepřiřazuje. Tlačítka Zpět a Znovu na panelu nástrojů Rychlý přístup nic nezapisují do historie, kdežto tlačítka AutoCADu zapisují vlastní řádky.
+Ctrl+Shift+Z také obnovuje, potichu, ačkoli AutoCAD této zkratce nic nepřiřazuje.
 
 ## Questions
 

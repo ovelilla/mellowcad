@@ -48,7 +48,39 @@ export const ja: EditorLocale = {
       "saved": "保存済み",
       "savedHint": "このデバイスに保存済み",
       "undo": "元に戻す",
-      "redo": "やり直し"
+      "redo": "やり直し",
+      "undoCount": [
+        [
+          "count",
+          2,
+          {
+            "=1": [
+              0,
+              " 個のコマンドを元に戻す"
+            ],
+            "other": [
+              0,
+              " 個のコマンドを元に戻す"
+            ]
+          }
+        ]
+      ],
+      "redoCount": [
+        [
+          "count",
+          2,
+          {
+            "=1": [
+              0,
+              " 個のコマンドをやり直す"
+            ],
+            "other": [
+              0,
+              " 個のコマンドをやり直す"
+            ]
+          }
+        ]
+      ]
     },
     "NavigationBar": {
       "label": "ナビゲーション バー",

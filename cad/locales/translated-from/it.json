@@ -2435,6 +2435,8 @@
   "commands.messages.markEncountered": "Mark encountered",
   "commands.messages.startOfGroup": "Start of Group encountered.\nMust enter UNDO END to go back further.",
   "commands.messages.undoGroup": "GROUP",
+  "commands.messages.undoListGroup": "Group of commands",
+  "commands.messages.undoListMark": "- Mark -",
   "commands.messages.dropGeometryStep": "DROPGEOM GROUP",
   "commands.messages.menuStep": "{command} GROUP",
   "commands.messages.emptyMenuStep": "GROUP {command}",

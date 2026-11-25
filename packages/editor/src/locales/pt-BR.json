@@ -43,7 +43,9 @@
     "saved": "Salvo",
     "savedHint": "Salvo neste dispositivo",
     "undo": "Desfazer",
-    "redo": "Refazer"
+    "redo": "Refazer",
+    "undoCount": "{count, plural, =1 {Desfazer # comando} other {Desfazer # comandos}}",
+    "redoCount": "{count, plural, =1 {Refazer # comando} other {Refazer # comandos}}"
   },
   "NavigationBar": {
     "label": "Barra de navegação",

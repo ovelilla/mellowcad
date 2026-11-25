@@ -6,10 +6,10 @@
 > sus cinco bloques del §6 del plan (el estado del ribbon en el motor, el marco, Home, las otras
 > pestañas, minimizar y plegar), el 2 y el 3 revisados ese día (la revisión corta con Fable de
 > §5); el push que publique el ribbon espera la palabra del dueño. La fase 2 (la barra de título)
-> está en curso desde el 25/11: su pasada por el escritorio hecha (la lista Ayuda ▾ no se abrió
-> ni con el ratón) y sus cuatro bloques en el §6 del plan, hechos el 1 (Ayuda ▾), el 4 (el
-> nombre del dibujo, antes que el 2 porque su lista Open Documents lo muestra) y el 2 (el menú de
-> la aplicación); queda el 3 (Undo ▾ y Redo ▾).
+> está hecha el 25/11, sus cuatro bloques del §6 del plan (Ayuda ▾, el nombre del dibujo, el menú
+> de la aplicación, Undo ▾ y Redo ▾; la lista Ayuda ▾ no se abrió ni con el ratón, así que sus filas
+> son las del menú Ayuda de acad.cuix), y sigue la fase 3 (las paletas y los diálogos de estilos),
+> que empieza capturando una paleta acoplada, anclada y oculta (§7 del plan).
 > Acordado el 7/11/2026 por el dueño. Se borra cuando la última fase esté hecha; hasta entonces
 > cada fase cerrada se marca aquí.
 
@@ -118,7 +118,7 @@ nombra). Sustituye a la paleta de herramientas y a los grupos Layers y Propertie
 superior. El paso 9 de la skill `new-command` («the rail») pasa a describir el ribbon. Sus
 bloques y lo que deja falso, en el §6 del plan.
 
-### Fase 2 — la barra de título
+### Fase 2 — la barra de título (hecha el 25/11/2026)
 
 El menú de la aplicación en la disposición y el orden de AutoCAD (sus dos columnas y la página de
 cada entrada, capturadas en la fase 0),

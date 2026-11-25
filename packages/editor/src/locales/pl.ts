@@ -48,7 +48,43 @@ export const pl: EditorLocale = {
       "saved": "Zapisano",
       "savedHint": "Zapisano na tym urządzeniu",
       "undo": "Cofnij",
-      "redo": "Odtwórz"
+      "redo": "Odtwórz",
+      "undoCount": [
+        [
+          "count",
+          2,
+          {
+            "=1": [
+              "Cofaj ",
+              0,
+              " poleceń"
+            ],
+            "other": [
+              "Cofaj ",
+              0,
+              " poleceń"
+            ]
+          }
+        ]
+      ],
+      "redoCount": [
+        [
+          "count",
+          2,
+          {
+            "=1": [
+              "Przywróć ",
+              0,
+              " poleceń"
+            ],
+            "other": [
+              "Odtwórz ",
+              0,
+              " poleceń"
+            ]
+          }
+        ]
+      ]
     },
     "NavigationBar": {
       "label": "Pasek nawigacji",

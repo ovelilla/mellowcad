@@ -47,6 +47,9 @@ const MENU_PAGE_ITEM =
 /** A drawing of Open Documents: AutoCAD's row of 26. */
 const MENU_DOCUMENT =
   "flex h-6.5 cursor-default items-center gap-1.5 rounded-sm px-2 text-ui outline-hidden select-none data-highlighted:bg-accent"
+/** A row of Undo's or Redo's list: AutoCAD's 21 on a pitch of 23. */
+const MENU_STEP =
+  "flex h-5.25 cursor-default items-center rounded-sm px-1.5 text-ui outline-hidden select-none"
 /** The right column's foot, where AutoCAD has Options and Exit. */
 const MENU_FOOT =
   "mt-auto flex h-7 cursor-default items-center gap-1.5 self-end rounded-sm border px-2 text-ui outline-hidden select-none data-highlighted:bg-accent data-popup-open:bg-accent"
@@ -144,25 +147,17 @@ export function TitleBar({
           size="quick"
           onClick={() => run("saveAs")}
         />
-        <IconAction
-          icon={Undo2}
-          mirrored
-          label={t("undo")}
-          shortcut={keys("undo")}
-          side="bottom"
-          size="quick"
-          disabled={!state.canUndo}
-          onClick={() => engine.undo()}
+        <StepList
+          engine={engine}
+          kind="undo"
+          steps={state.undoSteps}
+          enabled={state.canUndo}
         />
-        <IconAction
-          icon={Redo2}
-          mirrored
-          label={t("redo")}
-          shortcut={keys("redo")}
-          side="bottom"
-          size="quick"
-          disabled={!state.canRedo}
-          onClick={() => engine.redo()}
+        <StepList
+          engine={engine}
+          kind="redo"
+          steps={state.redoSteps}
+          enabled={state.canRedo}
         />
       </Panel>
 
@@ -445,6 +440,102 @@ function back(element: Element): string {
 function MenuGlyph({ icon }: { icon: string }) {
   const Icon = LARGE_MENU_ICONS[icon]
   return <Icon className="size-8 shrink-0" />
+}
+
+/**
+ * Undo ▾ or Redo ▾ of the Quick Access Toolbar (docs/plans/autocad-ui.md,
+ * §2.2, F5): a split button of 36, the button 24 and its arrow 12 (AutoCAD's
+ * 13 shares a pixel), the button running `_.undo` or `_.mredo` answered 1
+ * and the arrow listing the steps, the next one first, each a row of 21 on a
+ * pitch of 23 named as AutoCAD's list names them (`EngineState.undoSteps`),
+ * the list 600 high at most, then scrolled. The pointer or the focus on a row
+ * takes it and every row above it, which the caption under the list counts
+ * (acadres 4853/4855, `Undo 3 commands`); choosing it runs the macro answered
+ * with that count, as AutoCAD's row does (desktop, 2026-11-25).
+ */
+function StepList({
+  engine,
+  kind,
+  steps,
+  enabled,
+}: {
+  engine: CadEngine
+  kind: "undo" | "redo"
+  steps: readonly string[]
+  enabled: boolean
+}) {
+  const portal = usePortalContainer()
+  const t = useEditorText("TitleBar")
+  const keys = useEditorText("Keys")
+  const [taken, setTaken] = useState(0)
+  const run = (count: number) =>
+    kind === "undo" ? engine.undoSteps(count) : engine.redoSteps(count)
+  return (
+    <Menu.Root onOpenChange={(open) => open && setTaken(0)}>
+      <div className="flex shrink-0">
+        <IconAction
+          icon={kind === "undo" ? Undo2 : Redo2}
+          mirrored
+          label={t(kind)}
+          shortcut={keys(kind)}
+          side="bottom"
+          size="quick"
+          className="rounded-e-none"
+          disabled={!enabled}
+          onClick={() => {
+            run(1)
+            engine.focusSurface()
+          }}
+        />
+        <Menu.Trigger
+          disabled={steps.length === 0}
+          render={
+            <Button
+              size="quick"
+              variant="ghost"
+              aria-label={t(kind)}
+              className="w-3 rounded-s-none"
+            />
+          }
+        >
+          <ChevronDown className="size-2.5" />
+        </Menu.Trigger>
+      </div>
+      <Menu.Portal container={portal}>
+        <Menu.Positioner
+          side="bottom"
+          align="start"
+          sideOffset={1}
+          className="z-50"
+        >
+          <Menu.Popup
+            className={cn(MENU_POPUP, "min-w-37.5 p-0")}
+            finalFocus={drawingFocus(engine)}
+          >
+            <div className="flex max-h-150 flex-col gap-0.5 overflow-y-auto p-0.5">
+              {steps.map((step, i) => (
+                <Menu.Item
+                  // Steps repeat their names: a row is its place in the list.
+                  key={i}
+                  onClick={() => run(i + 1)}
+                  onMouseEnter={() => setTaken(i)}
+                  onFocus={() => setTaken(i)}
+                  className={cn(MENU_STEP, i <= taken && "bg-accent")}
+                >
+                  <span className="whitespace-nowrap">{step}</span>
+                </Menu.Item>
+              ))}
+            </div>
+            <div className="flex h-7 items-center border-t px-2 text-muted-foreground">
+              {t(kind === "undo" ? "undoCount" : "redoCount", {
+                count: taken + 1,
+              })}
+            </div>
+          </Menu.Popup>
+        </Menu.Positioner>
+      </Menu.Portal>
+    </Menu.Root>
+  )
 }
 
 /** A function key is literal in every language (.claude/rules/ui.md, Text). */

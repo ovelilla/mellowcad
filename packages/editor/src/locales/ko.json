@@ -43,7 +43,9 @@
     "saved": "저장됨",
     "savedHint": "이 기기에 저장됨",
     "undo": "명령 취소",
-    "redo": "명령 복구"
+    "redo": "명령 복구",
+    "undoCount": "{count, plural, =1 {#개의 명령을 명령 취소} other {#개의 명령을 명령 취소}}",
+    "redoCount": "{count, plural, =1 {#개의 명령을 명령 복구} other {#개의 명령을 명령 복구}}"
   },
   "NavigationBar": {
     "label": "탐색 막대",

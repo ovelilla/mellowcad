@@ -48,7 +48,39 @@ export const fr: EditorLocale = {
       "saved": "Enregistré",
       "savedHint": "Enregistré sur cet appareil",
       "undo": "Annuler",
-      "redo": "Rétablir"
+      "redo": "Rétablir",
+      "undoCount": [
+        [
+          "count",
+          2,
+          {
+            "=1": [
+              "Annuler la commande ",
+              0
+            ],
+            "other": [
+              "Annuler les commandes ",
+              0
+            ]
+          }
+        ]
+      ],
+      "redoCount": [
+        [
+          "count",
+          2,
+          {
+            "=1": [
+              "Rétablir la commande ",
+              0
+            ],
+            "other": [
+              "Rétablir les commandes ",
+              0
+            ]
+          }
+        ]
+      ]
     },
     "NavigationBar": {
       "label": "Barre de navigation",

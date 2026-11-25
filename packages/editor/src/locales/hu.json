@@ -43,7 +43,9 @@
     "saved": "Mentve",
     "savedHint": "Mentve ezen az eszközön",
     "undo": "Vissza",
-    "redo": "Előre"
+    "redo": "Előre",
+    "undoCount": "{count, plural, =1 {# parancs visszavonása} other {# parancs visszavonása}}",
+    "redoCount": "{count, plural, =1 {# parancs ismétlése} other {# parancs ismétlése}}"
   },
   "NavigationBar": {
     "label": "Navigációs sáv",

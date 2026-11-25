@@ -4,7 +4,7 @@ metaTitle: "CAD 撤销（放弃）命令 UNDO：标记、后退与 Ctrl+Z"
 description: "AutoCAD UNDO（放弃）怎么用：按步数放弃，标记和后退，开始和结束，控制，以及它和 U、Ctrl+Z 的区别。在线免费试用。"
 before: "一块带两个孔、上面横画一条直线的板，由四个命令画成：RECTANG、两次 CIRCLE 和 LINE。"
 figure: "UNDO 2：放弃最后两个命令，即直线和第二个孔，板上保留第一个孔。"
-sourceHash: "5d2bca4366d1"
+sourceHash: "4be486fddde0"
 ---
 
 UNDO（放弃）命令放弃已执行的命令。一步是一个完整的命令：一次 LINE 画出的所有线段一起放弃，无论有多少段；命令所做的设置（例如 LTSCALE）也是如此。UNDO 先显示其当前设置，然后询问要放弃的操作数目或选项；按 Enter 键放弃一步。它在一行中显示所放弃的命令的名称，例如 `CIRCLE LINE`；全部放弃后显示 <Message id="everythingUndone" />，此后显示 <Message id="nothingToUndo" />。没有更改任何内容的命令（例如 ID 或 LIST）也是一步，ZOOM 和 PAN 对视图的更改也是。
@@ -39,7 +39,7 @@ UNDO（放弃）命令放弃已执行的命令。一步是一个完整的命令�
 
 ## Missing
 
-“自动”不会合并任何命令，因为这里没有执行多个命令的菜单。“合并”和“图层”只在浏览器会话中保留，而 AutoCAD 会在各次会话之间保留它们。快速访问工具栏的“放弃”和“重做”按钮不在历史记录中写入任何内容；AutoCAD 的这两个按钮则会写入自己的内容。Ctrl+Shift+Z 也会不加提示地重做，尽管 AutoCAD 没有为它指定任何功能。
+“自动”不会合并任何命令，因为这里没有执行多个命令的菜单。“合并”和“图层”只在浏览器会话中保留，而 AutoCAD 会在各次会话之间保留它们。Ctrl+Shift+Z 也会不加提示地重做，尽管 AutoCAD 没有为它指定任何功能。
 
 ## Questions
 

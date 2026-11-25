@@ -34,9 +34,10 @@ const ISLAND_MAX_BYTES = 1 * KB
  * in the chunk Save Drawing As loads (2026-11-23), to 503 KB for an R12
  * hatch's xdata, written in that chunk and read in the one a DXF opens with
  * (2026-11-23), to 504 KB for the ribbon's state, RIBBON and RIBBONCLOSE in
- * every language (2026-11-24).
+ * every language (2026-11-24), to 505 KB for the title bar's new drawing's name, Help and the
+ * Quick Access Toolbar's lists of steps in every language (2026-11-25).
  */
-const ENGINE_MAX_GZIP_BYTES = 504 * KB
+const ENGINE_MAX_GZIP_BYTES = 505 * KB
 
 /**
  * A language's catalog, gzipped, against English's, which the engine carries:

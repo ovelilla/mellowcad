@@ -48,7 +48,39 @@ export const hu: EditorLocale = {
       "saved": "Mentve",
       "savedHint": "Mentve ezen az eszközön",
       "undo": "Vissza",
-      "redo": "Előre"
+      "redo": "Előre",
+      "undoCount": [
+        [
+          "count",
+          2,
+          {
+            "=1": [
+              0,
+              " parancs visszavonása"
+            ],
+            "other": [
+              0,
+              " parancs visszavonása"
+            ]
+          }
+        ]
+      ],
+      "redoCount": [
+        [
+          "count",
+          2,
+          {
+            "=1": [
+              0,
+              " parancs ismétlése"
+            ],
+            "other": [
+              0,
+              " parancs ismétlése"
+            ]
+          }
+        ]
+      ]
     },
     "NavigationBar": {
       "label": "Navigációs sáv",

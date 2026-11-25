@@ -48,7 +48,39 @@ export const de: EditorLocale = {
       "saved": "Gespeichert",
       "savedHint": "Auf diesem Gerät gespeichert",
       "undo": "Rückgängig",
-      "redo": "Wiederherstellen"
+      "redo": "Wiederherstellen",
+      "undoCount": [
+        [
+          "count",
+          2,
+          {
+            "=1": [
+              0,
+              " Befehl rückgängig machen"
+            ],
+            "other": [
+              0,
+              " Befehle rückgängig machen"
+            ]
+          }
+        ]
+      ],
+      "redoCount": [
+        [
+          "count",
+          2,
+          {
+            "=1": [
+              0,
+              " Befehl wiederherstellen"
+            ],
+            "other": [
+              0,
+              " Befehle wiederherstellen"
+            ]
+          }
+        ]
+      ]
     },
     "NavigationBar": {
       "label": "Navigationsleiste",

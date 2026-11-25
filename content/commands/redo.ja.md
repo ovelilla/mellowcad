@@ -3,7 +3,7 @@ title: "AutoCAD の REDO[やり直し]コマンド"
 metaTitle: "AutoCAD やり直し：REDO と Ctrl+Y、MREDO"
 description: "AutoCAD の REDO[やり直し]の使い方を解説します。直前の U や UNDO で元に戻した操作をその直後に復元します。MREDO と[Ctrl]+[Y]は 1 ステップずつやり直します。"
 figure: "プレートに作図した穴を U で元に戻し、REDO で復元します。"
-sourceHash: "d88f63f885fd"
+sourceHash: "6017450979c2"
 ---
 
 REDO[やり直し]コマンドは、直前の <Command id="U" /> または <Command id="UNDO" /> を取り消します。元に戻したものがすべて再び作図されるため、5 つのコマンドを UNDO で戻した後に REDO を実行すると、5 つとも復元されます。その際にコマンド名を表示し、やり直すものがなくなると <Message id="everythingRedone" /> と表示します。何も尋ねず、オプションもありません。
@@ -14,7 +14,7 @@ REDO[やり直し]コマンドは、直前の <Command id="U" /> または <Comm
 
 ## Missing
 
-[Ctrl]+[Shift]+[Z]でも何も表示せずにやり直しますが、AutoCAD ではこのキーに何も割り当てられていません。クイック アクセス ツールバーの[元に戻す]と[やり直し]のボタンは履歴に何も書き込みませんが、AutoCAD のこれらのボタンは独自の内容を書き込みます。
+[Ctrl]+[Shift]+[Z]でも何も表示せずにやり直しますが、AutoCAD ではこのキーに何も割り当てられていません。
 
 ## Questions
 

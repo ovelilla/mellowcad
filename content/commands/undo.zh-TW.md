@@ -4,7 +4,7 @@ metaTitle: "CAD 復原上一步：UNDO（退回）、U 與 Ctrl+Z"
 description: "AutoCAD UNDO（退回）的用法：退回指定數目的步驟、標記與退回、開始與結束、控制，以及它與 U、Ctrl+Z 的不同。可以在瀏覽器中免費試用。"
 before: "一塊有兩個孔、一條線橫越的板，由四個指令繪製：RECTANG、兩次 CIRCLE 與 LINE。"
 figure: "UNDO 2：退回最後兩個指令，即那條線與第二個孔，板上保留第一個孔。"
-sourceHash: "5d2bca4366d1"
+sourceHash: "4be486fddde0"
 ---
 
 UNDO 退回指令。一個步驟就是一整個指令：一次 LINE 所繪製的一切會一起退回，無論它有幾段；指令所做的設定（例如 LTSCALE）也是如此。UNDO 先寫出其目前的設定，再要求要退回的作業數目或選項；按 Enter 退回一個。它會在一行中寫出所退回的指令名稱，例如 `CIRCLE LINE`，全部退回時顯示 <Message id="everythingUndone" />；之後則顯示 <Message id="nothingToUndo" />。沒有變更任何東西的指令（例如 ID 或 LIST）也算一個步驟，ZOOM 與 PAN 對視圖所做的變更也是。
@@ -39,7 +39,7 @@ UNDO 退回指令。一個步驟就是一整個指令：一次 LINE 所繪製的
 
 ## Missing
 
-「自動」不會合併任何東西，因為此處沒有任何功能表會執行一個以上的指令。「組合」與「圖層」只在瀏覽器的階段作業中保留，AutoCAD 則會保留到下一個階段作業。快速存取工具列的「退回」與「重做」按鈕不會在歷程中寫入任何內容，AutoCAD 的這兩個按鈕則會寫入自己的內容。Ctrl+Shift+Z 也會不作聲地重做，雖然 AutoCAD 沒有為它指定任何功能。
+「自動」不會合併任何東西，因為此處沒有任何功能表會執行一個以上的指令。「組合」與「圖層」只在瀏覽器的階段作業中保留，AutoCAD 則會保留到下一個階段作業。Ctrl+Shift+Z 也會不作聲地重做，雖然 AutoCAD 沒有為它指定任何功能。
 
 ## Questions
 

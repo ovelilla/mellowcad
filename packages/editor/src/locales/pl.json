@@ -43,7 +43,9 @@
     "saved": "Zapisano",
     "savedHint": "Zapisano na tym urządzeniu",
     "undo": "Cofnij",
-    "redo": "Odtwórz"
+    "redo": "Odtwórz",
+    "undoCount": "{count, plural, =1 {Cofaj # poleceń} other {Cofaj # poleceń}}",
+    "redoCount": "{count, plural, =1 {Przywróć # poleceń} other {Odtwórz # poleceń}}"
   },
   "NavigationBar": {
     "label": "Pasek nawigacji",

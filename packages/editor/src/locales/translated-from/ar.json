@@ -39,6 +39,8 @@
   "TitleBar.savedHint": "Saved on this device",
   "TitleBar.undo": "Undo",
   "TitleBar.redo": "Redo",
+  "TitleBar.undoCount": "{count, plural, =1 {Undo # command} other {Undo # commands}}",
+  "TitleBar.redoCount": "{count, plural, =1 {Redo # command} other {Redo # commands}}",
   "NavigationBar.label": "Navigation bar",
   "NavigationBar.zoom": "Zoom",
   "NavigationBar.extents": "Zoom Extents",

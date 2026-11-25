@@ -43,7 +43,9 @@
     "saved": "Gespeichert",
     "savedHint": "Auf diesem Gerät gespeichert",
     "undo": "Rückgängig",
-    "redo": "Wiederherstellen"
+    "redo": "Wiederherstellen",
+    "undoCount": "{count, plural, =1 {# Befehl rückgängig machen} other {# Befehle rückgängig machen}}",
+    "redoCount": "{count, plural, =1 {# Befehl wiederherstellen} other {# Befehle wiederherstellen}}"
   },
   "NavigationBar": {
     "label": "Navigationsleiste",

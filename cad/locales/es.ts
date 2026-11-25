@@ -4941,6 +4941,8 @@ export const es: EngineLocale = {
       "markEncountered": "Marca encontrada",
       "startOfGroup": "Se ha encontrado el comienzo del Grupo.\nPara retroceder aún más, utilice DESHACER FIN.",
       "undoGroup": "GRUPO",
+      "undoListGroup": "Grupo de comandos",
+      "undoListMark": "- Marca -",
       "dropGeometryStep": "SOLTARGEOM GRUPO",
       "menuStep": [
         [

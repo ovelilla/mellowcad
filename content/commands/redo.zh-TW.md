@@ -3,7 +3,7 @@ title: "AutoCAD REDO（重做）指令"
 metaTitle: "CAD 重做指令（REDO）：Ctrl+Y 與 MREDO"
 description: "AutoCAD REDO（重做）如何在 U 或 UNDO 之後，立即恢復上一次退回的內容；MREDO 和 Ctrl+Y 則逐步重做。可在瀏覽器中免費試用。"
 figure: "在板件上繪製一個孔，以 U 退回，再以 REDO 恢復。"
-sourceHash: "d88f63f885fd"
+sourceHash: "6017450979c2"
 ---
 
 REDO（重做）指令取消上一次的 <Command id="U" /> 或 <Command id="UNDO" />：被退回的內容會全部重新繪製，因此在 UNDO 退回五個指令之後，REDO 會恢復這五個指令。執行時會顯示各指令的名稱，沒有可重做的內容時則顯示 <Message id="everythingRedone" />。它不詢問任何提示，也沒有選項。
@@ -14,7 +14,7 @@ REDO（重做）指令取消上一次的 <Command id="U" /> 或 <Command id="UND
 
 ## Missing
 
-Ctrl+Shift+Z 也會靜默地重做，雖然 AutoCAD 並未為它指定任何功能。快速存取工具列的「退回」和「重做」按鈕不會在指令歷程中寫入任何內容，AutoCAD 的這兩個按鈕則會寫入。
+Ctrl+Shift+Z 也會靜默地重做，雖然 AutoCAD 並未為它指定任何功能。
 
 ## Questions
 

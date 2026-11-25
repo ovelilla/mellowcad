@@ -48,7 +48,43 @@ export const ptBR: EditorLocale = {
       "saved": "Salvo",
       "savedHint": "Salvo neste dispositivo",
       "undo": "Desfazer",
-      "redo": "Refazer"
+      "redo": "Refazer",
+      "undoCount": [
+        [
+          "count",
+          2,
+          {
+            "=1": [
+              "Desfazer ",
+              0,
+              " comando"
+            ],
+            "other": [
+              "Desfazer ",
+              0,
+              " comandos"
+            ]
+          }
+        ]
+      ],
+      "redoCount": [
+        [
+          "count",
+          2,
+          {
+            "=1": [
+              "Refazer ",
+              0,
+              " comando"
+            ],
+            "other": [
+              "Refazer ",
+              0,
+              " comandos"
+            ]
+          }
+        ]
+      ]
     },
     "NavigationBar": {
       "label": "Barra de navegação",

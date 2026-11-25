@@ -5070,6 +5070,8 @@ export const cs: EngineLocale = {
       "markEncountered": "Nalezeno ozNač",
       "startOfGroup": "Nalezen začátek Skupiny.\nPro další návrat je nutné zadat ZPĚT KONEC.",
       "undoGroup": "SKUPINA",
+      "undoListGroup": "Skupina příkazů",
+      "undoListMark": "- Označit -",
       "dropGeometryStep": "DROPGEOM SKUPINA",
       "menuStep": [
         [

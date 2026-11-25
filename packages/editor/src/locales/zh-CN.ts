@@ -48,7 +48,43 @@ export const zhCN: EditorLocale = {
       "saved": "已保存",
       "savedHint": "已保存到此设备",
       "undo": "放弃",
-      "redo": "重做"
+      "redo": "重做",
+      "undoCount": [
+        [
+          "count",
+          2,
+          {
+            "=1": [
+              "放弃 ",
+              0,
+              " 个命令"
+            ],
+            "other": [
+              "放弃 ",
+              0,
+              " 个命令"
+            ]
+          }
+        ]
+      ],
+      "redoCount": [
+        [
+          "count",
+          2,
+          {
+            "=1": [
+              "重做 ",
+              0,
+              " 个命令"
+            ],
+            "other": [
+              "重做 ",
+              0,
+              " 命令"
+            ]
+          }
+        ]
+      ]
     },
     "NavigationBar": {
       "label": "导航栏",

@@ -4956,6 +4956,8 @@ export const it: EngineLocale = {
       "markEncountered": "È stato incontrato un segno",
       "startOfGroup": "È stato incontrato un inizio di gruppo.\nÈ necessario digitare ANNULLA FINE per tornare ulteriormente indietro.",
       "undoGroup": "GRUPPO",
+      "undoListGroup": "Gruppo di comandi",
+      "undoListMark": "- Segno -",
       "dropGeometryStep": "DROPGEOM GRUPPO",
       "menuStep": [
         [

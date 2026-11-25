@@ -48,7 +48,43 @@ export const es: EditorLocale = {
       "saved": "Guardado",
       "savedHint": "Guardado en este dispositivo",
       "undo": "Deshacer",
-      "redo": "Rehacer"
+      "redo": "Rehacer",
+      "undoCount": [
+        [
+          "count",
+          2,
+          {
+            "=1": [
+              "Deshacer ",
+              0,
+              " comando"
+            ],
+            "other": [
+              "Deshacer ",
+              0,
+              " comandos"
+            ]
+          }
+        ]
+      ],
+      "redoCount": [
+        [
+          "count",
+          2,
+          {
+            "=1": [
+              "Repetir ",
+              0,
+              " comando"
+            ],
+            "other": [
+              "Repetir ",
+              0,
+              " comandos"
+            ]
+          }
+        ]
+      ]
     },
     "NavigationBar": {
       "label": "Barra de navegación",

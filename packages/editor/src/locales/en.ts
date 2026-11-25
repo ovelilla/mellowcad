@@ -48,7 +48,43 @@ export const en: EditorCatalog = {
       "saved": "Saved",
       "savedHint": "Saved on this device",
       "undo": "Undo",
-      "redo": "Redo"
+      "redo": "Redo",
+      "undoCount": [
+        [
+          "count",
+          2,
+          {
+            "=1": [
+              "Undo ",
+              0,
+              " command"
+            ],
+            "other": [
+              "Undo ",
+              0,
+              " commands"
+            ]
+          }
+        ]
+      ],
+      "redoCount": [
+        [
+          "count",
+          2,
+          {
+            "=1": [
+              "Redo ",
+              0,
+              " command"
+            ],
+            "other": [
+              "Redo ",
+              0,
+              " commands"
+            ]
+          }
+        ]
+      ]
     },
     "NavigationBar": {
       "label": "Navigation bar",

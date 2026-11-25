@@ -557,6 +557,13 @@ export class CadRuntime extends Observable {
    * after NEW).
    */
   private newDrawings = 1
+  /** Undo ▾'s and Redo ▾'s rows, as of a revision of the history and a language. */
+  private stepLists: {
+    readonly revision: number
+    readonly text: EngineText
+    readonly undo: readonly string[]
+    readonly redo: readonly string[]
+  } | null = null
   /**
    * The answers a ribbon macro has still to type ({@link RibbonMacro}), and
    * the question a pause waits at until the user's answer moves it on.
@@ -3708,6 +3715,64 @@ export class CadRuntime extends Observable {
       return names.length > 0 ? names.join(" ") : step.name
     }
     return [this.text.message("undoGroup"), ...names].join(" ")
+  }
+
+  /**
+   * A step as the Quick Access Toolbar's Undo and Redo lists name it
+   * (desktop, 2026-11-25): the command that made it as U names it, without
+   * the dash or apostrophe before it, its first letter capital and the rest
+   * small (`Line` for `L` and `_LINE`, `Layer` for `-LAYER`, `Ltscale`; es
+   * `Linea`, `Capa`), joined ZOOMs by the first (`Zoom`); a group UNDO BEgin
+   * and End made `Group of commands` (acadres 4860), a mark `- Mark -`
+   * (4861). One U names nothing (CECOLOR from a drop-down) is an empty row:
+   * unverified.
+   */
+  private listedStep(step: Step): string {
+    if (step.kind === "mark") return this.text.message("undoListMark")
+    if (step.kind === "group") return this.text.message("undoListGroup")
+    const name = (step.names[0] ?? step.name ?? "").replace(/^[-'._]+/, "")
+    return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase()
+  }
+
+  /**
+   * Undo ▾'s and Redo ▾'s rows, named again only when the history or the
+   * language has changed: the state is built on every pointer move.
+   */
+  private quickAccessSteps(): {
+    readonly undo: readonly string[]
+    readonly redo: readonly string[]
+  } {
+    const { revision } = this.history
+    const kept = this.stepLists
+    if (kept?.revision === revision && kept.text === this.text) return kept
+    this.stepLists = {
+      revision,
+      text: this.text,
+      undo: this.history.undoable().map((step) => this.listedStep(step)),
+      redo: this.history.redoable().map((step) => this.listedStep(step)),
+    }
+    return this.stepLists
+  }
+
+  /**
+   * The Quick Access Toolbar's Undo, and the row of its list `count` down:
+   * `_.undo` answered `count`, the running command cancelled first (desktop,
+   * 2026-11-25: `*Cancel*`, `_.undo`, `…<1>: 1 LINE`; the third row `3`).
+   */
+  undoSteps(count: number): void {
+    this.runStepsMacro("_UNDO", "_.undo", count)
+  }
+
+  /** Its Redo, and the row of its list `count` down: `_.mredo` answered `count`. */
+  redoSteps(count: number): void {
+    this.runStepsMacro("_MREDO", "_.mredo", count)
+  }
+
+  private runStepsMacro(command: string, echo: string, count: number): void {
+    if (this.activeTool.id !== "select") this.cancelCommand()
+    if (!this.runCommandAs(command, { echo })) return
+    this.setCommandLineText(String(count))
+    this.submitCommandLine()
   }
 
   /** UNDO's own operations, for its tool. */
@@ -8482,6 +8547,8 @@ export class CadRuntime extends Observable {
       currentLineweight: settings.currentLineweight,
       canUndo: this.history.canUndo(),
       canRedo: this.history.canRedo(),
+      undoSteps: this.quickAccessSteps().undo,
+      redoSteps: this.quickAccessSteps().redo,
       saveState: this.autosave.getState(),
       lastSavedAt: this.autosave.getLastSavedAt(),
       drawingName:

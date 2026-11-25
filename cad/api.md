@@ -57,6 +57,17 @@ export declare class CadEngine {
      */
     redo(): void;
     /**
+     * The Quick Access Toolbar's Undo, or the row `count` down its list
+     * (`EngineState.undoSteps`): UNDO answered `count`, echoed `_.undo` as
+     * AutoCAD's button writes it, the running command cancelled first.
+     */
+    undoSteps(count: number): void;
+    /**
+     * Its Redo, or the row `count` down its list (`EngineState.redoSteps`):
+     * MREDO answered `count`, echoed `_.mredo`.
+     */
+    redoSteps(count: number): void;
+    /**
      * Asks the host for Help, as F1 does: the running command's page, or
      * Help's start with none (`CadEngineOptions.onHelp`; without it, nothing).
      */
@@ -1077,6 +1088,14 @@ export interface EngineState {
     readonly currentLineweight: Lineweight | "ByLayer";
     readonly canUndo: boolean;
     readonly canRedo: boolean;
+    /**
+     * The steps an undo takes back, the next first, as the Quick Access
+     * Toolbar's Undo ▾ lists them: `Line`, `Group of commands`, `- Mark -`
+     * (es `Linea`); the n-th is what `undoSteps(n)` takes back to.
+     */
+    readonly undoSteps: readonly string[];
+    /** The steps a redo does again, the next first, as Redo ▾ lists them. */
+    readonly redoSteps: readonly string[];
     /** Transparent auto-save lifecycle, drives the save button's spinner. */
     readonly saveState: SaveState;
     /** Epoch millis of the last successful auto-save, or null if never saved. */

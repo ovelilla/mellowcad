@@ -252,6 +252,8 @@ export class CommandHistory extends Observable {
     if (this.groupStart !== null) return
     this.groupStart = this.undoStack.length
     this.groupSteps = stepsEmpty
+    // The steps an undo meets now count the running command (`undoable`).
+    this.changes += 1
   }
 
   /**
@@ -568,6 +570,40 @@ export class CommandHistory extends Observable {
 
   canRedo(): boolean {
     return this.redoStack.length > 0
+  }
+
+  /**
+   * The steps an undo would take back, the next first, as far as the start
+   * of a group UNDO BEgin opened, which no undo passes.
+   */
+  undoable(): Step[] {
+    const steps: Step[] = []
+    let below = this.undoStack.length
+    // A running command's entries are one step once it ends, as the Quick
+    // Access Toolbar's macros end it before they undo: one row, or the
+    // empty step a command that made none leaves.
+    const start = this.groupStart
+    if (start !== null) {
+      const running = this.undoStack.slice(start)
+      if (running.every((entry) => entry.kind === "command")) {
+        below = start
+        const name = running[0]?.name ?? this.commandName
+        if (running.length > 0 || (this.groupSteps && name !== null)) {
+          steps.push({ kind: "command", name, names: [], regenerates: false })
+        }
+      }
+    }
+    for (let i = below - 1; i >= 0; i--) {
+      const entry = this.undoStack[i]
+      if (entry === this.undoGroup) break
+      steps.push(this.step(entry))
+    }
+    return steps
+  }
+
+  /** The steps a redo would do again, the next first. */
+  redoable(): Step[] {
+    return this.redoStack.toReversed().map((entry) => this.step(entry))
   }
 
   /** Takes back the last step; null with none, or at an open group's start. */

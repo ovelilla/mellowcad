@@ -48,7 +48,43 @@ export const it: EditorLocale = {
       "saved": "Salvato",
       "savedHint": "Salvato su questo dispositivo",
       "undo": "Annulla",
-      "redo": "Ripeti"
+      "redo": "Ripeti",
+      "undoCount": [
+        [
+          "count",
+          2,
+          {
+            "=1": [
+              "Annulla ",
+              0,
+              " comando"
+            ],
+            "other": [
+              "Annulla ",
+              0,
+              " comandi"
+            ]
+          }
+        ]
+      ],
+      "redoCount": [
+        [
+          "count",
+          2,
+          {
+            "=1": [
+              "Ripeti ",
+              0,
+              " comando"
+            ],
+            "other": [
+              "Ripeti ",
+              0,
+              " comandi"
+            ]
+          }
+        ]
+      ]
     },
     "NavigationBar": {
       "label": "Barra di navigazione",

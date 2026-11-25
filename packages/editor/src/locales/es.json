@@ -43,7 +43,9 @@
     "saved": "Guardado",
     "savedHint": "Guardado en este dispositivo",
     "undo": "Deshacer",
-    "redo": "Rehacer"
+    "redo": "Rehacer",
+    "undoCount": "{count, plural, =1 {Deshacer # comando} other {Deshacer # comandos}}",
+    "redoCount": "{count, plural, =1 {Repetir # comando} other {Repetir # comandos}}"
   },
   "NavigationBar": {
     "label": "Barra de navegación",

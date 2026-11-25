@@ -214,6 +214,23 @@ export class CadEngine {
   }
 
   /**
+   * The Quick Access Toolbar's Undo, or the row `count` down its list
+   * (`EngineState.undoSteps`): UNDO answered `count`, echoed `_.undo` as
+   * AutoCAD's button writes it, the running command cancelled first.
+   */
+  undoSteps(count: number): void {
+    this.runtime.undoSteps(count)
+  }
+
+  /**
+   * Its Redo, or the row `count` down its list (`EngineState.redoSteps`):
+   * MREDO answered `count`, echoed `_.mredo`.
+   */
+  redoSteps(count: number): void {
+    this.runtime.redoSteps(count)
+  }
+
+  /**
    * Asks the host for Help, as F1 does: the running command's page, or
    * Help's start with none (`CadEngineOptions.onHelp`; without it, nothing).
    */

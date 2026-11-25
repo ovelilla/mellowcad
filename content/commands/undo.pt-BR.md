@@ -4,7 +4,7 @@ metaTitle: "UNDO (DESFAZER) no AutoCAD: Marca, D e Ctrl+Z"
 description: "Como funciona o UNDO do AutoCAD em português, DESFAZER: vários passos, Marca e Voltar, cOmeço e Fim, Controle, e como difere do D e do Ctrl+Z. Experimente."
 before: "Uma placa com dois furos e uma linha que a atravessa, desenhados por quatro comandos: RETANGULO, CIRCULO duas vezes e LINHA."
 figure: "DESFAZER 2: os dois últimos comandos são desfeitos, a linha e o segundo furo, e a placa fica com o primeiro furo."
-sourceHash: "5d2bca4366d1"
+sourceHash: "4be486fddde0"
 ---
 
 O UNDO, DESFAZER no AutoCAD em português, desfaz comandos. Um passo é um comando inteiro: tudo o que uma LINHA desenhou sai de uma vez, quantos segmentos tivesse, e também o que um comando definiu, como o ESCALATL. O DESFAZER escreve as suas configurações atuais e depois pede o número de operações a desfazer ou uma opção; Enter desfaz uma. Ele escreve numa linha os nomes dos comandos que desfez, `CIRCULO LINHA`, e <Message id="everythingUndone" /> quando eles acabam; depois disso, <Message id="nothingToUndo" />. Um comando que não mudou nada, como o ID ou o LISTA, também é um passo, e também o que o ZOOM e o PAN fizeram com a vista.
@@ -39,7 +39,7 @@ Desfaz todos os passos até a última marca, e a marca com eles. Sem marca, perg
 
 ## Missing
 
-Auto não junta nada, já que nenhum menu aqui executa mais de um comando. COmbinar e CAmada duram a sessão do navegador, onde o AutoCAD os mantém de uma sessão para a outra. Os botões Desfazer e Refazer da barra de ferramentas de acesso rápido não escrevem nada no histórico, onde os do AutoCAD escrevem as suas linhas. Ctrl+Shift+Z também refaz, em silêncio, embora o AutoCAD não associe nada a ele.
+Auto não junta nada, já que nenhum menu aqui executa mais de um comando. COmbinar e CAmada duram a sessão do navegador, onde o AutoCAD os mantém de uma sessão para a outra. Ctrl+Shift+Z também refaz, em silêncio, embora o AutoCAD não associe nada a ele.
 
 ## Questions
 

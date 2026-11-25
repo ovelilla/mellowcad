@@ -3,7 +3,7 @@ title: "AutoCAD ELŐRE (REDO) parancs: a visszavonás visszavonása"
 metaTitle: "AutoCAD ELŐRE (REDO) parancs: Ctrl+Y, TELŐRE"
 description: "Az AutoCAD ELŐRE (REDO) parancsa visszaállítja, amit az utolsó T vagy VISSZA visszavont, közvetlenül utána; a TELŐRE és a Ctrl+Y lépésenként. Ingyen, online."
 figure: "Egy alaplapba rajzolt furat, a T paranccsal visszavonva és az ELŐRE paranccsal visszaállítva."
-sourceHash: "d88f63f885fd"
+sourceHash: "6017450979c2"
 ---
 
 Az ELŐRE (REDO) parancs az utolsó <Command id="U" /> vagy <Command id="UNDO" /> hatását fordítja vissza: amit az visszavont, az újra megjelenik, mégpedig egészében, így egy öt parancsot visszavonó VISSZA után az ELŐRE mind az ötöt visszaállítja. Közben kiírja a parancsok nevét, majd <Message id="everythingRedone" /> üzenetet, ha már nincs mit visszaállítani. Semmit sem kérdez, és nincsenek opciói.
@@ -14,7 +14,7 @@ A <Command id="MREDO" /> lépésenként állít vissza: bekéri a műveletek sz�
 
 ## Missing
 
-A Ctrl+Shift+Z is visszaállít, szó nélkül, bár az AutoCAD semmit sem rendel hozzá. A Gyorselérési eszköztár Vissza és Előre gombja semmit sem ír az előzményekbe, míg az AutoCAD gombjai a sajátjukat kiírják.
+A Ctrl+Shift+Z is visszaállít, szó nélkül, bár az AutoCAD semmit sem rendel hozzá.
 
 ## Questions
 
