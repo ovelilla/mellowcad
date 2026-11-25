@@ -2,10 +2,10 @@
 title: "Comando UNITA (UNITS) in AutoCAD"
 description: "Come funziona UNITA (UNITS, alias UT) di AutoCAD: la finestra Unità disegno, la precisione da 0 a 8 decimali, la scala di inserimento in mm, cm o m."
 figure: "UNITA aperto su una piastra di 100 per 60, poi ID sul suo angolo opposto: le coordinate alla precisione del disegno, due decimali."
-sourceHash: "1fd1973c3ebf"
+sourceHash: "4dd8ca2f4f5c"
 ---
 
-UNITA (UNITS) apre la finestra Unità disegno, che imposta come il disegno scrive le lunghezze e cosa rappresenta un'unità di disegno. Come in AutoCAD la finestra è modale: il comando dura finché OK o Annulla non la chiude, la modifica di OK è un solo passaggio che <Command id="U" /> annulla, e Annulla o Esc non cambiano nulla. Digitato con un apostrofo, `'UNITS`, si apre all'interno di un comando in esecuzione, che prosegue una volta chiusa la finestra. Lo aprono anche le unità della barra di stato e Unità disegno del menu dell'applicazione.
+UNITA (UNITS) apre la finestra Unità disegno, che imposta come il disegno scrive le lunghezze e cosa rappresenta un'unità di disegno. Come in AutoCAD la finestra è modale: il comando dura finché OK o Annulla non la chiude, la modifica di OK è un solo passaggio che <Command id="U" /> annulla, e Annulla o Esc non cambiano nulla. Digitato con un apostrofo, `'UNITS`, si apre all'interno di un comando in esecuzione, che prosegue una volta chiusa la finestra. Lo aprono anche le unità della barra di stato e la voce Utilità disegno ▸ Unità del menu dell'applicazione.
 
 Il Tipo di lunghezza è Decimale, e la sua Precisione, da 0 a 8 cifre decimali, è quella con cui si scrive ogni lunghezza: coordinate, distanze, aree, i valori predefiniti proposti nelle richieste. Un nuovo disegno parte qui con due decimali, dove il modello metrico di AutoCAD parte con quattro. La Scala di inserimento indica cos'è un'unità di disegno, millimetri, centimetri o metri; la barra di stato e l'input dinamico la mostrano. Esempio di output mostra un punto alla precisione scelta.
 

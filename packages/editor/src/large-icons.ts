@@ -614,3 +614,49 @@ export const LARGE_BUTTON_ICONS: Readonly<Record<string, LargeIcon>> = {
     tint: [CUBE_FRONT, CUBE_TOP, CUBE_SIDE],
   }),
 }
+
+/** A sheet with its corner folded: a file. */
+const FILE = ["M8 3 H20 L26 9 V29 H8 Z", "M20 3 V9 H26"]
+
+/**
+ * The application menu's 32 px glyphs (docs/plans/autocad-ui.md, §2.2): each
+ * entry's, and each item's of an entry's page.
+ */
+export const LARGE_MENU_ICONS: Readonly<Record<string, LargeIcon>> = {
+  fileNew: largeIcon("FileNew", { d: [...FILE, "M13 19 H21", "M17 15 V23"] }),
+  file: largeIcon("File", { d: FILE }),
+  fileOther: largeIcon("FileOther", {
+    d: [...FILE, "M12 20 H22", "M18 16 L22 20 L18 24"],
+  }),
+  folderOpen: largeIcon("FolderOpen", {
+    d: ["M3 27 V5 H12 L15 8 H25 V13", "M3 27 L8 14 H30 L25 27 Z"],
+  }),
+  save: largeIcon("Save", {
+    d: ["M5 5 H22 L27 10 V27 H5 Z", "M10 5 V11 H20 V5", "M9 27 V18 H23 V27"],
+  }),
+  // Save's disk, smaller, under a pen.
+  saveAs: largeIcon("SaveAs", {
+    d: [
+      "M3 3 H18 L23 8 V23 H3 Z",
+      "M7 3 V8 H16 V3",
+      "M7 23 V16 H19 V23",
+      "M17 29 L28 18 L30 20 L19 31 H17 Z",
+    ],
+  }),
+  // A wrench: the drawing's upkeep.
+  utilities: largeIcon("Utilities", {
+    d: [
+      "M21 4 A7 7 0 0 0 14.5 13.5 L4.5 23.5 A2.5 2.5 0 0 0 8.5 27.5 L18.5 17.5 A7 7 0 0 0 28 11 L23 16 L18 14 L16 9 Z",
+    ],
+  }),
+  // A rule with its marks: how the drawing measures.
+  units: largeIcon("Units", {
+    d: [
+      "M3 11 H29 V21 H3 Z",
+      "M8 11 V15",
+      "M13 11 V17",
+      "M18 11 V15",
+      "M23 11 V17",
+    ],
+  }),
+}

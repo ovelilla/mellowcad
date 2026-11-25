@@ -3,10 +3,10 @@ title: "Unidades no AutoCAD: comando UNIDADES (UNITS)"
 metaTitle: "Unidades no AutoCAD: comando UNIDADES (UNITS)"
 description: "Como funciona o UNITS do AutoCAD em português, UNIDADES: a caixa Unidades do desenho, a precisão de 0 a 8 casas e a escala em milímetros, centímetros ou metros."
 figure: "UNIDADES aberto sobre uma placa de 100 por 60 e depois ID no seu canto oposto: as coordenadas na precisão do desenho, duas casas."
-sourceHash: "1fd1973c3ebf"
+sourceHash: "4dd8ca2f4f5c"
 ---
 
-O UNITS, UNIDADES no AutoCAD em português, abre a caixa Unidades do desenho, que define como o desenho escreve os comprimentos e o que uma unidade de desenho representa. Como no AutoCAD, a caixa é modal: o comando dura até que OK ou Cancelar a feche, a mudança do OK é um passo que o <Command id="U" /> desfaz, e Cancelar ou Esc não mudam nada. Digitado com um apóstrofo na frente, `'UNIDADES`, ele abre dentro de um comando em andamento, que continua quando a caixa fecha. As unidades da barra de status e Unidades do desenho do menu do aplicativo também a abrem.
+O UNITS, UNIDADES no AutoCAD em português, abre a caixa Unidades do desenho, que define como o desenho escreve os comprimentos e o que uma unidade de desenho representa. Como no AutoCAD, a caixa é modal: o comando dura até que OK ou Cancelar a feche, a mudança do OK é um passo que o <Command id="U" /> desfaz, e Cancelar ou Esc não mudam nada. Digitado com um apóstrofo na frente, `'UNIDADES`, ele abre dentro de um comando em andamento, que continua quando a caixa fecha. As unidades da barra de status e a entrada Utilitários de desenho ▸ Unidades do menu do aplicativo também a abrem.
 
 O Tipo do Comprimento é Decimal, e a sua Precisão, de 0 a 8 casas decimais, é a usada em cada comprimento escrito: coordenadas, distâncias, áreas e os valores padrão que os prompts oferecem. Um desenho novo começa aqui com duas casas, onde o modelo métrico do AutoCAD começa com quatro. A Escala de inserção diz o que é uma unidade de desenho, milímetros, centímetros ou metros; a barra de status e a entrada dinâmica a mostram. O Exemplo mostra um ponto na precisão escolhida.
 

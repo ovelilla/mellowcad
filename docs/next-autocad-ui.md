@@ -7,8 +7,9 @@
 > pestañas, minimizar y plegar), el 2 y el 3 revisados ese día (la revisión corta con Fable de
 > §5); el push que publique el ribbon espera la palabra del dueño. La fase 2 (la barra de título)
 > está en curso desde el 25/11: su pasada por el escritorio hecha (la lista Ayuda ▾ no se abrió
-> ni con el ratón) y sus cuatro bloques en el §6 del plan, hechos el 1 (Ayuda ▾) y el 4 (el
-> nombre del dibujo, antes que el 2 porque su lista Open Documents lo muestra).
+> ni con el ratón) y sus cuatro bloques en el §6 del plan, hechos el 1 (Ayuda ▾), el 4 (el
+> nombre del dibujo, antes que el 2 porque su lista Open Documents lo muestra) y el 2 (el menú de
+> la aplicación); queda el 3 (Undo ▾ y Redo ▾).
 > Acordado el 7/11/2026 por el dueño. Se borra cuando la última fase esté hecha; hasta entonces
 > cada fase cerrada se marca aquí.
 

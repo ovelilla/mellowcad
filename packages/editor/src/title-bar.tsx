@@ -1,38 +1,34 @@
 "use client"
 
-import type { ReactElement, ReactNode } from "react"
+import { useState, type ReactElement, type ReactNode } from "react"
 import { Menu } from "@base-ui/react/menu"
 import {
   CheckIcon,
   ChevronDown,
   ChevronRight,
   CircleQuestionMark,
+  File,
   FilePlus,
+  Files,
   FolderOpen,
   Globe,
   Loader2,
   Menu as MenuIcon,
   MessageSquare,
   Redo2,
-  Ruler,
   Save,
   SaveAll,
   Undo2,
-  type LucideIcon,
 } from "lucide-react"
 
 import { type CadEngine } from "@mellowcad/engine"
 import type { EditorState } from "@mellowcad/react"
 import { cn } from "./utils"
 import { Button } from "./ui/button"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "./ui/tooltip"
+import { TooltipProvider } from "./ui/tooltip"
 import { usePortalContainer } from "./ui/portal-container"
 import { drawingFocus } from "./drawing-focus"
+import { LARGE_MENU_ICONS } from "./large-icons"
 
 import { IconAction, Panel } from "./toolbar-primitives"
 import { useEditorText } from "./editor-text"
@@ -42,6 +38,18 @@ const MENU_POPUP =
   "min-w-48 origin-(--transform-origin) overflow-hidden rounded-md border bg-card/90 p-1 text-popover-foreground shadow-md backdrop-blur transition-[transform,opacity] outline-none data-ending-style:scale-95 data-ending-style:opacity-0 data-starting-style:scale-95 data-starting-style:opacity-0"
 const MENU_ITEM =
   "relative flex cursor-default items-center gap-2 rounded-sm py-1.5 ps-2 pe-8 text-ui outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground data-popup-open:bg-accent [&_svg]:size-4 [&_svg]:shrink-0"
+/** An entry of the application menu's left column: AutoCAD's row of 46, its 32 px glyph. */
+const MENU_ENTRY =
+  "flex min-h-11.5 cursor-default items-center gap-2 rounded-sm ps-1.5 pe-1 text-ui outline-hidden select-none data-highlighted:bg-accent"
+/** An item of an entry's page: its glyph, its name and AutoCAD's description. */
+const MENU_PAGE_ITEM =
+  "flex cursor-default items-start gap-2.5 rounded-sm px-2 py-2.5 text-ui outline-hidden select-none data-highlighted:bg-accent"
+/** A drawing of Open Documents: AutoCAD's row of 26. */
+const MENU_DOCUMENT =
+  "flex h-6.5 cursor-default items-center gap-1.5 rounded-sm px-2 text-ui outline-hidden select-none data-highlighted:bg-accent"
+/** The right column's foot, where AutoCAD has Options and Exit. */
+const MENU_FOOT =
+  "mt-auto flex h-7 cursor-default items-center gap-1.5 self-end rounded-sm border px-2 text-ui outline-hidden select-none data-highlighted:bg-accent data-popup-open:bg-accent"
 /**
  * The page in one language, for the application menu. A plain link: a switch
  * is a full page load, since the language changes `lang`, `dir` and the
@@ -96,7 +104,12 @@ export function TitleBar({
       {/* The Quick Access Toolbar's defaults in their order (New, Open, Save,
           Save As, …, Undo, Redo); Plot and the Web & Mobile pair do not exist
           here. */}
-      <ApplicationMenu engine={engine} mark={mark} links={languages} />
+      <ApplicationMenu
+        engine={engine}
+        state={state}
+        mark={mark}
+        links={languages}
+      />
       {/* WHY ms-1: AutoCAD's first Quick Access button starts 56 px from
           the edge, 8 after the application button. One button against the
           next, on a 24 px pitch. */}
@@ -178,87 +191,209 @@ export function TitleBar({
   )
 }
 
+/** An entry's page: its items, each a command of AutoCAD's with its description. */
+type Page = "new" | "open" | "saveAs" | "utilities"
+
 /**
- * The application menu (AutoCAD's "A" button): the file commands, Drawing
- * Utilities' Units and the page's language, which AutoCAD has no menu for.
+ * The application menu (docs/plans/autocad-ui.md, §2.2, F6): AutoCAD's two
+ * columns with what exists here. On the left the entries in AutoCAD's order —
+ * New, Open, Save, Save As | Drawing Utilities —, each a row of 46 with its 32
+ * px glyph, running its command (acad.cuix's application menu, AcWindows:
+ * `_NEW`, `_OPEN`, `_QSave`, `_SAVEAS`); an entry with a page shows it on the
+ * right while the pointer or the focus is on it, as AutoCAD's does. The
+ * right column shows Open Documents otherwise, where AutoCAD starts on
+ * Recent Documents, which a page cannot keep (it cannot reopen a file), and
+ * at its foot, in Options' place, the page's language, which AutoCAD has no
+ * menu for: it is installed in one. Import, Export, Publish, Print, Close,
+ * the search, Options and Exit do not exist here (`docs/coverage/workspace.md`).
  */
 function ApplicationMenu({
   engine,
+  state,
   mark,
   links,
 }: {
   engine: CadEngine
+  state: EditorState
   mark: ReactNode
   links: readonly LanguageLink[]
 }) {
   const portal = usePortalContainer()
   const t = useEditorText("TitleBar")
-  const item = (icon: LucideIcon, label: string, onClick: () => void) => {
-    const Icon = icon
-    return (
-      <Menu.Item onClick={onClick} className={MENU_ITEM}>
-        <Icon />
-        {label}
-      </Menu.Item>
-    )
-  }
+  const [page, setPage] = useState<Page | null>(null)
+  const file = (button: "new" | "open" | "save" | "saveAs") => () =>
+    engine.runFileButton("applicationMenu", button)
+  const entry = (
+    icon: string,
+    label: string,
+    run: (() => void) | null,
+    shows: Page | null
+  ) => (
+    <Menu.Item
+      // Drawing Utilities runs nothing (AcWindows has no command for it):
+      // a click shows its page and leaves the menu open.
+      closeOnClick={run !== null}
+      onClick={run ?? undefined}
+      onMouseEnter={() => setPage(shows)}
+      onFocus={() => setPage(shows)}
+      onKeyDown={(event) => {
+        if (shows !== null && event.key === forward(event.currentTarget)) {
+          event.preventDefault()
+          event.currentTarget
+            .closest("[role=menu]")
+            ?.querySelector<HTMLElement>("[data-page-item]")
+            ?.focus()
+        }
+      }}
+      data-entry={shows ?? undefined}
+      className={cn(
+        MENU_ENTRY,
+        shows !== null && shows === page && "bg-accent"
+      )}
+    >
+      <MenuGlyph icon={icon} />
+      {/* AutoCAD wraps a name in its box (`Drawing / Utilities`); a word
+          wider than the box widens the column rather than being cut. */}
+      <span className="w-17.5 min-w-min">{label}</span>
+      {shows !== null && (
+        <ChevronRight
+          aria-hidden
+          className="ms-auto size-3 shrink-0 rtl:-scale-x-100"
+        />
+      )}
+    </Menu.Item>
+  )
+  const item = (icon: string, name: string, hint: string, run: () => void) => (
+    <Menu.Item
+      onClick={run}
+      onKeyDown={(event) => {
+        if (event.key === back(event.currentTarget)) {
+          event.preventDefault()
+          event.currentTarget
+            .closest("[role=menu]")
+            ?.querySelector<HTMLElement>(`[data-entry="${page}"]`)
+            ?.focus()
+        }
+      }}
+      data-page-item=""
+      className={MENU_PAGE_ITEM}
+    >
+      <MenuGlyph icon={icon} />
+      <span className="flex min-w-0 flex-col">
+        <span className="text-title">{name}</span>
+        {hint && <span className="text-muted-foreground">{hint}</span>}
+      </span>
+    </Menu.Item>
+  )
+  const heading = (text: string) => (
+    <Menu.GroupLabel className="mx-2 mb-1 border-b py-2 text-title text-muted-foreground">
+      {text}
+    </Menu.GroupLabel>
+  )
 
   return (
-    <Menu.Root>
-      <Tooltip>
-        <TooltipTrigger
-          render={
-            <Menu.Trigger
-              render={
-                <Button
-                  size="application"
-                  variant="ghost"
-                  aria-label={t("menu")}
-                >
-                  {mark ?? <MenuIcon />}
-                </Button>
-              }
-            />
-          }
-        />
-        <TooltipContent side="bottom">{t("menu")}</TooltipContent>
-      </Tooltip>
+    <Menu.Root onOpenChange={(open) => open && setPage(null)}>
+      {/* WHY no tooltip: it would stop the menu opening (ui.md, Base UI). */}
+      <Menu.Trigger
+        render={
+          <Button size="application" variant="ghost" aria-label={t("menu")}>
+            {mark ?? <MenuIcon />}
+          </Button>
+        }
+      />
       <Menu.Portal container={portal}>
-        <Menu.Positioner
-          side="bottom"
-          align="start"
-          sideOffset={6}
-          className="z-50"
-        >
-          <Menu.Popup className={MENU_POPUP}>
-            {item(FilePlus, t("new"), () =>
-              engine.runFileButton("applicationMenu", "new")
-            )}
-            {item(FolderOpen, t("open"), () =>
-              engine.runFileButton("applicationMenu", "open")
-            )}
-            {item(Save, t("save"), () =>
-              engine.runFileButton("applicationMenu", "save")
-            )}
-            {item(SaveAll, t("saveAs"), () =>
-              engine.runFileButton("applicationMenu", "saveAs")
-            )}
-            <Menu.Separator className="-mx-1 my-1 h-px bg-border" />
-            {/* Drawing Utilities > Units, as the help files it. */}
-            {item(Ruler, t("units"), () => engine.openDrawingUnitsFromMenu())}
-            {links.length > 0 && (
-              <>
-                <Menu.Separator className="-mx-1 my-1 h-px bg-border" />
+        <Menu.Positioner side="bottom" align="start" className="z-50">
+          <Menu.Popup
+            className={cn(MENU_POPUP, "flex p-0")}
+            finalFocus={drawingFocus(engine)}
+          >
+            <div className="flex min-w-35 shrink-0 flex-col p-1">
+              {entry("fileNew", t("new"), file("new"), "new")}
+              {entry("folderOpen", t("open"), file("open"), "open")}
+              {entry("save", t("save"), file("save"), null)}
+              {entry("saveAs", t("saveAs"), file("saveAs"), "saveAs")}
+              <Menu.Separator className="mx-2 my-0.5 h-px bg-border" />
+              {entry("utilities", t("utilities"), null, "utilities")}
+            </div>
+            <div className="flex w-70 flex-col border-s bg-background/40 p-1">
+              {page === "new" && (
+                <Menu.Group>
+                  {heading(t("newHint"))}
+                  {item(
+                    "fileNew",
+                    t("newDrawing"),
+                    t("newDrawingHint"),
+                    file("new")
+                  )}
+                </Menu.Group>
+              )}
+              {page === "open" && (
+                <Menu.Group>
+                  {heading(t("openHint"))}
+                  {item(
+                    "file",
+                    t("openDrawing"),
+                    t("openDrawingHint"),
+                    file("open")
+                  )}
+                </Menu.Group>
+              )}
+              {page === "saveAs" && (
+                <Menu.Group>
+                  {heading(t("saveAsHint"))}
+                  {item(
+                    "save",
+                    t("saveAsDrawing"),
+                    t("saveAsDrawingHint"),
+                    file("saveAs")
+                  )}
+                  {item(
+                    "fileOther",
+                    t("saveAsOther"),
+                    t("saveAsOtherHint"),
+                    file("saveAs")
+                  )}
+                </Menu.Group>
+              )}
+              {page === "utilities" && (
+                <Menu.Group>
+                  {heading(t("utilitiesHint"))}
+                  {/* Units as the desktop's item runs it, `^C^C_UNITS`. */}
+                  {item("units", t("units"), t("unitsHint"), () =>
+                    engine.openDrawingUnitsFromMenu()
+                  )}
+                </Menu.Group>
+              )}
+              {page === null && (
+                <Menu.Group>
+                  <div className="flex items-center gap-2 px-2 py-2 text-title text-muted-foreground">
+                    <Files aria-hidden className="size-4" />
+                    {t("openDocuments")}
+                  </div>
+                  {/* The one drawing open: choosing it, as choosing the
+                      current one in AutoCAD's list, closes the menu. */}
+                  <Menu.Item className={MENU_DOCUMENT}>
+                    <File aria-hidden className="size-4 shrink-0" />
+                    <span dir="auto" className="truncate">
+                      {state.drawingName}
+                    </span>
+                  </Menu.Item>
+                </Menu.Group>
+              )}
+              {links.length > 0 && (
                 <Menu.SubmenuRoot>
-                  <Menu.SubmenuTrigger className={MENU_ITEM}>
-                    <Globe />
+                  <Menu.SubmenuTrigger className={MENU_FOOT}>
+                    <Globe aria-hidden className="size-4" />
                     {t("language")}
-                    <ChevronRight className="absolute inset-e-2 rtl:-scale-x-100" />
+                    <ChevronRight
+                      aria-hidden
+                      className="size-3 rtl:-scale-x-100"
+                    />
                   </Menu.SubmenuTrigger>
                   <Menu.Portal container={portal}>
                     <Menu.Positioner
                       side="inline-end"
-                      align="start"
+                      align="end"
                       sideOffset={6}
                       className="z-50"
                     >
@@ -282,13 +417,34 @@ function ApplicationMenu({
                     </Menu.Positioner>
                   </Menu.Portal>
                 </Menu.SubmenuRoot>
-              </>
-            )}
+              )}
+            </div>
           </Menu.Popup>
         </Menu.Positioner>
       </Menu.Portal>
     </Menu.Root>
   )
+}
+
+/**
+ * The arrow that goes into an entry's page, AutoCAD's Right, and the one that
+ * comes back: the page lies on the inline end, so a right-to-left page swaps
+ * them.
+ */
+function forward(element: Element): string {
+  return getComputedStyle(element).direction === "rtl"
+    ? "ArrowLeft"
+    : "ArrowRight"
+}
+
+function back(element: Element): string {
+  return forward(element) === "ArrowLeft" ? "ArrowRight" : "ArrowLeft"
+}
+
+/** A 32 px glyph of the application menu's. */
+function MenuGlyph({ icon }: { icon: string }) {
+  const Icon = LARGE_MENU_ICONS[icon]
+  return <Icon className="size-8 shrink-0" />
 }
 
 /** A function key is literal in every language (.claude/rules/ui.md, Text). */

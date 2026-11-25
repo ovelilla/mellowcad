@@ -3,10 +3,10 @@ title: "Mértékegységek az AutoCAD-ben: MÉRTEGYS (UNITS) parancs"
 metaTitle: "Mértékegységek az AutoCAD-ben: MÉRTEGYS"
 description: "Így működik az AutoCAD MÉRTEGYS (UNITS, MES) parancsa: Rajzi mértékegységek párbeszédpanel, 0–8 tizedesjegy, beszúrási lépték mm, cm vagy m. Próbálja ki!"
 figure: "MÉRTEGYS megnyitva egy 100 × 60-as alaplap fölött, majd KOORD a túlsó sarkán: a koordináták a rajz pontosságával, két tizedesjeggyel."
-sourceHash: "1fd1973c3ebf"
+sourceHash: "4dd8ca2f4f5c"
 ---
 
-A MÉRTEGYS (UNITS) parancs megnyitja a Rajzi mértékegységek párbeszédpanelt, amely azt állítja be, hogyan írja ki a rajz a hosszakat, és mit jelent egy rajzi egység. Ahogy az AutoCAD-ben, a párbeszédpanel modális: a parancs addig tart, amíg az OK vagy a Mégse be nem zárja, az OK módosítása egy lépés, amelyet a <Command id="U" /> parancs visszavon, a Mégse vagy az Esc pedig semmit sem változtat. Aposztróffal begépelve (`'MÉRTEGYS`) egy futó parancson belül is megnyílik, és az a parancs a párbeszédpanel bezárása után folytatódik. Az állapotsor Mértékegységek gombja és az alkalmazásmenü Rajzi mértékegységek eleme is megnyitja.
+A MÉRTEGYS (UNITS) parancs megnyitja a Rajzi mértékegységek párbeszédpanelt, amely azt állítja be, hogyan írja ki a rajz a hosszakat, és mit jelent egy rajzi egység. Ahogy az AutoCAD-ben, a párbeszédpanel modális: a parancs addig tart, amíg az OK vagy a Mégse be nem zárja, az OK módosítása egy lépés, amelyet a <Command id="U" /> parancs visszavon, a Mégse vagy az Esc pedig semmit sem változtat. Aposztróffal begépelve (`'MÉRTEGYS`) egy futó parancson belül is megnyílik, és az a parancs a párbeszédpanel bezárása után folytatódik. Az állapotsor Mértékegységek gombja és az alkalmazásmenü Rajzolási segédeszközök ▸ Mértékegységek eleme is megnyitja.
 
 A Hosszúság típusa Tizedes, a Pontossága pedig, 0-tól 8 tizedesjegyig, minden hossz kiírását meghatározza: a koordinátákét, a távolságokét, a területekét, a promptokban felajánlott alapértékekét. Az új rajz itt két tizedesjeggyel indul, míg az AutoCAD metrikus sablonja néggyel. A Beszúrási lépték azt adja meg, mi egy rajzi egység: milliméter, centiméter vagy méter; az állapotsor és a dinamikus bevitel ezt mutatja. A Minta egy pontot mutat a választott pontossággal.
 

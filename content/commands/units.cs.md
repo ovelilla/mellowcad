@@ -2,10 +2,10 @@
 title: "Jednotky v AutoCADu: příkaz JEDNOTKY (UNITS)"
 description: "Jak v AutoCADu nastavit jednotky příkazem JEDNOTKY (UNITS, zkratka JN): dialog Výkresové jednotky, přesnost 0 až 8 míst, měřítko pro vložení v mm, cm nebo m."
 figure: "JEDNOTKY otevřené nad deskou 100 na 60, pak ID v jejím vzdáleném rohu: souřadnice s přesností výkresu, dvě místa."
-sourceHash: "1fd1973c3ebf"
+sourceHash: "4dd8ca2f4f5c"
 ---
 
-Příkaz JEDNOTKY (UNITS) otevře dialog Výkresové jednotky, který určuje, jak výkres zapisuje délky a čemu odpovídá jedna výkresová jednotka. Jako v AutoCADu je dialog modální: příkaz trvá, dokud dialog nezavře OK nebo Storno, změna potvrzená tlačítkem OK je jeden krok, který vrátí <Command id="U" />, a Storno nebo Esc nic nezmění. Zadaný s apostrofem, `'JEDNOTKY`, se otevře uvnitř běžícího příkazu, který po zavření dialogu pokračuje. Otevřou ho také jednotky na stavovém řádku a položka Výkresové jednotky v nabídce aplikace.
+Příkaz JEDNOTKY (UNITS) otevře dialog Výkresové jednotky, který určuje, jak výkres zapisuje délky a čemu odpovídá jedna výkresová jednotka. Jako v AutoCADu je dialog modální: příkaz trvá, dokud dialog nezavře OK nebo Storno, změna potvrzená tlačítkem OK je jeden krok, který vrátí <Command id="U" />, a Storno nebo Esc nic nezmění. Zadaný s apostrofem, `'JEDNOTKY`, se otevře uvnitř běžícího příkazu, který po zavření dialogu pokračuje. Otevřou ho také jednotky na stavovém řádku a položka Kreslicí pomůcky ▸ Jednotky v nabídce aplikace.
 
 Typ délky je Desítkový a její Přesnost, od 0 do 8 desetinných míst, určuje zápis každé délky: souřadnic, vzdáleností, ploch, výchozích hodnot nabízených ve výzvách. Nový výkres zde začíná na dvou místech, zatímco metrická šablona AutoCADu začíná na čtyřech. Měřítko pro vložení určuje, čím je výkresová jednotka: milimetrem, centimetrem nebo metrem; ukazuje to stavový řádek a dynamické zadání. Příklad výstupu ukáže bod se zvolenou přesností.
 

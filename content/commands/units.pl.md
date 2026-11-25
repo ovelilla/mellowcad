@@ -2,10 +2,10 @@
 title: "Jednostki w AutoCADzie: polecenie JEDN (UNITS)"
 description: "Jak ustawić jednostki w AutoCADzie poleceniem JEDN (UNITS, skrót JED): okno Jednostki rysunku, dokładność od 0 do 8 miejsc, skala wstawiania w mm, cm lub m."
 figure: "JEDN otwarte nad płytą 100 na 60, potem ID w jej dalekim narożniku: współrzędne z dokładnością rysunku, dwa miejsca."
-sourceHash: "1fd1973c3ebf"
+sourceHash: "4dd8ca2f4f5c"
 ---
 
-Polecenie JEDN (UNITS) otwiera okno dialogowe Jednostki rysunku, które ustala, jak rysunek zapisuje długości i czemu odpowiada jedna jednostka rysunku. Jak w AutoCADzie okno jest modalne: polecenie trwa, dopóki okna nie zamknie przycisk OK lub Anuluj, zmiana zatwierdzona przyciskiem OK to jeden krok, który cofa <Command id="U" />, a Anuluj lub Esc niczego nie zmienia. Wpisane z apostrofem, `'JEDN`, otwiera się wewnątrz działającego polecenia, które trwa dalej po zamknięciu okna. Otwierają je też jednostki na pasku stanu i pozycja Jednostki rysunku w menu aplikacji.
+Polecenie JEDN (UNITS) otwiera okno dialogowe Jednostki rysunku, które ustala, jak rysunek zapisuje długości i czemu odpowiada jedna jednostka rysunku. Jak w AutoCADzie okno jest modalne: polecenie trwa, dopóki okna nie zamknie przycisk OK lub Anuluj, zmiana zatwierdzona przyciskiem OK to jeden krok, który cofa <Command id="U" />, a Anuluj lub Esc niczego nie zmienia. Wpisane z apostrofem, `'JEDN`, otwiera się wewnątrz działającego polecenia, które trwa dalej po zamknięciu okna. Otwierają je też jednostki na pasku stanu i pozycja Narzędzia rysunkowe ▸ Jednostki w menu aplikacji.
 
 Typ długości to Dziesiętne, a Dokładność długości, od 0 do 8 miejsc po przecinku, określa zapis każdej długości: współrzędnych, odległości, pól, wartości domyślnych proponowanych w monitach. Nowy rysunek zaczyna tu od dwóch miejsc, podczas gdy metryczny szablon AutoCADa zaczyna od czterech. Skala wstawiania określa, czym jest jednostka rysunku: milimetrem, centymetrem lub metrem; pokazują to pasek stanu i wprowadzanie dynamiczne. Przykładowy wygląd pokazuje punkt z wybraną dokładnością.
 

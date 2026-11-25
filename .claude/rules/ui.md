@@ -196,7 +196,7 @@ the ribbon, the bottom row from phase 4. **28 px**, icons 16, for the rest one p
 
 | What                                                                     | Size                                                                                        |
 | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------- |
-| The title bar; its application button (`size="application"`)             | 32 (`h-8`); 48 × 32, the host's mark 20                                                     |
+| The title bar; its application button; that menu's entry, document row  | 32 (`h-8`); 48 × 32, mark 20; 46 and 26, icons 32 (plan §2.2)                               |
 | A Quick Access button (`IconAction size="quick"`)                        | 24 × 22 (`h-5.5 w-6`), icon 16, one against the next from 56 px                             |
 | The ribbon, whole; minimized to panel buttons, titles, tabs              | 124 (`h-31`): the tab row, 24, and the panels, 100, each 97; 86, 45, 24 (`ribbon-*:`)       |
 | A ribbon button, large or small; a combo; a list's row                   | 72, icon 32; 22, icon 16, on a 24 pitch; 22; 38, icon 32 (`control-size.test.ts`)           |

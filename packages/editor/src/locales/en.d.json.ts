@@ -21,7 +21,22 @@ declare const source: {
     "open": string
     "save": string
     "saveAs": string
+    "newHint": string
+    "newDrawing": string
+    "newDrawingHint": string
+    "openHint": string
+    "openDrawing": string
+    "openDrawingHint": string
+    "saveAsHint": string
+    "saveAsDrawing": string
+    "saveAsDrawingHint": string
+    "saveAsOther": string
+    "saveAsOtherHint": string
+    "utilities": string
+    "utilitiesHint": string
     "units": string
+    "unitsHint": string
+    "openDocuments": string
     "language": string
     "feedback": string
     "help": string

@@ -13,4 +13,18 @@ describe("a popup's final focus", () => {
     expect(finalFocus()).toBe(false)
     expect(focusSurface).toHaveBeenCalledTimes(1)
   })
+
+  // The application menu's Units opens Drawing Units; the menu unmounts
+  // after it, and its final focus leaves the dialog its focus.
+  it("leaves the focus where a modal dialog holds it", () => {
+    const focusSurface = vi.fn()
+    const inDialog = { closest: () => ({}) }
+    vi.stubGlobal("document", { activeElement: inDialog })
+    try {
+      expect(drawingFocus({ focusSurface })()).toBe(false)
+      expect(focusSurface).not.toHaveBeenCalled()
+    } finally {
+      vi.unstubAllGlobals()
+    }
+  })
 })

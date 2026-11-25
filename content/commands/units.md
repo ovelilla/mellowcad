@@ -7,7 +7,7 @@ related: ["DIST", "AREA", "DIMSTYLE", "LTSCALE"]
 coverage: "f776933e5835"
 ---
 
-UNITS opens the Drawing Units dialog, which sets how the drawing writes lengths and what one drawing unit stands for. As in AutoCAD the dialog is modal: the command lasts until OK or Cancel closes it, OK's change is one step that <Command id="U" /> takes back, and Cancel or Escape changes nothing. Typed with an apostrophe, `'UNITS`, it opens inside a running command, which goes on once the dialog closes. The status bar's units and the application menu's Drawing Units open it too.
+UNITS opens the Drawing Units dialog, which sets how the drawing writes lengths and what one drawing unit stands for. As in AutoCAD the dialog is modal: the command lasts until OK or Cancel closes it, OK's change is one step that <Command id="U" /> takes back, and Cancel or Escape changes nothing. Typed with an apostrophe, `'UNITS`, it opens inside a running command, which goes on once the dialog closes. The status bar's units and the application menu's Drawing Utilities ▸ Units open it too.
 
 Length's Type is Decimal, and its Precision, from 0 to 8 decimal places, is what every length is written with: coordinates, distances, areas, the defaults offered in the prompts. A new drawing starts at two places here, where AutoCAD's metric template starts at four. Insertion Scale says what a drawing unit is, millimetres, centimetres or metres; the status bar and the dynamic input show it. Sample Output shows a point at the precision chosen.
 

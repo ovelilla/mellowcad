@@ -1,5 +1,7 @@
 import type { CadEngine } from "@mellowcad/engine"
 
+const MODAL_DIALOG = '[role="dialog"][aria-modal="true"]'
+
 /**
  * A popup's `finalFocus` that gives the drawing its keys back once the popup
  * has closed. WHY not `focusSurface()` as the pick acts: a modal list leaves
@@ -15,7 +17,11 @@ export function drawingFocus(
   engine: Pick<CadEngine, "focusSurface">
 ): () => false {
   return () => {
-    engine.focusSurface()
+    // WHY: Base UI runs it once the popup has unmounted, after its exit
+    // animation, when a dialog the pick opened (the application menu's
+    // Units, Save As) may already hold the focus: that dialog keeps it.
+    const held = globalThis.document?.activeElement
+    if (!held?.closest(MODAL_DIALOG)) engine.focusSurface()
     return false
   }
 }

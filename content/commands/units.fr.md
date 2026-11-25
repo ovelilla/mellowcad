@@ -2,10 +2,10 @@
 title: "Commande UNITES (UNITS) dans AutoCAD"
 description: "Comment fonctionne UNITES (UNITS, alias UI) d'AutoCAD : la boîte Unités de dessin, une précision de 0 à 8 décimales, l'échelle d'insertion en mm, cm ou m."
 figure: "UNITES ouverte sur une plaque de 100 sur 60, puis ID sur son coin opposé : les coordonnées à la précision du dessin, deux décimales."
-sourceHash: "1fd1973c3ebf"
+sourceHash: "4dd8ca2f4f5c"
 ---
 
-UNITES (UNITS) ouvre la boîte de dialogue Unités de dessin, qui fixe la façon dont le dessin écrit les longueurs et ce que représente une unité de dessin. Comme dans AutoCAD, la boîte de dialogue est modale : la commande dure jusqu'à ce que OK ou Annuler la ferme, la modification validée par OK est une étape que <Command id="U" /> défait, et Annuler ou Echap ne change rien. Tapée avec une apostrophe, `'UNITES`, elle s'ouvre à l'intérieur d'une commande en cours, qui continue une fois la boîte de dialogue fermée. Les unités de la barre d'état et l'entrée Unités de dessin du menu de l'application l'ouvrent aussi.
+UNITES (UNITS) ouvre la boîte de dialogue Unités de dessin, qui fixe la façon dont le dessin écrit les longueurs et ce que représente une unité de dessin. Comme dans AutoCAD, la boîte de dialogue est modale : la commande dure jusqu'à ce que OK ou Annuler la ferme, la modification validée par OK est une étape que <Command id="U" /> défait, et Annuler ou Echap ne change rien. Tapée avec une apostrophe, `'UNITES`, elle s'ouvre à l'intérieur d'une commande en cours, qui continue une fois la boîte de dialogue fermée. Les unités de la barre d'état et l'entrée Utilitaires de dessin ▸ Unités du menu de l'application l'ouvrent aussi.
 
 Le Type de Longueur est Décimal, et sa Précision, de 0 à 8 décimales, est celle avec laquelle chaque longueur est écrite : coordonnées, distances, aires, valeurs par défaut proposées aux invites. Un nouveau dessin commence ici à deux décimales, là où le gabarit métrique d'AutoCAD commence à quatre. L'Echelle d'insertion dit ce qu'est une unité de dessin, en millimètres, centimètres ou mètres ; la barre d'état et la saisie dynamique l'affichent. Exemple affiche un point à la précision choisie.
 

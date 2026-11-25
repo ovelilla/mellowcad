@@ -3,10 +3,10 @@ title: "Unidades en AutoCAD: comando UNIDADES (UNITS)"
 metaTitle: "Unidades en AutoCAD: comando UNIDADES (UNITS)"
 description: "Cómo funciona UNIDADES (UNITS, alias UNS) de AutoCAD en español: el cuadro Unidades de dibujo, la precisión de 0 a 8 decimales y la escala de inserción."
 figure: "UNIDADES abierto sobre una placa de 100 por 60 y después ID en su esquina opuesta: las coordenadas a la precisión del dibujo, dos decimales."
-sourceHash: "1fd1973c3ebf"
+sourceHash: "4dd8ca2f4f5c"
 ---
 
-UNIDADES (UNITS en inglés) abre el cuadro Unidades de dibujo, que fija cómo escribe el dibujo las longitudes y qué representa una unidad de dibujo. Como en AutoCAD el cuadro es modal: el comando dura hasta que Aceptar o Cancelar lo cierran, el cambio de Aceptar es un paso que <Command id="U" /> deshace, y Cancelar o Esc no cambian nada. Escrito con un apóstrofo delante, `'UNIDADES`, se abre dentro de un comando en curso, que sigue cuando el cuadro se cierra. Las unidades de la barra de estado y Unidades de dibujo del menú de la aplicación también lo abren.
+UNIDADES (UNITS en inglés) abre el cuadro Unidades de dibujo, que fija cómo escribe el dibujo las longitudes y qué representa una unidad de dibujo. Como en AutoCAD el cuadro es modal: el comando dura hasta que Aceptar o Cancelar lo cierran, el cambio de Aceptar es un paso que <Command id="U" /> deshace, y Cancelar o Esc no cambian nada. Escrito con un apóstrofo delante, `'UNIDADES`, se abre dentro de un comando en curso, que sigue cuando el cuadro se cierra. Las unidades de la barra de estado y la entrada Ayudas al dibujo ▸ Unidades del menú de la aplicación también lo abren.
 
 El Tipo de Longitud es Decimales, y su Precisión, de 0 a 8 decimales, es la que usa cada longitud escrita: coordenadas, distancias, áreas y los valores por defecto que ofrecen las solicitudes. Un dibujo nuevo empieza aquí con dos decimales, donde la plantilla métrica de AutoCAD empieza con cuatro. La Escala de inserción dice qué es una unidad de dibujo, milímetros, centímetros o metros; la barra de estado y la entrada dinámica lo muestran. Muestra de salida enseña un punto a la precisión elegida.
 

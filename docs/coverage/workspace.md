@@ -35,7 +35,7 @@ instead), the right-click menus of Grid, Object Snap Tracking and Lineweight, th
 
 **Implemented:** the Drawing Units dialog (es "Unidades de dibujo"), modal, opened by the command
 (the aliases from both `acad.pgp` files, en:417, :505, es:284, :513; `DDUNITS` probe
-workspace/p311), the application menu's Drawing Units, which cancels the running command, echoes
+workspace/p311), the application menu's Drawing Utilities ▸ Units, which cancels the running command, echoes
 `_UNITS` and is a group U names `UNITS GROUP` (desktop workspace/d05-4), and the status bar's Units,
 which runs UNITS' macro `'_units` (acad.cuix ID_Units: inside a command, transparently; U names
 `'UNITS` at `Command:`) — WHY not the application menu's: AutoCAD's status-bar Units is a menu of
@@ -206,8 +206,20 @@ that one); a command named in the command line but not run yet; offline Help
 while RIBBONCLOSE or Clean Screen has closed it, then the drawing. In the title bar the application
 button, 48 wide, flush at its start, and the Quick Access Toolbar's buttons at AutoCAD's 24×22 with
 16 px icons, one against the next from 56 px (UI Automation at 1280×720, 2026-11-24). The
-application menu: New, Open, Save, Save As, then Drawing Units, which the help files under Drawing
-Utilities > Units, and the page's language, which AutoCAD has no menu for. InfoCenter's Help ▾ at
+application menu in AutoCAD 2027's two columns (plan §2.2, AcWindows.resources.dll's items, words
+and descriptions): on the left New, Open, Save, Save As, a line, Drawing Utilities, each a row of 46
+with its 32 px glyph, a long name wrapped in two lines as AutoCAD's (a word wider than its box
+widens the column), running its command (`_NEW`, `_OPEN`, `_QSave`, `_SAVEAS`; Drawing Utilities
+runs none and stays open); an entry with a page shows it on the right once the pointer or the
+focus is on it, until another entry takes its place (Right goes into it and Left back, mirrored
+on a right-to-left page) — a heading and each item's 32 px glyph, name and AutoCAD's description:
+New ▸ Drawing, Open ▸ Drawing, Save As ▸ Drawing and Other Formats (both SAVEAS, as AutoCAD's),
+Drawing Utilities ▸ Units (`^C^C_UNITS`: see UNITS), the descriptions without what this program
+does not do (New's template chosen; the DWG, DWT and DWS Save As writes); before any page, and on
+Save, Open Documents (AdWindows `system:String_95`), the one drawing by its name, which
+closes the menu as choosing the current one does. At the right column's foot, in Options' place,
+the page's language, which AutoCAD has no menu for — WHY: AutoCAD is installed in one language, a
+page chooses its own. InfoCenter's Help ▾ at
 the bar's end, a split button of 36 (the button 24, its arrow 12; AutoCAD's 13 shares a pixel,
 UI Automation 2026-11-24): the button asks for Help as F1 does (acad.cuix `ID_Help`, `'_help`),
 the running command's page or the start, and the command goes on; its list is acad.cuix's Help
@@ -229,10 +241,12 @@ browser tab named `plan.dxf · MellowCAD` by `/draw` once the drawing has a file
 new drawing's: `Drawing1.dwg` names nothing, and the page's own title is what a search engine that
 renders the page reads; WHY the name first, where AutoCAD's caption ends with it: a tab cuts its end
 
-**Missing:** the rest of the application menu and its layout (the 2027 desktop's:
-New, Open, Save, Save As, Import, Export | Publish, Print, Drawing Utilities | Close, each but Save
-with a page of items, Units one of Drawing Utilities'; a search, the recent and open documents,
-Options and Exit; `docs/plans/autocad-ui.md`, §2.2), Undo's and Redo's lists (split buttons in
+**Missing:** the rest of the application menu (plan §2.2): Import, Export, Publish, Print and Close,
+the rest of each page (New ▸ Sheet Set; Open ▸ Sheet Set, DGN, Sample Files; Save As ▸ Drawing
+Template, Drawing Standards, Save Layout as a Drawing, DWG Convert; Drawing Utilities ▸ Drawing
+Properties, DWG Compare, Audit, Status, Purge, Recover, the Drawing Recovery Manager), the search,
+Recent Documents (WHY Open Documents in its place: a page cannot reopen a file it was handed) and
+the toggles and view list over the documents, Options and Exit, a double-click on the button; Undo's and Redo's lists (split buttons in
 AutoCAD, 36 wide, plain buttons of 24 here), Plot, Customize ▾ and Share, the program's name before the drawing's (WHY: Autodesk's mark, and the
 editor names no host), the rest of InfoCenter (its search, sign-in, App Store, Stay Connected, Support Assistant) and of
 the Help list (Download Offline Help, Online Resources ▸, Privacy Settings, About), the drawing's

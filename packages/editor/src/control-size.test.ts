@@ -40,6 +40,10 @@ const ALLOWED: Record<string, Record<string, string>> = {
     "h-9":
       "the command line and the status bar: a control and 4 px either side",
   },
+  "packages/editor/src/title-bar.tsx": {
+    "size-8":
+      "the application menu's 32 px glyphs, each entry's and each page item's (docs/plans/autocad-ui.md, §2.2)",
+  },
   "packages/editor/src/palette-panel.tsx": {
     "h-9": "the palette panel's tab bar, a bar like the others",
   },
