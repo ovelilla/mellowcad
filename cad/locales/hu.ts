@@ -9362,6 +9362,13 @@ export const hu: EngineLocale = {
         [
           "date"
         ]
+      ],
+      "drawing": [
+        "Rajz",
+        [
+          "n"
+        ],
+        ".dwg"
       ]
     }
   }

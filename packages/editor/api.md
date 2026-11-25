@@ -229,8 +229,9 @@ export interface StatusBarProps extends PieceProps {
 export { TitleBar }
 /**
  * AutoCAD's title bar: the application button and the Quick Access Toolbar at
- * AutoCAD's sizes, then the save state where AutoCAD's title names the
- * drawing. Every part has a fixed width, so the row never grows.
+ * AutoCAD's sizes, the auto-save's state, the drawing's name centred, and
+ * InfoCenter's Help ▾ at the end. Every part has a fixed width, so the row
+ * never grows.
  */
 export declare function TitleBar(titleBarProps: TitleBarProps): ReactElement;
 

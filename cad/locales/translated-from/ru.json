@@ -3192,5 +3192,6 @@
   "commands.defaults.layer": "Layer{n}",
   "commands.defaults.textStyle": "style{n}",
   "commands.defaults.copyOf": "Copy of {name}",
-  "commands.defaults.fileName": "drawing-{date}"
+  "commands.defaults.fileName": "drawing-{date}",
+  "commands.defaults.drawing": "Drawing{n}.dwg"
 }

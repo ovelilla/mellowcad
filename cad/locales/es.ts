@@ -9378,6 +9378,13 @@ export const es: EngineLocale = {
         [
           "date"
         ]
+      ],
+      "drawing": [
+        "Dibujo",
+        [
+          "n"
+        ],
+        ".dwg"
       ]
     }
   }

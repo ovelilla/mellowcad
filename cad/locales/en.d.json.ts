@@ -3650,6 +3650,7 @@ declare const source: {
       "textStyle": string
       "copyOf": string
       "fileName": string
+      "drawing": string
     }
   }
 }

@@ -23,6 +23,7 @@ import {
 } from "@/lib/opened-drawing"
 import { reportUrl, type ReportFields } from "@/lib/report"
 import { runDrawing, scriptOfHash, withRun } from "@/lib/script-link"
+import { SITE_NAME } from "@/lib/site"
 
 /** Room round what the editor frames as a drawing opens, in the canvas's pixels. */
 const VIEW_PADDING = 24
@@ -86,6 +87,28 @@ export function DrawEditor({
     toType.current = null
     runScript(engine, script)
     engine.zoomToFit(VIEW_PADDING)
+  }, [engine])
+
+  // The tab names the drawing once it has a file's name (DWGTITLED), as
+  // AutoCAD's window caption does (`… - [plan.dxf]`), the name first since a
+  // tab cuts its end. WHY not a new drawing's: `Drawing1.dwg` names nothing,
+  // and the page's own title is what a search engine that renders it reads.
+  useEffect(() => {
+    if (!engine) return
+    const pageTitle = document.title
+    const show = () => {
+      const { drawingName, drawingTitled } = engine.getState()
+      const title = drawingTitled ? `${drawingName} · ${SITE_NAME}` : pageTitle
+      // The engine speaks on every pointer move: the <title> is rewritten
+      // only when it changes.
+      if (document.title !== title) document.title = title
+    }
+    show()
+    const unsubscribe = engine.subscribe(show)
+    return () => {
+      unsubscribe()
+      document.title = pageTitle
+    }
   }, [engine])
 
   useEffect(() => {

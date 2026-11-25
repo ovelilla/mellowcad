@@ -3394,7 +3394,8 @@
       "layer": "Layer{n}",
       "textStyle": "style{n}",
       "copyOf": "Copy of {name}",
-      "fileName": "drawing-{date}"
+      "fileName": "drawing-{date}",
+      "drawing": "Drawing{n}.dwg"
     }
   }
 }

@@ -3593,7 +3593,8 @@
       "layer": "Calque{n}",
       "textStyle": "style{n}",
       "copyOf": "Copie de {name}",
-      "fileName": "dessin-{date}"
+      "fileName": "dessin-{date}",
+      "drawing": "Dessin{n}.dwg"
     }
   }
 }

@@ -426,7 +426,7 @@ export function EditorZones({
       {/* AutoCAD's title bar: the application button flush at the start,
       as the window's own frame has it, and the Quick Access Toolbar. */}
       {Title && (
-        <div className="box-content flex h-8 min-w-0 items-center gap-1 border-b [grid-area:title]">
+        <div className="relative box-content flex h-8 min-w-0 items-center gap-1 border-b [grid-area:title]">
           {ready && (
             <Title
               {...ready}

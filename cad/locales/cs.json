@@ -3605,7 +3605,8 @@
       "layer": "Hladina{n}",
       "textStyle": "styl{n}",
       "copyOf": "Kopie {name}",
-      "fileName": "výkres-{date}"
+      "fileName": "výkres-{date}",
+      "drawing": "Výkres{n}.dwg"
     }
   }
 }

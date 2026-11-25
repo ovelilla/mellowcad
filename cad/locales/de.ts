@@ -9380,6 +9380,13 @@ export const de: EngineLocale = {
         [
           "date"
         ]
+      ],
+      "drawing": [
+        "Zeichnung",
+        [
+          "n"
+        ],
+        ".dwg"
       ]
     }
   }

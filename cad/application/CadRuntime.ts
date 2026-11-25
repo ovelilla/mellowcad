@@ -552,6 +552,12 @@ export class CadRuntime extends Observable {
    */
   private drawingName: string | null = null
   /**
+   * The new drawings of this session, the one it started with first, which
+   * number a new drawing's name as AutoCAD numbers them (`Drawing2.dwg`
+   * after NEW).
+   */
+  private newDrawings = 1
+  /**
    * The answers a ribbon macro has still to type ({@link RibbonMacro}), and
    * the question a pause waits at until the user's answer moves it on.
    */
@@ -3347,6 +3353,7 @@ export class CadRuntime extends Observable {
     this.resetTracking()
     this.history.execute(new NewDrawingCommand())
     this.drawingName = null
+    this.newDrawings += 1
     // WHY outside the command: AutoCAD's NEW opens another document, so
     // nothing takes the old one's unsaved values back, and undoing NEW here
     // brings the drawing back without them (RECTANG-D42).
@@ -6466,7 +6473,14 @@ export class CadRuntime extends Observable {
       this.reportFileError(this.text.message("saveUnavailable"))
       return
     }
-    this.files.save(this.serializeDrawing(), this.suggestedFileName())
+    const fileName = this.suggestedFileName()
+    this.files.save(this.serializeDrawing(), fileName)
+    // A new drawing takes the name of the file written, as AutoCAD's QSAVE
+    // of an untitled drawing names it through Save As.
+    if (this.drawingName === null) {
+      this.drawingName = fileName
+      this.invalidateState()
+    }
     if (this.startingName === null) return
     this.history.markRegenerated()
     this.history.recordEmpty(this.startingName)
@@ -6555,6 +6569,7 @@ export class CadRuntime extends Observable {
     if (choice.fileType === "drawing") {
       this.files?.save(this.serializeDrawing(), settled.fileName)
       this.drawingName = settled.fileName
+      this.invalidateState()
       this.history.markRegenerated()
       this.returnToNeutralTool()
       return
@@ -6663,6 +6678,7 @@ export class CadRuntime extends Observable {
       // A drawing file of another program's may hold an xref with no label.
       this.openParsed(withXrefLabels(opened.drawing, this.text))
       this.drawingName = typeof file === "string" ? null : file.name
+      this.invalidateState()
       if (opened.kind === "dxf") {
         for (const line of dxfReportLines(opened.report, this.text)) {
           this.commandLine.write("info", line)
@@ -8468,6 +8484,9 @@ export class CadRuntime extends Observable {
       canRedo: this.history.canRedo(),
       saveState: this.autosave.getState(),
       lastSavedAt: this.autosave.getLastSavedAt(),
+      drawingName:
+        this.drawingName ?? this.text.newDrawingName(this.newDrawings),
+      drawingTitled: this.drawingName !== null,
       properties: buildPropertiesUi(
         selectedEntities,
         this.propertiesFilter,

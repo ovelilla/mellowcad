@@ -9503,6 +9503,13 @@ export const pl: EngineLocale = {
         [
           "date"
         ]
+      ],
+      "drawing": [
+        "Rysunek",
+        [
+          "n"
+        ],
+        ".dwg"
       ]
     }
   }

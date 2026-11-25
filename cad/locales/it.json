@@ -3607,7 +3607,8 @@
       "layer": "Layer {n}",
       "textStyle": "stile{n}",
       "copyOf": "Copia di {name}",
-      "fileName": "disegno-{date}"
+      "fileName": "disegno-{date}",
+      "drawing": "Disegno{n}.dwg"
     }
   }
 }

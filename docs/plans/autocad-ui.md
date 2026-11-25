@@ -374,7 +374,7 @@ in `docs/coverage/`, never a dead button.
 | - | ------- | ---- | ----- | ----- |
 | F1 | Title bar, ribbon, file tabs, drawing, one bottom row | top bar, tool palette, canvas, panel, command row, status row | Revoked | 1 |
 | F2 | The window's own title bar with minimise, maximise and close | none: the browser's window | Platform — a page cannot draw the window's frame; the row is kept for the application button, the Quick Access Toolbar and the title | 1 |
-| F3 | The title names the program and the drawing | no title in the page; the tab's title is the site's | Revoked for the drawing's name once the file port knows it; until then `Drawing1.dwg`, as a new drawing's | 2 |
+| F3 | The title names the program and the drawing | no title in the page; the tab's title is the site's | Revoked for the drawing's name once the file port knows it; until then `Drawing1.dwg`, as a new drawing's | 2 (block 4, done) |
 | F4 | Quick Access: New, Open, Save, Save As, Plot, Undo ▾, Redo ▾, Customize ▾, Share | New, Open, Save, Save As, Undo, Redo, as 28 px buttons | Revoked: 24×22 on a 24 pitch. Plot and Share: Missing. Customize ▾: Missing (5) | 1, 2 |
 | F5 | Undo and Redo are split buttons with the list of steps | plain buttons | Revoked | 2 |
 | F6 | The application menu: its two columns, recent documents, Options and Exit | New, Open, Save, Save As, Drawing Units, the language, Send Feedback | Revoked: the two columns of §2.2, an entry's page with icon, name and description, and what exists here in its place — New ▸ Drawing, Open ▸ Drawing, Save, Save As ▸ Drawing and Other Formats, Drawing Utilities ▸ Units. Import, Export, Publish, Print, Close, the search, the documents' lists, Options and Exit: Missing. The language stays in it — Platform: AutoCAD is installed in one language and a page chooses its own | 2 |
@@ -591,7 +591,7 @@ Each closes with skill `finish-feature`. Each starts with the captures it still 
 
 The application menu in AutoCAD's layout and order, Undo's and Redo's lists, Help ▾ with Send
 Feedback, the drawing's name in the title and in the tab's. Its desktop pass is done (§7). Four
-blocks, a commit each, each leaving the editor whole:
+blocks, a commit each, each leaving the editor whole, built 1, 4, 2, 3:
 
 1. **Help ▾** (done 2026-11-25): the split button at the bar's end, F1's question from its
    button, its list Help and Send Feedback, which leaves the application menu (F7).
@@ -601,7 +601,7 @@ blocks, a commit each, each leaving the editor whole:
 3. **Undo ▾ and Redo ▾**: split buttons with the steps listed as §2.2 names them, which needs the
    history's steps in `EngineState`; the button and each row run `_.undo n` / `_.mredo n` (F5).
 4. **The drawing's name** in the title and in the tab's, from what the file port knows, else
-   `Drawing1.dwg` (F3).
+   `Drawing1.dwg` (F3). Done 2026-11-25, second: the Open Documents list of block 2 shows it.
 
 ### Phase 3 — the palettes and the style dialogs
 

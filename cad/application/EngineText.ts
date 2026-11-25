@@ -494,6 +494,11 @@ export class EngineText {
     return this.format(this.commands.defaults.fileName, { date })
   }
 
+  /** The `number`-th new drawing's name (acadres 4125, `Drawing.dwg`, numbered). */
+  newDrawingName(number: number): string {
+    return this.format(this.commands.defaults.drawing, { n: String(number) })
+  }
+
   /** The label a dynamic-input box shows once it holds a point. */
   coordinateLabel(polar: boolean): string {
     const format = this.commands.format

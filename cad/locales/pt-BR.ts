@@ -9396,6 +9396,13 @@ export const ptBR: EngineLocale = {
         [
           "date"
         ]
+      ],
+      "drawing": [
+        "Desenho",
+        [
+          "n"
+        ],
+        ".dwg"
       ]
     }
   }

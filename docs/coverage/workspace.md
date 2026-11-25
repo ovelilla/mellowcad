@@ -219,16 +219,25 @@ through UI Automation nor on four clicks (desktop, 2026-11-24 and 2026-11-25), s
 `'_help`: HELP is not a command here (F1, Missing). The Quick Access Toolbar
 in AutoCAD's order — New (QNEW), Open, Save, Save As, Undo, Redo —, each run as its command by its
 global name (`_QSAVE`), so it echoes (Drawing Units as the desktop's application menu runs it,
-`^C^C_UNITS`: see UNITS); the save state where AutoCAD's title names the drawing
+`^C^C_UNITS`: see UNITS); the auto-save's state after them (AutoCAD has none); the title, centred
+on the bar, the drawing's name alone as AutoCAD 2027's (DWGNAME: the file OPEN opened or QSAVE, SAVEAS or
+DXFOUT last wrote the whole drawing to, no path, nothing marking a change — desktop 2026-11-25,
+`Planta baja.dwg`), else the session's new drawing's, numbered as AutoCAD numbers them (acadres
+4125, `Drawing.dwg`: `Drawing1.dwg`, `Drawing2.dwg` after NEW; es `Dibujo1.dwg`; a language with no
+command language of its own keeps English's, as the Japanese, Korean and Chinese tables do); the
+browser tab named `plan.dxf · MellowCAD` by `/draw` once the drawing has a file's name — WHY not a
+new drawing's: `Drawing1.dwg` names nothing, and the page's own title is what a search engine that
+renders the page reads; WHY the name first, where AutoCAD's caption ends with it: a tab cuts its end
 
 **Missing:** the rest of the application menu and its layout (the 2027 desktop's:
 New, Open, Save, Save As, Import, Export | Publish, Print, Drawing Utilities | Close, each but Save
 with a page of items, Units one of Drawing Utilities'; a search, the recent and open documents,
 Options and Exit; `docs/plans/autocad-ui.md`, §2.2), Undo's and Redo's lists (split buttons in
-AutoCAD, 36 wide, plain buttons of 24 here), Plot, Customize ▾ and Share, the title centred and
-the rest of InfoCenter (its search, sign-in, App Store, Stay Connected, Support Assistant) and of
-the Help list (Download Offline Help, Online Resources ▸, Privacy Settings, About), the drawing's name in the title (the file port does not
-know the open file's name), the file tabs (one drawing at a time) — WHY no window buttons
+AutoCAD, 36 wide, plain buttons of 24 here), Plot, Customize ▾ and Share, the program's name before the drawing's (WHY: Autodesk's mark, and the
+editor names no host), the rest of InfoCenter (its search, sign-in, App Store, Stay Connected, Support Assistant) and of
+the Help list (Download Offline Help, Online Resources ▸, Privacy Settings, About), the drawing's
+name after a reload (the auto-save keeps the drawing, not its file's name: it comes back as
+`Drawing1.dwg`), the old name back when U undoes NEW, the file tabs (one drawing at a time) — WHY no window buttons
 (minimise, maximise, close): a page cannot draw its window's frame
 
 ### Ribbon

@@ -3423,7 +3423,8 @@
       "layer": "Capa{n}",
       "textStyle": "Estilo{n}",
       "copyOf": "Copia de {name}",
-      "fileName": "dibujo-{date}"
+      "fileName": "dibujo-{date}",
+      "drawing": "Dibujo{n}.dwg"
     }
   }
 }

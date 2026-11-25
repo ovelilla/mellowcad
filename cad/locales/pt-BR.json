@@ -3560,7 +3560,8 @@
       "layer": "Camada{n}",
       "textStyle": "estilo{n}",
       "copyOf": "Cópia de {name}",
-      "fileName": "desenho-{date}"
+      "fileName": "desenho-{date}",
+      "drawing": "Desenho{n}.dwg"
     }
   }
 }

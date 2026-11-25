@@ -675,6 +675,16 @@ export interface EngineState {
   readonly saveState: SaveState
   /** Epoch millis of the last successful auto-save, or null if never saved. */
   readonly lastSavedAt: number | null
+  /**
+   * DWGNAME, as AutoCAD's title shows it: the file opened (`plan.dxf`) or
+   * the one QSAVE, SAVEAS or DXFOUT last wrote the whole drawing to, its name
+   * alone; a drawing with neither is a new one, named as AutoCAD names
+   * each new drawing of a session (`Drawing1.dwg`, then `Drawing2.dwg`
+   * after NEW; es `Dibujo1.dwg`).
+   */
+  readonly drawingName: string
+  /** DWGTITLED: whether {@link drawingName} is a file's, not a new drawing's. */
+  readonly drawingTitled: boolean
   /** The Properties palette: its type filter and what it edits. */
   readonly properties: PropertiesUi
   /**

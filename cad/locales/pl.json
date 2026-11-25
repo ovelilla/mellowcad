@@ -3605,7 +3605,8 @@
       "layer": "Warstwa{n}",
       "textStyle": "styl{n}",
       "copyOf": "Kopia {name}",
-      "fileName": "rysunek-{date}"
+      "fileName": "rysunek-{date}",
+      "drawing": "Rysunek{n}.dwg"
     }
   }
 }

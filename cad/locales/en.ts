@@ -8638,6 +8638,13 @@ export const en: EngineCatalog = {
         [
           "date"
         ]
+      ],
+      "drawing": [
+        "Drawing",
+        [
+          "n"
+        ],
+        ".dwg"
       ]
     }
   }

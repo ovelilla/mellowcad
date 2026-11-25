@@ -3601,7 +3601,8 @@
       "layer": "Слой{n}",
       "textStyle": "стиль{n}",
       "copyOf": "Копия {name}",
-      "fileName": "чертеж-{date}"
+      "fileName": "чертеж-{date}",
+      "drawing": "Чертеж{n}.dwg"
     }
   }
 }

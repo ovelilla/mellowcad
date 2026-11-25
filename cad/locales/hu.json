@@ -3607,7 +3607,8 @@
       "layer": "Fólia{n}",
       "textStyle": "stílus{n}",
       "copyOf": "Másolat - {name}",
-      "fileName": "rajz-{date}"
+      "fileName": "rajz-{date}",
+      "drawing": "Rajz{n}.dwg"
     }
   }
 }

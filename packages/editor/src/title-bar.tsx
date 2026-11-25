@@ -72,8 +72,9 @@ export interface TitleBarProps extends PieceProps {
 
 /**
  * AutoCAD's title bar: the application button and the Quick Access Toolbar at
- * AutoCAD's sizes, then the save state where AutoCAD's title names the
- * drawing. Every part has a fixed width, so the row never grows.
+ * AutoCAD's sizes, the auto-save's state, the drawing's name centred, and
+ * InfoCenter's Help ▾ at the end. Every part has a fixed width, so the row
+ * never grows.
  */
 export function TitleBar({
   engine,
@@ -153,6 +154,19 @@ export function TitleBar({
       </Panel>
 
       <SaveStatus state={state} />
+
+      {/* The title, centred on the bar as AutoCAD's is on its window: the
+          drawing's name alone, no path, nothing marking a change (desktop,
+          2026-11-25). WHY no product name before it: the program's name in
+          AutoCAD's title is Autodesk's mark, and the editor names no host. */}
+      {/* WHY dir="auto": a file's name reads in its own direction, `plan
+          (2).dxf` whole on a right-to-left page. */}
+      <span
+        dir="auto"
+        className="pointer-events-none absolute inset-x-0 mx-auto w-fit max-w-1/3 truncate"
+      >
+        {state.drawingName}
+      </span>
 
       {/* InfoCenter's Help ▾, at the bar's end: its search, sign-in, App
           Store, Stay Connected and Support Assistant, and the window's own
@@ -379,9 +393,9 @@ function HelpMenu({
 }
 
 /**
- * The auto-save's state, where AutoCAD's title shows the drawing's name: the
- * drawing is kept on this device as it changes, apart from the files QSAVE
- * writes.
+ * The auto-save's state, after the Quick Access Toolbar (AutoCAD has none):
+ * the drawing is kept on this device as it changes, apart from the files
+ * QSAVE writes.
  */
 function SaveStatus({ state }: { state: EditorState }) {
   const t = useEditorText("TitleBar")

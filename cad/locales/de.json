@@ -3630,7 +3630,8 @@
       "layer": "Layer{n}",
       "textStyle": "Stil{n}",
       "copyOf": "Kopie von {name}",
-      "fileName": "zeichnung-{date}"
+      "fileName": "zeichnung-{date}",
+      "drawing": "Zeichnung{n}.dwg"
     }
   }
 }

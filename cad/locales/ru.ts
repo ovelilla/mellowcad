@@ -10012,6 +10012,13 @@ export const ru: EngineLocale = {
         [
           "date"
         ]
+      ],
+      "drawing": [
+        "Чертеж",
+        [
+          "n"
+        ],
+        ".dwg"
       ]
     }
   }

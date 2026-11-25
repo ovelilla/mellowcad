@@ -1081,6 +1081,16 @@ export interface EngineState {
     readonly saveState: SaveState;
     /** Epoch millis of the last successful auto-save, or null if never saved. */
     readonly lastSavedAt: number | null;
+    /**
+     * DWGNAME, as AutoCAD's title shows it: the file opened (`plan.dxf`) or
+     * the one QSAVE, SAVEAS or DXFOUT last wrote the whole drawing to, its name
+     * alone; a drawing with neither is a new one, named as AutoCAD names
+     * each new drawing of a session (`Drawing1.dwg`, then `Drawing2.dwg`
+     * after NEW; es `Dibujo1.dwg`).
+     */
+    readonly drawingName: string;
+    /** DWGTITLED: whether {@link drawingName} is a file's, not a new drawing's. */
+    readonly drawingTitled: boolean;
     /** The Properties palette: its type filter and what it edits. */
     readonly properties: PropertiesUi;
     /**
@@ -3134,6 +3144,8 @@ export declare class EngineText {
     defaultTextStyleName(n: number): string;
     copyName(name: string): string;
     fileName(date: string): string;
+    /** The `number`-th new drawing's name (acadres 4125, `Drawing.dwg`, numbered). */
+    newDrawingName(number: number): string;
     /** The label a dynamic-input box shows once it holds a point. */
     coordinateLabel(polar: boolean): string;
     /** `Erase: Yes` — a keyword and the value it is set to. */
