@@ -91,8 +91,10 @@ every other variable SETVAR knows is typed by its name (workspace.md, SETVAR). A
 (CLIPROMPTLINES 3: "displays above the command window while a command is in progress"; typed as a
 variable from 0 to 50, program-wide, a step U takes back, workspace/p214, p218), each line on a
 translucent label of its own over the drawing, 20 high (desktop cli-now, uia2-cli), which fades
-once the command ends (after 6 s: AutoCAD documents no time); F2, or the arrow at its end, expands
-the whole history up to 12 lines over the drawing ("a list of commands and prompts that you have
+once the command ends (after 6 s: AutoCAD documents no time), the labels from Recent Commands'
+start (desktop 2026-11-26, en1920-a beside cmp-cl-left); F2, or the arrow at its end, expands
+the whole history over the drawing, from 4 px before Recent Commands to the line's end and some 300
+high (desktop 2026-11-26, cl-f2: 299 at 1920 × 1080) ("a list of commands and prompts that you have
 used to expand up … from the command line"), and Escape or a press on the drawing collapses it;
 Ctrl+9 hides and shows it, from a field too, as acad.cuix's `^C^C_commandlinehide` /
 `^C^C_commandline` (ID_CmdLine): the running command cancelled and the macro written
@@ -100,8 +102,9 @@ Ctrl+9 hides and shows it, from a field too, as acad.cuix's `^C^C_commandlinehid
 here, so no undo group (**unverified**: by analogy with Ctrl+1's `GROUP PROPERTIES` it would be
 `GROUP COMMANDLINEHIDE`, unprobed) and with no question (Missing); and it comes back while something is typed (F2 opens the text window only on a docked one); its
 field is empty while a command asks, as AutoCAD's is after `REGION Designe objetos:` (desktop
-regions/d01-1, d01-2, d02-1). **Unverified**: how F2's history looks over the drawing (here a
-translucent panel as wide as the line, up to 12 lines), whether the temporary lines fade while a
+regions/d01-1, d01-2, d02-1). **Unverified**: the width a profile nobody has touched gives the
+floating line (the desktop's of 2026-11-26 kept the 1534 px it was last hidden with, centred over
+the drawing, as gui.md warns: here as wide as the drawing, as phase 0 measured it), whether the temporary lines fade while a
 command still runs (here only once it ends), how many commands Recent Commands keeps (here 50,
 Up and Down's history) and what its pick and the close button echo and name for U (here a typed
 name's and Ctrl+9's), and whether a floating palette lies over the line or under it (here

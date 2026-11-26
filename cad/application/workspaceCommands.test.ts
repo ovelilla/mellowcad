@@ -233,26 +233,30 @@ describe("Clean Screen", () => {
     expect(copy.state().cleanScreen.active).toBe(false)
   })
 
-  // The ribbon's right-click menu's Close (AcWindows' RibbonMenuClose):
-  // RIBBONCLOSE's step, no echo, a running command going on.
-  it("closes from the ribbon's own menu as RIBBONCLOSE does", () => {
+  // The ribbon's right-click menu's Close (AcWindows' RibbonMenuClose), as
+  // `^C^C_RibbonClose`: desktop 2026-11-26, rc-close — LINE at its second
+  // point `*Cancel*`, then `Command: _RibbonClose`.
+  it("closes from the ribbon's own menu, cancelling the running command", () => {
     const idle = createHarness()
+    const at = idle.commandLog().length
     idle.runtime.closeRibbon()
+    expect(idle.commandLog().slice(at).join("\n")).toContain("_RibbonClose")
     expect(idle.state().ribbon.open).toBe(false)
-    expect(written(idle, "U")).toEqual(["U", "RIBBONCLOSE"])
+    // RIBBONCLOSE's step, an empty one (U of it opens nothing), in a menu's
+    // group as an accelerator's (U's name on the desktop unverified).
+    expect(written(idle, "U")).toEqual(["U", "RIBBONCLOSE GROUP"])
     expect(idle.state().ribbon.open).toBe(false)
 
     const cad = createHarness()
     written(cad, "_LINE", "0,0")
     const from = cad.commandLog().length
     cad.runtime.closeRibbon()
-    expect(cad.commandLog().slice(from)).toEqual([])
+    const log = cad.commandLog().slice(from).join("\n")
+    expect(log).toContain("*Cancel*")
+    expect(log).toContain("_RibbonClose")
     expect(cad.state().ribbon.open).toBe(false)
-    expect(cad.state().commandLine.command).toBe("LINE")
-    cad.runtime.closeRibbon()
-    written(cad, "10,0", "", "_RIBBON")
-    expect(cad.state().ribbon.open).toBe(true)
-    expect(written(cad, "U")).toEqual(["U", "RIBBON"])
+    expect(cad.state().commandLine.command).toBeNull()
+    expect(cad.entities()).toHaveLength(0)
   })
 
   // desktop workspace/d10: the ribbon closed by RIBBONCLOSE, a step of its

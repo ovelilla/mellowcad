@@ -65,7 +65,7 @@ own `runScript`, so the link draws what the server drew. It wins over `?drawing=
 the language links keep it.
 
 **Where the editor links out is the host's** (`languages`, `help`, `feedback`): the package names
-no site. `/draw`'s Send Feedback is the repository's issue forms, filled in (`marketing.md`).
+no site; `/draw`'s Send Feedback: `marketing.md`.
 
 ## Text
 
@@ -178,8 +178,8 @@ and line height; the editor's root starts every text, its popups too, as `text-u
   menu.
 - `packages/editor/src/type-scale.test.ts` holds the scale and the steps in the editor;
   `cn()` keeps `text-ui` beside a colour. The ViewCube's SVG sets its
-  weight as an attribute (a class would size it too); its face names, sized to the face, are the
-  one text outside the scale.
+  weight as an attribute (a class would size it too); its face names and compass letters, scaled with the cube, are the
+  one text outside the scale (NAVVCUBESIZE 4).
 - A new zone, palette or menu is checked in Chrome (`getComputedStyle` on every visible text):
   every text on a role and a colour step, nothing truncated or wrapped at 1280×720 in any language
   but a palette row's label, which wraps and grows its row (an AutoCAD word stays whole: pt-BR's
@@ -210,7 +210,7 @@ the ribbon, the bottom row. **28 px**, icons 16, for the rest one presses. AutoC
   of a pixel pushes every icon after it off the pixel grid; the ribbon's round up (`WHOLE`;
   `roundWidths` without `calc-size`).
 - Outside both systems, each for a reason: the ViewCube's Home, roll arrows and UCS menu
-  (`size="icon-cube"`, `"cube"`, 24), drawn at the cube's scale; the viewport control `[Top]`, a
+  (`size="icon-cube"`, `"cube"`, 24), sized for the whole cube; the viewport control `[Top]`, a
   label on the drawing; separators, the product mark and swatches, which are not targets.
 - `packages/editor/src/control-size.test.ts` holds both, each AutoCAD size with where it was
   measured, and `Button`'s sizes to the table; a new size is argued here first, from AutoCAD's.

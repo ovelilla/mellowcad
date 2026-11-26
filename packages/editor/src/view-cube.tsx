@@ -24,11 +24,16 @@ import { useEditorText } from "./editor-text"
 import { drawingFocus } from "./drawing-focus"
 import type { PieceProps } from "./piece"
 
-/** The cube's box (`size-36`): its SVG draws in a 0–1 box scaled to it. */
+/**
+ * The cube's box at its full size, 144 (`--cube-size`, which the editor
+ * shrinks on a short drawing as AutoCAD's NAVVCUBESIZE 4 does): its SVG draws
+ * in a 0–1 box scaled to it.
+ */
 const CUBE_PX = 144
 
 /**
- * The compass letters at the title role's 12 px, in the box's units, on a
+ * The compass letters at the title role's 12 px on the whole cube, in the
+ * box's units, so smaller with it on a short drawing as AutoCAD's are, on a
  * disc wide enough for a W. The faces' names are not: they are drawn on the
  * cube, sized to fit its face as the drawing's text is to the drawing — a
  * name of eight letters (`SUPERIOR`) still reaches 12 px on a plan view's face.
@@ -112,7 +117,7 @@ export function ViewCube({
     <div
       // The cube's menu has no trigger in it to mark open: the root is.
       data-menu-open={menuAt !== null ? "" : undefined}
-      className="group/cube flex w-36 flex-col items-center gap-1 opacity-50 transition-opacity focus-within:opacity-100 hover:opacity-100 has-[[data-popup-open]]:opacity-100 data-menu-open:opacity-100 [&_button]:pointer-events-auto"
+      className="group/cube flex w-(--cube-size,9rem) flex-col items-center gap-1 opacity-50 transition-opacity focus-within:opacity-100 hover:opacity-100 has-[[data-popup-open]]:opacity-100 data-menu-open:opacity-100 [&_button]:pointer-events-auto"
       onContextMenu={(event) => {
         event.preventDefault()
         setMenuAt(new DOMRect(event.clientX, event.clientY, 0, 0))
@@ -123,7 +128,7 @@ export function ViewCube({
           the pointer once the pointer is on the cube, so it can cross to
           Home or the menu's arrow in the corners; at rest it takes none. */}
       <div
-        className="relative size-36 group-hover/cube:pointer-events-auto"
+        className="relative size-(--cube-size,9rem) group-hover/cube:pointer-events-auto"
         dir="ltr"
       >
         <svg

@@ -26,12 +26,7 @@ import { type CadEngine } from "@mellowcad/engine"
 import type { EditorState } from "@mellowcad/react"
 import { cn } from "./utils"
 import { Button } from "./ui/button"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "./ui/tooltip"
+import { TooltipProvider } from "./ui/tooltip"
 import { usePortalContainer } from "./ui/portal-container"
 import { drawingFocus } from "./drawing-focus"
 import { LARGE_MENU_ICONS } from "./large-icons"
@@ -653,25 +648,21 @@ function CustomizeQuickAccess({
   const t = useEditorText("TitleBar.quickAccess")
   return (
     <Menu.Root>
-      {/* As wide as Undo's arrow, AutoCAD's 13 (its width unverified); its
-      tooltip on a wrapper, never on the list's trigger (ui.md). */}
-      <Tooltip>
-        <TooltipTrigger render={<span className="flex" />}>
-          <Menu.Trigger
-            render={
-              <Button
-                size="quick"
-                variant="ghost"
-                aria-label={t("caption")}
-                className="w-3.25"
-              />
-            }
-          >
-            <ChevronDown className="size-2.5" />
-          </Menu.Trigger>
-        </TooltipTrigger>
-        <TooltipContent side="bottom">{t("caption")}</TooltipContent>
-      </Tooltip>
+      {/* AutoCAD's 16 × 22, one more than Undo's arrow, and no tooltip
+      (desktop 2026-11-26: ID_ToolBarCustomize_CustomizeButton 16 × 22, and
+      nothing over it after 1.8 s at rest, qat-tip). */}
+      <Menu.Trigger
+        render={
+          <Button
+            size="quick"
+            variant="ghost"
+            aria-label={t("caption")}
+            className="w-4"
+          />
+        }
+      >
+        <ChevronDown className="size-2.5" />
+      </Menu.Trigger>
       <Menu.Portal container={portal}>
         <Menu.Positioner
           side="bottom"

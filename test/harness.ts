@@ -147,6 +147,6 @@ export function createHarness(options: HarnessOptions = {}): CadHarness {
  */
 export function ribbonClosed(options: HarnessOptions = {}): CadHarness {
   const harness = createHarness(options)
-  harness.runtime.closeRibbon()
+  harness.runtime.ribbonStep(false)
   return harness
 }

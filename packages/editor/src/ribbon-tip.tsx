@@ -85,6 +85,9 @@ export function RibbonTip({
   const t = useEditorText("Ribbon")
   const portal = usePortalContainer()
   const trigger = useRef<HTMLElement>(null)
+  // Where the pointer rested as it opened: the tooltip opens there, not
+  // under the control.
+  const [anchorAt, setAnchorAt] = useState<DOMRect | null>(null)
   const [open, setOpen] = useState(false)
   const [extended, setExtended] = useState(false)
   const words = en.messages.Ribbon
@@ -126,7 +129,10 @@ export function RibbonTip({
   return (
     <Tooltip.Root
       open={open}
-      onOpenChange={(next) => {
+      // A tooltip under the pointer must not take the click meant for the
+      // control it covers.
+      disableHoverablePopup
+      onOpenChange={(next, details) => {
         const at = trigger.current
         const popups = portal ?? at?.ownerDocument
         // Only a list on screen: a Select's stays mounted, hidden, once used.
@@ -136,6 +142,19 @@ export function RibbonTip({
         )
         if (next && (listOpen || at?.querySelector('[aria-expanded="true"]')))
           return
+        if (next) {
+          // The event that opened it: the last move once the delay ran out,
+          // the entering one in a group opening at once; a focus has no
+          // point, and the tooltip goes under the control. The anchor stays
+          // as it closes, or it would jump as it fades.
+          const event = details.event
+          const rtl = at !== null && getComputedStyle(at).direction === "rtl"
+          setAnchorAt(
+            event instanceof MouseEvent
+              ? new DOMRect(event.clientX + (rtl ? -5 : 5), event.clientY, 0, 0)
+              : null
+          )
+        }
         setOpen(next)
         if (!next) setExtended(false)
       }}
@@ -148,17 +167,24 @@ export function RibbonTip({
         render={children}
       />
       <Tooltip.Portal container={portal}>
-        {/* The z-index on the positioner, its stacking context (ui.md). */}
+        {/* The z-index on the positioner, its stacking context (ui.md).
+            AutoCAD's opens at the pointer, its corner 5 after it and 26
+            under it, and stays there (desktop 2026-11-26, tt-pline-2,
+            tt-pline-low: the pointer at 70,85 and 85,118 on one button);
+            opened from the keyboard, under the control. */}
         <Tooltip.Positioner
           className="z-50"
           side="bottom"
           align="start"
-          sideOffset={2}
+          anchor={
+            anchorAt ? { getBoundingClientRect: () => anchorAt } : undefined
+          }
+          sideOffset={anchorAt ? 26 : 2}
         >
           <Tooltip.Popup
             data-ribbon-tip
             className={cn(
-              "flex max-w-82 flex-col rounded-md border border-border bg-popover p-2 text-ui text-popover-foreground shadow-md",
+              "pointer-events-none flex max-w-82 flex-col rounded-md border border-border bg-popover p-2 text-ui text-popover-foreground shadow-md",
               "transition-opacity data-ending-style:opacity-0 data-starting-style:opacity-0"
             )}
           >

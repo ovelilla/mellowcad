@@ -54,7 +54,11 @@ Windows desktop.
   show AutoCAD on top first. An instance launched while the owner works can open behind their
   windows, and a probe's clicks and keys (Esc, F-keys, Ctrl+W) then went to VS Code (2026-10-31).
 - **Typing**: `acad.sh type "<text>"` (`\n` Enter, `\e` Esc), one virtual key at a time;
-  `acad.sh key ctrl+z f8 shift+tab down` for what text cannot say. The keys reach a prompt only
+  `acad.sh key ctrl+z f8 shift+tab down comma` for what text cannot say. Both refuse (exit 2) a
+  key while another program is in front: SendInput types into whatever is there, and on 2026-11-26
+  the owner's hand on the mouse put a chat in front and a probe's keys went out as messages. Check
+  the exit status and stop on it; a burst of keys typed at once after Escape was read by AutoCAD's
+  input search as another command (ERASE), so pause between keys. The keys reach a prompt only
   when the drawing area holds the keyboard focus, which a click there gives: launched from WSL,
   AutoCAD came to the foreground with the focus on an inner window and swallowed every key until
   then (2026-10-21). A click at `Command:` on nothing starts a window: press Escape after it.
@@ -71,7 +75,8 @@ Windows desktop.
 AutoCAD's chrome is WPF and answers UI Automation, so its layout is read and its popups opened
 while the owner works in another window:
 
-- `acad.sh tree <hwnd> [depth]` prints every element with its rectangle and AutomationId: the
+- `acad.sh tree <hwnd> [depth]` prints every element with its rectangle and AutomationId (and
+  `disabled`, a slider's or spinner's range, a box's value): the
   title bar and Quick Access Toolbar, the ribbon's tabs, panels and buttons (`ID_Line`,
   `ID_PanelDraw`), the file and layout tabs, the status bar, the command line, an open list.
   **Not there**: the application button, and what the view draws (ViewCube, navigation bar,

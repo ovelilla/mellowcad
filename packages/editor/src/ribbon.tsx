@@ -614,8 +614,13 @@ function PanelView({
         if (!pinned) setOpen(false)
       }}
     >
-      <PanelRows panel={panel} shape={shape} ctx={ctx} />
-      <div className="mx-px mt-0.75 flex h-4.5 text-muted-foreground">
+      <PanelRows panel={panel} shape={shape} ctx={ctx} untitled={!ctx.titles} />
+      <div
+        className={cn(
+          "mx-px flex text-muted-foreground",
+          ctx.titles ? "mt-0.75 h-4.5" : "mt-1.75 h-2.75"
+        )}
+      >
         {slideOut.length > 0 ? (
           <Popover.Root
             open={open}
@@ -646,7 +651,7 @@ function PanelView({
                 anchor={anchor}
                 side="bottom"
                 align="start"
-                sideOffset={-18}
+                sideOffset={ctx.titles ? -18 : -11}
                 collisionPadding={0}
                 className="z-50"
               >
@@ -709,18 +714,30 @@ function PanelView({
   )
 }
 
-/** A panel's rows before its break: 4 above them, 72 high. */
+/**
+ * A panel's rows before its break: 4 above them, 72 high. With Show Panel
+ * Titles off AutoCAD's title bar keeps its ▾ in 11 of its 18 and the panel
+ * its 97, the rows 7 under its top and the bar 7 under them (desktop
+ * 2026-11-26, rc-after-titles: Draw's bar 143 to 154, Line's text 3 lower).
+ */
 function PanelRows({
   panel,
   shape,
   ctx,
+  untitled = false,
 }: {
   panel: RibbonPanel
   shape: PanelShape
   ctx: Context
+  untitled?: boolean
 }) {
   return (
-    <div className="mt-1 flex h-18 items-start ps-0.75 pe-0.5">
+    <div
+      className={cn(
+        "flex h-18 items-start ps-0.75 pe-0.5",
+        untitled ? "mt-1.75" : "mt-1"
+      )}
+    >
       {panel.slots.map((slot, i) => (
         <Fragment key={i}>
           {i > 0 && (
@@ -792,7 +809,7 @@ function Launcher({ panel, ctx }: { panel: RibbonPanel; ctx: Context }) {
       <button
         type="button"
         aria-label={name}
-        className="flex h-4.5 w-3 items-end justify-center rounded-sm pb-0.5 outline-none hover:bg-muted hover:text-foreground"
+        className="flex h-4.5 max-h-full w-3 items-end justify-center rounded-sm pb-0.5 outline-none hover:bg-muted hover:text-foreground"
         onClick={() => ctx.act(() => ctx.engine.runRibbonButton(button))}
       >
         <MoveDiagonal2

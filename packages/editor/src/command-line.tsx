@@ -17,9 +17,13 @@ import { drawingFocus } from "./drawing-focus"
 import { useEditorText } from "./editor-text"
 import type { PieceProps } from "./piece"
 
-/** The expanded history and the suggestions, over the drawing above the line. */
+/**
+ * The expanded history, over the drawing above the line: from 4 px before
+ * Recent Commands to the line's end, as AutoCAD's (desktop 2026-11-26,
+ * cl-f2: 251 to 1726 over a line from 193, its icon at 255).
+ */
 const ABOVE =
-  "absolute inset-x-0 bottom-full border border-b-0 bg-card/90 px-2 py-0.5 font-mono whitespace-pre-wrap backdrop-blur"
+  "absolute inset-s-6 inset-e-0 bottom-full border border-b-0 bg-card/90 px-2 py-0.5 font-mono whitespace-pre-wrap backdrop-blur"
 
 /**
  * AutoCAD's command window as it starts: one line floating over the foot of
@@ -240,7 +244,9 @@ function Line({
 /**
  * The temporary prompt history: the last lines of the running command, each
  * on a translucent label of its own over the drawing, 20 high, as AutoCAD's
- * list draws them (uia2-cli-Button_2.txt: ListBoxItem 133 × 20). Once the
+ * list draws them (uia2-cli-Button_2.txt: ListBoxItem 133 × 20), from
+ * Recent Commands' start (desktop 2026-11-26, en1920-a: labels at 257, its icon at
+ * 255, the line at 193). Once the
  * command ends they fade, so a report (ID, DIST) can still be read; the time
  * is ours, as AutoCAD documents none.
  */
@@ -255,7 +261,7 @@ function TemporaryLines({ commandLine }: { commandLine: CommandLineUi }) {
       lang={lang}
       aria-hidden
       className={cn(
-        "pointer-events-none absolute inset-s-0 bottom-full mb-px flex max-w-full flex-col items-start font-mono whitespace-pre",
+        "pointer-events-none absolute inset-s-7 inset-e-0 bottom-full mb-px flex flex-col items-start font-mono whitespace-pre",
         command === null && "animate-prompt-fade"
       )}
     >
@@ -271,7 +277,10 @@ function TemporaryLines({ commandLine }: { commandLine: CommandLineUi }) {
   )
 }
 
-/** The whole history, expanded up to 12 lines and scrolled to its end. */
+/**
+ * The whole history, expanded up to some 300 high, as AutoCAD's F2 opens it
+ * (desktop 2026-11-26, cl-f2: 299 at 1920 × 1080), and scrolled to its end.
+ */
 function History({
   commandLine,
   label,
@@ -293,8 +302,8 @@ function History({
       role="log"
       aria-label={label}
       lang={lang}
-      // Twelve lines of 16 px.
-      className={cn(ABOVE, "max-h-49 overflow-y-auto")}
+      // Eighteen lines of 16 px and the padding.
+      className={cn(ABOVE, "max-h-73 overflow-y-auto")}
     >
       {lines.map((line, index) => (
         <Line key={index} line={line} idlePrompt={idlePrompt} />

@@ -172,7 +172,7 @@ button drew 2-Point's icon over the same `Circle`, and ran it; **after a restart
 Radius again**: the member is the session's, not the profile's. The button of a command that
 is running was not lit while it ran (Circle, the pointer over the drawing).
 
-**A tooltip**, a second or so after the pointer rests on a button: a light panel under the
+**A tooltip**, a second or so after the pointer rests on a button: a light panel at the pointer, its corner 5 after it and 26 under it (2026-11-26, phase 6's session), under the
 button (Line's some 178×105, over the panel's title bar) with the name in bold, the description
 (`Creates straight line segments`), a rule, then the command line's icon and the command in bold
 (`LINE`) and, bold too, `Press F1 for more help`. The button under the pointer takes a faint
@@ -699,8 +699,12 @@ dialogs need nothing of the new frame:
 The command line floating (C1 to C4, D4); the bottom row at AutoCAD's sizes and defaults (S1,
 S3 to S5); the viewport controls' visual style label and list (D1), which closes that row of
 VSCURRENT's Missing; the ViewCube at rest (D2); grips and highlight compared (D5). Its desktop
-pass (§7) did not happen: the session had no word for it, so what needs it stays **unverified**
-in the coverage — S4 among it — and the rest is built. Blocks, a commit each, each leaving the
+pass (§7) did not happen that day; it came with phase 6's session, the same day, side by side at
+1920 × 1080 and 1280 × 720 in English and Spanish (`research/ui/2026-11-26`), and its fixes went in
+one commit: the ViewCube sized and placed as NAVVCUBESIZE 4 (Automatic) does, by the drawing's
+height; the navigation bar against the drawing's edge; F2's history some 300 high and, with the
+temporary lines, from Recent Commands' start. The bottom row and the grips matched. S4 and the
+floating line's own width still want a profile nobody has touched. Blocks, a commit each, each leaving the
 editor whole; the bottom row goes first, as the command line, floating, has nowhere to float to
 until the drawing reaches the row:
 
@@ -719,7 +723,8 @@ until the drawing reaches the row:
    capitals, which the engine keeps and runs), the field with `Type a command` at `Command:`
    and no `Command:` before it, the history's arrow at its end; Customize is Missing, undrawn.
    The temporary prompt lines are labels of their own, one per line, over the drawing, fading
-   as they do now; F2's history opens above the line (its look **unverified**, §7). The canvas
+   as they do now; F2's history opens above the line (its look compared on the desktop with
+   phase 6's session: some 300 high, from Recent Commands' start). The canvas
    keeps its box: like a floating palette the line covers the drawing's bottom and ZOOM Extents
    frames the whole drawing area, AutoCAD's 857 at 1080 (§2.1).
 3. **The visual style's label** (D1; done 2026-11-26): `[2D Wireframe]` after `[Top]`, a style off 2D Wireframe
@@ -742,7 +747,9 @@ until the drawing reaches the row:
 
 Tooltips (R11), the right-click menu with Show Tabs and Show Panels (R13, then decision 4 is
 revisited), the Quick Access Toolbar's Customize ▾ (F4). The session of 2026-11-26 had no word for
-the desktop, so what only the desktop settles stays **unverified** in the coverage and goes to §7.
+the desktop then; its pass came with phase 6's session the same day, and its fixes went in one
+commit: the tooltip at the pointer, a title bar 11 high without its name, Close as
+`^C^C_RibbonClose` (the command cancelled, the macro written), Customize ▾ 16 × 22 with no tooltip.
 Blocks, a commit each, each leaving the editor whole:
 
 1. **Tooltips** (R11; done 2026-11-26): every ribbon control a tooltip in §2.3's parts — the name, the description,
@@ -771,7 +778,7 @@ Blocks, a commit each, each leaving the editor whole:
    device's, kept as the minimize state is (where AutoCAD keeps it, the workspace or the profile,
    **unverified**). Show Panel Titles: Autodesk's support article "Ribbon panel drop-down titles are
    missing" settles it — "The drop-down arrow is present, but there is no text": the title bar
-   stays, its name goes; its height and the minimized states without names stay **unverified**.
+   stays, its name goes; the desktop pass of 2026-11-26 measured it 11 high, the panel keeping its 97; whether the minimized states lose their names stays **unverified**.
 3. **Customize ▾** (F4; done 2026-11-26): the arrow after the toolbar's last button and its list under it (§2.2, `pop-qat-custom`),
    rows of 21 under its caption, a check before each command on the toolbar: New, Open, Save,
    Save As..., Undo, Redo, Match Properties and Properties, the ones built; a pick adds or removes
@@ -845,8 +852,8 @@ start of its phase and with the owner's word first (`gui.md`):
 | 1 | done 2026-11-24 (§2.3): a button pressed, the extended tooltip, a small button's list, a slide-out open, the Insert gallery; block 4's toggles, gallery, Attribute Display and Object Color's list without the mouse (`research/ui/2026-11-24/block4`) |
 | 2 | done 2026-11-25 (§2.2): Undo's and Redo's lists and what they run, the title of a saved drawing, the Open Documents list (`research/ui/2026-11-25`); the Help list opened on none of four clicks either, so its rows stay **unverified** |
 | 3 | done 2026-11-25 (§2.8, §2.9): a palette docked, anchored and auto-hidden and its properties menu with the mouse; New Text Style and each tab of Modify Dimension Style without it (`research/ui/2026-11-25/phase3`) |
-| 4 | not reached: the session of 2026-11-26 had no word for it, and phase 4 was built without it; still owed, each **unverified** in its coverage entry: the status bar of a profile nobody has touched (S4); the navigation bar under the pointer; the command line's history open (F2) and its Recent Commands and Customize menus, which the mouse pass opened without a capture |
-| 5 | not reached (no word for the desktop on 2026-11-26), each **unverified** in its coverage entry: where a ribbon tooltip opens (at the pointer, it seems) and whether Circle's names its member; whether a second tooltip opens at once; whether a pick in the right-click menu closes it, whether its Close cancels a running command or echoes, a title bar's height without its name, and whether the names leave a folded panel or the minimized states; where AutoCAD keeps what the menu shows; Customize ▾'s arrow (its width, its tooltip), where a command added goes and whether a pick closes its list |
+| 4 | done 2026-11-26 with phase 6's session (§6, phase 4; `research/ui/2026-11-26`): ~~the command line's history open (F2) and its Recent Commands and Customize menus~~ (cl-f2, cl-recent2, cl-custom); still owed, each **unverified** in its coverage entry: the status bar and the floating line's width of a profile nobody has touched (S4: the profile measured has been used by every probe); the navigation bar under the pointer |
+| 5 | done 2026-11-26 with phase 6's session (§6, phase 5; `research/ui/2026-11-26`): ~~where a ribbon tooltip opens and whether Circle's names its member; whether a second tooltip opens at once; whether a pick in the right-click menu closes it, whether its Close cancels a running command or echoes, a title bar's height without its name; Customize ▾'s arrow, where a command added goes and whether a pick closes its list~~; still owed: whether the names leave a folded panel or the minimized states, where AutoCAD keeps what the menu shows, U's name after the menu's Close |
 | 6 | not reached (no word for the desktop on 2026-11-26), each **unverified** in its coverage entry: Array Creation's — whether a field's edit echoes, where a refused value is said, a tooltip with no command, Direction's lit state, ARRAYPATH's tab once the path is picked, Show Tabs and Show Panels on a contextual tab, the tab minimized; Hatch Creation's — first, a traced run of HATCH with the ribbon open in English and Spanish, for the `initget` of 129 and 50968 (31427, 16731 or 62278), what Enter and Undo do at 50968, whether Angle and Scale grey for a solid fill, the Angle slider's range, the pattern Type › Pattern brings back, Scale's spin step and the gallery's tooltips; no capture of Text Editor or Array Creation exists in research/ (Hatch Creation: hatch/d01-2; Array, selected: arrays/d07-1) |
 
 Without the mouse, `acad.sh act` opens a drop-down, a slide-out, a folded panel, the status

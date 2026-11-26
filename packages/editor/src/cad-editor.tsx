@@ -583,11 +583,27 @@ export function EditorZones({
             )}
 
             {/* The ViewCube keeps AutoCAD's corner of the drawing
-            (NAVVCUBELOCATION 0), the navigation bar linked under it. */}
+            (NAVVCUBELOCATION 0), its centre 80 from the drawing's edge and
+            110 from its top, the navigation bar under it against the edge.
+            AutoCAD's NAVVCUBESIZE 4 sizes it by the drawing's height: whole
+            from some 708 high, below that by the height, place and all
+            (desktop 2026-11-26, cube-<w>x<h>: W to E 113 on a drawing 883 high,
+            98 on 613, 83 on 523), so the box is the height's 20.34 % (144 of 708)
+            and the cube's offsets with it; the bar's 2 and 20 stay. */}
             {(Cube || Navigation) && (
-              <div className="pointer-events-none absolute inset-e-4 top-4 z-10 flex flex-col items-center gap-2">
-                {Cube && <Cube {...ready} />}
-                {Navigation && <Navigation {...ready} />}
+              <div className="[container-type:size] pointer-events-none absolute inset-0 z-10">
+                <div className="absolute inset-e-0.5 top-[min(38px,5.37cqh)] flex flex-col items-end [--cube-size:min(144px,20.34cqh)]">
+                  {Cube && (
+                    <div className="me-[min(6px,0.85cqh)]">
+                      <Cube {...ready} />
+                    </div>
+                  )}
+                  {Navigation && (
+                    <div className="mt-5">
+                      <Navigation {...ready} />
+                    </div>
+                  )}
+                </div>
               </div>
             )}
 

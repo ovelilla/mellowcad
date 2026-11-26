@@ -3329,14 +3329,14 @@ export class CadRuntime extends Observable {
   }
 
   /**
-   * The ribbon's right-click menu's Close (AcWindows' RibbonMenuClose): the
-   * ribbon closed as RIBBONCLOSE closes it, at `Command:` a step U names
-   * RIBBONCLOSE; a running command goes on, the close part of its step
-   * (whether AutoCAD's cancels it, or echoes, is unverified:
-   * docs/coverage/workspace.md, Ribbon).
+   * The ribbon's right-click menu's Close (AcWindows' RibbonMenuClose), a
+   * macro as `^C^C_RibbonClose`: the running command cancelled and
+   * `_RibbonClose` written, RIBBONCLOSE run (desktop 2026-11-26, rc-close:
+   * `Specify next point or [Undo]: *Cancel*`, then `Command: _RibbonClose`).
+   * A menu's step, as an accelerator's (U's name unverified).
    */
   closeRibbon(): void {
-    if (this.ribbonOpen) this.ribbonStep(false)
+    if (this.ribbonOpen) this.runAccelerator("RIBBONCLOSE", "_RibbonClose")
   }
 
   /**

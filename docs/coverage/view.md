@@ -327,14 +327,18 @@ UCSs and an unsaved or orthographic current one, `Unnamed` (es `S-nombre`), chec
 echoes so, UCS-D103); at rest the cube, its ring and the UCS menu alone, at 50 % opacity; with the pointer
 on it (or the focus in it, or one of its menus open) opaque, with Home at its top left, the roll
 arrows at its top right, the triangles of a face view and its menu's arrow at its bottom right,
-which opens the right-click menu (plan §2.5: desktop a-cube-crop, cube-hover); in a
+which opens the right-click menu (plan §2.5: desktop a-cube-crop, cube-hover); its size and place
+NAVVCUBESIZE 4's, Automatic: whole (W to E 113) from some 708 px of drawing height, its centre 80
+from the drawing's edge and 110 from its top, and below that height smaller by the height, place and
+all (desktop 2026-11-26, cube-1920x1080 to cube-1280x720 and cube-1920x720: 113 at 883 high, 98 at
+613, 83 at 523, whatever the width); in a
 right-to-left page its column sits top left with the palettes (no AutoCAD is right to left), the
 cube itself unmirrored
 
 **Missing:** Perspective and Perspective with Ortho Faces, ViewCube Settings (its Snap to closest
 view among them) and Help in the menu (d05: Home · Parallel, Perspective, Perspective with Ortho
 Faces · Set Current View as Home · ViewCube Settings... · Help), smooth transitions, NAVVCUBELOCATION / NAVVCUBEOPACITY / NAVVCUBESIZE / NAVVCUBEORIENT as variables
-(fixed at top right, 50 %, one size, the current UCS), NORTHDIRECTION, orienting to the WCS
+(fixed at top right, 50 %, Automatic's size, the current UCS), NORTHDIRECTION, orienting to the WCS
 
 ### Viewport controls (top left)
 
@@ -360,7 +364,8 @@ Styles ▸, the seven styles not built and Visual Styles Manager... (vp-style)
 
 ### Navigation bar
 
-**Implemented:** vertical, linked under the ViewCube (NAVBARDISPLAY 1): Pan, the Zoom split button
+**Implemented:** vertical, linked under the ViewCube (NAVBARDISPLAY 1), against the drawing's edge
+some 20 under the UCS menu (desktop 2026-11-26, en1920-a, en1280-full): Pan, the Zoom split button
 and Orbit, as the 2026 tour orders them; the split button runs the member it shows — the last one
 used, Extents at first (d07) — and its arrow lists Extents, Window, Previous, In and Out, in
 AutoCAD's order (d07-3; es Extensión, Zoom ventana, Previo, Acercar, Alejar, e01); each runs the

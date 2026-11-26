@@ -714,8 +714,8 @@ export class CadEngine {
   }
 
   /**
-   * Closes the ribbon from its own right-click menu, as RIBBONCLOSE does: at
-   * the Command prompt a step U names RIBBONCLOSE; a running command goes on.
+   * Closes the ribbon from its own right-click menu, as AutoCAD's does: the
+   * running command cancelled, `_RibbonClose` written and RIBBONCLOSE run.
    * RIBBON brings it back.
    */
   closeRibbon(): void {

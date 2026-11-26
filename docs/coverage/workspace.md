@@ -254,16 +254,15 @@ through UI Automation nor on four clicks (desktop, 2026-11-24 and 2026-11-25), s
 in AutoCAD's order — New (QNEW), Open, Save, Save As, Undo, Redo —, each run as its command by its
 global name (`_QSAVE`), so it echoes (Drawing Units as the desktop's application menu runs it,
 `^C^C_UNITS`: see UNITS); after the last its **Customize ▾** (§2.2, F4; desktop
-`autocad/pop-qat-custom`), an arrow of 13 whose tooltip names it, its list under it: the caption `Customize Quick Access
+`autocad/pop-qat-custom`), an arrow of 16 × 22 with no tooltip (desktop 2026-11-26, `qat-tip`, `qat-list`), its list under it: the caption `Customize Quick Access
 Toolbar` (AdWindows' `system:String_102`), then New, Open, Save, Save As..., Undo, Redo, Match
 Properties and Properties (AcWindows' `AcQAT…` items' words), rows of 21, each checked while the
 toolbar shows it; a pick adds the command at the toolbar's end or takes it from its place, and
-closes the list, the keys back on the drawing; Match Properties starts MATCHPROP as the ribbon's
+closes the list, the keys back on the drawing (desktop 2026-11-26, `qat-after`: Properties added
+after Redo, the list gone); Match Properties starts MATCHPROP as the ribbon's
 does, Properties toggles the palette, lit while it shows (AcQATProperties); what the toolbar shows
 is this device's (`layoutStorage.quickAccess`), as AutoCAD keeps it in the workspace. A focused
-control of the bar keeps Delete, Backspace, Enter and Space from the engine, as the ribbon's.
-**Unverified**: the arrow's width and tooltip, where an added command goes and whether a pick closes the list.
-The auto-save's state after them (AutoCAD has none); the title, centred
+control of the bar keeps Delete, Backspace, Enter and Space from the engine, as the ribbon's. The auto-save's state after them (AutoCAD has none); the title, centred
 on the bar, the drawing's name alone as AutoCAD 2027's (DWGNAME: the file OPEN opened or QSAVE, SAVEAS or
 DXFOUT last wrote the whole drawing to, no path, nothing marking a change — desktop 2026-11-25,
 `Planta baja.dwg`), else the session's new drawing's, numbered as AutoCAD numbers them (acadres
@@ -299,17 +298,19 @@ check per tab built, Show Panels ▸, a check per panel of the tab in front, | S
 checked, | Close (desktop `autocad-mouse/ribbon-rclick`, `ribbon-show-tabs`, `ribbon-show-panels`
 and their UI Automation dumps), each culture's words (AdWindows' BAML `system:String_99` to
 `_101`, AcWindows' `RibbonMenuClose`; Arabic's ours); a pick closes the menu and hands the keys to
-the drawing. A tab or panel unchecked is gone from the ribbon and its fold, the first tab shown
+the drawing (desktop 2026-11-26: the menu gone after Show Panel Titles). A tab or panel unchecked is gone from the ribbon and its fold, the first tab shown
 taking the front of a hidden one; every tab hidden, the panels' place says AutoCAD's `The Ribbon
 does not have any tabs or panels currently loaded.` (`system:String_81`). Show Panel Titles off
-leaves each title bar with its ▾ and launcher and no name, its height kept (Autodesk's "Ribbon panel
-drop-down titles are missing": "The drop-down arrow is present, but there is no text"). Close
-closes the ribbon as RIBBONCLOSE does, at `Command:` a step U names RIBBONCLOSE; a running command
-goes on, the close part of its step. What
+leaves each title bar with its ▾ and launcher and no name (Autodesk's "Ribbon panel
+drop-down titles are missing": "The drop-down arrow is present, but there is no text"), 11 high,
+the panel keeping its 97, the rows 7 under its top and the bar 7 under them (desktop 2026-11-26,
+`rc-after-titles`). Close is a macro, `^C^C_RibbonClose`: the running command cancelled,
+`_RibbonClose` written, the ribbon closed as RIBBONCLOSE closes it (desktop 2026-11-26,
+`rc-close`: `Specify next point or [Undo]: *Cancel*`, `Command: _RibbonClose`), a menu's step (U's
+name **unverified**: here `RIBBONCLOSE GROUP`). What
 is shown is this device's, kept as the minimize state is. **Unverified**: where AutoCAD keeps it
-(the workspace or the profile), whether a pick closes its menu, whether Close cancels a running
-command or echoes, what a title bar without its name measures, and whether the names leave a
-folded panel's button or the minimized states too (here they stay). Home (`docs/plans/autocad-ui.md`, §2.3; acad.cuix's
+(the workspace or the profile), and whether the names leave a folded panel's button or the
+minimized states too (here they stay). Home (`docs/plans/autocad-ui.md`, §2.3; acad.cuix's
 RibbonRoot, `node scripts/research/ribbon.mjs --tab Home --built`): its tab row, 24, and its panels,
 100, each 97 high (4, its rows' 72, 3 and a title bar of 18), with what the engine has in acad.cuix's
 rows and order — Draw, Modify, Annotation, Layers, Block, Properties, Utilities and Clipboard. Large
@@ -359,7 +360,9 @@ slide-out's title bar closes it, the drawing has the keys again, and a control f
 Delete, Backspace, Enter and Space from the engine, a letter typing a command on the drawing. Hovered, a
 button takes a faint frame; pressed, a darker fill (desktop 2026-11-24,
 `autocad-mouse/press-line.png`). **Tooltips** (§2.3, R11): after a second at rest (the profile's
-`ToolTipInitialDelay` 1000) under the control, from its start: the name — a command button's
+`ToolTipInitialDelay` 1000) at the pointer, its corner 5 after it and 26 under it, where it stays
+(desktop 2026-11-26, `tt-pline-2`, `tt-pline-low`: the pointer at two points of one button; from the
+keyboard, under the control): the name — a command button's
 text, its Name being "the label or tooltip name" (CUI help), a toggle's, combo's or gallery's its
 own AcWindows `TT_` entry's (`Properties Palette`, `Layer`) —, the description (each culture's
 acad.CUIX `HelpString` of the button's macro, or the `TT_` entry's), a rule, the command (its
@@ -369,10 +372,9 @@ two seconds more (`ExtendAfter` 2.000) and it grows into the extended tooltip, t
 paragraph in AcCommandToolTips.resources.dll under the description (120 of the 147; one that only
 introduces the illustration, `For example:`, left out); a split button has one, its member
 shown's, over its button and its arm; none opens while a list is open, its own or another's, and
-a list's rows have none (`scripts/research/ribbon-tips.mjs`; Arabic's words ours). **Unverified**:
-where the desktop places it (at the pointer, it seems: `tip-short` and `tip-line-1` put it 3 px
-apart under one button), whether Circle's tooltip names its member or its fixed text, and whether
-a second tooltip opens at once after the first, as Base UI's grouping does here. **Insert**: Block (Insert, Edit Attribute ▸ Single, Attribute
+a list's rows have none (`scripts/research/ribbon-tips.mjs`; Arabic's words ours); Circle's names its
+member (`Center, Radius`), and the next control's opens at once once one has shown, as Base UI's
+grouping does here (desktop 2026-11-26, `tt-second-a`). **Insert**: Block (Insert, Edit Attribute ▸ Single, Attribute
 Display) and Block Definition (Create Block, Define Attributes). **Annotate**: Text (Multiline Text ▸
 Single Line, SplitFollow), Dimensions in its three rows (Adjust Space; Update, `^C^C_-dimstyle
 _apply`; Linear ▾ and Continue ▾ with Baseline) and Markup (Wipeout); a panel's words its own where

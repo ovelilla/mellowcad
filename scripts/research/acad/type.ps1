@@ -21,8 +21,15 @@ public static class Ty {
   [DllImport("user32.dll")] public static extern short VkKeyScan(char c);
   static void Key(ushort vk, bool up) { var a = new IN[1]; a[0].type = 1; a[0].ki = new KI { vk = vk, flags = up ? 2u : 0u }; SendInput(1, a, Marshal.SizeOf(typeof(IN))); }
   static void Unicode(char c) { var a = new IN[2]; a[0].type = 1; a[0].ki = new KI { scan = c, flags = 4 }; a[1] = a[0]; a[1].ki.flags = 6; SendInput(2, a, Marshal.SizeOf(typeof(IN))); }
-  public static void Type(string s, int delay) {
+  [DllImport("user32.dll", EntryPoint = "GetWindowThreadProcessId")] static extern uint ProcessOf(IntPtr h, out uint pid);
+  // SendInput types into whatever is in front: a key goes only while AutoCAD's process is, or a
+  // hand on the mouse sends the rest elsewhere (on 2026-11-26 into a chat, as messages).
+  public static uint Owner;
+  public static uint ProcessOfWindow(IntPtr h) { uint pid; ProcessOf(h, out pid); return pid; }
+  public static bool InFront() { uint pid; ProcessOf(GetForegroundWindow(), out pid); return pid == Owner; }
+  public static bool Type(string s, int delay) {
     foreach (var c in s) {
+      if (!InFront()) return false;
       if (c == '\x1b') { Key(0x1B, false); Key(0x1B, true); }
       else if (c == '\r') { Key(0x0D, false); Key(0x0D, true); }
       else {
@@ -36,16 +43,21 @@ public static class Ty {
       }
       System.Threading.Thread.Sleep(delay);
     }
+    return true;
   }
   // Never tap Alt to win the foreground: in AutoCAD it opens the ribbon's key tips, and the next
   // digit typed runs a Quick Access Toolbar button (that is how a probe once saved a drawing).
   public static void Focus(IntPtr h) { uint fg = GetWindowThreadProcessId(GetForegroundWindow(), IntPtr.Zero), me = GetCurrentThreadId(); AttachThreadInput(me, fg, true); SetForegroundWindow(h); AttachThreadInput(me, fg, false); }
 }
 "@
-if ($hwnd -eq 0) { $hwnd = (Get-Process acad | Select-Object -First 1).MainWindowHandle }
+$acad = Get-Process acad | Select-Object -First 1
+if ($hwnd -eq 0) { $hwnd = $acad.MainWindowHandle }
+# The process of the window typed to, not the first acad.exe: with two open, either is checked right.
+[Ty]::Owner = [Ty]::ProcessOfWindow([IntPtr]$hwnd)
 $prev = [Ty]::GetForegroundWindow()
 if ($prev -ne [IntPtr]$hwnd) { [Ty]::Focus([IntPtr]$hwnd); Start-Sleep -Milliseconds 200 }
-[Ty]::Type($text.Replace('\e', [string][char]27).Replace('\n', [string][char]13), $delayMs)
+$done = [Ty]::Type($text.Replace('\e', [string][char]27).Replace('\n', [string][char]13), $delayMs)
 Start-Sleep -Milliseconds 300
 if ($prev -ne [IntPtr]$hwnd) { [Ty]::Focus($prev) }
+if (-not $done) { "refused: AutoCAD is not the foreground window; nothing more typed"; exit 2 }
 "typed"
