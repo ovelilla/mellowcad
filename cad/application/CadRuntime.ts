@@ -680,6 +680,10 @@ export class CadRuntime extends Observable {
   private lockedObjectsDialog: { readonly removed: number } | null = null
   // Whether MTEXT's editor asks `Do you want to save your text changes?`.
   private unsavedTextDialog = false
+  // The style Text Editor's gallery picked while the editor held text, until
+  // `Multiline Text - Text Style Change` is answered: null while it is not
+  // showing.
+  private textStyleChange: TextStyleId | null = null
   // Whether the command prompt is shown. Hiding it is purely visual: typing
   // still feeds the prompt, which reappears while there is text to show.
   private commandLineVisible = true
@@ -1438,6 +1442,8 @@ export class CadRuntime extends Observable {
 
   private switchTool(id: string | Tool): void {
     this.optionList = null
+    // Text Style Change asks about the editor being left: it goes with it.
+    this.textStyleChange = null
     if (this.suspended !== null) {
       // Ending a transparent command resumes the one it interrupted; starting
       // another ends them all.
@@ -3353,7 +3359,8 @@ export class CadRuntime extends Observable {
    * the tab it took it from, unless another was picked meanwhile.
    */
   private followContextualTab(): void {
-    const id = this.contextualTool().contextualTab?.()?.id ?? null
+    const id =
+      this.contextualTool().contextualTab?.(this.toolContext)?.id ?? null
     if (id === this.ribbonContextual) return
     const was = this.ribbonContextual
     this.ribbonContextual = id
@@ -3366,7 +3373,8 @@ export class CadRuntime extends Observable {
 
   /** The contextual tab's values, worded as the command's prompts write them. */
   private contextualTabUi(): ContextualTab | null {
-    const source = this.contextualTool().contextualTab?.() ?? null
+    const source =
+      this.contextualTool().contextualTab?.(this.toolContext) ?? null
     if (!source) return null
     const settings = this.document.getSettings()
     const fields: Partial<Record<ContextualFieldId, ContextualFieldUi>> = {}
@@ -3391,6 +3399,8 @@ export class CadRuntime extends Observable {
       toggles: source.toggles ?? {},
       method: source.method ?? null,
       pattern: source.pattern ?? null,
+      textStyle: source.textStyle ?? null,
+      attachment: source.attachment ?? null,
     }
   }
 
@@ -3405,6 +3415,37 @@ export class CadRuntime extends Observable {
    */
   editContextualTab(edit: ContextualEdit): void {
     if (this.suspendedStack.length > 0) return
+    // A style picked with text in the editor is asked about first, as
+    // AutoCAD's task dialog does; with the editor empty it applies at once
+    // (desktop, 2026-11-26).
+    if (
+      "textStyle" in edit &&
+      edit.textStyle !==
+        this.activeTool.contextualTab?.(this.toolContext)?.textStyle &&
+      (this.activeTool.editorHoldsText?.(this.toolContext) ?? false)
+    ) {
+      this.textStyleChange = edit.textStyle
+      this.invalidateState()
+      this.host.requestRender()
+      return
+    }
+    this.applyContextualEdit(edit)
+  }
+
+  /**
+   * `Multiline Text - Text Style Change`'s answer: Yes applies the style
+   * picked, No leaves the text as it was (desktop, 2026-11-26). Its `Always
+   * change the text style` is not offered.
+   */
+  answerTextStyleChange(answer: "yes" | "no"): void {
+    const style = this.textStyleChange
+    if (style === null) return
+    this.textStyleChange = null
+    if (answer === "yes") this.applyContextualEdit({ textStyle: style })
+    this.invalidateState()
+  }
+
+  private applyContextualEdit(edit: ContextualEdit): void {
     const context = this.toolContext
     // A field's value is refused as its prompt would refuse it, only the
     // words dropped. Nothing else is quieted: Close Hatch Creation is Enter,
@@ -4405,6 +4446,18 @@ export class CadRuntime extends Observable {
   private dynamicInputHasField(): boolean {
     const session = this.dynamicInput.getSession()
     return this.dynamicInput.isOpen() && (session?.fields.length ?? 0) > 0
+  }
+
+  /** The box's multi-line text field (MTEXT's in-place editor), if it is up. */
+  private paragraphsField(): string | null {
+    if (this.shortcutMenu !== null || this.commandLine.getBuffer() !== "") {
+      return null
+    }
+    const id = this.dynamicInput.getActiveFieldId()
+    const field = this.dynamicInput
+      .getSession()
+      ?.fields.find((f) => f.id === id)
+    return field?.kind === "paragraphs" ? field.id : null
   }
 
   /**
@@ -8138,6 +8191,29 @@ export class CadRuntime extends Observable {
         return true
       }
     }
+    // WHY: MTEXT's in-place editor holds the keyboard as AutoCAD's does: what
+    // is typed on the drawing before it has focus back (after a Text Editor
+    // control, or the corner's click) goes on where its text stopped, Enter a
+    // new paragraph, never to the command line.
+    const editor = this.paragraphsField()
+    if (editor !== null && e.ctrlKey && !e.altKey && e.key === "Enter") {
+      this.commitDynamicInput()
+      return true
+    }
+    if (editor !== null && !e.ctrlKey && !e.altKey) {
+      const typed = this.dynamicInput.getText(editor)
+      if (e.key === "Enter" || e.key.length === 1) {
+        this.setDynamicInputText(
+          typed + (e.key === "Enter" ? "\n" : e.key),
+          editor
+        )
+        return true
+      }
+      if (e.key === "Backspace") {
+        this.setDynamicInputText(typed.slice(0, -1), editor)
+        return true
+      }
+    }
 
     // Everything else typed on the drawing surface goes to the command prompt,
     // exactly like AutoCAD: names and aliases are entered as text and run with
@@ -8908,6 +8984,7 @@ export class CadRuntime extends Observable {
       saveAsDialog: this.saveAsDialog,
       lockedObjectsDialog: this.lockedObjectsDialog,
       unsavedTextDialog: this.unsavedTextDialog,
+      textStyleChangeDialog: this.textStyleChange !== null,
       cleanScreen: {
         active: this.cleanScreen,
         palettes: this.cleanScreenPalettes,

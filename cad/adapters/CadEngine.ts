@@ -983,6 +983,15 @@ export class CadEngine {
   }
 
   /**
+   * Answers `Multiline Text - Text Style Change`
+   * (`state.textStyleChangeDialog`): Yes applies the style Text Editor's
+   * gallery picked, No leaves the text as it was.
+   */
+  answerTextStyleChange(answer: "yes" | "no"): void {
+    this.runtime.answerTextStyleChange(answer)
+  }
+
+  /**
    * Inserts a block as the Blocks palette's click does: -INSERT past its
    * name, asking what the palette's Options leave to ask
    * (`state.blockInsert`).

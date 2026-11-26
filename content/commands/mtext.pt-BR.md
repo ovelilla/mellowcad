@@ -3,10 +3,10 @@ title: "Comando MTEXT (TEXTOM) no AutoCAD"
 metaTitle: "Caixa de texto no AutoCAD: MTEXT (TEXTOM)"
 description: "O MTEXT do AutoCAD em português, TEXTOM (alias T): dois cantos ou Largura, Altura, Justificar e espaçamento de linha, parágrafos num objeto. Experimente grátis."
 figure: "Uma nota numa caixa: primeiro a altura, depois o canto oposto, e um parágrafo ajustado à largura entre eles."
-sourceHash: "67d762bb368d"
+sourceHash: "0177fafe871f"
 ---
 
-O MTEXT, TEXTOM no AutoCAD em português, escreve texto multilinha: um só objeto com parágrafos que se ajustam a uma largura. Você especifica um primeiro canto e o oposto, e a caixa entre eles define a largura; depois digita num editor desenhado no lugar, onde Enter começa um novo parágrafo e Ctrl+Enter, ou um clique fora do quadro, mantém o texto. Esc com algo digitado pergunta se você quer salvá-lo, como a caixa de alterações não salvas do AutoCAD. Para linhas que sejam cada uma um objeto próprio, use o <Command id="TEXT" />.
+O MTEXT, TEXTOM no AutoCAD em português, escreve texto multilinha: um só objeto com parágrafos que se ajustam a uma largura. Você especifica um primeiro canto e o oposto, e a caixa entre eles define a largura; depois digita num editor desenhado no lugar, onde Enter começa um novo parágrafo e Ctrl+Enter, ou um clique fora do quadro, mantém o texto. Enquanto o editor está aberto, a faixa de opções mostra a guia Editor de texto, onde o estilo, a altura ou a justificação escolhidos se aplicam ao texto inteiro. Esc com algo digitado pergunta se você quer salvá-lo, como a caixa de alterações não salvas do AutoCAD. Para linhas que sejam cada uma um objeto próprio, use o <Command id="TEXT" />.
 
 A primeira linha mostra o estilo e a altura atuais. Cada opção é pedida no prompt do canto oposto e volta a ele, então uma execução define a altura, a justificação e o resto antes de fechar a caixa. As palavras passam para a linha seguinte onde uma linha passaria da largura, e uma palavra mais longa que a largura fica para fora. A altura é compartilhada com o <Command id="TEXT" /> e fica guardada no desenho; a justificação, a rotação e o espaçamento de linha voltam ao padrão a cada execução. O <Command id="-MTEXT" /> pergunta o mesmo e depois recebe o texto na linha de comando, uma linha por vez.
 
@@ -38,7 +38,7 @@ Pede a largura em vez do canto oposto, digitada ou como a distância até um pon
 
 ## Missing
 
-As colunas, que o AutoCAD 2027 lista no prompt do canto oposto, não são oferecidas. A formatação dentro do texto, como a altura, a fonte ou a cor de uma palavra, frações empilhadas ou sublinhado, não é desenhada nem aplicada, e o editor não tem régua, tabulações, recuos, listas nem a guia Editor de texto da faixa de opções, nem um cursor sobre o desenho. Não há máscara de fundo nem quadro de texto, altura definida, escala anotativa ou snap ao objeto Nó nos seus cantos, e um clique dentro da sua caixa o seleciona mesmo fora das letras, onde o AutoCAD não seleciona nada.
+As colunas, que o AutoCAD 2027 lista no prompt do canto oposto, não são oferecidas. A formatação dentro do texto, como a altura, a fonte ou a cor de uma palavra, frações empilhadas ou sublinhado, não é desenhada nem aplicada, e o editor não tem régua, tabulações, recuos nem listas, nem um cursor sobre o desenho. A guia Editor de texto da faixa de opções tem a galeria de estilos, a altura, Justificação e Fechar Editor de texto, mas não Anotativo, Máscara, a formatação, os marcadores e a numeração, o espaçamento de linha e o alinhamento de parágrafo, Inserir, Corretor ortográfico, Ferramentas nem Opções do AutoCAD, e a sua altura muda a do texto inteiro, onde a do AutoCAD define a do texto digitado em seguida. Não há máscara de fundo nem quadro de texto, altura definida, escala anotativa ou snap ao objeto Nó nos seus cantos, e um clique dentro da sua caixa o seleciona mesmo fora das letras, onde o AutoCAD não seleciona nada.
 
 ## Questions
 

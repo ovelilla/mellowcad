@@ -17,9 +17,12 @@ import { entityScenePrimitive } from "../SceneBuilder"
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import type { PromptId } from "../../locales/types"
+import { parseNumber } from "../../domain/units"
+import type { ContextualEdit } from "../EngineState"
 import {
   CommandOption,
   CommandOptionOutcome,
+  ContextualTabSource,
   type HeldVariables,
   KeyInput,
   PointerInput,
@@ -211,12 +214,100 @@ export class TextEditTool implements Tool {
    * it, as MTEXT's own editor does (desktop text/d05-5).
    */
   hasUnsavedText(ctx: ToolContext): boolean {
+    if (this.state.phase !== "edit") return false
+    const target = this.state.target
+    return target.type === "mtext" && this.mtextEdited(target, ctx) !== null
+  }
+
+  /**
+   * Text Editor (AcTextEditorInProgress) while a multiline text is open in
+   * the editor, showing its style, height and Justification.
+   */
+  contextualTab(): ContextualTabSource | null {
+    if (this.state.phase !== "edit") return null
+    const target = this.state.target
+    if (target.type !== "mtext") return null
+    return {
+      id: "textEditor",
+      fields: [{ id: "textHeight", value: target.height, kind: "distance" }],
+      textStyle: target.styleId,
+      attachment: target.attachment,
+    }
+  }
+
+  /**
+   * Text Editor's controls on the multiline text being edited, written with
+   * its wording as the editor closes: a style (its fixed height, or the
+   * object's own without one), a height, a Justification about the object's
+   * insertion point (unverified), or Close Text Editor, which keeps the edit
+   * as Ctrl+Enter does.
+   */
+  editContextual(edit: ContextualEdit, ctx: ToolContext): CommandOptionOutcome {
+    if (this.state.phase !== "edit") return "unhandled"
+    const target = this.state.target
+    if (target.type !== "mtext") return "unhandled"
+    if ("close" in edit) {
+      this.commitEdit(ctx)
+      if (this.endsAfterEdit()) return "end"
+      this.enterSelect(ctx)
+      return "continue"
+    }
+    let next: MTextEntity | null = null
+    if ("field" in edit && edit.field === "textHeight") {
+      const height = parseNumber(edit.text)
+      if (height === null || !(height > 0)) {
+        ctx.report(ctx.text.message("positiveNonzero"), "error")
+        return "continue"
+      }
+      next = { ...target, height }
+    } else if ("textStyle" in edit) {
+      const style = ctx.document.getTextStyle(edit.textStyle)
+      if (!style) return "unhandled"
+      const own = ctx.document.get(target.id)
+      const base = own?.type === "mtext" ? own.height : target.height
+      next = {
+        ...target,
+        styleId: style.id,
+        height: style.height > 0 ? style.height : base,
+      }
+    } else if ("attachment" in edit) {
+      next = { ...target, attachment: edit.attachment }
+    }
+    if (!next) return "unhandled"
+    this.state = { phase: "edit", target: next }
+    return "continue"
+  }
+
+  editorHoldsText(ctx: ToolContext): boolean {
     return (
       this.state.phase === "edit" &&
       this.state.target.type === "mtext" &&
-      ctx.dynamicInput.getText("value") !==
-        mtextPlainText(this.state.target.contents)
+      ctx.dynamicInput.getText("value") !== ""
     )
+  }
+
+  /**
+   * The multiline text as the editor leaves it, or null when neither its
+   * wording nor what Text Editor sets changed: unchanged wording keeps the
+   * contents as they were, formatting included.
+   */
+  private mtextEdited(
+    target: MTextEntity,
+    ctx: ToolContext
+  ): MTextEntity | null {
+    const own = ctx.document.get(target.id)
+    const before = own?.type === "mtext" ? own : target
+    const value = ctx.dynamicInput.getText("value")
+    const reworded = value !== mtextPlainText(before.contents)
+    if (
+      !reworded &&
+      target.styleId === before.styleId &&
+      target.height === before.height &&
+      target.attachment === before.attachment
+    ) {
+      return null
+    }
+    return reworded ? { ...target, contents: mtextContents(value) } : target
   }
 
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
@@ -484,12 +575,10 @@ export class TextEditTool implements Tool {
     // ERASE is for, and the wording AutoCAD uses here could not be verified.
     if (value.trim().length === 0) return
     if (target.type === "mtext") {
-      // Unchanged wording keeps the contents as they were, formatting included.
-      if (value === mtextPlainText(target.contents)) return
+      const edited = this.mtextEdited(target, ctx)
+      if (!edited) return
       this.marks.push(ctx.historyDepth())
-      ctx.execute(
-        new UpdateEntityCommand({ ...target, contents: mtextContents(value) })
-      )
+      ctx.execute(new UpdateEntityCommand(edited))
       return
     }
     if (value === target.value) return

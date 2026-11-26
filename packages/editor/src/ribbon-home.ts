@@ -115,6 +115,12 @@ export type RibbonControl =
    * AcHatchPatternAngleSlider, AcHatchScaleSpinner), in their rows.
    */
   | { readonly kind: "hatchProperties" }
+  /** Text Editor's gallery of text styles (AcIPEFontStyleGallery). */
+  | { readonly kind: "textStyles" }
+  /** Text Editor's height (AcIPEFontSizeCombo), in Style's second row. */
+  | { readonly kind: "textHeight" }
+  /** Text Editor's Justification (AcIPEJustificationMenu): nine attachments. */
+  | { readonly kind: "textJustification" }
 
 /** A column of up to three small controls, one row each. */
 export interface RibbonColumn {

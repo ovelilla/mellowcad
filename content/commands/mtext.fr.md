@@ -2,10 +2,10 @@
 title: "Commande TEXTMULT (MTEXT) dans AutoCAD"
 description: "Texte multiligne avec TEXTMULT (MTEXT, alias TT) d'AutoCAD en français : deux coins ou Largeur, Hauteur, Justifier, interligne, un seul objet. Essayez-le."
 figure: "Une note dans un cadre : la hauteur réglée d'abord, puis le coin opposé, et un paragraphe renvoyé à la ligne à la largeur entre les deux."
-sourceHash: "67d762bb368d"
+sourceHash: "0177fafe871f"
 ---
 
-TEXTMULT (MTEXT) écrit du texte multiligne : un seul objet qui contient des paragraphes renvoyés à la ligne selon une largeur. Vous cliquez un premier coin puis le coin opposé, et le cadre entre eux fixe la largeur ; vous tapez ensuite dans un éditeur dessiné sur place, où Entrée commence un nouveau paragraphe et Ctrl+Entrée, ou un clic hors du cadre, garde le texte. Echap avec quelque chose de tapé demande s'il faut l'enregistrer, comme la boîte de dialogue des modifications non enregistrées d'AutoCAD. Pour des lignes qui soient chacune un objet à part, utilisez <Command id="TEXT" />.
+TEXTMULT (MTEXT) écrit du texte multiligne : un seul objet qui contient des paragraphes renvoyés à la ligne selon une largeur. Vous cliquez un premier coin puis le coin opposé, et le cadre entre eux fixe la largeur ; vous tapez ensuite dans un éditeur dessiné sur place, où Entrée commence un nouveau paragraphe et Ctrl+Entrée, ou un clic hors du cadre, garde le texte. Tant que l'éditeur est ouvert, le ruban affiche l'onglet Editeur de texte, où le style, la hauteur ou la justification choisis s'appliquent à tout le texte. Echap avec quelque chose de tapé demande s'il faut l'enregistrer, comme la boîte de dialogue des modifications non enregistrées d'AutoCAD. Pour des lignes qui soient chacune un objet à part, utilisez <Command id="TEXT" />.
 
 La première ligne indique le style et la hauteur courants. Chaque option se demande à l'invite du coin opposé et y revient : une même exécution règle ainsi la hauteur, la justification et le reste avant que le cadre soit fermé. Les mots passent à la ligne là où une ligne dépasserait la largeur, et un mot plus long que la largeur la dépasse. La hauteur est partagée avec <Command id="TEXT" /> et gardée dans le dessin ; la justification, la rotation et l'interligne repartent de leurs valeurs par défaut à chaque exécution. <Command id="-MTEXT" /> demande la même chose, puis prend le texte sur la ligne de commande, une ligne à la fois.
 
@@ -37,7 +37,7 @@ Demande la largeur au lieu du coin opposé, tapée ou donnée par la distance à
 
 ## Missing
 
-Les colonnes, qu'AutoCAD 2027 propose à l'invite du coin opposé, ne sont pas proposées. La mise en forme à l'intérieur du texte, comme la hauteur, la police ou la couleur d'un mot, les fractions empilées ou le soulignement, n'est ni dessinée ni appliquée, et l'éditeur n'a ni règle, ni tabulations, ni retraits, ni listes, ni onglet contextuel Editeur de texte du ruban, ni curseur de texte sur le dessin. Il n'y a ni masque d'arrière-plan, ni cadre de texte, ni hauteur définie, ni échelle annotative, ni accrochage Nodal sur ses coins, et un clic dans son cadre le sélectionne même hors de ses lettres, là où AutoCAD ne sélectionne rien.
+Les colonnes, qu'AutoCAD 2027 propose à l'invite du coin opposé, ne sont pas proposées. La mise en forme à l'intérieur du texte, comme la hauteur, la police ou la couleur d'un mot, les fractions empilées ou le soulignement, n'est ni dessinée ni appliquée, et l'éditeur n'a ni règle, ni tabulations, ni retraits, ni listes, ni curseur de texte sur le dessin. L'onglet contextuel Editeur de texte du ruban a la galerie des styles, la hauteur, Justification et Fermer l'éditeur de texte, mais pas Annotatif, Masque, la mise en forme, les puces et la numérotation, l'espacement des lignes et l'alignement des paragraphes, Insérer, Vérifier l'orthographe, Outils ni Options d'AutoCAD, et sa hauteur change celle de tout le texte, là où celle d'AutoCAD fixe celle du texte tapé ensuite. Il n'y a ni masque d'arrière-plan, ni cadre de texte, ni hauteur définie, ni échelle annotative, ni accrochage Nodal sur ses coins, et un clic dans son cadre le sélectionne même hors de ses lettres, là où AutoCAD ne sélectionne rien.
 
 ## Questions
 

@@ -145,7 +145,8 @@ export const zhTW: EditorLocale = {
         "annotate": "註解",
         "tools3d": "3D 工具",
         "view": "檢視",
-        "arrayCreation": "陣列建立"
+        "arrayCreation": "陣列建立",
+        "textEditor": "文字編輯器"
       },
       "panels": {
         "hatchBoundaries": "邊界",
@@ -179,7 +180,10 @@ export const zhTW: EditorLocale = {
         "arrayRows": "列數",
         "arrayLevels": "層數",
         "arrayProperties": "性質",
-        "arrayClose": "關閉"
+        "arrayClose": "關閉",
+        "textStyle": "型式",
+        "textParagraph": "段落",
+        "textClose": "關閉"
       },
       "items": {
         "hatchPickPoints": "點選點",
@@ -338,7 +342,9 @@ export const zhTW: EditorLocale = {
         "arrayDivide": "等分",
         "arrayMeasure": "等距",
         "arrayAlignItems": "對齊項目",
-        "arrayClose": "關閉 陣列"
+        "arrayClose": "關閉 陣列",
+        "textJustification": "對正方式",
+        "textClose": "關閉\n文字編輯器"
       },
       "fields": {
         "hatchAngle": "角度",
@@ -354,7 +360,9 @@ export const zhTW: EditorLocale = {
         "items": "項目:",
         "angleBetween": "夾角:",
         "fillAngle": "填滿:",
-        "itemSpacing": "間距:"
+        "itemSpacing": "間距:",
+        "textStyle": "文字型式",
+        "textHeight": "文字高度"
       },
       "pressF1": "按 F1 以取得更多說明",
       "tips": {
@@ -532,7 +540,8 @@ export const zhTW: EditorLocale = {
         "arrayDivide": "重新分散對齊項目以沿著路徑長度均勻等分。",
         "arrayMeasure": "當編輯路徑，或是當由掣點或「性質」選項板編輯項目數目時，保持目前項目間距。",
         "arrayAlignItems": "指定是否對齊每個項目以相切於路徑方向。對齊將與第一個項目的方向相關。",
-        "arrayClose": "結束陣列指令。"
+        "arrayClose": "結束陣列指令。",
+        "textHeight": "以圖面單位為新文字或所選文字設定字元高度"
       },
       "tipTitles": {
         "hatchPickPoints": "點選點",
@@ -580,7 +589,8 @@ export const zhTW: EditorLocale = {
         "arrayDivide": "等分方法",
         "arrayMeasure": "等距方法",
         "arrayAlignItems": "對齊項目",
-        "arrayClose": "關閉陣列"
+        "arrayClose": "關閉陣列",
+        "textHeight": "文字高度"
       },
       "tipCommands": {
         "line": "LINE",
@@ -883,6 +893,17 @@ export const zhTW: EditorLocale = {
         "showPanelTitles": "展示面板標題",
         "close": "關閉",
         "empty": "功能區目前尚未載入任何頁籤或面板。"
+      },
+      "justifications": {
+        "tl": "左上\tTL",
+        "tc": "中上\tTC",
+        "tr": "右上\tTR",
+        "ml": "左中\tML",
+        "mc": "正中\tMC",
+        "mr": "右中\tMR",
+        "bl": "左下\tBL",
+        "bc": "中下\tBC",
+        "br": "右下\tBR"
       }
     },
     "CommandLine": {
@@ -1303,6 +1324,12 @@ export const zhTW: EditorLocale = {
         "yes": "是",
         "no": "否",
         "cancel": "取消"
+      },
+      "styleChange": {
+        "title": "多行文字 - 文字型式變更",
+        "instruction": "此變更將影響所有使用此型式的文字物件，而非僅選取的物件。是否要變更文字型式？",
+        "yes": "是",
+        "no": "否"
       }
     },
     "Palette": {

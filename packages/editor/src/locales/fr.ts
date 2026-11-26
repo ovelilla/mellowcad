@@ -141,7 +141,8 @@ export const fr: EditorLocale = {
         "annotate": "Annoter",
         "tools3d": "Outils 3D",
         "view": "Vue",
-        "arrayCreation": "Création de réseau"
+        "arrayCreation": "Création de réseau",
+        "textEditor": "Editeur de texte"
       },
       "panels": {
         "hatchBoundaries": "Contours",
@@ -175,7 +176,10 @@ export const fr: EditorLocale = {
         "arrayRows": "Rangées",
         "arrayLevels": "Niveaux",
         "arrayProperties": "Propriétés",
-        "arrayClose": "Fermer"
+        "arrayClose": "Fermer",
+        "textStyle": "Style",
+        "textParagraph": "Paragraphe",
+        "textClose": "Fermer"
       },
       "items": {
         "hatchPickPoints": "Choisir des points",
@@ -334,7 +338,9 @@ export const fr: EditorLocale = {
         "arrayDivide": "Diviser",
         "arrayMeasure": "Mesurer",
         "arrayAlignItems": "Aligner les éléments",
-        "arrayClose": "Fermer le réseau"
+        "arrayClose": "Fermer le réseau",
+        "textJustification": "Justification",
+        "textClose": "Fermer\nl'éditeur de texte"
       },
       "fields": {
         "hatchAngle": "Angle",
@@ -350,7 +356,9 @@ export const fr: EditorLocale = {
         "items": "Eléments:",
         "angleBetween": "Entre:",
         "fillAngle": "Remplissage:",
-        "itemSpacing": "Entre:"
+        "itemSpacing": "Entre:",
+        "textStyle": "Style de texte",
+        "textHeight": "Hauteur du texte"
       },
       "pressF1": "Appuyez sur F1 pour obtenir de l'aide",
       "tips": {
@@ -528,7 +536,8 @@ export const fr: EditorLocale = {
         "arrayDivide": "Redistribue les éléments à diviser de manière égale sur la longueur de la trajectoire.",
         "arrayMeasure": "Conserve l'espacement actuel entre les éléments lors de la modification de la trajectoire, ou lors de la modification du nombre d'éléments par l'intermédiaire de poignées ou de la palette Propriétés.",
         "arrayAlignItems": "Indique si chaque élément doit être aligné de manière à être tangent à la direction de la trajectoire. L'alignement est relatif à l'orientation du premier élément.",
-        "arrayClose": "Quitte la commande Réseau."
+        "arrayClose": "Quitte la commande Réseau.",
+        "textHeight": "Définit la hauteur des caractères (en unités de dessin) du nouveau texte ou du texte sélectionné."
       },
       "tipTitles": {
         "hatchPickPoints": "Choisir des points",
@@ -576,7 +585,8 @@ export const fr: EditorLocale = {
         "arrayDivide": "Méthode de division",
         "arrayMeasure": "Méthode de mesure",
         "arrayAlignItems": "Aligner les éléments",
-        "arrayClose": "Fermer le réseau"
+        "arrayClose": "Fermer le réseau",
+        "textHeight": "Hauteur du texte"
       },
       "tipCommands": {
         "line": "LIGNE",
@@ -879,6 +889,17 @@ export const fr: EditorLocale = {
         "showPanelTitles": "Afficher les titres de groupes de fonctions",
         "close": "Fermer",
         "empty": "Aucun groupe de fonctions ni onglet n'est actuellement chargé dans le ruban."
+      },
+      "justifications": {
+        "tl": "En haut à gauche\tHG",
+        "tc": "En haut au centre\tHC",
+        "tr": "En haut à droite\tHD",
+        "ml": "Au milieu à gauche\tMG",
+        "mc": "Au milieu au centre\tMC",
+        "mr": "Au milieu à droite\tMD",
+        "bl": "En bas à gauche\tBG",
+        "bc": "En bas au centre\tBC",
+        "br": "En bas à droite\tBD"
       }
     },
     "CommandLine": {
@@ -1298,6 +1319,12 @@ export const fr: EditorLocale = {
         "yes": "Oui",
         "no": "Non",
         "cancel": "Annuler"
+      },
+      "styleChange": {
+        "title": "Texte multiligne – Modifier le style de texte",
+        "instruction": "Cette modification aura une incidence sur tous les objets texte qui utilisent ce style et pas seulement sur la sélection. Voulez-vous modifier le style de texte?",
+        "yes": "Oui",
+        "no": "Non"
       }
     },
     "Palette": {

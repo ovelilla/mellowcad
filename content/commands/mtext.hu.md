@@ -3,10 +3,10 @@ title: "Bekezdéses szöveg az AutoCAD-ben: BSZÖVEG (MTEXT) parancs"
 metaTitle: "Bekezdéses szöveg AutoCAD-ben: BSZÖVEG (MTEXT)"
 description: "Az AutoCAD BSZÖVEG (MTEXT, rövidítése BS) parancsa: két sarokpont vagy szélesség, magasság, igazítás és sorköz, bekezdések egy objektumban. Próbálja ki online."
 figure: "Egy megjegyzés keretben: előbb a magasság beállítása, aztán az átellenes sarokpont, és egyetlen bekezdés, amely a kettő közötti szélességre tördelődik."
-sourceHash: "67d762bb368d"
+sourceHash: "0177fafe871f"
 ---
 
-A BSZÖVEG (MTEXT) parancs bekezdéses szöveget ír: egyetlen objektumot, amelynek bekezdései egy adott szélességre tördelődnek. Megad egy első sarokpontot és az átellenest, a köztük lévő keret pedig a szélességet adja meg; ezután a helyben megjelenő szerkesztőben gépel, ahol az Enter új bekezdést kezd, a Ctrl+Enter vagy egy kattintás a kereten kívül pedig megtartja a szöveget. Ha már beírt valamit, az Esc megkérdezi, hogy mentse-e, ahogy az AutoCAD Nem mentett változtatások párbeszédpanelje is. Ha minden sornak külön objektumnak kell lennie, használja a <Command id="TEXT" /> parancsot.
+A BSZÖVEG (MTEXT) parancs bekezdéses szöveget ír: egyetlen objektumot, amelynek bekezdései egy adott szélességre tördelődnek. Megad egy első sarokpontot és az átellenest, a köztük lévő keret pedig a szélességet adja meg; ezután a helyben megjelenő szerkesztőben gépel, ahol az Enter új bekezdést kezd, a Ctrl+Enter vagy egy kattintás a kereten kívül pedig megtartja a szöveget. Amíg a szerkesztő nyitva van, a szalagon a Szövegszerkesztő lap látható, ahol a választott stílus, magasság vagy igazítás az egész szövegre érvényes. Ha már beírt valamit, az Esc megkérdezi, hogy mentse-e, ahogy az AutoCAD Nem mentett változtatások párbeszédpanelje is. Ha minden sornak külön objektumnak kell lennie, használja a <Command id="TEXT" /> parancsot.
 
 Az első sor kiírja az aktuális stílust és magasságot. Minden opciót az átellenes sarokpont promptjánál kérdez, és utána oda tér vissza, így egy futás alatt a keret lezárása előtt beállítható a magasság, az igazítás és a többi. A szavak ott törnek új sorba, ahol a sor túllépné a szélességet, a szélességnél hosszabb szó pedig túlnyúlik rajta. A magasság közös a <Command id="TEXT" /> paranccsal, és a rajz megőrzi; az igazítás, az elforgatás és a sorköz minden futáskor az alapértékéről indul. A <Command id="-MTEXT" /> ugyanezt kérdezi, majd a szöveget a parancssorban veszi át, soronként.
 
@@ -38,7 +38,7 @@ Az átellenes sarokpont helyett a szélességet kéri be, beírva vagy egy ponti
 
 ## Missing
 
-A hasábokat, amelyeket az AutoCAD 2027 az átellenes sarokpont promptjánál felsorol, nem kínálja fel. A szövegen belüli formázást, például egy szó magasságát, betűtípusát vagy színét, a törtalakú szöveget vagy az aláhúzást nem rajzolja meg és nem alkalmazza, a szerkesztőben pedig nincs vonalzó, tabulátor, behúzás, lista vagy Szövegszerkesztő szalaglap, sem kurzor a rajzon. Nincs háttérmaszk és szövegkeret, nincs definiált magasság, feliratozási léptékezés és a sarkain Pont tárgyraszter, és a keretén belüli kattintás akkor is kijelöli, ha nem a betűire esik, míg az AutoCAD ilyenkor semmit sem jelöl ki.
+A hasábokat, amelyeket az AutoCAD 2027 az átellenes sarokpont promptjánál felsorol, nem kínálja fel. A szövegen belüli formázást, például egy szó magasságát, betűtípusát vagy színét, a törtalakú szöveget vagy az aláhúzást nem rajzolja meg és nem alkalmazza, a szerkesztőben pedig nincs vonalzó, tabulátor, behúzás vagy lista, sem kurzor a rajzon. A Szövegszerkesztő szalaglapon megvan a stílusgaléria, a magasság, az Igazítás és a Szövegszerkesztő bezárása, de nincsenek meg az AutoCAD elemei: Feliratozási, Maszk, formázás, felsorolás és sorszámozás, sorköz és bekezdésigazítás, Beszúrás, Helyesírás-ellenőrzés, Eszközök és Beállítások, és a magassága az egész szöveget módosítja, míg az AutoCAD-é a következőként beírt szövegét állítja be. Nincs háttérmaszk és szövegkeret, nincs definiált magasság, feliratozási léptékezés és a sarkain Pont tárgyraszter, és a keretén belüli kattintás akkor is kijelöli, ha nem a betűire esik, míg az AutoCAD ilyenkor semmit sem jelöl ki.
 
 ## Questions
 

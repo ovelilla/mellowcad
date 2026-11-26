@@ -66,8 +66,8 @@ export class ArrayCommandTool implements Tool {
     return this.chosen === null ? null : KINDS[this.chosen.kind]
   }
 
-  contextualTab(): ContextualTabSource | null {
-    return this.chosen?.tool.contextualTab?.() ?? null
+  contextualTab(ctx: ToolContext): ContextualTabSource | null {
+    return this.chosen?.tool.contextualTab?.(ctx) ?? null
   }
 
   editContextual(edit: ContextualEdit, ctx: ToolContext): CommandOptionOutcome {

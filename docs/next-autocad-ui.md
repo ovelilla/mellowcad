@@ -23,8 +23,9 @@
 > fase 6 (la comparación lado a lado y sus arreglos; lo poco que no resolvió sigue en el §7 del
 > plan). La fase 6 (pestañas contextuales) está en curso: sus bloques 1 (Array Creation) y 2
 > (Hatch Creation y los prompts de HATCH con el ribbon) del §6 del plan están hechos el 26/11 y
-> verificados en el escritorio ese día; quedan el 3 (Text Editor, ya capturado) y el 4 (las
-> pestañas de la selección). Después del rediseño, una fase 7 anotada por el dueño el 26/11 y por valorar: un
+> verificados en el escritorio ese día, y el 3 (Text Editor) también, comprobado en el escritorio
+> antes de construirlo; queda el 4 (las pestañas de la selección), capturado esa noche con lo que
+> el §7 del plan aún debía. Después del rediseño, una fase 7 anotada por el dueño el 26/11 y por valorar: un
 > aviso de novedades en el editor (§4).
 > Acordado el 7/11/2026 por el dueño. Se borra cuando la última fase esté hecha; hasta entonces
 > cada fase cerrada se marca aquí.

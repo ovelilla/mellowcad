@@ -145,7 +145,8 @@ export const zhCN: EditorLocale = {
         "annotate": "注释",
         "tools3d": "三维工具",
         "view": "视图",
-        "arrayCreation": "阵列创建"
+        "arrayCreation": "阵列创建",
+        "textEditor": "文字编辑器"
       },
       "panels": {
         "hatchBoundaries": "边界",
@@ -179,7 +180,10 @@ export const zhCN: EditorLocale = {
         "arrayRows": "行",
         "arrayLevels": "层级",
         "arrayProperties": "特性",
-        "arrayClose": "关闭"
+        "arrayClose": "关闭",
+        "textStyle": "样式",
+        "textParagraph": "段落",
+        "textClose": "关闭"
       },
       "items": {
         "hatchPickPoints": "拾取点",
@@ -338,7 +342,9 @@ export const zhCN: EditorLocale = {
         "arrayDivide": "定数等分",
         "arrayMeasure": "定距等分",
         "arrayAlignItems": "对齐项目",
-        "arrayClose": "关闭 阵列"
+        "arrayClose": "关闭 阵列",
+        "textJustification": "对正",
+        "textClose": "关闭\n文字编辑器"
       },
       "fields": {
         "hatchAngle": "角度",
@@ -354,7 +360,9 @@ export const zhCN: EditorLocale = {
         "items": "项目数:",
         "angleBetween": "介于:",
         "fillAngle": "填充:",
-        "itemSpacing": "介于:"
+        "itemSpacing": "介于:",
+        "textStyle": "文字样式",
+        "textHeight": "文字高度"
       },
       "pressF1": "按 F1 键获得更多帮助",
       "tips": {
@@ -532,7 +540,8 @@ export const zhCN: EditorLocale = {
         "arrayDivide": "重新分布项目，以沿路径的长度平均定数等分。",
         "arrayMeasure": "编辑路径时或通过夹点或“特性”选项板编辑项目数时，保持当前项目间距。",
         "arrayAlignItems": "指定是否对齐每个项目以与路径方向相切。对齐相对于第一个项目的方向。",
-        "arrayClose": "退出阵列命令。"
+        "arrayClose": "退出阵列命令。",
+        "textHeight": "为新的或选定的文字设置字符高度(采用图形单位)"
       },
       "tipTitles": {
         "hatchPickPoints": "拾取点",
@@ -580,7 +589,8 @@ export const zhCN: EditorLocale = {
         "arrayDivide": "定数等分方法",
         "arrayMeasure": "定距等分方法",
         "arrayAlignItems": "对齐项目",
-        "arrayClose": "关闭阵列"
+        "arrayClose": "关闭阵列",
+        "textHeight": "文字高度"
       },
       "tipCommands": {
         "line": "LINE",
@@ -883,6 +893,17 @@ export const zhCN: EditorLocale = {
         "showPanelTitles": "显示面板标题",
         "close": "关闭",
         "empty": "功能区当前没有加载任何选项卡或面板。"
+      },
+      "justifications": {
+        "tl": "左上\tTL",
+        "tc": "中上\tTC",
+        "tr": "右上\tTR",
+        "ml": "左中\tML",
+        "mc": "正中\tMC",
+        "mr": "右中\tMR",
+        "bl": "左下\tBL",
+        "bc": "中下\tBC",
+        "br": "右下\tBR"
       }
     },
     "CommandLine": {
@@ -1302,6 +1323,12 @@ export const zhCN: EditorLocale = {
         "yes": "是",
         "no": "否",
         "cancel": "取消"
+      },
+      "styleChange": {
+        "title": "多行文字 - 文字样式更改",
+        "instruction": "此更改将影响所有使用此样式的文字对象，而不是仅影响所选文字对象。是否更改文字样式？",
+        "yes": "是",
+        "no": "否"
       }
     },
     "Palette": {

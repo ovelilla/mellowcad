@@ -141,7 +141,8 @@ export const ko: EditorLocale = {
         "annotate": "주석",
         "tools3d": "3D 도구",
         "view": "뷰",
-        "arrayCreation": "배열 작성"
+        "arrayCreation": "배열 작성",
+        "textEditor": "문자 편집기"
       },
       "panels": {
         "hatchBoundaries": "경계",
@@ -175,7 +176,10 @@ export const ko: EditorLocale = {
         "arrayRows": "행",
         "arrayLevels": "수준",
         "arrayProperties": "특성",
-        "arrayClose": "닫기"
+        "arrayClose": "닫기",
+        "textStyle": "스타일",
+        "textParagraph": "단락",
+        "textClose": "닫기"
       },
       "items": {
         "hatchPickPoints": "선택점",
@@ -334,7 +338,9 @@ export const ko: EditorLocale = {
         "arrayDivide": "등분할",
         "arrayMeasure": "길이 분할",
         "arrayAlignItems": "항목 정렬",
-        "arrayClose": "배열 닫기"
+        "arrayClose": "배열 닫기",
+        "textJustification": "자리맞추기",
+        "textClose": "문서\n편집기 닫기"
       },
       "fields": {
         "hatchAngle": "각도",
@@ -350,7 +356,9 @@ export const ko: EditorLocale = {
         "items": "항목:",
         "angleBetween": "사이:",
         "fillAngle": "채우기:",
-        "itemSpacing": "사이:"
+        "itemSpacing": "사이:",
+        "textStyle": "문자 스타일",
+        "textHeight": "문자 높이"
       },
       "pressF1": "도움말을 보려면 F1을 누르십시오",
       "tips": {
@@ -528,7 +536,8 @@ export const ko: EditorLocale = {
         "arrayDivide": "등분할할 항목을 경로 길이를 따라 균일하게 다시 분산시킵니다.",
         "arrayMeasure": "경로를 편집할 때 또는 그립이나 특성 팔레트를 통해 항목 수를 편집할 때 현재 항목 간격을 유지합니다.",
         "arrayAlignItems": "각 항목을 경로 방향에 접하도록 정렬할지 여부를 지정합니다. 정렬은 첫 번째 항목 방향을 기준으로 합니다.",
-        "arrayClose": "베열 명령을 종료합니다."
+        "arrayClose": "베열 명령을 종료합니다.",
+        "textHeight": "새 문자 또는 선택한 문자의 문자 높이를 도면 단위로 설정합니다."
       },
       "tipTitles": {
         "hatchPickPoints": "점 선택",
@@ -576,7 +585,8 @@ export const ko: EditorLocale = {
         "arrayDivide": "등분할 방법",
         "arrayMeasure": "측정 방법",
         "arrayAlignItems": "항목 정렬",
-        "arrayClose": "배열 닫기"
+        "arrayClose": "배열 닫기",
+        "textHeight": "문자 높이"
       },
       "tipCommands": {
         "line": "LINE",
@@ -879,6 +889,17 @@ export const ko: EditorLocale = {
         "showPanelTitles": "패널 제목 표시",
         "close": "닫기",
         "empty": "현재 리본에 탭 또는 패널이 로드되어 있지 않습니다."
+      },
+      "justifications": {
+        "tl": "맨 위 왼쪽\tTL",
+        "tc": "맨 위 중심\tTC",
+        "tr": "맨 위 오른쪽\tTR",
+        "ml": "중간 왼쪽\tML",
+        "mc": "중간 중심\tMC",
+        "mr": "중간 오른쪽\tMR",
+        "bl": "맨 아래 왼쪽\tBL",
+        "bc": "맨 아래 중심\tBC",
+        "br": "맨 아래 오른쪽\tBR"
       }
     },
     "CommandLine": {
@@ -1299,6 +1320,12 @@ export const ko: EditorLocale = {
         "yes": "예",
         "no": "아니오",
         "cancel": "취소"
+      },
+      "styleChange": {
+        "title": "여러 줄 문자 - 문자 스타일 변경",
+        "instruction": "이 변경은 선택한 객체뿐만 아니라 이 스타일을 사용하는 모든 문자 객체에 적용됩니다. 문자 스타일을 변경하시겠습니까?",
+        "yes": "예",
+        "no": "아니오"
       }
     },
     "Palette": {

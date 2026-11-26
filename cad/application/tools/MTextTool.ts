@@ -34,9 +34,11 @@ import {
 import { entityScenePrimitive } from "../SceneBuilder"
 import { ScenePrimitive, StrokeStyle } from "../../scene/types"
 import { THEME } from "../../scene/theme"
+import type { ContextualEdit } from "../EngineState"
 import {
   CommandOption,
   CommandOptionOutcome,
+  ContextualTabSource,
   KeyInput,
   PointerInput,
   QuestionInput,
@@ -87,6 +89,14 @@ export class MTextTool implements Tool {
   private attachment: MTextAttachment = "tl"
   private lineSpacingStyle: LineSpacingStyle = "atLeast"
   private lineSpacingFactor = 1
+  /**
+   * Text Editor's style and height for the text being edited, null while
+   * the tab has set none: then the current style, and its fixed height or
+   * TEXTSIZE. Neither touches TEXTSTYLE nor TEXTSIZE, and the next run starts
+   * without them (desktop, 2026-11-26).
+   */
+  private editStyleId: TextStyleId | null = null
+  private editHeight: number | null = null
   /** The height and the style Height and Style offer as their `<default>`. */
   private heightOffered = DEFAULT_TEXT_HEIGHT
   private styleOffered = ""
@@ -111,6 +121,8 @@ export class MTextTool implements Tool {
     this.attachment = "tl"
     this.lineSpacingStyle = "atLeast"
     this.lineSpacingFactor = 1
+    this.editStyleId = null
+    this.editHeight = null
     ctx.report(
       ctx.text.message("currentMTextStyle", {
         style: this.styleNameOf(ctx),
@@ -259,7 +271,10 @@ export class MTextTool implements Tool {
         this.enterOpposite(input.point, ctx)
         break
       case "opposite":
-        this.enterEdit(this.boxFrom(state.first, input.point), ctx)
+        this.enterEdit(this.boxFrom(state.first, input.point), ctx, {
+          first: state.first,
+          second: input.point,
+        })
         break
       case "height":
         this.commitHeight(V.distance(state.first, input.point), ctx)
@@ -429,8 +444,12 @@ export class MTextTool implements Tool {
     this.openPointInput(ctx)
   }
 
-  private enterEdit(box: MTextBox, ctx: ToolContext): void {
-    this.state = { phase: "edit", box, lines: [] }
+  private enterEdit(
+    box: MTextBox,
+    ctx: ToolContext,
+    corners?: MTextCorners
+  ): void {
+    this.state = { phase: "edit", box, lines: [], corners }
     const session: DynamicInputSession = this.atCommandLine
       ? {
           fields: [
@@ -541,14 +560,92 @@ export class MTextTool implements Tool {
     return entityScenePrimitive(ctx.viewport, entity, RUBBER)
   }
 
-  /** The height text gets: the style's, when it fixes one, else TEXTSIZE. */
+  /**
+   * The height text gets: Text Editor's, else the style's when it fixes one,
+   * else TEXTSIZE.
+   */
   private currentHeight(ctx: ToolContext): number {
+    if (this.editHeight !== null) return this.editHeight
     const style = ctx.document.getTextStyle(this.currentStyleId(ctx))
     return style && style.height > 0 ? style.height : this.height
   }
 
   private currentStyleId(ctx: ToolContext): TextStyleId {
-    return ctx.document.getCurrentTextStyleId()
+    return this.editStyleId ?? ctx.document.getCurrentTextStyleId()
+  }
+
+  /**
+   * Text Editor (AcTextEditorInProgress), while the in-place editor is open:
+   * -MTEXT's lines at the command line open no editor, so no tab.
+   */
+  contextualTab(ctx: ToolContext): ContextualTabSource | null {
+    if (this.state.phase !== "edit" || this.atCommandLine) return null
+    return {
+      id: "textEditor",
+      fields: [
+        { id: "textHeight", value: this.currentHeight(ctx), kind: "distance" },
+      ],
+      textStyle: this.currentStyleId(ctx),
+      attachment: this.attachment,
+    }
+  }
+
+  /**
+   * Text Editor's controls on the text being made: a style from the gallery,
+   * a height, a Justification, or Close Text Editor, which keeps the text as
+   * Ctrl+Enter does. A height or a style sets the object's, never TEXTSIZE or
+   * TEXTSTYLE (desktop, 2026-11-26). WHY the object's even with text typed:
+   * AutoCAD's height then sets the text typed next, an inline format, which
+   * is not built (MTEXT's Missing).
+   */
+  editContextual(edit: ContextualEdit, ctx: ToolContext): CommandOptionOutcome {
+    const state = this.state
+    if (state.phase !== "edit" || this.atCommandLine) return "unhandled"
+    if ("close" in edit) {
+      this.commitPending(ctx)
+      return "end"
+    }
+    if ("field" in edit) {
+      if (edit.field !== "textHeight") return "unhandled"
+      // 0 and below are put back with nothing said (desktop, 2026-11-26).
+      const height = parseNumber(edit.text)
+      if (height === null || !(height > 0)) {
+        ctx.report(ctx.text.message("positiveNonzero"), "error")
+        return "continue"
+      }
+      this.editHeight = height
+      return "continue"
+    }
+    if ("textStyle" in edit) {
+      if (!ctx.document.getTextStyle(edit.textStyle)) return "unhandled"
+      // The style's fixed height, or TEXTSIZE without one: a height set
+      // before goes with the style it was set under.
+      this.editStyleId = edit.textStyle
+      this.editHeight = null
+      return "continue"
+    }
+    if ("attachment" in edit) {
+      this.attachment = edit.attachment
+      // The text hangs off the new attachment of the box the corners drew,
+      // as Justify asked before them places it; a box from Width keeps its
+      // point (unverified).
+      if (state.corners) {
+        this.state = {
+          ...state,
+          box: this.boxFrom(state.corners.first, state.corners.second),
+        }
+      }
+      return "continue"
+    }
+    return "unhandled"
+  }
+
+  editorHoldsText(ctx: ToolContext): boolean {
+    return (
+      this.state.phase === "edit" &&
+      !this.atCommandLine &&
+      ctx.dynamicInput.getText("value") !== ""
+    )
   }
 
   /**
@@ -676,7 +773,10 @@ export class MTextTool implements Tool {
     if (!point) return false
     if (state.phase === "corner") this.enterOpposite(point, ctx)
     else if (state.phase === "opposite") {
-      this.enterEdit(this.boxFrom(state.first, point), ctx)
+      this.enterEdit(this.boxFrom(state.first, point), ctx, {
+        first: state.first,
+        second: point,
+      })
     } else return false
     return true
   }
@@ -1001,4 +1101,11 @@ type MTextToolState =
       readonly box: MTextBox
       /** `-MTEXT`'s lines entered so far. */
       readonly lines: readonly string[]
+      /** The two corners the box was drawn from; none from Width. */
+      readonly corners?: MTextCorners
     }
+
+interface MTextCorners {
+  readonly first: Vec3
+  readonly second: Vec2
+}

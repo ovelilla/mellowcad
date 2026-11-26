@@ -141,7 +141,8 @@ export const de: EditorLocale = {
         "annotate": "Beschriften",
         "tools3d": "3D-Werkzeuge",
         "view": "Ansicht",
-        "arrayCreation": "Anordnung erstellen"
+        "arrayCreation": "Anordnung erstellen",
+        "textEditor": "Texteditor"
       },
       "panels": {
         "hatchBoundaries": "Umgrenzungen",
@@ -175,7 +176,10 @@ export const de: EditorLocale = {
         "arrayRows": "Reihen",
         "arrayLevels": "Ebenen",
         "arrayProperties": "Eigenschaften",
-        "arrayClose": "Schließen"
+        "arrayClose": "Schließen",
+        "textStyle": "Stil",
+        "textParagraph": "Absatz",
+        "textClose": "Schließen"
       },
       "items": {
         "hatchPickPoints": "Punkte wählen",
@@ -334,7 +338,9 @@ export const de: EditorLocale = {
         "arrayDivide": "Teilen",
         "arrayMeasure": "Messen",
         "arrayAlignItems": "Elemente ausrichten",
-        "arrayClose": "Anordnung schließen"
+        "arrayClose": "Anordnung schließen",
+        "textJustification": "Ausrichtung",
+        "textClose": "Texteditor\nschließen"
       },
       "fields": {
         "hatchAngle": "Winkel",
@@ -350,7 +356,9 @@ export const de: EditorLocale = {
         "items": "Elemente:",
         "angleBetween": "Zwischen:",
         "fillAngle": "Füllen:",
-        "itemSpacing": "Zwischen:"
+        "itemSpacing": "Zwischen:",
+        "textStyle": "Textstil",
+        "textHeight": "Texthöhe"
       },
       "pressF1": "F1 drücken, um weitere Hilfe zu erhalten",
       "tips": {
@@ -528,7 +536,8 @@ export const de: EditorLocale = {
         "arrayDivide": "Ordnet Elemente so an, dass sie entlang dem Pfad gleichmäßig verteilt sind.",
         "arrayMeasure": "Behält den aktuellen Abstand zwischen Elementen bei, wenn der Pfad bearbeitet wird oder die Anzahl der Elemente mithilfe von Griffen auf der Eigenschaftenpalette bearbeitet wird.",
         "arrayAlignItems": "Gibt an, ob jedes Element tangential zur Pfadrichtung ausgerichtet werden soll. Die Ausrichtung ist relativ zur Ausrichtung des ersten Objekts.",
-        "arrayClose": "Beendet den Befehl Reihe."
+        "arrayClose": "Beendet den Befehl Reihe.",
+        "textHeight": "Legt die Höhe der Zeichen in Zeichnungseinheiten für neuen oder ausgewählten Text fest"
       },
       "tipTitles": {
         "hatchPickPoints": "Punkte auswählen",
@@ -576,7 +585,8 @@ export const de: EditorLocale = {
         "arrayDivide": "Teilungsmethode",
         "arrayMeasure": "Messmethode",
         "arrayAlignItems": "Elemente ausrichten",
-        "arrayClose": "Anordnung schließen"
+        "arrayClose": "Anordnung schließen",
+        "textHeight": "Texthöhe"
       },
       "tipCommands": {
         "line": "LINIE",
@@ -879,6 +889,17 @@ export const de: EditorLocale = {
         "showPanelTitles": "Gruppentitel anzeigen",
         "close": "Schließen",
         "empty": "In der Multifunktionsleiste sind gegenwärtig keine Registerkarten oder Gruppen geladen."
+      },
+      "justifications": {
+        "tl": "Oben links\tOL",
+        "tc": "Oben zentriert\tOZ",
+        "tr": "Oben rechts\tOR",
+        "ml": "Mitte links\tML",
+        "mc": "Mitte zentriert\tMZ",
+        "mr": "Mitte rechts\tMR",
+        "bl": "Unten links\tUL",
+        "bc": "Unten zentriert\tUZ",
+        "br": "Unten rechts\tUR"
       }
     },
     "CommandLine": {
@@ -1298,6 +1319,12 @@ export const de: EditorLocale = {
         "yes": "Ja",
         "no": "Nein",
         "cancel": "Abbrechen"
+      },
+      "styleChange": {
+        "title": "Mehrzeiliger Text - Textstil-Änderung",
+        "instruction": "Diese Änderung wirkt sich auf alle Textobjekte aus, die diesen Stil verwenden, und nicht nur auf die Auswahl. Wollen Sie den Textstil ändern?",
+        "yes": "Ja",
+        "no": "Nein"
       }
     },
     "Palette": {

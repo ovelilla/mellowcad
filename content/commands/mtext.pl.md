@@ -3,10 +3,10 @@ title: "Tekst wielowierszowy w AutoCADzie: polecenie WTEKST (MTEXT)"
 metaTitle: "Tekst wielowierszowy w AutoCADzie: WTEKST"
 description: "Jak pisać tekst wielowierszowy w AutoCADzie poleceniem WTEKST (MTEXT, skrót WT): dwa narożniki lub szerokość, wysokość, wyrównanie, odstęp. Wypróbuj online."
 figure: "Notatka w ramce: najpierw ustawiona wysokość, potem przeciwległy narożnik i jeden akapit zawinięty do szerokości między nimi."
-sourceHash: "67d762bb368d"
+sourceHash: "0177fafe871f"
 ---
 
-Polecenie WTEKST (MTEXT) pisze tekst wielowierszowy: jeden obiekt z akapitami, które zawijają się do zadanej szerokości. Wskazujesz pierwszy narożnik i przeciwległy, a ramka między nimi ustala szerokość; potem piszesz w edytorze narysowanym na miejscu, gdzie Enter zaczyna nowy akapit, a Ctrl+Enter lub kliknięcie poza ramką zatwierdza tekst. Esc, gdy coś już wpisano, pyta, czy to zapisać, jak okno dialogowe AutoCADa „WTEKST – niezapisane zmiany”. Do wierszy, z których każdy jest osobnym obiektem, służy <Command id="TEXT" />.
+Polecenie WTEKST (MTEXT) pisze tekst wielowierszowy: jeden obiekt z akapitami, które zawijają się do zadanej szerokości. Wskazujesz pierwszy narożnik i przeciwległy, a ramka między nimi ustala szerokość; potem piszesz w edytorze narysowanym na miejscu, gdzie Enter zaczyna nowy akapit, a Ctrl+Enter lub kliknięcie poza ramką zatwierdza tekst. Gdy edytor jest otwarty, wstążka pokazuje kartę Edytor tekstu, na której wybrany styl, wysokość lub wyrównanie dotyczą całego tekstu. Esc, gdy coś już wpisano, pyta, czy to zapisać, jak okno dialogowe AutoCADa „WTEKST – niezapisane zmiany”. Do wierszy, z których każdy jest osobnym obiektem, służy <Command id="TEXT" />.
 
 Pierwszy wiersz podaje bieżący styl i wysokość. Każda opcja jest dostępna przy monicie o przeciwległy narożnik i do niego wraca, więc w jednym uruchomieniu ustawia się wysokość, wyrównanie i resztę, zanim ramka zostanie zamknięta. Słowa zawijają się tam, gdzie wiersz przekroczyłby szerokość, a słowo dłuższe niż szerokość wychodzi poza nią. Wysokość jest wspólna z <Command id="TEXT" /> i zapisana w rysunku; wyrównanie, obrót i odstęp wierszy przy każdym uruchomieniu wracają do wartości domyślnych. <Command id="-MTEXT" /> zadaje te same pytania, a potem przyjmuje tekst w wierszu polecenia, wiersz po wierszu.
 
@@ -38,7 +38,7 @@ Pyta o szerokość zamiast o przeciwległy narożnik, wpisaną lub jako odległo
 
 ## Missing
 
-Kolumny, które AutoCAD 2027 wymienia przy monicie o przeciwległy narożnik, nie są oferowane. Formatowanie wewnątrz tekstu, takie jak wysokość, czcionka czy kolor jednego słowa, ułamki piętrowe lub podkreślenie, nie jest rysowane ani stosowane, a edytor nie ma linijki, tabulatorów, wcięć, list ani karty wstążki Edytor tekstu, ani kursora tekstowego na rysunku. Nie ma maski tła ani ramki tekstu, określonej wysokości, skalowania opisowego ani lokalizacji Punkt na narożnikach, a kliknięcie wewnątrz ramki wskazuje tekst nawet poza literami, podczas gdy AutoCAD niczego nie wskazuje.
+Kolumny, które AutoCAD 2027 wymienia przy monicie o przeciwległy narożnik, nie są oferowane. Formatowanie wewnątrz tekstu, takie jak wysokość, czcionka czy kolor jednego słowa, ułamki piętrowe lub podkreślenie, nie jest rysowane ani stosowane, a edytor nie ma linijki, tabulatorów, wcięć ani list, ani kursora tekstowego na rysunku. Karta wstążki Edytor tekstu ma galerię stylów, wysokość, Wyrównanie i Zamknij edytor tekstu, ale brakuje w niej elementów AutoCADa: Opisowy, Maska, formatowanie, punktory i numerowanie, odstępy między wierszami i wyrównanie akapitu, Wstaw, Sprawdź pisownię, Narzędzia i Opcje, a jej wysokość zmienia wysokość całego tekstu, podczas gdy w AutoCADzie ustala wysokość tekstu wpisywanego dalej. Nie ma maski tła ani ramki tekstu, określonej wysokości, skalowania opisowego ani lokalizacji Punkt na narożnikach, a kliknięcie wewnątrz ramki wskazuje tekst nawet poza literami, podczas gdy AutoCAD niczego nie wskazuje.
 
 ## Questions
 

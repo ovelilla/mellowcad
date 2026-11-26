@@ -141,7 +141,8 @@ export const hu: EditorLocale = {
         "annotate": "Feliratozás",
         "tools3d": "3D eszközök",
         "view": "Nézet",
-        "arrayCreation": "Kiosztás létrehozása"
+        "arrayCreation": "Kiosztás létrehozása",
+        "textEditor": "Szövegszerkesztő"
       },
       "panels": {
         "hatchBoundaries": "Határvonalak",
@@ -175,7 +176,10 @@ export const hu: EditorLocale = {
         "arrayRows": "Sorok",
         "arrayLevels": "Szintek",
         "arrayProperties": "Tulajdonságok",
-        "arrayClose": "Bezárás"
+        "arrayClose": "Bezárás",
+        "textStyle": "Stílus",
+        "textParagraph": "Bekezdés",
+        "textClose": "Bezárás"
       },
       "items": {
         "hatchPickPoints": "Pontok kijelölése",
@@ -334,7 +338,9 @@ export const hu: EditorLocale = {
         "arrayDivide": "Feloszt",
         "arrayMeasure": "Beosztás",
         "arrayAlignItems": "Elemek illesztése",
-        "arrayClose": "Kiosztás bezárása"
+        "arrayClose": "Kiosztás bezárása",
+        "textJustification": "Igazítás",
+        "textClose": "Szövegszerkesztő\nbezárása"
       },
       "fields": {
         "hatchAngle": "Szög",
@@ -350,7 +356,9 @@ export const hu: EditorLocale = {
         "items": "Elemek:",
         "angleBetween": "Közöttük:",
         "fillAngle": "Kitöltés:",
-        "itemSpacing": "Közöttük:"
+        "itemSpacing": "Közöttük:",
+        "textStyle": "Szöveg stílusa",
+        "textHeight": "Szövegmagasság"
       },
       "pressF1": "További tudnivalókért nyomja meg az F1-et",
       "tips": {
@@ -528,7 +536,8 @@ export const hu: EditorLocale = {
         "arrayDivide": "Elemek egyenletes beosztása az útvonal mentén.",
         "arrayMeasure": "Az aktuális elemtávolság megtartása az útvonal szerkesztése során, valamint az elemek számának a fogókkal vagy a Tulajdonságok palettán keresztül történő szerkesztése esetén.",
         "arrayAlignItems": "Annak megadása, hogy a program minden egyes elemet érintőlegesen helyezzen-e el az útvonal irányához képest. Az elemek illesztése az első elem tájolásának függvénye.",
-        "arrayClose": "Kilépés a kiosztás parancsból."
+        "arrayClose": "Kilépés a kiosztás parancsból.",
+        "textHeight": "Az új vagy a kijelölt szöveg szövegmagasságát állítja be rajzi egységekben"
       },
       "tipTitles": {
         "hatchPickPoints": "Pontok kijelölése",
@@ -576,7 +585,8 @@ export const hu: EditorLocale = {
         "arrayDivide": "Felosztási módszer",
         "arrayMeasure": "Mérési módszer",
         "arrayAlignItems": "Elemek illesztése",
-        "arrayClose": "Kiosztás bezárása"
+        "arrayClose": "Kiosztás bezárása",
+        "textHeight": "Szövegmagasság"
       },
       "tipCommands": {
         "line": "VONAL",
@@ -879,6 +889,17 @@ export const hu: EditorLocale = {
         "showPanelTitles": "Panelcímek megjelenítése",
         "close": "Bezárás",
         "empty": "A szalagnak jelenleg nincs betöltött lapja vagy panelje."
+      },
+      "justifications": {
+        "tl": "Fent bal\tFB",
+        "tc": "Fent felező\tFF",
+        "tr": "Fent jobb \tFJ",
+        "ml": "Közép bal\tKB",
+        "mc": "Közép felező\tKF",
+        "mr": "Közép jobb\tKJ",
+        "bl": "Alsó bal\tAB",
+        "bc": "Alsó felező\tAF",
+        "br": "Alsó jobb\tAJ"
       }
     },
     "CommandLine": {
@@ -1302,6 +1323,12 @@ export const hu: EditorLocale = {
         "yes": "Igen",
         "no": "Nem",
         "cancel": "Mégse"
+      },
+      "styleChange": {
+        "title": "Bekezdéses szöveg – Szövegstílus módosítása",
+        "instruction": "Ez a módosítás nemcsak a kijelölésre, hanem az összes olyan szövegobjektumra hatással lesz, amely ezt a stílust használja. Biztosan módosítani kívánja a szövegstílust?",
+        "yes": "Igen",
+        "no": "Nem"
       }
     },
     "Palette": {

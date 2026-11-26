@@ -10,7 +10,8 @@
 > on 2026-11-26, its three blocks (§6: the tooltips, the right-click menu,
 > Customize ▾), the desktop pass of both done the same day with phase 6's session (§7); phase 6
 > in progress: blocks 1 (Array Creation) and 2 (Hatch Creation) done and checked on the desktop on
-> 2026-11-26, blocks 3 (Text Editor) and 4 (the selection's tabs) to come.
+> 2026-11-26, block 3 (Text Editor) done the same day, checked on the desktop before it was built,
+> and block 4 (the selection's tabs) captured that evening (§6, §7), to be built next.
 > The brief is `docs/next-autocad-ui.md`; where its phases and this plan differ, this plan rules
 > (the brief says so) and the brief was corrected the same day.
 
@@ -848,7 +849,7 @@ Blocks, a commit each, each leaving the editor whole:
    HPNAME, HPANG or HPSCALE as Properties sets it, inside the run, one U taking it back. Not
    built, HATCH's Missing: Remove, Recreate, the slide-outs, Gradient and User defined, the
    colours, Transparency, Origin, Options, Scale's spin arrows.
-3. **Text Editor** (TEXTEDITOR: the in-place editor of MTEXT and TEXTEDIT): Style (the text
+3. **Text Editor** (done 2026-11-26; TEXTEDITOR: the in-place editor of MTEXT and TEXTEDIT): Style (the text
    style, the height), Paragraph (Justification, Line Spacing) and Close (Close Text Editor), with
    what MTEXT has; inline formatting does not exist, so Formatting, Insert, Spell Check, Tools and
    Options are not drawn (decision 3) and go to MTEXT's Missing. Captured on 2026-11-26 (English,
@@ -862,9 +863,32 @@ Blocks, a commit each, each leaving the editor whole:
    text or … selected text", the help), so with none here: Line Spacing goes to MTEXT's Missing,
    and the height sets the object's, as MTEXT's Height prompt does, which is AutoCAD's with the
    editor empty or all its text selected; a height for part of the text is Missing with the
-   inline formatting.
+   inline formatting. Checked on the desktop before building (the evening's pass,
+   `research/ui/2026-11-26/phase6-blocks3-4-notes.txt`): a style picked sets the object's,
+   TEXTSTYLE and TEXTSIZE untouched; with text in the editor AutoCAD asks first, the task dialog
+   `Multiline Text - Text Style Change` (AcTaskDialogs' TaskDialog_7, in every culture: built, its
+   `Always change the text style` left out); the height typed sets the object's with the editor
+   empty (with text, the text typed next: the object's here, the decision), 0 and below put back
+   with nothing said; the height's list holds the one height shown. Built so: the engine's
+   `textEditor` tab from MTEXT's editor and TEXTEDIT's on an MTEXT (not -MTEXT's lines), the
+   style, height and Justification the edited object's, written with its wording; the gallery
+   two cells a row, the Justification list acmtedRes 1024–1032's, Close Text Editor Ctrl+Enter;
+   the Quick Access Toolbar greyed. Justification and Close have no `TT_` and show no tooltip.
+   Found on the way: a key typed on the drawing while MTEXT's editor lacked the focus (after a
+   tab's control, or the corner's click) went to the command line: it now goes into the editor.
 4. **The selection's tabs** (Array: one associative array selected; Hatch Editor: hatches only),
-   if the session reaches them; else they stay Missing.
+   captured on 2026-11-26 (§7), not built: the next session's block. Array: Type; Columns,
+   Rows, Levels with their Totals (polar: Items, Between, Fill; path: Items, Between, Total);
+   Properties (Base Point; polar Rotate Items and Direction lit, path Measure ▾, Align Items
+   and Z Direction lit); Options (Edit Source, Replace Item, Reset Array); Close Array
+   (sel-arr-rect, -polar, -path, with their trees). A field's edit applies to the array and writes
+   no line; U after it writes `_U` alone (sel-arr-rect-col5). Hatch Editor: Boundaries (Pick
+   Points, Select, Remove, Recreate), Pattern, Properties (Type, colours, Transparency, Angle,
+   Scale), Origin (Set Origin), Options (Associative, Annotative, Match Properties), Close Hatch
+   Editor (sel-hatch-pattern, -solid); a pattern picked runs `'_-hatchedit` on the selection,
+   its prompts written (`… <Properties>: _p`, `Enter a pattern name … <ANSI31>: ANSI32`, scale
+   and angle), and U names `'-HATCHEDIT GROUP` (sel-hatch-ansi32). With what each tab's
+   commands have here, as block 1 and 2 did.
 
 ## 7. Desktop blocks still owed
 
@@ -878,7 +902,7 @@ start of its phase and with the owner's word first (`gui.md`):
 | 3 | done 2026-11-25 (§2.8, §2.9): a palette docked, anchored and auto-hidden and its properties menu with the mouse; New Text Style and each tab of Modify Dimension Style without it (`research/ui/2026-11-25/phase3`) |
 | 4 | done 2026-11-26 with phase 6's session (§6, phase 4; `research/ui/2026-11-26`): ~~the command line's history open (F2) and its Recent Commands and Customize menus~~ (cl-f2, cl-recent2, cl-custom); still owed, each **unverified** in its coverage entry: the status bar and the floating line's width of a profile nobody has touched (S4: the profile measured has been used by every probe); the navigation bar under the pointer |
 | 5 | done 2026-11-26 with phase 6's session (§6, phase 5; `research/ui/2026-11-26`): ~~where a ribbon tooltip opens and whether Circle's names its member; whether a second tooltip opens at once; whether a pick in the right-click menu closes it, whether its Close cancels a running command or echoes, a title bar's height without its name; Customize ▾'s arrow, where a command added goes and whether a pick closes its list~~; still owed: whether the names leave a folded panel or the minimized states, where AutoCAD keeps what the menu shows, U's name after the menu's Close |
-| 6 | blocks 1 and 2 done 2026-11-26 with this phase's session (§6, phase 6; `research/ui/2026-11-26`): ~~whether a field's edit echoes, where a refused value is said, a tooltip with no command, Show Tabs on a contextual tab, the tab minimized; a traced run of HATCH with the ribbon open in English and Spanish, what Enter and Undo do at 50968, whether Angle and Scale grey for a solid fill, the Angle slider's range, the pattern Type › Pattern brings back, Scale's spin step and the gallery's tooltips; a capture of Text Editor and of Array Creation~~; still owed: Direction's lit state, ARRAYPATH's tab once the path is picked, Show Panels on a contextual tab, Hatch Creation's own boxes refusing in silence (by analogy with Array Creation's), whether HATCH's mode lasts across a restart; for block 4 the selection's tabs (Array, Hatch Editor), uncaptured |
+| 6 | done 2026-11-26 in the evening's pass (`research/ui/2026-11-26/phase6-blocks3-4-notes.txt`): ~~Direction's lit state~~ (lit at the default fill, counter-clockwise: sel-arr-polar, as here); ~~ARRAYPATH's tab once the path is picked~~ (arraypath-tab: ARRAYCREATION 3 as here, but **Items greyed under Measure** and Between not, where here Between greys under Divide and Items never: block 4's session classifies and fixes it); ~~Show Panels on a contextual tab~~ (it lists the tab's own panels, each checked: arraypath-showpanels; here **unverified**, block 4's session); ~~Hatch Creation's own boxes refusing in silence~~ (Scale 0 and −2 put back to 1, no line: hatch-scale-refuse, as here); ~~whether HATCH's mode lasts across a restart~~ (it does, a profile setting: here for the session, `docs/coverage/draw.md`, HATCH); ~~the selection's tabs~~ (§6, phase 6, block 4). Before that, blocks 1 and 2 done 2026-11-26 with this phase's session (§6, phase 6; `research/ui/2026-11-26`): ~~whether a field's edit echoes, where a refused value is said, a tooltip with no command, Show Tabs on a contextual tab, the tab minimized; a traced run of HATCH with the ribbon open in English and Spanish, what Enter and Undo do at 50968, whether Angle and Scale grey for a solid fill, the Angle slider's range, the pattern Type › Pattern brings back, Scale's spin step and the gallery's tooltips; a capture of Text Editor and of Array Creation~~ |
 
 Without the mouse, `acad.sh act` opens a drop-down, a slide-out, a folded panel, the status
 bar's menus, Undo's list and the command line's two menus, and `acad.sh tree` reads their rows

@@ -465,11 +465,22 @@ Creation, its text broken where acad.CUIX breaks it (`Close&#xD;Hatch Creation`)
 culture's acad.CUIX (the tab, panels and buttons; Angle) and AcWindows' `TT_AcHatch…` (the
 tooltips, Solid and Pattern, Scale's name), Arabic's ours. At 1280 AutoCAD's folds Pattern to a
 button and Boundaries' small buttons to icons (es1280-hatch): the fold here follows its rule,
-shedding only what does not fit, and what is built fits
+shedding only what does not fit, and what is built fits. **Text Editor** (`--source ID_MText_Tab`),
+while MTEXT's in-place editor is open, or TEXTEDIT's on an MTEXT (AcTextEditorInProgress; desktop
+2026-11-26, mtext-tab-crop, mtext-just-menu; what each control does, `docs/coverage/draw.md`,
+MTEXT): Style's gallery (AcIPEFontStyleGallery, 184 × 74), the drawing's text styles by name, two
+cells of 82 × 70 a row, each a sample over its name, its tooltip the name alone; the height box
+(AcIPEFontSizeCombo, 100 × 22) in Style's second row, Annotative's first left empty; Paragraph's
+Justification (81 × 72), its list the nine attachments in rows of 24, each with its letters, a
+check at the current one; Close Text Editor, broken where acad.CUIX breaks it. Justification and
+Close have no tooltip: no `TT_` names them (unverified on the desktop). The Quick Access Toolbar
+is greyed while it shows (mtext-tab-tree). Its words each culture's acad.CUIX (tab, panels,
+buttons, the gallery's name), AcWindows' `TT_AcIPEFontSizeCombo`, acmtedRes 1024–1032 (the
+attachments) and AcTaskDialogs' TaskDialog_7 (Text Style Change), Arabic's ours
 
 **Missing:** the Parametric, Visualize, Manage, Output, Add-ins, Collaborate, Express Tools and
-Featured Apps tabs, nothing of theirs built; the contextual tab Text Editor (phase 6, block 3),
-the selection's Array and Hatch Editor (block 4), Hatch Creation's controls HATCH does not have
+Featured Apps tabs, nothing of theirs built; the selection's Array and Hatch Editor (phase 6,
+block 4), Hatch Creation's controls HATCH does not have
 (`docs/coverage/draw.md`, HATCH's Missing), the other contextual
 tabs, whose features are not built (Block Editor, Edit Reference, Table Cell, External Reference,
 the underlays, Image, Mesh, Section Plane, Point Cloud, Geolocation); Array Creation's Base Point,

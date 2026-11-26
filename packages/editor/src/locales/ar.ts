@@ -145,7 +145,8 @@ export const ar: EditorLocale = {
         "annotate": "تعليقات توضيحية",
         "tools3d": "أدوات ثلاثية الأبعاد",
         "view": "عرض",
-        "arrayCreation": "إنشاء مصفوفة"
+        "arrayCreation": "إنشاء مصفوفة",
+        "textEditor": "محرر النص"
       },
       "panels": {
         "hatchBoundaries": "الحدود",
@@ -179,7 +180,10 @@ export const ar: EditorLocale = {
         "arrayRows": "الصفوف",
         "arrayLevels": "المستويات",
         "arrayProperties": "الخصائص",
-        "arrayClose": "إغلاق"
+        "arrayClose": "إغلاق",
+        "textStyle": "النمط",
+        "textParagraph": "الفقرة",
+        "textClose": "إغلاق"
       },
       "items": {
         "hatchPickPoints": "انتقاء نقاط",
@@ -338,7 +342,9 @@ export const ar: EditorLocale = {
         "arrayDivide": "تقسيم",
         "arrayMeasure": "قياس",
         "arrayAlignItems": "محاذاة العناصر",
-        "arrayClose": "إغلاق المصفوفة"
+        "arrayClose": "إغلاق المصفوفة",
+        "textJustification": "المحاذاة",
+        "textClose": "إغلاق\nمحرر النص"
       },
       "fields": {
         "hatchAngle": "الزاوية",
@@ -354,7 +360,9 @@ export const ar: EditorLocale = {
         "items": "العناصر:",
         "angleBetween": "بين:",
         "fillAngle": "التعبئة:",
-        "itemSpacing": "بين:"
+        "itemSpacing": "بين:",
+        "textStyle": "نمط النص",
+        "textHeight": "ارتفاع النص"
       },
       "pressF1": "اضغط ⁨F1⁩ للحصول على مزيد من التعليمات",
       "tips": {
@@ -532,7 +540,8 @@ export const ar: EditorLocale = {
         "arrayDivide": "يعيد توزيع العناصر لتقسيم طول المسار بالتساوي.",
         "arrayMeasure": "يحافظ على تباعد العناصر الحالي عند تحرير المسار، أو عند تحرير عدد العناصر بالمقابض أو من لوحة الخصائص.",
         "arrayAlignItems": "يحدد ما إذا كان كل عنصر يُحاذى مماسًا لاتجاه المسار. تكون المحاذاة نسبةً إلى اتجاه العنصر الأول.",
-        "arrayClose": "يُنهي أمر المصفوفة."
+        "arrayClose": "يُنهي أمر المصفوفة.",
+        "textHeight": "يعيّن ارتفاع الأحرف بوحدات الرسم للنص الجديد أو المحدد"
       },
       "tipTitles": {
         "hatchPickPoints": "انتقاء نقاط",
@@ -580,7 +589,8 @@ export const ar: EditorLocale = {
         "arrayDivide": "طريقة التقسيم",
         "arrayMeasure": "طريقة القياس",
         "arrayAlignItems": "محاذاة العناصر",
-        "arrayClose": "إغلاق المصفوفة"
+        "arrayClose": "إغلاق المصفوفة",
+        "textHeight": "ارتفاع النص"
       },
       "tipCommands": {
         "line": "LINE",
@@ -883,6 +893,17 @@ export const ar: EditorLocale = {
         "showPanelTitles": "إظهار عناوين اللوحات",
         "close": "إغلاق",
         "empty": "لا يحتوي الشريط على أي علامات تبويب أو لوحات محمَّلة حاليًا."
+      },
+      "justifications": {
+        "tl": "أعلى اليسار\tTL",
+        "tc": "أعلى الوسط\tTC",
+        "tr": "أعلى اليمين\tTR",
+        "ml": "منتصف اليسار\tML",
+        "mc": "منتصف الوسط\tMC",
+        "mr": "منتصف اليمين\tMR",
+        "bl": "أسفل اليسار\tBL",
+        "bc": "أسفل الوسط\tBC",
+        "br": "أسفل اليمين\tBR"
       }
     },
     "CommandLine": {
@@ -1327,6 +1348,12 @@ export const ar: EditorLocale = {
         "yes": "نعم",
         "no": "لا",
         "cancel": "إلغاء"
+      },
+      "styleChange": {
+        "title": "نص متعدد الأسطر - تغيير نمط النص",
+        "instruction": "سيؤثر هذا التغيير في كل كائنات النص التي تستخدم هذا النمط، وليس في التحديد فقط. هل تريد تغيير نمط النص؟",
+        "yes": "نعم",
+        "no": "لا"
       }
     },
     "Palette": {

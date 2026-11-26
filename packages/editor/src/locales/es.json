@@ -96,7 +96,8 @@
       "annotate": "Anotar",
       "tools3d": "Herramientas 3D",
       "view": "Vista",
-      "arrayCreation": "Creación de matriz"
+      "arrayCreation": "Creación de matriz",
+      "textEditor": "Editor de texto"
     },
     "panels": {
       "hatchBoundaries": "Contornos",
@@ -130,7 +131,10 @@
       "arrayRows": "Filas",
       "arrayLevels": "Niveles",
       "arrayProperties": "Propiedades",
-      "arrayClose": "Cerrar"
+      "arrayClose": "Cerrar",
+      "textStyle": "Estilo",
+      "textParagraph": "Párrafo",
+      "textClose": "Cerrar"
     },
     "items": {
       "hatchPickPoints": "Designar puntos",
@@ -289,7 +293,9 @@
       "arrayDivide": "Dividir",
       "arrayMeasure": "Medir",
       "arrayAlignItems": "Alinear elementos",
-      "arrayClose": "Cerrar matriz"
+      "arrayClose": "Cerrar matriz",
+      "textJustification": "Justificación",
+      "textClose": "Cerrar\neditor de texto"
     },
     "fields": {
       "hatchAngle": "Ángulo",
@@ -305,7 +311,9 @@
       "items": "Elementos:",
       "angleBetween": "Entre:",
       "fillAngle": "Relleno:",
-      "itemSpacing": "Entre:"
+      "itemSpacing": "Entre:",
+      "textStyle": "Estilo de texto",
+      "textHeight": "Altura de texto"
     },
     "pressF1": "Pulse F1 para obtener más ayuda",
     "tips": {
@@ -483,7 +491,8 @@
       "arrayDivide": "Redistribuye elementos para dividirlos de modo uniforme a lo largo de la longitud de la ruta.",
       "arrayMeasure": "Mantiene el espacio actual entre elementos cuando se edita la ruta o cuando el número de elementos se modifica mediante pinzamientos o la paleta Propiedades.",
       "arrayAlignItems": "Especifica si se va a alinear cada elemento para que sea tangente a la dirección de la ruta. La alineación es relativa a la orientación del primer elemento.",
-      "arrayClose": "Sale del comando MATRIZ."
+      "arrayClose": "Sale del comando MATRIZ.",
+      "textHeight": "Establece la altura de los caracteres en unidades de dibujo para el texto nuevo o seleccionado."
     },
     "tipTitles": {
       "hatchPickPoints": "Designar puntos",
@@ -531,7 +540,8 @@
       "arrayDivide": "Método de división",
       "arrayMeasure": "Método de medición",
       "arrayAlignItems": "Alinear elementos",
-      "arrayClose": "Cerrar matriz"
+      "arrayClose": "Cerrar matriz",
+      "textHeight": "Altura de texto"
     },
     "tipCommands": {
       "line": "LINEA",
@@ -834,6 +844,17 @@
       "showPanelTitles": "Mostrar títulos de grupo",
       "close": "Cerrar",
       "empty": "La cinta de opciones no tiene ni etiquetas ni grupos cargados actualmente."
+    },
+    "justifications": {
+      "tl": "Sup. Izquierda\tSI",
+      "tc": "Sup. Centro\tSC",
+      "tr": "Sup. Derecha\tSD",
+      "ml": "Medio Izquierda\tMI",
+      "mc": "Medio Centro\tMC",
+      "mr": "Medio Derecha\tMD",
+      "bl": "Inf. Izquierda\tII",
+      "bc": "Inf. Centro\tIC",
+      "br": "Inf. Derecha\tID"
     }
   },
   "CommandLine": {
@@ -1152,6 +1173,12 @@
       "yes": "Sí",
       "no": "No",
       "cancel": "Cancelar"
+    },
+    "styleChange": {
+      "title": "Texto de líneas múltiples - Cambio de estilo de texto",
+      "instruction": "Este cambio afectará a todos los objetos de texto que utilicen este estilo, no sólo a la selección. ¿Desea cambiar el estilo de texto?",
+      "yes": "Sí",
+      "no": "No"
     }
   },
   "Palette": {

@@ -24,7 +24,10 @@ const CLOSE: RibbonPanel = {
  * (RBN_01738148) has Boundaries' Pick Points and Select, Pattern, Properties'
  * Type, Angle and Scale, and Close; the rest (Remove, Recreate, the colours,
  * Transparency, Origin, Options, the slide-outs) is not built
- * (docs/coverage/draw.md, HATCH).
+ * (docs/coverage/draw.md, HATCH). Text Editor (ID_MText_Tab) has Style's
+ * gallery and height, Paragraph's Justification and Close; Annotative, Mask,
+ * Formatting, Bullets and Numbering, Line Spacing, the paragraph alignments,
+ * Insert, Spell Check, Tools and Options are not built (MTEXT's Missing).
  */
 export const CONTEXTUAL_TABS: Readonly<Record<ContextualTabId, RibbonTab>> = {
   arrayCreationRectangular: {
@@ -152,6 +155,29 @@ export const CONTEXTUAL_TABS: Readonly<Record<ContextualTabId, RibbonTab>> = {
         icon: "hatchClose",
         // Close Hatch Creation, `^M` (MM_1928): Enter.
         slots: [{ kind: "closeContextual", text: "hatchClose" }],
+      },
+    ],
+  },
+  textEditor: {
+    id: "textEditor",
+    panels: [
+      {
+        id: "textStyle",
+        icon: "textStyle",
+        slots: [
+          { kind: "textStyles" },
+          { kind: "column", rows: [{ kind: "textHeight" }] },
+        ],
+      },
+      {
+        id: "textParagraph",
+        icon: "textJustification",
+        slots: [{ kind: "textJustification" }],
+      },
+      {
+        id: "textClose",
+        icon: "textClose",
+        slots: [{ kind: "closeContextual", text: "textClose" }],
       },
     ],
   },

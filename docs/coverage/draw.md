@@ -1198,7 +1198,20 @@ TEXT per line where AutoCAD's stand (p303; pieces/p255, p256). Aliases from acad
 `MTEXT` (es `T` is TEXTO and `MT` nothing, p259, p260). The es title of the Unsaved Changes dialog,
 `Texto de líneas múltiples - Cambios sin guardar`, and its question,
 `¿Desea guardar los cambios del texto?`, are unverified (the tables hold only 25268,
-`TEXTOM – Cambios sin guardar`)
+`TEXTOM – Cambios sin guardar`). The ribbon's **Text Editor** tab (ID_MText_Tab,
+AcTextEditorInProgress) while the in-place editor is open, here or in TEXTEDIT on an MTEXT
+(desktop 2026-11-26, `research/ui/2026-11-26/mtext-*`, `phase6-*`): Style's gallery of the
+drawing's text styles, two cells a row, which sets the edited text's style, with the editor empty
+at once and with text in it after AutoCAD's task dialog `Multiline Text - Text Style Change`
+(AcTaskDialogs' TaskDialog_7; Yes applies it, No leaves it); its height box, the text's height
+(0 and below put back with nothing said), its list the one height it shows; Paragraph's
+Justification, the nine attachments of acmtedRes 1024–1032 (`Top Left TL`…), the text hung off
+the new one in the box the corners drew (from Width, off its point; TEXTEDIT keeps the insertion
+point: both **unverified**); Close Text Editor, which keeps the text as Ctrl+Enter does. A style
+or height sets the object's, never TEXTSTYLE or TEXTSIZE, and the next run starts without them
+(desktop: S5 picked, the object S5 at 5, TEXTSTYLE Standard, TEXTSIZE 2.5). No line is written.
+The Quick Access Toolbar is greyed while the tab shows. What is typed on the drawing while the
+editor lacks focus goes into it, Enter a new paragraph
 
 **Missing:** Columns, listed in 2027 (`[…/Width/Columns]`; its
 `Enter column type [Dynamic/Static/No columns] <Dynamic>:`, es
@@ -1207,7 +1220,11 @@ TEXT per line where AutoCAD's stand (p303; pieces/p255, p256). Aliases from acad
 p231, p232; the keyword is not offered), the Unsaved Changes dialog's
 `Always perform my current choice` (a profile setting), drawing inline formatting (height, font,
 colour, stacking, underline…), the editor's ruler, tabs, indents and lists, background mask, text
-frame, the Text Editor ribbon tab, MTEXTFIXED 2 (horizontal while typing; here always as drawn), a
+frame, in Text Editor's tab Annotative, Mask, the Formatting panel, Bullets and Numbering, Line
+Spacing and the paragraph alignments (a paragraph's format), Insert, Spell Check, Tools and
+Options, and its height for the text typed next or selected (with text in the editor AutoCAD's
+height goes to new text, an inline format: here the object's), the Text Style Change dialog's
+`Always change the text style`, the Text Formatting toolbar with the ribbon closed, MTEXTFIXED 2 (horizontal while typing; here always as drawn), a
 caret on the canvas, Node snap on MTEXT (OSNAPNODELEGACY 0: AutoCAD's finds the frame's four
 corners, the defined width by the actual height, p307, p329, p330), defined height and the
 column-height grip, Annotative, the palette's Direction, Defined height, Columns, Background mask
@@ -1229,7 +1246,9 @@ in English and Spanish, 2026-11-26: 129's `initget` is 31427's, 50968's `Select 
 and 16731's after them, es `…desHacer AUto úNico … Seleccionar Designar Contornos…`; picK is the
 same word in both tables in every command language). A run starts in the mode the last one left:
 at Select objects after one left there, at the internal point after one left there (en and es,
-twice each way; kept for the session, across a restart **unverified**). It shows Hatch
+twice each way). AutoCAD keeps it across a restart too (left at Select objects, quit and
+relaunched, desktop 2026-11-26): here for the session, as every profile setting
+(`.claude/rules/cad-tools.md`, System variables). It shows Hatch
 Creation for the whole run (HATCHCREATION 1, d01-2; `docs/coverage/workspace.md`, Ribbon): Pick
 Points and Select switch the two modes; a pattern, Type, Angle and Scale set HPNAME, HPANG and
 HPSCALE as Properties sets them, inside the run, with no echo, what its prompts refuse put back in

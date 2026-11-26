@@ -2,10 +2,10 @@
 title: "Comando TESTOM (MTEXT) in AutoCAD"
 description: "Come funziona TESTOM (MTEXT, alias TSM) di AutoCAD in italiano: due angoli o Larghezza, Altezza, Giustifica, Interlinea, testo multilinea."
 figure: "Una nota in un riquadro: l'altezza impostata per prima, poi l'angolo opposto, e un paragrafo a capo alla larghezza tra i due."
-sourceHash: "67d762bb368d"
+sourceHash: "0177fafe871f"
 ---
 
-TESTOM (MTEXT in inglese) scrive testo multilinea: un solo oggetto con paragrafi che vanno a capo a una larghezza. Indichi un primo angolo e quello opposto, e il riquadro tra i due imposta la larghezza; poi digiti in un editor sul posto, dove Invio inizia un nuovo paragrafo e Ctrl+Invio, o un clic fuori dal riquadro, mantiene il testo. Esc dopo aver digitato qualcosa chiede se salvarlo, come la finestra Modifiche non salvate di AutoCAD. Per righe che siano oggetti indipendenti, usa <Command id="TEXT" />.
+TESTOM (MTEXT in inglese) scrive testo multilinea: un solo oggetto con paragrafi che vanno a capo a una larghezza. Indichi un primo angolo e quello opposto, e il riquadro tra i due imposta la larghezza; poi digiti in un editor sul posto, dove Invio inizia un nuovo paragrafo e Ctrl+Invio, o un clic fuori dal riquadro, mantiene il testo. Mentre l'editor è aperto, la barra multifunzione mostra la scheda Editor di testo, dove lo stile, l'altezza o la giustificazione scelti valgono per tutto il testo. Esc dopo aver digitato qualcosa chiede se salvarlo, come la finestra Modifiche non salvate di AutoCAD. Per righe che siano oggetti indipendenti, usa <Command id="TEXT" />.
 
 La prima riga indica lo stile e l'altezza correnti. Ogni opzione si sceglie alla richiesta dell'angolo opposto, che poi si ripresenta, quindi ogni esecuzione può impostare l'altezza, la giustificazione e il resto prima che il riquadro sia chiuso. Le parole vanno a capo dove una riga supererebbe la larghezza, e una parola più lunga della larghezza la oltrepassa. L'altezza è condivisa con <Command id="TEXT" /> e conservata nel disegno; la giustificazione, la rotazione e l'interlinea partono dai loro valori predefiniti a ogni esecuzione. <Command id="-MTEXT" /> chiede lo stesso, poi prende il testo nella riga di comando, una riga alla volta.
 
@@ -37,7 +37,7 @@ Chiede la larghezza al posto dell'angolo opposto, digitata o come distanza da un
 
 ## Missing
 
-Le colonne, che AutoCAD 2027 elenca alla richiesta dell'angolo opposto, non sono offerte. La formattazione dentro il testo, come l'altezza, il font o il colore di una parola, le frazioni impilate o la sottolineatura, non viene disegnata né applicata, e l'editor non ha righello, tabulazioni, rientri, elenchi né la scheda Editor di testo della barra multifunzione, né un cursore di testo sul disegno. Mancano la maschera di sfondo, la cornice del testo, l'altezza definita, la scala annotativa e lo snap Nodo sui suoi angoli, e un clic dentro il suo riquadro lo seleziona anche fuori dalle sue lettere, dove AutoCAD non seleziona nulla.
+Le colonne, che AutoCAD 2027 elenca alla richiesta dell'angolo opposto, non sono offerte. La formattazione dentro il testo, come l'altezza, il font o il colore di una parola, le frazioni impilate o la sottolineatura, non viene disegnata né applicata, e l'editor non ha righello, tabulazioni, rientri né elenchi, né un cursore di testo sul disegno. La scheda Editor di testo della barra multifunzione ha la galleria degli stili, l'altezza, Giustificazione e Chiudi editor di testo, ma non Annotativo, Maschera, la formattazione, gli elenchi puntati e numerati, la spaziatura linea e l'allineamento del paragrafo, Inserisci, Ortografia, Strumenti né Opzioni di AutoCAD, e la sua altezza cambia quella di tutto il testo, dove quella di AutoCAD imposta quella del testo digitato dopo. Mancano la maschera di sfondo, la cornice del testo, l'altezza definita, la scala annotativa e lo snap Nodo sui suoi angoli, e un clic dentro il suo riquadro lo seleziona anche fuori dalle sue lettere, dove AutoCAD non seleziona nulla.
 
 ## Questions
 

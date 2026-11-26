@@ -145,7 +145,8 @@ export const pl: EditorLocale = {
         "annotate": "Opisz",
         "tools3d": "Narzędzia 3D",
         "view": "Widok",
-        "arrayCreation": "Tworzenie szyku"
+        "arrayCreation": "Tworzenie szyku",
+        "textEditor": "Edytor tekstu"
       },
       "panels": {
         "hatchBoundaries": "Obwiednie",
@@ -179,7 +180,10 @@ export const pl: EditorLocale = {
         "arrayRows": "Wiersze",
         "arrayLevels": "Poziomy",
         "arrayProperties": "Właściwości",
-        "arrayClose": "Zamknij"
+        "arrayClose": "Zamknij",
+        "textStyle": "Styl",
+        "textParagraph": "Akapit",
+        "textClose": "Zamknij"
       },
       "items": {
         "hatchPickPoints": "Wskaż punkty",
@@ -338,7 +342,9 @@ export const pl: EditorLocale = {
         "arrayDivide": "Podziel",
         "arrayMeasure": "Zmierz",
         "arrayAlignItems": "Wyrównaj elementy",
-        "arrayClose": "Zamknij szyk"
+        "arrayClose": "Zamknij szyk",
+        "textJustification": "Wyrównanie",
+        "textClose": "Zamknij\nedytor tekstu"
       },
       "fields": {
         "hatchAngle": "Kąt",
@@ -354,7 +360,9 @@ export const pl: EditorLocale = {
         "items": "Elementy:",
         "angleBetween": "Między:",
         "fillAngle": "Wypełnienie:",
-        "itemSpacing": "Między:"
+        "itemSpacing": "Między:",
+        "textStyle": "Styl tekstu",
+        "textHeight": "Wysokość tekstu"
       },
       "pressF1": "Aby uzyskać pomoc, naciśnij klawisz F1",
       "tips": {
@@ -532,7 +540,8 @@ export const pl: EditorLocale = {
         "arrayDivide": "Ponownie rozmieszcza elementy, dzieląc je równo wzdłuż ścieżki.",
         "arrayMeasure": "Zachowuje bieżący odstęp między elementami podczas edycji ścieżki lub edycji wielu elementów za pomocą uchwytów lub palety Właściwości.",
         "arrayAlignItems": "Określa, czy dopasować każdy element, aby był styczny do ścieżki. Kierunek linii trasowania jest określany względem orientacji pierwszego elementu.",
-        "arrayClose": "Kończy działanie polecenia Szyk."
+        "arrayClose": "Kończy działanie polecenia Szyk.",
+        "textHeight": "Określa wysokość znaków w jednostkach rysunku dla nowego lub wybranego tekstu."
       },
       "tipTitles": {
         "hatchPickPoints": "Wskaż punkty",
@@ -580,7 +589,8 @@ export const pl: EditorLocale = {
         "arrayDivide": "Metoda dzielenia",
         "arrayMeasure": "Metoda pomiaru",
         "arrayAlignItems": "Wyrównywanie elementów",
-        "arrayClose": "Zamknij szyk"
+        "arrayClose": "Zamknij szyk",
+        "textHeight": "Wysokość tekstu"
       },
       "tipCommands": {
         "line": "LINIA",
@@ -883,6 +893,17 @@ export const pl: EditorLocale = {
         "showPanelTitles": "Pokaż tytuły paneli",
         "close": "Zamknij",
         "empty": "Aktualnie Wstążka nie ma wczytanych żadnych kart ani paneli."
+      },
+      "justifications": {
+        "tl": "Góra lewo\tGL",
+        "tc": "Góra symetria\tGS",
+        "tr": "Góra prawo\tGP",
+        "ml": "Centrum lewo\tCL",
+        "mc": "Centrum symetria\tCS",
+        "mr": "Centrum prawo\tCP",
+        "bl": "Dół lewo\tDL",
+        "bc": "Dół symetria\tDS",
+        "br": "Dół prawo\tDP"
       }
     },
     "CommandLine": {
@@ -1301,6 +1322,12 @@ export const pl: EditorLocale = {
         "yes": "Tak",
         "no": "Nie",
         "cancel": "Anuluj"
+      },
+      "styleChange": {
+        "title": "Tekst wielowierszowy - Zmiana stylu tekstu",
+        "instruction": "Ta zmiana wpłynie na wszystkie obiekty korzystające z tego stylu, a nie tylko wybrane. Czy chcesz zmienić styl tekstu?",
+        "yes": "Tak",
+        "no": "Nie"
       }
     },
     "Palette": {

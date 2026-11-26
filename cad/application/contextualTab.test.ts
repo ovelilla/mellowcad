@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import type { HatchEntity, InsertEntity } from "../domain/entities"
+import type { HatchEntity, InsertEntity, MTextEntity } from "../domain/entities"
 import { createHarness } from "../../test/harness"
 import { circleOf, lineOf, p, rectOf } from "../../test/builders"
 
@@ -320,5 +320,169 @@ describe("Hatch Creation", () => {
     expect(cad.state().ribbon.contextual?.id).toBe("hatchCreation")
     cad.escape()
     expect(cad.state().ribbon.contextual?.id).toBe("hatchCreation")
+  })
+})
+
+describe("Text Editor", () => {
+  /** A drawing with S5, a style of fixed height 5, beside Standard. */
+  const withS5 = () => {
+    const cad = createHarness()
+    const s5 = cad.runtime.createTextStyle("S5", undefined, false)
+    cad.runtime.updateTextStyle(s5, { height: 5 })
+    return { cad, s5 }
+  }
+  /** MTEXT's box drawn from (0, 0) to (200, -100), left in the editor. */
+  const editing = () => {
+    const { cad, s5 } = withS5()
+    cad.command("MTEXT").click(p(0, 0)).click(p(200, -100))
+    return { cad, s5 }
+  }
+  const mtext = (cad: ReturnType<typeof createHarness>) =>
+    cad.only<MTextEntity>("mtext")
+
+  it("opens with MTEXT's in-place editor, not at its corners nor with -MTEXT", () => {
+    const cad = createHarness()
+    cad.runtime.setRibbonTab("insert")
+    cad.command("MTEXT").click(p(0, 0))
+    expect(cad.state().ribbon.contextual).toBeNull()
+    cad.click(p(200, -100))
+    const tab = cad.state().ribbon.contextual
+    expect(tab?.id).toBe("textEditor")
+    expect(cad.state().ribbon.tab).toBe("textEditor")
+    expect(tab?.textStyle).toBe("Standard")
+    expect(tab?.attachment).toBe("tl")
+    expect(tab?.fields.textHeight).toEqual({ text: "2.5", disabled: false })
+    cad.type("A").enter()
+    expect(cad.state().ribbon.contextual).toBeNull()
+    expect(cad.state().ribbon.tab).toBe("insert")
+
+    const dash = createHarness()
+    dash.command("-MTEXT").click(p(0, 0)).click(p(200, -100))
+    expect(dash.state().ribbon.contextual).toBeNull()
+  })
+
+  it("sets the object's style and height, never TEXTSTYLE or TEXTSIZE, with no echo", () => {
+    // Desktop 2026-11-26: S5 picked, the object S5 at 5; 7 typed, at 7;
+    // TEXTSTYLE Standard and TEXTSIZE 2.5 all along.
+    const { cad, s5 } = editing()
+    const before = cad.commandLog().length
+    cad.runtime.editContextualTab({ textStyle: s5 })
+    expect(cad.state().textStyleChangeDialog).toBe(false)
+    expect(cad.state().ribbon.contextual?.textStyle).toBe(s5)
+    expect(cad.state().ribbon.contextual?.fields.textHeight?.text).toBe("5")
+    cad.runtime.editContextualTab({ textStyle: "Standard" })
+    expect(cad.state().ribbon.contextual?.fields.textHeight?.text).toBe("2.5")
+    cad.runtime.editContextualTab({ field: "textHeight", text: "7" })
+    expect(cad.commandLog().length).toBe(before)
+    cad.type("ABC")
+    cad.runtime.editContextualTab({ close: true })
+    expect(cad.activeToolId()).toBe("select")
+    expect(mtext(cad)).toMatchObject({ styleId: "Standard", height: 7 })
+    expect(cad.state().currentTextStyleId).toBe("Standard")
+
+    // The next run starts again from the current style and TEXTSIZE, 2.5.
+    cad.command("MTEXT").click(p(0, -200)).click(p(200, -300))
+    expect(cad.state().ribbon.contextual?.fields.textHeight?.text).toBe("2.5")
+    cad.escape()
+  })
+
+  it("puts back a height of 0 or below, in silence", () => {
+    const { cad } = editing()
+    const before = cad.commandLog().length
+    cad.runtime.editContextualTab({ field: "textHeight", text: "0" })
+    cad.runtime.editContextualTab({ field: "textHeight", text: "-3" })
+    expect(cad.commandLog().length).toBe(before)
+    expect(cad.state().ribbon.contextual?.fields.textHeight?.text).toBe("2.5")
+    cad.escape()
+  })
+
+  it("asks before a style while the editor holds text, Yes applying it and No not", () => {
+    const { cad, s5 } = editing()
+    cad.type("ABC")
+    cad.runtime.editContextualTab({ textStyle: s5 })
+    expect(cad.state().textStyleChangeDialog).toBe(true)
+    expect(cad.state().ribbon.contextual?.textStyle).toBe("Standard")
+    cad.runtime.answerTextStyleChange("no")
+    expect(cad.state().textStyleChangeDialog).toBe(false)
+    expect(cad.state().ribbon.contextual?.textStyle).toBe("Standard")
+    cad.runtime.editContextualTab({ textStyle: s5 })
+    cad.runtime.answerTextStyleChange("yes")
+    expect(cad.state().ribbon.contextual?.textStyle).toBe(s5)
+    cad.runtime.editContextualTab({ close: true })
+    expect(mtext(cad)).toMatchObject({ styleId: s5, height: 5 })
+  })
+
+  it("keeps the keys typed on the drawing after a control, as the editor's", () => {
+    // A control gives the drawing the focus back; the editor's box takes it
+    // only after the next render, and its first key went to the command line.
+    const { cad } = editing()
+    cad.type("AB")
+    cad.runtime.editContextualTab({ attachment: "mc" })
+    cad.press("C")
+    cad.press("Enter")
+    cad.press("D")
+    expect(cad.state().commandLine.buffer).toBe("")
+    expect(cad.activeToolId()).toBe("mtext")
+    // Ctrl+Enter keeps the text, as in the editor's own box.
+    cad.press("Enter", { ctrlKey: true })
+    expect(cad.activeToolId()).toBe("select")
+    expect(mtext(cad).contents).toBe("ABC\\PD")
+  })
+
+  it("asks nothing for the style the text wears, and drops a question its command left", () => {
+    const { cad, s5 } = editing()
+    cad.type("ABC")
+    cad.runtime.editContextualTab({ textStyle: "Standard" })
+    expect(cad.state().textStyleChangeDialog).toBe(false)
+    cad.runtime.editContextualTab({ textStyle: s5 })
+    expect(cad.state().textStyleChangeDialog).toBe(true)
+    cad.runtime.setActiveTool("line")
+    expect(cad.state().textStyleChangeDialog).toBe(false)
+    cad.runtime.answerTextStyleChange("yes")
+    expect(cad.state().textStyleChangeDialog).toBe(false)
+    cad.escape()
+  })
+
+  it("hangs the text off the Justification picked, in the box the corners drew", () => {
+    const { cad } = editing()
+    cad.runtime.editContextualTab({ attachment: "br" })
+    expect(cad.state().ribbon.contextual?.attachment).toBe("br")
+    cad.type("X")
+    cad.runtime.editContextualTab({ close: true })
+    expect(mtext(cad).attachment).toBe("br")
+    expect(mtext(cad).position).toBeCloseToPoint(p(200, -100))
+  })
+
+  it("shows TEXTEDIT's multiline text and writes what it sets with the wording", () => {
+    const { cad, s5 } = withS5()
+    cad.command("MTEXT").click(p(0, 0)).click(p(200, -100))
+    cad.type("OLD").enter()
+    cad.command("TEXTEDIT").click(p(5, -1))
+    const tab = cad.state().ribbon.contextual
+    expect(tab?.id).toBe("textEditor")
+    expect(tab?.fields.textHeight?.text).toBe("2.5")
+    cad.runtime.editContextualTab({ field: "textHeight", text: "4" })
+    cad.runtime.editContextualTab({ attachment: "mc" })
+    // Unchanged wording, changed height and Justification: still an edit.
+    cad.enter()
+    expect(mtext(cad)).toMatchObject({
+      contents: "OLD",
+      height: 4,
+      attachment: "mc",
+      styleId: "Standard",
+    })
+    expect(mtext(cad).position).toBeCloseToPoint(p(0, 0))
+    cad.escape()
+    cad.undo()
+    expect(mtext(cad)).toMatchObject({ height: 2.5, attachment: "tl" })
+
+    // A style with text in the editor is asked about first.
+    cad.command("TEXTEDIT").click(p(5, -1))
+    cad.runtime.editContextualTab({ textStyle: s5 })
+    expect(cad.state().textStyleChangeDialog).toBe(true)
+    cad.runtime.answerTextStyleChange("yes")
+    cad.runtime.editContextualTab({ close: true })
+    expect(mtext(cad)).toMatchObject({ styleId: s5, height: 5 })
+    cad.escape()
   })
 })

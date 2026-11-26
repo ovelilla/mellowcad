@@ -50,6 +50,7 @@ import {
   type CadEngine,
   type ContextualFieldId,
   type ContextualToggleId,
+  type ContextualTab,
   type PaletteId,
 } from "@mellowcad/engine"
 import { isImeKey, type EditorState } from "@mellowcad/react"
@@ -1231,6 +1232,12 @@ function Control({
       return <HatchPatterns ctx={ctx} />
     case "hatchProperties":
       return <HatchProperties ctx={ctx} />
+    case "textStyles":
+      return <TextStyles ctx={ctx} />
+    case "textHeight":
+      return <TextHeight ctx={ctx} />
+    case "textJustification":
+      return <TextJustification ctx={ctx} />
   }
 }
 
@@ -1250,6 +1257,7 @@ const FIELD_ICONS: Readonly<Record<ContextualFieldId, LucideIcon>> = {
   itemSpacing: MoveHorizontal,
   hatchAngle: RotateCcw,
   hatchScale: Scaling,
+  textHeight: CaseSensitive,
 }
 
 /** Each field's tooltip, its AcWindows `TT_…` (Items: the polar or the path one's). */
@@ -1283,6 +1291,7 @@ function fieldTip(field: ContextualFieldId, ctx: Context): TipKey {
       return "arrayItemSpacing"
     case "hatchAngle":
     case "hatchScale":
+    case "textHeight":
       return field
   }
 }
@@ -2491,30 +2500,74 @@ const ACROSS_OPEN = 6
  */
 function HatchPatterns({ ctx }: { ctx: Context }) {
   const t = useEditorText("Ribbon")
+  const current = ctx.state.ribbon.contextual?.pattern ?? null
+  return (
+    <Gallery
+      items={PATTERNS}
+      current={current}
+      across={ACROSS}
+      acrossOpen={ACROSS_OPEN}
+      label={t("panels.hatchPattern")}
+      engine={ctx.engine}
+      cell={(pattern, onPick) => (
+        <PatternCell
+          key={pattern}
+          pattern={pattern}
+          current={pattern === current}
+          ctx={ctx}
+          onPick={onPick}
+        />
+      )}
+      onPick={(pattern) =>
+        ctx.act(() => ctx.engine.editContextualTab({ pattern }))
+      }
+    />
+  )
+}
+
+/**
+ * A ribbon gallery in window mode: a row of cells, the current one's row
+ * scrolled to, then a column of 14 with the rows' up and down and the arrow
+ * that opens every cell under it. WHY the up and down are out of the keys'
+ * way: the arrow's list holds every cell, reached by the keyboard.
+ */
+function Gallery<T extends string>({
+  items,
+  current,
+  across,
+  acrossOpen,
+  label,
+  engine,
+  rowClassName,
+  cell,
+  onPick,
+}: {
+  items: readonly T[]
+  current: T | null
+  across: number
+  acrossOpen: number
+  label: string
+  engine: CadEngine
+  /** The row's width, where fewer cells than `across` would shrink it. */
+  rowClassName?: string
+  cell: (item: T, onPick: () => void) => ReactElement
+  onPick: (item: T) => void
+}) {
   const portal = usePortalContainer()
   const [open, setOpen] = useState(false)
-  // The row scrolled to; null, the current pattern's.
+  // The row scrolled to; null, the current item's.
   const [row, setRow] = useState<number | null>(null)
-  const current = ctx.state.ribbon.contextual?.pattern ?? null
-  const rows = Math.ceil(PATTERNS.length / ACROSS)
-  const shown =
-    row ?? Math.floor(Math.max(0, PATTERNS.indexOf(current ?? "")) / ACROSS)
-  const pick = (pattern: string) =>
-    ctx.act(() => ctx.engine.editContextualTab({ pattern }))
+  const rows = Math.ceil(items.length / across)
+  const at = current === null ? 0 : Math.max(0, items.indexOf(current))
+  const shown = row ?? Math.floor(at / across)
   const scroll =
     "flex flex-1 items-center justify-center rounded-sm text-muted-foreground outline-none hover:bg-muted disabled:text-faint-foreground"
   return (
     <div className="mt-px flex h-18 rounded-sm border border-input">
-      <div className="flex">
-        {PATTERNS.slice(shown * ACROSS, (shown + 1) * ACROSS).map((pattern) => (
-          <PatternCell
-            key={pattern}
-            pattern={pattern}
-            current={pattern === current}
-            ctx={ctx}
-            onPick={() => pick(pattern)}
-          />
-        ))}
+      <div className={cn("flex", rowClassName)}>
+        {items
+          .slice(shown * across, (shown + 1) * across)
+          .map((item) => cell(item, () => onPick(item)))}
       </div>
       <div className="flex w-3.5 flex-col border-s border-input">
         <button
@@ -2525,7 +2578,7 @@ function HatchPatterns({ ctx }: { ctx: Context }) {
           className={scroll}
           onClick={() => {
             setRow(shown - 1)
-            ctx.engine.focusSurface()
+            engine.focusSurface()
           }}
         >
           <ChevronUp className="size-2.5" />
@@ -2538,17 +2591,17 @@ function HatchPatterns({ ctx }: { ctx: Context }) {
           className={scroll}
           onClick={() => {
             setRow(shown + 1)
-            ctx.engine.focusSurface()
+            engine.focusSurface()
           }}
         >
           <ChevronDown className="size-2.5" />
         </button>
         <Popover.Root open={open} onOpenChange={setOpen}>
           <Popover.Trigger
-            aria-label={t("panels.hatchPattern")}
+            aria-label={label}
             className={cn(scroll, "flex-none basis-4.5 aria-expanded:bg-muted")}
             onClick={(event) => {
-              if (event.detail > 0) ctx.engine.focusSurface()
+              if (event.detail > 0) engine.focusSurface()
             }}
           >
             <ChevronsDown aria-hidden className="size-2.5" />
@@ -2566,22 +2619,16 @@ function HatchPatterns({ ctx }: { ctx: Context }) {
                 <div
                   className="grid gap-0.5"
                   style={{
-                    gridTemplateColumns: `repeat(${ACROSS_OPEN}, auto)`,
+                    gridTemplateColumns: `repeat(${acrossOpen}, auto)`,
                   }}
                 >
-                  {PATTERNS.map((pattern) => (
-                    <PatternCell
-                      key={pattern}
-                      pattern={pattern}
-                      current={pattern === current}
-                      ctx={ctx}
-                      onPick={() => {
-                        setOpen(false)
-                        setRow(null)
-                        pick(pattern)
-                      }}
-                    />
-                  ))}
+                  {items.map((item) =>
+                    cell(item, () => {
+                      setOpen(false)
+                      setRow(null)
+                      onPick(item)
+                    })
+                  )}
                 </div>
               </Popover.Popup>
             </Popover.Positioner>
@@ -2663,6 +2710,238 @@ function PatternSwatch({
 }
 
 const SWATCH_PX = 32
+
+/**
+ * A style cell's sample: AutoCAD's, the same in every language, so no word
+ * of a catalog (desktop, 2026-11-26, mtext-tab-crop).
+ */
+const STYLE_SAMPLE = "AaBb12"
+/** Text Editor's gallery: two cells a row, as the open list (desktop, 2026-11-26). */
+const STYLES_ACROSS = 2
+
+/**
+ * Text Editor's gallery of text styles (AcIPEFontStyleGallery, 184 × 74):
+ * every style of the drawing, by name, two cells of 82 × 70 a row, the
+ * edited text's marked and its row scrolled to (desktop, 2026-11-26,
+ * mtext-tab-tree). A pick is the text's style, asked about first while the
+ * editor holds text (`state.textStyleChangeDialog`).
+ */
+function TextStyles({ ctx }: { ctx: Context }) {
+  const t = useEditorText("Ribbon")
+  const styles = [...ctx.state.textStyles].sort((a, b) =>
+    a.name.localeCompare(b.name, "en", { sensitivity: "base" })
+  )
+  const ids = styles.map((style) => style.id)
+  const names = new Map(styles.map((style) => [style.id, style.name]))
+  const current = ctx.state.ribbon.contextual?.textStyle ?? null
+  return (
+    <Gallery
+      items={ids}
+      current={current}
+      across={STYLES_ACROSS}
+      acrossOpen={STYLES_ACROSS}
+      label={t("fields.textStyle")}
+      engine={ctx.engine}
+      // Two cells of 82 even with one style: AutoCAD's gallery is 184 wide.
+      rowClassName="w-41"
+      cell={(id, onPick) => (
+        <TextStyleCell
+          key={id}
+          name={names.get(id) ?? id}
+          current={id === current}
+          onPick={onPick}
+        />
+      )}
+      onPick={(textStyle) =>
+        ctx.act(() => ctx.engine.editContextualTab({ textStyle }))
+      }
+    />
+  )
+}
+
+/**
+ * A style's cell, 82 × 70: its sample over its name. WHY one sample for
+ * every style: a style here names no font, all text is drawn in one.
+ */
+function TextStyleCell({
+  name,
+  current,
+  onPick,
+}: {
+  name: string
+  current: boolean
+  onPick: () => void
+}) {
+  // Its tooltip is the style's name alone, as a pattern cell's (desktop,
+  // 2026-11-26: `S5`).
+  return (
+    <Tooltip disableHoverablePopup>
+      <TooltipTrigger
+        render={
+          <button
+            type="button"
+            aria-pressed={current}
+            className="flex h-17.5 w-20.5 shrink-0 flex-col items-center justify-center gap-1 rounded-sm px-0.5 outline-none hover:bg-accent focus-visible:bg-accent aria-pressed:bg-active/15"
+            onClick={onPick}
+          />
+        }
+      >
+        {/* A sample, not words: the same in every language, as AutoCAD's. */}
+        <span
+          aria-hidden
+          dir="ltr"
+          className="flex h-9.5 w-full items-center justify-center overflow-hidden rounded-xs bg-white text-black"
+        >
+          {STYLE_SAMPLE}
+        </span>
+        {/* A style's name is drawing data, the same in every language. */}
+        <span dir="ltr" className="w-full truncate text-center">
+          {name}
+        </span>
+      </TooltipTrigger>
+      <TooltipContent side="bottom" sideOffset={2}>
+        <span dir="ltr">{name}</span>
+      </TooltipContent>
+    </Tooltip>
+  )
+}
+
+/**
+ * Text Editor's height (AcIPEFontSizeCombo, 100 × 22) in Style's second row
+ * (WHY its first is empty: Annotative is not built): the edited text's
+ * height, typed as a field's value, its list the one height it shows
+ * (desktop, 2026-11-26). A value refused, 0 or below, is put back.
+ */
+function TextHeight({ ctx }: { ctx: Context }) {
+  const t = useEditorText("Ribbon")
+  const portal = usePortalContainer()
+  const value = ctx.state.ribbon.contextual?.fields.textHeight
+  if (!value) return null
+  const label = t("fields.textHeight")
+  return (
+    <Tip tip="textHeight" title={label} ctx={ctx}>
+      <div className="mt-6 flex h-5.5 w-25">
+        <FieldBox
+          field="textHeight"
+          label={label}
+          className="min-w-0 flex-1 rounded-e-none"
+          ctx={ctx}
+        />
+        <Menu.Root>
+          <Menu.Trigger
+            aria-label={label}
+            className="flex w-4 items-center justify-center rounded-e-sm border border-s-0 border-input bg-background text-muted-foreground outline-none hover:bg-muted aria-expanded:bg-muted"
+          >
+            <ChevronDown aria-hidden className="size-2.5" />
+          </Menu.Trigger>
+          <Menu.Portal container={portal}>
+            <Menu.Positioner
+              side="bottom"
+              align="end"
+              sideOffset={1}
+              className="z-50"
+            >
+              <Menu.Popup
+                className={cn(POPUP, "w-25 p-0.5")}
+                finalFocus={ctx.toDrawing}
+              >
+                <Menu.Item
+                  className="flex h-5 cursor-default items-center rounded-sm px-1 outline-hidden data-highlighted:bg-accent"
+                  onClick={() =>
+                    ctx.engine.editContextualTab({
+                      field: "textHeight",
+                      text: value.text,
+                    })
+                  }
+                >
+                  <span dir="ltr">{value.text}</span>
+                </Menu.Item>
+              </Menu.Popup>
+            </Menu.Positioner>
+          </Menu.Portal>
+        </Menu.Root>
+      </div>
+    </Tip>
+  )
+}
+
+type Attachment = NonNullable<ContextualTab["attachment"]>
+
+/** Justification's rows, acmtedRes 1024 to 1032's order on the menu. */
+const ATTACHMENTS: readonly Attachment[] = [
+  "tl",
+  "tc",
+  "tr",
+  "ml",
+  "mc",
+  "mr",
+  "bl",
+  "bc",
+  "br",
+]
+
+/**
+ * Text Editor's Justification (AcIPEJustificationMenu, 81 × 72): large, its
+ * glyph over `Justification` and an arrow; its list the nine attachments,
+ * rows of 24 with each one's letters after it and a check at the edited
+ * text's (desktop, 2026-11-26, mtext-just-menu). A pick writes no line.
+ * No tooltip: AutoCAD's tables hold none for it.
+ */
+function TextJustification({ ctx }: { ctx: Context }) {
+  const t = useEditorText("Ribbon")
+  const portal = usePortalContainer()
+  const current = ctx.state.ribbon.contextual?.attachment ?? null
+  return (
+    <Menu.Root>
+      <Menu.Trigger
+        className={cn(
+          BUTTON,
+          "h-18 min-w-9.5 flex-col justify-start px-0.5 pt-0.75",
+          WHOLE_EVEN
+        )}
+      >
+        <LargeGlyph action="textJustification" />
+        <span className="mt-0.5">{ctx.text("textJustification")}</span>
+        <ChevronDown aria-hidden className="size-2.5" />
+      </Menu.Trigger>
+      <Menu.Portal container={portal}>
+        <Menu.Positioner
+          side="bottom"
+          align="start"
+          sideOffset={1}
+          className="z-50"
+        >
+          <Menu.Popup className={cn(POPUP, "p-0.5")} finalFocus={ctx.toDrawing}>
+            {ATTACHMENTS.map((attachment) => {
+              const [name, letters] = t(`justifications.${attachment}`).split(
+                "\t"
+              )
+              return (
+                <Menu.Item
+                  key={attachment}
+                  className="flex h-6 cursor-default items-center gap-1.5 rounded-sm ps-1 pe-3 outline-hidden select-none data-highlighted:bg-accent"
+                  onClick={() => ctx.engine.editContextualTab({ attachment })}
+                >
+                  <Check
+                    aria-hidden
+                    className={cn(
+                      "size-4 text-primary",
+                      attachment !== current && "invisible"
+                    )}
+                  />
+                  <span className="flex-1">{name}</span>
+                  <span dir="ltr" className="ps-3">
+                    {letters}
+                  </span>
+                </Menu.Item>
+              )
+            })}
+          </Menu.Popup>
+        </Menu.Positioner>
+      </Menu.Portal>
+    </Menu.Root>
+  )
+}
 
 /**
  * Hatch Creation's Properties in AutoCAD's rows (hatch/d01-2): Type in the

@@ -145,7 +145,8 @@ export const it: EditorLocale = {
         "annotate": "Annota",
         "tools3d": "Strumenti 3D",
         "view": "Vista",
-        "arrayCreation": "Creazione serie"
+        "arrayCreation": "Creazione serie",
+        "textEditor": "Editor di testo"
       },
       "panels": {
         "hatchBoundaries": "Contorni",
@@ -179,7 +180,10 @@ export const it: EditorLocale = {
         "arrayRows": "Righe",
         "arrayLevels": "Livelli",
         "arrayProperties": "Proprietà",
-        "arrayClose": "Chiudi"
+        "arrayClose": "Chiudi",
+        "textStyle": "Stile",
+        "textParagraph": "Paragrafo",
+        "textClose": "Chiudi"
       },
       "items": {
         "hatchPickPoints": "Seleziona punti",
@@ -338,7 +342,9 @@ export const it: EditorLocale = {
         "arrayDivide": "Dividi",
         "arrayMeasure": "Misura",
         "arrayAlignItems": "Allinea elementi",
-        "arrayClose": "Chiudi serie"
+        "arrayClose": "Chiudi serie",
+        "textJustification": "Giustificazione",
+        "textClose": "Chiudi\neditor di testo"
       },
       "fields": {
         "hatchAngle": "Angolo",
@@ -354,7 +360,9 @@ export const it: EditorLocale = {
         "items": "Elementi:",
         "angleBetween": "Tra:",
         "fillAngle": "Riempimento:",
-        "itemSpacing": "Tra:"
+        "itemSpacing": "Tra:",
+        "textStyle": "Stile testo",
+        "textHeight": "Altezza testo"
       },
       "pressF1": "Premere F1 per ulteriori informazioni",
       "tips": {
@@ -532,7 +540,8 @@ export const it: EditorLocale = {
         "arrayDivide": "Ridistribuisce gli elementi da dividere in maniera uniforme lungo la traiettoria.",
         "arrayMeasure": "Mantiene la spaziatura corrente tra gli elementi quando viene modificato il percorso o quando il numero di elementi viene modificato tramite grip o la tavolozza Proprietà.",
         "arrayAlignItems": "Specifica se allineare ogni elemento in modo che sia tangente alla traiettoria direzione. L'allineamento è relativo all'orientamento del primo elemento.",
-        "arrayClose": "Consente di uscire dal comando Serie."
+        "arrayClose": "Consente di uscire dal comando Serie.",
+        "textHeight": "Imposta l'altezza del carattere nelle unità del disegno per il testo nuovo o selezionato"
       },
       "tipTitles": {
         "hatchPickPoints": "Scegli punti",
@@ -580,7 +589,8 @@ export const it: EditorLocale = {
         "arrayDivide": "Divisione (metodo)",
         "arrayMeasure": "Misura (metodo)",
         "arrayAlignItems": "Allinea di elementi",
-        "arrayClose": "Chiudi serie"
+        "arrayClose": "Chiudi serie",
+        "textHeight": "Altezza testo"
       },
       "tipCommands": {
         "line": "LINEA",
@@ -883,6 +893,17 @@ export const it: EditorLocale = {
         "showPanelTitles": "Mostra titoli pannelli",
         "close": "Chiudi",
         "empty": "Nessuna scheda o gruppo attualmente caricato nella barra multifunzione."
+      },
+      "justifications": {
+        "tl": "Alto sinistra\tAS",
+        "tc": "Alto Centro\tAC",
+        "tr": "Alto Destra\tAD",
+        "ml": "Mezzo Sinistra\tMS",
+        "mc": "Mezzo Centro\tMC",
+        "mr": "Mezzo Destra\tMD",
+        "bl": "Basso Sinistra\tBS",
+        "bc": "Basso Centro\tBC",
+        "br": "Basso Destra\tBD"
       }
     },
     "CommandLine": {
@@ -1302,6 +1323,12 @@ export const it: EditorLocale = {
         "yes": "Sì",
         "no": "No",
         "cancel": "Annulla"
+      },
+      "styleChange": {
+        "title": "Testo multilinea - Modifica stile di testo",
+        "instruction": "La modifica verrà applicata a tutti gli oggetti di testo che utilizzano questo stile, non solo agli oggetti selezionati. Modificare lo stile di testo?",
+        "yes": "Sì",
+        "no": "No"
       }
     },
     "Palette": {

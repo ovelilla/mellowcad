@@ -3,10 +3,10 @@ title: "MTEXT en AutoCAD: TEXTOM, texto de líneas múltiples"
 metaTitle: "MTEXT en AutoCAD: comando TEXTOM en español"
 description: "Cómo funciona TEXTOM (MTEXT, alias TXM) de AutoCAD en español: esquinas o Anchura, Altura, Justificar e Interlineado, párrafos en un objeto. Pruébalo gratis."
 figure: "Una nota en un recuadro: primero la altura, después la esquina opuesta, y un párrafo ajustado a la anchura entre ambas."
-sourceHash: "67d762bb368d"
+sourceHash: "0177fafe871f"
 ---
 
-TEXTOM (MTEXT en inglés) escribe texto de líneas múltiples: un solo objeto con párrafos que se ajustan a una anchura. Precisas una primera esquina y la opuesta, y el recuadro entre ellas fija la anchura; después escribes en un editor dibujado en su sitio, donde Intro empieza un párrafo nuevo y Ctrl+Intro, o un clic fuera del marco, conserva el texto. Esc con algo escrito pregunta si quieres guardarlo, como el cuadro de cambios sin guardar de AutoCAD. Para líneas que sean cada una un objeto propio, usa <Command id="TEXT" />.
+TEXTOM (MTEXT en inglés) escribe texto de líneas múltiples: un solo objeto con párrafos que se ajustan a una anchura. Precisas una primera esquina y la opuesta, y el recuadro entre ellas fija la anchura; después escribes en un editor dibujado en su sitio, donde Intro empieza un párrafo nuevo y Ctrl+Intro, o un clic fuera del marco, conserva el texto. Mientras el editor está abierto, la cinta de opciones muestra la ficha Editor de texto, donde el estilo, la altura o la justificación que elijas se aplican a todo el texto. Esc con algo escrito pregunta si quieres guardarlo, como el cuadro de cambios sin guardar de AutoCAD. Para líneas que sean cada una un objeto propio, usa <Command id="TEXT" />.
 
 La primera línea indica el estilo y la altura actuales. Cada opción se pide en la solicitud de la esquina opuesta y vuelve a ella, así que una ejecución fija la altura, la justificación y lo demás antes de cerrar el recuadro. Las palabras pasan a la línea siguiente donde una línea superaría la anchura, y una palabra más larga que la anchura sobresale. La altura se comparte con <Command id="TEXT" /> y se guarda en el dibujo; la justificación, la rotación y el interlineado vuelven a sus valores por defecto en cada ejecución. <Command id="-MTEXT" /> pregunta lo mismo y después toma el texto en la línea de comandos, línea a línea.
 
@@ -38,7 +38,7 @@ Pide la anchura en lugar de la esquina opuesta, escrita o como la distancia a un
 
 ## Missing
 
-Las columnas, que AutoCAD 2027 ofrece en la solicitud de la esquina opuesta, no se ofrecen. El formato dentro del texto, como la altura, la fuente o el color de una palabra, las fracciones apiladas o el subrayado, no se dibuja ni se aplica, y el editor no tiene regla, tabulaciones, sangrías, listas ni la ficha Editor de texto de la cinta de opciones, ni un cursor sobre el dibujo. No hay máscara de fondo ni marco de texto, altura definida, escala anotativa ni referencia a objetos Punto en sus esquinas, y un clic dentro de su cuadro lo designa aunque no caiga sobre sus letras, donde AutoCAD no designa nada.
+Las columnas, que AutoCAD 2027 ofrece en la solicitud de la esquina opuesta, no se ofrecen. El formato dentro del texto, como la altura, la fuente o el color de una palabra, las fracciones apiladas o el subrayado, no se dibuja ni se aplica, y el editor no tiene regla, tabulaciones, sangrías ni listas, ni un cursor sobre el dibujo. La ficha Editor de texto de la cinta de opciones tiene la galería de estilos, la altura, Justificación y Cerrar editor de texto, pero no Anotativo, Máscara, el formato, las viñetas y la numeración, el interlineado y la alineación de párrafo, Insertar, Ortografía, Herramientas ni Opciones de AutoCAD, y su altura cambia la de todo el texto, donde la de AutoCAD fija la del texto que se escribe a continuación. No hay máscara de fondo ni marco de texto, altura definida, escala anotativa ni referencia a objetos Punto en sus esquinas, y un clic dentro de su cuadro lo designa aunque no caiga sobre sus letras, donde AutoCAD no designa nada.
 
 ## Questions
 

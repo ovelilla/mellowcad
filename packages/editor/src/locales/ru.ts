@@ -145,7 +145,8 @@ export const ru: EditorLocale = {
         "annotate": "Аннотации",
         "tools3d": "3D-инструменты",
         "view": "Вид",
-        "arrayCreation": "Создание массива"
+        "arrayCreation": "Создание массива",
+        "textEditor": "Текстовый редактор"
       },
       "panels": {
         "hatchBoundaries": "Контуры",
@@ -179,7 +180,10 @@ export const ru: EditorLocale = {
         "arrayRows": "Строки",
         "arrayLevels": "Уровни",
         "arrayProperties": "Свойства",
-        "arrayClose": "Закрыть"
+        "arrayClose": "Закрыть",
+        "textStyle": "Стиль",
+        "textParagraph": "Абзац",
+        "textClose": "Закрыть"
       },
       "items": {
         "hatchPickPoints": "Указать точки",
@@ -338,7 +342,9 @@ export const ru: EditorLocale = {
         "arrayDivide": "Поделить",
         "arrayMeasure": "Разметить",
         "arrayAlignItems": "Выровнять элементы",
-        "arrayClose": "Закрыть массив"
+        "arrayClose": "Закрыть массив",
+        "textJustification": "Выравнивание",
+        "textClose": "Закрыть\nтекстовый редактор"
       },
       "fields": {
         "hatchAngle": "Угол",
@@ -354,7 +360,9 @@ export const ru: EditorLocale = {
         "items": "Элементы:",
         "angleBetween": "Между:",
         "fillAngle": "Заполнение:",
-        "itemSpacing": "Между:"
+        "itemSpacing": "Между:",
+        "textStyle": "Стиль текста",
+        "textHeight": "Высота текста"
       },
       "pressF1": "Нажмите F1 для получения дополнительной справки",
       "tips": {
@@ -532,7 +540,8 @@ export const ru: EditorLocale = {
         "arrayDivide": "Повторное распределение элементов для равномерного разделения по всей длине траектории.",
         "arrayMeasure": "Сохраняет текущие интервалы между элементами при редактировании траектории или при изменении числа элементов с помощью ручек или палитры свойств.",
         "arrayAlignItems": "Указывает, следует ли выравнивать каждый элемент по касательной к траектории. Выравнивание выполняется относительно ориентации первого элемента.",
-        "arrayClose": "Завершение команды массива."
+        "arrayClose": "Завершение команды массива.",
+        "textHeight": "Задание высоты символов в единицах измерения чертежа для нового или выбранного текста."
       },
       "tipTitles": {
         "hatchPickPoints": "Указать точки",
@@ -580,7 +589,8 @@ export const ru: EditorLocale = {
         "arrayDivide": "Метод разделения",
         "arrayMeasure": "Метод измерения",
         "arrayAlignItems": "Выровнять элементы",
-        "arrayClose": "Закрыть массив"
+        "arrayClose": "Закрыть массив",
+        "textHeight": "Высота текста"
       },
       "tipCommands": {
         "line": "ОТРЕЗОК",
@@ -883,6 +893,17 @@ export const ru: EditorLocale = {
         "showPanelTitles": "Показать заголовки панелей",
         "close": "Закрыть",
         "empty": "В ленту не загружены вкладки или панели."
+      },
+      "justifications": {
+        "tl": "Вверх влево\tВЛ",
+        "tc": "Вверх по центру\tВЦ",
+        "tr": "Вверх вправо\tВП",
+        "ml": "Середина влево\tСЛ",
+        "mc": "Середина по центру\tСЦ",
+        "mr": "Середина вправо\tСП",
+        "bl": "Вниз влево\tНЛ",
+        "bc": "Вниз по центру\tНЦ",
+        "br": "Вниз вправо\tНП"
       }
     },
     "CommandLine": {
@@ -1300,6 +1321,12 @@ export const ru: EditorLocale = {
         "yes": "Да",
         "no": "Нет",
         "cancel": "Отмена"
+      },
+      "styleChange": {
+        "title": "Многострочный текст — изменение стиля текста",
+        "instruction": "Данное изменение повлияет на все текстовые объекты, использующие данный стиль, а не только на выбранные. Изменить стиль текста?",
+        "yes": "Да",
+        "no": "Нет"
       }
     },
     "Palette": {

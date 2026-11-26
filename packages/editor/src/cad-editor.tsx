@@ -63,6 +63,7 @@ import { DimStyleDialog } from "./dim-style-dialog"
 import { SaveAsDialog } from "./save-as-dialog"
 import { LockedObjectsDialog } from "./locked-objects-dialog"
 import { UnsavedTextDialog } from "./unsaved-text-dialog"
+import { TextStyleChangeDialog } from "./text-style-change-dialog"
 import { DynamicInput } from "./dynamic-input"
 import { RolloverTooltip } from "./rollover-tooltip"
 import { ViewCube } from "./view-cube"
@@ -424,6 +425,7 @@ function Workspace({
                     <SaveAsDialog engine={engine} state={state} />
                     <LockedObjectsDialog engine={engine} state={state} />
                     <UnsavedTextDialog engine={engine} state={state} />
+                    <TextStyleChangeDialog engine={engine} state={state} />
                   </>
                 )}
               </main>

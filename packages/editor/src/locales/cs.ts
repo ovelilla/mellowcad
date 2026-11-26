@@ -145,7 +145,8 @@ export const cs: EditorLocale = {
         "annotate": "Poznámky",
         "tools3d": "3D nástroje",
         "view": "Pohled",
-        "arrayCreation": "Vytvoření pole"
+        "arrayCreation": "Vytvoření pole",
+        "textEditor": "Textový editor"
       },
       "panels": {
         "hatchBoundaries": "Hranice",
@@ -179,7 +180,10 @@ export const cs: EditorLocale = {
         "arrayRows": "Řádky",
         "arrayLevels": "Úrovně",
         "arrayProperties": "Vlastnosti",
-        "arrayClose": "Zavřít"
+        "arrayClose": "Zavřít",
+        "textStyle": "Písmo",
+        "textParagraph": "Odstavec",
+        "textClose": "Zavřít"
       },
       "items": {
         "hatchPickPoints": "Vybrat body",
@@ -338,7 +342,9 @@ export const cs: EditorLocale = {
         "arrayDivide": "Dělit na úseky",
         "arrayMeasure": "Dělit v měřítku",
         "arrayAlignItems": "Zarovnat prvky",
-        "arrayClose": "Zavřít pole"
+        "arrayClose": "Zavřít pole",
+        "textJustification": "Zarovnání",
+        "textClose": "Zavřít\ntextový editor"
       },
       "fields": {
         "hatchAngle": "Úhel",
@@ -354,7 +360,9 @@ export const cs: EditorLocale = {
         "items": "Položky:",
         "angleBetween": "Mezi:",
         "fillAngle": "Výplň:",
-        "itemSpacing": "Mezi:"
+        "itemSpacing": "Mezi:",
+        "textStyle": "Styl textu",
+        "textHeight": "Výška textu"
       },
       "pressF1": "Další nápovědu zobrazíte stisknutím klávesy F1.",
       "tips": {
@@ -532,7 +540,8 @@ export const cs: EditorLocale = {
         "arrayDivide": "Přerozdělí položky rovnoměrně podél trajektorie.",
         "arrayMeasure": "Zachová aktuální rozteč položek, pokud je cesta upravena, nebo když je počet položek upraven pomocí uzlů nebo palety Vlastnosti.",
         "arrayAlignItems": "Určuje, zda mají být jednotlivé položky zarovnány, aby byly tečné k trajektorii směru. Zarovnání je relativní vzhledem k orientaci první položky.",
-        "arrayClose": "Ukončí příkaz pole."
+        "arrayClose": "Ukončí příkaz pole.",
+        "textHeight": "Slouží k nastavení výšky znaků ve výkresových jednotkách u nového nebo vybraného textu."
       },
       "tipTitles": {
         "hatchPickPoints": "Vybrat body",
@@ -580,7 +589,8 @@ export const cs: EditorLocale = {
         "arrayDivide": "Metoda rozdělení",
         "arrayMeasure": "Způsob měření",
         "arrayAlignItems": "Zarovnat položky",
-        "arrayClose": "Zavřít pole"
+        "arrayClose": "Zavřít pole",
+        "textHeight": "Výška textu"
       },
       "tipCommands": {
         "line": "ÚSEČKA",
@@ -883,6 +893,17 @@ export const cs: EditorLocale = {
         "showPanelTitles": "Zobrazit názvy panelů",
         "close": "Zavřít",
         "empty": "Do pásu karet nebyly dosud načteny žádné karty ani panely."
+      },
+      "justifications": {
+        "tl": "Horní levý\tHL",
+        "tc": "Horní Centr\tHC",
+        "tr": "Horní Pravý\tHP",
+        "ml": "Střední Levý\tSL",
+        "mc": "Střední Centr\tSC",
+        "mr": "Střední Pravý\tSP",
+        "bl": "Dolní Levý\tDL",
+        "bc": "Dolní Centr\tDC",
+        "br": "Dolní Pravý\tDP"
       }
     },
     "CommandLine": {
@@ -1302,6 +1323,12 @@ export const cs: EditorLocale = {
         "yes": "Ano",
         "no": "Ne",
         "cancel": "Storno"
+      },
+      "styleChange": {
+        "title": "Víceřádkový text – Změna stylu textu",
+        "instruction": "Tato změna ovlivní všechny textové objekty používající tento styl, nikoli pouze výběr. Chcete změnit styl textu?",
+        "yes": "Ano",
+        "no": "Ne"
       }
     },
     "Palette": {

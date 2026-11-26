@@ -413,6 +413,12 @@ export declare class CadEngine {
     closeLockedObjectsDialog(): void;
     answerUnsavedText(answer: "yes" | "no" | "cancel"): void;
     /**
+     * Answers `Multiline Text - Text Style Change`
+     * (`state.textStyleChangeDialog`): Yes applies the style Text Editor's
+     * gallery picked, No leaves the text as it was.
+     */
+    answerTextStyleChange(answer: "yes" | "no"): void;
+    /**
      * Inserts a block as the Blocks palette's click does: -INSERT past its
      * name, asking what the palette's Options leave to ask
      * (`state.blockInsert`).
@@ -974,7 +980,8 @@ export type { ContextualEdit }
  * What a contextual tab's control asks of the running command, as its prompt
  * would take it: a field's typed text, a toggle flipped, a path array's
  * Method, Hatch Creation's pattern (a name in `HATCH_PATTERNS`), its Type or
- * how its boundaries are given (Pick Points, Select), or the tab's Close.
+ * how its boundaries are given (Pick Points, Select), Text Editor's style or
+ * Justification, or the tab's Close.
  */
 export type ContextualEdit = {
     readonly field: ContextualFieldId;
@@ -990,12 +997,16 @@ export type ContextualEdit = {
 } | {
     readonly boundary: "pick" | "select";
 } | {
+    readonly textStyle: TextStyleId;
+} | {
+    readonly attachment: MTextAttachment;
+} | {
     readonly close: true;
 };
 
 export type { ContextualFieldId }
 /** A field of a contextual tab, by what it sets. */
-export type ContextualFieldId = "columns" | "columnSpacing" | "rows" | "rowSpacing" | "rowElevation" | "levels" | "levelSpacing" | "levelTotal" | "items" | "angleBetween" | "fillAngle" | "itemSpacing" | "hatchAngle" | "hatchScale";
+export type ContextualFieldId = "columns" | "columnSpacing" | "rows" | "rowSpacing" | "rowElevation" | "levels" | "levelSpacing" | "levelTotal" | "items" | "angleBetween" | "fillAngle" | "itemSpacing" | "hatchAngle" | "hatchScale" | "textHeight";
 
 export type { ContextualFieldUi }
 /** A field's value, written at the drawing's precision as its prompt's default is. */
@@ -1010,7 +1021,8 @@ export interface ContextualTab {
     /**
      * Which tab: Array Creation for ARRAYRECT, ARRAYPOLAR or ARRAYPATH
      * (ARRAYCREATION 1, 2, 3); Hatch Creation for HATCH with the ribbon open
-     * (HATCHCREATION 1).
+     * (HATCHCREATION 1); Text Editor while MTEXT's or TEXTEDIT's in-place
+     * editor is open on a multiline text (AcTextEditorInProgress).
      */
     readonly id: ContextualTabId;
     /** Each field's value as its prompt offers it, and whether it is greyed. */
@@ -1024,11 +1036,15 @@ export interface ContextualTab {
      * (`SOLID` for a solid fill); null on the others.
      */
     readonly pattern: string | null;
+    /** Text Editor's style, the one the edited text wears; null on the others. */
+    readonly textStyle: TextStyleId | null;
+    /** Text Editor's Justification, the edited text's; null on the others. */
+    readonly attachment: MTextAttachment | null;
 }
 
 export type { ContextualTabId }
 /** The contextual tabs a command opens. */
-export type ContextualTabId = "arrayCreationRectangular" | "arrayCreationPolar" | "arrayCreationPath" | "hatchCreation";
+export type ContextualTabId = "arrayCreationRectangular" | "arrayCreationPolar" | "arrayCreationPath" | "hatchCreation" | "textEditor";
 
 export type { ContextualToggleId }
 /** A toggle of a contextual tab. */
@@ -1379,6 +1395,12 @@ export interface EngineState {
      * Answered with `answerUnsavedText`.
      */
     readonly unsavedTextDialog: boolean;
+    /**
+     * The task dialog `Multiline Text - Text Style Change`: a style picked in
+     * Text Editor's gallery while the editor holds text (desktop, 2026-11-26).
+     * Answered with `answerTextStyleChange`.
+     */
+    readonly textStyleChangeDialog: boolean;
     /** Clean Screen (CLEANSCREENON / CLEANSCREENOFF, Ctrl+0). */
     readonly cleanScreen: CleanScreenUi;
     /** The ribbon (RIBBON, RIBBONCLOSE, Clean Screen). */

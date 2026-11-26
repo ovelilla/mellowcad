@@ -145,7 +145,8 @@ export const en: EditorCatalog = {
         "annotate": "Annotate",
         "tools3d": "3D Tools",
         "view": "View",
-        "arrayCreation": "Array Creation"
+        "arrayCreation": "Array Creation",
+        "textEditor": "Text Editor"
       },
       "panels": {
         "hatchBoundaries": "Boundaries",
@@ -179,7 +180,10 @@ export const en: EditorCatalog = {
         "arrayRows": "Rows",
         "arrayLevels": "Levels",
         "arrayProperties": "Properties",
-        "arrayClose": "Close"
+        "arrayClose": "Close",
+        "textStyle": "Style",
+        "textParagraph": "Paragraph",
+        "textClose": "Close"
       },
       "items": {
         "hatchPickPoints": "Pick Points",
@@ -338,7 +342,9 @@ export const en: EditorCatalog = {
         "arrayDivide": "Divide",
         "arrayMeasure": "Measure",
         "arrayAlignItems": "Align Items",
-        "arrayClose": "Close Array"
+        "arrayClose": "Close Array",
+        "textJustification": "Justification",
+        "textClose": "Close\nText Editor"
       },
       "fields": {
         "hatchAngle": "Angle",
@@ -354,7 +360,9 @@ export const en: EditorCatalog = {
         "items": "Items:",
         "angleBetween": "Between:",
         "fillAngle": "Fill:",
-        "itemSpacing": "Between:"
+        "itemSpacing": "Between:",
+        "textStyle": "Text Style",
+        "textHeight": "Text Height"
       },
       "pressF1": "Press F1 for more help",
       "tips": {
@@ -532,7 +540,8 @@ export const en: EditorCatalog = {
         "arrayDivide": "Redistributes items to divide evenly along the length of the path.",
         "arrayMeasure": "Maintains current item spacing when the path is edited, or when the number of items is edited through grips or the Properties palette.",
         "arrayAlignItems": "Specifies whether to align each item to be tangent to the path direction. Alignment is relative to the orientation of the first item.",
-        "arrayClose": "Exits the array command."
+        "arrayClose": "Exits the array command.",
+        "textHeight": "Sets the character height in drawing units for new or selected text"
       },
       "tipTitles": {
         "hatchPickPoints": "Pick Points",
@@ -580,7 +589,8 @@ export const en: EditorCatalog = {
         "arrayDivide": "Divide Method",
         "arrayMeasure": "Measure Method",
         "arrayAlignItems": "Align Items",
-        "arrayClose": "Close Array"
+        "arrayClose": "Close Array",
+        "textHeight": "Text Height"
       },
       "tipCommands": {
         "line": "LINE",
@@ -883,6 +893,17 @@ export const en: EditorCatalog = {
         "showPanelTitles": "Show Panel Titles",
         "close": "Close",
         "empty": "The Ribbon does not have any tabs or panels currently loaded."
+      },
+      "justifications": {
+        "tl": "Top Left\tTL",
+        "tc": "Top Center\tTC",
+        "tr": "Top Right\tTR",
+        "ml": "Middle Left\tML",
+        "mc": "Middle Center\tMC",
+        "mr": "Middle Right\tMR",
+        "bl": "Bottom Left\tBL",
+        "bc": "Bottom Center\tBC",
+        "br": "Bottom Right\tBR"
       }
     },
     "CommandLine": {
@@ -1302,6 +1323,12 @@ export const en: EditorCatalog = {
         "yes": "Yes",
         "no": "No",
         "cancel": "Cancel"
+      },
+      "styleChange": {
+        "title": "Multiline Text - Text Style Change",
+        "instruction": "This change will affect all text objects using this style, not just the selection. Do you want to change the text style?",
+        "yes": "Yes",
+        "no": "No"
       }
     },
     "Palette": {

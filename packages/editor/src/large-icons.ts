@@ -535,6 +535,16 @@ export const LARGE_BUTTON_ICONS: Readonly<Record<string, LargeIcon>> = {
   // Close: the check AutoCAD's Close buttons wear.
   arrayClose: largeIcon("ArrayClose", { d: ["M6 17 L13 24 L27 8"] }),
   hatchClose: largeIcon("HatchClose", { d: ["M6 17 L13 24 L27 8"] }),
+  textClose: largeIcon("TextClose", { d: ["M6 17 L13 24 L27 8"] }),
+  // Justification: an A in a frame with its nine attachment points' corners.
+  textJustification: largeIcon("TextJustification", {
+    d: ["M4 4 H28 V28 H4 Z", "M10 23 L16 8 L22 23", "M12.5 17 H19.5"],
+  }),
+  // Text Editor's Style, folded or minimized: two samples side by side.
+  textStyle: largeIcon("TextStyle", {
+    d: ["M4 8 H15 V24 H4 Z", "M17 8 H28 V24 H17 Z"],
+    thin: ["M7 20 L9.5 12 L12 20", "M20 20 L22.5 12 L25 20"],
+  }),
   // Pick Points: a point picked inside a boundary.
   hatchPickPoints: largeIcon("HatchPickPoints", {
     d: ["M4 4 H28 V28 H4 Z", "M16 10 V22", "M10 16 H22"],

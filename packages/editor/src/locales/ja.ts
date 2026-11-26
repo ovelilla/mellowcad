@@ -141,7 +141,8 @@ export const ja: EditorLocale = {
         "annotate": "注釈",
         "tools3d": "3D ツール",
         "view": "表示",
-        "arrayCreation": "配列複写作成"
+        "arrayCreation": "配列複写作成",
+        "textEditor": "テキスト エディタ"
       },
       "panels": {
         "hatchBoundaries": "境界",
@@ -175,7 +176,10 @@ export const ja: EditorLocale = {
         "arrayRows": "行",
         "arrayLevels": "レベル",
         "arrayProperties": "オブジェクト プロパティ管理",
-        "arrayClose": "閉じる"
+        "arrayClose": "閉じる",
+        "textStyle": "文字スタイル",
+        "textParagraph": "段落",
+        "textClose": "閉じる"
       },
       "items": {
         "hatchPickPoints": "点をクリック",
@@ -334,7 +338,9 @@ export const ja: EditorLocale = {
         "arrayDivide": "ディバイダ",
         "arrayMeasure": "メジャー",
         "arrayAlignItems": "項目を位置合わせ",
-        "arrayClose": "配列複写 を閉じる"
+        "arrayClose": "配列複写 を閉じる",
+        "textJustification": "位置合わせ",
+        "textClose": "テキスト エディタ\nを閉じる"
       },
       "fields": {
         "hatchAngle": "角度",
@@ -350,7 +356,9 @@ export const ja: EditorLocale = {
         "items": "項目:",
         "angleBetween": "間隔:",
         "fillAngle": "埋める:",
-        "itemSpacing": "間隔:"
+        "itemSpacing": "間隔:",
+        "textStyle": "文字スタイル",
+        "textHeight": "文字高さ"
       },
       "pressF1": "ヘルプを表示するには F1 キー",
       "tips": {
@@ -528,7 +536,8 @@ export const ja: EditorLocale = {
         "arrayDivide": "パスの長さに応じて項目が等間隔に並ぶように再配置",
         "arrayMeasure": "パスが編集された場合や、グリップまたはプロパティ パレットで項目数が変更された場合でも、現在の項目の間隔を保持",
         "arrayAlignItems": "各項目がパスの方向に対して正接になるかどうかを指定。位置合わせは第 1 項目の方向に対して相対です。",
-        "arrayClose": "配列複写コマンドを終了します。"
+        "arrayClose": "配列複写コマンドを終了します。",
+        "textHeight": "新しいまたは選択した文字の文字高さを作図単位で設定します"
       },
       "tipTitles": {
         "hatchPickPoints": "点をクリック",
@@ -576,7 +585,8 @@ export const ja: EditorLocale = {
         "arrayDivide": "ディバイダ方式",
         "arrayMeasure": "メジャー方式",
         "arrayAlignItems": "項目を位置合わせ",
-        "arrayClose": "配列複写を閉じる"
+        "arrayClose": "配列複写を閉じる",
+        "textHeight": "文字高さ"
       },
       "tipCommands": {
         "line": "LINE",
@@ -879,6 +889,17 @@ export const ja: EditorLocale = {
         "showPanelTitles": "パネルのタイトルを表示",
         "close": "閉じる",
         "empty": "現在ロードされているリボンにはタブやパネルが存在しません。"
+      },
+      "justifications": {
+        "tl": "左上\tTL",
+        "tc": "中心上\tTC",
+        "tr": "右上\tTR",
+        "ml": "左中央\tML",
+        "mc": "中央\tMC",
+        "mr": "右中央\tMR",
+        "bl": "左下\tBL",
+        "bc": "中心下\tBC",
+        "br": "右下\tBR"
       }
     },
     "CommandLine": {
@@ -1298,6 +1319,12 @@ export const ja: EditorLocale = {
         "yes": "はい",
         "no": "いいえ",
         "cancel": "キャンセル"
+      },
+      "styleChange": {
+        "title": "マルチ テキスト - 文字スタイルの変更",
+        "instruction": "この変更は、選択した文字オブジェクトだけでなく、このスタイルを使用するすべての文字に反映されます。文字スタイルを変更しますか?",
+        "yes": "はい",
+        "no": "いいえ"
       }
     },
     "Palette": {

@@ -1,7 +1,12 @@
 import { Vec2 } from "../../geometry/Vec2"
 import { Vec3 } from "../../geometry/Vec3"
 import { DocumentReader } from "../../domain/Document"
-import { Entity, EntityId, BlockLookup } from "../../domain/entities"
+import {
+  Entity,
+  EntityId,
+  BlockLookup,
+  MTextAttachment,
+} from "../../domain/entities"
 import type { TextStyleId } from "../../domain/textStyles"
 import { Ucs } from "../../domain/ucs"
 import { Viewport } from "../Viewport"
@@ -594,6 +599,9 @@ export interface ContextualTabSource {
   readonly method?: "divide" | "measure"
   /** Hatch Creation's pattern (HPNAME's, as the registry names it). */
   readonly pattern?: string
+  /** Text Editor's style and Justification: the edited text's. */
+  readonly textStyle?: TextStyleId
+  readonly attachment?: MTextAttachment
 }
 
 /** A contextual tab's field: its value and how its prompt writes it. */
@@ -688,7 +696,7 @@ export interface Tool {
    * The ribbon contextual tab the command shows now (AutoCAD's ARRAYCREATION
    * and the like), or null; the runtime words its values.
    */
-  contextualTab?(): ContextualTabSource | null
+  contextualTab?(ctx: ToolContext): ContextualTabSource | null
   /**
    * A contextual tab's control acting on the command as its prompt would take
    * it, refused there in the prompt's words: `"end"` when it ended the command
@@ -852,6 +860,14 @@ export interface Tool {
    * whose No is the Escape it held back.
    */
   hasUnsavedText?(ctx: ToolContext): boolean
+
+  /**
+   * Whether the in-place editor holds text, so that a style picked in Text
+   * Editor's gallery is asked about first (`Multiline Text - Text Style
+   * Change`); with the editor empty AutoCAD applies it at once (desktop,
+   * 2026-11-26).
+   */
+  editorHoldsText?(ctx: ToolContext): boolean
 
   /**
    * Escape steps back inside the command instead of ending it: `true` when

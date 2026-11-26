@@ -4,10 +4,10 @@ metaTitle: "MTEXT in AutoCAD: multiline text, options, alias"
 description: "How AutoCAD's MTEXT (T) works, prompt by prompt: two corners or Width, Height, Justify and Line spacing, paragraphs wrapped in one object. Try it free online."
 figure: "A note in a box: the height set first, then the opposite corner, and one paragraph wrapped to the width between them."
 related: ["TEXT", "TEXTEDIT", "STYLE", "EXPLODE"]
-coverage: "6c98ba5bbd2c"
+coverage: "f7c1e4b4ef79"
 ---
 
-MTEXT writes multiline text: one object holding paragraphs that wrap to a width. You pick a first corner and the opposite one, and the box between them sets the width; then you type in an editor drawn in place, where Enter starts a new paragraph and Ctrl+Enter, or a click outside the frame, keeps the text. Escape with something typed asks whether to save it, as AutoCAD's Unsaved Changes dialog does. For lines that are each an object of their own, use <Command id="TEXT" />.
+MTEXT writes multiline text: one object holding paragraphs that wrap to a width. You pick a first corner and the opposite one, and the box between them sets the width; then you type in an editor drawn in place, where Enter starts a new paragraph and Ctrl+Enter, or a click outside the frame, keeps the text. While the editor is open the ribbon shows the Text Editor tab, where a style, a height or a justification picked applies to the whole text. Escape with something typed asks whether to save it, as AutoCAD's Unsaved Changes dialog does. For lines that are each an object of their own, use <Command id="TEXT" />.
 
 The first line says the current style and height. Every option is asked at the opposite corner prompt and comes back to it, so a run sets the height, the justification and the rest before the box is closed. Words wrap where a line would pass the width, and a word longer than the width runs past it. The height is shared with <Command id="TEXT" /> and kept in the drawing; the justification, the rotation and the line spacing start from their defaults at every run. <Command id="-MTEXT" /> asks the same, then takes the text at the command line, a line at a time.
 
@@ -39,7 +39,7 @@ Asks for the width instead of the opposite corner, typed or as the distance to a
 
 ## Missing
 
-Columns, which AutoCAD 2027 lists at the opposite corner prompt, are not offered. Formatting within the text, such as a word's height, font or colour, stacked fractions or underline, is not drawn or applied, and the editor has no ruler, tabs, indents, lists or Text Editor ribbon tab, nor a caret on the drawing. There is no background mask or text frame, no defined height, no annotative scaling and no Node snap on its corners, and a click inside its box picks it even off its letters, where AutoCAD picks nothing.
+Columns, which AutoCAD 2027 lists at the opposite corner prompt, are not offered. Formatting within the text, such as a word's height, font or colour, stacked fractions or underline, is not drawn or applied, and the editor has no ruler, tabs, indents or lists, nor a caret on the drawing. The ribbon's Text Editor tab has its style gallery, the height, Justification and Close Text Editor, but not AutoCAD's Annotative, Mask, formatting, bullets and numbering, line spacing and paragraph alignment, Insert, Spell Check, Tools or Options, and its height changes the whole text, where AutoCAD's sets the text typed next. There is no background mask or text frame, no defined height, no annotative scaling and no Node snap on its corners, and a click inside its box picks it even off its letters, where AutoCAD picks nothing.
 
 ## Questions
 

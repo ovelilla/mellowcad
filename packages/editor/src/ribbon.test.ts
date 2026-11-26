@@ -194,7 +194,8 @@ describe("the ribbon's tooltips", () => {
   it("describe every button; a list's row has none", () => {
     const untipped = Object.keys(words.items).filter((id) => !tipped(id))
     // Array Creation's Type is a label (a `DataTemplate`, no `TT_`), and its
-    // Method shows the tooltip of the method in force.
+    // Method shows the tooltip of the method in force. Text Editor's
+    // Justification and Close have no `TT_` in AcWindows, nor a macro.
     expect(untipped.sort()).toEqual([
       "arrayMethod",
       "arrayPath",
@@ -202,6 +203,8 @@ describe("the ribbon's tooltips", () => {
       "arrayRectangular",
       "manageDimensionStyles",
       "manageTextStyles",
+      "textClose",
+      "textJustification",
     ])
     for (const control of controls()) {
       if (control.kind === "tool") expect(tipped(control.tool)).toBe(true)
@@ -212,13 +215,15 @@ describe("the ribbon's tooltips", () => {
   })
 
   it("name the command in capitals, the one F1 asks Help for", () => {
-    // Array Creation's and Hatch Creation's `TT_…` name no command, nor does
-    // Close Hatch Creation's `^M` (MM_1928): their tooltips show none.
+    // Array Creation's, Hatch Creation's and Text Editor's `TT_…` name no
+    // command, nor does Close Hatch Creation's `^M` (MM_1928): their
+    // tooltips show none.
     const commandless = Object.keys(words.tips).filter(
       (tip) => !(tip in words.tipCommands)
     )
-    expect(commandless).toHaveLength(28)
-    for (const tip of commandless) expect(tip).toMatch(/^(array|hatch)[A-Z]/)
+    expect(commandless).toHaveLength(29)
+    for (const tip of commandless)
+      expect(tip).toMatch(/^(array|hatch|text)[A-Z]/)
     const commands = new Set(commandCatalog().map((command) => command.id))
     for (const [tip, command] of Object.entries(words.tipCommands)) {
       expect(String(command)).toMatch(/^[A-Z0-9-]+$/)

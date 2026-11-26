@@ -2230,8 +2230,9 @@ silence (p242, p243). One annotation object (text, MTEXT, attribute definition) 
 opens at once after the settings line (p159); a set holding anything else is dropped and the prompt
 asked (p146). U names it `TEXTEDIT` (es `EDITARTEXTO`, p249, p282). Retype in place; Escape in a
 single-line text's editor discards that edit and asks for the next object, a second Escape ending
-the command (desktop d06-5, d06-6); multiline text in MTEXT's editor (Escape asks to save a changed
-wording, unchanged wording keeps its formatting), a loose attribute definition as Edit Attribute
+the command (desktop d06-5, d06-6); multiline text in MTEXT's editor with the ribbon's Text
+Editor tab, its style, height and Justification written with the wording (MTEXT's entry; Escape
+asks to save a changed wording or what the tab set, unchanged wording keeps its formatting), a loose attribute definition as Edit Attribute
 Definition's Tag / Prompt / Default (Escape cancels). A double-click (DoubleClickRoot.cui) on a
 text or an attribute definition runs `_textedit`, settings line and all, and goes on as TEXTEDIT
 does (d06); on an MTEXT it runs `_mtedit`: no settings line, the one object, ended with the editor

@@ -145,7 +145,8 @@ export const ptBR: EditorLocale = {
         "annotate": "Anotação",
         "tools3d": "Ferramentas 3D",
         "view": "Vista",
-        "arrayCreation": "Criação de Matriz"
+        "arrayCreation": "Criação de Matriz",
+        "textEditor": "Editor de texto"
       },
       "panels": {
         "hatchBoundaries": "Limites",
@@ -179,7 +180,10 @@ export const ptBR: EditorLocale = {
         "arrayRows": "Linhas",
         "arrayLevels": "Níveis",
         "arrayProperties": "Propriedades",
-        "arrayClose": "Fechar"
+        "arrayClose": "Fechar",
+        "textStyle": "Estilo",
+        "textParagraph": "Parágrafo",
+        "textClose": "Fechar"
       },
       "items": {
         "hatchPickPoints": "Selecionar pontos",
@@ -338,7 +342,9 @@ export const ptBR: EditorLocale = {
         "arrayDivide": "Dividir",
         "arrayMeasure": "Medir",
         "arrayAlignItems": "Alinhar itens",
-        "arrayClose": "Fechar matriz"
+        "arrayClose": "Fechar matriz",
+        "textJustification": "Justificação",
+        "textClose": "Fechar\nEditor de texto"
       },
       "fields": {
         "hatchAngle": "Ângulo",
@@ -354,7 +360,9 @@ export const ptBR: EditorLocale = {
         "items": "Itens:",
         "angleBetween": "Entre:",
         "fillAngle": "Preencher:",
-        "itemSpacing": "Entre:"
+        "itemSpacing": "Entre:",
+        "textStyle": "Estilo do texto",
+        "textHeight": "Altura do texto"
       },
       "pressF1": "Pressione F1 para obter mais ajuda",
       "tips": {
@@ -532,7 +540,8 @@ export const ptBR: EditorLocale = {
         "arrayDivide": "Redistribui itens para dividir por igual ao longo do comprimento do caminho.",
         "arrayMeasure": "Mantém o espaçamento do item atual quando o caminho é editado ou quando o número de itens é editado por alças ou na paleta Propriedades.",
         "arrayAlignItems": "Especifica se deseja alinhar cada item para que fique tangente na direção do caminho. O alinhamento é relativo à orientação do primeiro item.",
-        "arrayClose": "Sai do comando da matriz."
+        "arrayClose": "Sai do comando da matriz.",
+        "textHeight": "Define a altura do caractere em unidades de desenho para texto novo ou selecionado"
       },
       "tipTitles": {
         "hatchPickPoints": "Selecionar pontos",
@@ -580,7 +589,8 @@ export const ptBR: EditorLocale = {
         "arrayDivide": "Método Dividir",
         "arrayMeasure": "Método Medir",
         "arrayAlignItems": "Alinhar itens",
-        "arrayClose": "Fechar matriz"
+        "arrayClose": "Fechar matriz",
+        "textHeight": "Altura do texto"
       },
       "tipCommands": {
         "line": "LINHA",
@@ -883,6 +893,17 @@ export const ptBR: EditorLocale = {
         "showPanelTitles": "Mostrar títulos dos painéis",
         "close": "Fechar",
         "empty": "A faixa de opções não tem nenhuma guia ou painel no momento carregada."
+      },
+      "justifications": {
+        "tl": "Superior esquerdo\tSE",
+        "tc": "Superior central\tSC",
+        "tr": "Superior direito\tSD",
+        "ml": "Meio esquerdo\tME",
+        "mc": "Meio central\tMC",
+        "mr": "Meio direito\tMD",
+        "bl": "Inferior esquerdo\tIE",
+        "bc": "Inferior central\tIC",
+        "br": "Inferior direito\tID"
       }
     },
     "CommandLine": {
@@ -1302,6 +1323,12 @@ export const ptBR: EditorLocale = {
         "yes": "Sim",
         "no": "Não",
         "cancel": "Cancelar"
+      },
+      "styleChange": {
+        "title": "Texto multilinha -Alterar o estilo de texto",
+        "instruction": "Esta alteração irá afetar todos os objetos de texto que usam este estilo, não apenas a seleção. Deseja alterar o estilo de texto?",
+        "yes": "Sim",
+        "no": "Não"
       }
     },
     "Palette": {

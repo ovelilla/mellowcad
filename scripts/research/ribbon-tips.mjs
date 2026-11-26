@@ -216,6 +216,7 @@ export const TIP_SOURCES = {
   hatchAngle: "TT_AcHatchPatternAngleSlider",
   hatchScale: "TT_AcHatchScaleSpinner",
   hatchClose: "MM_1928",
+  textHeight: "TT_AcIPEFontSizeCombo",
 }
 
 function zipParts(path) {

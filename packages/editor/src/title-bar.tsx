@@ -137,111 +137,120 @@ export function TitleBar({
         />
         {/* WHY ms-1: AutoCAD's first Quick Access button starts 56 px from
           the edge, 8 after the application button. One button against the
-          next, on a 24 px pitch. */}
-        <Panel className="ms-1 shrink-0 items-center gap-0">
-          {shown.map((item) => {
-            switch (item) {
-              case "new":
-                return (
-                  <IconAction
-                    key={item}
-                    icon={FilePlus}
-                    label={t("new")}
-                    side="bottom"
-                    size="quick"
-                    onClick={() => run("new")}
-                  />
-                )
-              case "open":
-                return (
-                  <IconAction
-                    key={item}
-                    icon={FolderOpen}
-                    label={t("open")}
-                    shortcut={keys("open")}
-                    side="bottom"
-                    size="quick"
-                    onClick={() => run("open")}
-                  />
-                )
-              case "save":
-                return (
-                  <IconAction
-                    key={item}
-                    icon={Save}
-                    label={t("save")}
-                    shortcut={keys("save")}
-                    side="bottom"
-                    size="quick"
-                    onClick={() => run("save")}
-                  />
-                )
-              case "saveAs":
-                return (
-                  <IconAction
-                    key={item}
-                    icon={SaveAll}
-                    label={t("saveAs")}
-                    side="bottom"
-                    size="quick"
-                    onClick={() => run("saveAs")}
-                  />
-                )
-              case "undo":
-              case "redo":
-                return (
-                  <StepList
-                    key={item}
-                    engine={engine}
-                    kind={item}
-                    steps={item === "undo" ? state.undoSteps : state.redoSteps}
-                    enabled={item === "undo" ? state.canUndo : state.canRedo}
-                  />
-                )
-              // acad.cuix's AcQATMatchProp, `'_matchprop`, as the ribbon's
-              // Match Properties starts it.
-              case "matchProp":
-                return (
-                  <IconAction
-                    key={item}
-                    icon={toolIcon("matchprop")}
-                    label={t("quickAccess.matchProp")}
-                    side="bottom"
-                    size="quick"
-                    onClick={() => {
-                      engine.setActiveTool("matchprop")
-                      engine.focusSurface()
-                    }}
-                  />
-                )
-              // AcQATProperties, a toggle lit while the palette shows, as
-              // View's Properties.
-              case "properties":
-                return (
-                  <IconAction
-                    key={item}
-                    icon={SlidersHorizontal}
-                    label={t("quickAccess.properties")}
-                    active={paletteShows(state, "properties")}
-                    side="bottom"
-                    size="quick"
-                    onClick={() => {
-                      engine.togglePalette("properties")
-                      engine.focusSurface()
-                    }}
-                  />
-                )
-            }
-          })}
-          <CustomizeQuickAccess
-            engine={engine}
-            shown={shown}
-            onChange={(next) => {
-              setShown(next)
-              rememberQuickAccess(storageKey, next)
-            }}
-          />
-        </Panel>
+          next, on a 24 px pitch. Greyed while the text editor is open, as
+          AutoCAD's (desktop 2026-11-26, mtext-tab-tree: every button
+          disabled under Text Editor). */}
+        <fieldset
+          disabled={state.ribbon.contextual?.id === "textEditor"}
+          className="contents"
+        >
+          <Panel className="ms-1 shrink-0 items-center gap-0">
+            {shown.map((item) => {
+              switch (item) {
+                case "new":
+                  return (
+                    <IconAction
+                      key={item}
+                      icon={FilePlus}
+                      label={t("new")}
+                      side="bottom"
+                      size="quick"
+                      onClick={() => run("new")}
+                    />
+                  )
+                case "open":
+                  return (
+                    <IconAction
+                      key={item}
+                      icon={FolderOpen}
+                      label={t("open")}
+                      shortcut={keys("open")}
+                      side="bottom"
+                      size="quick"
+                      onClick={() => run("open")}
+                    />
+                  )
+                case "save":
+                  return (
+                    <IconAction
+                      key={item}
+                      icon={Save}
+                      label={t("save")}
+                      shortcut={keys("save")}
+                      side="bottom"
+                      size="quick"
+                      onClick={() => run("save")}
+                    />
+                  )
+                case "saveAs":
+                  return (
+                    <IconAction
+                      key={item}
+                      icon={SaveAll}
+                      label={t("saveAs")}
+                      side="bottom"
+                      size="quick"
+                      onClick={() => run("saveAs")}
+                    />
+                  )
+                case "undo":
+                case "redo":
+                  return (
+                    <StepList
+                      key={item}
+                      engine={engine}
+                      kind={item}
+                      steps={
+                        item === "undo" ? state.undoSteps : state.redoSteps
+                      }
+                      enabled={item === "undo" ? state.canUndo : state.canRedo}
+                    />
+                  )
+                // acad.cuix's AcQATMatchProp, `'_matchprop`, as the ribbon's
+                // Match Properties starts it.
+                case "matchProp":
+                  return (
+                    <IconAction
+                      key={item}
+                      icon={toolIcon("matchprop")}
+                      label={t("quickAccess.matchProp")}
+                      side="bottom"
+                      size="quick"
+                      onClick={() => {
+                        engine.setActiveTool("matchprop")
+                        engine.focusSurface()
+                      }}
+                    />
+                  )
+                // AcQATProperties, a toggle lit while the palette shows, as
+                // View's Properties.
+                case "properties":
+                  return (
+                    <IconAction
+                      key={item}
+                      icon={SlidersHorizontal}
+                      label={t("quickAccess.properties")}
+                      active={paletteShows(state, "properties")}
+                      side="bottom"
+                      size="quick"
+                      onClick={() => {
+                        engine.togglePalette("properties")
+                        engine.focusSurface()
+                      }}
+                    />
+                  )
+              }
+            })}
+            <CustomizeQuickAccess
+              engine={engine}
+              shown={shown}
+              onChange={(next) => {
+                setShown(next)
+                rememberQuickAccess(storageKey, next)
+              }}
+            />
+          </Panel>
+        </fieldset>
 
         <SaveStatus state={state} />
 

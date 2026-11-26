@@ -98,6 +98,7 @@ declare const source: {
       "tools3d": string
       "view": string
       "arrayCreation": string
+      "textEditor": string
     }
     "panels": {
       "hatchBoundaries": string
@@ -132,6 +133,9 @@ declare const source: {
       "arrayLevels": string
       "arrayProperties": string
       "arrayClose": string
+      "textStyle": string
+      "textParagraph": string
+      "textClose": string
     }
     "items": {
       "hatchPickPoints": string
@@ -291,6 +295,8 @@ declare const source: {
       "arrayMeasure": string
       "arrayAlignItems": string
       "arrayClose": string
+      "textJustification": string
+      "textClose": string
     }
     "fields": {
       "hatchAngle": string
@@ -307,6 +313,8 @@ declare const source: {
       "angleBetween": string
       "fillAngle": string
       "itemSpacing": string
+      "textStyle": string
+      "textHeight": string
     }
     "pressF1": string
     "tips": {
@@ -485,6 +493,7 @@ declare const source: {
       "arrayMeasure": string
       "arrayAlignItems": string
       "arrayClose": string
+      "textHeight": string
     }
     "tipTitles": {
       "hatchPickPoints": string
@@ -533,6 +542,7 @@ declare const source: {
       "arrayMeasure": string
       "arrayAlignItems": string
       "arrayClose": string
+      "textHeight": string
     }
     "tipCommands": {
       "line": string
@@ -835,6 +845,17 @@ declare const source: {
       "showPanelTitles": string
       "close": string
       "empty": string
+    }
+    "justifications": {
+      "tl": string
+      "tc": string
+      "tr": string
+      "ml": string
+      "mc": string
+      "mr": string
+      "bl": string
+      "bc": string
+      "br": string
     }
   }
   "CommandLine": {
@@ -1153,6 +1174,12 @@ declare const source: {
       "yes": string
       "no": string
       "cancel": string
+    }
+    "styleChange": {
+      "title": string
+      "instruction": string
+      "yes": string
+      "no": string
     }
   }
   "Palette": {

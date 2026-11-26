@@ -39,9 +39,11 @@ const ISLAND_MAX_BYTES = 1 * KB
  * command line's Recent Commands, the visual style's `(Fast)` in every language and AutoCAD's
  * grip colours (2026-11-26), to 507 KB for the ribbon's contextual tab (Array Creation's state,
  * the three array tools' answers to it; 2026-11-26), to 508 KB for HATCH's ribbon prompts in
- * every command language, Hatch Creation's answers and its gallery's swatches (2026-11-26).
+ * every command language, Hatch Creation's answers and its gallery's swatches (2026-11-26), to
+ * 509 KB for Text Editor's tab, MTEXT's and TEXTEDIT's answers to it and its Text Style Change
+ * dialog (2026-11-26).
  */
-const ENGINE_MAX_GZIP_BYTES = 508 * KB
+const ENGINE_MAX_GZIP_BYTES = 509 * KB
 
 /**
  * A language's catalog, gzipped, against English's, which the engine carries:
