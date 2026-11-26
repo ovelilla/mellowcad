@@ -47,6 +47,17 @@ declare const source: {
     "redo": string
     "undoCount": string
     "redoCount": string
+    "quickAccess": {
+      "caption": string
+      "new": string
+      "open": string
+      "save": string
+      "saveAs": string
+      "undo": string
+      "redo": string
+      "matchProp": string
+      "properties": string
+    }
   }
   "NavigationBar": {
     "label": string

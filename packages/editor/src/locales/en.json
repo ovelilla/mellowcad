@@ -45,7 +45,18 @@
     "undo": "Undo",
     "redo": "Redo",
     "undoCount": "{count, plural, =1 {Undo # command} other {Undo # commands}}",
-    "redoCount": "{count, plural, =1 {Redo # command} other {Redo # commands}}"
+    "redoCount": "{count, plural, =1 {Redo # command} other {Redo # commands}}",
+    "quickAccess": {
+      "caption": "Customize Quick Access Toolbar",
+      "new": "New",
+      "open": "Open",
+      "save": "Save",
+      "saveAs": "Save As...",
+      "undo": "Undo",
+      "redo": "Redo",
+      "matchProp": "Match Properties",
+      "properties": "Properties"
+    }
   },
   "NavigationBar": {
     "label": "Navigation bar",

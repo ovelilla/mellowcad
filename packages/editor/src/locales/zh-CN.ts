@@ -84,7 +84,18 @@ export const zhCN: EditorLocale = {
             ]
           }
         ]
-      ]
+      ],
+      "quickAccess": {
+        "caption": "自定义快速访问工具栏",
+        "new": "新建",
+        "open": "打开",
+        "save": "保存",
+        "saveAs": "另存为...",
+        "undo": "放弃",
+        "redo": "重做",
+        "matchProp": "特性匹配",
+        "properties": "特性"
+      }
     },
     "NavigationBar": {
       "label": "导航栏",

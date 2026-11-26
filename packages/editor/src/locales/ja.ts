@@ -80,7 +80,18 @@ export const ja: EditorLocale = {
             ]
           }
         ]
-      ]
+      ],
+      "quickAccess": {
+        "caption": "クイック アクセス ツールバーをカスタマイズ",
+        "new": "新規作成",
+        "open": "開く",
+        "save": "上書き保存",
+        "saveAs": "名前を付けて保存...",
+        "undo": "元に戻す",
+        "redo": "やり直し",
+        "matchProp": "プロパティ コピー",
+        "properties": "プロパティ"
+      }
     },
     "NavigationBar": {
       "label": "ナビゲーション バー",

@@ -45,7 +45,18 @@
     "undo": "Annulla",
     "redo": "Ripeti",
     "undoCount": "{count, plural, =1 {Annulla # comando} other {Annulla # comandi}}",
-    "redoCount": "{count, plural, =1 {Ripeti # comando} other {Ripeti # comandi}}"
+    "redoCount": "{count, plural, =1 {Ripeti # comando} other {Ripeti # comandi}}",
+    "quickAccess": {
+      "caption": "Personalizza barra degli strumenti Accesso rapido",
+      "new": "Nuovo",
+      "open": "Apri",
+      "save": "Salva",
+      "saveAs": "Salva con nome...",
+      "undo": "Annulla",
+      "redo": "Ripeti",
+      "matchProp": "Corrispondenza con proprietà",
+      "properties": "Proprietà"
+    }
   },
   "NavigationBar": {
     "label": "Barra di navigazione",

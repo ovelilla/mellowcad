@@ -253,7 +253,17 @@ through UI Automation nor on four clicks (desktop, 2026-11-24 and 2026-11-25), s
 `'_help`: HELP is not a command here (F1, Missing). The Quick Access Toolbar
 in AutoCAD's order — New (QNEW), Open, Save, Save As, Undo, Redo —, each run as its command by its
 global name (`_QSAVE`), so it echoes (Drawing Units as the desktop's application menu runs it,
-`^C^C_UNITS`: see UNITS); the auto-save's state after them (AutoCAD has none); the title, centred
+`^C^C_UNITS`: see UNITS); after the last its **Customize ▾** (§2.2, F4; desktop
+`autocad/pop-qat-custom`), an arrow of 13 whose tooltip names it, its list under it: the caption `Customize Quick Access
+Toolbar` (AdWindows' `system:String_102`), then New, Open, Save, Save As..., Undo, Redo, Match
+Properties and Properties (AcWindows' `AcQAT…` items' words), rows of 21, each checked while the
+toolbar shows it; a pick adds the command at the toolbar's end or takes it from its place, and
+closes the list, the keys back on the drawing; Match Properties starts MATCHPROP as the ribbon's
+does, Properties toggles the palette, lit while it shows (AcQATProperties); what the toolbar shows
+is this device's (`layoutStorage.quickAccess`), as AutoCAD keeps it in the workspace. A focused
+control of the bar keeps Delete, Backspace, Enter and Space from the engine, as the ribbon's.
+**Unverified**: the arrow's width and tooltip, where an added command goes and whether a pick closes the list.
+The auto-save's state after them (AutoCAD has none); the title, centred
 on the bar, the drawing's name alone as AutoCAD 2027's (DWGNAME: the file OPEN opened or QSAVE, SAVEAS or
 DXFOUT last wrote the whole drawing to, no path, nothing marking a change — desktop 2026-11-25,
 `Planta baja.dwg`), else the session's new drawing's, numbered as AutoCAD numbers them (acadres
@@ -268,7 +278,10 @@ the rest of each page (New ▸ Sheet Set; Open ▸ Sheet Set, DGN, Sample Files;
 Template, Drawing Standards, Save Layout as a Drawing, DWG Convert; Drawing Utilities ▸ Drawing
 Properties, DWG Compare, Audit, Status, Purge, Recover, the Drawing Recovery Manager), the search,
 Recent Documents (WHY Open Documents in its place: a page cannot reopen a file it was handed) and
-the toggles and view list over the documents, Options and Exit, a double-click on the button; Plot, Customize ▾ and Share, the program's name before the drawing's (WHY: Autodesk's mark, and the
+the toggles and view list over the documents, Options and Exit, a double-click on the button; Plot and Share, Customize ▾'s Plot, Batch Plot, Layer, Plot Preview, Render, Sheet Set Manager,
+Workspace, More Commands..., Show Menu Bar and Show Below the Ribbon, the right-click menu of a
+Quick Access button, its buttons' tooltips in AutoCAD's parts (`TT_AcQAT…Button`: name,
+description, command, `Press F1 for more help`; here the name and the key), the program's name before the drawing's (WHY: Autodesk's mark, and the
 editor names no host), the rest of InfoCenter (its search, sign-in, App Store, Stay Connected, Support Assistant) and of
 the Help list (Download Offline Help, Online Resources ▸, Privacy Settings, About), the drawing's
 name after a reload (the auto-save keeps the drawing, not its file's name: it comes back as

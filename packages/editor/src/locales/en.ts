@@ -84,7 +84,18 @@ export const en: EditorCatalog = {
             ]
           }
         ]
-      ]
+      ],
+      "quickAccess": {
+        "caption": "Customize Quick Access Toolbar",
+        "new": "New",
+        "open": "Open",
+        "save": "Save",
+        "saveAs": "Save As...",
+        "undo": "Undo",
+        "redo": "Redo",
+        "matchProp": "Match Properties",
+        "properties": "Properties"
+      }
     },
     "NavigationBar": {
       "label": "Navigation bar",

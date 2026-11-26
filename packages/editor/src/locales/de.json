@@ -45,7 +45,18 @@
     "undo": "Rückgängig",
     "redo": "Wiederherstellen",
     "undoCount": "{count, plural, =1 {# Befehl rückgängig machen} other {# Befehle rückgängig machen}}",
-    "redoCount": "{count, plural, =1 {# Befehl wiederherstellen} other {# Befehle wiederherstellen}}"
+    "redoCount": "{count, plural, =1 {# Befehl wiederherstellen} other {# Befehle wiederherstellen}}",
+    "quickAccess": {
+      "caption": "Schnellzugriff-Werkzeugkasten anpassen",
+      "new": "Neu",
+      "open": "Öffnen",
+      "save": "Speichern",
+      "saveAs": "Speichern unter...",
+      "undo": "Zurück",
+      "redo": "Wiederherstellen",
+      "matchProp": "Eigenschaften abstimmen",
+      "properties": "Eigenschaften"
+    }
   },
   "NavigationBar": {
     "label": "Navigationsleiste",

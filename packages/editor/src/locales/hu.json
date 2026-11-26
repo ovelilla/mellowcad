@@ -45,7 +45,18 @@
     "undo": "Vissza",
     "redo": "Előre",
     "undoCount": "{count, plural, =1 {# parancs visszavonása} other {# parancs visszavonása}}",
-    "redoCount": "{count, plural, =1 {# parancs ismétlése} other {# parancs ismétlése}}"
+    "redoCount": "{count, plural, =1 {# parancs ismétlése} other {# parancs ismétlése}}",
+    "quickAccess": {
+      "caption": "Gyorselérési eszköztár testreszabása",
+      "new": "Új",
+      "open": "Megnyitás",
+      "save": "Mentés",
+      "saveAs": "Mentés másként...",
+      "undo": "Vissza",
+      "redo": "Előre",
+      "matchProp": "Tulajdonságok másolása",
+      "properties": "Tulajdonságok"
+    }
   },
   "NavigationBar": {
     "label": "Navigációs sáv",

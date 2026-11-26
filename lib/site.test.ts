@@ -11,6 +11,7 @@ describe("the editor's storage keys", () => {
       statusBar: "easycad:status-bar:v1",
       ribbon: "mellowcad:ribbon:v1",
       properties: "mellowcad:properties:v1",
+      quickAccess: "mellowcad:quick-access:v1",
     })
   })
 })

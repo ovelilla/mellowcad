@@ -84,7 +84,18 @@ export const zhTW: EditorLocale = {
             ]
           }
         ]
-      ]
+      ],
+      "quickAccess": {
+        "caption": "自訂快速存取工具列",
+        "new": "新建",
+        "open": "開啟",
+        "save": "儲存",
+        "saveAs": "另存...",
+        "undo": "退回",
+        "redo": "重做",
+        "matchProp": "複製性質",
+        "properties": "性質"
+      }
     },
     "NavigationBar": {
       "label": "導覽列",

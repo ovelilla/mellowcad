@@ -18,6 +18,7 @@ import {
   Redo2,
   Save,
   SaveAll,
+  SlidersHorizontal,
   Undo2,
 } from "lucide-react"
 
@@ -25,12 +26,28 @@ import { type CadEngine } from "@mellowcad/engine"
 import type { EditorState } from "@mellowcad/react"
 import { cn } from "./utils"
 import { Button } from "./ui/button"
-import { TooltipProvider } from "./ui/tooltip"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./ui/tooltip"
 import { usePortalContainer } from "./ui/portal-container"
 import { drawingFocus } from "./drawing-focus"
 import { LARGE_MENU_ICONS } from "./large-icons"
 
 import { IconAction, Panel } from "./toolbar-primitives"
+import { toolIcon } from "./tool-icons"
+import { paletteShows } from "./palettes"
+import { useLayoutStorage } from "./layout-storage-context"
+import { keepControlKeys } from "./control-keys"
+import {
+  QUICK_ACCESS_ITEMS,
+  readQuickAccess,
+  rememberQuickAccess,
+  toggleQuickAccess,
+  type QuickAccessItem,
+} from "./quick-access-layout"
 import { useEditorText } from "./editor-text"
 import type { PieceProps } from "./piece"
 
@@ -97,6 +114,10 @@ export function TitleBar({
 }: TitleBarProps): ReactElement {
   const t = useEditorText("TitleBar")
   const keys = useEditorText("Keys")
+  // Only rendered once the engine exists, in the browser: the choice is read
+  // here, and the bar's height never depends on it.
+  const storageKey = useLayoutStorage().quickAccess
+  const [shown, setShown] = useState(() => readQuickAccess(storageKey))
   // The bar's buttons run acad.cuix's `^C^C` macros: the running command
   // cancelled, the macro echoed (`_qnew`).
   const run = (button: "new" | "open" | "save" | "saveAs") =>
@@ -104,84 +125,151 @@ export function TitleBar({
 
   return (
     <TooltipProvider>
-      {/* The Quick Access Toolbar's defaults in their order (New, Open, Save,
-          Save As, …, Undo, Redo); Plot and the Web & Mobile pair do not exist
-          here. */}
-      <ApplicationMenu
-        engine={engine}
-        state={state}
-        mark={mark}
-        links={languages}
-      />
-      {/* WHY ms-1: AutoCAD's first Quick Access button starts 56 px from
+      {/* WHY contents: the bar's zone lays its parts out; this only keeps a
+      focused control's keys from the engine (`keepControlKeys`). */}
+      <div
+        className="contents"
+        onKeyDownCapture={(event) => keepControlKeys(event, engine)}
+      >
+        {/* The Quick Access Toolbar in its order (New, Open, Save, Save As, …,
+          Undo, Redo, and what Customize ▾ added after them); Plot and Share
+          do not exist here. */}
+        <ApplicationMenu
+          engine={engine}
+          state={state}
+          mark={mark}
+          links={languages}
+        />
+        {/* WHY ms-1: AutoCAD's first Quick Access button starts 56 px from
           the edge, 8 after the application button. One button against the
           next, on a 24 px pitch. */}
-      <Panel className="ms-1 shrink-0 items-center gap-0">
-        <IconAction
-          icon={FilePlus}
-          label={t("new")}
-          side="bottom"
-          size="quick"
-          onClick={() => run("new")}
-        />
-        <IconAction
-          icon={FolderOpen}
-          label={t("open")}
-          shortcut={keys("open")}
-          side="bottom"
-          size="quick"
-          onClick={() => run("open")}
-        />
-        <IconAction
-          icon={Save}
-          label={t("save")}
-          shortcut={keys("save")}
-          side="bottom"
-          size="quick"
-          onClick={() => run("save")}
-        />
-        <IconAction
-          icon={SaveAll}
-          label={t("saveAs")}
-          side="bottom"
-          size="quick"
-          onClick={() => run("saveAs")}
-        />
-        <StepList
-          engine={engine}
-          kind="undo"
-          steps={state.undoSteps}
-          enabled={state.canUndo}
-        />
-        <StepList
-          engine={engine}
-          kind="redo"
-          steps={state.redoSteps}
-          enabled={state.canRedo}
-        />
-      </Panel>
+        <Panel className="ms-1 shrink-0 items-center gap-0">
+          {shown.map((item) => {
+            switch (item) {
+              case "new":
+                return (
+                  <IconAction
+                    key={item}
+                    icon={FilePlus}
+                    label={t("new")}
+                    side="bottom"
+                    size="quick"
+                    onClick={() => run("new")}
+                  />
+                )
+              case "open":
+                return (
+                  <IconAction
+                    key={item}
+                    icon={FolderOpen}
+                    label={t("open")}
+                    shortcut={keys("open")}
+                    side="bottom"
+                    size="quick"
+                    onClick={() => run("open")}
+                  />
+                )
+              case "save":
+                return (
+                  <IconAction
+                    key={item}
+                    icon={Save}
+                    label={t("save")}
+                    shortcut={keys("save")}
+                    side="bottom"
+                    size="quick"
+                    onClick={() => run("save")}
+                  />
+                )
+              case "saveAs":
+                return (
+                  <IconAction
+                    key={item}
+                    icon={SaveAll}
+                    label={t("saveAs")}
+                    side="bottom"
+                    size="quick"
+                    onClick={() => run("saveAs")}
+                  />
+                )
+              case "undo":
+              case "redo":
+                return (
+                  <StepList
+                    key={item}
+                    engine={engine}
+                    kind={item}
+                    steps={item === "undo" ? state.undoSteps : state.redoSteps}
+                    enabled={item === "undo" ? state.canUndo : state.canRedo}
+                  />
+                )
+              // acad.cuix's AcQATMatchProp, `'_matchprop`, as the ribbon's
+              // Match Properties starts it.
+              case "matchProp":
+                return (
+                  <IconAction
+                    key={item}
+                    icon={toolIcon("matchprop")}
+                    label={t("quickAccess.matchProp")}
+                    side="bottom"
+                    size="quick"
+                    onClick={() => {
+                      engine.setActiveTool("matchprop")
+                      engine.focusSurface()
+                    }}
+                  />
+                )
+              // AcQATProperties, a toggle lit while the palette shows, as
+              // View's Properties.
+              case "properties":
+                return (
+                  <IconAction
+                    key={item}
+                    icon={SlidersHorizontal}
+                    label={t("quickAccess.properties")}
+                    active={paletteShows(state, "properties")}
+                    side="bottom"
+                    size="quick"
+                    onClick={() => {
+                      engine.togglePalette("properties")
+                      engine.focusSurface()
+                    }}
+                  />
+                )
+            }
+          })}
+          <CustomizeQuickAccess
+            engine={engine}
+            shown={shown}
+            onChange={(next) => {
+              setShown(next)
+              rememberQuickAccess(storageKey, next)
+            }}
+          />
+        </Panel>
 
-      <SaveStatus state={state} />
+        <SaveStatus state={state} />
 
-      {/* The title, centred on the bar as AutoCAD's is on its window: the
+        {/* The title, centred on the bar as AutoCAD's is on its window: the
           drawing's name alone, no path, nothing marking a change (desktop,
           2026-11-25). WHY no product name before it: the program's name in
           AutoCAD's title is Autodesk's mark, and the editor names no host. */}
-      {/* WHY dir="auto": a file's name reads in its own direction, `plan
+        {/* WHY dir="auto": a file's name reads in its own direction, `plan
           (2).dxf` whole on a right-to-left page. */}
-      <span
-        dir="auto"
-        className="pointer-events-none absolute inset-x-0 mx-auto w-fit max-w-1/3 truncate"
-      >
-        {state.drawingName}
-      </span>
+        <span
+          dir="auto"
+          className="pointer-events-none absolute inset-x-0 mx-auto w-fit max-w-1/3 truncate"
+        >
+          {state.drawingName}
+        </span>
 
-      {/* InfoCenter's Help ▾, at the bar's end: its search, sign-in, App
+        {/* InfoCenter's Help ▾, at the bar's end: its search, sign-in, App
           Store, Stay Connected and Support Assistant, and the window's own
           buttons after it, do not exist here. */}
-      {(help || feedback) && (
-        <HelpMenu engine={engine} help={help} feedback={feedback} />
-      )}
+        {(help || feedback) && (
+          <HelpMenu engine={engine} help={help} feedback={feedback} />
+        )}
+      </div>
     </TooltipProvider>
   )
 }
@@ -531,6 +619,93 @@ function StepList({
                 count: taken + 1,
               })}
             </div>
+          </Menu.Popup>
+        </Menu.Positioner>
+      </Menu.Portal>
+    </Menu.Root>
+  )
+}
+
+/** A row of Customize ▾'s list: AutoCAD's 21, its check in a column before the name. */
+const MENU_CHECK_ROW =
+  "relative flex h-5.25 cursor-default items-center rounded-sm ps-5.5 pe-3 text-ui whitespace-nowrap outline-hidden select-none data-highlighted:bg-accent"
+
+/**
+ * The Quick Access Toolbar's Customize ▾ (docs/plans/autocad-ui.md, §2.2, F4):
+ * an arrow after the last button, its list under it (`pop-qat-custom.png`):
+ * the caption `Customize Quick Access Toolbar`, then the commands that exist
+ * here, each a row of 21 checked while the toolbar shows it, a pick adding it
+ * at the toolbar's end or taking it away (AdWindows' `system:String_102`,
+ * AcWindows' `AcQAT…` items' words). Plot, Batch Plot, Layer, Plot Preview,
+ * Render, Sheet Set Manager, Workspace, More Commands..., Show Menu Bar and
+ * Show Below the Ribbon are not drawn: none exists here.
+ */
+function CustomizeQuickAccess({
+  engine,
+  shown,
+  onChange,
+}: {
+  engine: CadEngine
+  shown: readonly QuickAccessItem[]
+  onChange: (shown: readonly QuickAccessItem[]) => void
+}) {
+  const portal = usePortalContainer()
+  const t = useEditorText("TitleBar.quickAccess")
+  return (
+    <Menu.Root>
+      {/* As wide as Undo's arrow, AutoCAD's 13 (its width unverified); its
+      tooltip on a wrapper, never on the list's trigger (ui.md). */}
+      <Tooltip>
+        <TooltipTrigger render={<span className="flex" />}>
+          <Menu.Trigger
+            render={
+              <Button
+                size="quick"
+                variant="ghost"
+                aria-label={t("caption")}
+                className="w-3.25"
+              />
+            }
+          >
+            <ChevronDown className="size-2.5" />
+          </Menu.Trigger>
+        </TooltipTrigger>
+        <TooltipContent side="bottom">{t("caption")}</TooltipContent>
+      </Tooltip>
+      <Menu.Portal container={portal}>
+        <Menu.Positioner
+          side="bottom"
+          align="start"
+          sideOffset={1}
+          className="z-50"
+        >
+          <Menu.Popup
+            className={cn(MENU_POPUP, "min-w-47 p-0.5")}
+            finalFocus={drawingFocus(engine)}
+          >
+            <Menu.Group>
+              <Menu.GroupLabel className="flex h-4.25 items-center px-1.5 whitespace-nowrap text-muted-foreground">
+                {t("caption")}
+              </Menu.GroupLabel>
+              {QUICK_ACCESS_ITEMS.map((item) => (
+                <Menu.CheckboxItem
+                  key={item}
+                  checked={shown.includes(item)}
+                  onCheckedChange={(on) =>
+                    onChange(toggleQuickAccess(shown, item, on))
+                  }
+                  // A pick closes the list, as a Windows list's click does
+                  // (whether AutoCAD's stays open is unverified).
+                  closeOnClick
+                  className={MENU_CHECK_ROW}
+                >
+                  <Menu.CheckboxItemIndicator className="absolute inset-s-1.5 flex">
+                    <CheckIcon className="size-3 text-primary" />
+                  </Menu.CheckboxItemIndicator>
+                  {t(item)}
+                </Menu.CheckboxItem>
+              ))}
+            </Menu.Group>
           </Menu.Popup>
         </Menu.Positioner>
       </Menu.Portal>

@@ -94,9 +94,12 @@ export interface LayoutStorage {
   readonly properties?: string
   /**
    * The ribbon's minimize state and what its button does, also read by the
-   * `<head>` script.
+   * `<head>` script, and the tabs, panels and titles its right-click menu
+   * shows.
    */
   readonly ribbon?: string
+  /** The Quick Access Toolbar's commands, as its Customize ▾ leaves them. */
+  readonly quickAccess?: string
 }
 
 /**

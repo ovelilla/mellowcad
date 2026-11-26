@@ -80,7 +80,18 @@ export const ko: EditorLocale = {
             ]
           }
         ]
-      ]
+      ],
+      "quickAccess": {
+        "caption": "신속 접근 도구막대 사용자화",
+        "new": "새로 만들기",
+        "open": "열기",
+        "save": "저장",
+        "saveAs": "다른 이름으로 저장...",
+        "undo": "명령 취소",
+        "redo": "명령 복구",
+        "matchProp": "특성 일치",
+        "properties": "특성"
+      }
     },
     "NavigationBar": {
       "label": "탐색 막대",

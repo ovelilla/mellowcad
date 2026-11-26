@@ -139,8 +139,9 @@ objects and for unsaved text. The engine waits on their answer, so the editor al
 
   Without `help`, F1 is the browser's.
 - **`layoutStorage`** names the `localStorage` keys under which this browser remembers where each
-  palette shows and its size (`palette`), the ribbon's minimize state (`ribbon`), what the status
-  bar shows (`statusBar`) and which of the Properties palette's categories are folded, for each
+  palette shows and its size (`palette`), the ribbon's minimize state and what its right-click
+  menu shows (`ribbon`), what the status bar shows (`statusBar`), what the Quick Access Toolbar
+  shows (`quickAccess`) and which of the Properties palette's categories are folded, for each
   type of object (`properties`). A part without a key is not remembered. On a page rendered on a
   server, `palette` and `ribbon` need [their layout scripts](nextjs.md#the-palettes-at-the-first-paint)
   too, or the palettes and the ribbon show as they start until the scripts run, then change.

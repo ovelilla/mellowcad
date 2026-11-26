@@ -45,7 +45,18 @@
     "undo": "Cofnij",
     "redo": "Odtwórz",
     "undoCount": "{count, plural, =1 {Cofaj # poleceń} other {Cofaj # poleceń}}",
-    "redoCount": "{count, plural, =1 {Przywróć # poleceń} other {Odtwórz # poleceń}}"
+    "redoCount": "{count, plural, =1 {Przywróć # poleceń} other {Odtwórz # poleceń}}",
+    "quickAccess": {
+      "caption": "Dostosuj pasek narzędzi szybkiego dostępu",
+      "new": "Nowy",
+      "open": "Otwórz",
+      "save": "Zapisz",
+      "saveAs": "Zapisz jako...",
+      "undo": "Cofnij",
+      "redo": "Odtwórz",
+      "matchProp": "Uzgodnij właściwości",
+      "properties": "Właściwości"
+    }
   },
   "NavigationBar": {
     "label": "Pasek nawigacji",

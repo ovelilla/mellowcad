@@ -80,7 +80,18 @@ export const hu: EditorLocale = {
             ]
           }
         ]
-      ]
+      ],
+      "quickAccess": {
+        "caption": "Gyorselérési eszköztár testreszabása",
+        "new": "Új",
+        "open": "Megnyitás",
+        "save": "Mentés",
+        "saveAs": "Mentés másként...",
+        "undo": "Vissza",
+        "redo": "Előre",
+        "matchProp": "Tulajdonságok másolása",
+        "properties": "Tulajdonságok"
+      }
     },
     "NavigationBar": {
       "label": "Navigációs sáv",

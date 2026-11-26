@@ -84,7 +84,18 @@ export const cs: EditorLocale = {
             ]
           }
         ]
-      ]
+      ],
+      "quickAccess": {
+        "caption": "Přizpůsobit panel nástrojů Rychlý přístup",
+        "new": "Nový",
+        "open": "Otevřít",
+        "save": "Uložit",
+        "saveAs": "Uložit jako...",
+        "undo": "Zpět",
+        "redo": "Znovu",
+        "matchProp": "Kopie vlastností",
+        "properties": "Vlastnosti"
+      }
     },
     "NavigationBar": {
       "label": "Panel navigace",

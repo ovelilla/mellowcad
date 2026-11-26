@@ -45,7 +45,18 @@
     "undo": "Zpět",
     "redo": "Znova",
     "undoCount": "{count, plural, =1 {Zpět # příkaz} other {Zpět # příkazů}}",
-    "redoCount": "{count, plural, =1 {Znova # příkaz} other {Znova # příkazů}}"
+    "redoCount": "{count, plural, =1 {Znova # příkaz} other {Znova # příkazů}}",
+    "quickAccess": {
+      "caption": "Přizpůsobit panel nástrojů Rychlý přístup",
+      "new": "Nový",
+      "open": "Otevřít",
+      "save": "Uložit",
+      "saveAs": "Uložit jako...",
+      "undo": "Zpět",
+      "redo": "Znovu",
+      "matchProp": "Kopie vlastností",
+      "properties": "Vlastnosti"
+    }
   },
   "NavigationBar": {
     "label": "Panel navigace",

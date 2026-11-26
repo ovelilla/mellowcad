@@ -45,7 +45,18 @@
     "undo": "تراجع",
     "redo": "إعادة",
     "undoCount": "{count, plural, =1 {تراجع عن # أمر} other {تراجع عن # أوامر}}",
-    "redoCount": "{count, plural, =1 {إعادة # أمر} other {إعادة # أوامر}}"
+    "redoCount": "{count, plural, =1 {إعادة # أمر} other {إعادة # أوامر}}",
+    "quickAccess": {
+      "caption": "تخصيص شريط أدوات الوصول السريع",
+      "new": "جديد",
+      "open": "فتح",
+      "save": "حفظ",
+      "saveAs": "حفظ باسم...",
+      "undo": "تراجع",
+      "redo": "إعادة",
+      "matchProp": "مطابقة الخصائص",
+      "properties": "الخصائص"
+    }
   },
   "NavigationBar": {
     "label": "شريط التنقل",

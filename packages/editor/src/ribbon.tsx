@@ -84,6 +84,7 @@ import {
 } from "./ribbon-layout"
 import { useRibbonLayout } from "./ribbon-layout-context"
 import { RibbonMenu } from "./ribbon-menu"
+import { keepControlKeys } from "./control-keys"
 import { useEditorText } from "./editor-text"
 import type { PieceProps } from "./piece"
 
@@ -183,44 +184,8 @@ export function Ribbon({ engine, state }: PieceProps): ReactElement {
           if (target.closest('[role="listbox"], [role="menu"]')) return
           setMenuAt({ x: event.clientX, y: event.clientY })
         }}
-        // The keys a control keeps, as the palettes': stopped in the capture,
-        // or the engine's listener on the document runs them too — Delete on
-        // a closed drop-down erased the selection, Enter on a button repeated
-        // the last command before the click. Its popups' lists and menus
-        // (portalled, reached here through React) keep theirs: the engine
-        // leaves those alone, and a stop here would starve Base UI's.
-        onKeyDownCapture={(event) => {
-          const target = event.target as HTMLElement
-          if (target.closest('[role="listbox"], [role="menu"]')) return
-          if (event.key === "Delete" || event.key === "Backspace") {
-            event.preventDefault()
-            event.stopPropagation()
-          } else if (
-            (event.key === "Enter" || event.key === " ") &&
-            target.closest("button")
-          ) {
-            // Its default action, the click, is kept.
-            event.stopPropagation()
-            // But a tab's: a composite item, Base UI clicks it from its own
-            // key-down, which the stop starves, and cancels the native click
-            // on Space's key-up.
-            const tab = target.closest<HTMLElement>('[role="tab"]')
-            if (tab) {
-              event.preventDefault()
-              tab.click()
-            }
-          } else if (
-            event.key.length === 1 &&
-            !event.ctrlKey &&
-            !event.altKey &&
-            !event.metaKey
-          ) {
-            // A letter types a command, as on the drawing, which takes the
-            // keys after it: the Enter that ends the command is the
-            // engine's, not a click on the control.
-            engine.focusSurface()
-          }
-        }}
+        // The keys a control keeps (`keepControlKeys`).
+        onKeyDownCapture={(event) => keepControlKeys(event, engine)}
       >
         {/* The tab row: the tabs 20 high on its foot, the one in front on
         the panels' surface, and after the last the minimize button and its

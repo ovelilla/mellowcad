@@ -193,6 +193,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     ribbon: RIBBON_KEY,
     statusBar: "my-app:status-bar",
     properties: "my-app:properties",
+    quickAccess: "my-app:quick-access",
   }}
 />
 ```

@@ -80,7 +80,18 @@ export const fr: EditorLocale = {
             ]
           }
         ]
-      ]
+      ],
+      "quickAccess": {
+        "caption": "Personnaliser la barre d'outils d'accès rapide",
+        "new": "Nouveau",
+        "open": "Ouvrir",
+        "save": "Enregistrer",
+        "saveAs": "Enregistrer sous...",
+        "undo": "Annuler",
+        "redo": "Rétablir",
+        "matchProp": "Copier les propriétés",
+        "properties": "Propriétés"
+      }
     },
     "NavigationBar": {
       "label": "Barre de navigation",

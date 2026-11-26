@@ -32,6 +32,7 @@ export const EDITOR_LAYOUT_STORAGE = {
   statusBar: "easycad:status-bar:v1",
   ribbon: "mellowcad:ribbon:v1",
   properties: "mellowcad:properties:v1",
+  quickAccess: "mellowcad:quick-access:v1",
 } as const
 
 /**

@@ -80,7 +80,18 @@ export const de: EditorLocale = {
             ]
           }
         ]
-      ]
+      ],
+      "quickAccess": {
+        "caption": "Schnellzugriff-Werkzeugkasten anpassen",
+        "new": "Neu",
+        "open": "Öffnen",
+        "save": "Speichern",
+        "saveAs": "Speichern unter...",
+        "undo": "Zurück",
+        "redo": "Wiederherstellen",
+        "matchProp": "Eigenschaften abstimmen",
+        "properties": "Eigenschaften"
+      }
     },
     "NavigationBar": {
       "label": "Navigationsleiste",

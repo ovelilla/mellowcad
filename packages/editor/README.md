@@ -80,8 +80,8 @@ Every prop is optional.
   product's glyph on the application menu; `languages`, the page in each language you offer, in
   that menu; `help`, where F1 and the title bar's Help open help; `feedback`, the page the Help
   list's Send Feedback opens, where your users report a problem; `layoutStorage`, the
-  `localStorage` keys under which the palettes' places, the ribbon's layout (its minimize state, and the tabs, panels and titles its menu shows) and the
-  status bar are remembered; and `sheet`, an id and a `view-transition-name` for the drawing's cell. See
+  `localStorage` keys under which the palettes' places, the ribbon's layout (its minimize state, and the tabs, panels and titles its menu shows), the
+  status bar and the Quick Access Toolbar are remembered; and `sheet`, an id and a `view-transition-name` for the drawing's cell. See
   [Customizing](docs/customizing.md).
 
 `engineLocale`, `store`, `onEngine` and `help` go to the engine, so they are read once, when the

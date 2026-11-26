@@ -84,7 +84,18 @@ export const ru: EditorLocale = {
             ]
           }
         ]
-      ]
+      ],
+      "quickAccess": {
+        "caption": "Адаптировать панель быстрого доступа",
+        "new": "Создать",
+        "open": "Открыть",
+        "save": "Сохранить",
+        "saveAs": "Сохранить как...",
+        "undo": "Отменить",
+        "redo": "Повторить",
+        "matchProp": "Копирование свойств",
+        "properties": "Свойства"
+      }
     },
     "NavigationBar": {
       "label": "Панель навигации",

@@ -6,8 +6,9 @@
 > phase 3 done on 2026-11-26, its desktop pass and its blocks 1 (the style dialogs), 2a and 2b
 > (the palettes' frame), 3a to 3c (what each palette holds) and 4 (the ribbon's style lists);
 > phase 4 done on 2026-11-26 without its desktop pass, its five blocks (§6: the bottom row, the
-> floating command line, the visual style's label, the ViewCube at rest, the grips); phases 5
-> and 6 not started.
+> floating command line, the visual style's label, the ViewCube at rest, the grips); phase 5 done
+> on 2026-11-26 without a desktop pass, its three blocks (§6: the tooltips, the right-click menu,
+> Customize ▾); phase 6 not started.
 > The brief is `docs/next-autocad-ui.md`; where its phases and this plan differ, this plan rules
 > (the brief says so) and the brief was corrected the same day.
 
@@ -401,7 +402,7 @@ in `docs/coverage/`, never a dead button.
 | F1 | Title bar, ribbon, file tabs, drawing, one bottom row | top bar, tool palette, canvas, panel, command row, status row | Revoked | 1 |
 | F2 | The window's own title bar with minimise, maximise and close | none: the browser's window | Platform — a page cannot draw the window's frame; the row is kept for the application button, the Quick Access Toolbar and the title | 1 |
 | F3 | The title names the program and the drawing | no title in the page; the tab's title is the site's | Revoked for the drawing's name once the file port knows it; until then `Drawing1.dwg`, as a new drawing's | 2 (block 4, done) |
-| F4 | Quick Access: New, Open, Save, Save As, Plot, Undo ▾, Redo ▾, Customize ▾, Share | New, Open, Save, Save As, Undo, Redo, as 28 px buttons | Revoked: 24×22 on a 24 pitch. Plot and Share: Missing. Customize ▾: Missing (5) | 1, 2 |
+| F4 | Quick Access: New, Open, Save, Save As, Plot, Undo ▾, Redo ▾, Customize ▾, Share | New, Open, Save, Save As, Undo, Redo, as 28 px buttons | Revoked: 24×22 on a 24 pitch. Plot and Share: Missing. Customize ▾: revoked with what exists here | 1, 2, 5 (block 3, done) |
 | F5 | Undo and Redo are split buttons with the list of steps | plain buttons | Revoked | 2 (block 3, done) |
 | F6 | The application menu: its two columns, recent documents, Options and Exit | New, Open, Save, Save As, Drawing Units, the language, Send Feedback | Revoked: the two columns of §2.2, an entry's page with icon, name and description, and what exists here in its place — New ▸ Drawing, Open ▸ Drawing, Save, Save As ▸ Drawing and Other Formats, Drawing Utilities ▸ Units. Import, Export, Publish, Print, Close, the search, the documents' lists, Options and Exit: Missing. The language stays in it — Platform: AutoCAD is installed in one language and a page chooses its own | 2 (block 2, done) |
 | F7 | InfoCenter: search, sign-in, App Store, Help ▾ | nothing | Missing, but Help ▾: Revoked, with Help (F1's page) and Send Feedback, which leaves the application menu, in the order of acad.cuix's Help menu (`ID_MnHelp`; the list itself never opened, so **unverified**, §7) | 2 (block 1, done) |
@@ -737,7 +738,7 @@ until the drawing reaches the row:
    missing) and the revoked ones fixed in the scene's `THEME` and the presenters, checked by the
    harness where the engine computes them.
 
-### Phase 5 — what the ribbon still lacks
+### Phase 5 — what the ribbon still lacks (done 2026-11-26)
 
 Tooltips (R11), the right-click menu with Show Tabs and Show Panels (R13, then decision 4 is
 revisited), the Quick Access Toolbar's Customize ▾ (F4). The session of 2026-11-26 had no word for
@@ -771,10 +772,10 @@ Blocks, a commit each, each leaving the editor whole:
    **unverified**). Show Panel Titles: Autodesk's support article "Ribbon panel drop-down titles are
    missing" settles it — "The drop-down arrow is present, but there is no text": the title bar
    stays, its name goes; its height and the minimized states without names stay **unverified**.
-3. **Customize ▾** (F4): the arrow after Redo and its list under it (§2.2, `pop-qat-custom`),
+3. **Customize ▾** (F4; done 2026-11-26): the arrow after the toolbar's last button and its list under it (§2.2, `pop-qat-custom`),
    rows of 21 under its caption, a check before each command on the toolbar: New, Open, Save,
    Save As..., Undo, Redo, Match Properties and Properties, the ones built; a pick adds or removes
-   the button, in acad.cuix's order, kept on the device. Plot, Batch Plot, Layer, Plot Preview,
+   the button, added at the toolbar's end and taken from its place, kept on the device. Plot, Batch Plot, Layer, Plot Preview,
    Render, Sheet Set Manager, Workspace, More Commands..., Show Menu Bar and Show Below the Ribbon
    stay Missing, undrawn.
 
@@ -795,7 +796,7 @@ start of its phase and with the owner's word first (`gui.md`):
 | 2 | done 2026-11-25 (§2.2): Undo's and Redo's lists and what they run, the title of a saved drawing, the Open Documents list (`research/ui/2026-11-25`); the Help list opened on none of four clicks either, so its rows stay **unverified** |
 | 3 | done 2026-11-25 (§2.8, §2.9): a palette docked, anchored and auto-hidden and its properties menu with the mouse; New Text Style and each tab of Modify Dimension Style without it (`research/ui/2026-11-25/phase3`) |
 | 4 | not reached: the session of 2026-11-26 had no word for it, and phase 4 was built without it; still owed, each **unverified** in its coverage entry: the status bar of a profile nobody has touched (S4); the navigation bar under the pointer; the command line's history open (F2) and its Recent Commands and Customize menus, which the mouse pass opened without a capture |
-| 5 | not reached (no word for the desktop on 2026-11-26), each **unverified** in its coverage entry: where a ribbon tooltip opens (at the pointer, it seems) and whether Circle's names its member; whether a second tooltip opens at once; whether a pick in the right-click menu closes it, whether its Close cancels a running command or echoes, a title bar's height without its name, and whether the names leave a folded panel or the minimized states; where AutoCAD keeps what the menu shows |
+| 5 | not reached (no word for the desktop on 2026-11-26), each **unverified** in its coverage entry: where a ribbon tooltip opens (at the pointer, it seems) and whether Circle's names its member; whether a second tooltip opens at once; whether a pick in the right-click menu closes it, whether its Close cancels a running command or echoes, a title bar's height without its name, and whether the names leave a folded panel or the minimized states; where AutoCAD keeps what the menu shows; Customize ▾'s arrow (its width, its tooltip), where a command added goes and whether a pick closes its list |
 
 Without the mouse, `acad.sh act` opens a drop-down, a slide-out, a folded panel, the status
 bar's menus, Undo's list and the command line's two menus, and `acad.sh tree` reads their rows

@@ -84,7 +84,18 @@ export const ar: EditorLocale = {
             ]
           }
         ]
-      ]
+      ],
+      "quickAccess": {
+        "caption": "تخصيص شريط أدوات الوصول السريع",
+        "new": "جديد",
+        "open": "فتح",
+        "save": "حفظ",
+        "saveAs": "حفظ باسم...",
+        "undo": "تراجع",
+        "redo": "إعادة",
+        "matchProp": "مطابقة الخصائص",
+        "properties": "الخصائص"
+      }
     },
     "NavigationBar": {
       "label": "شريط التنقل",

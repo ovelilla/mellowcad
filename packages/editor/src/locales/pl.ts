@@ -84,7 +84,18 @@ export const pl: EditorLocale = {
             ]
           }
         ]
-      ]
+      ],
+      "quickAccess": {
+        "caption": "Dostosuj pasek narzędzi szybkiego dostępu",
+        "new": "Nowy",
+        "open": "Otwórz",
+        "save": "Zapisz",
+        "saveAs": "Zapisz jako...",
+        "undo": "Cofnij",
+        "redo": "Odtwórz",
+        "matchProp": "Uzgodnij właściwości",
+        "properties": "Właściwości"
+      }
     },
     "NavigationBar": {
       "label": "Pasek nawigacji",

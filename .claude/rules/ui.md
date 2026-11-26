@@ -40,8 +40,8 @@ keyboard listener. If a button needs one, the engine owes it a method (behind a 
 in `cad/adapters/`), or every host has to rewrite it. Failures are reported at the command prompt,
 never in a React banner. The exception is the layout, kept on the device as AutoCAD keeps it in
 the profile: the palettes' places (`palette-layout.ts`) and the ribbon's minimize
-state (`ribbon-layout.ts`, with its menu's choices), read by a `<head>` script, and, read after mount, the status bar's
-Customization (`status-bar-layout.ts`) and Properties' folds (`properties-fold.ts`), each under the host's key (`layoutStorage`; none, not kept), the site's frozen
+state and menu (`ribbon-layout.ts`), read by a `<head>` script, and, read after mount, the status bar's
+and Quick Access Toolbar's (`status-bar-layout.ts`, `quick-access-layout.ts`) and Properties' folds (`properties-fold.ts`), each under the host's key (`layoutStorage`; none, not kept), the site's frozen
 (`lib/site.test.ts`).
 
 **`/draw?drawing=<name>` opens a drawing the site publishes** (an exercise's: the engine records
@@ -222,14 +222,14 @@ the ribbon, the bottom row. **28 px**, icons 16, for the rest one presses. AutoC
   stacking context that traps a z-index set inside it.
 - A `Portal` takes `container={usePortalContainer()}` (ESLint): in Base UI's default, `<body>`, the
   root's tokens, `dir` and `lang` miss the popup.
-- `Select.Root` needs `items` (a value→label record) for the closed trigger to show the label, not
-  the raw value. `onValueChange` can deliver `null`: guard before committing. A drop-down in a bar
+- `Select.Root` needs `items` (a value→label record) for the closed trigger to show the label. `onValueChange` can deliver `null`: guard before committing. A drop-down in a bar
   passes `below` (`alignItemWithTrigger` off), or its list covers its trigger.
-- Never a Tooltip and a Popover on the same trigger: the popover stops opening. The tooltip wraps
-  the two (`RibbonTip`).
+- Never a Tooltip and a Popover on the same trigger: the popover stops opening. Wrap both
+  (`RibbonTip`).
 - `Menu.RadioItem` and `Menu.CheckboxItem` default to `closeOnClick={false}` (`Menu.Item` to
   `true`): a pick that ends the choice passes `closeOnClick` (Polar's angles, the palette's
-  flyouts); a checklist leaves it (the object snaps, Customization).
+  flyouts); a checklist leaves it (the object snaps, Customization), but the ribbon's and Quick
+  Access menus, closing as Windows'.
 - `Dialog.Popup` sets no `aria-modal`: a modal dialog sets `aria-modal="true"` itself — the engine
   reads it to leave the dialog its keys. While it is open the rest of the page is inert, so a test
   reaches the command line by a CSS selector, not by its role.
@@ -242,10 +242,10 @@ the ribbon, the bottom row. **28 px**, icons 16, for the rest one presses. AutoC
   dialog: `finalFocus={false}` and `focusSurface` on `onOpenChangeComplete`.
 - **React hands a portalled popup's events to what rendered it**: an ancestor's `onWheel` too,
   a palette's title bar's drag (`ownPress`).
-- **React listens on its root (Next's `document`), as the engine does**: a key a palette or the
-  ribbon keeps (Delete on a closed list) stops in `onKeyDownCapture`, or the engine runs it too.
-- `Panel` (`toolbar-primitives.tsx`) does **not** forward props: `<PopoverTrigger render={<Panel>…} />`
-  drops the click handler. Make the `Button` the trigger, the `Panel` round the `Popover`.
+- **React listens on its root (Next's `document`), as the engine does**: a key a palette or a
+  bar keeps (Delete on a closed list) stops in the capture (`keepControlKeys`), or the engine runs it.
+- `Panel` (`toolbar-primitives.tsx`) does **not** forward props: as a `render`ed trigger it drops
+  the click. Make the `Button` the trigger.
 
 ## Where a control belongs
 

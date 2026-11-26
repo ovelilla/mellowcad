@@ -84,7 +84,18 @@ export const ptBR: EditorLocale = {
             ]
           }
         ]
-      ]
+      ],
+      "quickAccess": {
+        "caption": "Personalizar a barra de ferramentas Acesso rápido",
+        "new": "Novo",
+        "open": "Abrir",
+        "save": "Salvar",
+        "saveAs": "Salvar como...",
+        "undo": "Desfazer",
+        "redo": "Refazer",
+        "matchProp": "Corresponder propriedades",
+        "properties": "Propriedades"
+      }
     },
     "NavigationBar": {
       "label": "Barra de navegação",

@@ -84,7 +84,18 @@ export const it: EditorLocale = {
             ]
           }
         ]
-      ]
+      ],
+      "quickAccess": {
+        "caption": "Personalizza barra degli strumenti Accesso rapido",
+        "new": "Nuovo",
+        "open": "Apri",
+        "save": "Salva",
+        "saveAs": "Salva con nome...",
+        "undo": "Annulla",
+        "redo": "Ripeti",
+        "matchProp": "Corrispondenza con proprietà",
+        "properties": "Proprietà"
+      }
     },
     "NavigationBar": {
       "label": "Barra di navigazione",
