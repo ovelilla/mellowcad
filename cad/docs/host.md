@@ -213,7 +213,9 @@ A host that leaves one of them out simply has nothing to show when it opens.
 F1 is AutoCAD's help for the running command. Pass `onHelp`, and it is called with the command's
 global name (`"LINE"`, whatever the language) or `null` at the Command prompt. Without it, F1 is
 the browser's. A Help button of your own asks the same with `engine.help()`, and the running
-command goes on.
+command goes on. While a tooltip of yours names a command (`Press F1 for more help`, as AutoCAD's
+ribbon tooltips do), say which with `engine.setTooltipHelp("CIRCLE")`, and `null` once it has
+gone: F1 then asks about that one, AutoCAD's "Help for the active tooltip".
 
 ```ts
 import { CadEngine } from "@mellowcad/engine"

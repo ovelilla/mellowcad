@@ -192,7 +192,11 @@ session and not after a restart (`docs/plans/autocad-ui.md`, §2.3; the ribbon: 
 
 **Implemented:** F1 asks the host for Help (Function Key Reference: "Displays Help for the active
 tooltip, command, palette or dialog box"; HELP: "Press F1 … when command is active to display Help
-for that command"): the running command's global name — a transparent one's inside another
+for that command"): while a ribbon tooltip shows, its command's global name (`setTooltipHelp`,
+the tooltip's `Press F1 for more help`, the English `CLICommand` of its macro, or what the button
+runs where that is no command here: DIST and AREA for MEASUREGEOM, VSCURRENT for the gallery's
+VISUALSTYLES); else the running
+command's — a transparent one's inside another
 (`'ZOOM` in LINE), `LINE` from `LINEA` — or none at `Command:` (`EngineHost.showHelp`,
 `CadEngineOptions.onHelp`); taken from a focused field too, as every function key. `/draw` opens
 the command's own page in the docs (`/docs/commands/offset`, in the page's language), its entry in
@@ -202,8 +206,8 @@ bar). A host that shows no help leaves F1 to the browser. WHY a page may take it
 `IDC_HELP_PAGE_VIA_KEYBOARD`, not in `kReservedCommandIds` (`chrome/browser/ui/accelerator_table.cc`,
 main, 2026-10-30)
 
-**Missing:** HELP and `'HELP` as commands; F1 over a tooltip, a palette or a dialog (Help for
-that one); a command named in the command line but not run yet; offline Help
+**Missing:** HELP and `'HELP` as commands; F1 over a palette or a dialog (Help for that one), or
+over a tooltip that is not the ribbon's; a command named in the command line but not run yet; offline Help
 
 ### Title bar
 
@@ -326,7 +330,21 @@ culture's AcWindows.resources.dll), ending the running command and opening the d
 slide-out's title bar closes it, the drawing has the keys again, and a control focused keeps
 Delete, Backspace, Enter and Space from the engine, a letter typing a command on the drawing. Hovered, a
 button takes a faint frame; pressed, a darker fill (desktop 2026-11-24,
-`autocad-mouse/press-line.png`). **Insert**: Block (Insert, Edit Attribute ▸ Single, Attribute
+`autocad-mouse/press-line.png`). **Tooltips** (§2.3, R11): after a second at rest (the profile's
+`ToolTipInitialDelay` 1000) under the control, from its start: the name — a command button's
+text, its Name being "the label or tooltip name" (CUI help), a toggle's, combo's or gallery's its
+own AcWindows `TT_` entry's (`Properties Palette`, `Layer`) —, the description (each culture's
+acad.CUIX `HelpString` of the button's macro, or the `TT_` entry's), a rule, the command (its
+`CLICommand`, the command language's word: es `LINEA`, ja `LINE`; Arabic the global one) and
+`Press F1 for more help` (AdWindows' ribbon tooltip), F1 then asking Help for that command (F1);
+two seconds more (`ExtendAfter` 2.000) and it grows into the extended tooltip, the macro's
+paragraph in AcCommandToolTips.resources.dll under the description (120 of the 147; one that only
+introduces the illustration, `For example:`, left out); a split button has one, its member
+shown's, over its button and its arm; none opens while a list is open, its own or another's, and
+a list's rows have none (`scripts/research/ribbon-tips.mjs`; Arabic's words ours). **Unverified**:
+where the desktop places it (at the pointer, it seems: `tip-short` and `tip-line-1` put it 3 px
+apart under one button), whether Circle's tooltip names its member or its fixed text, and whether
+a second tooltip opens at once after the first, as Base UI's grouping does here. **Insert**: Block (Insert, Edit Attribute ▸ Single, Attribute
 Display) and Block Definition (Create Block, Define Attributes). **Annotate**: Text (Multiline Text ▸
 Single Line, SplitFollow), Dimensions in its three rows (Adjust Space; Update, `^C^C_-dimstyle
 _apply`; Linear ▾ and Continue ▾ with Baseline) and Markup (Wipeout); a panel's words its own where
@@ -378,9 +396,8 @@ no `calc-size` (Firefox and Safari **unverified**) — WHY TEXTEDIT has no butto
 on a text
 
 **Missing:** the Parametric, Visualize, Manage, Output, Add-ins, Collaborate, Express Tools and
-Featured Apps tabs, nothing of theirs built; AutoCAD's tooltips — the name, a description, the command and `Press
-F1 for more help`, and after a longer rest the extended one, a paragraph and an illustration added
-(desktop 2026-11-24, `autocad-mouse/tip-long.png`; phase 5) —, the right-click menu (phase 5); Groups
+Featured Apps tabs, nothing of theirs built; the extended tooltip's illustration (WHY: Autodesk's art, and none is
+drawn here; `autocad-mouse/tip-long.png`), the right-click menu (phase 5); Groups
 and View, with nothing built; what each panel lacks: Draw's Tan, Tan, Radius and Tan, Tan, Tan, Arc's
 seven other members and Continue, Gradient, Boundary, Helix, Donut and Revision Cloud; Modify's Set to
 ByLayer, Change Space, Lengthen, Edit Hatch, Edit Array, Align, Reverse, Copy Nested Objects, Delete

@@ -225,7 +225,8 @@ the ribbon, the bottom row. **28 px**, icons 16, for the rest one presses. AutoC
 - `Select.Root` needs `items` (a value→label record) for the closed trigger to show the label, not
   the raw value. `onValueChange` can deliver `null`: guard before committing. A drop-down in a bar
   passes `below` (`alignItemWithTrigger` off), or its list covers its trigger.
-- Never a Tooltip and a Popover on the same trigger: the popover stops opening.
+- Never a Tooltip and a Popover on the same trigger: the popover stops opening. The tooltip wraps
+  the two (`RibbonTip`).
 - `Menu.RadioItem` and `Menu.CheckboxItem` default to `closeOnClick={false}` (`Menu.Item` to
   `true`): a pick that ends the choice passes `closeOnClick` (Polar's angles, the palette's
   flyouts); a checklist leaves it (the object snaps, Customization).
@@ -244,8 +245,7 @@ the ribbon, the bottom row. **28 px**, icons 16, for the rest one presses. AutoC
 - **React listens on its root (Next's `document`), as the engine does**: a key a palette or the
   ribbon keeps (Delete on a closed list) stops in `onKeyDownCapture`, or the engine runs it too.
 - `Panel` (`toolbar-primitives.tsx`) does **not** forward props: `<PopoverTrigger render={<Panel>…} />`
-  drops the click handler: the popover never opens. Render the `Button` as the trigger
-  and wrap the whole `Popover` in the `Panel`.
+  drops the click handler. Make the `Button` the trigger, the `Panel` round the `Popover`.
 
 ## Where a control belongs
 

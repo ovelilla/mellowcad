@@ -421,7 +421,7 @@ in `docs/coverage/`, never a dead button.
 | R8 | Styles, Blocks and the command line are toggled from View › Palettes | toggles at the end of the top bar | Revoked | 1 |
 | R9 | 3D Tools is a hidden tab of the workspace; 3D work has the 3D Modeling workspace | the 3D tools in the palette | Platform-like, for now: **the 3D Tools tab shows**, as do View's Visual Styles, Coordinates and Navigate — WHY: there is no workspace switching nor the ribbon's Show Tabs menu yet, and hidden they could not be reached | 1, 5 |
 | R10 | Contextual tabs (Hatch Creation, Text Editor, Array) while their command runs | the command's prompts only | Missing | 6 |
-| R11 | Tooltips: the name, a description, the command and `Press F1 for more help` | the name and the alias | Revoked: §2.3's four parts, the description from the engine's catalog | 5 |
+| R11 | Tooltips: the name, a description, the command and `Press F1 for more help` | the name and the alias | Revoked: §2.3's four parts, each culture's words (acad.CUIX, AcWindows, AcCommandToolTips) | 5 (block 1, done) |
 | R12 | RIBBON and RIBBONCLOSE; Clean Screen closes the ribbon | neither command; Clean Screen hides the palette and the top bar's groups | Revoked | 1 |
 | R13 | The ribbon docks at a side or floats; a panel can be dragged off; right-click shows or hides tabs, panels and titles | — | Missing (Show Tabs, Show Panels and Show Panel Titles: 5; Undock and the tool palette groups stay Missing) | 5 |
 | R15 | A running command's button is not lit | the running tool's button is lit (`active`) | Revoked: the ribbon keeps the accent for what is a state (Layer Properties while its palette is open, a toggle) | 1 |
@@ -739,7 +739,43 @@ until the drawing reaches the row:
 ### Phase 5 — what the ribbon still lacks
 
 Tooltips (R11), the right-click menu with Show Tabs and Show Panels (R13, then decision 4 is
-revisited), the Quick Access Toolbar's Customize ▾ (F4).
+revisited), the Quick Access Toolbar's Customize ▾ (F4). The session of 2026-11-26 had no word for
+the desktop, so what only the desktop settles stays **unverified** in the coverage and goes to §7.
+Blocks, a commit each, each leaving the editor whole:
+
+1. **Tooltips** (R11; done 2026-11-26): every ribbon control a tooltip in §2.3's parts — the name, the description,
+   a rule, the command and `Press F1 for more help` — after 1 s at rest (the profile's
+   `ToolTipInitialDelay` 1000), growing after 2 s more (`ExtendAfter` 2.0) into the extended one,
+   its paragraph added. The words are each culture's: the description is the button's macro's
+   `HelpString` in acad.CUIX (Line's `ACAD_1523`, es `Crea segmentos de línea recta`), the
+   paragraph its entry in AcCommandToolTips.resources.dll's BAML, the F1 line AdWindows' — kept
+   in the editor's catalog beside the item's name, not the engine's as R11 said: they are the
+   macro's, not the command's (Circle's six members run one command and say six things), and the
+   engine's descriptions are ours. The command is the macro's `CLICommand`, which is the command's
+   name in the command language (es `LINEA`, ja `LINE`): each culture's, in the catalog too, carrying
+   the command line's `lang`. F1 while a tooltip shows asks Help for its command (English's
+   `CLICommand`, or what the button runs where that is no command here: DIST and AREA for
+   MEASUREGEOM), as the Function Key Reference says ("the active tooltip"), closing that row of
+   F1's Missing. A list's arm and a
+   button that only lists get theirs on a wrapper, never on the popup's trigger (ui.md), and none
+   while their list is open. The alias leaves the tooltip: AutoCAD's shows none. The extended
+   tooltip's illustration is Missing (WHY: Autodesk's art, and none is drawn here).
+2. **The right-click menu** (R13) on the tab row and the panels: Show Tabs ▸ and Show Panels ▸,
+   checks over what is built (the tabs; the panels of the tab in front), and Close (RIBBONCLOSE).
+   Show Related Tool Palette Group, Tool Palette Group and Undock stay Missing, undrawn (no tool
+   palettes, no docking). **Decision 4 is revisited**: with Show Tabs and Show Panels here, the
+   WHY that showed 3D Tools and View's Visual Styles, Coordinates and Navigate is gone, so they
+   start hidden, as Drafting & Annotation has them, and the menu shows them. What is shown is the
+   device's, kept as the minimize state is (where AutoCAD keeps it, the workspace or the profile,
+   **unverified**). Show Panel Titles: what a panel becomes without its title bar (its height, its
+   slide-out's ▾, Properties' launcher) was never captured, so it is built only if the help or a
+   capture settles it, else Missing and first in §7.
+3. **Customize ▾** (F4): the arrow after Redo and its list under it (§2.2, `pop-qat-custom`),
+   rows of 21 under its caption, a check before each command on the toolbar: New, Open, Save,
+   Save As..., Undo, Redo, Match Properties and Properties, the ones built; a pick adds or removes
+   the button, in acad.cuix's order, kept on the device. Plot, Batch Plot, Layer, Plot Preview,
+   Render, Sheet Set Manager, Workspace, More Commands..., Show Menu Bar and Show Below the Ribbon
+   stay Missing, undrawn.
 
 ### Phase 6 — contextual tabs
 

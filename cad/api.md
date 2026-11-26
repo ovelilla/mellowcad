@@ -72,6 +72,12 @@ export declare class CadEngine {
      * Help's start with none (`CadEngineOptions.onHelp`; without it, nothing).
      */
     help(): void;
+    /**
+     * The global name of the command whose tooltip shows (`"LINE"`), or `null`
+     * once it has gone: F1 asks Help for it meanwhile, AutoCAD's "Help for the
+     * active tooltip" (Function Key Reference).
+     */
+    setTooltipHelp(command: string | null): void;
     zoomIn(): void;
     zoomOut(): void;
     resetView(): void;

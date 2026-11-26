@@ -43,6 +43,19 @@ describe("F1", () => {
     expect(asked).toEqual(["ZOOM"])
   })
 
+  // "Displays Help for the active tooltip, command, palette or dialog box":
+  // a ribbon tooltip's `Press F1 for more help`.
+  it("asks about the tooltip on screen, before the running command", () => {
+    const { h, asked } = helped()
+    h.command("LINE").click(p(0, 0))
+    h.runtime.setTooltipHelp("CIRCLE")
+    h.press("F1")
+    h.runtime.setTooltipHelp(null)
+    h.press("F1")
+    expect(asked).toEqual(["CIRCLE", "LINE"])
+    expect(h.state().commandLine.command).toBe("LINE")
+  })
+
   it("is the platform's when the host shows no help", () => {
     const h = createHarness()
     expect(h.press("F1")).toBe(false)

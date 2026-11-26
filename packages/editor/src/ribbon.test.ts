@@ -2,7 +2,7 @@ import { createElement } from "react"
 import { renderToString } from "react-dom/server"
 import { describe, expect, it } from "vitest"
 
-import type { CadEngine } from "@mellowcad/engine"
+import { commandCatalog, type CadEngine } from "@mellowcad/engine"
 import type { EditorState } from "@mellowcad/react"
 import { createHarness } from "../../../test/harness"
 import { LARGE_BUTTON_ICONS, LARGE_TOOL_ICONS } from "./large-icons"
@@ -20,6 +20,9 @@ import {
   type RibbonSlot,
 } from "./ribbon-home"
 import { RIBBON_TABS } from "./ribbon-tabs"
+import { en } from "./locales/en"
+import { HELP_INSTEAD } from "./ribbon-tip"
+import { editorTags, readEditorCatalog } from "../../../scripts/locales/editor"
 
 const PANELS = RIBBON_TABS.flatMap((tab) => tab.panels)
 
@@ -147,6 +150,49 @@ describe("the ribbon's tabs", () => {
       (m) => m[1]
     )
     expect(tabs).toEqual(["Home", "Insert", "Annotate", "3D Tools", "View"])
+  })
+})
+
+// AutoCAD's tooltip: the name, the description, the command, Press F1 — each
+// culture's words (scripts/research/ribbon-tips.mjs).
+describe("the ribbon's tooltips", () => {
+  const words = en.messages.Ribbon
+  const tipped = (id: string) => id in words.tips
+
+  it("describe every button; a list's row has none", () => {
+    const untipped = Object.keys(words.items).filter((id) => !tipped(id))
+    expect(untipped.sort()).toEqual([
+      "manageDimensionStyles",
+      "manageTextStyles",
+    ])
+    for (const control of controls()) {
+      if (control.kind === "tool") expect(tipped(control.tool)).toBe(true)
+      if (control.kind === "split")
+        for (const member of control.members)
+          if (member !== null) expect(tipped(member)).toBe(true)
+    }
+  })
+
+  it("name the command in capitals, the one F1 asks Help for", () => {
+    expect(Object.keys(words.tipCommands)).toEqual(Object.keys(words.tips))
+    const commands = new Set(commandCatalog().map((command) => command.id))
+    for (const [tip, command] of Object.entries(words.tipCommands)) {
+      expect(String(command)).toMatch(/^[A-Z0-9-]+$/)
+      // F1 asks about a command the engine has, or what the button runs.
+      if (tip in HELP_INSTEAD) {
+        const instead = HELP_INSTEAD[tip as keyof typeof HELP_INSTEAD]
+        expect(commands.has(String(command)), tip).toBe(false)
+        if (instead) expect(commands.has(instead), tip).toBe(true)
+      } else expect(commands.has(String(command)), tip).toBe(true)
+    }
+  })
+
+  it("are worded in every language, none left to English", () => {
+    for (const tag of editorTags()) {
+      const ribbon = (readEditorCatalog(tag) as typeof en.messages).Ribbon
+      expect(Object.keys(ribbon.tips), tag).toEqual(Object.keys(words.tips))
+      expect(ribbon.pressF1, tag).toBeTruthy()
+    }
   })
 })
 

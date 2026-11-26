@@ -29,12 +29,8 @@ import {
 import type { CadEngine, PaletteId } from "@mellowcad/engine"
 import type { EditorState } from "@mellowcad/react"
 import { cn } from "./utils"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "./ui/tooltip"
+import { TooltipProvider } from "./ui/tooltip"
+import { isTip, RibbonTip, type TipKey } from "./ribbon-tip"
 import {
   Select,
   SelectContent,
@@ -714,24 +710,23 @@ function Launcher({ panel, ctx }: { panel: RibbonPanel; ctx: Context }) {
   const name =
     button === "properties" ? t(`panels.${panel.id}`) : ctx.text(button)
   return (
-    <Tooltip>
-      <TooltipTrigger
-        render={
-          <button
-            type="button"
-            aria-label={name}
-            className="flex h-4.5 w-3 items-end justify-center rounded-sm pb-0.5 outline-none hover:bg-muted hover:text-foreground"
-            onClick={() => ctx.act(() => ctx.engine.runRibbonButton(button))}
-          >
-            <MoveDiagonal2
-              aria-hidden
-              className="size-2.5 -scale-y-100 rtl:-scale-x-100"
-            />
-          </button>
-        }
-      />
-      <TooltipContent side="bottom">{name}</TooltipContent>
-    </Tooltip>
+    <Tip
+      tip={button === "properties" ? "propertiesLauncher" : button}
+      title={name}
+      ctx={ctx}
+    >
+      <button
+        type="button"
+        aria-label={name}
+        className="flex h-4.5 w-3 items-end justify-center rounded-sm pb-0.5 outline-none hover:bg-muted hover:text-foreground"
+        onClick={() => ctx.act(() => ctx.engine.runRibbonButton(button))}
+      >
+        <MoveDiagonal2
+          aria-hidden
+          className="size-2.5 -scale-y-100 rtl:-scale-x-100"
+        />
+      </button>
+    </Tip>
   )
 }
 
@@ -1040,7 +1035,7 @@ function Control({
   narrow?: boolean
   ctx: Context
 }) {
-  const { engine, state } = ctx
+  const { engine } = ctx
   if (!shows(control, ctx)) return null
 
   switch (control.kind) {
@@ -1051,7 +1046,8 @@ function Control({
           size={control.size}
           action={action}
           text={ctx.text(control.tool)}
-          shortcut={shortcutOf(action, state)}
+          tip={control.tool}
+          ctx={ctx}
           onClick={() => ctx.act(() => runAction(engine, action))}
         />
       )
@@ -1061,6 +1057,8 @@ function Control({
         <SmallButton
           icon={control.button === "textStyle" ? CaseSensitive : PencilRuler}
           label={ctx.text(control.button)}
+          tip={control.button}
+          ctx={ctx}
           onClick={() => ctx.act(() => engine.runRibbonButton(control.button))}
         />
       )
@@ -1087,12 +1085,6 @@ function Control({
   }
 }
 
-/** A command's alias, as a tooltip shows it: a tool's own, or the one its action starts. */
-function shortcutOf(action: string, state: EditorState): string | undefined {
-  const tool = toolOfAction(action)
-  return state.tools.find((t) => t.id === tool)?.shortcut?.toUpperCase()
-}
-
 /**
  * A toggle with no macro (acad.cuix's `Ac…ToggleButton`), lit while what it
  * shows is: UCS Icon (`_ucsicon _off` / `_on`) and View Cube
@@ -1102,7 +1094,6 @@ function shortcutOf(action: string, state: EditorState): string | undefined {
  */
 function ToggleButton({ toggle, ctx }: { toggle: RibbonToggle; ctx: Context }) {
   const { engine, state } = ctx
-  const keys = useEditorText("Keys")
   const shows = (id: PaletteId) => paletteShows(state, id)
   const [on, run]: [boolean, () => void] = (() => {
     switch (toggle) {
@@ -1129,7 +1120,8 @@ function ToggleButton({ toggle, ctx }: { toggle: RibbonToggle; ctx: Context }) {
       <SmallButton
         icon={BUTTON_ICONS[toggle] ?? toolIcon(toggle)}
         label={text}
-        shortcut={toggle === "commandLine" ? keys("commandLine") : undefined}
+        tip={toggle}
+        ctx={ctx}
         pressed={on}
         onClick={() => ctx.act(run)}
       />
@@ -1139,6 +1131,8 @@ function ToggleButton({ toggle, ctx }: { toggle: RibbonToggle; ctx: Context }) {
     <LargeButton
       icon={LARGE_BUTTON_ICONS[toggle]}
       text={text}
+      tip={toggle}
+      ctx={ctx}
       pressed={on}
       onClick={() => ctx.act(run)}
     />
@@ -1150,13 +1144,15 @@ function ToolButton({
   size,
   action,
   text,
-  shortcut,
+  tip,
+  ctx,
   onClick,
 }: {
   size: ControlSize
   action: string
   text: string
-  shortcut?: string
+  tip: TipKey | ItemId
+  ctx: Context
   onClick: () => void
 }) {
   if (size === "large") {
@@ -1165,7 +1161,8 @@ function ToolButton({
         icon={largeIcon(action)}
         mirrored={MIRRORED.has(action)}
         text={text}
-        shortcut={shortcut}
+        tip={tip}
+        ctx={ctx}
         onClick={onClick}
       />
     )
@@ -1176,7 +1173,8 @@ function ToolButton({
       mirrored={MIRRORED.has(action)}
       label={text}
       withText={size === "small"}
-      shortcut={shortcut}
+      tip={tip}
+      ctx={ctx}
       onClick={onClick}
     />
   )
@@ -1204,33 +1202,32 @@ function largeLines(text: string): string[] {
   return [text.slice(0, at), text.slice(at + 1)]
 }
 
-/** The tooltip AutoCAD shows a button: its name and, here, its alias. */
+/**
+ * The tooltip AutoCAD shows a control (`RibbonTip`), titled `title` where its
+ * words name none: a button's text, a split button's member shown.
+ */
 function Tip({
-  label,
-  shortcut,
+  tip,
+  title,
+  ctx,
   children,
 }: {
-  label: string
-  shortcut?: string
+  /** An item with no tooltip of its own (a list's row) shows none. */
+  tip: TipKey | ItemId
+  title: string
+  ctx: Context
   children: ReactElement
 }) {
+  if (!isTip(tip)) return children
   return (
-    <Tooltip>
-      <TooltipTrigger render={children} />
-      <TooltipContent side="bottom">
-        <span className="flex items-center gap-2">
-          {label}
-          {shortcut && (
-            <kbd
-              dir="ltr"
-              className="rounded border border-border/60 bg-muted px-1 font-mono text-muted-foreground"
-            >
-              {shortcut}
-            </kbd>
-          )}
-        </span>
-      </TooltipContent>
-    </Tooltip>
+    <RibbonTip
+      tip={tip}
+      title={title}
+      engine={ctx.engine}
+      lang={ctx.state.commandLine.lang}
+    >
+      {children}
+    </RibbonTip>
   )
 }
 
@@ -1239,7 +1236,8 @@ function LargeButton({
   icon: Icon,
   mirrored = false,
   text,
-  shortcut,
+  tip,
+  ctx,
   pressed,
   onClick,
 }: {
@@ -1247,12 +1245,13 @@ function LargeButton({
   /** A glyph of direction in time, mirrored right to left. */
   mirrored?: boolean
   text: string
-  shortcut?: string
+  tip: TipKey | ItemId
+  ctx: Context
   pressed?: boolean
   onClick: () => void
 }) {
   return (
-    <Tip label={text} shortcut={shortcut}>
+    <Tip tip={tip} title={text} ctx={ctx}>
       <button
         type="button"
         aria-pressed={pressed}
@@ -1281,7 +1280,8 @@ function SmallButton({
   mirrored = false,
   label,
   withText = false,
-  shortcut,
+  tip,
+  ctx,
   pressed,
   onClick,
 }: {
@@ -1290,13 +1290,14 @@ function SmallButton({
   mirrored?: boolean
   label: string
   withText?: boolean
-  shortcut?: string
+  tip: TipKey | ItemId
+  ctx: Context
   /** A toggle's state: lit while on. */
   pressed?: boolean
   onClick: () => void
 }) {
   return (
-    <Tip label={label} shortcut={shortcut}>
+    <Tip tip={tip} title={label} ctx={ctx}>
       <button
         type="button"
         aria-label={withText ? undefined : label}
@@ -1346,7 +1347,6 @@ function SplitButton({
     follows && tools.includes(remembered as ItemId)
       ? (remembered as ItemId)
       : tools[0]
-  const shortcut = shortcutOf(actionOf(shown), state)
   const text = control.text ? t(control.text) : ctx.text(shown)
   const run = (id: ItemId) =>
     ctx.act(() => {
@@ -1370,20 +1370,24 @@ function SplitButton({
     const withText = control.size === "small"
     return (
       <Menu.Root>
-        <Menu.Trigger
-          aria-label={withText ? undefined : text}
-          className={cn(
-            BUTTON,
-            "h-5.5",
-            withText ? cn("pe-1", WHOLE) : "w-8.75"
-          )}
-        >
-          <span className="flex w-5.5 justify-center">
-            <ToolIcon id={actionOf(shown)} />
-          </span>
-          {withText && <span className="pe-1">{ctx.text(shown)}</span>}
-          <ChevronDown aria-hidden className="size-2.5" />
-        </Menu.Trigger>
+        <Tip tip={shown} title={ctx.text(shown)} ctx={ctx}>
+          <div className="flex shrink-0">
+            <Menu.Trigger
+              aria-label={withText ? undefined : text}
+              className={cn(
+                BUTTON,
+                "h-5.5",
+                withText ? cn("pe-1", WHOLE) : "w-8.75"
+              )}
+            >
+              <span className="flex w-5.5 justify-center">
+                <ToolIcon id={actionOf(shown)} />
+              </span>
+              {withText && <span className="pe-1">{ctx.text(shown)}</span>}
+              <ChevronDown aria-hidden className="size-2.5" />
+            </Menu.Trigger>
+          </div>
+        </Tip>
         {list}
       </Menu.Root>
     )
@@ -1397,8 +1401,8 @@ function SplitButton({
     // neighbours.
     return (
       <Menu.Root>
-        <div className={cn("group flex h-18 shrink-0 flex-col", WHOLE_EVEN)}>
-          <Tip label={ctx.text(shown)} shortcut={shortcut}>
+        <Tip tip={shown} title={ctx.text(shown)} ctx={ctx}>
+          <div className={cn("group flex h-18 shrink-0 flex-col", WHOLE_EVEN)}>
             <button
               type="button"
               aria-label={text}
@@ -1410,27 +1414,27 @@ function SplitButton({
             >
               <LargeGlyph action={actionOf(shown)} />
             </button>
-          </Tip>
-          <Menu.Trigger
-            aria-label={text}
-            className={cn(
-              BUTTON,
-              "-mt-px h-8.75 flex-col justify-start rounded-t-none px-2.5 group-hover:border-border"
-            )}
-          >
-            {lines.map((line, i) => (
-              <span key={i} className="flex items-center gap-0.5">
-                {line}
-                {lines.length > 1 && i === lines.length - 1 && (
-                  <ChevronDown aria-hidden className="size-2.5" />
-                )}
-              </span>
-            ))}
-            {lines.length === 1 && (
-              <ChevronDown aria-hidden className="size-2.5" />
-            )}
-          </Menu.Trigger>
-        </div>
+            <Menu.Trigger
+              aria-label={text}
+              className={cn(
+                BUTTON,
+                "-mt-px h-8.75 flex-col justify-start rounded-t-none px-2.5 group-hover:border-border"
+              )}
+            >
+              {lines.map((line, i) => (
+                <span key={i} className="flex items-center gap-0.5">
+                  {line}
+                  {lines.length > 1 && i === lines.length - 1 && (
+                    <ChevronDown aria-hidden className="size-2.5" />
+                  )}
+                </span>
+              ))}
+              {lines.length === 1 && (
+                <ChevronDown aria-hidden className="size-2.5" />
+              )}
+            </Menu.Trigger>
+          </div>
+        </Tip>
         {list}
       </Menu.Root>
     )
@@ -1439,8 +1443,8 @@ function SplitButton({
   const withText = control.size === "small"
   return (
     <Menu.Root>
-      <div className="group flex h-5.5 shrink-0">
-        <Tip label={ctx.text(shown)} shortcut={shortcut}>
+      <Tip tip={shown} title={ctx.text(shown)} ctx={ctx}>
+        <div className="group flex h-5.5 shrink-0">
           <button
             type="button"
             aria-label={withText ? undefined : text}
@@ -1456,19 +1460,19 @@ function SplitButton({
             </span>
             {withText && text}
           </button>
-        </Tip>
-        <Menu.Trigger
-          aria-label={text}
-          className={cn(
-            BUTTON,
-            "h-5.5 w-3.25 justify-start rounded-s-none group-hover:border-border"
-          )}
-        >
-          {/* From the start of the 11 inside the border: centred, the 10 px
+          <Menu.Trigger
+            aria-label={text}
+            className={cn(
+              BUTTON,
+              "h-5.5 w-3.25 justify-start rounded-s-none group-hover:border-border"
+            )}
+          >
+            {/* From the start of the 11 inside the border: centred, the 10 px
           arrow would land on half a pixel. */}
-          <ChevronDown aria-hidden className="size-2.5" />
-        </Menu.Trigger>
-      </div>
+            <ChevronDown aria-hidden className="size-2.5" />
+          </Menu.Trigger>
+        </div>
+      </Tip>
       {list}
     </Menu.Root>
   )
@@ -1543,6 +1547,8 @@ function LayerPropertiesButton({ ctx }: { ctx: Context }) {
     <LargeButton
       icon={LayerPropertiesLarge}
       text={ctx.text("layerProperties")}
+      tip="layerProperties"
+      ctx={ctx}
       pressed={open}
       onClick={() => ctx.act(() => engine.togglePalette("layers"))}
     />
@@ -1576,18 +1582,22 @@ function LayerCombo({ ctx }: { ctx: Context }) {
         engine.focusSurface()
       }}
     >
-      <SelectTrigger aria-label={t("layer")} className={cn(COMBO, "w-52")}>
-        <SelectValue placeholder={properties("varies")}>
-          {(id: string | null) =>
-            id === null ? null : (
-              <>
-                <LayerSwatch color={colorOf(id) ?? ""} />
-                <span className="truncate">{items[id]}</span>
-              </>
-            )
-          }
-        </SelectValue>
-      </SelectTrigger>
+      <Tip tip="layer" title={t("layer")} ctx={ctx}>
+        <div className="flex">
+          <SelectTrigger aria-label={t("layer")} className={cn(COMBO, "w-52")}>
+            <SelectValue placeholder={properties("varies")}>
+              {(id: string | null) =>
+                id === null ? null : (
+                  <>
+                    <LayerSwatch color={colorOf(id) ?? ""} />
+                    <span className="truncate">{items[id]}</span>
+                  </>
+                )
+              }
+            </SelectValue>
+          </SelectTrigger>
+        </div>
+      </Tip>
       <SelectContent
         align="start"
         alignItemWithTrigger={false}
@@ -1628,62 +1638,70 @@ function PropertyCombo({
 
   if (property === "color") {
     return (
-      <ColorSelect
-        below
-        ribbon
-        value={selected ? state.selectionColor : state.currentColor}
-        names={state.names}
-        onValueChange={(value) => {
-          engine.applyColorControl(value)
-          done()
-        }}
-        ariaLabel={t("color")}
-        className={outer}
-        triggerClassName={COMBO}
-        finalFocus={ctx.toDrawing}
-      />
+      <Tip tip="color" title={t("color")} ctx={ctx}>
+        <div className="flex">
+          <ColorSelect
+            below
+            ribbon
+            value={selected ? state.selectionColor : state.currentColor}
+            names={state.names}
+            onValueChange={(value) => {
+              engine.applyColorControl(value)
+              done()
+            }}
+            ariaLabel={t("color")}
+            className={outer}
+            triggerClassName={COMBO}
+            finalFocus={ctx.toDrawing}
+          />
+        </div>
+      </Tip>
     )
   }
   const Icon = property === "lineweight" ? LineweightIcon : LinetypeIcon
   return (
-    <div className={cn("flex items-center", outer)}>
-      <span
-        aria-hidden
-        className="flex w-5 justify-center text-muted-foreground"
-      >
-        <Icon className="size-4" />
-      </span>
-      {property === "lineweight" ? (
-        <LineweightSelect
-          below
-          includeByLayer
-          value={selected ? state.selectionLineweight : state.currentLineweight}
-          names={state.names}
-          onValueChange={(value) => {
-            engine.applyLineweightControl(value)
-            done()
-          }}
-          ariaLabel={t("lineweight")}
-          className={cn(COMBO, inner)}
-          finalFocus={ctx.toDrawing}
-        />
-      ) : (
-        <LinetypeSelect
-          below
-          includeByLayer
-          value={selected ? state.selectionLinetype : state.currentLinetype}
-          names={state.names}
-          linetypes={state.linetypes}
-          onValueChange={(value) => {
-            engine.applyLinetypeControl(value)
-            done()
-          }}
-          ariaLabel={t("linetype")}
-          className={cn(COMBO, inner)}
-          finalFocus={ctx.toDrawing}
-        />
-      )}
-    </div>
+    <Tip tip={property} title={t(property)} ctx={ctx}>
+      <div className={cn("flex items-center", outer)}>
+        <span
+          aria-hidden
+          className="flex w-5 justify-center text-muted-foreground"
+        >
+          <Icon className="size-4" />
+        </span>
+        {property === "lineweight" ? (
+          <LineweightSelect
+            below
+            includeByLayer
+            value={
+              selected ? state.selectionLineweight : state.currentLineweight
+            }
+            names={state.names}
+            onValueChange={(value) => {
+              engine.applyLineweightControl(value)
+              done()
+            }}
+            ariaLabel={t("lineweight")}
+            className={cn(COMBO, inner)}
+            finalFocus={ctx.toDrawing}
+          />
+        ) : (
+          <LinetypeSelect
+            below
+            includeByLayer
+            value={selected ? state.selectionLinetype : state.currentLinetype}
+            names={state.names}
+            linetypes={state.linetypes}
+            onValueChange={(value) => {
+              engine.applyLinetypeControl(value)
+              done()
+            }}
+            ariaLabel={t("linetype")}
+            className={cn(COMBO, inner)}
+            finalFocus={ctx.toDrawing}
+          />
+        )}
+      </div>
+    </Tip>
   )
 }
 
@@ -1736,16 +1754,26 @@ function StyleList({
         engine.focusSurface()
       }}
     >
-      <SelectTrigger
-        aria-label={ctx.text(text ? "textStyle" : "dimensionStyle")}
-        className={cn(COMBO, "w-50")}
+      <Tip
+        tip={text ? "textStyleList" : "dimensionStyleList"}
+        title={ctx.text(text ? "textStyle" : "dimensionStyle")}
+        ctx={ctx}
       >
-        <SelectValue placeholder={properties("varies")}>
-          {(id: string | null) =>
-            id === null ? null : <span className="truncate">{items[id]}</span>
-          }
-        </SelectValue>
-      </SelectTrigger>
+        <div className="flex">
+          <SelectTrigger
+            aria-label={ctx.text(text ? "textStyle" : "dimensionStyle")}
+            className={cn(COMBO, "w-50")}
+          >
+            <SelectValue placeholder={properties("varies")}>
+              {(id: string | null) =>
+                id === null ? null : (
+                  <span className="truncate">{items[id]}</span>
+                )
+              }
+            </SelectValue>
+          </SelectTrigger>
+        </div>
+      </Tip>
       {/* As wide as its longest row: `Zarządzaj stylami wymiarowania...`
       would be cut at the trigger's 200. */}
       <SelectContent
@@ -1781,26 +1809,31 @@ function InsertGallery({ ctx }: { ctx: Context }) {
 
   return (
     <Popover.Root open={open} onOpenChange={setOpen}>
-      <Popover.Trigger
-        className={cn(
-          BUTTON,
-          "h-18 min-w-9.5 flex-col justify-start px-0.5 pt-0.75",
-          WHOLE_EVEN
-        )}
-        // The drawing keeps the keys while the gallery is open, as after a
-        // slide-out's title bar.
-        onClick={(event) => {
-          if (event.detail > 0) engine.focusSurface()
-        }}
-      >
-        {Icon && <Icon />}
-        <span className="mt-0.5">{text}</span>
-        <ChevronDown aria-hidden className="size-2.5" />
-      </Popover.Trigger>
+      <Tip tip="insert" title={text} ctx={ctx}>
+        <div className="flex shrink-0">
+          <Popover.Trigger
+            className={cn(
+              BUTTON,
+              "h-18 min-w-9.5 flex-col justify-start px-0.5 pt-0.75",
+              WHOLE_EVEN
+            )}
+            // The drawing keeps the keys while the gallery is open, as after a
+            // slide-out's title bar.
+            onClick={(event) => {
+              if (event.detail > 0) engine.focusSurface()
+            }}
+          >
+            {Icon && <Icon />}
+            <span className="mt-0.5">{text}</span>
+            <ChevronDown aria-hidden className="size-2.5" />
+          </Popover.Trigger>
+        </div>
+      </Tip>
       <Popover.Portal container={portal}>
         <Popover.Positioner side="bottom" align="start" className="z-50">
           {/* No focus taken: the drawing keeps the keys while it is open. */}
           <Popover.Popup
+            data-ribbon-list
             initialFocus={false}
             finalFocus={false}
             className={cn(POPUP, "w-60 p-1")}
@@ -1861,16 +1894,24 @@ function AttributeDisplay({ size, ctx }: { size: ControlSize; ctx: Context }) {
   const text = ctx.text(current[1])
   return (
     <Menu.Root>
-      <Menu.Trigger
-        aria-label={withText ? undefined : text}
-        className={cn(BUTTON, "h-5.5", withText ? cn("pe-1", WHOLE) : "w-8.75")}
-      >
-        <span className="flex w-5.5 justify-center">
-          <ToolIcon id={current[1]} />
-        </span>
-        {withText && <span className="pe-1">{text}</span>}
-        <ChevronDown aria-hidden className="size-2.5" />
-      </Menu.Trigger>
+      <Tip tip={current[1]} title={text} ctx={ctx}>
+        <div className="flex shrink-0">
+          <Menu.Trigger
+            aria-label={withText ? undefined : text}
+            className={cn(
+              BUTTON,
+              "h-5.5",
+              withText ? cn("pe-1", WHOLE) : "w-8.75"
+            )}
+          >
+            <span className="flex w-5.5 justify-center">
+              <ToolIcon id={current[1]} />
+            </span>
+            {withText && <span className="pe-1">{text}</span>}
+            <ChevronDown aria-hidden className="size-2.5" />
+          </Menu.Trigger>
+        </div>
+      </Tip>
       <Menu.Portal container={portal}>
         <Menu.Positioner
           side="bottom"
@@ -1927,27 +1968,35 @@ function VisualStyles({ ctx }: { ctx: Context }) {
 
   return (
     <Popover.Root open={open} onOpenChange={setOpen}>
-      <Popover.Trigger
-        aria-label={`${t("panels.visualStyles")}: ${state.names.visualStyles[current[0]]}`}
-        className={cn(
-          COMBO,
-          "flex w-50 items-center gap-1 rounded-sm border ps-0.75 pe-1 outline-none hover:bg-muted focus-visible:border-ring aria-expanded:bg-muted"
-        )}
-        onClick={(event) => {
-          if (event.detail > 0) engine.focusSurface()
-        }}
-      >
-        <ToolIcon id={current[1]} />
-        <span className="min-w-0 flex-1 truncate text-start">
-          {state.names.visualStyles[current[0]]}
-        </span>
-        <ChevronDown aria-hidden className="size-2.5 text-muted-foreground" />
-      </Popover.Trigger>
+      <Tip tip="visualStyleList" title={t("panels.visualStyles")} ctx={ctx}>
+        <div className="flex">
+          <Popover.Trigger
+            aria-label={`${t("panels.visualStyles")}: ${state.names.visualStyles[current[0]]}`}
+            className={cn(
+              COMBO,
+              "flex w-50 items-center gap-1 rounded-sm border ps-0.75 pe-1 outline-none hover:bg-muted focus-visible:border-ring aria-expanded:bg-muted"
+            )}
+            onClick={(event) => {
+              if (event.detail > 0) engine.focusSurface()
+            }}
+          >
+            <ToolIcon id={current[1]} />
+            <span className="min-w-0 flex-1 truncate text-start">
+              {state.names.visualStyles[current[0]]}
+            </span>
+            <ChevronDown
+              aria-hidden
+              className="size-2.5 text-muted-foreground"
+            />
+          </Popover.Trigger>
+        </div>
+      </Tip>
       <Popover.Portal container={portal}>
         <Popover.Positioner side="bottom" align="start" className="z-50">
           {/* No focus taken or given back: the drawing keeps the keys, as
           after Insert's gallery. */}
           <Popover.Popup
+            data-ribbon-list
             initialFocus={false}
             finalFocus={false}
             className={cn(POPUP, "p-px")}

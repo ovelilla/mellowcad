@@ -4052,6 +4052,20 @@ export class CadRuntime extends Observable {
     )
   }
 
+  /** The command of the tooltip on screen, which F1 asks Help for; see `setTooltipHelp`. */
+  private tooltipHelp: string | null = null
+
+  /**
+   * The command whose tooltip a host shows (a ribbon button's), or `null` once
+   * it has gone: F1 then asks Help for it, before the running command's, as
+   * the Function Key Reference's F1 "Displays Help for the active tooltip,
+   * command, palette or dialog box" and the tooltip says `Press F1 for more
+   * help`.
+   */
+  setTooltipHelp(command: string | null): void {
+    this.tooltipHelp = command
+  }
+
   /**
    * What a tool's button advertises: the typed alias of the command it runs
    * ("L", "AR", "TR"), else the tool's own hint.
@@ -7797,7 +7811,8 @@ export class CadRuntime extends Observable {
 
     // Only a host that shows help takes F1.
     if (e.key === "F1" && this.host.showHelp) {
-      this.help()
+      if (this.tooltipHelp !== null) this.host.showHelp(this.tooltipHelp)
+      else this.help()
       return true
     }
 

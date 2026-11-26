@@ -244,6 +244,15 @@ export class CadEngine {
     this.runtime.help()
   }
 
+  /**
+   * The global name of the command whose tooltip shows (`"LINE"`), or `null`
+   * once it has gone: F1 asks Help for it meanwhile, AutoCAD's "Help for the
+   * active tooltip" (Function Key Reference).
+   */
+  setTooltipHelp(command: string | null): void {
+    this.runtime.setTooltipHelp(command)
+  }
+
   zoomIn(): void {
     this.runtime.zoomIn()
   }
