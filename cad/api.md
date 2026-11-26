@@ -369,7 +369,26 @@ export declare class CadEngine {
     runFileButton(bar: "quickAccess" | "applicationMenu", button: "new" | "open" | "save" | "saveAs"): void;
     closeLockedObjectsDialog(): void;
     answerUnsavedText(answer: "yes" | "no" | "cancel"): void;
+    /**
+     * Inserts a block as the Blocks palette's click does: -INSERT past its
+     * name, asking what the palette's Options leave to ask
+     * (`state.blockInsert`).
+     */
     insertBlock(id: string): void;
+    /** The Blocks palette's view: icons of a size, or a list. */
+    setBlocksView(view: BlocksView): void;
+    /**
+     * The Blocks palette's Options: whether the insertion point, the scale or
+     * the rotation is asked when a block is inserted, and Scale's Uniform
+     * Scale.
+     */
+    setBlockInsertCheck(check: BlockInsertCheck, on: boolean): void;
+    /**
+     * Types a value of the Blocks palette's Options — the insertion point's X,
+     * Y and Z in the UCS, the scales, the angle in degrees — read as the
+     * command line reads one. False, the value unchanged, where it is none.
+     */
+    setBlockInsertValue(field: BlockInsertField, text: string): boolean;
     /**
      * Deletes the block definitions named, or every one, that nothing in the
      * drawing uses: PURGE's Blocks, one undo step. Returns how many went.
@@ -733,6 +752,41 @@ export interface BlockInfo {
     /** How many references to it the drawing currently holds. */
     readonly referenceCount: number;
 }
+
+export type { BlockInsertCheck }
+/** The checks and the drop-down, which a host turns on and off. */
+export type BlockInsertCheck = "pickPoint" | "pickScale" | "uniformScale" | "pickRotation";
+
+export type { BlockInsertField }
+/** The fields a host types into. */
+export type BlockInsertField = "x" | "y" | "z" | "scaleX" | "scaleY" | "angle";
+
+export type { BlockInsertUi }
+/** The Options as the palette shows them: each value written by the drawing's units. */
+export interface BlockInsertUi {
+    readonly pickPoint: boolean;
+    readonly x: string;
+    readonly y: string;
+    readonly z: string;
+    readonly pickScale: boolean;
+    readonly uniformScale: boolean;
+    readonly scaleX: string;
+    readonly scaleY: string;
+    readonly pickRotation: boolean;
+    readonly angle: string;
+}
+
+export { BLOCKS_VIEWS }
+export declare const BLOCKS_VIEWS: readonly BlocksView[];
+
+export type { BlocksView }
+/**
+ * How the Blocks palette shows the blocks, its view drop-down's entries in
+ * their order (AcWindows' ViewModeSwitcher, Details left out: its one column,
+ * Annotative / Dynamic, is no block's here). The palette opens on the
+ * profile's CurrentViewMode 1, Large Icon.
+ */
+export type BlocksView = "extraLarge" | "large" | "medium" | "small" | "list";
 
 export type { CleanScreenUi }
 /** Clean Screen: what it hides is the host's chrome, so the host hides it. */
@@ -1157,6 +1211,13 @@ export interface EngineState {
     readonly styleDialog: StyleDialog | null;
     /** Every block defined in the drawing (the Blocks palette's Current tab). */
     readonly blocks: ReadonlyArray<BlockInfo>;
+    /**
+     * The Blocks palette's Options: what inserting from it asks and what it
+     * takes from the fields (`setBlockInsertCheck`, `setBlockInsertValue`).
+     */
+    readonly blockInsert: BlockInsertUi;
+    /** How the Blocks palette shows the blocks (`setBlocksView`). */
+    readonly blocksView: BlocksView;
     /** Which palettes are open. */
     readonly palettes: PalettesUi;
     /** Whether the Drawing Units dialog (UNITS) is showing. */

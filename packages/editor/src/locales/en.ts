@@ -668,26 +668,26 @@ export const en: EditorCatalog = {
     },
     "Blocks": {
       "title": "Blocks",
-      "filter": "Filter (? and * allowed)",
-      "filterLabel": "Filter blocks",
       "empty": "No blocks defined. Draw something and run BLOCK.",
-      "noMatch": "No block matches the filter.",
-      "references": [
-        [
-          "name"
-        ],
-        " — ",
-        [
-          "count",
-          2,
-          {
-            "other": [
-              0,
-              " in drawing"
-            ]
-          }
-        ]
-      ]
+      "currentDrawing": "Current Drawing",
+      "currentDrawingBlocks": "Current Drawing Blocks",
+      "filterHint": "Filter...",
+      "views": {
+        "extraLarge": "Extra Large Icon",
+        "large": "Large Icon",
+        "medium": "Medium Icon",
+        "small": "Small Icon",
+        "list": "List"
+      },
+      "options": "Options",
+      "insertionPoint": "Insertion Point",
+      "scale": "Scale",
+      "uniformScale": "Uniform Scale",
+      "rotation": "Rotation",
+      "angle": "Angle",
+      "x": "X:",
+      "y": "Y:",
+      "z": "Z:"
     },
     "Properties": {
       "noSelection": "No selection",

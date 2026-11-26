@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, type ReactElement } from "react"
+import { useRef, useState, type ReactElement } from "react"
 
 import {
   type CadEngine,
@@ -302,19 +302,28 @@ function PropertyInput({
   edit: PropertyEdit
 }) {
   const [draft, setDraft] = useState<string | null>(null)
+  // WHY a ref beside the state: handing the keys to the drawing blurs the
+  // field at once, and that blur's commit read the render's draft, so
+  // Escape set what it was to put back, and Enter set it twice.
+  const typed = useRef<string | null>(null)
+  const type = (text: string | null) => {
+    typed.current = text
+    setDraft(text)
+  }
 
   const commit = () => {
-    if (draft !== null && draft !== edit.text) {
-      engine.setSelectionProperty(edit.property, draft)
+    const text = typed.current
+    type(null)
+    if (text !== null && text !== edit.text) {
+      engine.setSelectionProperty(edit.property, text)
     }
-    setDraft(null)
   }
 
   return (
     <input
       aria-label={label}
       value={draft ?? edit.text}
-      onChange={(event) => setDraft(event.target.value)}
+      onChange={(event) => type(event.target.value)}
       onFocus={(event) => event.currentTarget.select()}
       onBlur={commit}
       onKeyDown={(event) => {
@@ -325,7 +334,7 @@ function PropertyInput({
           engine.focusSurface()
         } else if (event.key === "Escape") {
           event.preventDefault()
-          setDraft(null)
+          type(null)
           engine.focusSurface()
         }
       }}

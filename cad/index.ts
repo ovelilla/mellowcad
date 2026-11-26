@@ -74,6 +74,13 @@ export type {
   SaveFileType,
   DxfSaveSettings,
 } from "./application/EngineState"
+export type {
+  BlockInsertUi,
+  BlockInsertCheck,
+  BlockInsertField,
+  BlocksView,
+} from "./application/blockInsertOptions"
+export { BLOCKS_VIEWS } from "./application/blockInsertOptions"
 export { PALETTES, SAVE_FILE_TYPES } from "./application/EngineState"
 export { saveFileName } from "./application/runtimeFiles"
 export type {

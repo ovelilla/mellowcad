@@ -23,6 +23,5 @@ export interface EditorValues {
   "DimStyle.current": { name: string }
   "DimStyle.newTitle": { name: string }
   "DimStyle.modifyTitle": { name: string }
-  "Blocks.references": { count: number; name: string }
   "Properties.lockedObjects.content": { count: number }
 }

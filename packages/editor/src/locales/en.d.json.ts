@@ -530,11 +530,26 @@ declare const source: {
   }
   "Blocks": {
     "title": string
-    "filter": string
-    "filterLabel": string
     "empty": string
-    "noMatch": string
-    "references": string
+    "currentDrawing": string
+    "currentDrawingBlocks": string
+    "filterHint": string
+    "views": {
+      "extraLarge": string
+      "large": string
+      "medium": string
+      "small": string
+      "list": string
+    }
+    "options": string
+    "insertionPoint": string
+    "scale": string
+    "uniformScale": string
+    "rotation": string
+    "angle": string
+    "x": string
+    "y": string
+    "z": string
   }
   "Properties": {
     "noSelection": string

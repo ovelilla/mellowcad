@@ -693,38 +693,26 @@ export const ar: EditorLocale = {
     },
     "Blocks": {
       "title": "الكتل",
-      "filter": "تصفية (يُسمح بـ ⁨?⁩ و⁨*⁩)",
-      "filterLabel": "تصفية الكتل",
       "empty": "لا كتل معرّفة. ارسم شيئًا ونفّذ ⁨BLOCK⁩.",
-      "noMatch": "لا كتلة تطابق التصفية.",
-      "references": [
-        "⁨",
-        [
-          "name"
-        ],
-        "⁩ — ",
-        [
-          "count",
-          2,
-          {
-            "zero": "لا مراجع في الرسم",
-            "one": "مرجع واحد في الرسم",
-            "two": "مرجعان في الرسم",
-            "few": [
-              0,
-              " مراجع في الرسم"
-            ],
-            "many": [
-              0,
-              " مرجعًا في الرسم"
-            ],
-            "other": [
-              0,
-              " مرجع في الرسم"
-            ]
-          }
-        ]
-      ]
+      "currentDrawing": "الرسم الحالي",
+      "currentDrawingBlocks": "كتل الرسم الحالي",
+      "filterHint": "تصفية...",
+      "views": {
+        "extraLarge": "أيقونة كبيرة جدًا",
+        "large": "أيقونة كبيرة",
+        "medium": "أيقونة متوسطة",
+        "small": "أيقونة صغيرة",
+        "list": "قائمة"
+      },
+      "options": "خيارات",
+      "insertionPoint": "نقطة الإدراج",
+      "scale": "المقياس",
+      "uniformScale": "مقياس موحّد",
+      "rotation": "الدوران",
+      "angle": "الزاوية",
+      "x": "X:",
+      "y": "Y:",
+      "z": "Z:"
     },
     "Properties": {
       "noSelection": "لا يوجد تحديد",

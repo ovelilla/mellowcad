@@ -668,38 +668,26 @@ export const cs: EditorLocale = {
     },
     "Blocks": {
       "title": "Bloky",
-      "filter": "Filtr (povoleno ? a *)",
-      "filterLabel": "Filtrovat bloky",
       "empty": "Nejsou definovány žádné bloky. Něco nakreslete a spusťte příkaz BLOK.",
-      "noMatch": "Filtru neodpovídá žádný blok.",
-      "references": [
-        [
-          "name"
-        ],
-        " – ",
-        [
-          "count",
-          2,
-          {
-            "one": [
-              0,
-              " ve výkresu"
-            ],
-            "few": [
-              0,
-              " ve výkresu"
-            ],
-            "many": [
-              0,
-              " ve výkresu"
-            ],
-            "other": [
-              0,
-              " ve výkresu"
-            ]
-          }
-        ]
-      ]
+      "currentDrawing": "Aktuální výkres",
+      "currentDrawingBlocks": "Bloky aktuálního výkresu",
+      "filterHint": "Filtr...",
+      "views": {
+        "extraLarge": "Extra velká ikona",
+        "large": "Velká ikona",
+        "medium": "Střední ikona",
+        "small": "Malá ikona",
+        "list": "Seznam"
+      },
+      "options": "Možnosti",
+      "insertionPoint": "Bod vložení",
+      "scale": "Měřítko",
+      "uniformScale": "Jednotné měřítko",
+      "rotation": "Otočení",
+      "angle": "Úhel",
+      "x": "X:",
+      "y": "Y:",
+      "z": "Z:"
     },
     "Properties": {
       "noSelection": "Žádný výběr",

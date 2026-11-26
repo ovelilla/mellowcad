@@ -665,27 +665,26 @@ export const ko: EditorLocale = {
     },
     "Blocks": {
       "title": "블록",
-      "filter": "필터(? 및 * 사용 가능)",
-      "filterLabel": "블록 필터",
       "empty": "정의된 블록이 없습니다. 객체를 그린 후 BLOCK을 실행하십시오.",
-      "noMatch": "필터와 일치하는 블록이 없습니다.",
-      "references": [
-        [
-          "name"
-        ],
-        " — ",
-        [
-          "count",
-          2,
-          {
-            "other": [
-              "도면에 ",
-              0,
-              "개"
-            ]
-          }
-        ]
-      ]
+      "currentDrawing": "현재 도면",
+      "currentDrawingBlocks": "현재 도면 블록",
+      "filterHint": "필터",
+      "views": {
+        "extraLarge": "아주 큰 아이콘",
+        "large": "큰 아이콘",
+        "medium": "보통 아이콘",
+        "small": "작은 아이콘",
+        "list": "리스트"
+      },
+      "options": "옵션",
+      "insertionPoint": "삽입점",
+      "scale": "축척",
+      "uniformScale": "단일 축척",
+      "rotation": "회전",
+      "angle": "각도",
+      "x": "X:",
+      "y": "Y:",
+      "z": "Z:"
     },
     "Properties": {
       "noSelection": "선택 요소가 없습니다",

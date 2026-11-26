@@ -664,27 +664,26 @@ export const ja: EditorLocale = {
     },
     "Blocks": {
       "title": "ブロック",
-      "filter": "フィルタ(? と * を使用可能)",
-      "filterLabel": "ブロックをフィルタ",
       "empty": "ブロックが定義されていません。何か作図して BLOCK を実行してください。",
-      "noMatch": "フィルタに一致するブロックはありません。",
-      "references": [
-        [
-          "name"
-        ],
-        " — ",
-        [
-          "count",
-          2,
-          {
-            "other": [
-              "図面内に ",
-              0,
-              " 個"
-            ]
-          }
-        ]
-      ]
+      "currentDrawing": "現在の図面",
+      "currentDrawingBlocks": "現在の図面のブロック",
+      "filterHint": "フィルタ",
+      "views": {
+        "extraLarge": "特大アイコン",
+        "large": "大アイコン",
+        "medium": "中アイコン",
+        "small": "小アイコン",
+        "list": "一覧"
+      },
+      "options": "オプション",
+      "insertionPoint": "挿入位置",
+      "scale": "尺度",
+      "uniformScale": "XYZ 尺度を均一に設定",
+      "rotation": "回転",
+      "angle": "角度",
+      "x": "X:",
+      "y": "Y:",
+      "z": "Z:"
     },
     "Properties": {
       "noSelection": "何も選択されていません",

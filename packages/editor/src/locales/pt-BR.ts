@@ -668,26 +668,26 @@ export const ptBR: EditorLocale = {
     },
     "Blocks": {
       "title": "Blocos",
-      "filter": "Filtro (? e * permitidos)",
-      "filterLabel": "Filtrar blocos",
       "empty": "Nenhum bloco definido. Desenhe algo e execute BLOCO.",
-      "noMatch": "Nenhum bloco corresponde ao filtro.",
-      "references": [
-        [
-          "name"
-        ],
-        " — ",
-        [
-          "count",
-          2,
-          {
-            "other": [
-              0,
-              " no desenho"
-            ]
-          }
-        ]
-      ]
+      "currentDrawing": "Desenho atual",
+      "currentDrawingBlocks": "Blocos de desenho atual",
+      "filterHint": "Filtro...",
+      "views": {
+        "extraLarge": "Ícone extragrande",
+        "large": "Ícone grande",
+        "medium": "Ícone médio",
+        "small": "Ícone pequeno",
+        "list": "Lista"
+      },
+      "options": "Opções",
+      "insertionPoint": "Ponto de inserção",
+      "scale": "Escala",
+      "uniformScale": "Escala uniforme",
+      "rotation": "Rotação",
+      "angle": "Ângulo",
+      "x": "X:",
+      "y": "Y:",
+      "z": "Z:"
     },
     "Properties": {
       "noSelection": "Nenhuma seleção",

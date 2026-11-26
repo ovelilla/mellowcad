@@ -3,10 +3,10 @@ title: "Befehl EINFÜGE (INSERT): Block einfügen in AutoCAD"
 metaTitle: "Befehl EINFÜGE (INSERT) in AutoCAD"
 description: "So fügt AutoCADs EINFÜGE (INSERT, Alias EIN) einen Block ein: die Palette Blöcke oder -EINFÜGE in der Befehlszeile mit Maßstab, Drehung, Attributen."
 figure: "Ein Stuhl, zum Block gemacht und dann zweimal an einem Tisch eingefügt: einmal nach seinem Punkt um 180 gedreht, einmal vor ihm mit Drehen um 90."
-sourceHash: "e9859c7871f3"
+sourceHash: "ea41fdd8000f"
 ---
 
-EINFÜGE (INSERT) setzt einen in der Zeichnung definierten Block als Blockreferenz ein: eine weitere Kopie von ihm, mit eigenem Punkt, Maßstab und eigener Drehung, gezeichnet aus der einen Definition, die <Command id="BLOCK" /> erstellt hat. Wie das EINFÜGE von AutoCAD 2027 öffnet er die Palette Blöcke, die die Blöcke der Zeichnung zeigt; klicken Sie einen an, und die Befehlszeile fragt nach seinem Einfügepunkt, der Block hängt dabei am Cursor, dann nach Maßstab und Drehung. Die Palette bleibt offen, sodass jeder weitere Block nur ein Klick ist.
+EINFÜGE (INSERT) setzt einen in der Zeichnung definierten Block als Blockreferenz ein: eine weitere Kopie von ihm, mit eigenem Punkt, Maßstab und eigener Drehung, gezeichnet aus der einen Definition, die <Command id="BLOCK" /> erstellt hat. Wie das EINFÜGE von AutoCAD 2027 öffnet er die Palette Blöcke, die die Blöcke der Zeichnung zeigt; klicken Sie einen an, und die Befehlszeile fragt nach seinem Einfügepunkt, der Block hängt dabei am Cursor; Maßstab und Drehung nimmt er aus den Optionen der Palette, in denen sich auch einstellen lässt, dass danach gefragt wird. Die Palette bleibt offen, sodass jeder weitere Block nur ein Klick ist.
 
 <Command id="-INSERT" /> fragt alles in der Befehlszeile ab: den Namen des Blocks (die Eingabetaste übernimmt den angebotenen: den zuletzt eingefügten Block, sonst den zuletzt definierten), den Einfügepunkt, dann den Maßstabsfaktor X, den Maßstabsfaktor Y (die Eingabetaste übernimmt den von X) und den Drehwinkel. Ein negativer Faktor spiegelt den Block, und ungleiche strecken ihn: Ein Kreis darin wird als Ellipse gezeichnet. Ein Block mit Attributen fragt dann jeden Wert mit seiner Eingabeaufforderung ab und bietet seine Vorgabe an. Die Objekte des Blocks auf Layer 0 übernehmen den Layer der Blockreferenz, die anderen behalten ihren. Jedes Einfügen ist ein Rückgängig-Schritt.
 
@@ -40,7 +40,7 @@ Geben Sie `-EIN` und den Namen des Blocks ein, wählen Sie dann den Einfügepunk
 
 ### Wie füge ich einen Block in einem anderen Maßstab ein?
 
-Geben Sie den Maßstabsfaktor X nach dem Einfügepunkt ein und drücken Sie bei Faktor Y die Eingabetaste, damit beide gleich bleiben; oder wählen Sie <Keyword id="Scale" /> vor dem Punkt und geben Sie einen Faktor für beide ein. Ein negativer Faktor spiegelt den Block.
+Geben Sie den Maßstabsfaktor X nach dem Einfügepunkt ein und drücken Sie bei Faktor Y die Eingabetaste, damit beide gleich bleiben; oder wählen Sie <Keyword id="Scale" /> vor dem Punkt und geben Sie einen Faktor für beide ein. Ein negativer Faktor spiegelt den Block. In der Palette Blöcke geben Sie ihn unter Optionen in X und Y ein, oder Sie aktivieren Skalierung, damit nach dem Punkt danach gefragt wird.
 
 ### Wie füge ich einen Block aus einer anderen Zeichnung ein?
 

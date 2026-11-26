@@ -466,7 +466,7 @@ in `docs/coverage/`, never a dead button.
 | P2 | Auto-hide and anchoring to a strip | the panel folds to a strip of icons | Revoked: auto-hide per palette | 3 |
 | P3 | A palette can leave the program's window, to another monitor | — | Platform: nothing leaves the page | — |
 | P4 | Layer Properties Manager: a wide grid with a filter tree and a toolbar | a list in the panel's tab | Revoked for the grid and toolbar of what exists; filters, states and viewport columns: Missing | 3 |
-| P5 | Blocks: tabs at its edge and Options | the Current Drawing list | Revoked for its frame; Recent, Favorites, Libraries and Options stay Missing | 3 |
+| P5 | Blocks: tabs at its edge and Options | the Current Drawing list | Revoked for its frame, its views and the Options -INSERT has; Recent, Favorites, Libraries, Auto-Placement, Repeat Placement and Explode stay Missing | 3 |
 | P6 | Properties: PICKADD, Select Objects and Quick Select beside the list; categories that fold | the list and the rows | Revoked for folding; the three buttons: Missing | 3 |
 | P7 | STYLE and DIMSTYLE are modal dialogs; the ribbon has their combos | a Styles tab of the panel | Revoked: the two dialogs, and the combos in Home › Annotation's slide-out and on Annotate | 3 |
 | P8 | Quick Properties, Tool Palettes, DesignCenter, Sheet Set Manager… | — | Missing | — |
@@ -659,7 +659,13 @@ dialogs need nothing of the new frame:
      with Indicate Layers in Use off, its default), the status line, the grid scrolled sideways
      and moved through by the keys; the object count, which AutoCAD has not, went. Filters, layer
      states, New VP Freeze, Refresh, Toggle Override Highlight and Settings are Missing, undrawn.
-   - **3b**: Blocks' tabs at its edge and Options (P5).
+   - **3b** (done 2026-11-25): Blocks (P5): the Current Drawing tab written upwards at its edge
+     (the other three, which list other drawings' blocks, undrawn), the filter and the view
+     drop-down (Extra Large Icon to List at AcWindows' sizes; Details, Insert DWG as Block and the
+     filter's history Missing), and Options: Insertion Point, Scale with Uniform Scale and
+     Rotation, each asked as the block goes in where checked, else its fields' values, kept by
+     the engine for the program (`state.blockInsert`), so a click asks the point alone, as the
+     profile starts them. Auto-Placement, Repeat Placement and Explode are Missing, undrawn.
    - **3c**: Properties' categories that fold (P6).
 4. **The ribbon's style combos**: Text Style and Dimension Style in Home › Annotation's slide-out
    and on Annotate (P7).

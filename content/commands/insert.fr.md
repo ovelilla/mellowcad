@@ -2,10 +2,10 @@
 title: "Commande INSERER (INSERT) dans AutoCAD"
 description: "Insérer un bloc avec INSERER (INSERT, alias I) d'AutoCAD en français : la palette Blocs, ou -INSERER avec échelle, rotation et attributs. Essayez-le en ligne."
 figure: "Une chaise transformée en bloc, puis insérée deux fois autour d'une table : tournée de 180 après son point, puis de 90 par Rotation avant lui."
-sourceHash: "e9859c7871f3"
+sourceHash: "ea41fdd8000f"
 ---
 
-INSERER (INSERT) place un bloc défini dans le dessin sous forme de référence : une copie de plus, avec son propre point, sa propre échelle et sa propre rotation, dessinée à partir de l'unique définition qu'a créée <Command id="BLOCK" />. Comme dans AutoCAD 2027, elle ouvre la palette Blocs, qui montre les blocs du dessin ; cliquez sur l'un d'eux et la ligne de commande demande son point d'insertion, le bloc entraîné sous le curseur, puis son échelle et sa rotation. La palette reste ouverte : un bloc après l'autre, c'est un clic sur chacun.
+INSERER (INSERT) place un bloc défini dans le dessin sous forme de référence : une copie de plus, avec son propre point, sa propre échelle et sa propre rotation, dessinée à partir de l'unique définition qu'a créée <Command id="BLOCK" />. Comme dans AutoCAD 2027, elle ouvre la palette Blocs, qui montre les blocs du dessin ; cliquez sur l'un d'eux et la ligne de commande demande son point d'insertion, le bloc entraîné sous le curseur ; son échelle et sa rotation viennent des Options de la palette, qui peuvent aussi les faire demander. La palette reste ouverte : un bloc après l'autre, c'est un clic sur chacun.
 
 <Command id="-INSERT" /> demande tout sur la ligne de commande : le nom du bloc (Entrée prend celui qui est proposé : le dernier bloc inséré, ou à défaut le dernier défini), le point d'insertion, puis le facteur d'échelle X, le facteur d'échelle Y (Entrée reprend celui de X) et l'angle de rotation. Un facteur négatif fait une symétrie du bloc, et des facteurs inégaux l'étirent : un cercle qu'il contient est dessiné comme une ellipse. Un bloc avec attributs demande ensuite chaque valeur par son invite, en proposant sa valeur par défaut. Les objets du bloc sur le calque 0 prennent le calque de la référence, les autres gardent le leur. Chaque insertion est une étape qu'Annuler défait.
 
@@ -39,7 +39,7 @@ Tapez `-I` et le nom du bloc, puis cliquez le point d'insertion et répondez à 
 
 ### Comment insérer un bloc à une autre échelle ?
 
-Tapez le facteur d'échelle X après le point d'insertion, et Entrée au facteur Y pour les garder égaux ; ou choisissez <Keyword id="Scale" /> avant le point et tapez un seul facteur pour les deux. Un facteur négatif fait une symétrie du bloc.
+Tapez le facteur d'échelle X après le point d'insertion, et Entrée au facteur Y pour les garder égaux ; ou choisissez <Keyword id="Scale" /> avant le point et tapez un seul facteur pour les deux. Un facteur négatif fait une symétrie du bloc. Depuis la palette Blocs, tapez-le dans X et Y des Options, ou cochez Echelle pour qu'il soit demandé après le point.
 
 ### Comment insérer un bloc d'un autre dessin ?
 

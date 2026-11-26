@@ -664,30 +664,26 @@ export const de: EditorLocale = {
     },
     "Blocks": {
       "title": "Blöcke",
-      "filter": "Filter (? und * zulässig)",
-      "filterLabel": "Blöcke filtern",
       "empty": "Keine Blöcke definiert. Zeichnen Sie etwas und führen Sie BLOCK aus.",
-      "noMatch": "Kein Block entspricht dem Filter.",
-      "references": [
-        [
-          "name"
-        ],
-        " — ",
-        [
-          "count",
-          2,
-          {
-            "one": [
-              0,
-              " in der Zeichnung"
-            ],
-            "other": [
-              0,
-              " in der Zeichnung"
-            ]
-          }
-        ]
-      ]
+      "currentDrawing": "Aktuelle Zeichnung",
+      "currentDrawingBlocks": "Aktuelle Zeichnungsblöcke",
+      "filterHint": "Filtern...",
+      "views": {
+        "extraLarge": "Sehr großes Symbol",
+        "large": "Großes Symbol",
+        "medium": "Mittelgroßes Symbol",
+        "small": "Kleines Symbol",
+        "list": "Liste"
+      },
+      "options": "Optionen",
+      "insertionPoint": "Einfügepunkt",
+      "scale": "Skalierung",
+      "uniformScale": "Einheitliche Skalierung",
+      "rotation": "Drehung",
+      "angle": "Winkel",
+      "x": "X:",
+      "y": "Y:",
+      "z": "Z:"
     },
     "Properties": {
       "noSelection": "Keine Auswahl",

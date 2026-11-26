@@ -3,10 +3,10 @@ title: "Wstawianie bloku w AutoCADzie: polecenie WSTAW (INSERT)"
 metaTitle: "Wstawianie bloku w AutoCADzie: WSTAW (INSERT)"
 description: "Jak wstawić blok w AutoCADzie poleceniem WSTAW (INSERT, skrót W): paleta Bloki albo -WSTAW w wierszu polecenia, ze skalą, obrotem i atrybutami."
 figure: "Krzesło zamienione w blok, potem wstawione dwa razy przy stole: obrócone o 180 po podaniu punktu, potem o 90 opcją Obrót przed nim."
-sourceHash: "e9859c7871f3"
+sourceHash: "ea41fdd8000f"
 ---
 
-Polecenie WSTAW (INSERT) umieszcza blok zdefiniowany w rysunku jako odnośnik: kolejną jego kopię, z własnym punktem, skalą i obrotem, rysowaną z jednej definicji, którą utworzyło polecenie <Command id="BLOCK" />. Tak jak polecenie WSTAW w AutoCADzie 2027, otwiera paletę „Bloki”, która pokazuje bloki rysunku; kliknij jeden, a wiersz polecenia zapyta o jego punkt wstawienia, z blokiem przeciąganym pod kursorem, potem o skalę i obrót. Paleta zostaje otwarta, więc wstawianie bloku za blokiem to po jednym kliknięciu na każdy.
+Polecenie WSTAW (INSERT) umieszcza blok zdefiniowany w rysunku jako odnośnik: kolejną jego kopię, z własnym punktem, skalą i obrotem, rysowaną z jednej definicji, którą utworzyło polecenie <Command id="BLOCK" />. Tak jak polecenie WSTAW w AutoCADzie 2027, otwiera paletę „Bloki”, która pokazuje bloki rysunku; kliknij jeden, a wiersz polecenia zapyta o jego punkt wstawienia, z blokiem przeciąganym pod kursorem; skala i obrót pochodzą z Opcji palety, w których można też ustawić, by o nie pytano. Paleta zostaje otwarta, więc wstawianie bloku za blokiem to po jednym kliknięciu na każdy.
 
 Polecenie <Command id="-INSERT" /> pyta o wszystko w wierszu polecenia: nazwę bloku (Enter przyjmuje proponowaną: ostatnio wstawiony blok albo, jeśli go nie ma, ostatnio zdefiniowany), punkt wstawienia, potem współczynnik skali X, współczynnik skali Y (Enter przyjmuje współczynnik X) i kąt obrotu. Ujemny współczynnik odbija blok, a nierówne go rozciągają: okrąg w nim jest rysowany jako elipsa. Blok z atrybutami pyta potem o każdą wartość jej monitem, proponując wartość domyślną. Obiekty bloku na warstwie 0 przyjmują warstwę odnośnika, pozostałe zachowują swoje. Każde wstawienie to jeden krok cofania.
 
@@ -40,7 +40,7 @@ Wpisz `-W` i nazwę bloku, potem wskaż punkt wstawienia i odpowiedz na pytania 
 
 ### Jak wstawić blok w innej skali?
 
-Wpisz współczynnik skali X po punkcie wstawienia, a przy współczynniku Y naciśnij Enter, aby były równe; albo wybierz <Keyword id="Scale" /> przed punktem i wpisz jeden współczynnik dla obu. Ujemny współczynnik odbija blok lustrzanie.
+Wpisz współczynnik skali X po punkcie wstawienia, a przy współczynniku Y naciśnij Enter, aby były równe; albo wybierz <Keyword id="Scale" /> przed punktem i wpisz jeden współczynnik dla obu. Ujemny współczynnik odbija blok lustrzanie. W palecie „Bloki” wpisz ją w polach X i Y w sekcji Opcje albo zaznacz Skala, by była pytana po punkcie.
 
 ### Jak wstawić blok z innego rysunku w AutoCADzie?
 

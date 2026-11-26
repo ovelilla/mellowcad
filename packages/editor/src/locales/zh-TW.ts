@@ -669,27 +669,26 @@ export const zhTW: EditorLocale = {
     },
     "Blocks": {
       "title": "圖塊",
-      "filter": "篩選（可使用 ? 和 *）",
-      "filterLabel": "篩選圖塊",
       "empty": "未定義任何圖塊。請先繪製物件，再執行 BLOCK 指令。",
-      "noMatch": "沒有符合篩選的圖塊。",
-      "references": [
-        [
-          "name"
-        ],
-        " — ",
-        [
-          "count",
-          2,
-          {
-            "other": [
-              "圖面中有 ",
-              0,
-              " 個"
-            ]
-          }
-        ]
-      ]
+      "currentDrawing": "目前的圖面",
+      "currentDrawingBlocks": "目前圖面的圖塊",
+      "filterHint": "篩選...",
+      "views": {
+        "extraLarge": "特大圖示",
+        "large": "大圖示",
+        "medium": "中型圖示",
+        "small": "小圖示",
+        "list": "清單"
+      },
+      "options": "選項",
+      "insertionPoint": "插入點",
+      "scale": "比例",
+      "uniformScale": "等比例",
+      "rotation": "旋轉",
+      "angle": "角度",
+      "x": "X:",
+      "y": "Y:",
+      "z": "Z:"
     },
     "Properties": {
       "noSelection": "未選取",

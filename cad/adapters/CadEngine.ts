@@ -37,6 +37,11 @@ import type { PointerModifiers } from "../application/CadDriver"
 import type { DxfWriteOptions, WrittenDxf } from "../application/runtimeFiles"
 import type { KeyedInLine } from "../application/runtimeKeyIn"
 import type {
+  BlockInsertCheck,
+  BlockInsertField,
+  BlocksView,
+} from "../application/blockInsertOptions"
+import type {
   ViewCubeRoll,
   ViewCubeSide,
   ViewCubeTarget,
@@ -912,8 +917,36 @@ export class CadEngine {
     this.runtime.answerUnsavedText(answer)
   }
 
+  /**
+   * Inserts a block as the Blocks palette's click does: -INSERT past its
+   * name, asking what the palette's Options leave to ask
+   * (`state.blockInsert`).
+   */
   insertBlock(id: string): void {
     this.runtime.insertBlock(id)
+  }
+
+  /** The Blocks palette's view: icons of a size, or a list. */
+  setBlocksView(view: BlocksView): void {
+    this.runtime.setBlocksView(view)
+  }
+
+  /**
+   * The Blocks palette's Options: whether the insertion point, the scale or
+   * the rotation is asked when a block is inserted, and Scale's Uniform
+   * Scale.
+   */
+  setBlockInsertCheck(check: BlockInsertCheck, on: boolean): void {
+    this.runtime.setBlockInsertCheck(check, on)
+  }
+
+  /**
+   * Types a value of the Blocks palette's Options — the insertion point's X,
+   * Y and Z in the UCS, the scales, the angle in degrees — read as the
+   * command line reads one. False, the value unchanged, where it is none.
+   */
+  setBlockInsertValue(field: BlockInsertField, text: string): boolean {
+    return this.runtime.setBlockInsertValue(field, text)
   }
 
   /**

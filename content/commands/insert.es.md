@@ -3,10 +3,10 @@ title: "Insertar bloques en AutoCAD: INSERT"
 metaTitle: "Insertar un bloque en AutoCAD: comando INSERT"
 description: "Cómo insertar un bloque con INSERT (alias IN) de AutoCAD en español: la paleta Bloques, o -INSERT con escala, rotación y atributos. Pruébalo gratis online."
 figure: "Una silla convertida en bloque y después insertada dos veces junto a una mesa: girada 180 tras su punto y 90 con Girar antes de él."
-sourceHash: "e9859c7871f3"
+sourceHash: "ea41fdd8000f"
 ---
 
-INSERT, con el mismo nombre en español, coloca un bloque definido en el dibujo como referencia: una copia más, con su propio punto, escala y rotación, dibujada a partir de la única definición que hizo <Command id="BLOCK" />. Como el INSERT de AutoCAD 2027, abre la paleta Bloques, que muestra los bloques del dibujo; haz clic en uno y la línea de comandos pide su punto de inserción, con el bloque arrastrado bajo el cursor, y después su escala y su rotación. La paleta sigue abierta, así que un bloque tras otro es un clic en cada uno.
+INSERT, con el mismo nombre en español, coloca un bloque definido en el dibujo como referencia: una copia más, con su propio punto, escala y rotación, dibujada a partir de la única definición que hizo <Command id="BLOCK" />. Como el INSERT de AutoCAD 2027, abre la paleta Bloques, que muestra los bloques del dibujo; haz clic en uno y la línea de comandos pide su punto de inserción, con el bloque arrastrado bajo el cursor; su escala y su rotación salen de las Opciones de la paleta, que también pueden hacer que se pidan. La paleta sigue abierta, así que un bloque tras otro es un clic en cada uno.
 
 <Command id="-INSERT" /> lo pide todo en la línea de comandos: el nombre del bloque (Intro toma el que ofrece: el último insertado o, si no, el último definido), el punto de inserción, el factor de escala X, el factor de escala Y (Intro toma el de X) y el ángulo de rotación. Un factor negativo refleja el bloque, y dos distintos lo estiran: un círculo de dentro se dibuja como una elipse. Un bloque con atributos pide después cada valor por su solicitud, ofreciendo el de por defecto. Los objetos del bloque en la capa 0 toman la capa de la referencia; los demás conservan la suya. Cada inserción es un paso que Deshacer revierte.
 
@@ -40,7 +40,7 @@ Escribe `IN` y haz clic en el bloque en la paleta Bloques, o escribe `-IN` y su 
 
 ### ¿Cómo inserto un bloque a escala?
 
-Escribe el factor de escala X después del punto de inserción, e Intro en el de Y para que sean iguales; o elige <Keyword id="Scale" /> antes del punto y escribe un factor para los dos. Un factor negativo refleja el bloque, como una simetría.
+Escribe el factor de escala X después del punto de inserción, e Intro en el de Y para que sean iguales; o elige <Keyword id="Scale" /> antes del punto y escribe un factor para los dos. Un factor negativo refleja el bloque, como una simetría. Desde la paleta Bloques, escríbelo en X e Y de Opciones, o marca Escala para que se pida tras el punto.
 
 ### ¿Cómo inserto un bloque de otro dibujo?
 

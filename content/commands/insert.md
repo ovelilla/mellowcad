@@ -7,7 +7,7 @@ related: ["BLOCK", "BLOCKSPALETTE", "ATTEDIT", "EXPLODE"]
 coverage: "2409f822e4bc"
 ---
 
-INSERT places a block defined in the drawing as a reference: one more copy of it, with a point, a scale and a rotation of its own, drawn from the one definition <Command id="BLOCK" /> made. As AutoCAD 2027's INSERT does, it opens the Blocks palette, which shows the drawing's blocks; click one and the command line asks for its insertion point, the block dragged under the cursor, then its scale and rotation. The palette stays open, so one block after another is a click on each.
+INSERT places a block defined in the drawing as a reference: one more copy of it, with a point, a scale and a rotation of its own, drawn from the one definition <Command id="BLOCK" /> made. As AutoCAD 2027's INSERT does, it opens the Blocks palette, which shows the drawing's blocks; click one and the command line asks for its insertion point, the block dragged under the cursor; its scale and rotation are the palette's Options, which can have them asked too. The palette stays open, so one block after another is a click on each.
 
 <Command id="-INSERT" /> asks it all at the command line: the block's name (Enter takes the one offered: the last block inserted, or else the last defined), the insertion point, then the X scale factor, the Y scale factor (Enter takes X's) and the rotation angle. A negative factor reflects the block, and unequal ones stretch it: a circle in it is drawn as an ellipse. A block with attributes then asks each value by its prompt, offering its default. The block's objects on layer 0 take the reference's layer, the others keep theirs. Each insertion is one step that Undo takes back.
 
@@ -41,7 +41,7 @@ Type `-I` and the block's name, then pick the insertion point and answer the sca
 
 ### How do I insert a block at a different scale?
 
-Type the X scale factor after the insertion point, and Enter at the Y factor to keep them equal; or choose <Keyword id="Scale" /> before the point and type one factor for both. A negative factor mirrors the block.
+Type the X scale factor after the insertion point, and Enter at the Y factor to keep them equal; or choose <Keyword id="Scale" /> before the point and type one factor for both. A negative factor mirrors the block. From the Blocks palette, type it in Options' X and Y, or check Scale to be asked after the point.
 
 ### How do I insert a block from another drawing?
 

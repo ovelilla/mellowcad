@@ -2,10 +2,10 @@
 title: "Comando INSER (INSERT) in AutoCAD"
 description: "Come funziona INSER (INSERT, alias IN) di AutoCAD in italiano: la tavolozza Blocchi, o -INSER nella riga di comando con scala, rotazione e attributi. Provalo."
 figure: "Una sedia resa blocco, poi inserita due volte a un tavolo: ruotata di 180 dopo il suo punto, poi di 90 con Rotate prima."
-sourceHash: "e9859c7871f3"
+sourceHash: "ea41fdd8000f"
 ---
 
-INSER (INSERT in inglese) colloca un blocco definito nel disegno come riferimento: una copia in più, con un punto, una scala e una rotazione propri, disegnata dall'unica definizione che <Command id="BLOCK" /> ha creato. Come fa INSER di AutoCAD 2027, apre la tavolozza Blocchi, che mostra i blocchi del disegno; fai clic su uno e la riga di comando chiede il suo punto di inserimento, con il blocco trascinato sotto il cursore, poi la sua scala e la rotazione. La tavolozza resta aperta, quindi un blocco dopo l'altro è un clic su ciascuno.
+INSER (INSERT in inglese) colloca un blocco definito nel disegno come riferimento: una copia in più, con un punto, una scala e una rotazione propri, disegnata dall'unica definizione che <Command id="BLOCK" /> ha creato. Come fa INSER di AutoCAD 2027, apre la tavolozza Blocchi, che mostra i blocchi del disegno; fai clic su uno e la riga di comando chiede il suo punto di inserimento, con il blocco trascinato sotto il cursore; scala e rotazione vengono dalle Opzioni della tavolozza, che possono anche farle chiedere. La tavolozza resta aperta, quindi un blocco dopo l'altro è un clic su ciascuno.
 
 <Command id="-INSERT" /> chiede tutto nella riga di comando: il nome del blocco (Invio accetta quello proposto: l'ultimo blocco inserito, o altrimenti l'ultimo definito), il punto di inserimento, poi il fattore di scala X, il fattore di scala Y (Invio usa quello di X) e l'angolo di rotazione. Un fattore negativo riflette il blocco, e fattori diversi lo stirano: un cerchio al suo interno viene disegnato come un'ellisse. Un blocco con attributi chiede poi ogni valore con il suo messaggio, proponendo il valore predefinito. Gli oggetti del blocco sul layer 0 prendono il layer del riferimento, gli altri mantengono il proprio. Ogni inserimento è un passo che Annulla ripristina.
 
@@ -39,7 +39,7 @@ Digita `-IN` e il nome del blocco, poi seleziona il punto di inserimento e rispo
 
 ### Come si inserisce un blocco a una scala diversa?
 
-Digita il fattore di scala X dopo il punto di inserimento, e Invio al fattore Y per mantenerli uguali; oppure scegli <Keyword id="Scale" /> prima del punto e digita un solo fattore per entrambi. Un fattore negativo specchia il blocco.
+Digita il fattore di scala X dopo il punto di inserimento, e Invio al fattore Y per mantenerli uguali; oppure scegli <Keyword id="Scale" /> prima del punto e digita un solo fattore per entrambi. Un fattore negativo specchia il blocco. Dalla tavolozza Blocchi, digitalo in X e Y di Opzioni, oppure seleziona Scala perché venga chiesto dopo il punto.
 
 ### Come si inserisce un blocco da un altro disegno?
 

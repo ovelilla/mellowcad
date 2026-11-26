@@ -668,27 +668,26 @@ export const zhCN: EditorLocale = {
     },
     "Blocks": {
       "title": "块",
-      "filter": "过滤器（允许使用 ? 和 *）",
-      "filterLabel": "过滤块",
       "empty": "未定义任何块。请先绘制对象，然后运行 BLOCK 命令。",
-      "noMatch": "没有与过滤器匹配的块。",
-      "references": [
-        [
-          "name"
-        ],
-        " — ",
-        [
-          "count",
-          2,
-          {
-            "other": [
-              "图形中有 ",
-              0,
-              " 个"
-            ]
-          }
-        ]
-      ]
+      "currentDrawing": "当前图形",
+      "currentDrawingBlocks": "当前图形块",
+      "filterHint": "过滤器...",
+      "views": {
+        "extraLarge": "特大图标",
+        "large": "大图标",
+        "medium": "中等图标",
+        "small": "小图标",
+        "list": "列表"
+      },
+      "options": "选项",
+      "insertionPoint": "插入点",
+      "scale": "比例",
+      "uniformScale": "统一比例",
+      "rotation": "旋转",
+      "angle": "角度",
+      "x": "X:",
+      "y": "Y:",
+      "z": "Z:"
     },
     "Properties": {
       "noSelection": "无选择",

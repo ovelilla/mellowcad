@@ -52,6 +52,16 @@ import {
   VisualStyle,
 } from "../domain/units"
 import {
+  BLOCK_INSERT_OPTIONS,
+  type BlockInsertCheck,
+  type BlockInsertField,
+  type BlockInsertOptions,
+  type BlocksView,
+  blockInsertUi,
+  paletteInsert,
+  typedBlockInsertValue,
+} from "./blockInsertOptions"
+import {
   DrawingFileError,
   ParsedDrawing,
   parseDrawingFile,
@@ -638,6 +648,9 @@ export class CadRuntime extends Observable {
   private styleDialog: StyleDialog | null = null
   // Which palettes are open, each apart.
   private palettesOpen: Record<PaletteId, boolean>
+  // The Blocks palette's Options: the program's, kept through NEW and OPEN.
+  private blockInsert: BlockInsertOptions = BLOCK_INSERT_OPTIONS
+  private blocksView: BlocksView = "large"
   // The Properties palette's object type filter; null is All.
   private propertiesFilter: ObjectType | null = null
   // The Properties palette's current vertex of a polyline (its Vertex row).
@@ -6486,8 +6499,9 @@ export class CadRuntime extends Observable {
 
   /**
    * Starts -INSERT with the block already chosen — the palette's "clicking
-   * and placing them", which skips only the name prompt so the insertion
-   * point, scale and rotation are answered exactly as they are when typed.
+   * and placing them", which skips the name prompt and asks what the
+   * palette's Options leave to ask, as when typed: by default the point
+   * alone, at scale 1 and angle 0 (2027 help, Blocks Palette, Options).
    * WHY no echo: AutoCAD writes only -INSERT's point prompt, and U and REDO
    * name the step -INSERT (desktop d06-6, d06-9).
    */
@@ -6505,9 +6519,39 @@ export class CadRuntime extends Observable {
       this.starting = null
       this.startingName = null
     }
-    this.insert.beginInsert(id, this.toolContext)
+    this.insert.beginInsert(
+      id,
+      this.toolContext,
+      paletteInsert(this.blockInsert)
+    )
     this.invalidateState()
     this.host.requestRender()
+  }
+
+  /** The Blocks palette's view: icons of a size, or a list. */
+  setBlocksView(view: BlocksView): void {
+    if (this.blocksView === view) return
+    this.blocksView = view
+    this.invalidateState()
+  }
+
+  /** Turns one of the Blocks palette's checks, or its Uniform Scale, on or off. */
+  setBlockInsertCheck(check: BlockInsertCheck, on: boolean): void {
+    if (this.blockInsert[check] === on) return
+    this.blockInsert = { ...this.blockInsert, [check]: on }
+    this.invalidateState()
+  }
+
+  /**
+   * Types one of the Blocks palette's fields: false, and the field keeps its
+   * value, where the text is no number (or no angle) or a scale is 0.
+   */
+  setBlockInsertValue(field: BlockInsertField, text: string): boolean {
+    const next = typedBlockInsertValue(this.blockInsert, field, text)
+    if (!next) return false
+    this.blockInsert = next
+    this.invalidateState()
+    return true
   }
 
   buildBlockPreview(id: BlockId, width: number, height: number): Scene | null {
@@ -8609,6 +8653,8 @@ export class CadRuntime extends Observable {
         this.document.getEntities()
       ),
       palettes: this.palettesOpen,
+      blockInsert: blockInsertUi(this.blockInsert, settings),
+      blocksView: this.blocksView,
       unitsDialog: this.unitsDialog,
       pointStyleDialog: this.pointStyleDialog,
       saveAsDialog: this.saveAsDialog,

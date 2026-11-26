@@ -21,6 +21,7 @@ import {
 import { parseAngleDegrees, parseNumber } from "../../domain/units"
 import {
   ucsAngleToWorld,
+  ucsPointToWorld,
   ucsDirectionToWorld,
   worldDirectionToUcs,
 } from "../../domain/ucs"
@@ -48,6 +49,7 @@ import { withCurrentProperties } from "./currentProperties"
 import { headingInUcs } from "./ucsHeading"
 import { THEME } from "../../scene/theme"
 import { drawn } from "./ghostLook"
+import { type PaletteInsert, factorText } from "../blockInsertOptions"
 
 /** Reused so preview frames don't burn entity ids. */
 const PREVIEW_ID: EntityId = "__insert_preview__"
@@ -92,7 +94,7 @@ export interface InsertName {
 
 /**
  * AutoCAD's -INSERT (2027's INSERT opens the Blocks palette, whose click
- * starts it at the point): places a reference to a block already defined in
+ * starts it past the name, its Options giving what it will not ask): places a reference to a block already defined in
  * the drawing. The block is named first (`?` lists what is defined and ends,
  * as -BLOCK's does), then the insertion point, with **Scale** and **Rotate**
  * offered as the keywords -INSERT lists — each sets its value and returns to
@@ -181,13 +183,26 @@ export class InsertTool implements Tool {
   }
 
   /**
-   * Skips straight to the insertion point with `id` already chosen — how the
-   * Blocks palette inserts, where the block was named by clicking it.
+   * Skips the name with `id` already chosen — how the Blocks palette
+   * inserts, where the block was named by clicking it — and asks only what
+   * its Options leave to ask (`PaletteInsert`): a value they give is taken
+   * as Scale or Rotate typed at the point would be, so the questions after
+   * the point leave it out.
    */
-  beginInsert(id: BlockId, ctx: ToolContext): void {
+  beginInsert(id: BlockId, ctx: ToolContext, given: PaletteInsert): void {
     if (!ctx.document.getBlock(id)) return
     this.blockId = id
-    this.enterPoint(ctx)
+    if (given.scale) {
+      this.scaleX = given.scale.x
+      this.scaleY = given.scale.y
+      this.scaleGiven = true
+    }
+    if (given.rotation !== null) {
+      this.rotation = (given.rotation * Math.PI) / 180
+      this.rotationGiven = true
+    }
+    if (given.at) this.place(ucsPointToWorld(ctx.ucs, given.at), ctx)
+    else this.enterPoint(ctx)
   }
 
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
@@ -937,14 +952,6 @@ function defaultAttributes(
         blockAttribute(definition, definition.value)
       )
     : undefined
-}
-
-/**
- * A scale factor as -INSERT's `<default>` writes it, C's `%g`: `<1>`,
- * `<2.5>`, six significant digits (probes blocks/p02, p204).
- */
-function factorText(factor: number): string {
-  return String(Number(factor.toPrecision(6)))
 }
 
 /**

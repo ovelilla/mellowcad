@@ -3,10 +3,10 @@ title: "Vložení bloku v AutoCADu: příkaz VLOŽ (INSERT)"
 metaTitle: "Vložení bloku v AutoCADu: příkaz VLOŽ (INSERT)"
 description: "Jak v AutoCADu vložit blok příkazem VLOŽ (INSERT, zkratka VL): paleta Bloky, nebo -VLOŽ na příkazovém řádku, s měřítkem, natočením a atributy."
 figure: "Židle převedená na blok, pak dvakrát vložená ke stolu: otočená o 180 po zadání bodu, pak o 90 možností Otoč před ním."
-sourceHash: "e9859c7871f3"
+sourceHash: "ea41fdd8000f"
 ---
 
-Příkaz VLOŽ (INSERT) umístí blok definovaný ve výkresu jako referenci: další jeho kopii, s vlastním bodem, měřítkem a natočením, kreslenou z jediné definice, kterou vytvořil příkaz <Command id="BLOCK" />. Stejně jako příkaz VLOŽ v AutoCADu 2027 otevře paletu Bloky, která ukazuje bloky výkresu; klikněte na jeden a příkazový řádek se zeptá na jeho bod vložení, s blokem taženým pod kurzorem, a pak na měřítko a natočení. Paleta zůstane otevřená, takže vkládání bloku za blokem je jedno kliknutí na každý.
+Příkaz VLOŽ (INSERT) umístí blok definovaný ve výkresu jako referenci: další jeho kopii, s vlastním bodem, měřítkem a natočením, kreslenou z jediné definice, kterou vytvořil příkaz <Command id="BLOCK" />. Stejně jako příkaz VLOŽ v AutoCADu 2027 otevře paletu Bloky, která ukazuje bloky výkresu; klikněte na jeden a příkazový řádek se zeptá na jeho bod vložení, s blokem taženým pod kurzorem; měřítko a natočení se berou z Možností palety, kde lze nastavit, aby se příkaz ptal i na ně. Paleta zůstane otevřená, takže vkládání bloku za blokem je jedno kliknutí na každý.
 
 Příkaz <Command id="-INSERT" /> se na všechno ptá na příkazovém řádku: na název bloku (Enter přijme nabídnutý: naposledy vložený blok, jinak naposledy definovaný), bod vložení, pak měřítko X, měřítko Y (Enter přijme měřítko X) a úhel natočení. Záporné měřítko blok zrcadlí a nestejná měřítka ho roztáhnou: kružnice v něm se nakreslí jako elipsa. Blok s atributy se pak zeptá na každou hodnotu její výzvou a nabídne výchozí hodnotu. Objekty bloku v hladině 0 přeberou hladinu reference, ostatní si ponechají svou. Každé vložení je jeden krok, který lze vrátit zpět.
 
@@ -40,7 +40,7 @@ Zadejte `-VL` a název bloku, pak vyberte bod vložení a odpovězte na otázky 
 
 ### Jak vložit blok v jiném měřítku?
 
-Po bodu vložení zadejte měřítko X a u měřítka Y stiskněte Enter, aby byla stejná; nebo před bodem zvolte <Keyword id="Scale" /> a zadejte jedno měřítko pro obě osy. Záporné měřítko blok zrcadlí.
+Po bodu vložení zadejte měřítko X a u měřítka Y stiskněte Enter, aby byla stejná; nebo před bodem zvolte <Keyword id="Scale" /> a zadejte jedno měřítko pro obě osy. Záporné měřítko blok zrcadlí. V paletě Bloky jej zadejte do polí X a Y v Možnostech, nebo zaškrtněte Měřítko, aby se na něj příkaz ptal po bodu.
 
 ### Jak v AutoCADu vložit blok z jiného výkresu?
 

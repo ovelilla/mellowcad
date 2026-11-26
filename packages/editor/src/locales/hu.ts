@@ -668,30 +668,26 @@ export const hu: EditorLocale = {
     },
     "Blocks": {
       "title": "Blokkok",
-      "filter": "Szűrő (? és * használható)",
-      "filterLabel": "Blokkok szűrése",
       "empty": "Nincs definiált blokk. Rajzoljon valamit, majd adja ki a BLOKK parancsot.",
-      "noMatch": "Egy blokk sem felel meg a szűrőnek.",
-      "references": [
-        [
-          "name"
-        ],
-        " – ",
-        [
-          "count",
-          2,
-          {
-            "one": [
-              0,
-              " a rajzban"
-            ],
-            "other": [
-              0,
-              " a rajzban"
-            ]
-          }
-        ]
-      ]
+      "currentDrawing": "Aktuális rajz",
+      "currentDrawingBlocks": "Aktuális rajz blokkjai",
+      "filterHint": "Szűrő...",
+      "views": {
+        "extraLarge": "Nagyon nagy ikon",
+        "large": "Nagy ikon",
+        "medium": "Közepes méretű ikon",
+        "small": "Kis ikon",
+        "list": "Lista"
+      },
+      "options": "Beállítások",
+      "insertionPoint": "Beszúrási pont",
+      "scale": "Lépték",
+      "uniformScale": "Egységes lépték",
+      "rotation": "Elforgatás",
+      "angle": "Szög",
+      "x": "X:",
+      "y": "Y:",
+      "z": "Z:"
     },
     "Properties": {
       "noSelection": "Nincs kiválasztás",

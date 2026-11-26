@@ -2,10 +2,10 @@
 title: "Comando INSERT (INSERIR) no AutoCAD"
 description: "Como inserir um bloco com o INSERT do AutoCAD em português, INSERIR (alias I): a paleta Blocos, ou -INSERIR com escala, rotação e atributos. Experimente grátis."
 figure: "Uma cadeira transformada em bloco e depois inserida duas vezes junto a uma mesa: girada 180 depois do ponto e 90 com Rotacionar antes dele."
-sourceHash: "e9859c7871f3"
+sourceHash: "ea41fdd8000f"
 ---
 
-O INSERT, INSERIR no AutoCAD em português, coloca um bloco definido no desenho como referência: mais uma cópia dele, com ponto, escala e rotação próprios, desenhada a partir da única definição que o <Command id="BLOCK" /> criou. Como o INSERIR do AutoCAD 2027, ele abre a paleta Blocos, que mostra os blocos do desenho; clique num deles e a linha de comando pede o ponto de inserção, com o bloco arrastado sob o cursor, e depois a escala e a rotação. A paleta continua aberta, então um bloco atrás do outro é um clique em cada um.
+O INSERT, INSERIR no AutoCAD em português, coloca um bloco definido no desenho como referência: mais uma cópia dele, com ponto, escala e rotação próprios, desenhada a partir da única definição que o <Command id="BLOCK" /> criou. Como o INSERIR do AutoCAD 2027, ele abre a paleta Blocos, que mostra os blocos do desenho; clique num deles e a linha de comando pede o ponto de inserção, com o bloco arrastado sob o cursor; a escala e a rotação vêm das Opções da paleta, que também podem fazer com que sejam pedidas. A paleta continua aberta, então um bloco atrás do outro é um clique em cada um.
 
 O <Command id="-INSERT" /> pede tudo na linha de comando: o nome do bloco (Enter aceita o oferecido: o último inserido ou, senão, o último definido), o ponto de inserção, o fator de escala X, o fator de escala Y (Enter usa o de X) e o ângulo de rotação. Um fator negativo espelha o bloco, e dois diferentes o esticam: um círculo dentro dele é desenhado como elipse. Um bloco com atributos pede depois cada valor pelo seu prompt, oferecendo o padrão. Os objetos do bloco na camada 0 assumem a camada da referência; os outros mantêm a sua. Cada inserção é um passo que o Desfazer reverte.
 
@@ -39,7 +39,7 @@ Digite `I` e clique no bloco na paleta Blocos, ou digite `-I` e o nome dele; ind
 
 ### Como inserir um bloco na escala do desenho?
 
-Digite o fator de escala X depois do ponto de inserção, e Enter no de Y para que fiquem iguais; ou escolha <Keyword id="Scale" /> antes do ponto e digite um fator para os dois. Um bloco definido no próprio desenho já está nas unidades dele: na escala 1, ele entra no tamanho em que foi desenhado.
+Digite o fator de escala X depois do ponto de inserção, e Enter no de Y para que fiquem iguais; ou escolha <Keyword id="Scale" /> antes do ponto e digite um fator para os dois. Um bloco definido no próprio desenho já está nas unidades dele: na escala 1, ele entra no tamanho em que foi desenhado. Na paleta Blocos, digite-o em X e Y de Opções, ou marque Escala para que seja pedido depois do ponto.
 
 ### Como inserir um bloco de outro desenho?
 

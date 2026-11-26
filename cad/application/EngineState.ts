@@ -5,6 +5,7 @@ import { Vec3, add3, sub3 } from "../geometry/Vec3"
 import { isUpright, worldDirectionToUcs, worldPointToUcs } from "../domain/ucs"
 import { ellipseAngleFromParam, normalizeDegrees } from "../geometry/primitives"
 import { axesToWorld } from "../geometry/ocs"
+import type { BlockInsertUi, BlocksView } from "./blockInsertOptions"
 import {
   DocumentSettings,
   LengthUnit,
@@ -734,6 +735,13 @@ export interface EngineState {
   readonly styleDialog: StyleDialog | null
   /** Every block defined in the drawing (the Blocks palette's Current tab). */
   readonly blocks: ReadonlyArray<BlockInfo>
+  /**
+   * The Blocks palette's Options: what inserting from it asks and what it
+   * takes from the fields (`setBlockInsertCheck`, `setBlockInsertValue`).
+   */
+  readonly blockInsert: BlockInsertUi
+  /** How the Blocks palette shows the blocks (`setBlocksView`). */
+  readonly blocksView: BlocksView
   /** Which palettes are open. */
   readonly palettes: PalettesUi
   /** Whether the Drawing Units dialog (UNITS) is showing. */

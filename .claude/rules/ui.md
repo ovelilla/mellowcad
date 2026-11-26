@@ -73,11 +73,10 @@ no site. `/draw`'s Send Feedback is the repository's issue forms, filled in (`ma
 - **Every label comes from a catalog**; no literals (`i18n.md`). The chrome's own words are its
   catalog, `packages/editor/src/locales/en.json`, read with `useEditorText("<Part>")`; never next-intl,
   which is the site's (`i18n/messages.test.ts`).
-- What the engine names is read from the engine, never copied into the catalog: tool labels and
-  aliases (`state.tools`), snap and colour names, the preset views, the ViewCube's faces and
-  compass letters (`state.names`), the drawing's linetypes (`state.linetypes`), property rows. A shortcut that is a command alias comes from
-  `state.tools`; a key combination is `Keys` (keys have local names — `Supr` in Spanish); a
-  function key is literal.
+- What the engine names comes from it, never the catalog: tools and aliases (`state.tools`),
+  snaps, colours, views, the ViewCube's words (`state.names`), linetypes (`state.linetypes`),
+  property rows. A key combination is `Keys` (local names — `Supr` in Spanish); a function key is
+  literal.
 - The editor speaks the page's language: `CadEditor` takes the catalogs the page loaded
   (`editorLocale`, `engineLocale`) and `CadCanvas`'s `locale` hands the engine its own.
 - **What speaks the command language carries `lang={state.commandLine.lang}`** — the command line's
@@ -316,13 +315,15 @@ component that unmounts with its node: no leave fires for a node gone. A new pal
 `showPalette`, a branch in `PaletteContent`, its `PALETTE_SIZE` and, if View's Palettes panel has
 its toggle, a `RibbonToggle`.
 
-Anything that **draws drawing content** (a block thumbnail) asks the engine for a `Scene`
-(`engine.buildBlockPreview(...)`) and paints it with `CanvasScenePresenter`. Never walk entities in
-a component: a preview built a second way can disagree with the drawing.
+**Drawing content** (a block thumbnail) is the engine's `Scene` (`engine.buildBlockPreview`) painted
+by `CanvasScenePresenter`, never entities walked in a component, which can disagree with the drawing.
 
-A popover that remains (a status-bar menu) closes on a click on the canvas after the canvas
-handler ran: a guard on "is the command still running?" reads false. What must stay up while one
-draws is a palette.
+A palette's check is a `button role="checkbox"`: the engine leaves a native one its keys, so a
+letter there typed no command. A field whose Escape hands the keys back keeps its draft in a ref,
+or the blur that causes commits it.
+
+A popover (a status-bar menu) closes on a click on the canvas after the canvas handler ran: a
+guard on "is the command still running?" reads false. What stays up while one draws is a palette.
 
 ## Icons
 

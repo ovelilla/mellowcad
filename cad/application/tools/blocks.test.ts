@@ -840,9 +840,9 @@ describe("the blocks palette", () => {
     cad.command("BLOCKSPALETTE")
 
     cad.runtime.insertBlock("WINDOW")
-    cad.click(p(250, 0)).enter().enter().enter()
+    cad.click(p(250, 0))
     cad.runtime.insertBlock("DOOR")
-    cad.click(p(500, 0)).enter().enter().enter()
+    cad.click(p(500, 0))
 
     expect(cad.state().palettes.blocks).toBe(true)
     expect(
@@ -873,11 +873,11 @@ describe("the blocks palette", () => {
     // Straight to the insertion point: the name prompt has been answered.
     expect(cad.state().dynamicInput?.fields[0].label).toBe("X,Y")
 
-    cad.click(p(250, 0)).enter().enter().enter()
+    cad.click(p(250, 0))
     expect(cad.latest()).toMatchObject({ type: "insert", blockId: "WINDOW" })
   })
 
-  it("asks -INSERT's point with no echo, and U and REDO name it -INSERT (desktop d06-6, d06-9)", () => {
+  it("asks -INSERT's point alone with no echo, and U and REDO name it -INSERT (desktop d06-6, d06-9)", () => {
     const cad = withBlocks()
     cad.runtime.insertBlock("WINDOW")
 
@@ -886,18 +886,124 @@ describe("the blocks palette", () => {
     )
     expect(cad.commandLog()).toEqual([])
 
-    answer(cad, "250,0", "", "", "", "U", "REDO")
+    // Scale and Rotation are cleared, so the fields' 1 and 0 are taken
+    // (2027 help, Blocks Palette, Options; desktop d06-3).
+    answer(cad, "250,0")
+    expect(cad.activeToolId()).toBe("select")
+    expect(cad.latest()).toMatchObject({
+      blockId: "WINDOW",
+      position: { x: 250, y: 0 },
+      scaleX: 1,
+      scaleY: 1,
+      rotation: 0,
+    })
+    answer(cad, "U", "REDO")
     expect(cad.commandLog()).toEqual([
       "Specify insertion point or [Scale/Rotate]: 250,0",
-      "Enter X scale factor, specify opposite corner, or [Corner/XYZ] <1>:",
-      "Enter Y scale factor <use X scale factor>:",
-      "Specify rotation angle <0>:",
       "U",
       "-INSERT",
       "REDO",
       "-INSERT",
       "Everything has been redone",
     ])
+  })
+
+  it("starts with AutoCAD's profile: the point asked, scale 1 and angle 0 taken (desktop d06-3)", () => {
+    expect(withBlocks().state().blockInsert).toEqual({
+      pickPoint: true,
+      x: "0.00",
+      y: "0.00",
+      z: "0.00",
+      pickScale: false,
+      uniformScale: false,
+      scaleX: "1",
+      scaleY: "1",
+      pickRotation: false,
+      angle: "0",
+    })
+  })
+
+  it("takes Scale's X and Y and Rotation's angle from its fields while they are cleared", () => {
+    const cad = withBlocks()
+    expect(cad.runtime.setBlockInsertValue("scaleX", "2")).toBe(true)
+    expect(cad.runtime.setBlockInsertValue("scaleY", "-3")).toBe(true)
+    expect(cad.runtime.setBlockInsertValue("angle", "30")).toBe(true)
+    cad.runtime.insertBlock("WINDOW")
+    cad.click(p(250, 0))
+
+    const insert = cad.latest() as InsertEntity
+    expect(insert).toMatchObject({ scaleX: 2, scaleY: -3 })
+    expect(insert.rotation).toBeCloseTo((30 * Math.PI) / 180)
+  })
+
+  it("Uniform Scale gives X to Y too", () => {
+    const cad = withBlocks()
+    cad.runtime.setBlockInsertValue("scaleX", "2")
+    cad.runtime.setBlockInsertValue("scaleY", "5")
+    cad.runtime.setBlockInsertCheck("uniformScale", true)
+    cad.runtime.insertBlock("WINDOW")
+    cad.click(p(250, 0))
+
+    expect(cad.latest()).toMatchObject({ scaleX: 2, scaleY: 2 })
+  })
+
+  it("asks the scale and the rotation after the point where they are checked", () => {
+    const cad = withBlocks()
+    cad.runtime.setBlockInsertCheck("pickScale", true)
+    cad.runtime.setBlockInsertCheck("pickRotation", true)
+    cad.runtime.insertBlock("WINDOW")
+    answer(cad, "250,0", "2", "", "45")
+
+    expect(cad.commandLog()).toEqual([
+      "Specify insertion point or [Scale/Rotate]: 250,0",
+      "Enter X scale factor, specify opposite corner, or [Corner/XYZ] <1>: 2",
+      "Enter Y scale factor <use X scale factor>:",
+      "Specify rotation angle <0>: 45",
+    ])
+    const insert = cad.latest() as InsertEntity
+    expect(insert).toMatchObject({ scaleX: 2, scaleY: 2 })
+    expect(insert.rotation).toBeCloseTo((45 * Math.PI) / 180)
+  })
+
+  it("inserts at the fields' point, in the UCS, where Insertion Point is cleared", () => {
+    const cad = withBlocks()
+    cad.command("UCS").type("100,50").enter().enter()
+    cad.runtime.setBlockInsertCheck("pickPoint", false)
+    cad.runtime.setBlockInsertValue("x", "10")
+    cad.runtime.setBlockInsertValue("y", "20")
+    const before = cad.commandLog().length
+    cad.runtime.insertBlock("WINDOW")
+
+    expect(cad.activeToolId()).toBe("select")
+    expect(cad.commandLog().length).toBe(before)
+    expect((cad.latest() as InsertEntity).position).toBeCloseToPoint(p(110, 70))
+    answer(cad, "U")
+    expect(cad.commandLog().slice(-1)).toEqual(["-INSERT"])
+  })
+
+  it("refuses what is no number in a field, and a scale of 0, keeping the value", () => {
+    const cad = withBlocks()
+    expect(cad.runtime.setBlockInsertValue("x", "abc")).toBe(false)
+    expect(cad.runtime.setBlockInsertValue("scaleX", "0")).toBe(false)
+    expect(cad.runtime.setBlockInsertValue("angle", "45d30'")).toBe(true)
+    expect(cad.runtime.setBlockInsertValue("x", "1/2")).toBe(true)
+    expect(cad.state().blockInsert).toMatchObject({
+      x: "0.50",
+      scaleX: "1",
+      angle: "46",
+    })
+  })
+
+  it("keeps its options through NEW", () => {
+    const cad = withBlocks()
+    cad.runtime.setBlockInsertCheck("pickRotation", true)
+    cad.runtime.setBlockInsertValue("scaleX", "4")
+    cad.command("NEW")
+
+    expect(cad.state().blockInsert).toMatchObject({
+      pickRotation: true,
+      scaleX: "4",
+    })
   })
 
   it("ignores a block that is not defined", () => {

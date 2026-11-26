@@ -667,38 +667,26 @@ export const pl: EditorLocale = {
     },
     "Blocks": {
       "title": "Bloki",
-      "filter": "Filtr (dozwolone ? i *)",
-      "filterLabel": "Filtruj bloki",
       "empty": "Brak zdefiniowanych bloków. Narysuj coś i uruchom polecenie BLOK.",
-      "noMatch": "Żaden blok nie pasuje do filtru.",
-      "references": [
-        [
-          "name"
-        ],
-        " – ",
-        [
-          "count",
-          2,
-          {
-            "one": [
-              0,
-              " na rysunku"
-            ],
-            "few": [
-              0,
-              " na rysunku"
-            ],
-            "many": [
-              0,
-              " na rysunku"
-            ],
-            "other": [
-              0,
-              " na rysunku"
-            ]
-          }
-        ]
-      ]
+      "currentDrawing": "Bieżący rysunek",
+      "currentDrawingBlocks": "Bloki bieżącego rysunku",
+      "filterHint": "Filtr...",
+      "views": {
+        "extraLarge": "Bardzo duże ikony",
+        "large": "Duże ikony",
+        "medium": "Średnie ikony",
+        "small": "Małe ikony",
+        "list": "Lista"
+      },
+      "options": "Opcje",
+      "insertionPoint": "Punkt wstawienia",
+      "scale": "Skala",
+      "uniformScale": "Skala proporcjonalna",
+      "rotation": "Obrót",
+      "angle": "Kąt",
+      "x": "X:",
+      "y": "Y:",
+      "z": "Z:"
     },
     "Properties": {
       "noSelection": "Nic nie wybrano",

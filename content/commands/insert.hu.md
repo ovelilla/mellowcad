@@ -3,10 +3,10 @@ title: "Blokk beillesztése az AutoCAD-ben: BEILL (INSERT) parancs"
 metaTitle: "Blokk beillesztése az AutoCAD-ben: BEILL parancs"
 description: "Blokk beillesztése az AutoCAD BEILL (INSERT, BE) parancsával: a Blokkok paletta, vagy a -BEILL a parancssorban léptékkel, forgatással és attribútumokkal."
 figure: "Blokká alakított szék, majd kétszer beillesztve egy asztalhoz: a pont után 180 fokkal elforgatva, majd előtte a Forgat opcióval 90 fokkal."
-sourceHash: "e9859c7871f3"
+sourceHash: "ea41fdd8000f"
 ---
 
-A BEILL (INSERT) parancs a rajzban definiált blokkot referenciaként helyezi el: egy újabb példányként, saját beszúrási ponttal, léptékkel és elforgatással, amelyet az egyetlen, a <Command id="BLOCK" /> paranccsal készült definíció alapján rajzol meg. Ahogy az AutoCAD 2027 BEILL parancsa, megnyitja a Blokkok palettát, amely a rajz blokkjait mutatja; kattintson az egyikre, és a parancssor kéri a beszúrási pontját – a blokk közben a kurzor alatt mozog –, majd a léptékét és az elforgatását. A paletta nyitva marad, így egyik blokk a másik után egy-egy kattintás.
+A BEILL (INSERT) parancs a rajzban definiált blokkot referenciaként helyezi el: egy újabb példányként, saját beszúrási ponttal, léptékkel és elforgatással, amelyet az egyetlen, a <Command id="BLOCK" /> paranccsal készült definíció alapján rajzol meg. Ahogy az AutoCAD 2027 BEILL parancsa, megnyitja a Blokkok palettát, amely a rajz blokkjait mutatja; kattintson az egyikre, és a parancssor kéri a beszúrási pontját – a blokk közben a kurzor alatt mozog –; a léptéket és az elforgatást a paletta Beállításai adják, ahol az is beállítható, hogy a parancs rákérdezzen. A paletta nyitva marad, így egyik blokk a másik után egy-egy kattintás.
 
 A <Command id="-INSERT" /> parancs mindent a parancssorban kérdez: a blokk nevét (az Enter a felkínáltat választja: az utoljára beillesztett blokkot, vagy ha ilyen nincs, az utoljára definiáltat), a beszúrási pontot, majd az X léptéktényezőt, az Y léptéktényezőt (az Enter az X-ét veszi át) és az elforgatási szöget. A negatív tényező tükrözi a blokkot, az eltérő tényezők pedig megnyújtják: a benne lévő kör ellipszisként jelenik meg. Az attribútumokat tartalmazó blokk ezután minden értéket a promptja szerint kér, az alapértékét felkínálva. A blokk 0 fólián lévő objektumai a referencia fóliáját veszik át, a többiek megtartják a sajátjukat. Minden beillesztés egyetlen lépés, amely a Vissza paranccsal visszavonható.
 
@@ -40,7 +40,7 @@ INSERT. A magyar AutoCAD-ben a rövidítése `BE`: írja be, majd nyomja meg az 
 
 ### Hogyan lehet blokkot más léptékben beilleszteni?
 
-A beszúrási pont után írja be az X léptéktényezőt, és az Y tényezőnél nyomja meg az Enter billentyűt, hogy egyenlők maradjanak; vagy a pont előtt válassza a <Keyword id="Scale" /> opciót, és írjon be egy tényezőt mindkettőre. A negatív tényező tükrözi a blokkot.
+A beszúrási pont után írja be az X léptéktényezőt, és az Y tényezőnél nyomja meg az Enter billentyűt, hogy egyenlők maradjanak; vagy a pont előtt válassza a <Keyword id="Scale" /> opciót, és írjon be egy tényezőt mindkettőre. A negatív tényező tükrözi a blokkot. A Blokkok palettán írja be a Beállítások X és Y mezőjébe, vagy jelölje be a Léptéket, hogy a pont után rákérdezzen.
 
 ### Hogyan lehet blokkot beilleszteni egy másik rajzból?
 

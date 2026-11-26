@@ -2247,8 +2247,10 @@ reference's colour, linetype or lineweight in AutoCAD; it is not modelled here (
 
 **Implemented:** INSERT opens the Blocks palette, as 2027's does, and writes nothing more (the
 console's `*Insert a block from the Blocks palette` is the console's, p05; desktop d06); the ribbon's
-Insert is a gallery of the drawing's blocks instead, a pick running -INSERT as the palette's. A click on a block there asks -INSERT's point with the block chosen, writing
-only the prompt line, and U and REDO name the step `-INSERT` (d06-6, d06-9). -INSERT's command line
+Insert is a gallery of the drawing's blocks instead, a pick running -INSERT as the palette's. A click on a block there runs -INSERT with the block chosen, asking
+what the palette's Options leave to ask (by default the point alone, at scale 1 and angle 0;
+blocks-palette.md) and writing only the prompt line, and U and REDO name the step `-INSERT` (d06-6,
+d06-9). -INSERT's command line
 (aliases from the 2027 `acad.pgp` and console, p200, p201; Enter repeats it, `'-INSERT` is refused,
 p202): `Enter block name or [?] <B1>:` (spaces typed key by key, `AB CD` whole, desktop
 workspace/d06; the last block inserted, or else the last named one
