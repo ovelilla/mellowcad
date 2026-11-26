@@ -170,6 +170,7 @@ What the engine names, a host reads from its state and never copies. `state.name
 | `colorNumbers`  | An index colour, `"1"` to `"255"` | The palette's `Color 30` (`colorLabel`) |
 | `views`         | `ViewPreset`, and `custom`        | The view menu (`state.view.preset`)     |
 | `visualStyles`  | `VisualStyle`                     | A style list (`state.visualStyle`)      |
+| `viewportVisualStyles` | `VisualStyle`              | The viewport controls' style label      |
 | `viewCubeFaces` | `ViewCubeFace`                    | The ViewCube (`state.viewCube`)         |
 | `compass`       | `CompassLetter`                   | The ViewCube's compass                  |
 

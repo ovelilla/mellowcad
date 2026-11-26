@@ -3,7 +3,7 @@ title: "Vizuální styly v AutoCADu: příkaz AKTUÁLNÍVS (VSCURRENT)"
 metaTitle: "Vizuální styly v AutoCADu: AKTUÁLNÍVS"
 description: "Jak v AutoCADu změnit vizuální styl příkazem AKTUÁLNÍVS (VSCURRENT, zkratka VC): 2D drátový model, Skrytý a Koncepční, co který kreslí a jak se vrátit do 2D."
 figure: "Kvádr s průchozím otvorem, viděný od jihovýchodu: AKTUÁLNÍVS Koncepční vystínuje jeho plochy a nakreslí na ně hrany."
-sourceHash: "ddb8f2338e68"
+sourceHash: "d7b4b0b602ea"
 ---
 
 Příkaz AKTUÁLNÍVS (VSCURRENT) nastaví vizuální styl: to, jak pohled kreslí 3D tělesa. Zeptá se na styl a nabídne aktuální jako výchozí, takže Enter ho ponechá. <Keyword id="2dwireframe" /> kreslí každou hranu, i ty vzadu; <Keyword id="Hidden" /> skryje to, co zakrývají plochy; <Keyword id="Conceptual" /> plochy vybarví, se stínováním. Styl patří pohledu a ukládá se do výkresu a každé spuštění je jeden krok, který lze vrátit zpět. Uvnitř jiného příkazu ho použít nelze.
@@ -32,7 +32,7 @@ Ostatní styly AutoCADu – Drátový model, Realistický, Stínovaný, Stínova
 
 ### Jak v AutoCADu změnit vizuální styl?
 
-Spusťte příkaz AKTUÁLNÍVS (nebo zkratku `VC`; anglická `VS` v české verzi spouští příkaz SVLOŽSPEC) a zvolte styl: <Keyword id="Hidden" /> pro skrytí hran vzadu, <Keyword id="Conceptual" /> pro vystínování ploch. Mění jen pohled, ne objekty.
+Spusťte příkaz AKTUÁLNÍVS (nebo zkratku `VC`; anglická `VS` v české verzi spouští příkaz SVLOŽSPEC) a zvolte styl: <Keyword id="Hidden" /> pro skrytí hran vzadu, <Keyword id="Conceptual" /> pro vystínování ploch. Mění jen pohled, ne objekty. Bez psaní ho vyberete v popisku v levém horním rohu výkresu, který ukazuje aktuální styl, nebo na pásu karet v Pohled › Vizuální styl.
 
 ### Jak se vrátit k 2D drátovému modelu?
 

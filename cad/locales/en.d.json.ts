@@ -216,6 +216,7 @@ declare const source: {
       "hidden": string
       "conceptual": string
     }
+    "visualStyleFast": string
     "viewCube": {
       "face": {
         "top": string

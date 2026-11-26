@@ -3,7 +3,7 @@ title: "Comando VSCURRENT (EVATUAL) no AutoCAD"
 metaTitle: "Estilos visuais no AutoCAD: VSCURRENT (EVATUAL)"
 description: "Como o VSCURRENT do AutoCAD em português, EVATUAL (alias EVA), define o estilo visual: Estrutura de arame 2D, Oculto e Conceitual, e como voltar. Teste grátis."
 figure: "Um bloco com um furo passante, visto do sudeste: o EVATUAL Conceitual sombreia as faces e desenha as arestas por cima delas."
-sourceHash: "ddb8f2338e68"
+sourceHash: "d7b4b0b602ea"
 ---
 
 O VSCURRENT, EVATUAL no AutoCAD em português, define o estilo visual: como a vista desenha os sólidos 3D. Ele pede um estilo, oferecendo o atual como padrão, e o Enter o mantém. <Keyword id="2dwireframe" /> desenha todas as arestas, também as de trás; <Keyword id="Hidden" /> oculta o que as faces ocultam; <Keyword id="Conceptual" /> pinta as faces, sombreadas. O estilo pertence à vista e é salvo com o desenho, e cada execução é um passo de desfazer. Ele não pode ser usado dentro de outro comando.
@@ -32,7 +32,7 @@ Os outros estilos do AutoCAD — Estrutura de arame, Realista, Sombreado, Sombre
 
 ### Como mudar o estilo visual no AutoCAD?
 
-Execute o EVATUAL (ou `EVA`) e escolha o estilo: <Keyword id="Hidden" /> para ocultar as arestas de trás, <Keyword id="Conceptual" /> para sombrear as faces. Ele muda só a vista, não os objetos. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: `_VSCURRENT`.
+Execute o EVATUAL (ou `EVA`) e escolha o estilo: <Keyword id="Hidden" /> para ocultar as arestas de trás, <Keyword id="Conceptual" /> para sombrear as faces. Ele muda só a vista, não os objetos. Sem digitar, escolha-o no rótulo do canto superior esquerdo do desenho, que mostra o estilo atual, ou em Vista › Estilos visuais na faixa de opções. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: `_VSCURRENT`.
 
 ### Como voltar para a Estrutura de arame 2D?
 

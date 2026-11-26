@@ -251,7 +251,7 @@ as in 2D Wireframe, in its colours (p301, p302); a fillet's tangent edges are dr
 plan a cylinder or a cone shows its circle alone (p307); a solid on a layer that is off neither
 shows nor hides another (p309; frozen layers are not modelled). A click takes the solid whose face
 is nearest the viewer under it, never one by an edge a face hides (p314: 2D Wireframe takes the
-edge's solid), and the object snaps still find every edge (p313) The ribbon's View › Visual Styles gallery sets the style with no echo, a step U names `VSCURRENT GROUP` (`docs/coverage/workspace.md`, Ribbon).
+edge's solid), and the object snaps still find every edge (p313). The ribbon's View › Visual Styles gallery sets the style with no echo, a step U names `VSCURRENT GROUP` (`docs/coverage/workspace.md`, Ribbon), and so does the viewport controls' style label (see Viewport controls).
 
 **Missing:** Wireframe, Realistic, Shaded, shaded with Edges, shades of Gray, SKetchy, X-ray and
 Other (`Enter a visual style name or [?]:`, es `Indique un nombre de estilo visual o [?]`, pt-BR
@@ -259,7 +259,7 @@ Other (`Enter a visual style name or [?]:`, es `Indique un nombre de estilo visu
 `The "FOO" visual style does not exist`, v05), refused here as any answer, so the prompt lists only
 the styles built, and the hidden `3DWIREFRAME` (`3`, Wireframe) and `EDGES` (Shaded with edges)
 refused with them (p204); SHADEMODE (es MODOSOMBRA), which runs VSCURRENT; -VISUALSTYLES and the Visual
-Styles Manager; the viewport controls' style menu; in Hidden and Conceptual, what hides lines but a
+Styles Manager; in Hidden and Conceptual, what hides lines but a
 solid: regions, wide polylines and objects with thickness, a circle with thickness among them, not a
 plain circle ("Objects that can hide other objects", HIDE's page; solid-inquiry/p315), which
 Conceptual also shades as faces with colour 7 edges (p302's region filled, p316's tube; here their
@@ -343,12 +343,17 @@ desktop view/e01) — each run as AutoCAD's menu runs it (`'_-view` answered `_s
 `'-VIEW Regenerating model.` (es `'-VISTA`, e01); while a command runs the label takes no pointer
 and the click is the command's (d06, VIEW-D66); its label is the preset the camera looks along (a
 turned plan is none), else Custom View / es Vista personalizada (table 40867); the list opens
-downwards (**unverified**)
+downwards (**unverified**). The visual style control after it, `[2D Wireframe]` (desktop d06,
+vp-style), naming the current style, one off 2D Wireframe with `(Fast)` after it (table 18992:
+`[Hidden (Fast)]`, es `[Oculto (Rápido)]`, solid-inquiry/d03, d11); its list the styles built in
+AutoCAD's order, 2D Wireframe, Conceptual, Hidden, the current one checked, a pick setting the
+style as the ribbon's gallery does, with no echo, a step U names `VSCURRENT GROUP` (**unverified**
+from this menu: its macro is unread); while a command runs it takes no pointer, as `[Top]`
 
-**Missing:** the `[−]` and visual style controls (`[-][Top][2D Wireframe]`, d06; `[Hidden (Fast)]`,
-`[Conceptual (Fast)]`, es `[Oculto (Rápido)]`, `[Conceptual (Rápido)]` off 2D Wireframe,
-solid-inquiry/d03, d11), VPCONTROL as a
-variable, Custom Model Views, Parallel / Perspective and the View Manager in the list
+**Missing:** the `[−]` control (Restore Viewport, Viewport Configuration List ▸, and the ViewCube,
+SteeringWheels and Navigation Bar checks, vp-minus), VPCONTROL as a variable, Custom Model Views,
+Parallel / Perspective and the View Manager in the view list; the style list's Custom Visual
+Styles ▸, the seven styles not built and Visual Styles Manager... (vp-style)
 
 ### Navigation bar
 

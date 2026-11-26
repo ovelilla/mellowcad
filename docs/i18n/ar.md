@@ -136,6 +136,7 @@ marks a choice between competing terms that a native review should settle first 
 | Keys | Enter, Esc, Del, Ctrl, Shift, Tab, Spacebar | Enter، Esc، Del، Ctrl، Shift، Tab، المسافة: the keys keep the names printed on Arabic keyboards (M) |
 | Command line | Type a command, Close, Recent Commands | اكتب أمرًا، إغلاق، الأوامر الأخيرة (M) |
 |  | Command history | سجل الأوامر (M) |
+| Viewport controls | Visual Style Controls (the style label's name, acadres 62833); (Fast), after a style's name (acadres 18992) | عناصر التحكم في النمط المرئي؛ (سريع) (M) † |
 | Shortcut menu | Shortcut menu; Repeat ‹command›, Enter, Cancel | القائمة المختصرة؛ تكرار ‹الأمر›، Enter، إلغاء (L) † — Enter is the key's printed name, as in Keys |
 |  | Clipboard; Osnap Overrides; Properties | الحافظة (M)؛ تجاوزات الالتقاط (L) †؛ الخصائص (M) |
 |  | Dimension Style (the Edit menu over dimensions) | نمط البُعد (C) |

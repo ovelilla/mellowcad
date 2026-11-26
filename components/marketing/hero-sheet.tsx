@@ -155,7 +155,8 @@ export async function HeroSheet() {
               style={turn}
               dangerouslySetInnerHTML={{ __html: inlineSvg(turned.markup) }}
             />
-            {/* The view control, top left, as the editor draws it: AutoCAD's
+            {/* The view control, top left, as the editor draws it (the
+                visual style's label after it is left out here): AutoCAD's
                 brackets are notation, not words. */}
             <p
               aria-hidden="true"

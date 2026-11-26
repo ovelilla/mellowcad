@@ -97,6 +97,12 @@ export const hu: EditorLocale = {
         [
           "name"
         ]
+      ],
+      "visualStyle": [
+        "Látványstílus-vezérlők: ",
+        [
+          "name"
+        ]
       ]
     },
     "ViewCube": {

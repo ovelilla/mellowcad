@@ -57,7 +57,8 @@
     "out": "Alejar"
   },
   "Viewport": {
-    "view": "Controles de vista: {name}"
+    "view": "Controles de vista: {name}",
+    "visualStyle": "Controles de estilo visual: {name}"
   },
   "ViewCube": {
     "label": "ViewCube",

@@ -57,7 +57,8 @@
     "out": "Pomniejsz"
   },
   "Viewport": {
-    "view": "Kontrolki widoku: {name}"
+    "view": "Kontrolki widoku: {name}",
+    "visualStyle": "Kontrolki stylu wizualnego: {name}"
   },
   "ViewCube": {
     "label": "ViewCube",

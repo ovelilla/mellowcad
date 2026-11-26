@@ -4,7 +4,7 @@ metaTitle: "CAD 視覺型式（VSCURRENT）切換與快捷鍵 VS"
 description: "AutoCAD VSCURRENT（視覺型式，VS）如何設定視覺型式：2D 線架構、隱藏與概念，各自繪製的內容，以及如何回到線架構。可以在瀏覽器中免費試用。"
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"CAD 如何變更視覺型式？","answer":"執行 VSCURRENT（或 VS）並選擇型式：Hidden 隱藏後方的邊，Conceptual 為面描影。它只改變視圖，不改變物件。"},{"question":"如何回到 2D 線架構？","answer":"執行 VSCURRENT 並選擇 2dwireframe，其字母為 2。"},{"question":"隱藏與概念有什麼不同？","answer":"兩者都會隱藏被面遮住的部分。「隱藏」只在背景上繪製邊，就像線條圖；「概念」則還會為面著色，依光源描影，並在面上繪製相同的邊。"},{"question":"為什麼仍然可以看到穿過實體的線？","answer":"那些線不屬於實體。線、圓與面域在每一種型式中都以「2D 線架構」繪製，因此方塊後方的線仍然可見。在 2dwireframe 中，實體本身後方的邊也會顯示：請選擇 Hidden。"}]
+faq: [{"question":"CAD 如何變更視覺型式？","answer":"執行 VSCURRENT（或 VS）並選擇型式：Hidden 隱藏後方的邊，Conceptual 為面描影。它只改變視圖，不改變物件。不輸入指令也可以：在圖面左上角顯示目前型式的標籤中選擇，或在功能區的「檢視 › 視覺型式」中選擇。"},{"question":"如何回到 2D 線架構？","answer":"執行 VSCURRENT 並選擇 2dwireframe，其字母為 2。"},{"question":"隱藏與概念有什麼不同？","answer":"兩者都會隱藏被面遮住的部分。「隱藏」只在背景上繪製邊，就像線條圖；「概念」則還會為面著色，依光源描影，並在面上繪製相同的邊。"},{"question":"為什麼仍然可以看到穿過實體的線？","answer":"那些線不屬於實體。線、圓與面域在每一種型式中都以「2D 線架構」繪製，因此方塊後方的線仍然可見。在 2dwireframe 中，實體本身後方的邊也會顯示：請選擇 Hidden。"}]
 ---
 
 VSCURRENT 設定視覺型式：視圖如何繪製 3D 實體。它要求選擇一個型式，以目前的型式為預設值，按 Enter 會保持不變。`2dwireframe` 繪製每一條邊，包括後方的邊；`Hidden` 隱藏被面遮住的部分；`Conceptual` 為面著色並描影。型式屬於視圖，隨圖面儲存，每次執行都是一個退回步驟。它不能在其他指令中使用。
@@ -46,7 +46,7 @@ AutoCAD 的其他型式（線架構、擬真、描影、帶邊的描影、灰色
 
 ### CAD 如何變更視覺型式？
 
-執行 VSCURRENT（或 `VS`）並選擇型式：`Hidden` 隱藏後方的邊，`Conceptual` 為面描影。它只改變視圖，不改變物件。
+執行 VSCURRENT（或 `VS`）並選擇型式：`Hidden` 隱藏後方的邊，`Conceptual` 為面描影。它只改變視圖，不改變物件。不輸入指令也可以：在圖面左上角顯示目前型式的標籤中選擇，或在功能區的「檢視 › 視覺型式」中選擇。
 
 ### 如何回到 2D 線架構？
 

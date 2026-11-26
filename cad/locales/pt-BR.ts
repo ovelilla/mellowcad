@@ -224,6 +224,7 @@ export const ptBR: EngineLocale = {
       "hidden": "Oculto",
       "conceptual": "Conceitual"
     },
+    "visualStyleFast": "(Rápido)",
     "viewCube": {
       "face": {
         "top": "SUPERIOR",

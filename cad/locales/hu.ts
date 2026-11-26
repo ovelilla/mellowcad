@@ -224,6 +224,7 @@ export const hu: EngineLocale = {
       "hidden": "Takartvonalas",
       "conceptual": "Koncepcionális"
     },
+    "visualStyleFast": "(Gyors)",
     "viewCube": {
       "face": {
         "top": "FELÜL",

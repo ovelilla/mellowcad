@@ -572,7 +572,9 @@ export function EditorZones({
             in a page that does the viewport controls and the ViewCube
             swap corners with the shell; the cube itself never mirrors. */}
             {Viewport && (
-              <div className="absolute inset-s-1 top-1 z-10">
+              // Only the labels take the pointer: while a command runs they
+              // give it up, and the click under them is the command's.
+              <div className="pointer-events-none absolute inset-s-1 top-1 z-10">
                 <Viewport {...ready} />
               </div>
             )}

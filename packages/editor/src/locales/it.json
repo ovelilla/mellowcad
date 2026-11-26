@@ -57,7 +57,8 @@
     "out": "Zoom out"
   },
   "Viewport": {
-    "view": "Controlli vista: {name}"
+    "view": "Controlli vista: {name}",
+    "visualStyle": "Controlli stile visualizzazione: {name}"
   },
   "ViewCube": {
     "label": "ViewCube",

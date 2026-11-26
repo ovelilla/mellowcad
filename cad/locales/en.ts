@@ -224,6 +224,7 @@ export const en: EngineCatalog = {
       "hidden": "Hidden",
       "conceptual": "Conceptual"
     },
+    "visualStyleFast": "(Fast)",
     "viewCube": {
       "face": {
         "top": "TOP",

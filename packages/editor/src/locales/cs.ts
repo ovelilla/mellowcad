@@ -101,6 +101,12 @@ export const cs: EditorLocale = {
         [
           "name"
         ]
+      ],
+      "visualStyle": [
+        "Ovládací prvky vizuálního stylu: ",
+        [
+          "name"
+        ]
       ]
     },
     "ViewCube": {

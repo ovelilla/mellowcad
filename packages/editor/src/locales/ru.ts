@@ -101,6 +101,12 @@ export const ru: EditorLocale = {
         [
           "name"
         ]
+      ],
+      "visualStyle": [
+        "Управление визуальными стилями: ",
+        [
+          "name"
+        ]
       ]
     },
     "ViewCube": {

@@ -107,6 +107,22 @@ function boxFaces(cad: CadHarness): number[][] {
 }
 
 describe("VSCURRENT", () => {
+  // Table 18992 after a style off 2D Wireframe (desktop solid-inquiry/d03, d11).
+  it("names each style as the viewport controls' label shows it", () => {
+    expect(createHarness().state().names.viewportVisualStyles).toEqual({
+      "2dWireframe": "2D Wireframe",
+      hidden: "Hidden (Fast)",
+      conceptual: "Conceptual (Fast)",
+    })
+    expect(
+      createHarness({ locale: es }).state().names.viewportVisualStyles
+    ).toEqual({
+      "2dWireframe": "Estructura alámbrica 2D",
+      hidden: "Oculto (Rápido)",
+      conceptual: "Conceptual (Rápido)",
+    })
+  })
+
   it("offers the styles built, the current one's name at Enter (visualstyle/v02)", () => {
     const cad = isoBox()
     expect(written(cad, "VSCURRENT", "FOO", "H")).toEqual([

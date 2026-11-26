@@ -57,7 +57,8 @@
     "out": "Уменьшить"
   },
   "Viewport": {
-    "view": "Управление видами: {name}"
+    "view": "Управление видами: {name}",
+    "visualStyle": "Управление визуальными стилями: {name}"
   },
   "ViewCube": {
     "label": "ViewCube",

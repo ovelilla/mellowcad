@@ -97,6 +97,12 @@ export const ja: EditorLocale = {
         [
           "name"
         ]
+      ],
+      "visualStyle": [
+        "表示スタイル コントロール: ",
+        [
+          "name"
+        ]
       ]
     },
     "ViewCube": {

@@ -4,7 +4,7 @@ metaTitle: "CAD 视觉样式怎么切换（VSCURRENT）与快捷键 VS"
 description: "AutoCAD VSCURRENT（视觉样式，快捷键 VS）怎么设置视觉样式：二维线框、隐藏和概念，各自显示什么，以及怎么切回二维线框。在线免费试用。"
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"CAD 视觉样式怎么切换？","answer":"执行 VSCURRENT（或输入 VS）并选择样式：Hidden 隐藏后面的边，Conceptual 为面着色。它只改变视图，不改变对象。"},{"question":"CAD 怎么切回二维线框？","answer":"执行 VSCURRENT 并选择 2dwireframe，其字母为 2。"},{"question":"CAD 隐藏和概念视觉样式有什么区别？","answer":"两者都隐藏被面遮挡的部分。“隐藏”只在背景上绘制边，像一幅线条图；“概念”还为面着色，按光照显示明暗，面上绘制同样的边。"},{"question":"CAD 实体里为什么还能看到线条？","answer":"这些线条不属于实体。直线、圆和面域在所有样式中都按“二维线框”显示，因此长方体后面的直线仍然可见。在 2dwireframe 中，实体本身后面的边也会显示：请选择 Hidden。"}]
+faq: [{"question":"CAD 视觉样式怎么切换？","answer":"执行 VSCURRENT（或输入 VS）并选择样式：Hidden 隐藏后面的边，Conceptual 为面着色。它只改变视图，不改变对象。不输入命令也可以：在图形左上角显示当前样式的标签中选择，或在功能区的“视图 › 视觉样式”中选择。"},{"question":"CAD 怎么切回二维线框？","answer":"执行 VSCURRENT 并选择 2dwireframe，其字母为 2。"},{"question":"CAD 隐藏和概念视觉样式有什么区别？","answer":"两者都隐藏被面遮挡的部分。“隐藏”只在背景上绘制边，像一幅线条图；“概念”还为面着色，按光照显示明暗，面上绘制同样的边。"},{"question":"CAD 实体里为什么还能看到线条？","answer":"这些线条不属于实体。直线、圆和面域在所有样式中都按“二维线框”显示，因此长方体后面的直线仍然可见。在 2dwireframe 中，实体本身后面的边也会显示：请选择 Hidden。"}]
 ---
 
 VSCURRENT（视觉样式）命令设置视觉样式，即视图显示三维实体的方式。它询问样式，以当前样式作为默认值，按 Enter 键即保持不变。`2dwireframe` 显示所有边，包括后面的边；`Hidden` 隐藏被面遮挡的部分；`Conceptual` 为面着色并显示明暗。样式属于视图，随图形保存，每次执行是一个放弃步骤。它不能在其他命令中使用。
@@ -46,7 +46,7 @@ VSCURRENT（视觉样式）命令设置视觉样式，即视图显示三维实�
 
 ### CAD 视觉样式怎么切换？
 
-执行 VSCURRENT（或输入 `VS`）并选择样式：`Hidden` 隐藏后面的边，`Conceptual` 为面着色。它只改变视图，不改变对象。
+执行 VSCURRENT（或输入 `VS`）并选择样式：`Hidden` 隐藏后面的边，`Conceptual` 为面着色。它只改变视图，不改变对象。不输入命令也可以：在图形左上角显示当前样式的标签中选择，或在功能区的“视图 › 视觉样式”中选择。
 
 ### CAD 怎么切回二维线框？
 

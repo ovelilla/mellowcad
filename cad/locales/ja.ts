@@ -224,6 +224,7 @@ export const ja: EngineLocale = {
       "hidden": "隠線処理",
       "conceptual": "コンセプト"
     },
+    "visualStyleFast": "(高速)",
     "viewCube": {
       "face": {
         "top": "上",

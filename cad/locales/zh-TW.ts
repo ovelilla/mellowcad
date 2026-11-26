@@ -224,6 +224,7 @@ export const zhTW: EngineLocale = {
       "hidden": "隱藏",
       "conceptual": "概念"
     },
+    "visualStyleFast": "(快速)",
     "viewCube": {
       "face": {
         "top": "上",

@@ -57,7 +57,8 @@
     "out": "Verkleinern"
   },
   "Viewport": {
-    "view": "Ansichtssteuerung: {name}"
+    "view": "Ansichtssteuerung: {name}",
+    "visualStyle": "Steuerungen für visuellen Stil: {name}"
   },
   "ViewCube": {
     "label": "ViewCube",

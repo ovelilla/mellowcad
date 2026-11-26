@@ -97,6 +97,12 @@ export const de: EditorLocale = {
         [
           "name"
         ]
+      ],
+      "visualStyle": [
+        "Steuerungen für visuellen Stil: ",
+        [
+          "name"
+        ]
       ]
     },
     "ViewCube": {

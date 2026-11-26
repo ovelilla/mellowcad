@@ -202,6 +202,7 @@
   "interface.visualStyle.2dWireframe": "2D Wireframe",
   "interface.visualStyle.hidden": "Hidden",
   "interface.visualStyle.conceptual": "Conceptual",
+  "interface.visualStyleFast": "(Fast)",
   "interface.viewCube.face.top": "TOP",
   "interface.viewCube.face.bottom": "BOTTOM",
   "interface.viewCube.face.front": "FRONT",

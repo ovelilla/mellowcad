@@ -59,6 +59,7 @@ declare const source: {
   }
   "Viewport": {
     "view": string
+    "visualStyle": string
   }
   "ViewCube": {
     "label": string

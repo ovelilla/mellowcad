@@ -101,6 +101,12 @@ export const zhCN: EditorLocale = {
         [
           "name"
         ]
+      ],
+      "visualStyle": [
+        "视觉样式控件: ",
+        [
+          "name"
+        ]
       ]
     },
     "ViewCube": {

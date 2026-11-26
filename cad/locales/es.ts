@@ -224,6 +224,7 @@ export const es: EngineLocale = {
       "hidden": "Oculto",
       "conceptual": "Conceptual"
     },
+    "visualStyleFast": "(Rápido)",
     "viewCube": {
       "face": {
         "top": "SUPERIOR",

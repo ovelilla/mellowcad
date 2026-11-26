@@ -49,6 +49,7 @@
   "NavigationBar.in": "Zoom In",
   "NavigationBar.out": "Zoom Out",
   "Viewport.view": "View controls: {name}",
+  "Viewport.visualStyle": "Visual Style Controls: {name}",
   "ViewCube.label": "ViewCube",
   "ViewCube.home": "Home",
   "ViewCube.parallel": "Parallel",

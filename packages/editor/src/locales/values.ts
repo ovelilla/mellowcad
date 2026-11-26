@@ -9,6 +9,7 @@ export interface EditorValues {
   "TitleBar.undoCount": { count: number }
   "TitleBar.redoCount": { count: number }
   "Viewport.view": { name: string }
+  "Viewport.visualStyle": { name: string }
   "ShortcutMenu.repeat": { command: string }
   "Layers.withKey": { key: string; label: string }
   "Layers.currentLayer": { name: string }

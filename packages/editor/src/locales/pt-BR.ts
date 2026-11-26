@@ -101,6 +101,12 @@ export const ptBR: EditorLocale = {
         [
           "name"
         ]
+      ],
+      "visualStyle": [
+        "Controles de estilos visuais: ",
+        [
+          "name"
+        ]
       ]
     },
     "ViewCube": {

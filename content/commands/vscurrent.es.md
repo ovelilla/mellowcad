@@ -3,7 +3,7 @@ title: "Estilos visuales en AutoCAD: ESTVISACTUAL (VSCURRENT)"
 metaTitle: "Estilos visuales en AutoCAD: ESTVISACTUAL (EVA)"
 description: "Cómo funciona ESTVISACTUAL (VSCURRENT, alias EVA) de AutoCAD en español: Estructura alámbrica 2D, Oculto y Conceptual, y cómo volver a la alámbrica. Pruébalo."
 figure: "Una pieza con un agujero pasante, vista desde el sureste: ESTVISACTUAL Conceptual sombrea sus caras y dibuja sus aristas encima."
-sourceHash: "ddb8f2338e68"
+sourceHash: "d7b4b0b602ea"
 ---
 
 ESTVISACTUAL (VSCURRENT en inglés) define el estilo visual: cómo dibuja la vista los sólidos 3D. Pide un estilo, ofrece el actual como opción por defecto, e Intro lo conserva. <Keyword id="2dwireframe" /> dibuja todas las aristas, también las de detrás; <Keyword id="Hidden" /> oculta lo que tapan las caras; <Keyword id="Conceptual" /> pinta las caras, sombreadas. El estilo pertenece a la vista y se guarda con el dibujo, y cada ejecución es un paso de deshacer. No se puede usar dentro de otro comando.
@@ -32,7 +32,7 @@ Los demás estilos de AutoCAD —Estructura alámbrica, Realista, Sombreado, Som
 
 ### ¿Cómo cambiar el estilo visual en AutoCAD?
 
-Ejecuta ESTVISACTUAL (o `EVA`) y elige el estilo: <Keyword id="Hidden" /> para ocultar las aristas de detrás, <Keyword id="Conceptual" /> para sombrear las caras. Solo cambia la vista, no los objetos. Como en AutoCAD en español, el nombre inglés también funciona con un guion bajo delante: `_VSCURRENT`.
+Ejecuta ESTVISACTUAL (o `EVA`) y elige el estilo: <Keyword id="Hidden" /> para ocultar las aristas de detrás, <Keyword id="Conceptual" /> para sombrear las caras. Solo cambia la vista, no los objetos. Sin teclear, elígelo en la etiqueta de la esquina superior izquierda del dibujo, que muestra el estilo actual, o en Vista › Estilos visuales de la cinta de opciones. Como en AutoCAD en español, el nombre inglés también funciona con un guion bajo delante: `_VSCURRENT`.
 
 ### ¿Cómo volver a Estructura alámbrica 2D?
 

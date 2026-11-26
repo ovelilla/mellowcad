@@ -281,10 +281,11 @@ export declare function ViewCube(pieceProps: PieceProps): React.ReactElement | n
 
 export { ViewportControls }
 /**
- * The viewport controls at the drawing's top left (VPCONTROL 1), of which
- * only the view control exists: `[Top]`, naming the view the engine says the
- * camera shows, opens the preset views and runs the one chosen as AutoCAD's
- * `'_-view _swiso`.
+ * The viewport controls at the drawing's top left (VPCONTROL 1): the view
+ * control, `[Top]`, naming the view the engine says the camera shows and
+ * running the preset chosen as AutoCAD's `'_-view _swiso`; then the visual
+ * style control, `[2D Wireframe]`, whose list runs VSCURRENT as the ribbon's
+ * gallery does. `[–]` (viewport configurations) is Missing.
  */
 export declare function ViewportControls(pieceProps: PieceProps): ReactElement;
 ```

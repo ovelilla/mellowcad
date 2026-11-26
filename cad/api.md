@@ -1060,6 +1060,13 @@ export interface EngineNames {
      * tables 41794, 41445, 8027).
      */
     readonly visualStyles: Readonly<Record<VisualStyle, string>>;
+    /**
+     * The visual styles as the viewport controls label the current one: 2D
+     * Wireframe by its name, the others with `(Fast)` after it (string table
+     * 18992; desktop solid-inquiry/d03, d11: `[Hidden (Fast)]`, es
+     * `[Oculto (Rápido)]`).
+     */
+    readonly viewportVisualStyles: Readonly<Record<VisualStyle, string>>;
     /** The ViewCube's face labels, by the faces of `state.viewCube`. */
     readonly viewCubeFaces: Readonly<Record<ViewCubeFace, string>>;
     /** The ViewCube's compass letters, by `state.viewCube`'s compass. */

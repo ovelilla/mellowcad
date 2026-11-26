@@ -718,7 +718,7 @@ until the drawing reaches the row:
    as they do now; F2's history opens above the line (its look **unverified**, §7). The canvas
    keeps its box: like a floating palette the line covers the drawing's bottom and ZOOM Extents
    frames the whole drawing area, AutoCAD's 857 at 1080 (§2.1).
-3. **The visual style's label** (D1): `[2D Wireframe]` after `[Top]`, a style off 2D Wireframe
+3. **The visual style's label** (D1; done 2026-11-26): `[2D Wireframe]` after `[Top]`, a style off 2D Wireframe
    labelled with table 18992's `(Fast)` (`[Hidden (Fast)]`, solid-inquiry/d03, d11); its list
    the styles built in the order of §2.5's (2D Wireframe, Conceptual, Hidden), the current one
    checked, a pick running VSCURRENT as the ribbon's gallery does (`engine.setVisualStyle`: its

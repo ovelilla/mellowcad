@@ -224,6 +224,7 @@ export const zhCN: EngineLocale = {
       "hidden": "隐藏",
       "conceptual": "概念"
     },
+    "visualStyleFast": "(快速)",
     "viewCube": {
       "face": {
         "top": "俯视",

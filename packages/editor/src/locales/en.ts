@@ -101,6 +101,12 @@ export const en: EditorCatalog = {
         [
           "name"
         ]
+      ],
+      "visualStyle": [
+        "Visual Style Controls: ",
+        [
+          "name"
+        ]
       ]
     },
     "ViewCube": {

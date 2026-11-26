@@ -57,7 +57,8 @@
     "out": "Zoom arrière"
   },
   "Viewport": {
-    "view": "Contrôles de la vue : {name}"
+    "view": "Contrôles de la vue : {name}",
+    "visualStyle": "Contrôles du style visuel : {name}"
   },
   "ViewCube": {
     "label": "ViewCube",

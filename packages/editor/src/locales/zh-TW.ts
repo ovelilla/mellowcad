@@ -101,6 +101,12 @@ export const zhTW: EditorLocale = {
         [
           "name"
         ]
+      ],
+      "visualStyle": [
+        "視覺型式控制: ",
+        [
+          "name"
+        ]
       ]
     },
     "ViewCube": {

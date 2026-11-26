@@ -224,6 +224,7 @@ export const ru: EngineLocale = {
       "hidden": "Скрытие линий",
       "conceptual": "Концептуальный"
     },
+    "visualStyleFast": "(быстрое)",
     "viewCube": {
       "face": {
         "top": "Сверху",

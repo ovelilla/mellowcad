@@ -224,6 +224,7 @@ export const ko: EngineLocale = {
       "hidden": "숨김",
       "conceptual": "개념"
     },
+    "visualStyleFast": "(빠름)",
     "viewCube": {
       "face": {
         "top": "평면도",

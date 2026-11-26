@@ -3,7 +3,7 @@ title: "AutoCAD VSCURRENT（視覺型式）指令"
 metaTitle: "CAD 視覺型式（VSCURRENT）切換與快捷鍵 VS"
 description: "AutoCAD VSCURRENT（視覺型式，VS）如何設定視覺型式：2D 線架構、隱藏與概念，各自繪製的內容，以及如何回到線架構。可以在瀏覽器中免費試用。"
 figure: "一個有貫穿孔的塊體，從東南方檢視：VSCURRENT 的「概念」為其面描影，並在面上繪製其邊。"
-sourceHash: "ddb8f2338e68"
+sourceHash: "d7b4b0b602ea"
 ---
 
 VSCURRENT 設定視覺型式：視圖如何繪製 3D 實體。它要求選擇一個型式，以目前的型式為預設值，按 Enter 會保持不變。<Keyword id="2dwireframe" /> 繪製每一條邊，包括後方的邊；<Keyword id="Hidden" /> 隱藏被面遮住的部分；<Keyword id="Conceptual" /> 為面著色並描影。型式屬於視圖，隨圖面儲存，每次執行都是一個退回步驟。它不能在其他指令中使用。
@@ -32,7 +32,7 @@ AutoCAD 的其他型式（線架構、擬真、描影、帶邊的描影、灰色
 
 ### CAD 如何變更視覺型式？
 
-執行 VSCURRENT（或 `VS`）並選擇型式：<Keyword id="Hidden" /> 隱藏後方的邊，<Keyword id="Conceptual" /> 為面描影。它只改變視圖，不改變物件。
+執行 VSCURRENT（或 `VS`）並選擇型式：<Keyword id="Hidden" /> 隱藏後方的邊，<Keyword id="Conceptual" /> 為面描影。它只改變視圖，不改變物件。不輸入指令也可以：在圖面左上角顯示目前型式的標籤中選擇，或在功能區的「檢視 › 視覺型式」中選擇。
 
 ### 如何回到 2D 線架構？
 

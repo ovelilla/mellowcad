@@ -4,7 +4,7 @@ metaTitle: "VSCURRENT in AutoCAD: visual styles and alias"
 description: "How AutoCAD's VSCURRENT (VS) sets the visual style: 2D Wireframe, Hidden and Conceptual, what each draws and how to go back to wireframe. Try it free online."
 figure: "A block with a hole through it, seen from the south-east: VSCURRENT Conceptual shades its faces and draws its edges over them."
 related: ["3DORBIT", "BOX", "VIEW", "UCS"]
-coverage: "a8e002e5dc9f"
+coverage: "2d803f695663"
 ---
 
 VSCURRENT sets the visual style: how the view draws 3D solids. It asks for a style, offering the current one as the default, and Enter keeps it. <Keyword id="2dwireframe" /> draws every edge, those behind too; <Keyword id="Hidden" /> hides what faces hide; <Keyword id="Conceptual" /> paints the faces, shaded. The style belongs to the view and is saved with the drawing, and each run is one undo step. It cannot be used inside another command.
@@ -33,7 +33,7 @@ The other styles of AutoCAD — Wireframe, Realistic, Shaded, Shaded with edges,
 
 ### How do I change the visual style in AutoCAD?
 
-Run VSCURRENT (or `VS`) and choose the style: <Keyword id="Hidden" /> to hide the edges behind, <Keyword id="Conceptual" /> to shade the faces. It changes the view only, not the objects.
+Run VSCURRENT (or `VS`) and choose the style: <Keyword id="Hidden" /> to hide the edges behind, <Keyword id="Conceptual" /> to shade the faces. It changes the view only, not the objects. Without typing, pick it in the label at the drawing's top left that names the current style, or in View › Visual Styles on the ribbon.
 
 ### How do I go back to 2D Wireframe?
 

@@ -101,6 +101,12 @@ export const ar: EditorLocale = {
         [
           "name"
         ]
+      ],
+      "visualStyle": [
+        "عناصر التحكم في النمط المرئي: ",
+        [
+          "name"
+        ]
       ]
     },
     "ViewCube": {

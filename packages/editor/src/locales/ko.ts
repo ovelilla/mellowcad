@@ -97,6 +97,12 @@ export const ko: EditorLocale = {
         [
           "name"
         ]
+      ],
+      "visualStyle": [
+        "비주얼 스타일 컨트롤: ",
+        [
+          "name"
+        ]
       ]
     },
     "ViewCube": {

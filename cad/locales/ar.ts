@@ -224,6 +224,7 @@ export const ar: EngineLocale = {
       "hidden": "مخفي",
       "conceptual": "مفاهيمي"
     },
+    "visualStyleFast": "(سريع)",
     "viewCube": {
       "face": {
         "top": "أعلى",
