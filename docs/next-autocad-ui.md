@@ -23,7 +23,8 @@
 > acceso rápido; lo que solo el escritorio resuelve queda «unverified» y en el §7 del plan. La
 > fase 6 (pestañas contextuales) está en curso: sus bloques 1 (Array Creation) y 2 (Hatch Creation
 > y los prompts de HATCH con el ribbon) del §6 del plan están hechos el 26/11, sin pasada por el
-> escritorio.
+> escritorio. Después del rediseño, una fase 7 anotada por el dueño el 26/11 y por valorar: un
+> aviso de novedades en el editor (§4).
 > Acordado el 7/11/2026 por el dueño. Se borra cuando la última fase esté hecha; hasta entonces
 > cada fase cerrada se marca aquí.
 
@@ -174,6 +175,31 @@ acceso rápido.
 
 Hatch Creation, Text Editor y Array como pestañas que siguen a su comando. Cada una es la
 interfaz de un comando, así que pasa por la revisión y la investigación de ese comando.
+
+### Fase 7 — el aviso de novedades (idea del dueño, 26/11/2026; por valorar, sin acordar)
+
+Va después de la fase 6, con el rediseño terminado. Un aviso en el editor, poco intrusivo, que
+cuente en pocas líneas y sin tecnicismos lo que ha cambiado; el primero, el rediseño: que la
+interfaz se parece ahora a la de AutoCAD para que quien viene de él trabaje de memoria. Escrito
+con ilusión, no como una nota de versión. Quien lo cierra no lo vuelve a ver hasta que haya otra
+novedad. Lo que hay que valorar antes de construirlo:
+
+- **La forma**: una tarjeta pequeña que se cierra, en una esquina del dibujo, sin tapar la línea
+  de comandos ni robar el foco ni las teclas (la primera tecla sigue escribiendo un comando), frente
+  a solo una entrada «Novedades» en la lista Ayuda ▾ de la barra de título; quizá las dos: la
+  tarjeta una vez y la entrada siempre.
+- **A quién**: solo a quien conoció la interfaz anterior (lo que el dispositivo ya guarda: un
+  dibujo autoguardado, la disposición de las paletas o del ribbon); a quien llega por primera vez
+  no le dice nada.
+- **Cerrado para siempre**: el id del aviso guardado en el dispositivo bajo la clave del host
+  (`layoutStorage`, como el resto de la disposición); un aviso nuevo es otro id. Sin servidor ni
+  dato personal, así que `/privacy` no cambia.
+- **El texto**, en cada idioma vivo, en su catálogo: solo lo que sea verdad (`i18n.md`, «Claims and
+  copy»): «muchas peticiones» solo si las hubo.
+- **La regla que cambia**: `.claude/rules/ui.md` dice «No product or meta copy in the editor:
+  that is the landing's»; el aviso es la excepción acordada y la regla se reescribe en el mismo
+  commit. AutoCAD no tiene un aviso así en el dibujo (su What's New es una página de la ayuda), así
+  que es una decisión de producto, no de fidelidad.
 
 ## 5. Con qué modelo
 
