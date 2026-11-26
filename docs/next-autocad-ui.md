@@ -84,9 +84,10 @@ editor, la tabla de diferencias y las fases. Lo que cambió respecto a lo acorda
   a la lista Ayuda ▾ de la barra de título (fase 2).
 - **La línea de comandos de AutoCAD flota** sobre el dibujo, y las pestañas Model/Layout comparten
   fila con la barra de estado: la fase 4 lo iguala y devuelve esa altura al dibujo.
-- **La pestaña 3D Tools**, que el espacio «Drafting & Annotation» tiene oculta, se muestra aquí, y
-  también los paneles ocultos de View (Visual Styles, Coordinates, Navigate): no hay cambio de
-  espacio de trabajo ni el menú «Show Tabs» para llegar a ellos.
+- **La pestaña 3D Tools**, que el espacio «Drafting & Annotation» tiene oculta, se mostraba aquí, y
+  también los paneles ocultos de View (Visual Styles, Coordinates, Navigate), mientras no hubo
+  menú «Show Tabs» para llegar a ellos; desde la fase 5 empiezan ocultos, como en AutoCAD, y el
+  menú contextual del ribbon los muestra.
 - **Dos fases nuevas**: la 5 (tooltips, el menú contextual del ribbon, personalizar el acceso
   rápido) y la 6 (pestañas contextuales: Hatch Creation, Text Editor, Array).
 - **Dos pasadas por el escritorio** el mismo día: la primera sin ratón, por UI Automation, con el
@@ -147,7 +148,8 @@ Pedido por el dueño (10/11/2026): **cambiar el estilo visual desde la interfaz*
 puede tecleando VSCURRENT (`VS`, es `EVA`), y un usuario de AutoCAD busca la etiqueta de los
 controles del viewport (`[2D Wireframe]`, arriba a la izquierda) y su lista de estilos; también
 la galería de estilos visuales del ribbon. La fase 0 la sitúa en View › Visual Styles, un panel
-que «Drafting & Annotation» tiene oculto y aquí se muestra: va con la fase 1 (su bloque 4), así
+que «Drafting & Annotation» tiene oculto (aquí se mostró hasta la fase 5, que lo oculta como
+AutoCAD y lo deja al menú contextual): va con la fase 1 (su bloque 4), así
 que el pedido se cumple primero por el ribbon, y la etiqueta del viewport llega en la fase 4. La
 lista ofrece solo los estilos construidos (2D Wireframe, Hidden,
 Conceptual: `docs/coverage/view.md`, VSCURRENT) y ejecuta VSCURRENT, como la de AutoCAD; quita

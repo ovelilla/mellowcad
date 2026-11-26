@@ -760,6 +760,13 @@ export const fr: EditorLocale = {
         "panelTitles": "Réduire en titres de groupe de fonctions",
         "panelButtons": "Réduire en boutons de groupe de fonctions",
         "cycle": "Tout parcourir"
+      },
+      "menu": {
+        "showTabs": "Afficher onglets",
+        "showPanels": "Afficher groupes de fonctions",
+        "showPanelTitles": "Afficher les titres de groupes de fonctions",
+        "close": "Fermer",
+        "empty": "Aucun groupe de fonctions ni onglet n'est actuellement chargé dans le ruban."
       }
     },
     "CommandLine": {

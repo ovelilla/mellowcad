@@ -202,10 +202,18 @@ export { Ribbon }
 export declare function Ribbon(pieceProps: PieceProps): ReactElement;
 
 export type { RibbonLayout }
-/** The ribbon's minimize state, and what its minimize button does. */
+/**
+ * The ribbon's minimize state, what its minimize button does, and what its
+ * right-click menu shows and hides (Show Tabs, Show Panels, Show Panel Titles).
+ */
 export interface RibbonLayout {
     readonly state: RibbonState;
     readonly mode: RibbonMinimizeMode;
+    /** The tabs hidden, by id (`RIBBON_TABS`). */
+    readonly hiddenTabs: readonly string[];
+    /** The panels hidden, by id, whichever tab holds them. */
+    readonly hiddenPanels: readonly string[];
+    readonly panelTitles: boolean;
 }
 
 export type { RibbonLayoutControl }

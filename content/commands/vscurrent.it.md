@@ -2,7 +2,7 @@
 title: "Comando STILEVISCORRENTE (VSCURRENT) in AutoCAD"
 description: "Come STILEVISCORRENTE (VSCURRENT, alias SVC) di AutoCAD imposta lo stile visivo: Wireframe 2D, Nascosto e Concettuale, e come tornare al wireframe."
 figure: "Un blocco con un foro passante, visto da sud-est: STILEVISCORRENTE Concettuale ombreggia le sue facce e vi disegna sopra i suoi spigoli."
-sourceHash: "d7b4b0b602ea"
+sourceHash: "d06873f62261"
 ---
 
 STILEVISCORRENTE (VSCURRENT) imposta lo stile visivo: come la vista disegna i solidi 3D. Chiede uno stile, proponendo quello corrente come valore predefinito, e Invio lo mantiene. <Keyword id="2dwireframe" /> disegna ogni spigolo, anche quelli dietro; <Keyword id="Hidden" /> nasconde ciò che le facce nascondono; <Keyword id="Conceptual" /> dipinge le facce, ombreggiate. Lo stile appartiene alla vista e viene salvato con il disegno, e ogni esecuzione è un solo passo di annullamento. Non si può usare all'interno di un altro comando.
@@ -31,7 +31,7 @@ Gli altri stili di AutoCAD, Wireframe, Realistico, Ombreggiato, Ombreggiato con 
 
 ### Come si cambia lo stile visivo in AutoCAD?
 
-Avvia STILEVISCORRENTE (o `SVC`) e scegli lo stile: <Keyword id="Hidden" /> per nascondere gli spigoli dietro, <Keyword id="Conceptual" /> per ombreggiare le facce. Cambia solo la vista, non gli oggetti. Senza digitare, sceglilo nell'etichetta in alto a sinistra del disegno, che mostra lo stile corrente, o in Vista › Stili di visualizzazione della barra multifunzione.
+Avvia STILEVISCORRENTE (o `SVC`) e scegli lo stile: <Keyword id="Hidden" /> per nascondere gli spigoli dietro, <Keyword id="Conceptual" /> per ombreggiare le facce. Cambia solo la vista, non gli oggetti. Senza digitare, sceglilo nell'etichetta in alto a sinistra del disegno, che mostra lo stile corrente.
 
 ### Come si torna a Wireframe 2D?
 

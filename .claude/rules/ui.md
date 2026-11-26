@@ -40,7 +40,7 @@ keyboard listener. If a button needs one, the engine owes it a method (behind a 
 in `cad/adapters/`), or every host has to rewrite it. Failures are reported at the command prompt,
 never in a React banner. The exception is the layout, kept on the device as AutoCAD keeps it in
 the profile: the palettes' places (`palette-layout.ts`) and the ribbon's minimize
-state (`ribbon-layout.ts`), read by a `<head>` script, and, read after mount, the status bar's
+state (`ribbon-layout.ts`, with its menu's choices), read by a `<head>` script, and, read after mount, the status bar's
 Customization (`status-bar-layout.ts`) and Properties' folds (`properties-fold.ts`), each under the host's key (`layoutStorage`; none, not kept), the site's frozen
 (`lib/site.test.ts`).
 
@@ -288,8 +288,8 @@ Each bar's AutoCAD order is in its component's header comment; touch and phones 
 - **The ribbon** draws its tabs from `RIBBON_TABS`: acad.cuix's panels, rows and drop-downs
   (`ribbon.mjs --built`), only what the engine has, its words each culture's acad.CUIX's (or its
   AcWindows resources'). A tool with no button is in `TYPED` with its WHY (`ribbon.test.ts`). What
-  a control shows is the engine's (`setRibbonTab`, `setRibbonMember`, `visualStyle`), its minimize
-  state the device's: the piece unmounts while closed. Panels fold, never scroll (a tab's `fold`,
+  a control shows is the engine's (`setRibbonTab`, `setRibbonMember`, `visualStyle`), its layout
+  (`RibbonLayout`) the device's: the piece unmounts while closed. Panels fold, never scroll (a tab's `fold`,
   else `foldSteps`). A control with no macro does what the desktop's does, read there first.
 - **The dynamic input** is `pointer-events-none` and keyboard-driven — never clickable. A
   `paragraphs` field (MTEXT) is a textarea, never reselected when focus comes back; nor is a value

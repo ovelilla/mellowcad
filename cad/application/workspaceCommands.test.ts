@@ -233,6 +233,28 @@ describe("Clean Screen", () => {
     expect(copy.state().cleanScreen.active).toBe(false)
   })
 
+  // The ribbon's right-click menu's Close (AcWindows' RibbonMenuClose):
+  // RIBBONCLOSE's step, no echo, a running command going on.
+  it("closes from the ribbon's own menu as RIBBONCLOSE does", () => {
+    const idle = createHarness()
+    idle.runtime.closeRibbon()
+    expect(idle.state().ribbon.open).toBe(false)
+    expect(written(idle, "U")).toEqual(["U", "RIBBONCLOSE"])
+    expect(idle.state().ribbon.open).toBe(false)
+
+    const cad = createHarness()
+    written(cad, "_LINE", "0,0")
+    const from = cad.commandLog().length
+    cad.runtime.closeRibbon()
+    expect(cad.commandLog().slice(from)).toEqual([])
+    expect(cad.state().ribbon.open).toBe(false)
+    expect(cad.state().commandLine.command).toBe("LINE")
+    cad.runtime.closeRibbon()
+    written(cad, "10,0", "", "_RIBBON")
+    expect(cad.state().ribbon.open).toBe(true)
+    expect(written(cad, "U")).toEqual(["U", "RIBBON"])
+  })
+
   // desktop workspace/d10: the ribbon closed by RIBBONCLOSE, a step of its
   // own after CLEANSCREENON; U of CLEANSCREENON opens it, by RIBBON, a step
   // that drops what REDO would redo

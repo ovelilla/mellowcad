@@ -764,6 +764,13 @@ export const zhCN: EditorLocale = {
         "panelTitles": "最小化为面板标题",
         "panelButtons": "最小化为面板按钮",
         "cycle": "循环浏览所有项"
+      },
+      "menu": {
+        "showTabs": "显示选项卡",
+        "showPanels": "显示面板",
+        "showPanelTitles": "显示面板标题",
+        "close": "关闭",
+        "empty": "功能区当前没有加载任何选项卡或面板。"
       }
     },
     "CommandLine": {

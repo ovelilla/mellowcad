@@ -764,6 +764,13 @@ export const pl: EditorLocale = {
         "panelTitles": "Minimalizuj do tytułów paneli",
         "panelButtons": "Minimalizuj do przycisków paneli",
         "cycle": "Przechodź przez wszystko"
+      },
+      "menu": {
+        "showTabs": "Pokaż karty",
+        "showPanels": "Pokaż panele",
+        "showPanelTitles": "Pokaż tytuły paneli",
+        "close": "Zamknij",
+        "empty": "Aktualnie Wstążka nie ma wczytanych żadnych kart ani paneli."
       }
     },
     "CommandLine": {

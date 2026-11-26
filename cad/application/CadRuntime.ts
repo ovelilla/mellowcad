@@ -3317,6 +3317,17 @@ export class CadRuntime extends Observable {
     )
   }
 
+  /**
+   * The ribbon's right-click menu's Close (AcWindows' RibbonMenuClose): the
+   * ribbon closed as RIBBONCLOSE closes it, at `Command:` a step U names
+   * RIBBONCLOSE; a running command goes on, the close part of its step
+   * (whether AutoCAD's cancels it, or echoes, is unverified:
+   * docs/coverage/workspace.md, Ribbon).
+   */
+  closeRibbon(): void {
+    if (this.ribbonOpen) this.ribbonStep(false)
+  }
+
   /** The ribbon's tab in front: the host's choice, kept for the session. */
   setRibbonTab(tab: string): void {
     if (this.ribbonTab === tab) return

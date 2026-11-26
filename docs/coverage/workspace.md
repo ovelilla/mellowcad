@@ -186,7 +186,7 @@ command may not be invoked transparently **` (d09). The engine keeps, for the se
 front and the member each drop-down shows (`state.ribbon`), as AutoCAD keeps the member for the
 session and not after a restart (`docs/plans/autocad-ui.md`, §2.3; the ribbon: below)
 
-**Missing:** its right-click menu's Close and Undock, docking and floating it
+**Missing:** its right-click menu's Undock, docking and floating it (its Close: Ribbon)
 
 ### F1 (Help)
 
@@ -279,9 +279,24 @@ name after a reload (the auto-save keeps the drawing, not its file's name: it co
 
 **Implemented:** the tabs of Drafting & Annotation that hold something built, in its order —
 Home, Insert, Annotate, 3D Tools, View — the tab in front the engine's for the session
-(`state.ribbon.tab`), 3D Tools and View's Visual Styles, Coordinates and Navigate shown where the
-workspace hides them (WHY: no workspace switching nor the ribbon's Show Tabs and Show Panels here to
-reach them; `docs/plans/autocad-ui.md`, decision 4, R9). Home (`docs/plans/autocad-ui.md`, §2.3; acad.cuix's
+(`state.ribbon.tab`), 3D Tools and View's Visual Styles, Coordinates and Navigate hidden at first,
+as the workspace hides them (`docs/plans/autocad-ui.md`, decision 4, revisited in phase 5).
+**The right-click menu** (§2.3, R13), on the tab row or a panel, at the pointer: Show Tabs ▸, a
+check per tab built, Show Panels ▸, a check per panel of the tab in front, | Show Panel Titles,
+checked, | Close (desktop `autocad-mouse/ribbon-rclick`, `ribbon-show-tabs`, `ribbon-show-panels`
+and their UI Automation dumps), each culture's words (AdWindows' BAML `system:String_99` to
+`_101`, AcWindows' `RibbonMenuClose`; Arabic's ours); a pick closes the menu and hands the keys to
+the drawing. A tab or panel unchecked is gone from the ribbon and its fold, the first tab shown
+taking the front of a hidden one; every tab hidden, the panels' place says AutoCAD's `The Ribbon
+does not have any tabs or panels currently loaded.` (`system:String_81`). Show Panel Titles off
+leaves each title bar with its ▾ and launcher and no name, its height kept (Autodesk's "Ribbon panel
+drop-down titles are missing": "The drop-down arrow is present, but there is no text"). Close
+closes the ribbon as RIBBONCLOSE does, at `Command:` a step U names RIBBONCLOSE; a running command
+goes on, the close part of its step. What
+is shown is this device's, kept as the minimize state is. **Unverified**: where AutoCAD keeps it
+(the workspace or the profile), whether a pick closes its menu, whether Close cancels a running
+command or echoes, what a title bar without its name measures, and whether the names leave a
+folded panel's button or the minimized states too (here they stay). Home (`docs/plans/autocad-ui.md`, §2.3; acad.cuix's
 RibbonRoot, `node scripts/research/ribbon.mjs --tab Home --built`): its tab row, 24, and its panels,
 100, each 97 high (4, its rows' 72, 3 and a title bar of 18), with what the engine has in acad.cuix's
 rows and order — Draw, Modify, Annotation, Layers, Block, Properties, Utilities and Clipboard. Large
@@ -397,7 +412,8 @@ on a text
 
 **Missing:** the Parametric, Visualize, Manage, Output, Add-ins, Collaborate, Express Tools and
 Featured Apps tabs, nothing of theirs built; the extended tooltip's illustration (WHY: Autodesk's art, and none is
-drawn here; `autocad-mouse/tip-long.png`), the right-click menu (phase 5); Groups
+drawn here; `autocad-mouse/tip-long.png`), the right-click menu's Show Related Tool Palette Group,
+Tool Palette Group and Undock (no tool palettes, no docking); Groups
 and View, with nothing built; what each panel lacks: Draw's Tan, Tan, Radius and Tan, Tan, Tan, Arc's
 seven other members and Continue, Gradient, Boundary, Helix, Donut and Revision Cloud; Modify's Set to
 ByLayer, Change Space, Lengthen, Edit Hatch, Edit Array, Align, Reverse, Copy Nested Objects, Delete

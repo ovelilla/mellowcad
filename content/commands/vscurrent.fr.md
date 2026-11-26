@@ -2,7 +2,7 @@
 title: "Commande STYLVISCOURANT (VSCURRENT) dans AutoCAD"
 description: "STYLVISCOURANT (VSCURRENT, alias SV) d'AutoCAD règle le style visuel : Filaire 2D, Masqué et Conceptuel, ce que chacun dessine et comment revenir au filaire."
 figure: "Une pièce percée d'un trou, vue du sud-est : STYLVISCOURANT Conceptuel ombre ses faces et dessine ses arêtes par-dessus."
-sourceHash: "d7b4b0b602ea"
+sourceHash: "d06873f62261"
 ---
 
 STYLVISCOURANT (VSCURRENT) règle le style visuel : la façon dont la vue dessine les solides 3D. La commande demande un style, en proposant le style courant par défaut, et Entrée le garde. <Keyword id="2dwireframe" /> dessine toutes les arêtes, celles de derrière aussi ; <Keyword id="Hidden" /> masque ce que cachent les faces ; <Keyword id="Conceptual" /> peint les faces, ombrées. Le style appartient à la vue et est enregistré avec le dessin, et chaque exécution est une seule étape d'annulation. La commande ne peut pas s'utiliser à l'intérieur d'une autre.
@@ -31,7 +31,7 @@ Les autres styles d'AutoCAD (Filaire, Réaliste, Ombré, Ombré avec arêtes, Nu
 
 ### Comment changer le style visuel dans AutoCAD ?
 
-Lancez STYLVISCOURANT (ou `SV`) et choisissez le style : <Keyword id="Hidden" /> pour masquer les arêtes situées derrière, <Keyword id="Conceptual" /> pour ombrer les faces. Seule la vue change, pas les objets. Sans rien taper, choisissez-le dans l'étiquette en haut à gauche du dessin, qui affiche le style courant, ou dans Vue › Styles visuels du ruban. Comme dans AutoCAD en français, le nom anglais fonctionne aussi, précédé d'un trait de soulignement : `_VSCURRENT`.
+Lancez STYLVISCOURANT (ou `SV`) et choisissez le style : <Keyword id="Hidden" /> pour masquer les arêtes situées derrière, <Keyword id="Conceptual" /> pour ombrer les faces. Seule la vue change, pas les objets. Sans rien taper, choisissez-le dans l'étiquette en haut à gauche du dessin, qui affiche le style courant. Comme dans AutoCAD en français, le nom anglais fonctionne aussi, précédé d'un trait de soulignement : `_VSCURRENT`.
 
 ### Comment revenir en Filaire 2D ?
 

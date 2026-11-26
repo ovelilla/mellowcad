@@ -760,6 +760,13 @@ export const ko: EditorLocale = {
         "panelTitles": "패널 제목으로 최소화",
         "panelButtons": "패널 버튼으로 최소화",
         "cycle": "모두 순환"
+      },
+      "menu": {
+        "showTabs": "탭 표시",
+        "showPanels": "패널 표시",
+        "showPanelTitles": "패널 제목 표시",
+        "close": "닫기",
+        "empty": "현재 리본에 탭 또는 패널이 로드되어 있지 않습니다."
       }
     },
     "CommandLine": {

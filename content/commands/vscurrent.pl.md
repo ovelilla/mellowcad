@@ -3,7 +3,7 @@ title: "Style wizualne w AutoCADzie: polecenie BIEŻSTYLWIZ (VSCURRENT)"
 metaTitle: "Style wizualne w AutoCADzie: BIEŻSTYLWIZ"
 description: "Jak zmienić styl wizualny w AutoCADzie poleceniem BIEŻSTYLWIZ (VSCURRENT): Model szkieletowy 2D, Ukryty i Koncepcyjny, co rysuje każdy i jak wrócić do 2D."
 figure: "Klocek z otworem na wylot, widziany z południowego wschodu: BIEŻSTYLWIZ Koncepcyjny cieniuje jego powierzchnie i rysuje na nich krawędzie."
-sourceHash: "d7b4b0b602ea"
+sourceHash: "d06873f62261"
 ---
 
 Polecenie BIEŻSTYLWIZ (VSCURRENT) ustawia styl wizualny: sposób, w jaki widok rysuje bryły 3D. Pyta o styl, proponując bieżący jako domyślny, a Enter go zachowuje. <Keyword id="2dwireframe" /> rysuje każdą krawędź, także te z tyłu; <Keyword id="Hidden" /> ukrywa to, co zasłaniają powierzchnie; <Keyword id="Conceptual" /> maluje powierzchnie, z cieniowaniem. Styl należy do widoku i zapisuje się w rysunku, a każde wykonanie to jeden krok cofania. Nie można go użyć wewnątrz innego polecenia.
@@ -32,7 +32,7 @@ Pozostałe style AutoCADa – Model szkieletowy, Realistyczny, Cieniowany, Cieni
 
 ### Jak zmienić styl wizualny w AutoCADzie?
 
-Uruchom polecenie BIEŻSTYLWIZ (w polskim AutoCADzie nie ma ono skrótu, a angielski `VS` nie działa) i wybierz styl: <Keyword id="Hidden" />, aby ukryć krawędzie z tyłu, <Keyword id="Conceptual" />, aby cieniować powierzchnie. Zmienia tylko widok, nie obiekty. Bez wpisywania wybierzesz go w etykiecie w lewym górnym rogu rysunku, która pokazuje bieżący styl, albo na wstążce: Widok › Style widoku.
+Uruchom polecenie BIEŻSTYLWIZ (w polskim AutoCADzie nie ma ono skrótu, a angielski `VS` nie działa) i wybierz styl: <Keyword id="Hidden" />, aby ukryć krawędzie z tyłu, <Keyword id="Conceptual" />, aby cieniować powierzchnie. Zmienia tylko widok, nie obiekty. Bez wpisywania wybierzesz go w etykiecie w lewym górnym rogu rysunku, która pokazuje bieżący styl.
 
 ### Jak wrócić do modelu szkieletowego 2D?
 

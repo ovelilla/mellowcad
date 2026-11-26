@@ -419,11 +419,11 @@ in `docs/coverage/`, never a dead button.
 | R6 | Panels shed text and fold from the right as the window narrows | none | Revoked, in the measured order | 1 |
 | R7 | Layers and Properties are panels of Home | groups of the top bar | Revoked | 1 |
 | R8 | Styles, Blocks and the command line are toggled from View › Palettes | toggles at the end of the top bar | Revoked | 1 |
-| R9 | 3D Tools is a hidden tab of the workspace; 3D work has the 3D Modeling workspace | the 3D tools in the palette | Platform-like, for now: **the 3D Tools tab shows**, as do View's Visual Styles, Coordinates and Navigate — WHY: there is no workspace switching nor the ribbon's Show Tabs menu yet, and hidden they could not be reached | 1, 5 |
+| R9 | 3D Tools is a hidden tab of the workspace; 3D work has the 3D Modeling workspace | the 3D tools in the palette | Equal since phase 5: hidden at first, shown by Show Tabs and Show Panels (decision 4); until then they showed, unreachable hidden | 1, 5 (block 2, done) |
 | R10 | Contextual tabs (Hatch Creation, Text Editor, Array) while their command runs | the command's prompts only | Missing | 6 |
 | R11 | Tooltips: the name, a description, the command and `Press F1 for more help` | the name and the alias | Revoked: §2.3's four parts, each culture's words (acad.CUIX, AcWindows, AcCommandToolTips) | 5 (block 1, done) |
 | R12 | RIBBON and RIBBONCLOSE; Clean Screen closes the ribbon | neither command; Clean Screen hides the palette and the top bar's groups | Revoked | 1 |
-| R13 | The ribbon docks at a side or floats; a panel can be dragged off; right-click shows or hides tabs, panels and titles | — | Missing (Show Tabs, Show Panels and Show Panel Titles: 5; Undock and the tool palette groups stay Missing) | 5 |
+| R13 | The ribbon docks at a side or floats; a panel can be dragged off; right-click shows or hides tabs, panels and titles | — | Revoked for Show Tabs, Show Panels, Show Panel Titles and Close; Undock and the tool palette groups stay Missing | 5 (block 2, done) |
 | R15 | A running command's button is not lit | the running tool's button is lit (`active`) | Revoked: the ribbon keeps the accent for what is a state (Layer Properties while its palette is open, a toggle) | 1 |
 | R16 | A split button's last member lasts the session, whichever tab or state the ribbon is in | kept in the flyout's component, lost when it unmounts | Revoked with R3: the engine's, for the session (decision 2) | 1 |
 | R14 | Tools with no ribbon button are typed (LEADER, SOLID, 3DFACE…) | the same, listed in `RAIL_EXCLUDED` | Equal; the list moves with the ribbon | 1 |
@@ -498,8 +498,9 @@ colour scheme. Each has its WHY in its coverage entry already.
 3. **A tab or panel with nothing built is not drawn**; a panel is drawn with what it has, in
    AutoCAD's rows, and its coverage entry lists the rest. So: Home without Groups and View; no
    Parametric, Manage, Output, Add-ins, Collaborate, Express Tools or Featured Apps.
-4. **The 3D Tools tab and View's hidden panels show** (R9), until Show Tabs and workspace
-   switching exist.
+4. **The 3D Tools tab and View's hidden panels start hidden** (R9), as Drafting & Annotation has
+   them, and the ribbon's right-click Show Tabs and Show Panels show them (revisited in phase 5,
+   block 2: until then they showed, unreachable hidden).
 5. **The icons stay ours**, drawn at 16 and at 32 on lucide's metrics; a large button needs the
    32 px drawing of its tool, not the 16 px one scaled.
 6. **One block per commit and the gate once per block**, each block leaving the editor whole: the
@@ -760,16 +761,16 @@ Blocks, a commit each, each leaving the editor whole:
    button that only lists get theirs on a wrapper, never on the popup's trigger (ui.md), and none
    while their list is open. The alias leaves the tooltip: AutoCAD's shows none. The extended
    tooltip's illustration is Missing (WHY: Autodesk's art, and none is drawn here).
-2. **The right-click menu** (R13) on the tab row and the panels: Show Tabs ▸ and Show Panels ▸,
+2. **The right-click menu** (R13; done 2026-11-26) on the tab row and the panels: Show Tabs ▸ and Show Panels ▸,
    checks over what is built (the tabs; the panels of the tab in front), and Close (RIBBONCLOSE).
    Show Related Tool Palette Group, Tool Palette Group and Undock stay Missing, undrawn (no tool
    palettes, no docking). **Decision 4 is revisited**: with Show Tabs and Show Panels here, the
    WHY that showed 3D Tools and View's Visual Styles, Coordinates and Navigate is gone, so they
    start hidden, as Drafting & Annotation has them, and the menu shows them. What is shown is the
    device's, kept as the minimize state is (where AutoCAD keeps it, the workspace or the profile,
-   **unverified**). Show Panel Titles: what a panel becomes without its title bar (its height, its
-   slide-out's ▾, Properties' launcher) was never captured, so it is built only if the help or a
-   capture settles it, else Missing and first in §7.
+   **unverified**). Show Panel Titles: Autodesk's support article "Ribbon panel drop-down titles are
+   missing" settles it — "The drop-down arrow is present, but there is no text": the title bar
+   stays, its name goes; its height and the minimized states without names stay **unverified**.
 3. **Customize ▾** (F4): the arrow after Redo and its list under it (§2.2, `pop-qat-custom`),
    rows of 21 under its caption, a check before each command on the toolbar: New, Open, Save,
    Save As..., Undo, Redo, Match Properties and Properties, the ones built; a pick adds or removes
@@ -794,6 +795,7 @@ start of its phase and with the owner's word first (`gui.md`):
 | 2 | done 2026-11-25 (§2.2): Undo's and Redo's lists and what they run, the title of a saved drawing, the Open Documents list (`research/ui/2026-11-25`); the Help list opened on none of four clicks either, so its rows stay **unverified** |
 | 3 | done 2026-11-25 (§2.8, §2.9): a palette docked, anchored and auto-hidden and its properties menu with the mouse; New Text Style and each tab of Modify Dimension Style without it (`research/ui/2026-11-25/phase3`) |
 | 4 | not reached: the session of 2026-11-26 had no word for it, and phase 4 was built without it; still owed, each **unverified** in its coverage entry: the status bar of a profile nobody has touched (S4); the navigation bar under the pointer; the command line's history open (F2) and its Recent Commands and Customize menus, which the mouse pass opened without a capture |
+| 5 | not reached (no word for the desktop on 2026-11-26), each **unverified** in its coverage entry: where a ribbon tooltip opens (at the pointer, it seems) and whether Circle's names its member; whether a second tooltip opens at once; whether a pick in the right-click menu closes it, whether its Close cancels a running command or echoes, a title bar's height without its name, and whether the names leave a folded panel or the minimized states; where AutoCAD keeps what the menu shows |
 
 Without the mouse, `acad.sh act` opens a drop-down, a slide-out, a folded panel, the status
 bar's menus, Undo's list and the command line's two menus, and `acad.sh tree` reads their rows

@@ -173,15 +173,18 @@ export function SnapOverrideMenu({
 /** A submenu of a menu at the cursor, opening beside its entry. */
 export function Submenu({
   label,
+  className = MENU_ITEM,
   children,
 }: {
   label: string
+  /** Its trigger's classes: an entry of the menu it is in. */
+  className?: string
   children: React.ReactNode
 }) {
   const portal = usePortalContainer()
   return (
     <Menu.SubmenuRoot>
-      <Menu.SubmenuTrigger className={MENU_ITEM}>
+      <Menu.SubmenuTrigger className={className}>
         {label}
         <ChevronRight className="absolute inset-e-2 size-4 rtl:-scale-x-100" />
       </Menu.SubmenuTrigger>

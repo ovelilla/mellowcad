@@ -7,14 +7,14 @@ and it renders in the piece's place, or give it `null` and the piece is gone, wi
 took. The ribbon's band
 keeps its height while the ribbon is open (`RIBBONCLOSE` closes it, `RIBBON` brings it back): the
 full ribbon's, or the one its minimize state takes, which a `Ribbon` of your own reads and sets
-with `useRibbonLayout()`.
+with `useRibbonLayout()`, with the tabs, panels and titles the ribbon's right-click menu shows.
 
 ## The pieces
 
 | Slot               | The piece                                                                   |
 | ------------------ | --------------------------------------------------------------------------- |
 | `TitleBar`         | Across the top: the application menu, Quick Access and the save state       |
-| `Ribbon`           | Under it: the ribbon, Home, Insert, Annotate, 3D Tools and View             |
+| `Ribbon`           | Under it: the ribbon, Home, Insert, Annotate, View; 3D Tools by Show Tabs   |
 | `PaletteContent`   | What Properties, the Layer Properties Manager and Blocks each hold          |
 | `CommandLine`      | On the drawing, along its foot: the command line and its history            |
 | `StatusBar`        | Across the bottom: the coordinates, the drafting modes and Customization    |

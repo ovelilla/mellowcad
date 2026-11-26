@@ -2,7 +2,7 @@
 title: "Befehl VSAKTUELL (VSCURRENT) in AutoCAD"
 description: "So legt AutoCADs VSAKTUELL (VSCURRENT, Alias VSA) den visuellen Stil fest: 2D-Drahtkörper, Verdeckt und Konzeptuell, was jeder zeichnet und wie es zurückgeht."
 figure: "Ein Block mit einem Loch quer hindurch, von Südosten gesehen: VSAKTUELL Konzeptuell schattiert seine Flächen und zeichnet seine Kanten darüber."
-sourceHash: "d7b4b0b602ea"
+sourceHash: "d06873f62261"
 ---
 
 VSAKTUELL (VSCURRENT) legt den visuellen Stil fest: wie die Ansicht 3D-Volumenkörper zeichnet. Er fragt nach einem Stil, bietet den aktuellen als Vorgabe an, und die Eingabetaste behält ihn. <Keyword id="2dwireframe" /> zeichnet jede Kante, auch die dahinter; <Keyword id="Hidden" /> blendet aus, was Flächen verdecken; <Keyword id="Conceptual" /> malt die Flächen, schattiert. Der Stil gehört zur Ansicht und wird mit der Zeichnung gespeichert, und jeder Aufruf ist ein Schritt für Rückgängig. Innerhalb eines anderen Befehls lässt er sich nicht verwenden.
@@ -31,7 +31,7 @@ Die anderen Stile von AutoCAD, Drahtmodell, Realistisch, Schattiert, Schattiert 
 
 ### Wie ändere ich den visuellen Stil in AutoCAD?
 
-Starten Sie VSAKTUELL (oder `VSA`) und wählen Sie den Stil: <Keyword id="Hidden" />, um die Kanten dahinter auszublenden, <Keyword id="Conceptual" />, um die Flächen zu schattieren. Es ändert nur die Ansicht, nicht die Objekte. Ohne Eingabe wählen Sie ihn in der Beschriftung oben links in der Zeichnung, die den aktuellen Stil zeigt, oder in der Multifunktionsleiste unter Ansicht › Visuelle Stile.
+Starten Sie VSAKTUELL (oder `VSA`) und wählen Sie den Stil: <Keyword id="Hidden" />, um die Kanten dahinter auszublenden, <Keyword id="Conceptual" />, um die Flächen zu schattieren. Es ändert nur die Ansicht, nicht die Objekte. Ohne Eingabe wählen Sie ihn in der Beschriftung oben links in der Zeichnung, die den aktuellen Stil zeigt.
 
 ### Wie gehe ich zurück zu 2D-Drahtkörper?
 

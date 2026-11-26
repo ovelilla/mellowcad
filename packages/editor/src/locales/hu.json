@@ -715,6 +715,13 @@
       "panelTitles": "Összecsukás panelcímmé",
       "panelButtons": "Kicsinyítés a panel gombjaira",
       "cycle": "Végiglépés az összesen"
+    },
+    "menu": {
+      "showTabs": "Fülek mutatása",
+      "showPanels": "Panelek mutatása",
+      "showPanelTitles": "Panelcímek megjelenítése",
+      "close": "Bezárás",
+      "empty": "A szalagnak jelenleg nincs betöltött lapja vagy panelje."
     }
   },
   "CommandLine": {

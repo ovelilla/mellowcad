@@ -282,6 +282,12 @@ export declare class CadEngine {
     toggleCommandHistory(): void;
     setCleanScreen(on: boolean): void;
     toggleCleanScreen(): void;
+    /**
+     * Closes the ribbon from its own right-click menu, as RIBBONCLOSE does: at
+     * the Command prompt a step U names RIBBONCLOSE; a running command goes on.
+     * RIBBON brings it back.
+     */
+    closeRibbon(): void;
     /** Brings a ribbon tab to the front, by the host's id for it (`state.ribbon.tab`). */
     setRibbonTab(tab: string): void;
     /**

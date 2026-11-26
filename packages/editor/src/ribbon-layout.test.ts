@@ -68,17 +68,33 @@ describe("the ribbon's minimize state", () => {
     )
   })
 
+  // Drafting & Annotation hides 3D Tools and View's Visual Styles,
+  // Coordinates and Navigate (plan §2.3, decision 4): Show Tabs and Show
+  // Panels bring them back, the device keeping what they show.
   it("starts full and cycling, and reads what is stored leniently", () => {
-    expect(RIBBON_LAYOUT).toEqual({ state: "full", mode: "cycle" })
+    expect(RIBBON_LAYOUT).toEqual({
+      state: "full",
+      mode: "cycle",
+      hiddenTabs: ["tools3d"],
+      hiddenPanels: ["visualStyles", "coordinates", "navigate"],
+      panelTitles: true,
+    })
     expect(resolveRibbonLayout(null)).toEqual(RIBBON_LAYOUT)
     expect(resolveRibbonLayout({ state: "tabs", mode: 3 })).toEqual({
+      ...RIBBON_LAYOUT,
       state: "tabs",
-      mode: "cycle",
     })
     expect(resolveRibbonLayout({ state: "huge", mode: "tabs" })).toEqual({
-      state: "full",
+      ...RIBBON_LAYOUT,
       mode: "tabs",
     })
+    expect(
+      resolveRibbonLayout({
+        hiddenTabs: [],
+        hiddenPanels: ["draw", 3],
+        panelTitles: false,
+      })
+    ).toEqual({ ...RIBBON_LAYOUT, hiddenTabs: [], panelTitles: false })
   })
 
   // plan §2.3: the ribbon below the title bar in each state.

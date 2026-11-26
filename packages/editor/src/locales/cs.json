@@ -715,6 +715,13 @@
       "panelTitles": "Minimalizovat na zobrazení názvů panelů",
       "panelButtons": "Minimalizovat na zobrazení tlačítek panelů",
       "cycle": "Cyklicky procházet všechny"
+    },
+    "menu": {
+      "showTabs": "Zobrazit karty",
+      "showPanels": "Zobrazit panely",
+      "showPanelTitles": "Zobrazit názvy panelů",
+      "close": "Zavřít",
+      "empty": "Do pásu karet nebyly dosud načteny žádné karty ani panely."
     }
   },
   "CommandLine": {

@@ -3,7 +3,7 @@ title: "AutoCAD VSCURRENT（视觉样式）命令"
 metaTitle: "CAD 视觉样式怎么切换（VSCURRENT）与快捷键 VS"
 description: "AutoCAD VSCURRENT（视觉样式，快捷键 VS）怎么设置视觉样式：二维线框、隐藏和概念，各自显示什么，以及怎么切回二维线框。在线免费试用。"
 figure: "从东南方向观察的带通孔的块：VSCURRENT 概念为其面着色，并在面上绘制其边。"
-sourceHash: "d7b4b0b602ea"
+sourceHash: "d06873f62261"
 ---
 
 VSCURRENT（视觉样式）命令设置视觉样式，即视图显示三维实体的方式。它询问样式，以当前样式作为默认值，按 Enter 键即保持不变。<Keyword id="2dwireframe" /> 显示所有边，包括后面的边；<Keyword id="Hidden" /> 隐藏被面遮挡的部分；<Keyword id="Conceptual" /> 为面着色并显示明暗。样式属于视图，随图形保存，每次执行是一个放弃步骤。它不能在其他命令中使用。
@@ -32,7 +32,7 @@ VSCURRENT（视觉样式）命令设置视觉样式，即视图显示三维实�
 
 ### CAD 视觉样式怎么切换？
 
-执行 VSCURRENT（或输入 `VS`）并选择样式：<Keyword id="Hidden" /> 隐藏后面的边，<Keyword id="Conceptual" /> 为面着色。它只改变视图，不改变对象。不输入命令也可以：在图形左上角显示当前样式的标签中选择，或在功能区的“视图 › 视觉样式”中选择。
+执行 VSCURRENT（或输入 `VS`）并选择样式：<Keyword id="Hidden" /> 隐藏后面的边，<Keyword id="Conceptual" /> 为面着色。它只改变视图，不改变对象。不输入命令也可以：在图形左上角显示当前样式的标签中选择。
 
 ### CAD 怎么切回二维线框？
 

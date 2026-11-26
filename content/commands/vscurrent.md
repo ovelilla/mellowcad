@@ -33,7 +33,7 @@ The other styles of AutoCAD — Wireframe, Realistic, Shaded, Shaded with edges,
 
 ### How do I change the visual style in AutoCAD?
 
-Run VSCURRENT (or `VS`) and choose the style: <Keyword id="Hidden" /> to hide the edges behind, <Keyword id="Conceptual" /> to shade the faces. It changes the view only, not the objects. Without typing, pick it in the label at the drawing's top left that names the current style, or in View › Visual Styles on the ribbon.
+Run VSCURRENT (or `VS`) and choose the style: <Keyword id="Hidden" /> to hide the edges behind, <Keyword id="Conceptual" /> to shade the faces. It changes the view only, not the objects. Without typing, pick it in the label at the drawing's top left that names the current style.
 
 ### How do I go back to 2D Wireframe?
 

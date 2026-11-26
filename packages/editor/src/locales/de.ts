@@ -760,6 +760,13 @@ export const de: EditorLocale = {
         "panelTitles": "Auf Gruppentitel verkleinern",
         "panelButtons": "Auf Gruppenschaltflächen minimieren",
         "cycle": "Durch alle wechseln"
+      },
+      "menu": {
+        "showTabs": "Registerkarten anzeigen",
+        "showPanels": "Gruppen anzeigen",
+        "showPanelTitles": "Gruppentitel anzeigen",
+        "close": "Schließen",
+        "empty": "In der Multifunktionsleiste sind gegenwärtig keine Registerkarten oder Gruppen geladen."
       }
     },
     "CommandLine": {

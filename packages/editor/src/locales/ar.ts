@@ -764,6 +764,13 @@ export const ar: EditorLocale = {
         "panelTitles": "تصغير إلى عناوين اللوحات",
         "panelButtons": "تصغير إلى أزرار اللوحات",
         "cycle": "التنقل بين الكل"
+      },
+      "menu": {
+        "showTabs": "إظهار علامات التبويب",
+        "showPanels": "إظهار اللوحات",
+        "showPanelTitles": "إظهار عناوين اللوحات",
+        "close": "إغلاق",
+        "empty": "لا يحتوي الشريط على أي علامات تبويب أو لوحات محمَّلة حاليًا."
       }
     },
     "CommandLine": {

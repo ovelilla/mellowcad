@@ -764,6 +764,13 @@ export const ptBR: EditorLocale = {
         "panelTitles": "Minimizar os títulos dos painéis",
         "panelButtons": "Minimizar para os botões do painel",
         "cycle": "Navegar através de todos"
+      },
+      "menu": {
+        "showTabs": "Mostrar guias",
+        "showPanels": "Mostrar painéis",
+        "showPanelTitles": "Mostrar títulos dos painéis",
+        "close": "Fechar",
+        "empty": "A faixa de opções não tem nenhuma guia ou painel no momento carregada."
       }
     },
     "CommandLine": {

@@ -9,7 +9,11 @@ import { LARGE_BUTTON_ICONS, LARGE_TOOL_ICONS } from "./large-icons"
 import { BUTTON_ICONS, TOOL_ICONS } from "./tool-icons"
 import { Ribbon } from "./ribbon"
 import { RibbonLayoutProvider } from "./ribbon-layout-context"
-import type { RibbonState } from "./ribbon-layout"
+import {
+  RIBBON_LAYOUT,
+  type RibbonLayout,
+  type RibbonState,
+} from "./ribbon-layout"
 import {
   ACTIONS,
   SPACER,
@@ -53,7 +57,8 @@ const toolIds = () =>
  */
 function renderRibbon(
   prepare: (cad: ReturnType<typeof createHarness>) => void = () => {},
-  minimized: RibbonState = "full"
+  minimized: RibbonState = "full",
+  shown: Partial<RibbonLayout> = {}
 ) {
   const cad = createHarness()
   prepare(cad)
@@ -62,7 +67,7 @@ function renderRibbon(
       RibbonLayoutProvider,
       {
         value: {
-          layout: { state: minimized, mode: "cycle" },
+          layout: { ...RIBBON_LAYOUT, ...shown, state: minimized },
           setLayout: () => {},
         },
       },
@@ -144,12 +149,39 @@ describe("the ribbon's tabs", () => {
     expect(view).not.toContain(">Draw<")
   })
 
-  // Drafting & Annotation's order, with 3D Tools shown (decision 4).
+  // Drafting & Annotation's order; 3D Tools hidden as the workspace has it
+  // until Show Tabs brings it back (decision 4, revisited in phase 5).
   it("are Home, Insert, Annotate, 3D Tools and View, in that order", () => {
-    const tabs = [...renderRibbon().matchAll(/role="tab"[^>]*>([^<]+)</g)].map(
-      (m) => m[1]
+    const tabs = (html: string) =>
+      [...html.matchAll(/role="tab"[^>]*>([^<]+)</g)].map((m) => m[1])
+    expect(tabs(renderRibbon())).toEqual(["Home", "Insert", "Annotate", "View"])
+    expect(tabs(renderRibbon(undefined, "full", { hiddenTabs: [] }))).toEqual([
+      "Home",
+      "Insert",
+      "Annotate",
+      "3D Tools",
+      "View",
+    ])
+  })
+
+  it("show View without Visual Styles, Coordinates and Navigate at first", () => {
+    const view = (shown?: Partial<RibbonLayout>) =>
+      renderRibbon((cad) => cad.runtime.setRibbonTab("view"), "full", shown)
+    expect(view()).not.toContain(">Visual Styles<")
+    expect(view()).not.toContain(">Navigate<")
+    expect(view({ hiddenPanels: [] })).toContain(">Visual Styles<")
+    expect(view({ hiddenPanels: [] })).toContain(">Navigate<")
+  })
+
+  it("put the first tab shown in front of a hidden one, the names off without titles", () => {
+    const html = renderRibbon(
+      (cad) => cad.runtime.setRibbonTab("tools3d"),
+      "full",
+      { panelTitles: false }
     )
-    expect(tabs).toEqual(["Home", "Insert", "Annotate", "3D Tools", "View"])
+    expect(html).toContain('aria-label="Home"')
+    expect(html).not.toContain(">Draw<")
+    expect(html).toContain('aria-label="Draw"')
   })
 })
 
@@ -218,10 +250,14 @@ describe("View's toggles", () => {
 describe("the Visual Styles gallery", () => {
   it("shows the view's style by the drawing's name for it", () => {
     const html = (style?: "hidden") =>
-      renderRibbon((cad) => {
-        cad.runtime.setRibbonTab("view")
-        if (style) cad.runtime.setVisualStyle(style)
-      })
+      renderRibbon(
+        (cad) => {
+          cad.runtime.setRibbonTab("view")
+          if (style) cad.runtime.setVisualStyle(style)
+        },
+        "full",
+        { hiddenPanels: [] }
+      )
     expect(html()).toContain(">2D Wireframe<")
     expect(html("hidden")).toContain(">Hidden<")
   })

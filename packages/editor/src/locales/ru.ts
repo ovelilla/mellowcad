@@ -764,6 +764,13 @@ export const ru: EditorLocale = {
         "panelTitles": "Свернуть до названий панелей",
         "panelButtons": "Свернуть до кнопок панелей",
         "cycle": "Перебор всех вариантов"
+      },
+      "menu": {
+        "showTabs": "Показать вкладки",
+        "showPanels": "Показать панели",
+        "showPanelTitles": "Показать заголовки панелей",
+        "close": "Закрыть",
+        "empty": "В ленту не загружены вкладки или панели."
       }
     },
     "CommandLine": {

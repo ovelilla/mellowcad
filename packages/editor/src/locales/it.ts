@@ -764,6 +764,13 @@ export const it: EditorLocale = {
         "panelTitles": "Riduci a titoli gruppi",
         "panelButtons": "Riduci a pulsanti gruppo",
         "cycle": "Scorri tutti"
+      },
+      "menu": {
+        "showTabs": "Mostra schede",
+        "showPanels": "Mostra gruppi",
+        "showPanelTitles": "Mostra titoli pannelli",
+        "close": "Chiudi",
+        "empty": "Nessuna scheda o gruppo attualmente caricato nella barra multifunzione."
       }
     },
     "CommandLine": {

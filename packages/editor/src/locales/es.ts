@@ -764,6 +764,13 @@ export const es: EditorLocale = {
         "panelTitles": "Minimizar a títulos de grupo",
         "panelButtons": "Minimizar a botones de grupo",
         "cycle": "Recorrer todo cíclicamente"
+      },
+      "menu": {
+        "showTabs": "Mostrar fichas",
+        "showPanels": "Mostrar grupos",
+        "showPanelTitles": "Mostrar títulos de grupo",
+        "close": "Cerrar",
+        "empty": "La cinta de opciones no tiene ni etiquetas ni grupos cargados actualmente."
       }
     },
     "CommandLine": {

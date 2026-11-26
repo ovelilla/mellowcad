@@ -717,6 +717,13 @@ declare const source: {
       "panelButtons": string
       "cycle": string
     }
+    "menu": {
+      "showTabs": string
+      "showPanels": string
+      "showPanelTitles": string
+      "close": string
+      "empty": string
+    }
   }
   "CommandLine": {
     "label": string

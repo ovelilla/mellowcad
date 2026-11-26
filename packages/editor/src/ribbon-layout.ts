@@ -3,7 +3,7 @@ import { EDITOR_ROOT_ATTRIBUTE } from "./editor-root"
 /**
  * The ribbon's minimize state and what its button does, kept on the device
  * as AutoCAD keeps them in the profile (docs/plans/autocad-ui.md, decision
- * 2), and decided before the first paint as the docked palettes' columns are
+ * 2), with what its right-click menu hides, and decided before the first paint as the docked palettes' columns are
  * (`palette-layout.ts`): the ribbon's zone is 124, 86, 45 or 24 high by the
  * state, so an inline script in the layout's `<head>`
  * ({@link ribbonLayoutScript}) writes it on the editor's root as the parser
@@ -46,14 +46,33 @@ export const RIBBON_HEIGHT: Readonly<Record<RibbonState, number>> = {
   tabs: 24,
 }
 
-/** The ribbon's minimize state, and what its minimize button does. */
+/**
+ * The ribbon's minimize state, what its minimize button does, and what its
+ * right-click menu shows and hides (Show Tabs, Show Panels, Show Panel Titles).
+ */
 export interface RibbonLayout {
   readonly state: RibbonState
   readonly mode: RibbonMinimizeMode
+  /** The tabs hidden, by id (`RIBBON_TABS`). */
+  readonly hiddenTabs: readonly string[]
+  /** The panels hidden, by id, whichever tab holds them. */
+  readonly hiddenPanels: readonly string[]
+  readonly panelTitles: boolean
 }
 
-/** What a device starts with: the full ribbon, the button cycling. */
-export const RIBBON_LAYOUT: RibbonLayout = { state: "full", mode: "cycle" }
+/**
+ * What a device starts with: the full ribbon, the button cycling, and what
+ * Drafting & Annotation hides hidden — the 3D Tools tab and View's Visual
+ * Styles, Coordinates and Navigate panels (docs/plans/autocad-ui.md, §2.3 and
+ * decision 4), which Show Tabs and Show Panels bring back.
+ */
+export const RIBBON_LAYOUT: RibbonLayout = {
+  state: "full",
+  mode: "cycle",
+  hiddenTabs: ["tools3d"],
+  hiddenPanels: ["visualStyles", "coordinates", "navigate"],
+  panelTitles: true,
+}
 
 const isState = (value: unknown): value is RibbonState =>
   (RIBBON_STATES as readonly unknown[]).includes(value)
@@ -66,9 +85,19 @@ export function resolveRibbonLayout(stored: unknown): RibbonLayout {
     stored !== null && typeof stored === "object"
       ? (stored as Record<string, unknown>)
       : {}
+  const ids = (list: unknown, fallback: readonly string[]) =>
+    Array.isArray(list) && list.every((id) => typeof id === "string")
+      ? (list as string[])
+      : fallback
   return {
     state: isState(value.state) ? value.state : RIBBON_LAYOUT.state,
     mode: isMode(value.mode) ? value.mode : RIBBON_LAYOUT.mode,
+    hiddenTabs: ids(value.hiddenTabs, RIBBON_LAYOUT.hiddenTabs),
+    hiddenPanels: ids(value.hiddenPanels, RIBBON_LAYOUT.hiddenPanels),
+    panelTitles:
+      typeof value.panelTitles === "boolean"
+        ? value.panelTitles
+        : RIBBON_LAYOUT.panelTitles,
   }
 }
 
@@ -77,7 +106,9 @@ export function resolveRibbonLayout(stored: unknown): RibbonLayout {
  * in Cycle through All, else between the full ribbon and the one chosen
  * (help, "To Display and Control the Display State of the Ribbon").
  */
-export function nextRibbonState(layout: RibbonLayout): RibbonState {
+export function nextRibbonState(
+  layout: Pick<RibbonLayout, "state" | "mode">
+): RibbonState {
   if (layout.mode === "cycle") {
     const at = RIBBON_STATES.indexOf(layout.state)
     return RIBBON_STATES[(at + 1) % RIBBON_STATES.length]

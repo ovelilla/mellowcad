@@ -764,6 +764,13 @@ export const en: EditorCatalog = {
         "panelTitles": "Minimize to Panel Titles",
         "panelButtons": "Minimize to Panel Buttons",
         "cycle": "Cycle through All"
+      },
+      "menu": {
+        "showTabs": "Show Tabs",
+        "showPanels": "Show Panels",
+        "showPanelTitles": "Show Panel Titles",
+        "close": "Close",
+        "empty": "The Ribbon does not have any tabs or panels currently loaded."
       }
     },
     "CommandLine": {

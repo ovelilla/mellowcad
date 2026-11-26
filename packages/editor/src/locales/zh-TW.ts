@@ -764,6 +764,13 @@ export const zhTW: EditorLocale = {
         "panelTitles": "最小化為面板標題",
         "panelButtons": "最小化為面板按鈕",
         "cycle": "全部循環檢視"
+      },
+      "menu": {
+        "showTabs": "展示頁籤",
+        "showPanels": "展示面板",
+        "showPanelTitles": "展示面板標題",
+        "close": "關閉",
+        "empty": "功能區目前尚未載入任何頁籤或面板。"
       }
     },
     "CommandLine": {

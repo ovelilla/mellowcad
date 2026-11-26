@@ -137,6 +137,7 @@ marks a choice between competing terms that a native review should settle first 
 | Command line | Type a command, Close, Recent Commands | اكتب أمرًا، إغلاق، الأوامر الأخيرة (M) |
 |  | Command history | سجل الأوامر (M) |
 | Ribbon tooltips | Line's: Creates straight line segments; LINE; Press F1 for more help — and so each button's description (147), title where a control has its own (18) and extended paragraph (120) | ينشئ مقاطع خطوط مستقيمة; LINE; اضغط ⁨F1⁩ للحصول على مزيد من التعليمات (M) † — ours: Arabic has no AutoCAD; the command the global one, isolated in prose |
+| Ribbon's right-click menu | Show Tabs, Show Panels, Show Panel Titles, Close; The Ribbon does not have any tabs or panels currently loaded. | إظهار علامات التبويب, إظهار اللوحات, إظهار عناوين اللوحات, إغلاق; لا يحتوي الشريط على أي علامات تبويب أو لوحات محمَّلة حاليًا. (M) † — ours: Arabic has no AutoCAD; علامات التبويب and اللوحات as the minimize menu's |
 | Viewport controls | Visual Style Controls (the style label's name, acadres 62833); (Fast), after a style's name (acadres 18992) | عناصر التحكم في النمط المرئي؛ (سريع) (M) † |
 | Shortcut menu | Shortcut menu; Repeat ‹command›, Enter, Cancel | القائمة المختصرة؛ تكرار ‹الأمر›، Enter، إلغاء (L) † — Enter is the key's printed name, as in Keys |
 |  | Clipboard; Osnap Overrides; Properties | الحافظة (M)؛ تجاوزات الالتقاط (L) †؛ الخصائص (M) |

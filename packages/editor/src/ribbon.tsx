@@ -83,6 +83,7 @@ import {
   type RibbonMinimizeMode,
 } from "./ribbon-layout"
 import { useRibbonLayout } from "./ribbon-layout-context"
+import { RibbonMenu } from "./ribbon-menu"
 import { useEditorText } from "./editor-text"
 import type { PieceProps } from "./piece"
 
@@ -124,6 +125,8 @@ interface Context {
   readonly act: (run: () => void) => void
   /** A modal list's `finalFocus`: the drawing's, once it has closed. */
   readonly toDrawing: () => false
+  /** Show Panel Titles: off, a title bar keeps its ▾ and launcher, not its name. */
+  readonly titles: boolean
 }
 
 /**
@@ -152,19 +155,34 @@ export function Ribbon({ engine, state }: PieceProps): ReactElement {
       engine.focusSurface()
     },
     toDrawing: drawingFocus(engine),
+    titles: layout.panelTitles,
   }
+  // Where the right-click menu opened, while it is open.
+  const [menuAt, setMenuAt] = useState<{ x: number; y: number } | null>(null)
 
   // The tab in front is the engine's (`setRibbonTab`), so it outlives the
-  // piece, which unmounts while the ribbon is closed.
-  const front =
-    RIBBON_TABS.find((tab) => tab.id === state.ribbon.tab) ?? RIBBON_TABS[0]
-  const panelsLabel = t(`tabs.${front.id}`)
+  // piece, which unmounts while the ribbon is closed; hidden by Show Tabs,
+  // the first one shown is in front instead. Its panels are those Show Panels
+  // leaves (`layout.hiddenPanels`).
+  const shown = RIBBON_TABS.filter((tab) => !layout.hiddenTabs.includes(tab.id))
+  const chosen = shown.find((tab) => tab.id === state.ribbon.tab) ?? shown[0]
+  const front = chosen && withPanelsShown(chosen, layout.hiddenPanels)
+  const panelsLabel = front ? t(`tabs.${front.id}`) : t("menu.empty")
 
   return (
     <TooltipProvider>
       <Tabs.Root
-        value={front.id}
+        value={front?.id ?? null}
         onValueChange={(value) => engine.setRibbonTab(String(value))}
+        // A right-click on the tab row or a panel opens the ribbon's menu;
+        // in one of its open lists or menus (portalled, reached here through
+        // React) it is theirs, or the menu would open over a modal list.
+        onContextMenu={(event) => {
+          event.preventDefault()
+          const target = event.target as HTMLElement
+          if (target.closest('[role="listbox"], [role="menu"]')) return
+          setMenuAt({ x: event.clientX, y: event.clientY })
+        }}
         // The keys a control keeps, as the palettes': stopped in the capture,
         // or the engine's listener on the document runs them too — Delete on
         // a closed drop-down erased the selection, Enter on a button repeated
@@ -209,7 +227,7 @@ export function Ribbon({ engine, state }: PieceProps): ReactElement {
         arrow (20 × 18 and 10 × 18). */}
         <div ref={tabRow} className="flex h-6 items-end bg-background ps-1">
           <Tabs.List className="flex items-end">
-            {RIBBON_TABS.map((tab) => (
+            {shown.map((tab) => (
               <Tabs.Tab
                 key={tab.id}
                 value={tab.id}
@@ -217,8 +235,11 @@ export function Ribbon({ engine, state }: PieceProps): ReactElement {
                 // keep moving along the tabs. Minimized to the tabs, it drops
                 // the tab's panels over the drawing.
                 onClick={(event) => {
+                  // In front only because the engine's tab is hidden: a click
+                  // on it changes no value, so it is said here.
+                  if (state.ribbon.tab !== tab.id) engine.setRibbonTab(tab.id)
                   if (layout.state === "tabs")
-                    setDropped(!(dropped && tab.id === front.id))
+                    setDropped(!(dropped && tab.id === front?.id))
                   if (event.detail > 0) engine.focusSurface()
                 }}
                 className={cn(
@@ -242,39 +263,53 @@ export function Ribbon({ engine, state }: PieceProps): ReactElement {
             ctx={ctx}
           />
         </div>
-        {layout.state === "full" && (
+        {layout.state === "full" && !front && (
+          // Every tab hidden: AutoCAD's words for an empty ribbon
+          // (AdWindows' system:String_81) where the panels were.
+          <div className="flex h-25 items-center justify-center text-muted-foreground">
+            {panelsLabel}
+          </div>
+        )}
+        {layout.state === "full" && front && (
           <Tabs.Panel
             key={front.id}
             value={front.id}
             aria-label={panelsLabel}
             className="flex h-25 pt-px outline-none"
           >
-            <FoldingRow tab={front} ctx={ctx} />
+            <FoldingRow
+              key={layout.hiddenPanels.join()}
+              tab={front}
+              ctx={ctx}
+            />
           </Tabs.Panel>
         )}
-        {(layout.state === "panelButtons" ||
-          layout.state === "panelTitles") && (
-          <Tabs.Panel
-            key={front.id}
-            value={front.id}
-            aria-label={panelsLabel}
-            ref={rounded}
-            className={cn(
-              "flex overflow-hidden outline-none",
-              layout.state === "panelButtons" ? "h-15.5 pt-px" : "h-5.25 pt-px"
-            )}
-          >
-            {front.panels.map((panel) => (
-              <PanelPopup
-                key={panel.id}
-                panel={panel}
-                as={layout.state === "panelButtons" ? "button" : "title"}
-                ctx={ctx}
-              />
-            ))}
-          </Tabs.Panel>
-        )}
-        {layout.state === "tabs" && (
+        {front &&
+          (layout.state === "panelButtons" ||
+            layout.state === "panelTitles") && (
+            <Tabs.Panel
+              key={front.id}
+              value={front.id}
+              aria-label={panelsLabel}
+              ref={rounded}
+              className={cn(
+                "flex overflow-hidden outline-none",
+                layout.state === "panelButtons"
+                  ? "h-15.5 pt-px"
+                  : "h-5.25 pt-px"
+              )}
+            >
+              {front.panels.map((panel) => (
+                <PanelPopup
+                  key={panel.id}
+                  panel={panel}
+                  as={layout.state === "panelButtons" ? "button" : "title"}
+                  ctx={ctx}
+                />
+              ))}
+            </Tabs.Panel>
+          )}
+        {front && layout.state === "tabs" && (
           <DroppedPanels
             open={dropped}
             onOpenChange={setDropped}
@@ -285,8 +320,26 @@ export function Ribbon({ engine, state }: PieceProps): ReactElement {
           />
         )}
       </Tabs.Root>
+      <RibbonMenu
+        at={menuAt}
+        onClose={() => setMenuAt(null)}
+        layout={layout}
+        setLayout={setLayout}
+        tab={chosen}
+        engine={engine}
+      />
     </TooltipProvider>
   )
+}
+
+/** A tab with the panels Show Panels hid taken out, and their steps of its fold. */
+function withPanelsShown(tab: RibbonTab, hidden: readonly string[]): RibbonTab {
+  if (!tab.panels.some((panel) => hidden.includes(panel.id))) return tab
+  return {
+    ...tab,
+    panels: tab.panels.filter((panel) => !hidden.includes(panel.id)),
+    fold: tab.fold?.filter((step) => !hidden.includes(step.panel)),
+  }
 }
 
 /**
@@ -560,12 +613,13 @@ function PanelView({
             back, the slide-out staying open (a popover closes on a press
             elsewhere, not on focus leaving). */}
             <Popover.Trigger
+              aria-label={name}
               className="flex flex-1 items-center justify-center gap-1 rounded-sm outline-none hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/50"
               onClick={(event) => {
                 if (event.detail > 0) ctx.engine.focusSurface()
               }}
             >
-              {name}
+              {ctx.titles && name}
               <ChevronDown aria-hidden className="size-3" />
             </Popover.Trigger>
             <Popover.Portal container={portal}>
@@ -609,10 +663,11 @@ function PanelView({
                     {/* The title bar moved under the rows: it closes the
                     slide-out, as the one it covers opened it. */}
                     <Popover.Close
+                      aria-label={name}
                       className="flex h-4.5 flex-1 items-center justify-center rounded-sm outline-none hover:bg-muted hover:text-foreground"
                       onClick={() => ctx.engine.focusSurface()}
                     >
-                      {name}
+                      {ctx.titles && name}
                     </Popover.Close>
                     {panel.launcher ? (
                       launcher
@@ -626,7 +681,7 @@ function PanelView({
           </Popover.Root>
         ) : (
           <span className="flex flex-1 items-center justify-center">
-            {name}
+            {ctx.titles && name}
           </span>
         )}
         {panel.launcher && launcher}

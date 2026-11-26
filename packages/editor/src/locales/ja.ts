@@ -760,6 +760,13 @@ export const ja: EditorLocale = {
         "panelTitles": "パネル タイトルのみを表示",
         "panelButtons": "パネル ボタンのみを表示",
         "cycle": "すべてを循環"
+      },
+      "menu": {
+        "showTabs": "タブを表示",
+        "showPanels": "パネルを表示",
+        "showPanelTitles": "パネルのタイトルを表示",
+        "close": "閉じる",
+        "empty": "現在ロードされているリボンにはタブやパネルが存在しません。"
       }
     },
     "CommandLine": {

@@ -4,7 +4,7 @@ metaTitle: "VSCURRENT in AutoCAD: visual styles and alias"
 description: "How AutoCAD's VSCURRENT (VS) sets the visual style: 2D Wireframe, Hidden and Conceptual, what each draws and how to go back to wireframe. Try it free online."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"How do I change the visual style in AutoCAD?","answer":"Run VSCURRENT (or VS) and choose the style: Hidden to hide the edges behind, Conceptual to shade the faces. It changes the view only, not the objects. Without typing, pick it in the label at the drawing's top left that names the current style, or in View › Visual Styles on the ribbon."},{"question":"How do I go back to 2D Wireframe?","answer":"Run VSCURRENT and choose 2dwireframe, its letter 2."},{"question":"What is the difference between Hidden and Conceptual?","answer":"Both hide what faces hide. Hidden draws only edges, on the background, as a line drawing; Conceptual paints the faces too, shaded by the light, with the same edges over them."},{"question":"Why can I still see lines through my solid?","answer":"They are not part of a solid. Lines, circles and regions draw as in 2D Wireframe in every style, so a line behind a box still shows. In 2dwireframe, the solid's own edges behind show too: choose Hidden."}]
+faq: [{"question":"How do I change the visual style in AutoCAD?","answer":"Run VSCURRENT (or VS) and choose the style: Hidden to hide the edges behind, Conceptual to shade the faces. It changes the view only, not the objects. Without typing, pick it in the label at the drawing's top left that names the current style."},{"question":"How do I go back to 2D Wireframe?","answer":"Run VSCURRENT and choose 2dwireframe, its letter 2."},{"question":"What is the difference between Hidden and Conceptual?","answer":"Both hide what faces hide. Hidden draws only edges, on the background, as a line drawing; Conceptual paints the faces too, shaded by the light, with the same edges over them."},{"question":"Why can I still see lines through my solid?","answer":"They are not part of a solid. Lines, circles and regions draw as in 2D Wireframe in every style, so a line behind a box still shows. In 2dwireframe, the solid's own edges behind show too: choose Hidden."}]
 ---
 
 VSCURRENT sets the visual style: how the view draws 3D solids. It asks for a style, offering the current one as the default, and Enter keeps it. `2dwireframe` draws every edge, those behind too; `Hidden` hides what faces hide; `Conceptual` paints the faces, shaded. The style belongs to the view and is saved with the drawing, and each run is one undo step. It cannot be used inside another command.
@@ -46,7 +46,7 @@ The other styles of AutoCAD — Wireframe, Realistic, Shaded, Shaded with edges,
 
 ### How do I change the visual style in AutoCAD?
 
-Run VSCURRENT (or `VS`) and choose the style: `Hidden` to hide the edges behind, `Conceptual` to shade the faces. It changes the view only, not the objects. Without typing, pick it in the label at the drawing's top left that names the current style, or in View › Visual Styles on the ribbon.
+Run VSCURRENT (or `VS`) and choose the style: `Hidden` to hide the edges behind, `Conceptual` to shade the faces. It changes the view only, not the objects. Without typing, pick it in the label at the drawing's top left that names the current style.
 
 ### How do I go back to 2D Wireframe?
 

@@ -3,7 +3,7 @@ title: "Látványstílusok az AutoCAD-ben: LSAKTUÁLIS (VSCURRENT) parancs"
 metaTitle: "Látványstílusok az AutoCAD-ben: LSAKTUÁLIS"
 description: "Így állítja be az AutoCAD LSAKTUÁLIS (VSCURRENT, LSA) parancsa a látványstílust: 2D drótváz, Takartvonalas, Látványtervi, vissza a drótvázhoz. Próbálja ki!"
 figure: "Átmenő furatos tömb délkeletről nézve: az LSAKTUÁLIS Látványtervi stílusa árnyalja a lapjait, és rájuk rajzolja az éleit."
-sourceHash: "d7b4b0b602ea"
+sourceHash: "d06873f62261"
 ---
 
 Az LSAKTUÁLIS (VSCURRENT) parancs a látványstílust állítja be: azt, hogyan rajzolja a nézet a 3D szilárdtesteket. Stílust kér, alapértelmezésként az aktuálisat kínálva fel, így az Enter megtartja. A <Keyword id="2dwireframe" /> minden élt megrajzol, a hátsókat is; a <Keyword id="Hidden" /> elrejti, amit lapok takarnak; a <Keyword id="Conceptual" /> kiszínezi és árnyalja a lapokat. A stílus a nézethez tartozik, a rajzzal együtt mentődik, és minden futtatás egyetlen visszavonási lépés. Másik parancson belül nem használható.
@@ -32,7 +32,7 @@ Az AutoCAD többi stílusa – Drótváz, Valósághű, Árnyalt, Árnyalt, éle
 
 ### Hogyan lehet látványstílust váltani az AutoCAD-ben?
 
-Indítsa el az LSAKTUÁLIS parancsot (vagy az `LSA` rövidítést), és válassza ki a stílust: a <Keyword id="Hidden" /> elrejti a hátsó éleket, a <Keyword id="Conceptual" /> árnyalja a lapokat. Csak a nézetet változtatja meg, az objektumokat nem. Gépelés nélkül a rajz bal felső sarkában lévő, az aktuális stílust mutató feliratban is kiválaszthatja, vagy a szalagon: Nézet › Látványstílusok. Az angol változat `VS` rövidítése a magyarban nem működik, a `_VSCURRENT` viszont bármely nyelvi változatban igen.
+Indítsa el az LSAKTUÁLIS parancsot (vagy az `LSA` rövidítést), és válassza ki a stílust: a <Keyword id="Hidden" /> elrejti a hátsó éleket, a <Keyword id="Conceptual" /> árnyalja a lapokat. Csak a nézetet változtatja meg, az objektumokat nem. Gépelés nélkül a rajz bal felső sarkában lévő, az aktuális stílust mutató feliratban is kiválaszthatja. Az angol változat `VS` rövidítése a magyarban nem működik, a `_VSCURRENT` viszont bármely nyelvi változatban igen.
 
 ### Hogyan lehet visszatérni a 2D drótvázhoz?
 
