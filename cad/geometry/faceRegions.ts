@@ -78,6 +78,9 @@ const PROJECTION_STEPS = 40
 /** Samples of a profile searched for the seed nearest a point. */
 const PROJECTION_SEEDS = 64
 
+/** Halvings a Gauss–Newton step is cut by until it brings the point nearer. */
+const PROJECTION_HALVINGS = 30
+
 /**
  * The parameter of a profile's point nearest `q` under the linear map `m`
  * (`m(x) − m(0)` is linear): an ellipse's exactly, from its axes; a
@@ -120,22 +123,43 @@ function closestOnProfile(
       }
     }
   }
-  let u = t ?? start
+  const place = (x: number) =>
+    period === null ? Math.min(end, Math.max(start, x)) : x
+  const wrap = (x: number) =>
+    period === null ? x : start + ((((x - start) % period) + period) % period)
+  const gap = (x: number) => {
+    const r = sub3(at(wrap(x)), q)
+    return dot3(r, r)
+  }
+  let u = place(t ?? start)
+  let e = gap(u)
   for (let step = 0; step < PROJECTION_STEPS; step++) {
-    const inside = period === null ? Math.min(end, Math.max(start, u)) : u
-    const wrapped =
-      period === null
-        ? inside
-        : start + ((((inside - start) % period) + period) % period)
-    const r = sub3(at(wrapped), q)
-    const d = lin(sweptCurveDerivative(c, wrapped))
+    const w = wrap(u)
+    const r = sub3(at(w), q)
+    const d = lin(sweptCurveDerivative(c, w))
     const dd = dot3(d, d)
     if (!(dd > 0)) break
-    const delta = dot3(r, d) / dd
-    u = inside - delta
-    if (Math.abs(delta) <= 1e-15 * Math.max(1, Math.abs(end - start))) break
+    let delta = dot3(r, d) / dd
+    if (Math.abs(delta) <= 1e-15 * Math.max(1, Math.abs(end - start))) {
+      u = place(u - delta)
+      break
+    }
+    // WHY: from a point farther off than the profile's radius of curvature,
+    // Gauss–Newton overshoots the nearest point and hops between the ends
+    // — a swept face's level then flips sign far from it, a false crossing
+    // for `pointInSolid`. A step is halved until it brings the point nearer.
+    let next = place(u - delta)
+    let f = gap(next)
+    for (let k = 0; f > e && k < PROJECTION_HALVINGS; k++) {
+      delta /= 2
+      next = place(u - delta)
+      f = gap(next)
+    }
+    if (f > e) break
+    u = next
+    e = f
   }
-  return period === null ? Math.min(end, Math.max(start, u)) : u
+  return u
 }
 
 /** A revolution's profile lies in one half-plane off its axis: the way out to it. */

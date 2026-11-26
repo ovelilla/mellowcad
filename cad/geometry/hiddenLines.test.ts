@@ -348,4 +348,52 @@ describe("hidden lines of any solids", () => {
       )
     )
   }, 60_000)
+
+  it("read a point far off a slanted spline extrusion as outside it (a shrunk counterexample)", () => {
+    // The profile bulges by far less than the oracle's point lies off it:
+    // its nearest point, sought by Gauss–Newton, hopped between the ends,
+    // and the swept face read a crossing that is not there.
+    const slant = extrusionBrep(
+      {
+        axes: { x: Y, y: Z, z: X },
+        elevation: -0.15,
+        faces: [
+          {
+            loops: [
+              [
+                {
+                  kind: "spline",
+                  curve: {
+                    degree: 3,
+                    knots: [0, 0, 0, 0, 1, 1, 1, 1],
+                    controlPoints: [
+                      { x: 742.43, y: 367.78, z: 0 },
+                      { x: 566.99, y: 334.0175, z: 0 },
+                      { x: 566.99, y: 131.4425, z: 0 },
+                      { x: 742.43, y: 97.68, z: 0 },
+                    ],
+                  },
+                  from: 0,
+                  to: 1,
+                },
+                {
+                  kind: "line",
+                  start: { x: 742.43, y: 97.68 },
+                  end: { x: 742.43, y: 367.78 },
+                },
+              ],
+            ],
+          },
+        ],
+      },
+      { x: 999.86, y: 1199.832, z: 0 }
+    )!
+    const near = boxBrep(
+      { x: 425.19, y: 1106.577, z: -110.642 },
+      { x: -221.07, y: 412.933, z: 266.426 },
+      { x: 6.039, y: -214.235, z: 337.053 },
+      { x: 364.211, y: 141.264, z: 83.264 }
+    )
+    expectNothingInFront([slant, near], X, "slant/box")
+  })
 })
