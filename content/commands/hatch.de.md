@@ -2,7 +2,7 @@
 title: "Befehl SCHRAFF (HATCH) in AutoCAD"
 description: "Wie SCHRAFF (HATCH, Alias SCH, GS) in AutoCAD eine Fläche schraffiert, Schritt für Schritt: Punkt oder Objekte, Muster, Maßstab, Winkel, Inseln. Zum Testen."
 figure: "Ein Rechteck mit einem Kreis darin, mit ANSI31 von einem Punkt innerhalb schraffiert: Der Kreis bleibt frei, eine Insel."
-sourceHash: "a79440617f68"
+sourceHash: "c7c3effeb1c0"
 ---
 
 SCHRAFF (HATCH) füllt eine geschlossene Fläche mit einem Linienmuster oder voll. Wählen Sie einen Punkt innerhalb der Fläche, und der Befehl findet die Begrenzung in den Objekten ringsum und lässt frei, was darin liegt, als Insel: einen Kreis in einem Rechteck, einen Text; oder wählen Sie die Objekte, die sie begrenzen. Wählen Sie beliebig viele Flächen: Die Eingabetaste oder Esc macht aus allen eine Schraffur, auf dem aktuellen Layer, hinter ihrer Begrenzung. Der ganze Befehl ist ein Rückgängig-Schritt.

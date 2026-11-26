@@ -24,7 +24,6 @@ import {
   reportArrayType,
 } from "./arrayObject"
 import { MAX_ARRAY_COUNT, refusesCount, takesCount } from "./arrayCounts"
-import { refuseText } from "./refuseText"
 import { ArrayAtPrompt, ArrayPromptGrips } from "./arrayPromptGrips"
 import type { PromptId } from "../../locales/types"
 import type { ContextualEdit } from "../EngineState"
@@ -748,19 +747,14 @@ export class ArrayPathTool implements Tool {
       if (edit.field !== "items" && edit.field !== "itemSpacing") {
         return "unhandled"
       }
+      // Divide greys Between: nothing typed there is taken, a word neither.
+      if (edit.field === "itemSpacing" && layout.method !== "measure") {
+        return "unhandled"
+      }
       const value = parseNumber(edit.text.trim())
-      if (value === null) {
-        // Refused as Items' count or Measure's spacing refuse a word.
-        refuseText(
-          edit.field === "items"
-            ? { refusal: "requiresPositiveInteger" }
-            : {
-                refusal: "requiresDistance",
-                values: { points: "two", keyword: "yes" },
-              },
-          ctx
-        )
-      } else if (edit.field === "items") {
+      // A word is refused as a value is, in silence (`editContextualTab`).
+      if (value === null) return "continue"
+      if (edit.field === "items") {
         if (!refusesCount(value, ctx)) {
           const items =
             layout.method === "divide"

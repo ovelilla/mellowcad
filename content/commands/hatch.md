@@ -4,7 +4,7 @@ metaTitle: "HATCH in AutoCAD: patterns, options and alias"
 description: "How AutoCAD's HATCH (H) fills an area, prompt by prompt: a point inside or its objects, the pattern, its scale and angle, islands. Try it free in your browser."
 figure: "A rectangle with a circle in it, hatched with ANSI31 from one point inside: the circle is left clear, an island."
 related: ["AREA", "REGION", "MATCHPROP", "EXPLODE"]
-coverage: "eddfcad506a0"
+coverage: "e6d32884518f"
 ---
 
 HATCH fills a closed area with a pattern of lines, or solid. Pick a point inside the area and it finds the boundary in the objects around it, leaving clear what lies inside as an island — a circle in a rectangle, a text; or select the objects that bound it. Pick as many areas as you like: Enter, or Escape, makes one hatch of them all, on the current layer, behind its boundary. The whole command is one step that Undo takes back.

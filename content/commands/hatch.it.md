@@ -2,7 +2,7 @@
 title: "Comando TRATTEGGIO (HATCH) in AutoCAD"
 description: "Il tratteggio in AutoCAD in italiano con TRATTEGGIO (HATCH, alias PTR, RE), richiesta per richiesta: punto interno o oggetti, modello, scala, angolo, isole."
 figure: "Un rettangolo con un cerchio dentro, tratteggiato con ANSI31 da un punto interno: il cerchio resta libero, un'isola."
-sourceHash: "a79440617f68"
+sourceHash: "c7c3effeb1c0"
 ---
 
 TRATTEGGIO (HATCH in inglese) riempie un'area chiusa con un modello di linee, oppure pieno. Seleziona un punto all'interno dell'area e trova il contorno negli oggetti attorno, lasciando libero ciò che sta all'interno come un'isola, un cerchio in un rettangolo, un testo; oppure seleziona gli oggetti che la delimitano. Seleziona quante aree vuoi: Invio, o Esc, ne fa un solo tratteggio, sul layer corrente, dietro il suo contorno. L'intero comando è un solo passo che Annulla ripristina.

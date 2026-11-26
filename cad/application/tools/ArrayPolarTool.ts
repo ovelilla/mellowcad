@@ -16,7 +16,6 @@ import {
 import { ScenePrimitive } from "../../scene/types"
 import { ObjectSelector } from "./objectSelection"
 import { refusesCount, takesCount } from "./arrayCounts"
-import { refuseText } from "./refuseText"
 import {
   ArrayAssociativity,
   arrayPreview,
@@ -626,8 +625,8 @@ export class ArrayPolarTool implements Tool {
     const text = edit.text.trim()
     if (step === undefined) return "unhandled"
     const value = step === "items" ? parseNumber(text) : parseAngleDegrees(text)
-    if (value === null) refuseText(this.takesAt(step), ctx)
-    else if (!refuses(step, value, ctx)) {
+    // A word is refused as a value is, in silence (`editContextualTab`).
+    if (value !== null && !refuses(step, value, ctx)) {
       this.state = { ...state, ring: withValue(ring, step, value) }
     }
     ctx.requestRender()

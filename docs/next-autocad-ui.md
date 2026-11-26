@@ -13,17 +13,18 @@
 > diálogos), el 2a (el armazón de las paletas: cada una aparte, flotante o acoplada), el 2b
 > (anclar y auto-ocultar), el 3a (el Layer Properties Manager por dentro), el 3b (Blocks por
 > dentro), el 3c (Properties por dentro) y el 4 (las listas de estilos del ribbon). La fase 4 (el
-> área de dibujo y la fila inferior) está hecha el 26/11 sin su pasada por el escritorio (lo que
-> dependía de ella queda «unverified» en la cobertura y en el §7 del plan), sus cinco bloques del
+> área de dibujo y la fila inferior) está hecha el 26/11, sus cinco bloques del
 > §6 del plan: la fila inferior de 33, la línea de comandos flotante, la etiqueta del estilo
 > visual, el ViewCube en reposo y los grips. La fase 5 (lo que le falta al ribbon) está hecha el
-> 26/11 sin pasada por el escritorio, sus tres bloques del §6 del plan: los tooltips de AutoCAD con
+> 26/11, sus tres bloques del §6 del plan: los tooltips de AutoCAD con
 > el extendido, el menú contextual del ribbon (Show Tabs, Show Panels, Show Panel Titles, Close;
 > 3D Tools y los paneles ocultos de View empiezan ocultos, como en AutoCAD) y el Customize ▾ del
-> acceso rápido; lo que solo el escritorio resuelve queda «unverified» y en el §7 del plan. La
-> fase 6 (pestañas contextuales) está en curso: sus bloques 1 (Array Creation) y 2 (Hatch Creation
-> y los prompts de HATCH con el ribbon) del §6 del plan están hechos el 26/11, sin pasada por el
-> escritorio. Después del rediseño, una fase 7 anotada por el dueño el 26/11 y por valorar: un
+> acceso rápido. Las fases 4 y 5 quedan verificadas en el escritorio el 26/11, con la sesión de la
+> fase 6 (la comparación lado a lado y sus arreglos; lo poco que no resolvió sigue en el §7 del
+> plan). La fase 6 (pestañas contextuales) está en curso: sus bloques 1 (Array Creation) y 2
+> (Hatch Creation y los prompts de HATCH con el ribbon) del §6 del plan están hechos el 26/11 y
+> verificados en el escritorio ese día; quedan el 3 (Text Editor, ya capturado) y el 4 (las
+> pestañas de la selección). Después del rediseño, una fase 7 anotada por el dueño el 26/11 y por valorar: un
 > aviso de novedades en el editor (§4).
 > Acordado el 7/11/2026 por el dueño. Se borra cuando la última fase esté hecha; hasta entonces
 > cada fase cerrada se marca aquí.

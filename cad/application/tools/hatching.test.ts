@@ -1138,9 +1138,34 @@ describe("HATCH and -HATCH, the command", () => {
     expect(written(h, "U")).toEqual(["U", "HATCH"])
     expect(h.typeCounts().hatch).toBeUndefined()
 
-    // At a Properties prompt too, with the settings it had then.
-    h.command("HATCH").click(p(50, 25)).option("Properties").escape()
+    // At a Properties prompt too, with the settings it had then; the run
+    // starts at Select objects, where the last one was left.
+    h.command("HATCH").option("Pick internal point")
+    h.click(p(50, 25)).option("Properties").escape()
     expect(h.typeCounts().hatch).toBe(1)
+  })
+
+  // desktop 2026-11-26, traced in en and es: a run left at Select objects
+  // starts the next there, one left at the internal point there.
+  it("starts where the last run with the ribbon left its boundaries' mode", () => {
+    const h = createHarness({ entities: [ROOM] })
+    h.command("HATCH").option("Select objects").escape()
+    h.command("HATCH")
+    expect(h.state().commandLine.prompt).toBe(
+      "HATCH Select objects or [picK internal point/Undo]:"
+    )
+    h.option("Pick internal point").escape()
+    h.command("HATCH")
+    expect(h.state().commandLine.prompt).toBe(
+      "HATCH Pick internal point or [Select objects/Undo]:"
+    )
+    h.escape()
+    // -HATCH asks its own prompts whatever the ribbon's HATCH left.
+    h.command("HATCH").option("Select objects").escape()
+    h.command("-HATCH")
+    expect(h.state().commandLine.prompt).toContain(
+      "Specify internal point or [Properties/Select objects]:"
+    )
   })
 
   it("discards them when Escape ends -HATCH (desktop d02)", () => {

@@ -5,10 +5,12 @@
 > ships the ribbon waits for the owner's word; phase 2 done on 2026-11-25, its four blocks (§6);
 > phase 3 done on 2026-11-26, its desktop pass and its blocks 1 (the style dialogs), 2a and 2b
 > (the palettes' frame), 3a to 3c (what each palette holds) and 4 (the ribbon's style lists);
-> phase 4 done on 2026-11-26 without its desktop pass, its five blocks (§6: the bottom row, the
+> phase 4 done on 2026-11-26, its five blocks (§6: the bottom row, the
 > floating command line, the visual style's label, the ViewCube at rest, the grips); phase 5 done
-> on 2026-11-26 without a desktop pass, its three blocks (§6: the tooltips, the right-click menu,
-> Customize ▾); phase 6 not started.
+> on 2026-11-26, its three blocks (§6: the tooltips, the right-click menu,
+> Customize ▾), the desktop pass of both done the same day with phase 6's session (§7); phase 6
+> in progress: blocks 1 (Array Creation) and 2 (Hatch Creation) done and checked on the desktop on
+> 2026-11-26, blocks 3 (Text Editor) and 4 (the selection's tabs) to come.
 > The brief is `docs/next-autocad-ui.md`; where its phases and this plan differ, this plan rules
 > (the brief says so) and the brief was corrected the same day.
 
@@ -789,9 +791,9 @@ Blocks, a commit each, each leaving the editor whole:
 ### Phase 6 — contextual tabs
 
 Hatch Creation, Text Editor and Array as tabs that follow their command (R10). Each is a
-command's own interface, so each goes through its command's review and research. The session of
-2026-11-26 had no word for the desktop, so what only the desktop settles stays **unverified**
-and goes to §7. What opens each tab is acad.cuix's `RibbonTabSelectors` (`ribbon.mjs
+command's own interface, so each goes through its command's review and research. Blocks 1 and 2
+were built that day before the desktop pass, which came in the same session and is folded into each
+(what it left is in §7). What opens each tab is acad.cuix's `RibbonTabSelectors` (`ribbon.mjs
 --contextual`) over AcContextualTabSelectorRules.xaml beside acad.exe: a variable for the
 command's tab, `Activate="True"` (it comes to the front), the selection for the others. Their
 panels are `ribbon.mjs --source <uid>`; the fields', toggles' and tooltips' words AcWindows'
@@ -811,11 +813,16 @@ Blocks, a commit each, each leaving the editor whole:
    Close; path Type, Items (Items, Between, which Divide
    greys as AutoCAD's BAML does), Properties (Associative, Method ▾, Align Items), Close. A field
    is 98 × 22 on the 24 pitch after a 16 px icon and its label (d07-1); an edit is the value its
-   prompt takes, refused there in the prompt's words, with no echo (the BAML binds the fields to
-   the array's properties, not to the command line; the desktop's echo **unverified**); Close
-   Array is eXit. Not drawn, Missing: Base Point, Columns' and Rows' Total (ARRAYRECT asks no
-   Total there), polar Rows and Levels, path Total, Rows, Levels, Tangent Direction
-   and Z Direction.
+   prompt takes, with no echo; Close Array is eXit. Its desktop pass (2026-11-26, the same
+   session's) found the edit answering the prompt with a hidden `UPdate`, nothing written, and a
+   value refused (Columns 0, `abc`) put back in the box with no line written: fixed, the tab's
+   refusals now silent (the brief had them said in the prompt's words). Matched: the tooltips
+   (a field's, a toggle's with no command row), Show Tabs not listing the tab, the tab minimized.
+   Not drawn, Missing: Base Point, Columns' and Rows' Total (ARRAYRECT asks no
+   Total there; AutoCAD's tab shows both, Total being the span the count and spacing give), polar
+   Rows and Levels, path Total, Rows, Levels, Tangent Direction and Z Direction. Spanish AutoCAD
+   draws no `Columnas:` before Columns' box (es1920-array), the BAML's word kept here
+   (`docs/i18n/es.md`).
 2. **Hatch Creation and HATCH's own prompts** (done 2026-11-26, without the desktop;
    HATCHCREATION; the help: "When the ribbon is active, the Hatch Creation contextual tab is
    displayed"). With the ribbon open HATCH asks the ribbon's prompt, st2027's 129 in every
@@ -823,10 +830,16 @@ Blocks, a commit each, each leaving the editor whole:
    o [Seleccionar objetos/desHacer]`: Select objects is worded apart from -HATCH's), with no
    `Current hatch pattern` line (hatch/d01), and its Select objects mode its own, 50968's `Select
    objects or [picK internal point/Undo]:`, until picK, Enter there ending the command; Draw and
-   seTtings are not offered (no draW boundary, no dialog: HATCH's Missing). Their keywords are
-   31427's, the one candidate (of 31427, 16731, 62278) declaring every word both list:
-   **unverified**, as only a traced desktop run shows them, the console having no ribbon
-   (hatch/p370: HATCHCREATION 0 there). The hatch is still made as the run ends, not at each pick
+   seTtings are not offered (no draW boundary, no dialog: HATCH's Missing). Their keywords were
+   taken from 31427, the one candidate (of 31427, 16731, 62278) declaring every word both list;
+   the desktop pass of 2026-11-26 traced both in English and Spanish: 129's `initget` is 31427's,
+   50968's `Select objects:`'s words and 16731's after them, whose picK is 31427's word in all ten
+   command languages, so the catalogs stand and the citations moved. It also found a run starting
+   in the mode the last one left (fixed: the session's), Enter at 50968 with nothing selected
+   ending HATCH and Undo there the selection's (as here), Angle, Scale and the background colour
+   greyed for a solid fill, the Angle slider 0 to 360 (here 359: fixed), Type › Pattern bringing
+   back the last pattern (as here), Scale's arrows stepping a tenth of the value's decade
+   (Missing), the gallery's tooltip the pattern's name (added). The hatch is still made as the run ends, not at each pick
    (HATCH-D45's WHY, reworded: the same one object in one step; Escape keeps it); with the
    ribbon closed AutoCAD opens the Hatch and Gradient dialog, not built, so -HATCH's prompts stay
    there with HATCH-D31's WHY. The tab: Boundaries (Pick Points, Select), Pattern (the patterns
@@ -838,7 +851,18 @@ Blocks, a commit each, each leaving the editor whole:
 3. **Text Editor** (TEXTEDITOR: the in-place editor of MTEXT and TEXTEDIT): Style (the text
    style, the height), Paragraph (Justification, Line Spacing) and Close (Close Text Editor), with
    what MTEXT has; inline formatting does not exist, so Formatting, Insert, Spell Check, Tools and
-   Options are not drawn (decision 3) and go to MTEXT's Missing.
+   Options are not drawn (decision 3) and go to MTEXT's Missing. Captured on 2026-11-26 (English,
+   MTEXT with the ribbon, `research/ui/2026-11-26/mtext-*`): Style's gallery of text styles
+   (AcIPEFontStyleGallery, 184 × 74), Annotative (88 × 22), the height combo (AcIPEFontSizeCombo,
+   100 × 22) and Mask; Paragraph's Justification (81 × 72, a list of the nine attachments, rows of
+   24, `Top Left TL`…, the current one checked; a pick writes nothing), Bullets and Numbering, Line
+   Spacing (1.0x, 1.5x, 2.0x, 2.5x, More... | Clear Line Space) and the six alignment buttons;
+   Close Text Editor (61 × 72); the Quick Access Toolbar greyed while the editor is open. Line
+   Spacing and the height act on the paragraph or the text selected, inline formatting ("for new
+   text or … selected text", the help), so with none here: Line Spacing goes to MTEXT's Missing,
+   and the height sets the object's, as MTEXT's Height prompt does, which is AutoCAD's with the
+   editor empty or all its text selected; a height for part of the text is Missing with the
+   inline formatting.
 4. **The selection's tabs** (Array: one associative array selected; Hatch Editor: hatches only),
    if the session reaches them; else they stay Missing.
 
@@ -854,7 +878,7 @@ start of its phase and with the owner's word first (`gui.md`):
 | 3 | done 2026-11-25 (§2.8, §2.9): a palette docked, anchored and auto-hidden and its properties menu with the mouse; New Text Style and each tab of Modify Dimension Style without it (`research/ui/2026-11-25/phase3`) |
 | 4 | done 2026-11-26 with phase 6's session (§6, phase 4; `research/ui/2026-11-26`): ~~the command line's history open (F2) and its Recent Commands and Customize menus~~ (cl-f2, cl-recent2, cl-custom); still owed, each **unverified** in its coverage entry: the status bar and the floating line's width of a profile nobody has touched (S4: the profile measured has been used by every probe); the navigation bar under the pointer |
 | 5 | done 2026-11-26 with phase 6's session (§6, phase 5; `research/ui/2026-11-26`): ~~where a ribbon tooltip opens and whether Circle's names its member; whether a second tooltip opens at once; whether a pick in the right-click menu closes it, whether its Close cancels a running command or echoes, a title bar's height without its name; Customize ▾'s arrow, where a command added goes and whether a pick closes its list~~; still owed: whether the names leave a folded panel or the minimized states, where AutoCAD keeps what the menu shows, U's name after the menu's Close |
-| 6 | not reached (no word for the desktop on 2026-11-26), each **unverified** in its coverage entry: Array Creation's — whether a field's edit echoes, where a refused value is said, a tooltip with no command, Direction's lit state, ARRAYPATH's tab once the path is picked, Show Tabs and Show Panels on a contextual tab, the tab minimized; Hatch Creation's — first, a traced run of HATCH with the ribbon open in English and Spanish, for the `initget` of 129 and 50968 (31427, 16731 or 62278), what Enter and Undo do at 50968, whether Angle and Scale grey for a solid fill, the Angle slider's range, the pattern Type › Pattern brings back, Scale's spin step and the gallery's tooltips; no capture of Text Editor or Array Creation exists in research/ (Hatch Creation: hatch/d01-2; Array, selected: arrays/d07-1) |
+| 6 | blocks 1 and 2 done 2026-11-26 with this phase's session (§6, phase 6; `research/ui/2026-11-26`): ~~whether a field's edit echoes, where a refused value is said, a tooltip with no command, Show Tabs on a contextual tab, the tab minimized; a traced run of HATCH with the ribbon open in English and Spanish, what Enter and Undo do at 50968, whether Angle and Scale grey for a solid fill, the Angle slider's range, the pattern Type › Pattern brings back, Scale's spin step and the gallery's tooltips; a capture of Text Editor and of Array Creation~~; still owed: Direction's lit state, ARRAYPATH's tab once the path is picked, Show Panels on a contextual tab, Hatch Creation's own boxes refusing in silence (by analogy with Array Creation's), whether HATCH's mode lasts across a restart; for block 4 the selection's tabs (Array, Hatch Editor), uncaptured |
 
 Without the mouse, `acad.sh act` opens a drop-down, a slide-out, a folded panel, the status
 bar's menus, Undo's list and the command line's two menus, and `acad.sh tree` reads their rows

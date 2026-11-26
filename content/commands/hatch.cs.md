@@ -3,7 +3,7 @@ title: "Šrafování v AutoCADu: příkaz ŠRAFY (HATCH)"
 metaTitle: "Šrafování v AutoCADu: příkaz ŠRAFY (HATCH)"
 description: "Jak v AutoCADu šrafovat příkazem ŠRAFY (HATCH), výzvu po výzvě: bod uvnitř nebo hraniční objekty, vzor, měřítko, úhel, ostrovy. Vyzkoušejte zdarma online."
 figure: "Obdélník s kružnicí uvnitř, vyšrafovaný vzorem ANSI31 z jednoho bodu uvnitř: kružnice zůstane prázdná jako ostrov."
-sourceHash: "a79440617f68"
+sourceHash: "c7c3effeb1c0"
 ---
 
 Příkaz ŠRAFY (HATCH) vyplní uzavřenou oblast vzorem čar nebo plnou výplní. Vyberte bod uvnitř oblasti a příkaz najde její hranici v objektech kolem ní a to, co leží uvnitř, ponechá prázdné jako ostrov – kružnici v obdélníku, text; nebo vyberte objekty, které oblast ohraničují. Vyberte tolik oblastí, kolik chcete: Enter nebo Esc z nich všech vytvoří jedny šrafy, v aktuální hladině, pod jejich hranicí. Celý příkaz je jeden krok, který lze vrátit zpět.

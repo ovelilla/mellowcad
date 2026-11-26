@@ -61,24 +61,20 @@ describe("Array Creation", () => {
     expect(cad.entities().map((e) => e.id)).toEqual(["L1"])
   })
 
-  it("refuses what the prompt refuses, in its words", () => {
+  // desktop 2026-11-26, arr-zero, arr-abc: Columns 0 and `abc` put back to
+  // the value, no line written.
+  it("leaves what the prompt refuses unchanged, in silence", () => {
     const cad = ARRAY_ROW()
     cad.select("L1").command("ARRAYRECT")
+    const from = cad.commandLog().length
     cad.runtime.editContextualTab({ field: "columns", text: "0" })
     cad.runtime.editContextualTab({ field: "columnSpacing", text: "0" })
-    expect(cad.commandLog().slice(-2)).toEqual([
-      "Value must be positive and nonzero.",
-      "Value must be nonzero.",
-    ])
-    // A word, as its prompt refuses `FOO` (p113, p121, p433).
     cad.runtime.editContextualTab({ field: "columns", text: "abc" })
     cad.runtime.editContextualTab({ field: "levelTotal", text: "abc" })
-    expect(cad.commandLog().slice(-2)).toEqual([
-      "Requires a positive nonzero integer or option keyword.",
-      "Requires numeric distance or two points.",
-    ])
+    expect(cad.commandLog().slice(from)).toEqual([])
     expect(cad.state().ribbon.contextual?.fields.columns?.text).toBe("4")
     expect(cad.state().ribbon.contextual?.fields.columnSpacing?.text).toBe("15")
+    expect(cad.state().commandLine.command).toBe("ARRAYRECT")
   })
 
   it("closes with Close Array as eXit, making the array", () => {
@@ -138,8 +134,10 @@ describe("Array Creation", () => {
       rotateItems: false,
       direction: false,
     })
+    const at = cad.commandLog().length
     cad.runtime.editContextualTab({ field: "angleBetween", text: "-5" })
-    expect(cad.commandLog().at(-1)).toBe("Value must be positive and nonzero.")
+    expect(cad.commandLog().length).toBe(at)
+    expect(cad.state().ribbon.contextual?.fields.angleBetween?.text).toBe("36")
     cad.enter()
     expect((cad.latest() as InsertEntity).array).toMatchObject({
       items: 6,
@@ -257,18 +255,18 @@ describe("Hatch Creation", () => {
     })
   })
 
-  it("refuses what Properties' prompts refuse, in their words", () => {
+  // As Array Creation's fields (desktop 2026-11-26, arr-zero): unchanged,
+  // nothing written.
+  it("leaves what Properties' prompts refuse unchanged, in silence", () => {
     const cad = ROOM()
     cad.command("HATCH")
+    const from = cad.commandLog().length
     cad.runtime.editContextualTab({ field: "hatchScale", text: "0" })
     cad.runtime.editContextualTab({ field: "hatchScale", text: "abc" })
     cad.runtime.editContextualTab({ field: "hatchAngle", text: "abc" })
-    expect(cad.commandLog().slice(-3)).toEqual([
-      "Value must be positive and nonzero.",
-      "Requires a distance (or numberX).",
-      "Requires valid numeric angle or two points.",
-    ])
+    expect(cad.commandLog().slice(from)).toEqual([])
     expect(cad.state().ribbon.contextual?.fields.hatchScale?.text).toBe("1")
+    expect(cad.state().ribbon.contextual?.fields.hatchAngle?.text).toBe("0")
   })
 
   it("brings HPNAME's pattern back from Solid, as the run started with it", () => {

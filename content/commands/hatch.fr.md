@@ -2,7 +2,7 @@
 title: "Commande HACHURES (HATCH) dans AutoCAD"
 description: "Hachures dans AutoCAD en français avec HACHURES (HATCH, alias H), invite par invite : point interne ou objets, motif, échelle, angle, îlots. Essayez-le."
 figure: "Un rectangle avec un cercle dedans, hachuré en ANSI31 depuis un point intérieur : le cercle reste libre, un îlot."
-sourceHash: "a79440617f68"
+sourceHash: "c7c3effeb1c0"
 ---
 
 HACHURES (HATCH) remplit une zone fermée d'un motif de lignes, ou d'un remplissage plein. Cliquez un point dans la zone : la commande trouve le contour dans les objets qui l'entourent, et laisse libre ce qui se trouve à l'intérieur comme un îlot (un cercle dans un rectangle, un texte) ; ou sélectionnez les objets qui la délimitent. Cliquez dans autant de zones que vous voulez : Entrée, ou Echap, en fait un seul objet de hachures, sur le calque courant, derrière son contour. La commande entière est une seule étape, qu'Annuler défait.

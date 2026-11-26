@@ -3397,14 +3397,30 @@ export class CadRuntime extends Observable {
   /**
    * A contextual tab's control acting on the running command as its prompt
    * would take it (`Tool.editContextual`): no echo, as the tab's fields are
-   * bound to the command's values, not typed at its prompt. Close ends the
-   * command as its prompt's eXit or Enter does. Nothing while a transparent
-   * command runs inside it.
+   * bound to the command's values, not typed at its prompt; a value its
+   * prompt refuses changes nothing and says nothing, the box showing the
+   * value again (desktop 2026-11-26, arr-zero, arr-abc: Columns 0 and `abc`
+   * back to 5, no line written). Close ends the command as its prompt's eXit
+   * or Enter does. Nothing while a transparent command runs inside it.
    */
   editContextualTab(edit: ContextualEdit): void {
     if (this.suspendedStack.length > 0) return
-    const outcome =
-      this.activeTool.editContextual?.(edit, this.toolContext) ?? "unhandled"
+    const context = this.toolContext
+    // A field's value is refused as its prompt would refuse it, only the
+    // words dropped. Nothing else is quieted: Close Hatch Creation is Enter,
+    // and says `Unable to hatch the boundary.` as Enter does.
+    const quiet =
+      "field" in edit
+        ? new Proxy(context, {
+            get: (target, key) =>
+              key === "report"
+                ? (...[text, kind]: Parameters<ToolContext["report"]>) => {
+                    if (kind !== "error") target.report(text, kind)
+                  }
+                : Reflect.get(target, key),
+          })
+        : context
+    const outcome = this.activeTool.editContextual?.(edit, quiet) ?? "unhandled"
     if (outcome === "unhandled") return
     if (outcome === "end") {
       this.resetTracking()

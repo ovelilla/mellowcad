@@ -257,8 +257,8 @@ layer, colour, lineweight and Z (p164, p166), a copy on each level (p440), the s
 **The Array Creation tab** (`docs/coverage/workspace.md`, Ribbon): from the main prompt on
 (ARRAYCREATION 1 there, 0 at `Select objects:`, p450), Columns (Columns, Between), Rows (Rows,
 Between; Increment in its slide-out), Levels (Levels, Between, Total), Associative and Close Array;
-a field is what COLumns', Rows' and Levels' prompts take, refused in their words, Total the
-spacing it gives, Associative ASsociative's answer and Close Array eXit, with no echo.
+a field is what COLumns', Rows' and Levels' prompts take, what they refuse put back with no line written (desktop 2026-11-26, arr-zero, arr-abc), Total the
+spacing it gives, Associative ASsociative's answer and Close Array eXit, with no echo (the desktop answers its prompt with a hidden `UPdate` and writes nothing, arr-enter).
 
 The array object (the three commands'): one block reference, named for its kind — `Array
 (Rectangular)`, `Array (Polar)`, `Array (Path)` (es `Matriz (rectangular)`, `Matriz (polar)`,

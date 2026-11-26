@@ -40,7 +40,6 @@ import { ObjectSelector } from "./objectSelection"
 import type { PromptId } from "../../locales/types"
 import type { ContextualEdit } from "../EngineState"
 import { parseAngleDegrees, parseNumber } from "../../domain/units"
-import { refuseText } from "./refuseText"
 import {
   CommandOption,
   CommandOptionOutcome,
@@ -134,6 +133,13 @@ export class HatchTool implements Tool {
   /** The run has made its hatch, or said why not: its end makes nothing. */
   private ended = false
   /**
+   * The ribbon's boundaries mode a run left, which the next starts in: a run
+   * left at Select objects starts at `Select objects or [picK…]`, one left at
+   * the internal point there (desktop 2026-11-26, en and es traces: twice
+   * each way). Kept for the session; across a restart **unverified**.
+   */
+  private ribbonMode: "point" | "select" = "point"
+  /**
    * HPQUICKPREVIEW's hatch of the area under the cursor (desktop d01-1,
    * d02-1), with the face it fills, reused while the cursor stays in it.
    */
@@ -172,7 +178,8 @@ export class HatchTool implements Tool {
     if (!isSolidHatchPattern(this.patternId())) {
       this.lastPattern = this.patternId()
     }
-    this.enterPoint(ctx)
+    if (this.ribbon && this.ribbonMode === "select") this.enterSelect(ctx)
+    else this.enterPoint(ctx)
   }
 
   onDeactivate(ctx: ToolContext): void {
@@ -294,9 +301,9 @@ export class HatchTool implements Tool {
   commandOptions(): readonly CommandOption[] {
     switch (this.state.phase) {
       case "point":
-        // The ribbon's prompt lists Undo (129; its initget **unverified**, of
-        // 31427, 16731 and 62278 the one declaring every word it lists:
-        // 31427); -HATCH declares it here and lists it nowhere (table 25032).
+        // The ribbon's prompt lists Undo (129, its initget 31427's: desktop
+        // 2026-11-26, traced in en and es); -HATCH declares it here and lists
+        // it nowhere (table 25032).
         return this.ribbon
           ? [{ id: "Select objects" }, { id: "Undo" }]
           : [
@@ -308,7 +315,9 @@ export class HatchTool implements Tool {
         return [{ id: "?" }, { id: "Solid" }]
       case "select":
         // The ribbon's mode lists picK and Undo (50968), the selection's
-        // own Undo, which takes back what was selected last.
+        // own Undo, which takes back what was selected last: its initget is
+        // `Select objects:`'s words and 16731's after them (desktop
+        // 2026-11-26, en and es), picK 16731's word, 31427's too in all ten.
         return this.ribbon && !this.selector.inMode()
           ? [
               { id: "Pick internal point" },
@@ -435,8 +444,9 @@ export class HatchTool implements Tool {
    * Hatch Creation's controls, each as the prompt it stands for takes it,
    * with no echo: Pick Points and Select the keywords that switch the
    * boundaries' mode; a pattern, Type, Angle and Scale HPNAME, HPANG and
-   * HPSCALE as Properties sets them, inside the run (HATCH-D37), refused in
-   * its prompts' words; Close Hatch Creation `^M` (MM_1928), Enter.
+   * HPSCALE as Properties sets them, inside the run (HATCH-D37), what its
+   * prompts refuse left unchanged in silence; Close Hatch Creation `^M`
+   * (MM_1928), Enter.
    */
   editContextual(edit: ContextualEdit, ctx: ToolContext): CommandOptionOutcome {
     if (!this.ribbon || this.ended) return "unhandled"
@@ -467,19 +477,18 @@ export class HatchTool implements Tool {
     } else if ("field" in edit) {
       if (isSolidHatchPattern(this.patternId())) return "unhandled"
       const text = edit.text.trim()
+      // What the prompt refuses changes nothing and says nothing, the box
+      // showing the value again, as Array Creation's fields (desktop
+      // 2026-11-26, arr-zero; Hatch Creation's boxes by analogy).
       if (edit.field === "hatchAngle") {
         const degrees = parseAngleDegrees(text)
-        if (degrees === null) refuseText(ANGLE_TAKES, ctx)
-        else {
+        if (degrees !== null) {
           this.patternAngle = normalizeAngle((degrees * Math.PI) / 180)
           setCommandSettings({ hatchPatternAngle: this.patternAngle }, ctx)
         }
       } else if (edit.field === "hatchScale") {
         const scale = parseNumber(text)
-        if (scale === null) refuseText(SCALE_TAKES, ctx)
-        else if (!(scale > 0)) {
-          ctx.report(ctx.text.message("positiveNonzero"), "error")
-        } else {
+        if (scale !== null && scale > 0) {
           this.patternScale = scale
           setCommandSettings({ hatchPatternScale: scale }, ctx)
         }
@@ -806,6 +815,7 @@ export class HatchTool implements Tool {
   /** The main prompt, after the pattern it will use. */
   private enterPoint(ctx: ToolContext): void {
     this.state = { phase: "point" }
+    if (this.ribbon) this.ribbonMode = "point"
     this.refreshPreview(ctx)
     // Hatch Creation shows the pattern: the ribbon's prompt writes no line
     // of it (desktop hatch/d-session.log).
@@ -844,6 +854,7 @@ export class HatchTool implements Tool {
 
   private enterSelect(ctx: ToolContext): void {
     this.state = { phase: "select" }
+    if (this.ribbon) this.ribbonMode = "select"
     this.forgetHover()
     this.selector.start()
     this.refreshPreview(ctx)

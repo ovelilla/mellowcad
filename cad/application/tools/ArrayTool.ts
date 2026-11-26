@@ -19,7 +19,6 @@ import { drawingBox } from "../orbit"
 import { ObjectSelector } from "./objectSelection"
 import { selectedInDrawingOrder } from "./drawingOrder"
 import { refusesCount, takesCount } from "./arrayCounts"
-import { refuseText } from "./refuseText"
 import {
   ArrayAssociativity,
   arrayPreview,
@@ -772,8 +771,8 @@ export class ArrayTool implements Tool {
     const step = FIELD_STEP[edit.field]
     if (step === undefined) return "unhandled"
     const value = parseNumber(edit.text.trim())
-    if (value === null) refuseText(takesAt(step), ctx)
-    else if (!refuses(step, value, ctx)) {
+    // A word is refused as a value is, in silence (`editContextualTab`).
+    if (value !== null && !refuses(step, value, ctx)) {
       this.state = { ...state, grid: withValue(state.grid, step, value) }
     }
     ctx.requestRender()

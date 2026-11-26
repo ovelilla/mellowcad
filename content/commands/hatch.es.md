@@ -3,7 +3,7 @@ title: "Sombreado en AutoCAD: SOMBREA (HATCH)"
 metaTitle: "Sombreado en AutoCAD: comando SOMBREA (HATCH)"
 description: "Cómo funciona SOMBREA (HATCH, alias SB) de AutoCAD en español: punto interno u objetos, patrón, escala, ángulo e islas. Pruébalo gratis online."
 figure: "Un rectángulo con un círculo dentro, sombreado con ANSI31 desde un punto interno: el círculo queda libre, como isla."
-sourceHash: "a79440617f68"
+sourceHash: "c7c3effeb1c0"
 ---
 
 SOMBREA (HATCH en inglés) rellena un área cerrada con un patrón de líneas, o sólido. Precisa un punto dentro del área y encuentra el contorno en los objetos que la rodean, dejando libre como isla lo que hay dentro —un círculo en un rectángulo, un texto—; o designa los objetos que la delimitan. Señala tantas áreas como quieras: Intro, o Esc, hace un solo sombreado de todas, en la capa actual y detrás de su contorno. Todo el comando es un paso que Deshacer revierte.

@@ -54,7 +54,12 @@ import {
 } from "@mellowcad/engine"
 import { isImeKey, type EditorState } from "@mellowcad/react"
 import { cn } from "./utils"
-import { TooltipProvider } from "./ui/tooltip"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./ui/tooltip"
 import { isTip, RibbonTip, type TipKey } from "./ribbon-tip"
 import {
   Select,
@@ -2599,19 +2604,31 @@ function PatternCell({
   ctx: Context
   onPick: () => void
 }) {
+  // A cell's tooltip is its pattern's name alone, a plain label, not the
+  // ribbon's four parts (desktop 2026-11-26, hatch-gal-tip: `ANGLE`), taking
+  // no pointer: in the open list it lies over the next row's cells.
   return (
-    <button
-      type="button"
-      aria-pressed={current}
-      className="flex h-17.5 w-18.5 shrink-0 flex-col items-center justify-center gap-1 rounded-sm outline-none hover:bg-accent focus-visible:bg-accent aria-pressed:bg-active/15"
-      onClick={onPick}
-    >
-      <PatternSwatch engine={ctx.engine} pattern={pattern} />
-      {/* A pattern's name is drawing data, the same in every language. */}
-      <span dir="ltr" className="w-full truncate px-0.5 text-center">
-        {pattern}
-      </span>
-    </button>
+    <Tooltip disableHoverablePopup>
+      <TooltipTrigger
+        render={
+          <button
+            type="button"
+            aria-pressed={current}
+            className="flex h-17.5 w-18.5 shrink-0 flex-col items-center justify-center gap-1 rounded-sm outline-none hover:bg-accent focus-visible:bg-accent aria-pressed:bg-active/15"
+            onClick={onPick}
+          />
+        }
+      >
+        <PatternSwatch engine={ctx.engine} pattern={pattern} />
+        {/* A pattern's name is drawing data, the same in every language. */}
+        <span dir="ltr" className="w-full truncate px-0.5 text-center">
+          {pattern}
+        </span>
+      </TooltipTrigger>
+      <TooltipContent side="bottom" sideOffset={2}>
+        <span dir="ltr">{pattern}</span>
+      </TooltipContent>
+    </Tooltip>
   )
 }
 
@@ -2725,20 +2742,26 @@ function HatchType({ ctx }: { ctx: Context }) {
   )
 }
 
-/** The Angle slider's range, AutoCAD's 0 to 359 degrees (**unverified**). */
-const ANGLE_MAX = 359
+/**
+ * The Angle slider's range, AutoCAD's 0 to 360 in steps of 1 (desktop
+ * 2026-11-26, hatch-tab-tree: AcHatchPatternAngleSlider's RangeValue 0..360).
+ */
+const ANGLE_MAX = 360
 
 /**
  * Angle (AcHatchPatternAngleSlider): a slider of 157 with its name in it and
  * a box of 50 with the value (d01-2). Dragging sets whole degrees from 0 to
- * 359; the box takes what Properties' angle prompt takes. WHY the slider is
+ * 360, which HPANG keeps as 0; the box takes what Properties' angle prompt takes. WHY the slider is
  * for the pointer only, out of the keys' way: the box is the same value,
  * typed, and its name.
  */
 function HatchAngle({ ctx }: { ctx: Context }) {
   const t = useEditorText("Ribbon")
   const value = ctx.state.ribbon.contextual?.fields.hatchAngle
-  const last = useRef<number | null>(null)
+  // The degree dragged to: the thumb stays there while the pointer drags it,
+  // 360 too, which HPANG keeps as 0 (what AutoCAD's box then reads is
+  // **unverified**).
+  const [dragged, setDragged] = useState<number | null>(null)
   if (!value) return null
   const degrees = Number(value.text)
   const at = Number.isFinite(degrees) ? Math.min(degrees, ANGLE_MAX) : 0
@@ -2750,8 +2773,8 @@ function HatchAngle({ ctx }: { ctx: Context }) {
       Math.max(0, (event.clientX - box.left) / box.width)
     )
     const next = Math.round(share * ANGLE_MAX)
-    if (next === last.current) return
-    last.current = next
+    if (next === dragged) return
+    setDragged(next)
     ctx.engine.editContextualTab({ field: "hatchAngle", text: String(next) })
   }
   return (
@@ -2770,18 +2793,26 @@ function HatchAngle({ ctx }: { ctx: Context }) {
           onPointerDown={(event) => {
             if (event.button !== 0) return
             event.currentTarget.setPointerCapture(event.pointerId)
-            last.current = null
+            setDragged(null)
             slide(event)
           }}
           onPointerMove={(event) => {
             if (event.buttons & 1) slide(event)
           }}
-          onPointerUp={() => ctx.engine.focusSurface()}
-          onPointerCancel={() => ctx.engine.focusSurface()}
+          onPointerUp={() => {
+            setDragged(null)
+            ctx.engine.focusSurface()
+          }}
+          onPointerCancel={() => {
+            setDragged(null)
+            ctx.engine.focusSurface()
+          }}
         >
           <span
             className="absolute inset-y-0.5 w-0.75 rounded-full bg-muted-foreground"
-            style={{ left: `calc(${at / ANGLE_MAX} * (100% - 3px))` }}
+            style={{
+              left: `calc(${(dragged ?? at) / ANGLE_MAX} * (100% - 3px))`,
+            }}
           />
           <span className="relative">{label}</span>
         </div>

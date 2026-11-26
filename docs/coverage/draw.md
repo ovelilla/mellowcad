@@ -1224,13 +1224,17 @@ table: es `Designe un punto interno o [Seleccionar objetos/desHacer]`), with no 
 pattern` line (desktop d01, d-session.log), until Enter makes the hatch; its Select objects asks
 `Select objects or [picK internal point/Undo]:` (50968; es `Seleccione objetos o [Designar punto
 interno/desHacer]`) after each selection, picK going back to the internal point, Undo the
-selection's own, Enter making the hatch and ending (**unverified**: no desktop pass); the two
-prompts' keywords are 31427's, the one of its candidates (16731, 62278) declaring every word they
-list (**unverified**: only a traced desktop run shows each prompt's `initget`). It shows Hatch
+selection's own, Enter making the hatch and ending, with nothing selected too (a traced desktop run
+in English and Spanish, 2026-11-26: 129's `initget` is 31427's, 50968's `Select objects:`'s words
+and 16731's after them, es `…desHacer AUto úNico … Seleccionar Designar Contornos…`; picK is the
+same word in both tables in every command language). A run starts in the mode the last one left:
+at Select objects after one left there, at the internal point after one left there (en and es,
+twice each way; kept for the session, across a restart **unverified**). It shows Hatch
 Creation for the whole run (HATCHCREATION 1, d01-2; `docs/coverage/workspace.md`, Ribbon): Pick
 Points and Select switch the two modes; a pattern, Type, Angle and Scale set HPNAME, HPANG and
-HPSCALE as Properties sets them, inside the run, with no echo, refused in its prompts' words, the
-preview redrawn in them; Close Hatch Creation is `^M` (MM_1928), Enter. **With the ribbon closed**
+HPSCALE as Properties sets them, inside the run, with no echo, what its prompts refuse put back in
+silence, the preview redrawn in them; Type › Pattern brings back the last pattern set (ANSI31 after
+ANSI31 then Solid, desktop 2026-11-26); Close Hatch Creation is `^M` (MM_1928), Enter. **With the ribbon closed**
 (RIBBONCLOSE, Clean Screen) HATCH asks -HATCH's prompts, as -HATCH does whatever the ribbon (WHY:
 there AutoCAD's HATCH opens the Hatch and Gradient dialog, HPDLGMODE 2, which does not exist here,
 and the console's HATCH offers no Properties, p01; HATCH-D31): `Current hatch pattern:  ANGLE` (es
@@ -1371,14 +1375,13 @@ styles, -HATCH's other keywords (draW boundary, remove Boundaries, Advanced, DRa
 ANnotative, hatch COlor, LAyer, Transparency) and `?`'s `Enter pattern(s) to list <*>:` with its
 pages (HATCH-D32), the console HATCH's own prompt (`Pick internal point or [Select objects/remove
 Boundaries]:`, p200); the ribbon prompts' Draw and seTtings (no draW boundary, no Hatch and
-Gradient dialog) and the words 31427 declares besides (picK at the internal point, Boundaries,
-DEfine, ORigin, MAtch); Hatch Creation's Remove, Recreate and Boundaries' slide-out (Display
-Boundary Objects, Retain Boundaries, the boundary set), the Pattern gallery's tooltips (no `TT_`
-entry names one, **unverified**), Properties' Gradient and User defined types, Pattern Color,
-Background Color, Transparency, the gradient's colours and tint, its slide-out (Layer, Relative
-To Paper Space, Double, ISO Pen Width) and Scale's spin arrows (how far one steps
-**unverified**), the Origin and Options panels; the Angle slider's range (0 to 359 here) and the
-pattern Type › Pattern brings back from a solid fill (the last one set here), **unverified**; BHATCH and
+Gradient dialog) and the words 31427 and 16731 declare besides (picK at the internal point,
+Boundaries, DEfine, ORigin, MAtch; 50968's selection modes are `Select objects:`'s, which it
+offers); Hatch Creation's Remove, Recreate and Boundaries' slide-out (Display
+Boundary Objects, Retain Boundaries, the boundary set), Properties' Gradient and User defined types, Pattern Color,
+Background Color (greyed with Angle and Scale for a solid fill), Transparency, the gradient's colours and tint, its slide-out (Layer, Relative
+To Paper Space, Double, ISO Pen Width) and Scale's spin arrows (a tenth of the value's decade a
+step: 1.1, 1.2 up from 1, 0.9, 0.89, 0.88 down; desktop 2026-11-26), the Origin and Options panels; BHATCH and
 -BHATCH as commands of their own (typed whole they echo nothing more, and `-BH` echoes `-BHATCH`,
 p201, p255; here aliases: `BHATCH HATCH`, `-BH -HATCH`), making a gradient: -HATCH's Properties
 lists `[?/Solid/User defined/Gradient]` (g00), whose Gradient asks `Enter a gradient name or

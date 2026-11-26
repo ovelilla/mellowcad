@@ -3,7 +3,7 @@ title: "Kreskowanie w AutoCADzie: polecenie KRESKUJ (HATCH)"
 metaTitle: "Kreskowanie w AutoCADzie: polecenie KRESKUJ"
 description: "Jak kreskować w AutoCADzie poleceniem KRESKUJ (HATCH), monit po monicie: punkt wewnątrz lub obiekty obwiedni, wzór, skala, kąt, wyspy. Wypróbuj za darmo online."
 figure: "Prostokąt z okręgiem w środku, zakreskowany wzorem ANSI31 z jednego punktu wewnątrz: okrąg zostaje pusty jako wyspa."
-sourceHash: "a79440617f68"
+sourceHash: "c7c3effeb1c0"
 ---
 
 Polecenie KRESKUJ (HATCH) wypełnia zamknięty obszar wzorem linii albo jednolicie. Wskaż punkt wewnątrz obszaru, a polecenie znajdzie jego obwiednię w otaczających go obiektach, pozostawiając puste to, co leży w środku, jako wyspę – okrąg w prostokącie, tekst; albo wybierz obiekty, które go ograniczają. Wskaż tyle obszarów, ile chcesz: Enter lub Esc tworzy z nich wszystkich jedno kreskowanie, na bieżącej warstwie, pod swoją obwiednią. Całe polecenie to jeden krok cofania.

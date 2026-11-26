@@ -3,7 +3,7 @@ title: "Sraffozás az AutoCAD-ben: SRAFFOZ (HATCH) parancs"
 metaTitle: "Sraffozás az AutoCAD-ben: SRAFFOZ (HATCH)"
 description: "Sraffozás az AutoCAD SRAFFOZ (HATCH, SF) parancsával: belső pont vagy határoló objektumok, minta, lépték, szög, szigetek. Próbálja ki ingyen, online."
 figure: "Egy téglalap benne egy körrel, egyetlen belső pontból ANSI31 mintával sraffozva: a kör üresen marad, sziget lesz."
-sourceHash: "a79440617f68"
+sourceHash: "c7c3effeb1c0"
 ---
 
 A SRAFFOZ (HATCH) parancs zárt területet tölt ki vonalakból álló mintával vagy tömören. Válasszon egy pontot a területen belül, és a parancs megkeresi a határvonalat a körülötte lévő objektumokban, szigetként üresen hagyva, ami benne van – egy kört a téglalapban, egy szöveget –; vagy jelölje ki a területet határoló objektumokat. Tetszőleges számú területet választhat: az Enter vagy az Esc mindegyikből egyetlen sraffozást készít, az aktuális fólián, a határvonala mögött. A teljes parancs egyetlen lépés, amely a Vissza paranccsal visszavonható.

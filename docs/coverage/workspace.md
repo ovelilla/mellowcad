@@ -436,31 +436,36 @@ opens (its rule's `Activate="True"`); as it closes the tab it took the front fro
 the one picked meanwhile stays; a transparent command inside leaves it. Its Type a label with the
 kind's glyph; its fields 98 × 22 after a 16 px glyph and their label on the 24 pitch, the boxes in
 a column (d07-1), each a value its prompt takes, on Enter or on leaving the box (the BAML's
-`AcceptTextOnLostFocus`), Escape putting it back, refused in the prompt's words at the command
-line; Enter and Escape give the drawing the keys, and the box keeps the rest; its toggles large and
-lit while on; Close Array the command's eXit. Its words each culture's: the tab's, the panels' and
+`AcceptTextOnLostFocus`), Escape putting it back, what the prompt refuses put back in silence;
+Enter and Escape give the drawing the keys, and the box keeps the rest; its toggles large and
+lit while on; Close Array the command's eXit. An edit writes nothing at the command line (the
+desktop answers the prompt with a hidden `UPdate`), and a value refused (Columns 0, `abc`) goes back
+in the box with no line written either (desktop 2026-11-26, arr-enter, arr-zero, arr-abc). Its
+words each culture's: the tab's, the panels' and
 the buttons' acad.CUIX, the fields' labels, the type and the methods AcWindows' BAML, the tooltips
-its `TT_Ac…Array…` entries (title and description, `scripts/research/ribbon-tips.mjs`), Arabic's
-ours. Show Tabs does not list it. Minimized it shows as any tab does: a button per panel, a title
-per panel, or its panels dropped from it. **Unverified** (no desktop pass): whether an edit in a
-field echoes at the command line (the BAML binds the fields to the array's properties: here none),
-whether a value refused there is said at the command line or in the box, a tooltip with no
-command's layout (here no command row, F1 asking for the running command), whether Direction is
-lit counter-clockwise, ARRAYPATH's `ARRAYCREATION 3` once its path is picked (p452 never reached
-it), whether Show Tabs or Show Panels list a contextual tab, and how it shows minimized. **Hatch
+its `TT_Ac…Array…` entries (title and description, `scripts/research/ribbon-tips.mjs`), a field's
+on its box or glyph, a toggle's with no command row (desktop 2026-11-26, arr-tip-between,
+arr-tip-assoc), Arabic's ours. Show Tabs does not list it (arr-showtabs). Minimized it shows as any
+tab does: a button per panel, a title per panel, or its panels dropped from it (arr-min1 to
+arr-min3). **Unverified**: whether Direction is lit counter-clockwise, ARRAYPATH's
+`ARRAYCREATION 3` once its path is picked (p452 never reached it), and whether Show Panels lists
+a contextual tab's panels. **Hatch
 Creation** (`--source RBN_01738148`), while HATCH runs with the ribbon open (HATCHCREATION 1, its
 rule `Activate="True"`; desktop hatch/d01-2; its prompts, `docs/coverage/draw.md`): Boundaries'
 Pick Points, large on one line as acad.CUIX writes it, and Select, small; Pattern's gallery, the
 patterns built in acadiso.pat's order, four cells of 74 × 70 a row, each the engine's swatch of
 its pattern (a square hatched a few repeats across, `buildHatchSwatch`, painted as a block's
-thumbnail is) over its name, the current one marked, the rows' up and down and an arrow opening
+thumbnail is) over its name, the current one marked, its tooltip the name alone (hatch-gal-tip), the
+rows' up and down and an arrow opening
 every pattern under it, six across; Properties' Type (Solid, Pattern) in its first row and, after
-its Spacer, Angle (a slider of 157 with its name, 0 to 359, and a box of 50) and Scale (a box of
-177) in the second and third, greyed for a solid fill; Close Hatch Creation, its text broken where
-acad.CUIX breaks it (`Close&#xD;Hatch Creation`). Its words each culture's acad.CUIX (the tab,
-panels and buttons; Angle) and AcWindows' `TT_AcHatch…` (the tooltips, Solid and Pattern, Scale's
-name), Arabic's ours. **Unverified** as Array Creation's, and whether Angle and Scale grey for a
-solid fill
+its Spacer, Angle (a slider of 157 with its name, 0 to 360 as AutoCAD's, hatch-tab-tree, 360 kept by HPANG as 0, what AutoCAD's box then reads **unverified**, and a box
+of 50) and Scale (a box of 177) in the second and third, greyed for a solid fill (hatch-solid2);
+a value refused put back in silence, as Array Creation's (its own boxes by analogy); Close Hatch
+Creation, its text broken where acad.CUIX breaks it (`Close&#xD;Hatch Creation`). Its words each
+culture's acad.CUIX (the tab, panels and buttons; Angle) and AcWindows' `TT_AcHatch…` (the
+tooltips, Solid and Pattern, Scale's name), Arabic's ours. At 1280 AutoCAD's folds Pattern to a
+button and Boundaries' small buttons to icons (es1280-hatch): the fold here follows its rule,
+shedding only what does not fit, and what is built fits
 
 **Missing:** the Parametric, Visualize, Manage, Output, Add-ins, Collaborate, Express Tools and
 Featured Apps tabs, nothing of theirs built; the contextual tab Text Editor (phase 6, block 3),

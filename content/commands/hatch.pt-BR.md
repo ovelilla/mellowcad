@@ -2,7 +2,7 @@
 title: "Hachura no AutoCAD: comando HACHURA (HATCH)"
 description: "Como funciona o HATCH do AutoCAD em português, HACHURA (alias HC): ponto interno ou objetos, padrão, escala, ângulo e ilhas. Experimente grátis online."
 figure: "Um retângulo com um círculo dentro, hachurado com ANSI31 a partir de um ponto interno: o círculo fica livre, como ilha."
-sourceHash: "a79440617f68"
+sourceHash: "c7c3effeb1c0"
 ---
 
 O HATCH, HACHURA no AutoCAD em português, preenche uma área fechada com um padrão de linhas, ou sólido. Indique um ponto dentro da área e ele encontra o limite nos objetos ao redor, deixando livre como ilha o que está dentro — um círculo num retângulo, um texto —; ou selecione os objetos que a limitam. Indique quantas áreas quiser: Enter, ou Esc, faz uma só hachura de todas, na camada atual e atrás do seu limite. O comando inteiro é um passo que o Desfazer reverte.
