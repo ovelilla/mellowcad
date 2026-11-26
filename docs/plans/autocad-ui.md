@@ -5,7 +5,9 @@
 > ships the ribbon waits for the owner's word; phase 2 done on 2026-11-25, its four blocks (§6);
 > phase 3 done on 2026-11-26, its desktop pass and its blocks 1 (the style dialogs), 2a and 2b
 > (the palettes' frame), 3a to 3c (what each palette holds) and 4 (the ribbon's style lists);
-> phases 4 to 6 not started.
+> phase 4 done on 2026-11-26 without its desktop pass, its five blocks (§6: the bottom row, the
+> floating command line, the visual style's label, the ViewCube at rest, the grips); phases 5
+> and 6 not started.
 > The brief is `docs/next-autocad-ui.md`; where its phases and this plan differ, this plan rules
 > (the brief says so) and the brief was corrected the same day.
 
@@ -690,7 +692,7 @@ dialogs need nothing of the new frame:
    Japanese, Traditional Chinese and Arabic at 1280 Home's row ran 4 to 44 px past the window, the
    fold measuring a panels' row that had shrunk to it.
 
-### Phase 4 — the drawing area and the bottom row
+### Phase 4 — the drawing area and the bottom row (done 2026-11-26)
 
 The command line floating (C1 to C4, D4); the bottom row at AutoCAD's sizes and defaults (S1,
 S3 to S5); the viewport controls' visual style label and list (D1), which closes that row of
@@ -755,7 +757,7 @@ start of its phase and with the owner's word first (`gui.md`):
 | 1 | done 2026-11-24 (§2.3): a button pressed, the extended tooltip, a small button's list, a slide-out open, the Insert gallery; block 4's toggles, gallery, Attribute Display and Object Color's list without the mouse (`research/ui/2026-11-24/block4`) |
 | 2 | done 2026-11-25 (§2.2): Undo's and Redo's lists and what they run, the title of a saved drawing, the Open Documents list (`research/ui/2026-11-25`); the Help list opened on none of four clicks either, so its rows stay **unverified** |
 | 3 | done 2026-11-25 (§2.8, §2.9): a palette docked, anchored and auto-hidden and its properties menu with the mouse; New Text Style and each tab of Modify Dimension Style without it (`research/ui/2026-11-25/phase3`) |
-| 4 | the status bar of a profile nobody has touched; the navigation bar under the pointer; the command line's history open |
+| 4 | not reached: the session of 2026-11-26 had no word for it, and phase 4 was built without it; still owed, each **unverified** in its coverage entry: the status bar of a profile nobody has touched (S4); the navigation bar under the pointer; the command line's history open (F2) and its Recent Commands and Customize menus, which the mouse pass opened without a capture |
 
 Without the mouse, `acad.sh act` opens a drop-down, a slide-out, a folded panel, the status
 bar's menus, Undo's list and the command line's two menus, and `acad.sh tree` reads their rows

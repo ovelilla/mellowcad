@@ -12,8 +12,11 @@
 > hecha el 26/11: su pasada por el escritorio, su bloque 1 del §6 del plan (STYLE y DIMSTYLE como
 > diálogos), el 2a (el armazón de las paletas: cada una aparte, flotante o acoplada), el 2b
 > (anclar y auto-ocultar), el 3a (el Layer Properties Manager por dentro), el 3b (Blocks por
-> dentro), el 3c (Properties por dentro) y el 4 (las listas de estilos del ribbon); sigue la
-> fase 4 (el área de dibujo y la fila inferior).
+> dentro), el 3c (Properties por dentro) y el 4 (las listas de estilos del ribbon). La fase 4 (el
+> área de dibujo y la fila inferior) está hecha el 26/11 sin su pasada por el escritorio (lo que
+> dependía de ella queda «unverified» en la cobertura y en el §7 del plan), sus cinco bloques del
+> §6 del plan: la fila inferior de 33, la línea de comandos flotante, la etiqueta del estilo
+> visual, el ViewCube en reposo y los grips; sigue la fase 5 (lo que le falta al ribbon).
 > Acordado el 7/11/2026 por el dueño. Se borra cuando la última fase esté hecha; hasta entonces
 > cada fase cerrada se marca aquí.
 
@@ -135,7 +138,7 @@ Properties, Layer Properties Manager y Blocks como paletas propias: flotantes de
 página, acoplables a los lados, con auto-ocultar, y su sitio y tamaño guardados en el
 dispositivo. STYLE y DIMSTYLE como los diálogos de AutoCAD, con las listas de estilos del ribbon.
 
-### Fase 4 — el área de dibujo y la fila inferior
+### Fase 4 — el área de dibujo y la fila inferior (hecha el 26/11/2026)
 
 La línea de comandos flotante, la fila inferior a los tamaños y con los valores iniciales de
 AutoCAD, el ViewCube en reposo, y los grips y el resaltado comparados con sus capturas.
