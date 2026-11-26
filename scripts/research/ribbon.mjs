@@ -11,6 +11,8 @@
  *   node scripts/research/ribbon.mjs --lang es …           the Spanish file's words
  *   node scripts/research/ribbon.mjs --workspace WS_3DModeling
  *   node scripts/research/ribbon.mjs --qat                 the Quick Access Toolbar
+ *   node scripts/research/ribbon.mjs --contextual          each contextual tab and its rule
+ *   node scripts/research/ribbon.mjs --source RBN_01738148 any tab by its UID, in no workspace
  *   node scripts/research/ribbon.mjs --cuix <file> …       a culture's acad.CUIX that is not
  *                                                          installed, taken out of its language
  *                                                          pack (open-pack.sh's 7zz)
@@ -239,7 +241,25 @@ if (rest.includes("--qat")) {
     if (item.attrs.Id ?? item.attrs.MenuMacroID)
       lines.push(`${item.tag}  ${item.attrs.Id ?? macroOf(item)}`)
 } else if (option("--panel")) panel(option("--panel"), true, lines)
-else {
+else if (rest.includes("--contextual"))
+  // A contextual tab is in no workspace: a selector shows it while its rule holds, the rules
+  // being AcContextualTabSelectorRules.xaml's beside acad.exe (a variable or the selection).
+  for (const selector of all(ribbon, "RibbonTabSelector"))
+    lines.push(
+      `${selector.attrs.Rule}  →  ${selector.attrs.Tabs.split(";")
+        .map((id) => `${tabs.get(id)?.attrs.Text ?? "?"} (${id})`)
+        .join(", ")}`
+    )
+else if (option("--source")) {
+  const tab = tabs.get(option("--source"))
+  if (!tab) {
+    console.error(`No tab ${option("--source")}`)
+    process.exit(1)
+  }
+  lines.push(`TAB ${tab.attrs.Text} (${tab.attrs.UID})`)
+  for (const ref of all(tab, "RibbonPanelSourceReference"))
+    panel(ref.attrs.PanelId, true, lines)
+} else {
   const id = option("--workspace") ?? "WS_Anno2DDraft"
   const workspace = all(workspaces, "Workspace").find((w) => w.attrs.UID === id)
   if (!workspace) {

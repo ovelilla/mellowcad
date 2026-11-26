@@ -186,6 +186,28 @@ export const TIP_SOURCES = {
   dimensionStyleList: "TT_AcDimensionStyleCombo",
   visualStyleList: "TT_AcVisualStyleGalleryControl",
   propertiesLauncher: "ID_Modify",
+  // Array Creation's fields and toggles (`ribbon.mjs --source RBN_01740514`),
+  // whose RibbonToolTips name no command.
+  arrayColumns: "TT_AcRectArrayColumnCount",
+  arrayColumnSpacing: "TT_AcRectArrayColumnSpacing",
+  arrayRows: "TT_AcArrayRowCount",
+  arrayRowSpacing: "TT_AcArrayRowSpacing",
+  arrayRowElevation: "TT_AcArrayRowElevation",
+  arrayLevels: "TT_AcArrayLevelCount",
+  arrayLevelSpacing: "TT_AcArrayLevelSpacing",
+  arrayLevelTotal: "TT_AcArrayLevelSpan",
+  arrayPolarItems: "TT_AcPolarArrayItemCount",
+  arrayAngleBetween: "TT_AcPolarArrayItemSpacing",
+  arrayFillAngle: "TT_AcPolarArrayItemSpan",
+  arrayPathItems: "TT_AcPathArrayItemCount",
+  arrayItemSpacing: "TT_AcPathArrayItemSpacing",
+  arrayAssociative: "TT_AcArrayAssociativity",
+  arrayRotateItems: "TT_AcPolarArrayRotateItemsToggle",
+  arrayDirection: "TT_AcPolarArrayDirection",
+  arrayDivide: "TT_AcPathArrayDivideMethod",
+  arrayMeasure: "TT_AcPathArrayMeasureMethod",
+  arrayAlignItems: "TT_AcPathArrayAlignItemsToggle",
+  arrayClose: "TT_AcArrayCreationClose",
 }
 
 function zipParts(path) {

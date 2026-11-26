@@ -415,7 +415,72 @@ export interface RibbonUi {
    * (Circle's list was Center, Radius again after a restart).
    */
   readonly members: Readonly<Record<string, string>>
+  /**
+   * The contextual tab the running command shows, after the last tab, or
+   * null: AutoCAD's ribbon contextual tab states, a command's tab while its
+   * variable says so (ARRAYCREATION). It takes the front as it opens; the tab
+   * that was in front comes back as it closes, unless another was picked
+   * meanwhile.
+   */
+  readonly contextual: ContextualTab | null
 }
+
+/** A ribbon contextual tab: which, and what its controls show. */
+export interface ContextualTab {
+  /**
+   * Which tab: Array Creation for ARRAYRECT, ARRAYPOLAR or ARRAYPATH
+   * (ARRAYCREATION 1, 2, 3).
+   */
+  readonly id: ContextualTabId
+  /** Each field's value as its prompt offers it, and whether it is greyed. */
+  readonly fields: Readonly<
+    Partial<Record<ContextualFieldId, ContextualFieldUi>>
+  >
+  /** Each toggle's state, lit while true. */
+  readonly toggles: Readonly<Partial<Record<ContextualToggleId, boolean>>>
+  /** A path array's Method (Divide or Measure); null on the others. */
+  readonly method: "divide" | "measure" | null
+}
+
+/** The contextual tabs a command opens. */
+export type ContextualTabId =
+  "arrayCreationRectangular" | "arrayCreationPolar" | "arrayCreationPath"
+
+/** A field of a contextual tab, by what it sets. */
+export type ContextualFieldId =
+  | "columns"
+  | "columnSpacing"
+  | "rows"
+  | "rowSpacing"
+  | "rowElevation"
+  | "levels"
+  | "levelSpacing"
+  | "levelTotal"
+  | "items"
+  | "angleBetween"
+  | "fillAngle"
+  | "itemSpacing"
+
+/** A toggle of a contextual tab. */
+export type ContextualToggleId =
+  "associative" | "rotateItems" | "direction" | "alignItems"
+
+/** A field's value, written at the drawing's precision as its prompt's default is. */
+export interface ContextualFieldUi {
+  readonly text: string
+  readonly disabled: boolean
+}
+
+/**
+ * What a contextual tab's control asks of the running command, as its prompt
+ * would take it: a field's typed text, a toggle flipped, a path array's
+ * Method, or the tab's Close.
+ */
+export type ContextualEdit =
+  | { readonly field: ContextualFieldId; readonly text: string }
+  | { readonly toggle: ContextualToggleId }
+  | { readonly method: "divide" | "measure" }
+  | { readonly close: true }
 
 /** Snapshot of the command line (AutoCAD's `Command:` prompt) for the UI. */
 export interface CommandLineUi {

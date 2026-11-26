@@ -14,7 +14,7 @@ with `useRibbonLayout()`, with the tabs, panels and titles the ribbon's right-cl
 | Slot               | The piece                                                                   |
 | ------------------ | --------------------------------------------------------------------------- |
 | `TitleBar`         | Across the top: the application menu, Quick Access and the save state       |
-| `Ribbon`           | Under it: the ribbon, Home, Insert, Annotate, View; 3D Tools by Show Tabs   |
+| `Ribbon`           | Under it: the ribbon, Home to View, 3D Tools by Show Tabs, a command's tab  |
 | `PaletteContent`   | What Properties, the Layer Properties Manager and Blocks each hold          |
 | `CommandLine`      | On the drawing, along its foot: the command line and its history            |
 | `StatusBar`        | Across the bottom: the coordinates, the drafting modes and Customization    |

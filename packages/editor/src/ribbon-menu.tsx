@@ -15,7 +15,7 @@ import {
   SEPARATOR,
   Submenu,
 } from "./snap-override-menu"
-import type { RibbonTab } from "./ribbon-home"
+import { tabText, type RibbonTab } from "./ribbon-home"
 import { RIBBON_TABS } from "./ribbon-tabs"
 import type { RibbonLayout } from "./ribbon-layout"
 
@@ -82,7 +82,7 @@ export function RibbonMenu({
               {RIBBON_TABS.map((each) => (
                 <CheckEntry
                   key={each.id}
-                  label={t(`tabs.${each.id}`)}
+                  label={t(`tabs.${tabText(each)}`)}
                   checked={!layout.hiddenTabs.includes(each.id)}
                   onChange={(shown) =>
                     setLayout({

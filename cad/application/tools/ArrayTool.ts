@@ -18,7 +18,7 @@ import {
 import { drawingBox } from "../orbit"
 import { ObjectSelector } from "./objectSelection"
 import { selectedInDrawingOrder } from "./drawingOrder"
-import { refusesCount, takesCount } from "./arrayCounts"
+import { refuseText, refusesCount, takesCount } from "./arrayCounts"
 import {
   ArrayAssociativity,
   arrayPreview,
@@ -27,9 +27,11 @@ import {
 } from "./arrayObject"
 import { ArrayAtPrompt, ArrayPromptGrips } from "./arrayPromptGrips"
 import type { PromptId } from "../../locales/types"
+import type { ContextualEdit, ContextualFieldId } from "../EngineState"
 import {
   CommandOption,
   CommandOptionOutcome,
+  type ContextualTabSource,
   type HeldVariables,
   PointerInput,
   QuestionInput,
@@ -279,41 +281,12 @@ export class ArrayTool implements Tool {
     }
   }
 
-  /**
-   * The main prompt is a grip's pick; a count refuses as AutoCAD's does, its
-   * Expression keyword counted though not offered here, and a distance takes
-   * two points or Total and Expression — but Spacing's rows, which offers no
-   * keyword (probes arrays/p108, p114, p121, p138).
-   */
+  /** The main prompt is a grip's pick; the others' are `takesAt`'s. */
   takes(): QuestionInput | null {
     const state = this.state
     if (state.phase !== "edit") return this.selector.takes()
-    switch (state.step) {
-      case "main":
-        return this.grips.isHot() ? null : "point"
-      case "associative":
-        return "keyword"
-      case "countColumns":
-      case "countRows":
-      case "columnsCount":
-      case "rowsCount":
-      case "levelsCount":
-        return { refusal: "requiresPositiveInteger" }
-      case "unitCellFirst":
-      case "unitCellOpposite":
-        return "point"
-      case "spacingRows":
-      case "levelsTotal":
-        return {
-          refusal: "requiresDistance",
-          values: { points: "two", keyword: "no" },
-        }
-      default:
-        return {
-          refusal: "requiresDistance",
-          values: { points: "two", keyword: "yes" },
-        }
-    }
+    if (state.step === "main") return this.grips.isHot() ? null : "point"
+    return takesAt(state.step)
   }
 
   /** Unit cell's corners leave LASTPOINT where it was (probe arrays/p148). */
@@ -713,14 +686,7 @@ export class ArrayTool implements Tool {
   private answer(value: number | null, ctx: ToolContext): void {
     if (this.state.phase !== "edit") return
     const { step, grid } = this.state
-    if (value !== null && isCount(step) && refusesCount(value, ctx)) return
-    // The distances and Total refuse 0 and ask again; the elevation takes it
-    // (probes arrays/p117, p120, p135, p431, p433: AllowZero 0, and 1 at the
-    // elevation).
-    if (value === 0 && !isCount(step) && step !== "rowsElevation") {
-      ctx.report(ctx.text.message("valueMustBeNonzero"), "error")
-      return
-    }
+    if (value !== null && refuses(step, value, ctx)) return
     if (value !== null) {
       this.state = { ...this.state, grid: withValue(grid, step, value) }
     }
@@ -750,6 +716,67 @@ export class ArrayTool implements Tool {
       this.grips.moved()
     )
     ctx.dynamicInput.close()
+  }
+
+  /**
+   * Array Creation (ARRAYCREATION 1 from the main prompt on, probe
+   * arrays/p450): Columns, Rows and Levels with what their keywords ask, and
+   * Associative. Base Point and the columns' and rows' Total are not offered
+   * here, so not shown.
+   */
+  contextualTab(): ContextualTabSource | null {
+    const state = this.state
+    if (state.phase !== "edit") return null
+    const { grid } = state
+    return {
+      id: "arrayCreationRectangular",
+      fields: [
+        { id: "columns", value: grid.columns, kind: "count" },
+        { id: "columnSpacing", value: grid.colSpacing, kind: "distance" },
+        { id: "rows", value: grid.rows, kind: "count" },
+        { id: "rowSpacing", value: grid.rowSpacing, kind: "distance" },
+        { id: "rowElevation", value: grid.rowElevation, kind: "distance" },
+        { id: "levels", value: grid.levels, kind: "count" },
+        { id: "levelSpacing", value: grid.levelSpacing, kind: "distance" },
+        // Total's default: the spacing itself with one level (p433, p434),
+        // as the desktop's field shows it (arrays/d07-1: 1, 1, 1).
+        {
+          id: "levelTotal",
+          value: Math.max(grid.levels - 1, 1) * grid.levelSpacing,
+          kind: "distance",
+        },
+      ],
+      toggles: { associative: this.mode.associative },
+    }
+  }
+
+  /**
+   * A field takes what its keyword's prompt takes, refused in its words; the
+   * prompt asked stays. Close Array is eXit.
+   */
+  editContextual(edit: ContextualEdit, ctx: ToolContext): CommandOptionOutcome {
+    const state = this.state
+    // A grip taken holds the array it was taken from until its release.
+    if (state.phase !== "edit" || this.grips.isHot()) return "unhandled"
+    if ("close" in edit) {
+      this.create(ctx)
+      return "end"
+    }
+    if ("toggle" in edit) {
+      if (edit.toggle !== "associative") return "unhandled"
+      this.mode.associative = !this.mode.associative
+      return "continue"
+    }
+    if (!("field" in edit)) return "unhandled"
+    const step = FIELD_STEP[edit.field]
+    if (step === undefined) return "unhandled"
+    const value = parseNumber(edit.text.trim())
+    if (value === null) refuseText(takesAt(step), ctx)
+    else if (!refuses(step, value, ctx)) {
+      this.state = { ...state, grid: withValue(state.grid, step, value) }
+    }
+    ctx.requestRender()
+    return "continue"
   }
 
   /** The array at the main prompt, whose grips it picks; null at any other. */
@@ -782,6 +809,68 @@ const FIELD_LABEL: Readonly<
   levelsCount: "levels",
   levelsSpacing: "levelSpacing",
   levelsTotal: "distance",
+}
+
+/**
+ * What a prompt after the main one takes: a count refuses as AutoCAD's does,
+ * its Expression keyword counted though not offered here, and a distance
+ * takes two points or Total and Expression — but Spacing's rows and Total,
+ * which offer no keyword (probes arrays/p108, p114, p121, p138).
+ */
+function takesAt(step: Exclude<Step, "main">): QuestionInput {
+  switch (step) {
+    case "associative":
+      return "keyword"
+    case "countColumns":
+    case "countRows":
+    case "columnsCount":
+    case "rowsCount":
+    case "levelsCount":
+      return { refusal: "requiresPositiveInteger" }
+    case "unitCellFirst":
+    case "unitCellOpposite":
+      return "point"
+    case "spacingRows":
+    case "levelsTotal":
+      return {
+        refusal: "requiresDistance",
+        values: { points: "two", keyword: "no" },
+      }
+    default:
+      return {
+        refusal: "requiresDistance",
+        values: { points: "two", keyword: "yes" },
+      }
+  }
+}
+
+/** The step whose prompt each of Array Creation's fields answers. */
+const FIELD_STEP: Readonly<
+  Partial<Record<ContextualFieldId, Exclude<Step, "main">>>
+> = {
+  columns: "columnsCount",
+  columnSpacing: "columnsSpacing",
+  rows: "rowsCount",
+  rowSpacing: "rowsSpacing",
+  rowElevation: "rowsElevation",
+  levels: "levelsCount",
+  levelSpacing: "levelsSpacing",
+  levelTotal: "levelsTotal",
+}
+
+/**
+ * Whether `step`'s prompt refuses `value`, said in its words: a count as
+ * AutoCAD's counts refuse; the distances and Total 0, the elevation taking it
+ * (probes arrays/p117, p120, p135, p431, p433: AllowZero 0, and 1 at the
+ * elevation).
+ */
+function refuses(step: Step, value: number, ctx: ToolContext): boolean {
+  if (isCount(step)) return refusesCount(value, ctx)
+  if (value === 0 && step !== "rowsElevation") {
+    ctx.report(ctx.text.message("valueMustBeNonzero"), "error")
+    return true
+  }
+  return false
 }
 
 function isUnitCell(step: Step): step is "unitCellFirst" | "unitCellOpposite" {

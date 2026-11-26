@@ -8,14 +8,14 @@ import {
   isInfiniteLine,
 } from "../../domain/entities"
 import { isFullTurn, polarAngleBetween } from "../../domain/arrays"
-import { parseNumber } from "../../domain/units"
+import { parseAngleDegrees, parseNumber } from "../../domain/units"
 import {
   isCoordinateExpression,
   parseCoordinate,
 } from "../input/coordinateInput"
 import { ScenePrimitive } from "../../scene/types"
 import { ObjectSelector } from "./objectSelection"
-import { refusesCount, takesCount } from "./arrayCounts"
+import { refuseText, refusesCount, takesCount } from "./arrayCounts"
 import {
   ArrayAssociativity,
   arrayPreview,
@@ -24,9 +24,11 @@ import {
 } from "./arrayObject"
 import { ArrayAtPrompt, ArrayPromptGrips } from "./arrayPromptGrips"
 import type { PromptId } from "../../locales/types"
+import type { ContextualEdit, ContextualFieldId } from "../EngineState"
 import {
   CommandOption,
   CommandOptionOutcome,
+  type ContextualTabSource,
   PointerInput,
   QuestionInput,
   Tool,
@@ -219,6 +221,14 @@ export class ArrayPolarTool implements Tool {
     switch (state.step) {
       case "main":
         return this.grips.isHot() ? null : "point"
+      default:
+        return this.takesAt(state.step)
+    }
+  }
+
+  /** What a value's or a keyword's prompt takes: its refusal's words. */
+  private takesAt(step: Exclude<Step, "main">): QuestionInput {
+    switch (step) {
       case "items":
         return { refusal: "requiresPositiveInteger" }
       case "between":
@@ -554,19 +564,73 @@ export class ArrayPolarTool implements Tool {
   private answer(value: number, ctx: ToolContext): void {
     if (this.state.phase !== "edit") return
     const { step, ring } = this.state
-    if (step === "items" && refusesCount(value, ctx)) return
-    // Angle between is positive, a fill's sign is its direction (probes
-    // arrays/p214, p219).
-    if (step === "between" && value <= 0) {
-      ctx.report(ctx.text.message("positiveNonzero"), "error")
-      return
-    }
-    if (step === "fill" && value === 0) {
-      ctx.report(ctx.text.message("parameterCannotBeZero"), "error")
-      return
-    }
+    if (refuses(step, value, ctx)) return
     this.state = { ...this.state, ring: withValue(ring, step, value) }
     this.ask("main", ctx)
+  }
+
+  /**
+   * Array Creation (ARRAYCREATION 2 from the main prompt on, after the
+   * centre, probe arrays/p451): Items with its three values, Associative,
+   * Rotate Items and Direction, lit while the ring runs counter-clockwise.
+   * Rows, Levels and Base Point are not offered here, so not shown.
+   */
+  contextualTab(): ContextualTabSource | null {
+    const state = this.state
+    if (state.phase !== "edit") return null
+    const { ring } = state
+    return {
+      id: "arrayCreationPolar",
+      fields: [
+        { id: "items", value: ring.items, kind: "count" },
+        { id: "angleBetween", value: polarAngleBetween(ring), kind: "angle" },
+        { id: "fillAngle", value: ring.fill, kind: "angle" },
+      ],
+      toggles: {
+        associative: this.mode.associative,
+        rotateItems: ring.rotate,
+        direction: !ring.clockwise,
+      },
+    }
+  }
+
+  /**
+   * A field takes what its keyword's prompt takes, refused in its words;
+   * Direction is Fill angle answered with the other sign (`+=ccw, -=cw`), Rotate
+   * Items its Yes or No. Close Array is eXit.
+   */
+  editContextual(edit: ContextualEdit, ctx: ToolContext): CommandOptionOutcome {
+    const state = this.state
+    // A grip taken holds the array it was taken from until its release.
+    if (state.phase !== "edit" || this.grips.isHot()) return "unhandled"
+    const { ring } = state
+    if ("close" in edit) {
+      this.create(ctx)
+      return "end"
+    }
+    if ("toggle" in edit) {
+      if (edit.toggle === "associative") {
+        this.mode.associative = !this.mode.associative
+      } else if (edit.toggle === "rotateItems") {
+        this.state = { ...state, ring: { ...ring, rotate: !ring.rotate } }
+      } else if (edit.toggle === "direction") {
+        const fill = ring.clockwise ? ring.fill : -ring.fill
+        this.state = { ...state, ring: withValue(ring, "fill", fill) }
+      } else return "unhandled"
+      ctx.requestRender()
+      return "continue"
+    }
+    if (!("field" in edit)) return "unhandled"
+    const step = FIELD_STEP[edit.field]
+    const text = edit.text.trim()
+    if (step === undefined) return "unhandled"
+    const value = step === "items" ? parseNumber(text) : parseAngleDegrees(text)
+    if (value === null) refuseText(this.takesAt(step), ctx)
+    else if (!refuses(step, value, ctx)) {
+      this.state = { ...state, ring: withValue(ring, step, value) }
+    }
+    ctx.requestRender()
+    return "continue"
   }
 
   /** The ring the preview shows: the value being typed already applied. */
@@ -600,6 +664,32 @@ export class ArrayPolarTool implements Tool {
     )
     ctx.dynamicInput.close()
   }
+}
+
+/** The step whose prompt each of Array Creation's fields answers. */
+const FIELD_STEP: Readonly<
+  Partial<Record<ContextualFieldId, Exclude<Step, "main">>>
+> = {
+  items: "items",
+  angleBetween: "between",
+  fillAngle: "fill",
+}
+
+/**
+ * Whether `step`'s prompt refuses `value`, said in its words: Angle between
+ * is positive, a fill's sign is its direction (probes arrays/p214, p219).
+ */
+function refuses(step: Step, value: number, ctx: ToolContext): boolean {
+  if (step === "items") return refusesCount(value, ctx)
+  if (step === "between" && value <= 0) {
+    ctx.report(ctx.text.message("positiveNonzero"), "error")
+    return true
+  }
+  if (step === "fill" && value === 0) {
+    ctx.report(ctx.text.message("parameterCannotBeZero"), "error")
+    return true
+  }
+  return false
 }
 
 /** The ring's parameters, as the array object keeps them. */

@@ -3,6 +3,7 @@
 import {
   createElement,
   Fragment,
+  useEffect,
   useLayoutEffect,
   useRef,
   useState,
@@ -14,8 +15,19 @@ import { Menu } from "@base-ui/react/menu"
 import { Popover } from "@base-ui/react/popover"
 import { Tabs } from "@base-ui/react/tabs"
 import {
+  ArrowUpFromLine,
   Check,
   ChevronDown,
+  ChevronsUp,
+  CircleDashed,
+  Columns3,
+  FoldVertical,
+  Hash,
+  Layers,
+  MoveHorizontal,
+  MoveVertical,
+  RotateCcw,
+  Rows3,
   MoveDiagonal2,
   PanelTopClose,
   PanelTopOpen,
@@ -26,8 +38,13 @@ import {
   type LucideIcon,
 } from "lucide-react"
 
-import type { CadEngine, PaletteId } from "@mellowcad/engine"
-import type { EditorState } from "@mellowcad/react"
+import type {
+  CadEngine,
+  ContextualFieldId,
+  ContextualToggleId,
+  PaletteId,
+} from "@mellowcad/engine"
+import { isImeKey, type EditorState } from "@mellowcad/react"
 import { cn } from "./utils"
 import { TooltipProvider } from "./ui/tooltip"
 import { isTip, RibbonTip, type TipKey } from "./ribbon-tip"
@@ -59,6 +76,7 @@ import {
   ACTIONS,
   SPACER,
   actionOf,
+  tabText,
   toolOfAction,
   type ControlSize,
   type ItemId,
@@ -69,6 +87,7 @@ import {
   type RibbonToggle,
 } from "./ribbon-home"
 import { RIBBON_TABS } from "./ribbon-tabs"
+import { CONTEXTUAL_TABS } from "./ribbon-contextual"
 import {
   foldAt,
   foldSteps,
@@ -113,6 +132,12 @@ const WHOLE = "w-[calc-size(fit-content,round(up,size,1px))]"
  * and in an odd one it would land on half a pixel.
  */
 const WHOLE_EVEN = "w-[calc-size(fit-content,round(up,size,2px))]"
+/**
+ * A contextual tab: the accent's tint, and its text, AutoCAD's filled tab
+ * drawn with the editor's one accent (decision 7).
+ */
+const CONTEXTUAL_TAB =
+  "bg-active/15 text-active-foreground hover:bg-active/25 hover:text-active-foreground data-active:bg-active/25 data-active:text-active-foreground"
 /** A small combo: AutoCAD's 22 (§2.3). */
 const COMBO =
   "h-5.5 py-0 border-input bg-background shadow-none dark:bg-background"
@@ -165,10 +190,28 @@ export function Ribbon({ engine, state }: PieceProps): ReactElement {
   // piece, which unmounts while the ribbon is closed; hidden by Show Tabs,
   // the first one shown is in front instead. Its panels are those Show Panels
   // leaves (`layout.hiddenPanels`).
-  const shown = RIBBON_TABS.filter((tab) => !layout.hiddenTabs.includes(tab.id))
+  // A running command's contextual tab follows the last, in front as it
+  // opens (the engine's `ribbon.tab`); Show Tabs lists the workspace's only.
+  const contextual = state.ribbon.contextual
+  const contextualId = contextual?.id ?? null
+  // A contextual tab closing under one of its focused boxes leaves the focus
+  // on the page, the box gone: the drawing takes it.
+  const wasContextual = useRef(contextualId)
+  useEffect(() => {
+    const was = wasContextual.current
+    wasContextual.current = contextualId
+    const page = tabRow.current?.ownerDocument
+    if (was === null || contextualId !== null || !page) return
+    if (!page.activeElement || page.activeElement === page.body)
+      engine.focusSurface()
+  }, [contextualId, engine])
+  const shown = [
+    ...RIBBON_TABS.filter((tab) => !layout.hiddenTabs.includes(tab.id)),
+    ...(contextual ? [CONTEXTUAL_TABS[contextual.id]] : []),
+  ]
   const chosen = shown.find((tab) => tab.id === state.ribbon.tab) ?? shown[0]
   const front = chosen && withPanelsShown(chosen, layout.hiddenPanels)
-  const panelsLabel = front ? t(`tabs.${front.id}`) : t("menu.empty")
+  const panelsLabel = front ? t(`tabs.${tabText(front)}`) : t("menu.empty")
 
   return (
     <TooltipProvider>
@@ -212,10 +255,13 @@ export function Ribbon({ engine, state }: PieceProps): ReactElement {
                   layout.state === "tabs"
                     ? dropped &&
                         "data-active:bg-card data-active:text-foreground"
-                    : "data-active:bg-card data-active:text-foreground"
+                    : "data-active:bg-card data-active:text-foreground",
+                  // A contextual tab wears the accent, in front or not
+                  // (desktop hatch/d01-2, arrays/d07-1).
+                  tab.id === contextual?.id && CONTEXTUAL_TAB
                 )}
               >
-                {t(`tabs.${tab.id}`)}
+                {t(`tabs.${tabText(tab)}`)}
               </Tabs.Tab>
             ))}
           </Tabs.List>
@@ -921,7 +967,7 @@ function DroppedPanels({
  */
 function gapBetween(before: RibbonSlot, after: RibbonSlot): string {
   const stacked = (slot: RibbonSlot) =>
-    slot.kind === "column" || slot.kind === "rows"
+    slot.kind === "column" || slot.kind === "rows" || slot.kind === "fields"
   if (stacked(before) && stacked(after)) return "w-1.25"
   if (stacked(before) || stacked(after)) return "w-px"
   return "hidden"
@@ -986,6 +1032,7 @@ function Slot({
       </div>
     )
   }
+  if (slot.kind === "fields") return <Fields fields={slot.fields} ctx={ctx} />
   return <Control control={shed(slot)} ctx={ctx} />
 }
 
@@ -1102,7 +1149,284 @@ function Control({
       return <VisualStyles ctx={ctx} />
     case "styleList":
       return <StyleList style={control.style} ctx={ctx} />
+    case "field":
+      // A field alone (a slide-out's row): a grid of its own.
+      return <Fields fields={[control.field]} ctx={ctx} />
+    case "arrayType":
+      return <ArrayType type={control.type} ctx={ctx} />
+    case "contextualToggle":
+      return <ContextualToggle toggle={control.toggle} ctx={ctx} />
+    case "pathMethod":
+      return <PathMethod ctx={ctx} />
+    case "closeContextual":
+      return (
+        <LargeButton
+          icon={LARGE_BUTTON_ICONS.arrayClose}
+          text={ctx.text(control.text)}
+          tip="arrayClose"
+          ctx={ctx}
+          onClick={() =>
+            ctx.act(() => engine.editContextualTab({ close: true }))
+          }
+        />
+      )
   }
+}
+
+/** Each field's 16 px glyph, ours (the BAML's are Autodesk's art). */
+const FIELD_ICONS: Readonly<Record<ContextualFieldId, LucideIcon>> = {
+  columns: Columns3,
+  columnSpacing: MoveHorizontal,
+  rows: Rows3,
+  rowSpacing: MoveVertical,
+  rowElevation: ArrowUpFromLine,
+  levels: Layers,
+  levelSpacing: ChevronsUp,
+  levelTotal: FoldVertical,
+  items: Hash,
+  angleBetween: RotateCcw,
+  fillAngle: CircleDashed,
+  itemSpacing: MoveHorizontal,
+}
+
+/** Each field's tooltip, its AcWindows `TT_…` (Items: the polar or the path one's). */
+function fieldTip(field: ContextualFieldId, ctx: Context): TipKey {
+  switch (field) {
+    case "columns":
+      return "arrayColumns"
+    case "columnSpacing":
+      return "arrayColumnSpacing"
+    case "rows":
+      return "arrayRows"
+    case "rowSpacing":
+      return "arrayRowSpacing"
+    case "rowElevation":
+      return "arrayRowElevation"
+    case "levels":
+      return "arrayLevels"
+    case "levelSpacing":
+      return "arrayLevelSpacing"
+    case "levelTotal":
+      return "arrayLevelTotal"
+    case "items":
+      return ctx.state.ribbon.contextual?.id === "arrayCreationPath"
+        ? "arrayPathItems"
+        : "arrayPolarItems"
+    case "angleBetween":
+      return "arrayAngleBetween"
+    case "fillAngle":
+      return "arrayFillAngle"
+    case "itemSpacing":
+      return "arrayItemSpacing"
+  }
+}
+
+/**
+ * A contextual tab's fields, one a row of 22 on the 24 px pitch: a 16 px
+ * glyph, the label and a box of 98, the boxes in a column after the longest
+ * label, as the BAML's `Grid` lays them (desktop arrays/d07-1).
+ */
+function Fields({
+  fields,
+  ctx,
+}: {
+  fields: readonly ContextualFieldId[]
+  ctx: Context
+}) {
+  return (
+    <div className="mt-px grid grid-cols-[auto_auto_auto] gap-y-0.5">
+      {fields.map((field) => (
+        <Field key={field} field={field} ctx={ctx} />
+      ))}
+    </div>
+  )
+}
+
+/**
+ * A field: what its prompt offers, and what is typed in it going to the
+ * running command as that prompt takes it (`editContextualTab`), on Enter or
+ * on leaving the box (the BAML's `AcceptTextOnLostFocus`); Escape puts the
+ * value back. Enter and Escape give the drawing the keys back; the box's
+ * other keys are its own (the engine leaves a text box's alone). WHY no
+ * `DecimalInput`: the box takes what its prompt takes, read by the engine (a
+ * length in the drawing's units, an angle), and its arrows move the caret as
+ * the BAML's text box does, stepping nothing.
+ */
+function Field({ field, ctx }: { field: ContextualFieldId; ctx: Context }) {
+  const t = useEditorText("Ribbon")
+  const { engine } = ctx
+  const value = ctx.state.ribbon.contextual?.fields[field]
+  const [draft, setDraft] = useState<string | null>(null)
+  // WHY a ref: Escape's blur would commit the draft the state still holds.
+  const typed = useRef<string | null>(null)
+  if (!value) return null
+  const Icon = FIELD_ICONS[field]
+  const label = t(`fields.${field}`)
+  const id = `ribbon-field-${field}`
+  const set = (text: string | null) => {
+    typed.current = text
+    setDraft(text)
+  }
+  return (
+    <Tip tip={fieldTip(field, ctx)} title={label} ctx={ctx}>
+      <div className="col-span-3 grid h-5.5 grid-cols-subgrid items-center">
+        <Icon aria-hidden className="mx-1 size-4 text-muted-foreground" />
+        <label htmlFor={id} className="pe-1 whitespace-nowrap">
+          {label}
+        </label>
+        <input
+          id={id}
+          type="text"
+          inputMode="decimal"
+          dir="ltr"
+          autoComplete="off"
+          spellCheck={false}
+          disabled={value.disabled}
+          value={draft ?? value.text}
+          onChange={(event) => set(event.target.value)}
+          onBlur={() => {
+            const text = typed.current
+            set(null)
+            if (text !== null && text.trim() !== "" && text !== value.text)
+              engine.editContextualTab({ field, text })
+          }}
+          onKeyDown={(event) => {
+            // An IME's Enter confirms a conversion, its Escape drops it.
+            if (isImeKey(event)) return
+            if (event.key === "Enter" || event.key === "Escape") {
+              event.preventDefault()
+              if (event.key === "Escape") set(null)
+              event.currentTarget.blur()
+              engine.focusSurface()
+            }
+          }}
+          className="h-5.5 w-24.5 rounded-sm border border-input bg-background px-1 text-ui outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:text-faint-foreground"
+        />
+      </div>
+    </Tip>
+  )
+}
+
+/** Array Creation's Type: each kind's 32 px glyph, its tool's. */
+const TYPE_GLYPHS = {
+  arrayRectangular: "array",
+  arrayPolar: "arraypolar",
+  arrayPath: "arraypath",
+} as const
+
+/**
+ * Array Creation's Type: the kind's 32 px glyph over its name, a label that
+ * runs nothing (the BAML's `DataTemplate`, an image and a text box).
+ */
+function ArrayType({
+  type,
+  ctx,
+}: {
+  type: keyof typeof TYPE_GLYPHS
+  ctx: Context
+}) {
+  return (
+    <div
+      className={cn(
+        "flex h-18 min-w-9.5 flex-col items-center px-0.5 pt-0.75",
+        WHOLE_EVEN
+      )}
+    >
+      <LargeGlyph action={TYPE_GLYPHS[type]} />
+      <span className="mt-0.5">{ctx.text(type)}</span>
+    </div>
+  )
+}
+
+/** A contextual tab's toggle's item: its text, glyph and tooltip. */
+const TOGGLE_ITEMS: Readonly<Record<ContextualToggleId, ItemId & TipKey>> = {
+  associative: "arrayAssociative",
+  rotateItems: "arrayRotateItems",
+  direction: "arrayDirection",
+  alignItems: "arrayAlignItems",
+}
+
+/** A contextual tab's large toggle, lit while on (`contextual.toggles`). */
+function ContextualToggle({
+  toggle,
+  ctx,
+}: {
+  toggle: ContextualToggleId
+  ctx: Context
+}) {
+  const item = TOGGLE_ITEMS[toggle]
+  return (
+    <LargeButton
+      icon={LARGE_BUTTON_ICONS[item]}
+      text={ctx.text(item)}
+      tip={item}
+      ctx={ctx}
+      pressed={ctx.state.ribbon.contextual?.toggles[toggle] === true}
+      onClick={() => ctx.act(() => ctx.engine.editContextualTab({ toggle }))}
+    />
+  )
+}
+
+const PATH_METHODS = [
+  ["divide", "arrayDivide"],
+  ["measure", "arrayMeasure"],
+] as const
+
+/**
+ * ARRAYPATH's Method (AcPathArrayMethodSplitDropDown): large, the method in
+ * force's glyph over `Method`, one target listing Divide and Measure, a row
+ * of 38 each; a pick is Method's answer. Its tooltip is the method's.
+ */
+function PathMethod({ ctx }: { ctx: Context }) {
+  const portal = usePortalContainer()
+  const method = ctx.state.ribbon.contextual?.method ?? "measure"
+  const current =
+    PATH_METHODS.find(([each]) => each === method) ?? PATH_METHODS[1]
+  return (
+    <Menu.Root>
+      <Tip tip={current[1]} title={ctx.text(current[1])} ctx={ctx}>
+        <div className="flex shrink-0">
+          <Menu.Trigger
+            className={cn(
+              BUTTON,
+              "h-18 min-w-9.5 flex-col justify-start px-0.5 pt-0.75",
+              WHOLE_EVEN
+            )}
+          >
+            <LargeGlyph action={current[1]} />
+            <span className="mt-0.5 flex items-center gap-0.5">
+              {ctx.text("arrayMethod")}
+              <ChevronDown aria-hidden className="size-2.5" />
+            </span>
+          </Menu.Trigger>
+        </div>
+      </Tip>
+      <Menu.Portal container={portal}>
+        <Menu.Positioner
+          side="bottom"
+          align="start"
+          sideOffset={1}
+          className="z-50"
+        >
+          <Menu.Popup className={cn(POPUP, "p-0.5")} finalFocus={ctx.toDrawing}>
+            {PATH_METHODS.map(([each, item]) => (
+              <Menu.Item
+                key={each}
+                data-current={each === method ? "" : undefined}
+                className={LIST_ROW}
+                onClick={() => ctx.engine.editContextualTab({ method: each })}
+              >
+                <span className="flex size-8 shrink-0 items-center justify-center">
+                  <LargeGlyph action={item} />
+                </span>
+                {ctx.text(item)}
+              </Menu.Item>
+            ))}
+          </Menu.Popup>
+        </Menu.Positioner>
+      </Menu.Portal>
+    </Menu.Root>
+  )
 }
 
 /**

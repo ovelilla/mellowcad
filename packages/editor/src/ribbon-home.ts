@@ -1,4 +1,10 @@
-import type { RibbonButton, ZoomOption } from "@mellowcad/engine"
+import type {
+  ContextualFieldId,
+  ContextualTabId,
+  ContextualToggleId,
+  RibbonButton,
+  ZoomOption,
+} from "@mellowcad/engine"
 import type { EditorMessages } from "./locales/types"
 
 type RibbonWords = EditorMessages["Ribbon"]
@@ -77,6 +83,22 @@ export type RibbonControl =
    * AcDimensionStyleGallery): the selection's style, or the current one.
    */
   | { readonly kind: "styleList"; readonly style: "text" | "dimension" }
+  /**
+   * A contextual tab's field (`state.ribbon.contextual.fields`): its 16 px
+   * icon, its label and a box of 98 × 22 (desktop arrays/d07-1).
+   */
+  | { readonly kind: "field"; readonly field: ContextualFieldId }
+  /** Array Creation's Type: the array's kind, a large label that runs nothing. */
+  | {
+      readonly kind: "arrayType"
+      readonly type: "arrayRectangular" | "arrayPolar" | "arrayPath"
+    }
+  /** A contextual tab's toggle, large, lit while on. */
+  | { readonly kind: "contextualToggle"; readonly toggle: ContextualToggleId }
+  /** ARRAYPATH's Method (AcPathArrayMethodSplitDropDown): Divide, Measure. */
+  | { readonly kind: "pathMethod" }
+  /** A contextual tab's Close, ending its command (AcArrayCreationCloseButton). */
+  | { readonly kind: "closeContextual"; readonly text: ItemId }
 
 /** A column of up to three small controls, one row each. */
 export interface RibbonColumn {
@@ -93,7 +115,17 @@ export interface RibbonRows {
   readonly rows: readonly (readonly (RibbonControl | typeof SPACER)[])[]
 }
 
-export type RibbonSlot = RibbonControl | RibbonColumn | RibbonRows
+/**
+ * A contextual tab's fields, one a row on the 24 px pitch, their boxes in a
+ * column after the longest label (the BAML's `Grid` with an `Auto` column).
+ */
+export interface RibbonFields {
+  readonly kind: "fields"
+  readonly fields: readonly ContextualFieldId[]
+}
+
+export type RibbonSlot =
+  RibbonControl | RibbonColumn | RibbonRows | RibbonFields
 
 /** The 4 px acad.cuix puts between a row's groups (its `Spacer`). */
 export const SPACER = "spacer"
@@ -139,13 +171,21 @@ export interface RibbonFoldStep {
 }
 
 export interface RibbonTab {
-  readonly id: TabId
+  /** A workspace tab's id, or a contextual tab's (`state.ribbon.contextual`). */
+  readonly id: TabId | ContextualTabId
+  /** Its name's key, where the id is none (the three Array Creation tabs). */
+  readonly text?: TabId
   readonly panels: readonly RibbonPanel[]
   /**
    * The order its panels shed width and fold in as the window narrows, as
    * measured on the desktop; without it, `foldSteps`' rule.
    */
   readonly fold?: readonly RibbonFoldStep[]
+}
+
+/** A tab's name's key: its own, or its id's where the id is one (a workspace tab). */
+export function tabText(tab: RibbonTab): TabId {
+  return tab.text ?? (tab.id as TabId)
 }
 
 /**

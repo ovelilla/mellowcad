@@ -37,7 +37,7 @@ function controls(): RibbonControl[] {
     if (c === SPACER) return
     if (c.kind === "column") c.rows.forEach(add)
     else if (c.kind === "rows") c.rows.forEach((row) => row.forEach(add))
-    else out.push(c)
+    else if (c.kind !== "fields") out.push(c)
   }
   for (const panel of PANELS) {
     panel.slots.forEach(add)
@@ -193,7 +193,13 @@ describe("the ribbon's tooltips", () => {
 
   it("describe every button; a list's row has none", () => {
     const untipped = Object.keys(words.items).filter((id) => !tipped(id))
+    // Array Creation's Type is a label (a `DataTemplate`, no `TT_`), and its
+    // Method shows the tooltip of the method in force.
     expect(untipped.sort()).toEqual([
+      "arrayMethod",
+      "arrayPath",
+      "arrayPolar",
+      "arrayRectangular",
       "manageDimensionStyles",
       "manageTextStyles",
     ])
@@ -206,7 +212,12 @@ describe("the ribbon's tooltips", () => {
   })
 
   it("name the command in capitals, the one F1 asks Help for", () => {
-    expect(Object.keys(words.tipCommands)).toEqual(Object.keys(words.tips))
+    // Array Creation's `TT_…` name no command: their tooltips show none.
+    const commandless = Object.keys(words.tips).filter(
+      (tip) => !(tip in words.tipCommands)
+    )
+    expect(commandless).toHaveLength(20)
+    for (const tip of commandless) expect(tip).toMatch(/^array[A-Z]/)
     const commands = new Set(commandCatalog().map((command) => command.id))
     for (const [tip, command] of Object.entries(words.tipCommands)) {
       expect(String(command)).toMatch(/^[A-Z0-9-]+$/)
@@ -225,6 +236,37 @@ describe("the ribbon's tooltips", () => {
       expect(Object.keys(ribbon.tips), tag).toEqual(Object.keys(words.tips))
       expect(ribbon.pressF1, tag).toBeTruthy()
     }
+  })
+})
+
+// The running command's contextual tab (plan §6, phase 6, block 1): after the
+// last tab, in front, its fields the engine's values.
+describe("the contextual tab", () => {
+  const arrayRect = (cad: ReturnType<typeof createHarness>) => {
+    cad.command("CIRCLE").type("0,0").enter().type("5").enter()
+    cad.selectAll().command("ARRAYRECT")
+  }
+
+  it("shows Array Creation in front while ARRAYRECT asks its main prompt", () => {
+    const html = renderRibbon(arrayRect)
+    expect(html).toMatch(/aria-selected="true"[^>]*>Array Creation</)
+    expect(html).toContain(">Columns:<")
+    expect(html).toContain('value="4"')
+    expect(html).toMatch(/>Close<\/span><span>Array</)
+    expect(html).toMatch(
+      /aria-pressed="true"[^>]*>(?:(?!<\/button>).)*Associative</
+    )
+    // Total is not asked by COLumns here: not drawn.
+    expect(html.match(/>Total:</g)).toHaveLength(1)
+  })
+
+  it("is gone once the command ends, Show Tabs never listing it", () => {
+    const html = renderRibbon((cad) => {
+      arrayRect(cad)
+      cad.enter()
+    })
+    expect(html).not.toContain("Array Creation")
+    expect(html).toMatch(/aria-selected="true"[^>]*>Home</)
   })
 })
 

@@ -15,6 +15,12 @@ import type { CursorBadge } from "../SceneBuilder"
 import type { MessageValues } from "../../i18n/types"
 import type { FeedbackId, MessageId } from "../EngineText"
 import type { PromptId } from "../../locales/types"
+import type {
+  ContextualEdit,
+  ContextualFieldId,
+  ContextualTabId,
+  ContextualToggleId,
+} from "../EngineState"
 
 /** A normalised pointer event delivered to the active tool. */
 export interface PointerInput {
@@ -578,6 +584,26 @@ export interface ToolText {
 export const MACRO_PAUSE = "\\"
 
 /**
+ * What a command's contextual tab shows (`EngineState.ribbon.contextual`),
+ * in values the runtime words as the command's prompts write them.
+ */
+export interface ContextualTabSource {
+  readonly id: ContextualTabId
+  readonly fields: readonly ContextualFieldSource[]
+  readonly toggles?: Partial<Record<ContextualToggleId, boolean>>
+  readonly method?: "divide" | "measure"
+}
+
+/** A contextual tab's field: its value and how its prompt writes it. */
+export interface ContextualFieldSource {
+  readonly id: ContextualFieldId
+  readonly value: number
+  /** A count, a length (LUPREC) or an angle (AUPREC), trailing zeros dropped. */
+  readonly kind: "count" | "distance" | "angle"
+  readonly disabled?: boolean
+}
+
+/**
  * A ribbon button that runs a command and answers its prompts, as AutoCAD's
  * `^C^C_circle \_d` does: echoed `_circle`, repeated by Enter and named by U
  * as that command, its answers typed in turn as it asks.
@@ -653,6 +679,17 @@ export interface Tool {
    * is a value, not another run (probes workspace/p410, p415).
    */
   systemVariable?(): string
+  /**
+   * The ribbon contextual tab the command shows now (AutoCAD's ARRAYCREATION
+   * and the like), or null; the runtime words its values.
+   */
+  contextualTab?(): ContextualTabSource | null
+  /**
+   * A contextual tab's control acting on the command as its prompt would take
+   * it, refused there in the prompt's words: `"end"` when it ended the command
+   * (Close), `"unhandled"` when it does not apply now.
+   */
+  editContextual?(edit: ContextualEdit, ctx: ToolContext): CommandOptionOutcome
 
   /**
    * What the command asks right now, by its id in `commands.prompts`

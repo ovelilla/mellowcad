@@ -96,6 +96,7 @@ declare const source: {
       "annotate": string
       "tools3d": string
       "view": string
+      "arrayCreation": string
     }
     "panels": {
       "draw": string
@@ -119,6 +120,13 @@ declare const source: {
       "modeling": string
       "solidEditing": string
       "coordinates3d": string
+      "arrayType": string
+      "arrayColumns": string
+      "arrayItems": string
+      "arrayRows": string
+      "arrayLevels": string
+      "arrayProperties": string
+      "arrayClose": string
     }
     "items": {
       "line": string
@@ -262,6 +270,31 @@ declare const source: {
       "attModeNormal": string
       "attModeOn": string
       "attModeOff": string
+      "arrayRectangular": string
+      "arrayPolar": string
+      "arrayPath": string
+      "arrayAssociative": string
+      "arrayRotateItems": string
+      "arrayDirection": string
+      "arrayMethod": string
+      "arrayDivide": string
+      "arrayMeasure": string
+      "arrayAlignItems": string
+      "arrayClose": string
+    }
+    "fields": {
+      "columns": string
+      "columnSpacing": string
+      "rows": string
+      "rowSpacing": string
+      "rowElevation": string
+      "levels": string
+      "levelSpacing": string
+      "levelTotal": string
+      "items": string
+      "angleBetween": string
+      "fillAngle": string
+      "itemSpacing": string
     }
     "pressF1": string
     "tips": {
@@ -412,6 +445,26 @@ declare const source: {
       "dimensionStyleList": string
       "visualStyleList": string
       "propertiesLauncher": string
+      "arrayColumns": string
+      "arrayColumnSpacing": string
+      "arrayRows": string
+      "arrayRowSpacing": string
+      "arrayRowElevation": string
+      "arrayLevels": string
+      "arrayLevelSpacing": string
+      "arrayLevelTotal": string
+      "arrayPolarItems": string
+      "arrayAngleBetween": string
+      "arrayFillAngle": string
+      "arrayPathItems": string
+      "arrayItemSpacing": string
+      "arrayAssociative": string
+      "arrayRotateItems": string
+      "arrayDirection": string
+      "arrayDivide": string
+      "arrayMeasure": string
+      "arrayAlignItems": string
+      "arrayClose": string
     }
     "tipTitles": {
       "layerProperties": string
@@ -432,6 +485,26 @@ declare const source: {
       "dimensionStyleList": string
       "visualStyleList": string
       "propertiesLauncher": string
+      "arrayColumns": string
+      "arrayColumnSpacing": string
+      "arrayRows": string
+      "arrayRowSpacing": string
+      "arrayRowElevation": string
+      "arrayLevels": string
+      "arrayLevelSpacing": string
+      "arrayLevelTotal": string
+      "arrayPolarItems": string
+      "arrayAngleBetween": string
+      "arrayFillAngle": string
+      "arrayPathItems": string
+      "arrayItemSpacing": string
+      "arrayAssociative": string
+      "arrayRotateItems": string
+      "arrayDirection": string
+      "arrayDivide": string
+      "arrayMeasure": string
+      "arrayAlignItems": string
+      "arrayClose": string
     }
     "tipCommands": {
       "line": string

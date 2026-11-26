@@ -23,12 +23,19 @@ import {
   makeArray,
   reportArrayType,
 } from "./arrayObject"
-import { MAX_ARRAY_COUNT, refusesCount, takesCount } from "./arrayCounts"
+import {
+  MAX_ARRAY_COUNT,
+  refuseText,
+  refusesCount,
+  takesCount,
+} from "./arrayCounts"
 import { ArrayAtPrompt, ArrayPromptGrips } from "./arrayPromptGrips"
 import type { PromptId } from "../../locales/types"
+import type { ContextualEdit } from "../EngineState"
 import {
   CommandOption,
   CommandOptionOutcome,
+  type ContextualTabSource,
   PointerInput,
   QuestionInput,
   Tool,
@@ -307,12 +314,7 @@ export class ArrayPathTool implements Tool {
       case "method": {
         if (id !== "Divide" && id !== "Measure") return "unhandled"
         const method = id === "Divide" ? "divide" : "measure"
-        // Measure goes on from the spacing Divide had (probe arrays/p334).
-        const spacing =
-          method === "measure" && layout.method === "divide"
-            ? pathDivideStep(path, layout.items)
-            : layout.spacing
-        this.state = { ...state, layout: { ...layout, method, spacing } }
+        this.state = { ...state, layout: withMethod(layout, path, method) }
         this.ask("main", ctx)
         return "continue"
       }
@@ -691,6 +693,98 @@ export class ArrayPathTool implements Tool {
     }
   }
 
+  /**
+   * Array Creation (ARRAYCREATION 3 once the path is picked, as ARRAYRECT's
+   * and ARRAYPOLAR's from their main prompt: **unverified**, p452 stopped at
+   * the path): Items with its count and its spacing, which Divide greys (its
+   * share of the path shown), Associative, Method and Align Items. Total,
+   * Rows, Levels, Base Point, Tangent Direction and Z Direction are not
+   * offered here, so not shown.
+   */
+  contextualTab(): ContextualTabSource | null {
+    const state = this.state
+    if (state.phase !== "edit") return null
+    const { layout, path } = state
+    const divide = layout.method === "divide"
+    return {
+      id: "arrayCreationPath",
+      fields: [
+        { id: "items", value: layout.items, kind: "count" },
+        {
+          id: "itemSpacing",
+          value: divide ? pathDivideStep(path, layout.items) : layout.spacing,
+          kind: "distance",
+          disabled: divide,
+        },
+      ],
+      toggles: {
+        associative: this.mode.associative,
+        alignItems: layout.align,
+      },
+      method: layout.method,
+    }
+  }
+
+  /**
+   * Items is Divide's count, or Measure's at its prompt after the spacing,
+   * no more than fit (probe arrays/p373); the spacing is Measure's, the
+   * count kept as Enter keeps it there. Method and Align Items as their
+   * prompts' answers; Close Array is eXit.
+   */
+  editContextual(edit: ContextualEdit, ctx: ToolContext): CommandOptionOutcome {
+    const state = this.state
+    // A grip taken holds the array it was taken from until its release.
+    if (state.phase !== "edit" || this.grips.isHot()) return "unhandled"
+    const { layout, path } = state
+    if ("close" in edit) {
+      this.create(ctx)
+      return "end"
+    }
+    if ("method" in edit) {
+      this.setLayout(withMethod(layout, path, edit.method))
+    } else if ("toggle" in edit) {
+      if (edit.toggle === "associative") {
+        this.mode.associative = !this.mode.associative
+      } else if (edit.toggle === "alignItems") {
+        this.setLayout({ ...layout, align: !layout.align })
+      } else return "unhandled"
+    } else {
+      if (edit.field !== "items" && edit.field !== "itemSpacing") {
+        return "unhandled"
+      }
+      const value = parseNumber(edit.text.trim())
+      if (value === null) {
+        // Refused as Items' count or Measure's spacing refuse a word.
+        refuseText(
+          edit.field === "items"
+            ? { refusal: "requiresPositiveInteger" }
+            : {
+                refusal: "requiresDistance",
+                values: { points: "two", keyword: "yes" },
+              },
+          ctx
+        )
+      } else if (edit.field === "items") {
+        if (!refusesCount(value, ctx)) {
+          const items =
+            layout.method === "divide"
+              ? value
+              : Math.min(value, maxItems(path, layout.spacing))
+          this.setLayout({ ...layout, items })
+        }
+      } else if (edit.field === "itemSpacing" && layout.method === "measure") {
+        if (value <= 0) {
+          ctx.report(ctx.text.message("positiveNonzero"), "error")
+        } else {
+          const items = Math.min(layout.items, maxItems(path, value))
+          this.setLayout({ ...layout, spacing: value, items })
+        }
+      } else return "unhandled"
+    }
+    ctx.requestRender()
+    return "continue"
+  }
+
   private setLayout(layout: PathLayout): void {
     if (this.state.phase === "edit") this.state = { ...this.state, layout }
   }
@@ -727,6 +821,19 @@ export class ArrayPathTool implements Tool {
     )
     ctx.dynamicInput.close()
   }
+}
+
+/** Method's answer: Measure goes on from the spacing Divide had (probe arrays/p334). */
+function withMethod(
+  layout: PathLayout,
+  path: ArrayPath,
+  method: PathLayout["method"]
+): PathLayout {
+  const spacing =
+    method === "measure" && layout.method === "divide"
+      ? pathDivideStep(path, layout.items)
+      : layout.spacing
+  return { ...layout, method, spacing }
 }
 
 /** `Maximum items`, no more than the arrays' counts take. */

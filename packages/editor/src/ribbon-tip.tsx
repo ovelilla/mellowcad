@@ -14,6 +14,8 @@ import type { EditorMessages } from "./locales/types"
 type RibbonWords = EditorMessages["Ribbon"]
 /** A ribbon control whose tooltip has words of its own: a button's item, or a control's. */
 export type TipKey = keyof RibbonWords["tips"]
+/** A tooltip that names its command. */
+type CommandTip = keyof RibbonWords["tipCommands"]
 
 /** Whether a ribbon item has a tooltip: a list's row (Manage Text Styles...) has none. */
 export function isTip(key: string): key is TipKey {
@@ -86,10 +88,14 @@ export function RibbonTip({
   const [open, setOpen] = useState(false)
   const [extended, setExtended] = useState(false)
   const words = en.messages.Ribbon
+  // A control whose AcWindows `TT_…` names no command (Array Creation's
+  // fields and toggles) shows none, F1 then asking what it asks with no
+  // tooltip: the running command (the desktop's **unverified**).
+  const command = tip in words.tipCommands ? (tip as CommandTip) : null
   const help =
     tip in HELP_INSTEAD
       ? (HELP_INSTEAD[tip] ?? null)
-      : String(words.tipCommands[tip])
+      : command && String(words.tipCommands[command])
   // A language that leaves a key out shows English's, so English says which
   // controls have an extended paragraph or a title of their own.
   const paragraph =
@@ -162,19 +168,21 @@ export function RibbonTip({
               <span className="mt-2 whitespace-pre-line">{paragraph}</span>
             )}
             <span aria-hidden className="my-1.5 h-px bg-border" />
-            <span className="flex items-center gap-1.5">
-              <SquareTerminal
-                aria-hidden
-                className="size-4 text-muted-foreground"
-              />
-              <span
-                lang={lang}
-                dir="ltr"
-                className="text-title text-foreground"
-              >
-                {t(`tipCommands.${tip}`)}
+            {command && (
+              <span className="flex items-center gap-1.5">
+                <SquareTerminal
+                  aria-hidden
+                  className="size-4 text-muted-foreground"
+                />
+                <span
+                  lang={lang}
+                  dir="ltr"
+                  className="text-title text-foreground"
+                >
+                  {t(`tipCommands.${command}`)}
+                </span>
               </span>
-            </span>
+            )}
             <span className="mt-1 text-title text-foreground">
               {t("pressF1")}
             </span>

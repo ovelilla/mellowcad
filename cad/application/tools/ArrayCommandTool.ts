@@ -4,9 +4,11 @@ import { ScenePrimitive } from "../../scene/types"
 import type { EntityId } from "../../domain/entities"
 import { ObjectSelector } from "./objectSelection"
 import type { PromptId } from "../../locales/types"
+import type { ContextualEdit } from "../EngineState"
 import {
   CommandOption,
   CommandOptionOutcome,
+  type ContextualTabSource,
   type HeldVariables,
   PointerInput,
   QuestionInput,
@@ -62,6 +64,14 @@ export class ArrayCommandTool implements Tool {
 
   handedTo(): string | null {
     return this.chosen === null ? null : KINDS[this.chosen.kind]
+  }
+
+  contextualTab(): ContextualTabSource | null {
+    return this.chosen?.tool.contextualTab?.() ?? null
+  }
+
+  editContextual(edit: ContextualEdit, ctx: ToolContext): CommandOptionOutcome {
+    return this.chosen?.tool.editContextual?.(edit, ctx) ?? "unhandled"
   }
 
   onActivate(ctx: ToolContext): void {

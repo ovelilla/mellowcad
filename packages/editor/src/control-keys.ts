@@ -16,6 +16,9 @@ export function keepControlKeys(
 ): void {
   const target = event.target as HTMLElement
   if (target.closest('[role="listbox"], [role="menu"]')) return
+  // A text box (a contextual tab's field) keeps every key, its letters
+  // and Delete too, which the engine leaves alone in a box.
+  if (target.closest("input, textarea")) return
   if (event.key === "Delete" || event.key === "Backspace") {
     event.preventDefault()
     event.stopPropagation()

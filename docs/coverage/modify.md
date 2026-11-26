@@ -254,6 +254,12 @@ layer, colour, lineweight and Z (p164, p166), a copy on each level (p440), the s
 `*Cancelado*`; desktop d08, d08b), at a value's prompt with the values given before it
 (**unverified**: the desktop showed the main prompt only), before the main prompt nothing.
 
+**The Array Creation tab** (`docs/coverage/workspace.md`, Ribbon): from the main prompt on
+(ARRAYCREATION 1 there, 0 at `Select objects:`, p450), Columns (Columns, Between), Rows (Rows,
+Between; Increment in its slide-out), Levels (Levels, Between, Total), Associative and Close Array;
+a field is what COLumns', Rows' and Levels' prompts take, refused in their words, Total the
+spacing it gives, Associative ASsociative's answer and Close Array eXit, with no echo.
+
 The array object (the three commands'): one block reference, named for its kind — `Array
 (Rectangular)`, `Array (Polar)`, `Array (Path)` (es `Matriz (rectangular)`, `Matriz (polar)`,
 `Matriz (de ruta)`; AcArrayRes 9575, 39923, 887) in the palette's title, the rollover, the
@@ -409,7 +415,10 @@ and show their defaults unsigned, without trailing zeros, at the drawing's preci
 centre (p02, p405), or with ASsociative No the copies with the source's layer and colour (p05,
 p249), one undo step; the preview draws the first 1000 items (WHY: a count of thousands
 redrawn on every move would hang the page), the commit all of them; Escape as ARRAYRECT's once the
-centre is given, before it nothing (**unverified**: the desktop's polar run, d08c, was inconclusive)
+centre is given, before it nothing (**unverified**: the desktop's polar run, d08c, was inconclusive).
+**The Array Creation tab** (ARRAYRECT's), from the main prompt on (ARRAYCREATION 2 there, 0 at the
+centre, p451): Items (Items, Between, Fill), Associative, Rotate Items and Direction, lit while the
+ring runs counter-clockwise and answering Fill angle with the other sign
 
 **Missing:** the array's grips' menus, as ARRAYRECT's; Base point, at the centre and the main
 prompt (`Specify base point or [Key point] <centroid>:`, es
@@ -484,7 +493,10 @@ Enter makes the array object (ARRAYRECT's) at the path's start, keeping the path
 which object it was (p03, p406), or with ASsociative No adds the copies, the source's layer, colour
 and Z (p06, p309, p312, p316), one undo step U names (p369); the path is left in place, and erasing
 it leaves the array (p416); Escape as ARRAYRECT's once the path is picked (desktop d08c: the copies
-kept), before it nothing
+kept), before it nothing. **The Array Creation tab** (ARRAYRECT's), once the path is picked
+(ARRAYCREATION 3, **unverified**: p452 never reached the main prompt): Items (Items, and Between,
+Measure's spacing, the count kept within the path as Enter keeps it at the count's prompt, greyed
+by Divide, which shows its share), Associative, Method ▾ (Divide, Measure) and Align Items
 
 **Missing:** the array's grips' menus, as ARRAYRECT's; the array following its path
 (p407: STRETCH of the path's end from 100 to 50 leaves 9 items; WHY not built: the array keeps the

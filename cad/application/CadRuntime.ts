@@ -49,6 +49,7 @@ import {
   parseNumber,
   unitSuffix,
   ViewCubeSetting,
+  withoutTrailingZeros,
   VisualStyle,
 } from "../domain/units"
 import {
@@ -213,6 +214,11 @@ import {
   buildSelectionCandidates,
   buildTextStyleInfos,
   CommandOptionUi,
+  ContextualEdit,
+  ContextualFieldId,
+  ContextualFieldUi,
+  ContextualTab,
+  ContextualTabId,
   DxfSaveSettings,
   DynamicInputUi,
   EngineState,
@@ -692,6 +698,10 @@ export class CadRuntime extends Observable {
   private ribbonMembers: Readonly<Record<string, string>> = {}
   private ribbonBeforeCleanScreen = true
   private ribbonMovedFrom: boolean | null = null
+  // The contextual tab last shown, and the tab in front before it opened,
+  // which comes back as it closes unless another was picked meanwhile.
+  private ribbonContextual: ContextualTabId | null = null
+  private ribbonTabBeforeContextual = "home"
   // Whether a menu macro runs (`menuGroup`), whose group holds the steps of
   // the commands it runs.
   private inMenuGroup = false
@@ -3326,6 +3336,78 @@ export class CadRuntime extends Observable {
    */
   closeRibbon(): void {
     if (this.ribbonOpen) this.ribbonStep(false)
+  }
+
+  /**
+   * The tool whose contextual tab shows: the running command's, also while a
+   * transparent one runs inside it (its tab stays, as ARRAYCREATION does).
+   */
+  private contextualTool(): Tool {
+    return this.suspendedStack[0]?.tool ?? this.activeTool
+  }
+
+  /**
+   * A contextual tab opening takes the front (its rule's `Activate="True"`,
+   * AcContextualTabSelectorRules.xaml); closing, it gives the front back to
+   * the tab it took it from, unless another was picked meanwhile.
+   */
+  private followContextualTab(): void {
+    const id = this.contextualTool().contextualTab?.()?.id ?? null
+    if (id === this.ribbonContextual) return
+    const was = this.ribbonContextual
+    this.ribbonContextual = id
+    if (was === null) this.ribbonTabBeforeContextual = this.ribbonTab
+    if (id !== null) this.ribbonTab = id
+    else if (this.ribbonTab === was) {
+      this.ribbonTab = this.ribbonTabBeforeContextual
+    }
+  }
+
+  /** The contextual tab's values, worded as the command's prompts write them. */
+  private contextualTabUi(): ContextualTab | null {
+    const source = this.contextualTool().contextualTab?.() ?? null
+    if (!source) return null
+    const settings = this.document.getSettings()
+    const fields: Partial<Record<ContextualFieldId, ContextualFieldUi>> = {}
+    for (const field of source.fields) {
+      fields[field.id] = {
+        text:
+          field.kind === "count"
+            ? String(field.value)
+            : withoutTrailingZeros(
+                field.kind === "angle"
+                  ? formatAngle(field.value, settings)
+                  : formatLength(field.value, settings)
+              ),
+        disabled: field.disabled === true,
+      }
+    }
+    return {
+      id: source.id,
+      fields,
+      toggles: source.toggles ?? {},
+      method: source.method ?? null,
+    }
+  }
+
+  /**
+   * A contextual tab's control acting on the running command as its prompt
+   * would take it (`Tool.editContextual`): no echo, as the tab's fields are
+   * bound to the command's values, not typed at its prompt. Close ends the
+   * command as its prompt's eXit or Enter does. Nothing while a transparent
+   * command runs inside it.
+   */
+  editContextualTab(edit: ContextualEdit): void {
+    if (this.suspendedStack.length > 0) return
+    const outcome =
+      this.activeTool.editContextual?.(edit, this.toolContext) ?? "unhandled"
+    if (outcome === "unhandled") return
+    if (outcome === "end") {
+      this.resetTracking()
+      this.returnToNeutralTool()
+    }
+    this.invalidateState()
+    this.host.requestRender()
   }
 
   /** The ribbon's tab in front: the host's choice, kept for the session. */
@@ -8625,6 +8707,7 @@ export class CadRuntime extends Observable {
     // and a rebuilt snapshot is new from top to bottom. Keeping what did not
     // change lets the UI re-render only the part that did — the cursor's
     // coordinates and the dynamic input — rather than the whole editor.
+    this.followContextualTab()
     const next = shareStructure(this.stateSnapshot, this.buildState())
     if (next === this.stateSnapshot) return
     this.stateSnapshot = next
@@ -8808,6 +8891,7 @@ export class CadRuntime extends Observable {
         open: this.ribbonOpen,
         tab: this.ribbonTab,
         members: this.ribbonMembers,
+        contextual: this.contextualTabUi(),
       },
       visualStyle: settings.visualStyle,
       attributeDisplay: settings.attributeDisplay,

@@ -297,6 +297,14 @@ export declare class CadEngine {
      */
     setRibbonMember(dropDown: string, member: string): void;
     /**
+     * A control of the running command's contextual tab
+     * (`state.ribbon.contextual`) acting on it as its prompt would take the
+     * value — a field's typed text, a toggle, a path array's Method — or the
+     * tab's Close, which ends the command as its eXit does. A value its prompt
+     * refuses is refused in the prompt's words.
+     */
+    editContextualTab(edit: ContextualEdit): void;
+    /**
      * A ribbon button that runs a command rather than a tool, as its acad.cuix
      * macro does: Text Style (`'_style`) and Dimension Style (`'_dimstyle`),
      * transparent mid-command; their lists' Manage Text Styles... and Manage
@@ -955,6 +963,58 @@ export declare enum ConstraintType {
     Polar = "polar"
 }
 
+export type { ContextualEdit }
+/**
+ * What a contextual tab's control asks of the running command, as its prompt
+ * would take it: a field's typed text, a toggle flipped, a path array's
+ * Method, or the tab's Close.
+ */
+export type ContextualEdit = {
+    readonly field: ContextualFieldId;
+    readonly text: string;
+} | {
+    readonly toggle: ContextualToggleId;
+} | {
+    readonly method: "divide" | "measure";
+} | {
+    readonly close: true;
+};
+
+export type { ContextualFieldId }
+/** A field of a contextual tab, by what it sets. */
+export type ContextualFieldId = "columns" | "columnSpacing" | "rows" | "rowSpacing" | "rowElevation" | "levels" | "levelSpacing" | "levelTotal" | "items" | "angleBetween" | "fillAngle" | "itemSpacing";
+
+export type { ContextualFieldUi }
+/** A field's value, written at the drawing's precision as its prompt's default is. */
+export interface ContextualFieldUi {
+    readonly text: string;
+    readonly disabled: boolean;
+}
+
+export type { ContextualTab }
+/** A ribbon contextual tab: which, and what its controls show. */
+export interface ContextualTab {
+    /**
+     * Which tab: Array Creation for ARRAYRECT, ARRAYPOLAR or ARRAYPATH
+     * (ARRAYCREATION 1, 2, 3).
+     */
+    readonly id: ContextualTabId;
+    /** Each field's value as its prompt offers it, and whether it is greyed. */
+    readonly fields: Readonly<Partial<Record<ContextualFieldId, ContextualFieldUi>>>;
+    /** Each toggle's state, lit while true. */
+    readonly toggles: Readonly<Partial<Record<ContextualToggleId, boolean>>>;
+    /** A path array's Method (Divide or Measure); null on the others. */
+    readonly method: "divide" | "measure" | null;
+}
+
+export type { ContextualTabId }
+/** The contextual tabs a command opens. */
+export type ContextualTabId = "arrayCreationRectangular" | "arrayCreationPolar" | "arrayCreationPath";
+
+export type { ContextualToggleId }
+/** A toggle of a contextual tab. */
+export type ContextualToggleId = "associative" | "rotateItems" | "direction" | "alignItems";
+
 export type { DimStyleInfo }
 export interface DimStyleInfo extends DimStyle {
     readonly entityCount: number;
@@ -1515,6 +1575,14 @@ export interface RibbonUi {
      * (Circle's list was Center, Radius again after a restart).
      */
     readonly members: Readonly<Record<string, string>>;
+    /**
+     * The contextual tab the running command shows, after the last tab, or
+     * null: AutoCAD's ribbon contextual tab states, a command's tab while its
+     * variable says so (ARRAYCREATION). It takes the front as it opens; the tab
+     * that was in front comes back as it closes, unless another was picked
+     * meanwhile.
+     */
+    readonly contextual: ContextualTab | null;
 }
 
 export type { RolloverUi }

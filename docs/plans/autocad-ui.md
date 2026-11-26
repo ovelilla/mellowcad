@@ -421,7 +421,7 @@ in `docs/coverage/`, never a dead button.
 | R7 | Layers and Properties are panels of Home | groups of the top bar | Revoked | 1 |
 | R8 | Styles, Blocks and the command line are toggled from View › Palettes | toggles at the end of the top bar | Revoked | 1 |
 | R9 | 3D Tools is a hidden tab of the workspace; 3D work has the 3D Modeling workspace | the 3D tools in the palette | Equal since phase 5: hidden at first, shown by Show Tabs and Show Panels (decision 4); until then they showed, unreachable hidden | 1, 5 (block 2, done) |
-| R10 | Contextual tabs (Hatch Creation, Text Editor, Array) while their command runs | the command's prompts only | Missing | 6 |
+| R10 | Contextual tabs (Hatch Creation, Text Editor, Array) while their command runs | the command's prompts only | Revoked: the engine's tab (`state.ribbon.contextual`), Array Creation first; the others Missing until their block | 6 (block 1, done) |
 | R11 | Tooltips: the name, a description, the command and `Press F1 for more help` | the name and the alias | Revoked: §2.3's four parts, each culture's words (acad.CUIX, AcWindows, AcCommandToolTips) | 5 (block 1, done) |
 | R12 | RIBBON and RIBBONCLOSE; Clean Screen closes the ribbon | neither command; Clean Screen hides the palette and the top bar's groups | Revoked | 1 |
 | R13 | The ribbon docks at a side or floats; a panel can be dragged off; right-click shows or hides tabs, panels and titles | — | Revoked for Show Tabs, Show Panels, Show Panel Titles and Close; Undock and the tool palette groups stay Missing | 5 (block 2, done) |
@@ -782,8 +782,52 @@ Blocks, a commit each, each leaving the editor whole:
 ### Phase 6 — contextual tabs
 
 Hatch Creation, Text Editor and Array as tabs that follow their command (R10). Each is a
-command's own interface, so each goes through its command's review and research; listed here so
-the ribbon of phase 1 leaves room for a tab the engine opens.
+command's own interface, so each goes through its command's review and research. The session of
+2026-11-26 had no word for the desktop, so what only the desktop settles stays **unverified**
+and goes to §7. What opens each tab is acad.cuix's `RibbonTabSelectors` (`ribbon.mjs
+--contextual`) over AcContextualTabSelectorRules.xaml beside acad.exe: a variable for the
+command's tab, `Activate="True"` (it comes to the front), the selection for the others. Their
+panels are `ribbon.mjs --source <uid>`; the fields', toggles' and tooltips' words AcWindows'
+BAML, each culture's (the Asian ones from the packs). The desktop's captures of two of them exist
+from the command reviews: Hatch Creation (hatch/d01-2) and Array, selected (arrays/d07-1).
+Blocks, a commit each, each leaving the editor whole:
+
+1. **Array Creation** (done 2026-11-26; ARRAYCREATION 1, 2, 3: the console sets it at ARRAYRECT's and
+   ARRAYPOLAR's main prompt, 0 while the objects and the centre are asked, arrays/p450, p451;
+   ARRAYPATH's by analogy, **unverified**). The engine's first contextual tab: the running tool
+   says what it shows (`state.ribbon.contextual`), it takes the front while it opens and the tab
+   that was in front comes back as it closes, unless another was picked meanwhile; after the last
+   tab, filled with the accent (d07-1). Its panels with what each command asks: rectangular Type,
+   Columns (Columns, Between), Rows (Rows, Between; Increment in its slide-out), Levels (Levels,
+   Between, Total), Properties (Associative), Close; polar Type, Items (Items, Between, Fill),
+   Properties (Associative, Rotate Items, Direction: Fill angle answered with the other sign),
+   Close; path Type, Items (Items, Between, which Divide
+   greys as AutoCAD's BAML does), Properties (Associative, Method ▾, Align Items), Close. A field
+   is 98 × 22 on the 24 pitch after a 16 px icon and its label (d07-1); an edit is the value its
+   prompt takes, refused there in the prompt's words, with no echo (the BAML binds the fields to
+   the array's properties, not to the command line; the desktop's echo **unverified**); Close
+   Array is eXit. Not drawn, Missing: Base Point, Columns' and Rows' Total (ARRAYRECT asks no
+   Total there), polar Rows and Levels, path Total, Rows, Levels, Tangent Direction
+   and Z Direction.
+2. **Hatch Creation and HATCH's own prompts** (HATCHCREATION; the help: "When the ribbon is
+   active, the Hatch Creation contextual tab is displayed"). With the ribbon open HATCH asks the
+   ribbon's prompt (`Pick internal point or [Select objects/Draw/Undo/seTtings]`, hatch/d01, with
+   no `Current hatch pattern` line) and makes the hatch at each pick (HATCH-D45); with it closed
+   AutoCAD opens the Hatch and Gradient dialog, not built, so -HATCH's prompts stay there with
+   HATCH-D31's WHY. The tab: Boundaries (Pick Points, Select), Pattern (the patterns built),
+   Properties (Angle, Scale), Close (Close Hatch Creation, `^M`). Found while planning: the
+   prompt is st2027's 129 in every language (es `Designe un punto interno o [Seleccionar
+   objetos/DIBujar/desHacer/Parámetros]`: Select objects is worded apart from -HATCH's), and
+   its Select objects mode asks one of its own, `Select objects or [picK internal
+   point/Draw/Undo/seTtings]:` (50968), until picK; which `initget` each declares (31427,
+   16731, 62278 are candidates) only a traced desktop run shows, the console having no ribbon
+   (hatch/p370: HATCHCREATION 0 there).
+3. **Text Editor** (TEXTEDITOR: the in-place editor of MTEXT and TEXTEDIT): Style (the text
+   style, the height), Paragraph (Justification, Line Spacing) and Close (Close Text Editor), with
+   what MTEXT has; inline formatting does not exist, so Formatting, Insert, Spell Check, Tools and
+   Options are not drawn (decision 3) and go to MTEXT's Missing.
+4. **The selection's tabs** (Array: one associative array selected; Hatch Editor: hatches only),
+   if the session reaches them; else they stay Missing.
 
 ## 7. Desktop blocks still owed
 
@@ -797,6 +841,7 @@ start of its phase and with the owner's word first (`gui.md`):
 | 3 | done 2026-11-25 (§2.8, §2.9): a palette docked, anchored and auto-hidden and its properties menu with the mouse; New Text Style and each tab of Modify Dimension Style without it (`research/ui/2026-11-25/phase3`) |
 | 4 | not reached: the session of 2026-11-26 had no word for it, and phase 4 was built without it; still owed, each **unverified** in its coverage entry: the status bar of a profile nobody has touched (S4); the navigation bar under the pointer; the command line's history open (F2) and its Recent Commands and Customize menus, which the mouse pass opened without a capture |
 | 5 | not reached (no word for the desktop on 2026-11-26), each **unverified** in its coverage entry: where a ribbon tooltip opens (at the pointer, it seems) and whether Circle's names its member; whether a second tooltip opens at once; whether a pick in the right-click menu closes it, whether its Close cancels a running command or echoes, a title bar's height without its name, and whether the names leave a folded panel or the minimized states; where AutoCAD keeps what the menu shows; Customize ▾'s arrow (its width, its tooltip), where a command added goes and whether a pick closes its list |
+| 6 | not reached (no word for the desktop on 2026-11-26), each **unverified** in its coverage entry: Array Creation's — whether a field's edit echoes, where a refused value is said, a tooltip with no command, Direction's lit state, ARRAYPATH's tab once the path is picked, Show Tabs and Show Panels on a contextual tab, the tab minimized; no capture of Text Editor or Array Creation exists in research/ (Hatch Creation: hatch/d01-2; Array, selected: arrays/d07-1) |
 
 Without the mouse, `acad.sh act` opens a drop-down, a slide-out, a folded panel, the status
 bar's menus, Undo's list and the command line's two menus, and `acad.sh tree` reads their rows

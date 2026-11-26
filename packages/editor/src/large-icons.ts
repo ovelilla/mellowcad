@@ -468,6 +468,72 @@ export const LayerPropertiesLarge: LargeIcon = largeIcon("LayerProperties", {
  */
 export const LARGE_BUTTON_ICONS: Readonly<Record<string, LargeIcon>> = {
   layerProperties: LayerPropertiesLarge,
+  // Array Creation's panels, folded or minimized: three columns, three rows,
+  // three levels, a ring of items.
+  arrayColumns: largeIcon("ArrayColumns", {
+    d: ["M4 5 H10 V27 H4 Z", "M13 5 H19 V27 H13 Z", "M22 5 H28 V27 H22 Z"],
+  }),
+  arrayRows: largeIcon("ArrayRows", {
+    d: ["M5 4 H27 V10 H5 Z", "M5 13 H27 V19 H5 Z", "M5 22 H27 V28 H5 Z"],
+  }),
+  arrayLevels: largeIcon("ArrayLevels", {
+    d: ["M4 26 L10 20 H28 L22 26 Z", "M4 18 L10 12 H28 L22 18 Z"],
+    tint: ["M4 10 L10 4 H28 L22 10 Z"],
+  }),
+  arrayItems: largeIcon("ArrayItems", {
+    thin: [RING],
+    beads: [
+      [16, 4],
+      [26, 10],
+      [26, 22],
+      [16, 28],
+      [6, 22],
+      [6, 10],
+    ],
+  }),
+  // Associative: two links of a chain.
+  arrayAssociative: largeIcon("ArrayAssociative", {
+    d: [
+      "M14 9 L17 6 A5 5 0 0 1 26 15 L23 18",
+      "M18 23 L15 26 A5 5 0 0 1 6 17 L9 14",
+      "M12 20 L20 12",
+    ],
+  }),
+  // Rotate Items: an item turned as it goes round.
+  arrayRotateItems: largeIcon("ArrayRotateItems", {
+    d: [
+      "M5 21 A12 12 0 0 1 25 9",
+      "M19 7 L25 9 L24 15",
+      "M18 18 L23 23 L18 28 L13 23 Z",
+    ],
+  }),
+  // Direction: the ring's way round, counter-clockwise.
+  arrayDirection: largeIcon("ArrayDirection", {
+    d: ["M27 16 A11 11 0 1 1 21 6", "M15 4 L21 6 L19 12"],
+  }),
+  // Align Items: items square to a curve.
+  arrayAlignItems: largeIcon("ArrayAlignItems", {
+    d: [
+      "M4 26 A24 24 0 0 1 28 26",
+      "M8 14 L12 10 L16 14 L12 18 Z",
+      "M20 10 L24 10 L24 14 L20 14 Z",
+    ],
+  }),
+  // Method: Divide the path in equal parts, or Measure a spacing along it.
+  arrayDivide: largeIcon("ArrayDivide", {
+    d: ["M4 16 H28", "M4 10 V22", "M12 12 V20", "M20 12 V20", "M28 10 V22"],
+  }),
+  arrayMeasure: largeIcon("ArrayMeasure", {
+    d: [
+      "M4 11 H28 V21 H4 Z",
+      "M9 11 V16",
+      "M14 11 V18",
+      "M19 11 V16",
+      "M24 11 V18",
+    ],
+  }),
+  // Close: the check AutoCAD's Close buttons wear.
+  arrayClose: largeIcon("ArrayClose", { d: ["M6 17 L13 24 L27 8"] }),
   // World: the axes, and the globe they belong to.
   ucsWorld: largeIcon("UcsWorld", {
     d: [

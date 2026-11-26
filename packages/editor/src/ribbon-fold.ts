@@ -35,6 +35,7 @@ function slotHasSmallText(slot: RibbonSlot): boolean {
     return slot.rows.some((row) =>
       row.some((c) => typeof c !== "string" && hasSmallText(c))
     )
+  if (slot.kind === "fields") return false
   return hasSmallText(slot)
 }
 

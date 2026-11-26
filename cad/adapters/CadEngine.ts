@@ -13,6 +13,7 @@ import {
   PointerEventData,
 } from "../application/CadRuntime"
 import {
+  ContextualEdit,
   EngineState,
   ObjectType,
   PaletteId,
@@ -733,6 +734,17 @@ export class CadEngine {
    */
   setRibbonMember(dropDown: string, member: string): void {
     this.runtime.setRibbonMember(dropDown, member)
+  }
+
+  /**
+   * A control of the running command's contextual tab
+   * (`state.ribbon.contextual`) acting on it as its prompt would take the
+   * value — a field's typed text, a toggle, a path array's Method — or the
+   * tab's Close, which ends the command as its eXit does. A value its prompt
+   * refuses is refused in the prompt's words.
+   */
+  editContextualTab(edit: ContextualEdit): void {
+    this.runtime.editContextualTab(edit)
   }
 
   /**

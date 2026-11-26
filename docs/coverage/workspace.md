@@ -423,8 +423,38 @@ no `calc-size` (Firefox and Safari **unverified**) — WHY TEXTEDIT has no butto
 `^C^C_textedit` is on the Text toolbar, on no ribbon panel of 2027; it is typed, or a double-click
 on a text
 
+**Implemented, the contextual tabs** (`docs/plans/autocad-ui.md`, §6, phase 6): what acad.cuix's
+`RibbonTabSelectors` show over AcContextualTabSelectorRules.xaml's rules (`ribbon.mjs
+--contextual`), the engine's (`state.ribbon.contextual`): Array Creation, while ARRAYRECT,
+ARRAYPOLAR or ARRAYPATH asks its main prompt (`ARRAYCREATION` 1, 2, 3: probes arrays/p450, p451),
+one tab per kind (`--source RBN_01740514`, `RBN_01740500`, `RBN_01740507`), its panels in their
+rows with what each command asks (its coverage entry, `docs/coverage/modify.md`). After the last
+tab, filled with the accent as the desktop fills it (hatch/d01-2, arrays/d07-1), in front as it
+opens (its rule's `Activate="True"`); as it closes the tab it took the front from comes back, or
+the one picked meanwhile stays; a transparent command inside leaves it. Its Type a label with the
+kind's glyph; its fields 98 × 22 after a 16 px glyph and their label on the 24 pitch, the boxes in
+a column (d07-1), each a value its prompt takes, on Enter or on leaving the box (the BAML's
+`AcceptTextOnLostFocus`), Escape putting it back, refused in the prompt's words at the command
+line; Enter and Escape give the drawing the keys, and the box keeps the rest; its toggles large and
+lit while on; Close Array the command's eXit. Its words each culture's: the tab's, the panels' and
+the buttons' acad.CUIX, the fields' labels, the type and the methods AcWindows' BAML, the tooltips
+its `TT_Ac…Array…` entries (title and description, `scripts/research/ribbon-tips.mjs`), Arabic's
+ours. Show Tabs does not list it. Minimized it shows as any tab does: a button per panel, a title
+per panel, or its panels dropped from it. **Unverified** (no desktop pass): whether an edit in a
+field echoes at the command line (the BAML binds the fields to the array's properties: here none),
+whether a value refused there is said at the command line or in the box, a tooltip with no
+command's layout (here no command row, F1 asking for the running command), whether Direction is
+lit counter-clockwise, ARRAYPATH's `ARRAYCREATION 3` once its path is picked (p452 never reached
+it), whether Show Tabs or Show Panels list a contextual tab, and how it shows minimized
+
 **Missing:** the Parametric, Visualize, Manage, Output, Add-ins, Collaborate, Express Tools and
-Featured Apps tabs, nothing of theirs built; the extended tooltip's illustration (WHY: Autodesk's art, and none is
+Featured Apps tabs, nothing of theirs built; the contextual tabs Hatch Creation and Text Editor
+(phase 6, blocks 2 and 3), the selection's Array and Hatch Editor (block 4), the other contextual
+tabs, whose features are not built (Block Editor, Edit Reference, Table Cell, External Reference,
+the underlays, Image, Mesh, Section Plane, Point Cloud, Geolocation); Array Creation's Base Point,
+Columns' and Rows' Total, ARRAYPOLAR's Rows and Levels and ARRAYPATH's Total, Rows, Levels, Tangent
+Direction and Z Direction (their commands do not ask them: `docs/coverage/modify.md`), its fields'
+Expression and the Fill Entire Path button beside a path array's Items under Measure; the extended tooltip's illustration (WHY: Autodesk's art, and none is
 drawn here; `autocad-mouse/tip-long.png`), the right-click menu's Show Related Tool Palette Group,
 Tool Palette Group and Undock (no tool palettes, no docking); Groups
 and View, with nothing built; what each panel lacks: Draw's Tan, Tan, Radius and Tan, Tan, Tan, Arc's

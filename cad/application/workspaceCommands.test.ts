@@ -426,6 +426,7 @@ describe("the ribbon's tab and drop-downs", () => {
       open: true,
       tab: "home",
       members: {},
+      contextual: null,
     })
 
     cad.runtime.setRibbonTab("annotate")
@@ -436,6 +437,7 @@ describe("the ribbon's tab and drop-downs", () => {
       open: true,
       tab: "annotate",
       members: { circle: "circle3p", arc: "arcsce" },
+      contextual: null,
     })
 
     written(cad, "RIBBONCLOSE", "RIBBON", "NEW")

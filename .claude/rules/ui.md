@@ -44,8 +44,8 @@ state and menu (`ribbon-layout.ts`), read by a `<head>` script, and, read after 
 and Quick Access Toolbar's (`status-bar-layout.ts`, `quick-access-layout.ts`) and Properties' folds (`properties-fold.ts`), each under the host's key (`layoutStorage`; none, not kept), the site's frozen
 (`lib/site.test.ts`).
 
-**`/draw?drawing=<name>` opens a drawing the site publishes** (an exercise's: the engine records
-it at build time, `/drawings/<name>.json` per language, `noindex`) through `CadEditor`'s `store`, never
+**`/draw?drawing=<name>` opens a drawing the site publishes** (an exercise's,
+`/drawings/<name>.json` per language, `noindex`) through `CadEditor`'s `store`, never
 the editor's code: `DrawEditor` (`components/draw-editor.tsx`) reads the query in the browser, as
 the page is static, and gives that drawing a store of its own, `mellowcad:drawing:<name>:v1`
 (FROZEN, `lib/opened-drawing.ts`), so the autosave of whoever was drawing is neither read nor
@@ -285,9 +285,9 @@ Each bar's AutoCAD order is in its component's header comment; touch and phones 
   (`openDrawingUnits`, `navigate`). A tool's button is `engine.setActiveTool(id)`, echoing `_line`,
   repeated by Enter, a menu group U names `LINE GROUP` (`cad-runtime.md`); a menu's own path is an
   engine method of its own (`openDrawingUnitsFromMenu`, `choosePolarAngle`).
-- **The ribbon** draws its tabs from `RIBBON_TABS`: acad.cuix's panels, rows and drop-downs
-  (`ribbon.mjs --built`), only what the engine has, its words each culture's acad.CUIX's (or its
-  AcWindows resources'). A tool with no button is in `TYPED` with its WHY (`ribbon.test.ts`). What
+- **The ribbon** draws `RIBBON_TABS`, then the running command's `CONTEXTUAL_TABS`
+  (`state.ribbon.contextual`): acad.cuix's panels, rows and drop-downs (`ribbon.mjs`),
+  only what the engine has, its words each culture's acad.CUIX's or AcWindows'. A tool with no button is in `TYPED` with its WHY (`ribbon.test.ts`). What
   a control shows is the engine's (`setRibbonTab`, `setRibbonMember`, `visualStyle`), its layout
   (`RibbonLayout`) the device's: the piece unmounts while closed. Panels fold, never scroll (a tab's `fold`,
   else `foldSteps`). A control with no macro does what the desktop's does, read there first.
