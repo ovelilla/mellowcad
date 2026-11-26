@@ -277,7 +277,8 @@ export declare class CadEngine {
     /**
      * A ribbon button that runs a command rather than a tool, as its acad.cuix
      * macro does: Text Style (`'_style`) and Dimension Style (`'_dimstyle`),
-     * transparent mid-command; the Properties panel's dialog launcher,
+     * transparent mid-command; their lists' Manage Text Styles... and Manage
+     * Dimension Styles... (`^C^C_STYLE`, `^C^C_DIMSTYLE`); the Properties panel's dialog launcher,
      * PROPERTIES or PROPERTIESCLOSE as Ctrl+1; Annotate's Update
      * (`_-dimstyle _apply`); the UCS's buttons (`_ucs _w`, `_x`, …); and View's
      * UCS Icon and View Cube toggles. A tool's button is {@link setActiveTool}.
@@ -333,6 +334,12 @@ export declare class CadEngine {
     setCurrentDimStyle(id: string): void;
     removeDimStyle(id: string): boolean;
     setSelectionDimStyle(id: string): void;
+    /**
+     * The ribbon's Dimension Style list: with dimensions or leaders selected
+     * they take the style, in one undo step; else it becomes current
+     * (`state.dimStyleControl` is what the list shows).
+     */
+    applyDimStyleControl(id: string): void;
     createTextStyle(name?: string, basedOn?: string, makeCurrent?: boolean): string;
     updateTextStyle(id: string, patch: Partial<Omit<TextStyle, "id">>): void;
     /**
@@ -341,6 +348,12 @@ export declare class CadEngine {
     setCurrentTextStyle(id: string): void;
     removeTextStyle(id: string): boolean;
     setSelectionTextStyle(id: string): void;
+    /**
+     * The ribbon's Text Style list, as its layer drop-down: with text objects
+     * selected they take the style, in one undo step; else it becomes current
+     * (`state.textStyleControl` is what the list shows).
+     */
+    applyTextStyleControl(id: string): void;
     /** Shows or hides a style dialog; closed, its STYLE or DIMSTYLE run ends. */
     setStyleDialog(dialog: StyleDialog | null): void;
     /** The name New would give a style copied from `basedOn`, unmade. */
@@ -1200,10 +1213,18 @@ export interface EngineState {
     readonly textStyles: ReadonlyArray<TextStyleInfo>;
     /** The style new text is created with. */
     readonly currentTextStyleId: TextStyleId;
+    /**
+     * What the ribbon's Text Style list shows: the style the selected text
+     * objects share, null when they differ, or the current one when no text
+     * object is selected (`applyTextStyleControl`).
+     */
+    readonly textStyleControl: TextStyleId | null;
     /** Every dimension style with its usage count (the DIMSTYLE table). */
     readonly dimStyles: ReadonlyArray<DimStyleInfo>;
     /** The style new dimensions are created with. */
     readonly currentDimStyleId: DimStyleId;
+    /** The Dimension Style list's, as {@link textStyleControl}, over dimensions and leaders. */
+    readonly dimStyleControl: DimStyleId | null;
     /**
      * The style dialog showing, while STYLE or DIMSTYLE runs, or null. The
      * host draws it; closing it ends the command.
@@ -1441,7 +1462,7 @@ export type { RibbonButton }
  * host's id for it (`CadEngine.runRibbonButton`): each is acad.cuix's macro
  * or, for a toggle with none, what the desktop's does.
  */
-export type RibbonButton = "textStyle" | "dimensionStyle" | "properties" | "dimensionUpdate" | "ucsIcon" | "viewCube" | "extrude" | "revolve" | UcsButton;
+export type RibbonButton = "textStyle" | "dimensionStyle" | "manageTextStyles" | "manageDimensionStyles" | "properties" | "dimensionUpdate" | "ucsIcon" | "viewCube" | "extrude" | "revolve" | UcsButton;
 
 export type { RibbonUi }
 /**

@@ -3,7 +3,7 @@ title: "Estilo de texto en AutoCAD: ESTILO (STYLE)"
 metaTitle: "Estilo de texto en AutoCAD: comando ESTILO"
 description: "Cómo funciona ESTILO (STYLE, alias EST) de AutoCAD en español: crear, renombrar, suprimir y hacer actual un estilo de texto, y su altura. Pruébalo gratis."
 figure: "Una placa de nombre: ESTILO, después TEXTO, cuyo Estilo ? enumera el estilo del dibujo, Standard en Arial, y el nombre de la placa escrito con él."
-sourceHash: "5e9a49c82ada"
+sourceHash: "dc2db204a8ac"
 ---
 
 ESTILO (STYLE en inglés) gestiona los estilos de texto del dibujo: aquello con lo que se escribe un texto. Cada texto, texto de líneas múltiples y atributo tiene un estilo, y los nuevos toman el estilo actual, Standard en un dibujo nuevo. ESTILO abre el cuadro de diálogo Estilo de texto, como en AutoCAD. Una designación hecha antes se descarta, como la descarta el cuadro de diálogo, y escrito con un apóstrofo dentro de un comando, `'ESTILO`, se abre sin terminar ese comando, que sigue en cuanto se cierra el cuadro.
@@ -22,7 +22,7 @@ ESTILO, con los alias `EST` y `ESTILODD`. Como en AutoCAD en español, el nombre
 
 ### ¿Cómo cambio el estilo de texto en AutoCAD?
 
-Para el texto nuevo, haz actual el estilo con Definir actual en el cuadro que abre ESTILO, o con la opción <Keyword command="TEXT" id="Style" /> de <Command id="TEXT" />. Para el texto ya escrito, desígnalo y elige el estilo en la fila Estilo de texto de la paleta Propiedades.
+Para el texto nuevo, haz actual el estilo con Definir actual en el cuadro que abre ESTILO, o con la opción <Keyword command="TEXT" id="Style" /> de <Command id="TEXT" />. Para el texto ya escrito, desígnalo y elige el estilo en la fila Estilo de texto de la paleta Propiedades. La lista Estilo de texto de la cinta de opciones (Anotar › Texto, y el panel desplegable de Inicio › Anotación) hace las dos cosas: con texto seleccionado le cambia el estilo; sin nada seleccionado, hace actual el estilo.
 
 ### ¿Cómo cambio la fuente de un estilo de texto?
 

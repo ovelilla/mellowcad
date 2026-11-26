@@ -2,7 +2,7 @@
 title: "Comando STILE (STYLE) in AutoCAD: stili di testo"
 description: "Come STILE (STYLE, alias ST) di AutoCAD gestisce gli stili di testo: nuovo, rinomina, elimina, imposta corrente, altezza fissa, e TESTO e TESTOM. Provalo."
 figure: "Una targhetta: STILE, poi TESTO, il cui Stile ? elenca lo stile del disegno, Standard in Arial, e il nome della targhetta scritto con esso."
-sourceHash: "5e9a49c82ada"
+sourceHash: "dc2db204a8ac"
 ---
 
 STILE (STYLE) gestisce gli stili di testo del disegno: ciò con cui si scrive un testo. Ogni testo, testo multilinea e attributo ha uno stile, e i nuovi prendono lo stile corrente, Standard in un nuovo disegno. STILE apre la finestra Stile di testo, come in AutoCAD. Una selezione fatta prima viene scartata, come la scarta la finestra, e digitato con un apostrofo all'interno di un comando, `'STILE`, si apre senza terminare quel comando, che prosegue una volta chiusa la finestra.
@@ -21,7 +21,7 @@ L'anteprima della finestra. Font, stile del font e big font, fattore di larghezz
 
 ### Come si cambia lo stile di testo in AutoCAD?
 
-Per i nuovi testi, rendi corrente lo stile con Imposta corrente nella finestra che STILE apre, oppure con l'opzione <Keyword command="TEXT" id="Style" /> di <Command id="TEXT" />. Per il testo già scritto, selezionalo e scegli lo stile nella riga Stile della tavolozza Proprietà.
+Per i nuovi testi, rendi corrente lo stile con Imposta corrente nella finestra che STILE apre, oppure con l'opzione <Keyword command="TEXT" id="Style" /> di <Command id="TEXT" />. Per il testo già scritto, selezionalo e scegli lo stile nella riga Stile della tavolozza Proprietà. L'elenco Stile di testo della barra multifunzione (Annota › Testo, e il pannello esteso di Inizio › Annotazione) fa entrambe le cose: con del testo selezionato ne cambia lo stile, senza selezione rende corrente lo stile.
 
 ### Come si cambia il font di uno stile di testo?
 

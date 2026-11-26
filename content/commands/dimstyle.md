@@ -27,7 +27,7 @@ Select the style in the manager, press Modify... and change Text height, on Text
 
 ### How do I apply a dimension style to existing dimensions?
 
-Select the dimensions and choose the style in the Properties palette's Dim style row, or right-click them and pick it under Dimension Style: one undo step either way. New dimensions take the current style, which Set Current in the manager changes.
+Select the dimensions and choose the style in the Properties palette's Dim style row, or right-click them and pick it under Dimension Style: one undo step either way. New dimensions take the current style, which Set Current in the manager changes. The Dimension Style list on the ribbon (Annotate › Dimensions, and Home › Annotation's slide-out) does the same: with dimensions selected it restyles them, with nothing selected it makes the style current.
 
 ### How do I change the decimal separator of dimensions?
 

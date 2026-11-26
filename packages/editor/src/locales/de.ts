@@ -203,6 +203,8 @@ export const de: EditorLocale = {
         "dimdiameter": "Durchmesser",
         "textStyle": "Textstil",
         "dimensionStyle": "Bemaßungsstil",
+        "manageTextStyles": "Textstile verwalten...",
+        "manageDimensionStyles": "Bemaßungsstile verwalten...",
         "layerProperties": "Layer- Eigenschaften",
         "insert": "Einfügen",
         "block": "Erstellen",

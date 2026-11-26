@@ -203,6 +203,8 @@ export const ko: EditorLocale = {
         "dimdiameter": "지름",
         "textStyle": "문자 스타일",
         "dimensionStyle": "치수 스타일",
+        "manageTextStyles": "문자 스타일 관리...",
+        "manageDimensionStyles": "치수 스타일 관리...",
         "layerProperties": "도면층 특성",
         "insert": "삽입",
         "block": "작성",

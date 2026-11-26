@@ -207,6 +207,8 @@ export const ru: EditorLocale = {
         "dimdiameter": "Диаметр",
         "textStyle": "Стиль текста",
         "dimensionStyle": "Размерный стиль",
+        "manageTextStyles": "Управление стилями текста...",
+        "manageDimensionStyles": "Управление размерными стилями...",
         "layerProperties": "Свойства слоя",
         "insert": "Вставка",
         "block": "Создать",

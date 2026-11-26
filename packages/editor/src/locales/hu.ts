@@ -203,6 +203,8 @@ export const hu: EditorLocale = {
         "dimdiameter": "Átmérő",
         "textStyle": "Szövegstílus",
         "dimensionStyle": "Méretstílus",
+        "manageTextStyles": "Szövegstílusok kezelése...",
+        "manageDimensionStyles": "Méretstílusok kezelése...",
         "layerProperties": "Fólia- tulajdonságok",
         "insert": "Beszúrás",
         "block": "Létrehozás",

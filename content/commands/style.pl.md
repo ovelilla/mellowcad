@@ -2,7 +2,7 @@
 title: "Styl tekstu w AutoCADzie: polecenie STYL (STYLE)"
 description: "Jak polecenie STYL (STYLE, skrót ST) w AutoCADzie zarządza stylami tekstu: nowy, zmiana nazwy, usuwanie, ustawianie bieżącego, stała wysokość."
 figure: "Tabliczka znamionowa: STYL, potem TEKST, którego Styl ? wypisuje styl rysunku, Standard w kroju Arial, oraz napisana nim nazwa tabliczki."
-sourceHash: "5e9a49c82ada"
+sourceHash: "dc2db204a8ac"
 ---
 
 Polecenie STYL (STYLE) zarządza stylami tekstu rysunku: tym, czym tekst jest pisany. Każdy tekst, tekst wielowierszowy i atrybut ma styl, a nowe otrzymują styl bieżący, w nowym rysunku Standard. STYL otwiera okno dialogowe Styl tekstu, jak w AutoCADzie. Zbiór wskazań wybrany wcześniej zostaje odrzucony, tak jak odrzuca go okno dialogowe, a wpisane z apostrofem wewnątrz innego polecenia, `'STYL`, otwiera okno bez kończenia tamtego polecenia, które trwa dalej po zamknięciu okna.
@@ -21,7 +21,7 @@ STYLE. W polskim AutoCADzie wpisz `ST` lub pełną nazwę `STYL` i naciśnij Ent
 
 ### Jak zmienić styl tekstu w AutoCADzie?
 
-Dla nowego tekstu ustaw styl jako bieżący przyciskiem Ustaw bieżącą w oknie dialogowym, które otwiera STYL, albo opcją <Keyword command="TEXT" id="Style" /> polecenia <Command id="TEXT" />. Dla tekstu już napisanego zaznacz go i wybierz styl w wierszu Styl palety Właściwości.
+Dla nowego tekstu ustaw styl jako bieżący przyciskiem Ustaw bieżącą w oknie dialogowym, które otwiera STYL, albo opcją <Keyword command="TEXT" id="Style" /> polecenia <Command id="TEXT" />. Dla tekstu już napisanego zaznacz go i wybierz styl w wierszu Styl palety Właściwości. Lista Styl tekstu na wstążce (Opisz › Tekst, a także rozwinięty panel Narzędzia główne › Opis) robi jedno i drugie: gdy tekst jest zaznaczony, zmienia jego styl, a gdy nic nie jest zaznaczone, ustawia styl jako bieżący.
 
 ### Jak zmienić czcionkę stylu tekstu?
 

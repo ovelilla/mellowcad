@@ -2,7 +2,7 @@
 title: "Befehl TEXT (DTEXT) in AutoCAD: einzeiliger Text"
 description: "Wie TEXT (Alias DT) in AutoCAD einzeiligen Text schreibt, Schritt für Schritt: Startpunkt, Höhe und Drehung, Ausrichten und Stil, ein Objekt je Zeile."
 figure: "Zwei Zeilen einzeiligen Textes, zentriert in einem Kasten, mit Mitte Mitte ausgerichtet: jede Zeile ein eigenes Objekt."
-sourceHash: "44d0e1a420a7"
+sourceHash: "7ff166aadef6"
 ---
 
 TEXT schreibt einzeiligen Text. Sie geben einen Startpunkt, eine Höhe und einen Drehwinkel an, geben dann eine Zeile ein und drücken die Eingabetaste: Die Zeile wird zu einem eigenen Objekt, und die nächste beginnt eine Zeile darunter. Eine leere Zeile beendet den Befehl. Ein Klick an anderer Stelle davor beginnt die nächsten Zeilen an diesem Punkt, und Esc behält die schon eingegebenen Zeilen und verwirft die gerade getippte. Für einen Absatz, der auf eine Breite umbricht, als ein Objekt, verwenden Sie <Command id="MTEXT" />.
@@ -17,7 +17,7 @@ Fragt, woran der Text an seinem Punkt hängt: <Keyword id="Left" /> (die Vorgabe
 
 ### Style
 
-Fragt nach dem Namen des Textstils, der aktuell werden soll, wobei die Eingabetaste den vorhandenen behält. <Keyword id="?" /> listet die Stile der Zeichnung auf; ein Name, den die Zeichnung nicht hat, wird abgelehnt und erneut abgefragt. Stile werden in der Palette angelegt, die <Command id="STYLE" /> öffnet.
+Fragt nach dem Namen des Textstils, der aktuell werden soll, wobei die Eingabetaste den vorhandenen behält. <Keyword id="?" /> listet die Stile der Zeichnung auf; ein Name, den die Zeichnung nicht hat, wird abgelehnt und erneut abgefragt. Stile werden im Dialogfeld Textstil angelegt, das <Command id="STYLE" /> öffnet.
 
 ## Missing
 

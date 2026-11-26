@@ -724,10 +724,18 @@ export interface EngineState {
   readonly textStyles: ReadonlyArray<TextStyleInfo>
   /** The style new text is created with. */
   readonly currentTextStyleId: TextStyleId
+  /**
+   * What the ribbon's Text Style list shows: the style the selected text
+   * objects share, null when they differ, or the current one when no text
+   * object is selected (`applyTextStyleControl`).
+   */
+  readonly textStyleControl: TextStyleId | null
   /** Every dimension style with its usage count (the DIMSTYLE table). */
   readonly dimStyles: ReadonlyArray<DimStyleInfo>
   /** The style new dimensions are created with. */
   readonly currentDimStyleId: DimStyleId
+  /** The Dimension Style list's, as {@link textStyleControl}, over dimensions and leaders. */
+  readonly dimStyleControl: DimStyleId | null
   /**
    * The style dialog showing, while STYLE or DIMSTYLE runs, or null. The
    * host draws it; closing it ends the command.
@@ -831,7 +839,7 @@ function styleCounts(
 }
 
 /** Whether `entity` takes a style from the table `type` names. */
-function hasStyleOf(
+export function hasStyleOf(
   entity: Entity,
   type: "text" | "dimension"
 ): entity is
@@ -906,6 +914,21 @@ export function commonStyleId(
     else if (shared !== entity.styleId) return null
   }
   return shared
+}
+
+/**
+ * What the ribbon's style list of `type` shows: the style the selected
+ * objects of that type share (null when they differ), or `current` when the
+ * selection holds none of them.
+ */
+export function styleControlId(
+  entities: ReadonlyArray<Entity>,
+  type: "text" | "dimension",
+  current: string
+): string | null {
+  return entities.some((entity) => hasStyleOf(entity, type))
+    ? commonStyleId(entities, type)
+    : current
 }
 
 /** The palette's Gradient name of each gradient (ax26res 329). */

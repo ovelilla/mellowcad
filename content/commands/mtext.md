@@ -31,7 +31,7 @@ Turns the box and its text, by an angle typed or pointed from the first corner.
 
 ### Style
 
-Makes a text style current, by name; <Keyword id="?" /> lists the drawing's styles, and a name it does not have is refused. Styles are made in the palette that <Command id="STYLE" /> opens.
+Makes a text style current, by name; <Keyword id="?" /> lists the drawing's styles, and a name it does not have is refused. Styles are made in the Text Style dialog that <Command id="STYLE" /> opens.
 
 ### Width
 

@@ -3,7 +3,7 @@ title: "Styl wymiarowania w AutoCADzie: polecenie WYMSTYL (DIMSTYLE)"
 metaTitle: "Styl wymiarowania w AutoCADzie: WYMSTYL"
 description: "Jak ustawić styl wymiarowania w AutoCADzie: WYMSTYL (DIMSTYLE, skrót WST), style od ISO-25, wysokość tekstu, strzałki, skala i jednostki. Wypróbuj online."
 figure: "Wymiary narysowane w ISO-25, bieżącym stylu: strzałki, tekst nad linią i przecinek jako separator dziesiętny."
-sourceHash: "7bcae870d3ae"
+sourceHash: "b7333ee9b6b4"
 ---
 
 Polecenie WYMSTYL (DIMSTYLE) zarządza stylami wymiarowania rysunku: nazwanymi zestawami ustawień – rozmiar strzałki, wysokość tekstu, globalna skala, jednostki i reszta – które każdy wymiar bierze ze swojego stylu. Nowy rysunek zaczyna z bieżącym stylem ISO-25, metrycznym stylem, od którego zaczyna też AutoCAD. Polecenie WYMSTYL otwiera Menedżer stylów wymiarowania, jak w AutoCADzie; wpisane z apostrofem wewnątrz innego polecenia, `'WYMSTYL`, otwiera go bez kończenia tamtego polecenia.
@@ -26,7 +26,7 @@ Wybierz styl w menedżerze, naciśnij „Zmień...” i zmień „Wysokość tek
 
 ### Jak zastosować styl wymiarowania do istniejących wymiarów?
 
-Wybierz wymiary i wskaż styl w wierszu „Styl wymiarowania” palety „Właściwości” albo kliknij je prawym przyciskiem myszy i wybierz go w menu „Styl wymiarowania”: w obu przypadkach to jeden krok cofania. Nowe wymiary biorą styl bieżący, który zmienia przycisk „Ustaw bieżący” w menedżerze.
+Wybierz wymiary i wskaż styl w wierszu „Styl wymiarowania” palety „Właściwości” albo kliknij je prawym przyciskiem myszy i wybierz go w menu „Styl wymiarowania”: w obu przypadkach to jeden krok cofania. Nowe wymiary biorą styl bieżący, który zmienia przycisk „Ustaw bieżący” w menedżerze. Lista Styl wymiarowania na wstążce (Opisz › Wymiary, a także rozwinięty panel Narzędzia główne › Opis) robi to samo: gdy wymiary są zaznaczone, zmienia ich styl, a gdy nic nie jest zaznaczone, ustawia styl jako bieżący.
 
 ### Jak zmienić separator dziesiętny w wymiarach?
 

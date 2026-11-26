@@ -164,6 +164,8 @@ declare const source: {
       "dimdiameter": string
       "textStyle": string
       "dimensionStyle": string
+      "manageTextStyles": string
+      "manageDimensionStyles": string
       "layerProperties": string
       "insert": string
       "block": string

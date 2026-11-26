@@ -143,6 +143,8 @@
   "Ribbon.items.dimdiameter": "Diameter",
   "Ribbon.items.textStyle": "Text Style",
   "Ribbon.items.dimensionStyle": "Dimension Style",
+  "Ribbon.items.manageTextStyles": "Manage Text Styles...",
+  "Ribbon.items.manageDimensionStyles": "Manage Dimension Styles...",
   "Ribbon.items.layerProperties": "Layer Properties",
   "Ribbon.items.insert": "Insert",
   "Ribbon.items.block": "Create",

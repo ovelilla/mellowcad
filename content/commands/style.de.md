@@ -2,7 +2,7 @@
 title: "Befehl STIL (STYLE) in AutoCAD"
 description: "Wie STIL (STYLE, Alias STI) in AutoCAD Textstile verwaltet: neu, umbenennen, löschen, aktuell setzen, feste Höhe, und was ein Stil mit TEXT und MTEXT macht."
 figure: "Ein Typenschild: STIL, dann TEXT, dessen Stil ? den Stil der Zeichnung auflistet, Standard in Arial, und der Name des Schilds darin geschrieben."
-sourceHash: "5e9a49c82ada"
+sourceHash: "dc2db204a8ac"
 ---
 
 STIL (STYLE) verwaltet die Textstile der Zeichnung: womit ein Text geschrieben wird. Jeder Text, Absatztext und jedes Attribut hat einen Stil, und neue übernehmen den aktuellen Stil, in einer neuen Zeichnung Standard. STIL öffnet das Dialogfeld Textstil, wie in AutoCAD. Eine davor getroffene Auswahl wird verworfen, wie das Dialogfeld sie verwirft, und mit Apostroph innerhalb eines Befehls eingegeben, `'STYLE`, öffnet er sich, ohne diesen Befehl zu beenden, der weiterläuft, sobald das Dialogfeld geschlossen wird.
@@ -21,7 +21,7 @@ Die Vorschau des Dialogfelds. Schriftart, Schriftstil und Großschrift, Breitenf
 
 ### Wie ändere ich den Textstil in AutoCAD?
 
-Für neuen Text machen Sie den Stil mit Als aktuell setzen in dem von STIL geöffneten Dialogfeld aktuell oder mit der Option <Keyword command="TEXT" id="Style" /> von <Command id="TEXT" />. Für bereits geschriebenen Text wählen Sie ihn und wählen den Stil in der Zeile Stil der Eigenschaftenpalette.
+Für neuen Text machen Sie den Stil mit Als aktuell setzen in dem von STIL geöffneten Dialogfeld aktuell oder mit der Option <Keyword command="TEXT" id="Style" /> von <Command id="TEXT" />. Für bereits geschriebenen Text wählen Sie ihn und wählen den Stil in der Zeile Stil der Eigenschaftenpalette. Die Liste Textstil der Multifunktionsleiste (Beschriften › Text und die Erweiterung von Start › Beschriftung) kann beides: Ist Text ausgewählt, ändert sie seinen Stil; ist nichts ausgewählt, macht sie den Stil aktuell.
 
 ### Wie ändere ich die Schriftart eines Textstils?
 

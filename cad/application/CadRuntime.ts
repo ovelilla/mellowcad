@@ -226,6 +226,8 @@ import {
   ShortcutMenuEntry,
   ShortcutMenuMode,
   StyleDialog,
+  hasStyleOf,
+  styleControlId,
 } from "./EngineState"
 import {
   buildShortcutMenu,
@@ -4126,7 +4128,7 @@ export class CadRuntime extends Observable {
     this.outside(this.propertyStep("selection"), () =>
       setSelectionDimStyle(
         this.document,
-        this.editableIds("selection"),
+        this.editableIds("selection", (e) => hasStyleOf(e, "dimension")),
         this.history,
         id
       )
@@ -5404,8 +5406,16 @@ export class CadRuntime extends Observable {
    * dialog says how many (desktop properties/d03-5, d03-6). Only the
    * palette's answer was probed; the drop-downs give the same (PROPS-D61).
    */
-  private editableIds(scope: SelectionScope): EntityId[] {
-    const ids = this.scopeIds(scope)
+  private editableIds(
+    scope: SelectionScope,
+    takes: (entity: Entity) => boolean = () => true
+  ): EntityId[] {
+    // Only what the edit can change: a locked line is no text whose style a
+    // pick left alone, so it neither leaves the selection nor is counted.
+    const ids = this.scopeIds(scope).filter((id) => {
+      const entity = this.document.get(id)
+      return entity !== undefined && takes(entity)
+    })
     const locked = ids.filter((id) => {
       const entity = this.document.get(id)
       return entity !== undefined && !this.document.isEntityEditable(entity)
@@ -6119,16 +6129,49 @@ export class CadRuntime extends Observable {
     this.executeOutside(command, this.text.commandNames("DIMSTYLE")[0])
   }
 
-  /** Puts the dimensions the Properties palette edits on style `id`. */
-  setSelectionDimStyle(id: DimStyleId): void {
-    this.outside(this.propertyStep("properties"), () =>
+  /**
+   * Puts the dimensions and leaders the Properties palette edits on style
+   * `id`, or with `"selection"` every selected one, as the ribbon's list.
+   */
+  setSelectionDimStyle(
+    id: DimStyleId,
+    scope: SelectionScope = "properties"
+  ): void {
+    this.outside(this.propertyStep(scope), () =>
       setSelectionDimStyle(
         this.document,
-        this.editableIds("properties"),
+        this.editableIds(scope, (e) => hasStyleOf(e, "dimension")),
         this.history,
         id
       )
     )
+  }
+
+  /**
+   * The ribbon's Dimension Style list (AcDimensionStyleGallery), bound as its
+   * Text Style list is ({@link applyTextStyleControl}): the selected
+   * dimensions and leaders take the style, else it becomes current, a step
+   * U names `'DIMSTYLE` (unverified on the desktop).
+   */
+  applyDimStyleControl(id: DimStyleId): void {
+    if (this.selectionHolds("dimension")) {
+      this.setSelectionDimStyle(id, "selection")
+      return
+    }
+    setCurrentDimStyle(
+      this.document,
+      (command) =>
+        this.executeOutside(command, this.text.transparentCommand("DIMSTYLE")),
+      id
+    )
+  }
+
+  /** Whether the selection holds an object that takes a style of `table`. */
+  private selectionHolds(table: "text" | "dimension"): boolean {
+    return this.selection.toArray().some((id) => {
+      const entity = this.document.get(id)
+      return entity !== undefined && hasStyleOf(entity, table)
+    })
   }
 
   /**
@@ -6200,15 +6243,44 @@ export class CadRuntime extends Observable {
     this.invalidateState()
   }
 
-  /** Puts the text objects the Properties palette edits on style `id`. */
-  setSelectionTextStyle(id: TextStyleId): void {
-    this.outside(this.propertyStep("properties"), () =>
+  /**
+   * Puts the text objects the Properties palette edits on style `id`, or
+   * with `"selection"` every selected one, as the ribbon's list.
+   */
+  setSelectionTextStyle(
+    id: TextStyleId,
+    scope: SelectionScope = "properties"
+  ): void {
+    this.outside(this.propertyStep(scope), () =>
       setSelectionTextStyle(
         this.document,
-        this.editableIds("properties"),
+        this.editableIds(scope, (e) => hasStyleOf(e, "text")),
         this.history,
         id
       )
+    )
+  }
+
+  /**
+   * The ribbon's Text Style list (AcTextStyleCombo), bound to the selection's
+   * effective property as the layer, colour, linetype and lineweight lists
+   * are (AcWindows.resources.dll's BAML: `EffectiveProperties[TextStyle]`
+   * beside `.Layer` and `[Color]`): with text objects selected they take the
+   * style, a step U names `CHPROP` as those lists' edits; else the style
+   * becomes current (TEXTSTYLE), a step U names `'TEXTSTYLE` as the layer
+   * list's names `'CLAYER` — unverified on the desktop, as is what a pick
+   * does with a selection that holds no text (here it sets TEXTSTYLE).
+   */
+  applyTextStyleControl(id: TextStyleId): void {
+    if (this.selectionHolds("text")) {
+      this.setSelectionTextStyle(id, "selection")
+      return
+    }
+    setCurrentTextStyle(
+      this.document,
+      (command) =>
+        this.executeOutside(command, this.text.transparentCommand("TEXTSTYLE")),
+      id
     )
   }
 
@@ -6398,6 +6470,15 @@ export class CadRuntime extends Observable {
         // A menu group, as every macro of the chrome: U names the group,
         // never the command before it (desktop workspace/d02–d05).
         this.runTransparentMacro(button === "textStyle" ? "STYLE" : "DIMSTYLE")
+        return
+      // The style lists' last entries, Manage Text Styles... and Manage
+      // Dimension Styles...: `^C^C_STYLE` and `^C^C_DIMSTYLE`, not the
+      // buttons' transparent macros (AcWindows.resources.dll's BAML).
+      case "manageTextStyles":
+        this.runAccelerator("STYLE", "_STYLE")
+        return
+      case "manageDimensionStyles":
+        this.runAccelerator("DIMSTYLE", "_DIMSTYLE")
         return
       // Annotate › Dimensions' Update: ID_DimstyleA `^C^C_-dimstyle _apply`.
       case "dimensionUpdate":
@@ -8642,11 +8723,21 @@ export class CadRuntime extends Observable {
         this.document.getEntities()
       ),
       currentTextStyleId: this.document.getCurrentTextStyleId(),
+      textStyleControl: styleControlId(
+        selectedEntities,
+        "text",
+        this.document.getCurrentTextStyleId()
+      ),
       dimStyles: buildDimStyleInfos(
         this.document.getDimStyles(),
         this.document.getEntities()
       ),
       currentDimStyleId: this.document.getCurrentDimStyleId(),
+      dimStyleControl: styleControlId(
+        selectedEntities,
+        "dimension",
+        this.document.getCurrentDimStyleId()
+      ),
       styleDialog: this.styleDialog,
       blocks: buildBlockInfos(
         this.document.getBlocks(),

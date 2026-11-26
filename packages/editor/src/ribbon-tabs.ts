@@ -52,14 +52,16 @@ export const INSERT: readonly RibbonPanel[] = [
 
 /**
  * Annotate (`--tab Annotate --built`): Text, Dimensions and Markup, each
- * style's dialog launcher on its title bar. Centerlines, Leaders, Tables and
- * Annotation Scaling hold nothing built; the style combos come with the
- * style dialogs (phase 3).
+ * style's list in its panel and its dialog launcher on its title bar.
+ * Centerlines, Leaders, Tables and Annotation Scaling hold nothing built.
  */
 export const ANNOTATE: readonly RibbonPanel[] = [
   {
     id: "text",
     icon: "mtext",
+    // After Multiline Text, a sub-panel of Check Spelling, Text Align and
+    // Justify, none built, and one of [Text Style list], [Find Text], [Text
+    // Height], with what is built.
     slots: [
       {
         kind: "split",
@@ -68,18 +70,19 @@ export const ANNOTATE: readonly RibbonPanel[] = [
         behaviour: "follow",
         members: ["multilineText", "text"],
       },
+      column({ kind: "styleList", style: "text" }),
     ],
     launcher: "textStyle",
   },
   {
     id: "dimensions",
     icon: "dimlinear",
-    // Its rows: [style combo, Break, Adjust Space, Jog Line], [layer combo,
+    // Its rows: [style list, Break, Adjust Space, Jog Line], [layer combo,
     // Inspect, Update, Reassociate], [Linear ▾, Quick, Continue ▾], with
     // what is built.
     slots: [
       rows(
-        [tool("dimspace")],
+        [{ kind: "styleList", style: "dimension" }, tool("dimspace")],
         [tool("dimensionUpdate")],
         [
           {

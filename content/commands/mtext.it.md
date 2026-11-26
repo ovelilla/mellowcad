@@ -2,7 +2,7 @@
 title: "Comando TESTOM (MTEXT) in AutoCAD"
 description: "Come funziona TESTOM (MTEXT, alias TSM) di AutoCAD in italiano: due angoli o Larghezza, Altezza, Giustifica, Interlinea, testo multilinea."
 figure: "Una nota in un riquadro: l'altezza impostata per prima, poi l'angolo opposto, e un paragrafo a capo alla larghezza tra i due."
-sourceHash: "a53001f9674d"
+sourceHash: "67d762bb368d"
 ---
 
 TESTOM (MTEXT in inglese) scrive testo multilinea: un solo oggetto con paragrafi che vanno a capo a una larghezza. Indichi un primo angolo e quello opposto, e il riquadro tra i due imposta la larghezza; poi digiti in un editor sul posto, dove Invio inizia un nuovo paragrafo e Ctrl+Invio, o un clic fuori dal riquadro, mantiene il testo. Esc dopo aver digitato qualcosa chiede se salvarlo, come la finestra Modifiche non salvate di AutoCAD. Per righe che siano oggetti indipendenti, usa <Command id="TEXT" />.
@@ -29,7 +29,7 @@ Ruota il riquadro e il suo testo, di un angolo digitato o indicato dal primo ang
 
 ### Style
 
-Rende corrente uno stile di testo, per nome; <Keyword id="?" /> elenca gli stili del disegno, e un nome che non esiste viene rifiutato. Gli stili si creano nella tavolozza che apre <Command id="STYLE" />.
+Rende corrente uno stile di testo, per nome; <Keyword id="?" /> elenca gli stili del disegno, e un nome che non esiste viene rifiutato. Gli stili si creano nella finestra Stile di testo che apre <Command id="STYLE" />.
 
 ### Width
 

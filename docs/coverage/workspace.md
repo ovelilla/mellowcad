@@ -305,8 +305,20 @@ Retain Attribute Display, Display All Attributes, Hide All Attributes, each cult
 AcWindows.resources.dll's words — a pick setting ATTMODE with no echo and no regeneration said, a
 step U names `'ATTMODE` (UI Automation, `research/ui/2026-11-24/block4`); Object Color's 20 px
 icon no target, its list's last row `More Colors...` (each culture's AcWindows.resources.dll)
-opening the browser's colour picker in the place of Select Color; after a button acts, a list is picked from or closed, or a
-slide-out's title bar closes it, the drawing has the keys again. Hovered, a
+opening the browser's colour picker in the place of Select Color; the Text Style and Dimension
+Style lists (AcTextStyleCombo, AcDimensionStyleGallery), in Annotation's slide-out after each
+style's button and a Spacer, and on Annotate in Text's second sub-panel and Dimensions' first row,
+200 × 22 at every width (block5): bound to the selection's effective property as the layer and
+colour lists are (AcWindows.resources.dll's BAML, `EffectiveProperties[TextStyle]`,
+`[DimensionStyle]`), each shows the style the selected text objects (dimensions and leaders) share,
+blank when they differ, or the current one when none is selected; a pick restyles those objects,
+a step U names `CHPROP`, or sets the current style, a step U names `'TEXTSTYLE` or `'DIMSTYLE`
+(as the layer list's `'CLAYER`: **unverified** on the desktop, as is a pick with a selection that
+holds no such object, which sets the current style here); the list's last row, after a line,
+Manage Text Styles... or Manage Dimension Styles... (`^C^C_STYLE`, `^C^C_DIMSTYLE`, each
+culture's AcWindows.resources.dll), ending the running command and opening the dialog; after a button acts, a list is picked from or closed, or a
+slide-out's title bar closes it, the drawing has the keys again, and a control focused keeps
+Delete, Backspace, Enter and Space from the engine, a letter typing a command on the drawing. Hovered, a
 button takes a faint frame; pressed, a darker fill (desktop 2026-11-24,
 `autocad-mouse/press-line.png`). **Insert**: Block (Insert, Edit Attribute ▸ Single, Attribute
 Display) and Block Definition (Create Block, Define Attributes). **Annotate**: Text (Multiline Text ▸
@@ -367,15 +379,18 @@ and View, with nothing built; what each panel lacks: Draw's Tan, Tan, Radius and
 seven other members and Continue, Gradient, Boundary, Helix, Donut and Revision Cloud; Modify's Set to
 ByLayer, Change Space, Lengthen, Edit Hatch, Edit Array, Align, Reverse, Copy Nested Objects, Delete
 Duplicate Objects and Draw Order; Annotation's Dimension (DIM), Arc Length, Ordinate, Jogged, the
-Multileaders drop-down, Table, the style combos (phase 3), Multileader Style and Table Style; Layers'
+Multileaders drop-down, Table, Multileader Style and Table Style with their lists; Layers'
 small tools and the layer states; Block's Detect and Convert, Edit, Edit Attributes ▸ Multiple,
 Replace, Manage and Synchronize Attributes, Set Base Point, the gallery's Recent, Favorite and Library blocks; Properties' Plot Style and Transparency;
 Utilities' Quick (MEASUREGEOM), Quick Select, Select All and Quick Calculator; Clipboard's Paste as
 Block, as Hyperlink, to Original Coordinates, Paste Special and Cut with Base Point; Object
-Color's true colours and Index Colors rows; Insert's Detect and Convert, Edit Attribute ▸
+Color's true colours and Index Colors rows; the style lists' thumbnails (GALLERYVIEW 1: each style
+drawn in a cell over its name, 80 × 68 for text and 120 × 92 for dimensions, AcWindows' BAML;
+here the names in rows, as no style preview is built, the dialogs' neither), the annotative icon
+before a name and the rollover preview of a pick on the selection (PROPERTYPREVIEW); Insert's Detect and Convert, Edit Attribute ▸
 Multiple, Replace, Write Block, Manage Attributes, Block Editor, Set Base Point, Synchronize and
 the Reference, Import, Data, Linking & Extraction and Location panels; Annotate's Check Spelling,
-Text Align, Justify, Find Text, Text Height, Scale, the style and layer combos (phase 3),
+Text Align, Justify, Find Text, Text Height, Scale, the text and dimension layer lists,
 Dimension (DIM), Break, Jog Line, Inspect, Reassociate, Quick, Arc Length, Jogged, Ordinate, the
 slide-out's DIMTEDIT and DIMEDIT tools, Tolerance and Override, Revision Cloud, Centerlines,
 Leaders, Tables and Annotation Scaling; 3D Tools' Solid History, Polysolid, Loft, Sweep, the mesh

@@ -3,7 +3,7 @@ title: "Bekezdéses szöveg az AutoCAD-ben: BSZÖVEG (MTEXT) parancs"
 metaTitle: "Bekezdéses szöveg AutoCAD-ben: BSZÖVEG (MTEXT)"
 description: "Az AutoCAD BSZÖVEG (MTEXT, rövidítése BS) parancsa: két sarokpont vagy szélesség, magasság, igazítás és sorköz, bekezdések egy objektumban. Próbálja ki online."
 figure: "Egy megjegyzés keretben: előbb a magasság beállítása, aztán az átellenes sarokpont, és egyetlen bekezdés, amely a kettő közötti szélességre tördelődik."
-sourceHash: "a53001f9674d"
+sourceHash: "67d762bb368d"
 ---
 
 A BSZÖVEG (MTEXT) parancs bekezdéses szöveget ír: egyetlen objektumot, amelynek bekezdései egy adott szélességre tördelődnek. Megad egy első sarokpontot és az átellenest, a köztük lévő keret pedig a szélességet adja meg; ezután a helyben megjelenő szerkesztőben gépel, ahol az Enter új bekezdést kezd, a Ctrl+Enter vagy egy kattintás a kereten kívül pedig megtartja a szöveget. Ha már beírt valamit, az Esc megkérdezi, hogy mentse-e, ahogy az AutoCAD Nem mentett változtatások párbeszédpanelje is. Ha minden sornak külön objektumnak kell lennie, használja a <Command id="TEXT" /> parancsot.
@@ -30,7 +30,7 @@ Elforgatja a keretet és a szövegét, beírt vagy az első sarokponttól mutato
 
 ### Style
 
-Név szerint aktuálissá tesz egy szövegstílust; a <Keyword id="?" /> kilistázza a rajz stílusait, a rajzban nem létező nevet pedig elutasítja. A stílusok a <Command id="STYLE" /> paranccsal megnyíló palettán készülnek.
+Név szerint aktuálissá tesz egy szövegstílust; a <Keyword id="?" /> kilistázza a rajz stílusait, a rajzban nem létező nevet pedig elutasítja. A stílusok a <Command id="STYLE" /> parancs által megnyitott Szövegstílus párbeszédpanelen készülnek.
 
 ### Width
 

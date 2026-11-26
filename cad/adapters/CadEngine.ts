@@ -704,7 +704,8 @@ export class CadEngine {
   /**
    * A ribbon button that runs a command rather than a tool, as its acad.cuix
    * macro does: Text Style (`'_style`) and Dimension Style (`'_dimstyle`),
-   * transparent mid-command; the Properties panel's dialog launcher,
+   * transparent mid-command; their lists' Manage Text Styles... and Manage
+   * Dimension Styles... (`^C^C_STYLE`, `^C^C_DIMSTYLE`); the Properties panel's dialog launcher,
    * PROPERTIES or PROPERTIESCLOSE as Ctrl+1; Annotate's Update
    * (`_-dimstyle _apply`); the UCS's buttons (`_ucs _w`, `_x`, …); and View's
    * UCS Icon and View Cube toggles. A tool's button is {@link setActiveTool}.
@@ -818,6 +819,15 @@ export class CadEngine {
     this.runtime.setSelectionDimStyle(id)
   }
 
+  /**
+   * The ribbon's Dimension Style list: with dimensions or leaders selected
+   * they take the style, in one undo step; else it becomes current
+   * (`state.dimStyleControl` is what the list shows).
+   */
+  applyDimStyleControl(id: string): void {
+    this.runtime.applyDimStyleControl(id)
+  }
+
   createTextStyle(name?: string, basedOn?: string, makeCurrent = true): string {
     return this.runtime.createTextStyle(name, basedOn, makeCurrent)
   }
@@ -839,6 +849,15 @@ export class CadEngine {
 
   setSelectionTextStyle(id: string): void {
     this.runtime.setSelectionTextStyle(id)
+  }
+
+  /**
+   * The ribbon's Text Style list, as its layer drop-down: with text objects
+   * selected they take the style, in one undo step; else it becomes current
+   * (`state.textStyleControl` is what the list shows).
+   */
+  applyTextStyleControl(id: string): void {
+    this.runtime.applyTextStyleControl(id)
   }
 
   /** Shows or hides a style dialog; closed, its STYLE or DIMSTYLE run ends. */

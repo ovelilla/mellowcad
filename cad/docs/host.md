@@ -170,6 +170,11 @@ runs. Escape on the drawing closes whichever menu is open.
   shown by its name (`linetypeDashes` draws its sample). A colour is AutoCAD's index colour, its
   number (`"30"`), or a true colour, `"#rrggbb"`: `colorLabel` names either as the palette, the
   ribbon's list or the layer manager does, and `colorRgb` gives the RGB to paint a swatch with.
+- **Text and dimension styles**: the ribbon's lists are `applyTextStyleControl(id)` and
+  `applyDimStyleControl(id)`, showing `textStyleControl` and `dimStyleControl`: they restyle the
+  selected objects of their kind, or make the style current with none selected. The lists'
+  Manage Text Styles... and Manage Dimension Styles... are `runRibbonButton("manageTextStyles")`
+  and `"manageDimensionStyles"`; the dialogs those open are `state.styleDialog`.
 - **The Properties palette** is `state.properties`: a type filter (`filters`,
   `setPropertiesFilter`) and `info`, the rows to show in groups. A row with `edit` can be retyped:
   `setSelectionProperty(row.edit.property, text)`.

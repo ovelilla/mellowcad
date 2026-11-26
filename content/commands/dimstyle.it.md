@@ -2,7 +2,7 @@
 title: "Comando DIMSTILE (DIMSTYLE) in AutoCAD"
 description: "Stili di quota in AutoCAD in italiano: DIMSTILE (DIMSTYLE, alias D, DST), ISO-25, Nuovo, Imposta corrente, testo, frecce, scala e unità. Provalo nel browser."
 figure: "Quote disegnate in ISO-25, lo stile corrente: frecce, il testo sopra la linea e una virgola come separatore decimale."
-sourceHash: "7bcae870d3ae"
+sourceHash: "b7333ee9b6b4"
 ---
 
 DIMSTILE (DIMSTYLE in inglese) gestisce gli stili di quota del disegno: insiemi di impostazioni con un nome, dimensione della freccia, altezza del testo, scala generale, unità e il resto, che ogni quota prende dal proprio stile. Un nuovo disegno parte con ISO-25 come stile corrente, lo stile metrico con cui parte AutoCAD. DIMSTILE apre Gestione stili di quota, come in AutoCAD; digitato con un apostrofo all'interno di un comando, `'DIMSTILE`, si apre senza terminare quel comando.
@@ -25,7 +25,7 @@ Seleziona lo stile nel gestore, premi Modifica... e cambia Altezza testo, nella 
 
 ### Come si applica uno stile di quota a quote esistenti?
 
-Seleziona le quote e scegli lo stile nella riga Stile quota della tavolozza Proprietà, oppure fai clic destro su di esse e sceglilo sotto Stile quota: in entrambi i casi un solo passo di annullamento. Le nuove quote prendono lo stile corrente, che Imposta corrente cambia nel gestore.
+Seleziona le quote e scegli lo stile nella riga Stile quota della tavolozza Proprietà, oppure fai clic destro su di esse e sceglilo sotto Stile quota: in entrambi i casi un solo passo di annullamento. Le nuove quote prendono lo stile corrente, che Imposta corrente cambia nel gestore. L'elenco Stile di quota della barra multifunzione (Annota › Quote, e il pannello esteso di Inizio › Annotazione) fa lo stesso: con delle quote selezionate ne cambia lo stile, senza selezione rende corrente lo stile.
 
 ### Come si cambia il separatore decimale delle quote?
 

@@ -23,7 +23,7 @@ The dialog's preview. Font, font style and big font, width factor, oblique angle
 
 ### How do I change the text style in AutoCAD?
 
-For new text, make the style current with Set Current in the dialog STYLE opens, or with <Command id="TEXT" />'s <Keyword command="TEXT" id="Style" /> option. For text already written, select it and choose the style in the Style row of the Properties palette.
+For new text, make the style current with Set Current in the dialog STYLE opens, or with <Command id="TEXT" />'s <Keyword command="TEXT" id="Style" /> option. For text already written, select it and choose the style in the Style row of the Properties palette. The Text Style list on the ribbon (Annotate › Text, and Home › Annotation's slide-out) does both: with text selected it restyles it, with nothing selected it makes the style current.
 
 ### How do I change the font of a text style?
 

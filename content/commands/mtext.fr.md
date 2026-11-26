@@ -2,7 +2,7 @@
 title: "Commande TEXTMULT (MTEXT) dans AutoCAD"
 description: "Texte multiligne avec TEXTMULT (MTEXT, alias TT) d'AutoCAD en français : deux coins ou Largeur, Hauteur, Justifier, interligne, un seul objet. Essayez-le."
 figure: "Une note dans un cadre : la hauteur réglée d'abord, puis le coin opposé, et un paragraphe renvoyé à la ligne à la largeur entre les deux."
-sourceHash: "a53001f9674d"
+sourceHash: "67d762bb368d"
 ---
 
 TEXTMULT (MTEXT) écrit du texte multiligne : un seul objet qui contient des paragraphes renvoyés à la ligne selon une largeur. Vous cliquez un premier coin puis le coin opposé, et le cadre entre eux fixe la largeur ; vous tapez ensuite dans un éditeur dessiné sur place, où Entrée commence un nouveau paragraphe et Ctrl+Entrée, ou un clic hors du cadre, garde le texte. Echap avec quelque chose de tapé demande s'il faut l'enregistrer, comme la boîte de dialogue des modifications non enregistrées d'AutoCAD. Pour des lignes qui soient chacune un objet à part, utilisez <Command id="TEXT" />.
@@ -29,7 +29,7 @@ Fait tourner le cadre et son texte, d'un angle tapé ou montré depuis le premie
 
 ### Style
 
-Rend courant un style de texte, par son nom ; <Keyword id="?" /> liste les styles du dessin, et un nom qu'il n'a pas est refusé. Les styles se créent dans la palette qu'ouvre <Command id="STYLE" />.
+Rend courant un style de texte, par son nom ; <Keyword id="?" /> liste les styles du dessin, et un nom qu'il n'a pas est refusé. Les styles se créent dans la boîte de dialogue Style de texte qu'ouvre <Command id="STYLE" />.
 
 ### Width
 

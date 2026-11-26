@@ -209,7 +209,10 @@ export function removeTextStyle(
   return true
 }
 
-/** Puts every selected text object on style `id`: one step. */
+/**
+ * Puts every selected text object on style `id`, attribute definitions too
+ * (their Style row is the palette's, as a text's): one step.
+ */
 export function setSelectionTextStyle(
   document: CadDocument,
   ids: readonly EntityId[],
@@ -221,7 +224,9 @@ export function setSelectionTextStyle(
     .map((entityId) => document.get(entityId))
     .filter(
       (entity): entity is Entity =>
-        (entity?.type === "text" || entity?.type === "mtext") &&
+        (entity?.type === "text" ||
+          entity?.type === "mtext" ||
+          entity?.type === "attdef") &&
         entity.styleId !== id
     )
     .map((entity) => assignTextStyle(entity, id))

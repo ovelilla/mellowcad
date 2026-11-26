@@ -207,6 +207,8 @@ export const cs: EditorLocale = {
         "dimdiameter": "Průměr",
         "textStyle": "Styl textu",
         "dimensionStyle": "Styl kóty",
+        "manageTextStyles": "Správa stylů textu...",
+        "manageDimensionStyles": "Správa stylů kóty...",
         "layerProperties": "Vlastnosti hladiny",
         "insert": "Vložit",
         "block": "Vytvořit",

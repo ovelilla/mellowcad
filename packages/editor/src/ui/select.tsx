@@ -113,8 +113,13 @@ function SelectContent({
           )}
           {...props}
         >
+          {/* WHY no Select.List: with one the popup is `presentation`, and
+          opened by the mouse on no value (a mixed selection's) the focus
+          sat on it, outside the listbox, where the engine heard its keys —
+          a letter typed a command and Space repeated one. Without, the
+          popup is the listbox and scrolls, its arrows' too. */}
           <SelectScrollUpButton />
-          <SelectPrimitive.List>{children}</SelectPrimitive.List>
+          {children}
           <SelectScrollDownButton />
         </SelectPrimitive.Popup>
       </SelectPrimitive.Positioner>

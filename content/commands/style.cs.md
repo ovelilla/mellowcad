@@ -2,7 +2,7 @@
 title: "Styl textu v AutoCADu: příkaz PÍSMO (STYLE)"
 description: "Jak příkaz PÍSMO (STYLE, zkratka PSM) v AutoCADu spravuje styly textu: nový, přejmenování, odstranění, nastavení aktuálního, pevná výška."
 figure: "Typový štítek: PÍSMO, pak TEXT, jehož Styl ? vypíše styl výkresu, Standard písmem Arial, a jím napsaný název štítku."
-sourceHash: "5e9a49c82ada"
+sourceHash: "dc2db204a8ac"
 ---
 
 Příkaz PÍSMO (STYLE) spravuje styly textu výkresu: to, čím se text píše. Každý text, víceřádkový text a atribut má styl a nové dostanou aktuální styl, v novém výkresu Standard. Příkaz PÍSMO otevře dialog Styl textu, stejně jako v AutoCADu. Sada vybraná předem se zahodí, stejně jako ji zahodí dialog, a zadaný s apostrofem uvnitř jiného příkazu, `'PÍSMO`, otevře dialog, aniž by ten příkaz ukončil; ten pokračuje, jakmile se dialog zavře.
@@ -21,7 +21,7 @@ STYLE. V české verzi AutoCADu zadejte `PÍSMO` nebo zkratku `PSM` a stiskněte
 
 ### Jak v AutoCADu změnit styl textu?
 
-Pro nový text nastavte styl jako aktuální tlačítkem Aktuální v dialogu, který otevře příkaz PÍSMO, nebo možností <Keyword command="TEXT" id="Style" /> příkazu <Command id="TEXT" />. U textu, který už je napsaný, ho vyberte a zvolte styl v řádku Styl palety Vlastnosti.
+Pro nový text nastavte styl jako aktuální tlačítkem Aktuální v dialogu, který otevře příkaz PÍSMO, nebo možností <Keyword command="TEXT" id="Style" /> příkazu <Command id="TEXT" />. U textu, který už je napsaný, ho vyberte a zvolte styl v řádku Styl palety Vlastnosti. Seznam Styl textu na pásu karet (Poznámky › Text a rozbalený panel Výchozí › Poznámka) umí obojí: s vybraným textem změní jeho styl, bez výběru nastaví styl jako aktuální.
 
 ### Jak změnit písmo stylu textu?
 

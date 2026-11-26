@@ -2,7 +2,7 @@
 title: "Befehl MTEXT (Absatztext) in AutoCAD"
 description: "So arbeitet AutoCADs MTEXT (Alias T): zwei Ecken oder Breite, Höhe, Ausrichten und Zeilenabstand, Absätze umbrochen in einem Objekt. Online gratis testen."
 figure: "Eine Notiz in einem Rahmen: zuerst die Höhe, dann die gegenüberliegende Ecke und ein Absatz, der auf die Breite dazwischen umbrochen wird."
-sourceHash: "a53001f9674d"
+sourceHash: "67d762bb368d"
 ---
 
 MTEXT (in der deutschen AutoCAD-Version ebenfalls MTEXT, mit den Aliasen `MT` und `T`) schreibt mehrzeiligen Text, Absatztext: ein Objekt mit Absätzen, die auf eine Breite umgebrochen werden. Sie wählen eine erste Ecke und die gegenüberliegende, und der Rahmen dazwischen legt die Breite fest; dann tippen Sie in einem an Ort und Stelle gezeichneten Editor, in dem die Eingabetaste einen neuen Absatz beginnt und Strg+Eingabe oder ein Klick außerhalb des Rahmens den Text behält. Esc mit getipptem Text fragt, ob er gespeichert werden soll, wie AutoCADs Dialogfeld Nicht gespeicherte Änderungen. Für Zeilen, die je ein eigenes Objekt sind, verwenden Sie <Command id="TEXT" />.
@@ -29,7 +29,7 @@ Dreht den Rahmen und seinen Text, um einen getippten oder von der ersten Ecke au
 
 ### Style
 
-Macht einen Textstil aktuell, nach Namen; <Keyword id="?" /> listet die Stile der Zeichnung auf, und ein Name, den es nicht gibt, wird abgelehnt. Stile werden in der Palette erstellt, die <Command id="STYLE" /> öffnet.
+Macht einen Textstil aktuell, nach Namen; <Keyword id="?" /> listet die Stile der Zeichnung auf, und ein Name, den es nicht gibt, wird abgelehnt. Stile werden im Dialogfeld Textstil angelegt, das <Command id="STYLE" /> öffnet.
 
 ### Width
 

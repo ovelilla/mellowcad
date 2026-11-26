@@ -163,6 +163,8 @@
       "dimdiameter": "Diametro",
       "textStyle": "Stile di testo",
       "dimensionStyle": "Stile di quota",
+      "manageTextStyles": "Gestisci stili di testo...",
+      "manageDimensionStyles": "Gestisci stili di quota...",
       "layerProperties": "Proprietà layer",
       "insert": "Inserisci",
       "block": "Crea",

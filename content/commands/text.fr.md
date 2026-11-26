@@ -2,7 +2,7 @@
 title: "Commande TEXTE (TEXT) dans AutoCAD"
 description: "Comment fonctionne TEXTE (TEXT, alias T) d'AutoCAD en français, invite par invite : point de départ, hauteur, rotation, Justifier et Style, un objet par ligne."
 figure: "Deux lignes de texte, centrées dans un cadre et justifiées milieu centre : chaque ligne est un objet à part entière."
-sourceHash: "44d0e1a420a7"
+sourceHash: "7ff166aadef6"
 ---
 
 TEXTE (TEXT) écrit du texte sur une ligne. Vous indiquez un point de départ, une hauteur et un angle de rotation, puis vous tapez une ligne et appuyez sur Entrée : la ligne devient un objet à part entière, et la suivante commence une ligne plus bas. Une ligne vide termine la commande. Un clic ailleurs avant cela fait commencer les lignes suivantes à ce point, et Echap garde les lignes déjà entrées et abandonne celle en cours de saisie. Pour un paragraphe qui revient à la ligne selon une largeur, en un seul objet, utilisez <Command id="MTEXT" />.
@@ -17,7 +17,7 @@ Demande où le texte s'accroche à son point : <Keyword id="Left" /> (par défa
 
 ### Style
 
-Demande le nom du style de texte à rendre courant, Entrée gardant celui qui l'est. <Keyword id="?" /> liste les styles du dessin ; un nom que le dessin n'a pas est refusé et redemandé. Les styles se créent dans la palette qu'ouvre <Command id="STYLE" />.
+Demande le nom du style de texte à rendre courant, Entrée gardant celui qui l'est. <Keyword id="?" /> liste les styles du dessin ; un nom que le dessin n'a pas est refusé et redemandé. Les styles se créent dans la boîte de dialogue Style de texte qu'ouvre <Command id="STYLE" />.
 
 ## Missing
 

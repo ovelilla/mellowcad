@@ -2,7 +2,7 @@
 title: "Befehl BEMSTIL (DIMSTYLE) in AutoCAD"
 description: "Wie BEMSTIL (DIMSTYLE, Alias BMS) in AutoCAD funktioniert: Bemaßungsstile ab ISO-25, Neu, Aktuell und Einstellungen für Texthöhe, Pfeile, Skala und Einheiten."
 figure: "Bemaßungen im aktuellen Stil ISO-25 gezeichnet: Pfeile, der Text über der Linie und ein Komma als Dezimaltrennzeichen."
-sourceHash: "7bcae870d3ae"
+sourceHash: "b7333ee9b6b4"
 ---
 
 BEMSTIL (DIMSTYLE) verwaltet die Bemaßungsstile der Zeichnung: benannte Gruppen von Einstellungen, Pfeilgröße, Texthöhe, Gesamtskalierung, Einheiten und den Rest, die jede Bemaßung von ihrem Stil übernimmt. Eine neue Zeichnung beginnt mit ISO-25 als aktuellem Stil, dem metrischen Stil, mit dem AutoCAD beginnt. BEMSTIL öffnet den Bemaßungsstil-Manager, wie in AutoCAD; mit Apostroph innerhalb eines Befehls eingegeben, `'BEMSTIL`, öffnet er sich, ohne diesen Befehl zu beenden.
@@ -25,7 +25,7 @@ Wählen Sie den Stil im Manager, drücken Sie Ändern... und ändern Sie Texthö
 
 ### Wie weise ich vorhandenen Bemaßungen einen Bemaßungsstil zu?
 
-Wählen Sie die Bemaßungen und wählen Sie den Stil in der Zeile Bemaßungsstil der Eigenschaftenpalette, oder klicken Sie mit der rechten Maustaste darauf und wählen Sie ihn unter Bemaßungsstil: in beiden Fällen ein Rückgängig-Schritt. Neue Bemaßungen übernehmen den aktuellen Stil, den Als aktuell einstellen im Manager ändert.
+Wählen Sie die Bemaßungen und wählen Sie den Stil in der Zeile Bemaßungsstil der Eigenschaftenpalette, oder klicken Sie mit der rechten Maustaste darauf und wählen Sie ihn unter Bemaßungsstil: in beiden Fällen ein Rückgängig-Schritt. Neue Bemaßungen übernehmen den aktuellen Stil, den Als aktuell einstellen im Manager ändert. Die Liste Bemaßungsstil der Multifunktionsleiste (Beschriften › Bemaßungen und die Erweiterung von Start › Beschriftung) tut dasselbe: Sind Bemaßungen ausgewählt, ändert sie ihren Stil; ist nichts ausgewählt, macht sie den Stil aktuell.
 
 ### Wie ändere ich das Dezimaltrennzeichen der Bemaßungen?
 

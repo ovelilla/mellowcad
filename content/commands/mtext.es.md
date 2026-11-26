@@ -3,7 +3,7 @@ title: "MTEXT en AutoCAD: TEXTOM, texto de líneas múltiples"
 metaTitle: "MTEXT en AutoCAD: comando TEXTOM en español"
 description: "Cómo funciona TEXTOM (MTEXT, alias TXM) de AutoCAD en español: esquinas o Anchura, Altura, Justificar e Interlineado, párrafos en un objeto. Pruébalo gratis."
 figure: "Una nota en un recuadro: primero la altura, después la esquina opuesta, y un párrafo ajustado a la anchura entre ambas."
-sourceHash: "a53001f9674d"
+sourceHash: "67d762bb368d"
 ---
 
 TEXTOM (MTEXT en inglés) escribe texto de líneas múltiples: un solo objeto con párrafos que se ajustan a una anchura. Precisas una primera esquina y la opuesta, y el recuadro entre ellas fija la anchura; después escribes en un editor dibujado en su sitio, donde Intro empieza un párrafo nuevo y Ctrl+Intro, o un clic fuera del marco, conserva el texto. Esc con algo escrito pregunta si quieres guardarlo, como el cuadro de cambios sin guardar de AutoCAD. Para líneas que sean cada una un objeto propio, usa <Command id="TEXT" />.
@@ -30,7 +30,7 @@ Gira el recuadro y su texto, con un ángulo escrito o señalado desde la primera
 
 ### Style
 
-Hace actual un estilo de texto, por su nombre; <Keyword id="?" /> muestra los estilos del dibujo, y un nombre que el dibujo no tiene se rechaza. Los estilos se crean en la paleta que abre <Command id="STYLE" />.
+Hace actual un estilo de texto, por su nombre; <Keyword id="?" /> muestra los estilos del dibujo, y un nombre que el dibujo no tiene se rechaza. Los estilos se crean en el cuadro de diálogo Estilo de texto que abre <Command id="STYLE" />.
 
 ### Width
 

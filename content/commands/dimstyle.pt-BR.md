@@ -3,7 +3,7 @@ title: "Estilo de cota no AutoCAD: comando ESTILOCOTA (DIMSTYLE)"
 metaTitle: "Estilo de cota no AutoCAD: ESTILOCOTA (DIMSTYLE)"
 description: "O DIMSTYLE do AutoCAD em português, ESTILOCOTA (alias EC): estilos de cota a partir do ISO-25, altura do texto, setas, escala e separador. Experimente grátis."
 figure: "Cotas desenhadas no ISO-25, o estilo atual: setas, o texto acima da linha e uma vírgula como separador decimal."
-sourceHash: "7bcae870d3ae"
+sourceHash: "b7333ee9b6b4"
 ---
 
 O DIMSTYLE, ESTILOCOTA no AutoCAD em português, gerencia os estilos de cota do desenho: conjuntos nomeados de configurações, tamanho da seta, altura do texto, escala global, unidades e o resto, que cada cota recebe do seu estilo. Um desenho novo começa com o ISO-25 como estilo atual, o estilo métrico com que o AutoCAD começa. O ESTILOCOTA abre o Gerenciador de estilo de cota, como no AutoCAD; digitado com um apóstrofo dentro de um comando, `'ESTILOCOTA`, ele abre sem encerrar esse comando.
@@ -26,7 +26,7 @@ Selecione o estilo no gerenciador, clique em Modificar... e mude Altura do texto
 
 ### Como mudar o estilo de cota de cotas já desenhadas?
 
-Selecione as cotas e escolha o estilo na linha Estilo de cota da paleta Propriedades, ou clique com o botão direito e escolha-o em Estilo da cota: um só passo de desfazer nos dois casos. As cotas novas recebem o estilo atual, que Definir atual no gerenciador troca.
+Selecione as cotas e escolha o estilo na linha Estilo de cota da paleta Propriedades, ou clique com o botão direito e escolha-o em Estilo da cota: um só passo de desfazer nos dois casos. As cotas novas recebem o estilo atual, que Definir atual no gerenciador troca. A lista Estilo de cota da faixa de opções (Anotação › Cotas, e o painel expandido de Padrão › Anotação) faz o mesmo: com cotas selecionadas, muda o estilo delas; sem nada selecionado, torna o estilo atual.
 
 ### Como trocar a vírgula por ponto nas cotas?
 

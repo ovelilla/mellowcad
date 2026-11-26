@@ -4,7 +4,7 @@ metaTitle: "AutoCAD text style command: STYLE and alias"
 description: "How AutoCAD's STYLE (ST) manages text styles: new, rename, delete, set current, a fixed height, and what a style does to TEXT and MTEXT. Try it free online."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"What is the shortcut for STYLE in AutoCAD?","answer":"ST, then Enter or Space; DDSTYLE too. _STYLE works in any language of AutoCAD."},{"question":"How do I change the text style in AutoCAD?","answer":"For new text, make the style current with Set Current in the dialog STYLE opens, or with TEXT's Style option. For text already written, select it and choose the style in the Style row of the Properties palette."},{"question":"How do I change the font of a text style?","answer":"In AutoCAD, in the Text Style dialog's Font Name. Not yet here: every style is drawn in Arial, and a style differs only in its name and its height."},{"question":"Why does TEXT not ask for the height?","answer":"The current style has a height of its own. Set its height to 0 in the Text Style dialog, then Apply, and TEXT asks for the height again, offering the last one used."}]
+faq: [{"question":"What is the shortcut for STYLE in AutoCAD?","answer":"ST, then Enter or Space; DDSTYLE too. _STYLE works in any language of AutoCAD."},{"question":"How do I change the text style in AutoCAD?","answer":"For new text, make the style current with Set Current in the dialog STYLE opens, or with TEXT's Style option. For text already written, select it and choose the style in the Style row of the Properties palette. The Text Style list on the ribbon (Annotate › Text, and Home › Annotation's slide-out) does both: with text selected it restyles it, with nothing selected it makes the style current."},{"question":"How do I change the font of a text style?","answer":"In AutoCAD, in the Text Style dialog's Font Name. Not yet here: every style is drawn in Arial, and a style differs only in its name and its height."},{"question":"Why does TEXT not ask for the height?","answer":"The current style has a height of its own. Set its height to 0 in the Text Style dialog, then Apply, and TEXT asks for the height again, offering the last one used."}]
 ---
 
 STYLE manages the drawing's text styles: what a text is written with. Every text, multiline text and attribute has a style, and new ones take the current style, Standard in a new drawing. STYLE opens the Text Style dialog, as in AutoCAD. A selection made before it is dropped, as the dialog drops it, and typed with an apostrophe inside a command, `'STYLE`, it opens without ending that command, which goes on once the dialog closes.
@@ -36,7 +36,7 @@ The dialog's preview. Font, font style and big font, width factor, oblique angle
 
 ### How do I change the text style in AutoCAD?
 
-For new text, make the style current with Set Current in the dialog STYLE opens, or with [`TEXT`](/docs/commands/text)'s `Style` option. For text already written, select it and choose the style in the Style row of the Properties palette.
+For new text, make the style current with Set Current in the dialog STYLE opens, or with [`TEXT`](/docs/commands/text)'s `Style` option. For text already written, select it and choose the style in the Style row of the Properties palette. The Text Style list on the ribbon (Annotate › Text, and Home › Annotation's slide-out) does both: with text selected it restyles it, with nothing selected it makes the style current.
 
 ### How do I change the font of a text style?
 

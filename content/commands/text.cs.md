@@ -3,7 +3,7 @@ title: "Příkaz TEXT v AutoCADu: jednořádkový text"
 metaTitle: "Jednořádkový text v AutoCADu: příkaz TEXT"
 description: "Jak funguje příkaz TEXT (zkratka DT) v AutoCADu: počáteční bod, výška a natočení, zarovnání a styl, jeden objekt na každý řádek. Vyzkoušejte zdarma."
 figure: "Dva řádky jednořádkového textu vystředěné v obdélníku, se zarovnáním na střed uprostřed: každý řádek je samostatný objekt."
-sourceHash: "44d0e1a420a7"
+sourceHash: "7ff166aadef6"
 ---
 
 Příkaz TEXT píše jednořádkový text. Zadáte počáteční bod, výšku a úhel natočení, pak napíšete řádek a stisknete Enter: řádek se stane samostatným objektem a další začne o řádek níž. Prázdný řádek příkaz ukončí. Kliknutí jinam ještě předtím začne další řádky v tomto bodě a Esc ponechá už zadané řádky a zahodí ten, který se právě píše. Odstavec zalamovaný na šířku, jako jeden objekt, vytvoří příkaz <Command id="MTEXT" />.
@@ -18,7 +18,7 @@ Zeptá se, jak se text umístí vůči svému bodu: <Keyword id="Left" /> (vých
 
 ### Style
 
-Zeptá se na název stylu textu, který se má stát aktuálním; Enter ponechá stávající. <Keyword id="?" /> vypíše styly výkresu; název, který výkres nemá, se odmítne a příkaz se zeptá znovu. Styly se vytvářejí v paletě, kterou otevře příkaz <Command id="STYLE" />.
+Zeptá se na název stylu textu, který se má stát aktuálním; Enter ponechá stávající. <Keyword id="?" /> vypíše styly výkresu; název, který výkres nemá, se odmítne a příkaz se zeptá znovu. Styly se vytvářejí v dialogu Styl textu, který otevře příkaz <Command id="STYLE" />.
 
 ## Missing
 

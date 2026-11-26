@@ -3,7 +3,7 @@ title: "Tekst wielowierszowy w AutoCADzie: polecenie WTEKST (MTEXT)"
 metaTitle: "Tekst wielowierszowy w AutoCADzie: WTEKST"
 description: "Jak pisać tekst wielowierszowy w AutoCADzie poleceniem WTEKST (MTEXT, skrót WT): dwa narożniki lub szerokość, wysokość, wyrównanie, odstęp. Wypróbuj online."
 figure: "Notatka w ramce: najpierw ustawiona wysokość, potem przeciwległy narożnik i jeden akapit zawinięty do szerokości między nimi."
-sourceHash: "a53001f9674d"
+sourceHash: "67d762bb368d"
 ---
 
 Polecenie WTEKST (MTEXT) pisze tekst wielowierszowy: jeden obiekt z akapitami, które zawijają się do zadanej szerokości. Wskazujesz pierwszy narożnik i przeciwległy, a ramka między nimi ustala szerokość; potem piszesz w edytorze narysowanym na miejscu, gdzie Enter zaczyna nowy akapit, a Ctrl+Enter lub kliknięcie poza ramką zatwierdza tekst. Esc, gdy coś już wpisano, pyta, czy to zapisać, jak okno dialogowe AutoCADa „WTEKST – niezapisane zmiany”. Do wierszy, z których każdy jest osobnym obiektem, służy <Command id="TEXT" />.
@@ -30,7 +30,7 @@ Obraca ramkę i jej tekst o kąt wpisany lub wskazany od pierwszego narożnika.
 
 ### Style
 
-Ustawia bieżący styl tekstu według nazwy; <Keyword id="?" /> wyświetla style rysunku, a nazwa, której rysunek nie ma, zostaje odrzucona. Style tworzy się na palecie, którą otwiera <Command id="STYLE" />.
+Ustawia bieżący styl tekstu według nazwy; <Keyword id="?" /> wyświetla style rysunku, a nazwa, której rysunek nie ma, zostaje odrzucona. Style tworzy się w oknie dialogowym Styl tekstu, które otwiera <Command id="STYLE" />.
 
 ### Width
 

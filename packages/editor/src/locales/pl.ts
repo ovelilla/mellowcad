@@ -207,6 +207,8 @@ export const pl: EditorLocale = {
         "dimdiameter": "Średnica",
         "textStyle": "Styl tekstu",
         "dimensionStyle": "Styl wymiarowania",
+        "manageTextStyles": "Zarządzaj stylami tekstu...",
+        "manageDimensionStyles": "Zarządzaj stylami wymiarowania...",
         "layerProperties": "Właściwości warstwy",
         "insert": "Wstaw",
         "block": "Utwórz",

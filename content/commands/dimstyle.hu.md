@@ -3,7 +3,7 @@ title: "Méretstílus az AutoCAD-ben: MÉRETSTÍLUS (DIMSTYLE) parancs"
 metaTitle: "Méretstílus az AutoCAD-ben: MÉRETSTÍLUS"
 description: "Méretstílus az AutoCAD MÉRETSTÍLUS (DIMSTYLE, D) parancsával: stílusok az ISO-25-ből, szövegmagasság, nyilak, lépték és mértékegységek. Próbálja ki ingyen."
 figure: "Az aktuális ISO-25 stílusban rajzolt méretek: nyilak, a vonal fölötti szöveg és tizedesvessző."
-sourceHash: "7bcae870d3ae"
+sourceHash: "b7333ee9b6b4"
 ---
 
 A MÉRETSTÍLUS (DIMSTYLE) parancs a rajz méretstílusait kezeli: elnevezett beállításkészleteket – nyílméret, szövegmagasság, teljes lépték, mértékegységek és a többi –, amelyeket minden méret a saját stílusától vesz át. Az új rajz az ISO-25 aktuális stílussal indul, azzal a metrikus stílussal, amellyel az AutoCAD is. A MÉRETSTÍLUS parancs a Méretstílus-kezelőt nyitja meg, ahogy az AutoCAD-ben; aposztróffal egy parancson belül begépelve (`'MÉRETSTÍLUS`) úgy nyílik meg, hogy az a parancs nem fejeződik be.
@@ -26,7 +26,7 @@ Jelölje ki a stílust a kezelőben, nyomja meg a Módosítás... gombot, és m�
 
 ### Hogyan lehet méretstílust alkalmazni meglévő méretekre?
 
-Jelölje ki a méreteket, és válassza ki a stílust a Tulajdonságok paletta Méretstílus sorában, vagy kattintson rájuk a jobb gombbal, és válassza ki a Méretstílus menüpont alatt: mindkét esetben egyetlen visszavonási lépés. Az új méretek az aktuális stílust kapják, amelyet a kezelő Aktuális gombja módosít.
+Jelölje ki a méreteket, és válassza ki a stílust a Tulajdonságok paletta Méretstílus sorában, vagy kattintson rájuk a jobb gombbal, és válassza ki a Méretstílus menüpont alatt: mindkét esetben egyetlen visszavonási lépés. Az új méretek az aktuális stílust kapják, amelyet a kezelő Aktuális gombja módosít. A szalag Méretstílus listája (Feliratozás › Méretek, valamint a Kezdőlap › Feliratozás panel kibontott része) ugyanezt teszi: kijelölt méreteknek a stílusát cseréli, kijelölés nélkül a stílust teszi aktuálissá.
 
 ### Hogyan lehet módosítani a méretek tizedesjelét?
 

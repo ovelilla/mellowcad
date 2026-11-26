@@ -6,6 +6,8 @@
 export type RibbonButton =
   | "textStyle"
   | "dimensionStyle"
+  | "manageTextStyles"
+  | "manageDimensionStyles"
   | "properties"
   | "dimensionUpdate"
   | "ucsIcon"

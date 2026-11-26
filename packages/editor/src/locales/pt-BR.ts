@@ -207,6 +207,8 @@ export const ptBR: EditorLocale = {
         "dimdiameter": "Diâmetro",
         "textStyle": "Estilo de texto",
         "dimensionStyle": "Estilo de cota",
+        "manageTextStyles": "Gerenciar estilos de texto...",
+        "manageDimensionStyles": "Gerenciar estilos de cota...",
         "layerProperties": "Propriedades da camada",
         "insert": "Inserir",
         "block": "Criar",

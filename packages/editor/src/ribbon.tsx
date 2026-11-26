@@ -39,6 +39,7 @@ import {
   Select,
   SelectContent,
   SelectItem,
+  SelectSeparator,
   SelectTrigger,
   SelectValue,
 } from "./ui/select"
@@ -168,6 +169,44 @@ export function Ribbon({ engine, state }: PieceProps): ReactElement {
       <Tabs.Root
         value={front.id}
         onValueChange={(value) => engine.setRibbonTab(String(value))}
+        // The keys a control keeps, as the palettes': stopped in the capture,
+        // or the engine's listener on the document runs them too — Delete on
+        // a closed drop-down erased the selection, Enter on a button repeated
+        // the last command before the click. Its popups' lists and menus
+        // (portalled, reached here through React) keep theirs: the engine
+        // leaves those alone, and a stop here would starve Base UI's.
+        onKeyDownCapture={(event) => {
+          const target = event.target as HTMLElement
+          if (target.closest('[role="listbox"], [role="menu"]')) return
+          if (event.key === "Delete" || event.key === "Backspace") {
+            event.preventDefault()
+            event.stopPropagation()
+          } else if (
+            (event.key === "Enter" || event.key === " ") &&
+            target.closest("button")
+          ) {
+            // Its default action, the click, is kept.
+            event.stopPropagation()
+            // But a tab's: a composite item, Base UI clicks it from its own
+            // key-down, which the stop starves, and cancels the native click
+            // on Space's key-up.
+            const tab = target.closest<HTMLElement>('[role="tab"]')
+            if (tab) {
+              event.preventDefault()
+              tab.click()
+            }
+          } else if (
+            event.key.length === 1 &&
+            !event.ctrlKey &&
+            !event.altKey &&
+            !event.metaKey
+          ) {
+            // A letter types a command, as on the drawing, which takes the
+            // keys after it: the Enter that ends the command is the
+            // engine's, not a click on the control.
+            engine.focusSurface()
+          }
+        }}
       >
         {/* The tab row: the tabs 20 high on its foot, the one in front on
         the panels' surface, and after the last the minimize button and its
@@ -402,7 +441,10 @@ function FoldingRow({ tab, ctx }: { tab: RibbonTab; ctx: Context }) {
   const folds = foldAt(tab, level)
   return (
     <div ref={row} className="flex min-w-0 flex-1 overflow-hidden">
-      <div ref={content} className="flex w-max">
+      {/* WHY shrink-0: a flex item, the panels shrank to the row as a label
+      wrapped, and the fold measured the row's width, never theirs (Arabic,
+      Japanese and Chinese at 1280 kept a level 44 px too wide). */}
+      <div ref={content} className="flex w-max shrink-0">
         {tab.panels.map((panel) => {
           const fold = folds.get(panel.id) ?? { reduced: 0, folded: false }
           return fold.folded ? (
@@ -1040,6 +1082,8 @@ function Control({
       return <AttributeDisplay size={control.size} ctx={ctx} />
     case "visualStyles":
       return <VisualStyles ctx={ctx} />
+    case "styleList":
+      return <StyleList style={control.style} ctx={ctx} />
   }
 }
 
@@ -1640,6 +1684,85 @@ function PropertyCombo({
         />
       )}
     </div>
+  )
+}
+
+/** The Manage entry's value in a style list: no style's id is blank. */
+const MANAGE_STYLES = " manage"
+
+/**
+ * The Text Style and Dimension Style lists (AcTextStyleCombo,
+ * AcDimensionStyleGallery), 200 × 22 at every width the desktop showed
+ * (block5): the engine's `textStyleControl` or `dimStyleControl` (the
+ * selection's style, or the current one), the drawing's styles, then after a
+ * line Manage Text Styles... or Manage Dimension Styles...
+ * (AcWindows.resources.dll's BAML). A pick restyles what is selected or sets
+ * the current style, as the layer drop-down does (`applyTextStyleControl`).
+ * WHY names in rows, where AutoCAD's gallery shows a thumbnail per style
+ * (80 × 68 and 120 × 92, GALLERYVIEW 1): no style preview is built here, the
+ * dialogs' neither (docs/coverage/dimensions.md, STYLE and DIMSTYLE).
+ */
+function StyleList({
+  style,
+  ctx,
+}: {
+  style: "text" | "dimension"
+  ctx: Context
+}) {
+  const { engine, state } = ctx
+  const properties = useEditorText("Properties")
+  const text = style === "text"
+  const styles = text ? state.textStyles : state.dimStyles
+  const value = text ? state.textStyleControl : state.dimStyleControl
+  const manage = text ? "manageTextStyles" : "manageDimensionStyles"
+  const items: Record<string, string> = {
+    ...Object.fromEntries(styles.map((entry) => [entry.id, entry.name])),
+    [MANAGE_STYLES]: ctx.text(manage),
+  }
+
+  return (
+    <Select
+      items={items}
+      value={value}
+      onValueChange={(id) => {
+        if (id == null) return
+        // Its dialog takes the keys: `toDrawing` leaves them to it.
+        if (id === MANAGE_STYLES) {
+          engine.runRibbonButton(manage)
+          return
+        }
+        if (text) engine.applyTextStyleControl(id)
+        else engine.applyDimStyleControl(id)
+        engine.focusSurface()
+      }}
+    >
+      <SelectTrigger
+        aria-label={ctx.text(text ? "textStyle" : "dimensionStyle")}
+        className={cn(COMBO, "w-50")}
+      >
+        <SelectValue placeholder={properties("varies")}>
+          {(id: string | null) =>
+            id === null ? null : <span className="truncate">{items[id]}</span>
+          }
+        </SelectValue>
+      </SelectTrigger>
+      {/* As wide as its longest row: `Zarządzaj stylami wymiarowania...`
+      would be cut at the trigger's 200. */}
+      <SelectContent
+        align="start"
+        alignItemWithTrigger={false}
+        finalFocus={ctx.toDrawing}
+        className="w-max min-w-(--anchor-width)"
+      >
+        {styles.map((entry) => (
+          <SelectItem key={entry.id} value={entry.id}>
+            <span className="truncate">{entry.name}</span>
+          </SelectItem>
+        ))}
+        <SelectSeparator />
+        <SelectItem value={MANAGE_STYLES}>{ctx.text(manage)}</SelectItem>
+      </SelectContent>
+    </Select>
   )
 }
 

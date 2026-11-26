@@ -3,8 +3,9 @@
 > **Status:** phase 0 (this inventory and plan) done on 2026-11-24; phase 1 done the same day,
 > its five blocks (the engine, the frame, Home, the other tabs, minimize and fold); the push that
 > ships the ribbon waits for the owner's word; phase 2 done on 2026-11-25, its four blocks (§6);
-> phase 3 started on 2026-11-25, its desktop pass and block 1 (the style dialogs) done; phases 4
-> to 6 not started.
+> phase 3 done on 2026-11-26, its desktop pass and its blocks 1 (the style dialogs), 2a and 2b
+> (the palettes' frame), 3a to 3c (what each palette holds) and 4 (the ribbon's style lists);
+> phases 4 to 6 not started.
 > The brief is `docs/next-autocad-ui.md`; where its phases and this plan differ, this plan rules
 > (the brief says so) and the brief was corrected the same day.
 
@@ -462,15 +463,15 @@ in `docs/coverage/`, never a dead button.
 
 | # | AutoCAD | Here | Class | Phase |
 | - | ------- | ---- | ----- | ----- |
-| P1 | Each palette a window of its own, floating, with a vertical title bar | tabs of one docked panel | Revoked: each its own, floating inside the page by default, dockable at either side, its place and size kept on the device | 3 |
-| P2 | Auto-hide and anchoring to a strip | the panel folds to a strip of icons | Revoked: auto-hide per palette | 3 |
+| P1 | Each palette a window of its own, floating, with a vertical title bar | tabs of one docked panel | Revoked: each its own, floating inside the page by default, dockable at either side, its place and size kept on the device | 3 (done) |
+| P2 | Auto-hide and anchoring to a strip | the panel folds to a strip of icons | Revoked: auto-hide per palette | 3 (done) |
 | P3 | A palette can leave the program's window, to another monitor | — | Platform: nothing leaves the page | — |
-| P4 | Layer Properties Manager: a wide grid with a filter tree and a toolbar | a list in the panel's tab | Revoked for the grid and toolbar of what exists; filters, states and viewport columns: Missing | 3 |
-| P5 | Blocks: tabs at its edge and Options | the Current Drawing list | Revoked for its frame, its views and the Options -INSERT has; Recent, Favorites, Libraries, Auto-Placement, Repeat Placement and Explode stay Missing | 3 |
-| P6 | Properties: PICKADD, Select Objects and Quick Select beside the list; categories that fold | the list and the rows | Revoked for folding; the three buttons: Missing | 3 |
-| P7 | STYLE and DIMSTYLE are modal dialogs; the ribbon has their combos | a Styles tab of the panel | Revoked: the two dialogs, and the combos in Home › Annotation's slide-out and on Annotate | 3 |
+| P4 | Layer Properties Manager: a wide grid with a filter tree and a toolbar | a list in the panel's tab | Revoked for the grid and toolbar of what exists; filters, states and viewport columns: Missing | 3 (done) |
+| P5 | Blocks: tabs at its edge and Options | the Current Drawing list | Revoked for its frame, its views and the Options -INSERT has; Recent, Favorites, Libraries, Auto-Placement, Repeat Placement and Explode stay Missing | 3 (done) |
+| P6 | Properties: PICKADD, Select Objects and Quick Select beside the list; categories that fold | the list and the rows | Revoked for folding; the three buttons: Missing | 3 (done) |
+| P7 | STYLE and DIMSTYLE are modal dialogs; the ribbon has their combos | a Styles tab of the panel | Revoked: the two dialogs, and the combos in Home › Annotation's slide-out and on Annotate | 3 (done) |
 | P8 | Quick Properties, Tool Palettes, DesignCenter, Sheet Set Manager… | — | Missing | — |
-| P9 | A dialog is Windows' own: light, with the system's title bar | the editor's dark dialogs | Kept in colour (one scheme); each dialog's groups, order and buttons follow AutoCAD's, and UNITS, the point style and Save As are compared again when phase 3 builds the two of §2.9 | 3 |
+| P9 | A dialog is Windows' own: light, with the system's title bar | the editor's dark dialogs | Kept in colour (one scheme); each dialog's groups, order and buttons follow AutoCAD's, and UNITS, the point style and Save As are compared again when phase 3 builds the two of §2.9 | 3 (done) |
 
 ### Kept from the platform, as the brief lists them
 
@@ -626,7 +627,7 @@ blocks, a commit each, each leaving the editor whole, built 1, 4, 2, 3:
 4. **The drawing's name** in the title and in the tab's, from what the file port knows, else
    `Drawing1.dwg` (F3). Done 2026-11-25, second: the Open Documents list of block 2 shows it.
 
-### Phase 3 — the palettes and the style dialogs
+### Phase 3 — the palettes and the style dialogs (done 2026-11-26)
 
 Properties, Layer Properties Manager and Blocks as palettes of their own (P1 to P6); STYLE and
 DIMSTYLE as AutoCAD's dialogs, with the ribbon's style combos (P7). The Styles tab and the
@@ -674,8 +675,20 @@ dialogs need nothing of the new frame:
      Text and Dim style in Misc, where AutoCAD files them. Toggle PICKADD, Select Objects and Quick
      Select are Missing, undrawn: none of the three exists here. A drop-down with no value
      (`*VARIES*`) opened puts the keys in its list, as the 3a asked.
-4. **The ribbon's style combos**: Text Style and Dimension Style in Home › Annotation's slide-out
-   and on Annotate (P7).
+4. **The ribbon's style combos** (done 2026-11-26): Text Style and Dimension Style in Home ›
+   Annotation's slide-out (each after its button and a Spacer) and on Annotate (Text's second
+   sub-panel, Dimensions' first row), 200 × 22 at every width (block5) (P7). AcWindows' BAML
+   binds both to `EffectivePropertySource.EffectiveProperties[TextStyle]` and
+   `[DimensionStyle]`, as the layer and colour lists are bound: so a pick restyles the selected
+   objects of that kind (`CHPROP`) or, with none, sets the current style, the step named
+   `'TEXTSTYLE` or `'DIMSTYLE` as the layer list's `'CLAYER` — **unverified** on the desktop, as
+   is a pick with a selection holding no such object. The list ends in Manage Text Styles... and
+   Manage Dimension Styles... (`^C^C_STYLE`, `^C^C_DIMSTYLE`). The gallery's thumbnails (80 × 68,
+   120 × 92, GALLERYVIEW 1) are Missing: names in rows, as no style preview is built. Found on
+   the way, older than it: Delete on any closed list of the ribbon erased the selection and Enter
+   on a button repeated the last command (the ribbon now keeps them, as the palettes do); and in
+   Japanese, Traditional Chinese and Arabic at 1280 Home's row ran 4 to 44 px past the window, the
+   fold measuring a panels' row that had shrunk to it.
 
 ### Phase 4 — the drawing area and the bottom row
 

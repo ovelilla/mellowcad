@@ -181,6 +181,27 @@ describe("the Visual Styles gallery", () => {
   })
 })
 
+describe("Annotate's style lists", () => {
+  it("show the engine's text and dimension styles, by name", () => {
+    const html = (pick?: boolean) =>
+      renderRibbon((cad) => {
+        cad.runtime.setRibbonTab("annotate")
+        if (!pick) return
+        cad.runtime.applyTextStyleControl(
+          cad.runtime.createTextStyle("Notes", undefined, false)
+        )
+        cad.runtime.applyDimStyleControl(
+          cad.runtime.createDimStyle("Coarse", undefined, false)
+        )
+      })
+    expect(html()).toContain('aria-label="Text Style"')
+    expect(html()).toContain(">Standard<")
+    expect(html()).toContain(">ISO-25<")
+    expect(html(true)).toContain(">Notes<")
+    expect(html(true)).toContain(">Coarse<")
+  })
+})
+
 describe("Attribute Display", () => {
   it("shows the entry ATTMODE holds", () => {
     const html = (display?: "on") =>

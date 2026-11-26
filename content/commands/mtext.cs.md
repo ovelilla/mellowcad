@@ -2,7 +2,7 @@
 title: "Víceřádkový text v AutoCADu: příkaz MTEXT"
 description: "Jak psát víceřádkový text v AutoCADu příkazem MTEXT (zkratka T): dva rohy nebo šířka, výška, zarovnání a řádkování, odstavce v jednom objektu. Vyzkoušejte."
 figure: "Poznámka v rámečku: nejprve nastavená výška, pak protější roh a jeden odstavec zalomený na šířku mezi nimi."
-sourceHash: "a53001f9674d"
+sourceHash: "67d762bb368d"
 ---
 
 Příkaz MTEXT píše víceřádkový text: jeden objekt s odstavci, které se zalamují na šířku. Ukážete první roh a protější roh a rámeček mezi nimi určí šířku; pak píšete v editoru zobrazeném přímo na místě, kde Enter začne nový odstavec a Ctrl+Enter nebo kliknutí mimo rámeček text uloží. Esc, když je něco napsáno, se zeptá, zda text uložit, jako dialog AutoCADu o neuložených změnách. Pro řádky, z nichž každý je samostatným objektem, použijte <Command id="TEXT" />.
@@ -29,7 +29,7 @@ Otočí rámeček i s textem o úhel zadaný číslem nebo ukázaný od prvního
 
 ### Style
 
-Nastaví aktuální textový styl podle názvu; <Keyword id="?" /> vypíše styly výkresu a název, který výkres nemá, se odmítne. Styly se vytvářejí v paletě, kterou otevře <Command id="STYLE" />.
+Nastaví aktuální textový styl podle názvu; <Keyword id="?" /> vypíše styly výkresu a název, který výkres nemá, se odmítne. Styly se vytvářejí v dialogu Styl textu, který otevře příkaz <Command id="STYLE" />.
 
 ### Width
 

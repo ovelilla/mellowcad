@@ -3,7 +3,7 @@ title: "Estilo de texto no AutoCAD: comando STYLE (ESTILO)"
 metaTitle: "Estilo de texto no AutoCAD: STYLE (ESTILO)"
 description: "Como o STYLE do AutoCAD em português, ESTILO (alias ET), gerencia os estilos de texto: novo, renomear, excluir, definir atual e altura fixa. Experimente grátis."
 figure: "Uma placa de identificação: o ESTILO, depois o TEXTO, cujo Estilo ? lista o estilo do desenho, Standard em Arial, e o nome da placa escrito nele."
-sourceHash: "5e9a49c82ada"
+sourceHash: "dc2db204a8ac"
 ---
 
 O STYLE, ESTILO no AutoCAD em português, gerencia os estilos de texto do desenho: aquilo com que um texto é escrito. Todo texto, texto multilinha e atributo tem um estilo, e os novos recebem o estilo atual, Standard num desenho novo. O ESTILO abre a caixa de diálogo Estilo de texto, como no AutoCAD. Uma seleção feita antes dele é descartada, como a caixa de diálogo a descarta, e digitado com um apóstrofo dentro de um comando, `'ESTILO`, ele abre sem encerrar esse comando, que continua assim que a caixa de diálogo fecha.
@@ -22,7 +22,7 @@ ESTILO, com os aliases `ET` e `DDSTYLE`; `ST` não é comando nenhum no AutoCAD 
 
 ### Como mudar o estilo de texto no AutoCAD?
 
-Para textos novos, torne o estilo atual com Definir atual na caixa de diálogo que o ESTILO abre, ou com a opção <Keyword command="TEXT" id="Style" /> do <Command id="TEXT" />. Para textos já escritos, selecione-os e escolha o estilo na linha Estilo da paleta Propriedades.
+Para textos novos, torne o estilo atual com Definir atual na caixa de diálogo que o ESTILO abre, ou com a opção <Keyword command="TEXT" id="Style" /> do <Command id="TEXT" />. Para textos já escritos, selecione-os e escolha o estilo na linha Estilo da paleta Propriedades. A lista Estilo de texto da faixa de opções (Anotação › Texto, e o painel expandido de Padrão › Anotação) faz as duas coisas: com texto selecionado, muda o estilo dele; sem nada selecionado, torna o estilo atual.
 
 ### Como mudar a fonte de um estilo de texto?
 

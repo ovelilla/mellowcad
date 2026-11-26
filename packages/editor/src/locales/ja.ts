@@ -203,6 +203,8 @@ export const ja: EditorLocale = {
         "dimdiameter": "直径寸法記入",
         "textStyle": "文字スタイル管理",
         "dimensionStyle": "寸法スタイル管理",
+        "manageTextStyles": "文字スタイル管理...",
+        "manageDimensionStyles": "寸法スタイル管理...",
         "layerProperties": "画層プロパティ 管理",
         "insert": "挿入",
         "block": "作成",

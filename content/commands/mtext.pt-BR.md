@@ -3,7 +3,7 @@ title: "Comando MTEXT (TEXTOM) no AutoCAD"
 metaTitle: "Caixa de texto no AutoCAD: MTEXT (TEXTOM)"
 description: "O MTEXT do AutoCAD em português, TEXTOM (alias T): dois cantos ou Largura, Altura, Justificar e espaçamento de linha, parágrafos num objeto. Experimente grátis."
 figure: "Uma nota numa caixa: primeiro a altura, depois o canto oposto, e um parágrafo ajustado à largura entre eles."
-sourceHash: "a53001f9674d"
+sourceHash: "67d762bb368d"
 ---
 
 O MTEXT, TEXTOM no AutoCAD em português, escreve texto multilinha: um só objeto com parágrafos que se ajustam a uma largura. Você especifica um primeiro canto e o oposto, e a caixa entre eles define a largura; depois digita num editor desenhado no lugar, onde Enter começa um novo parágrafo e Ctrl+Enter, ou um clique fora do quadro, mantém o texto. Esc com algo digitado pergunta se você quer salvá-lo, como a caixa de alterações não salvas do AutoCAD. Para linhas que sejam cada uma um objeto próprio, use o <Command id="TEXT" />.
@@ -30,7 +30,7 @@ Gira a caixa e o seu texto, por um ângulo digitado ou indicado a partir do prim
 
 ### Style
 
-Torna atual um estilo de texto, pelo nome; <Keyword id="?" /> lista os estilos do desenho, e um nome que o desenho não tem é recusado. Os estilos são criados na paleta que o <Command id="STYLE" /> abre.
+Torna atual um estilo de texto, pelo nome; <Keyword id="?" /> lista os estilos do desenho, e um nome que o desenho não tem é recusado. Os estilos são criados na caixa de diálogo Estilo de texto que o <Command id="STYLE" /> abre.
 
 ### Width
 

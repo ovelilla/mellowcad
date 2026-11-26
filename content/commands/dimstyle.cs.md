@@ -3,7 +3,7 @@ title: "Kótovací styl v AutoCADu: příkaz KÓTYSTYL (DIMSTYLE)"
 metaTitle: "Kótovací styl v AutoCADu: KÓTYSTYL"
 description: "Jak v AutoCADu nastavit kótovací styl: KÓTYSTYL (DIMSTYLE, zkratka KSL), styly od ISO-25, výška textu, šipky, měřítko a jednotky. Vyzkoušejte zdarma online."
 figure: "Kóty nakreslené v ISO-25, aktuálním stylu: šipky, text nad čarou a čárka jako desetinný oddělovač."
-sourceHash: "7bcae870d3ae"
+sourceHash: "b7333ee9b6b4"
 ---
 
 Příkaz KÓTYSTYL (DIMSTYLE) spravuje kótovací styly výkresu: pojmenované sady nastavení – velikost šipky, výška textu, celkové měřítko, jednotky a další –, které každá kóta přebírá ze svého stylu. Nový výkres začíná s aktuálním stylem ISO-25, metrickým stylem, se kterým začíná i AutoCAD. Příkaz KÓTYSTYL otevře Správce kótovacího stylu, stejně jako v AutoCADu; zadaný s apostrofem uvnitř jiného příkazu, `'KÓTYSTYL`, se otevře, aniž by ten příkaz ukončil.
@@ -26,7 +26,7 @@ Vyberte styl ve správci, stiskněte „Upravit...“ a změňte hodnotu „Vý�
 
 ### Jak použít kótovací styl na existující kóty?
 
-Vyberte kóty a zvolte styl v řádku „Kótovací styl“ palety Vlastnosti, nebo na ně klikněte pravým tlačítkem myši a vyberte ho v nabídce „Kótovací styl“: v obou případech je to jeden krok zpět. Nové kóty přebírají aktuální styl, který mění tlačítko „Nastavit aktuální“ ve správci.
+Vyberte kóty a zvolte styl v řádku „Kótovací styl“ palety Vlastnosti, nebo na ně klikněte pravým tlačítkem myši a vyberte ho v nabídce „Kótovací styl“: v obou případech je to jeden krok zpět. Nové kóty přebírají aktuální styl, který mění tlačítko „Nastavit aktuální“ ve správci. Seznam Styl kóty na pásu karet (Poznámky › Kóty a rozbalený panel Výchozí › Poznámka) dělá totéž: s vybranými kótami změní jejich styl, bez výběru nastaví styl jako aktuální.
 
 ### Jak změnit desetinný oddělovač kót?
 

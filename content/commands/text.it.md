@@ -2,7 +2,7 @@
 title: "Comando TESTO (TEXT) in AutoCAD"
 description: "Come funziona TESTO (TEXT, alias TD) di AutoCAD: punto iniziale, altezza e rotazione, Giustifica e Stile, un oggetto per riga. Provalo."
 figure: "Due righe di testo su riga singola centrate in un riquadro, giustificate al centro: ogni riga è un oggetto a sé."
-sourceHash: "44d0e1a420a7"
+sourceHash: "7ff166aadef6"
 ---
 
 TESTO (TEXT) scrive testo su riga singola. Indichi un punto iniziale, un'altezza e un angolo di rotazione, poi digiti una riga e premi Invio: la riga diventa un oggetto a sé, e la successiva inizia una riga sotto. Una riga vuota termina il comando. Un clic altrove prima di quel momento fa iniziare le righe successive in quel punto, ed Esc conserva le righe già inserite e scarta quella che stai digitando. Per un paragrafo che va a capo a una larghezza, come un solo oggetto, usa <Command id="MTEXT" />.
@@ -17,7 +17,7 @@ Chiede a quale punto è ancorato il testo rispetto al suo punto di inserimento: 
 
 ### Style
 
-Chiede il nome dello stile di testo da rendere corrente, con Invio che mantiene quello corrente. <Keyword id="?" /> elenca gli stili del disegno; un nome che il disegno non ha viene rifiutato e chiesto di nuovo. Gli stili si creano nella tavolozza che apre <Command id="STYLE" />.
+Chiede il nome dello stile di testo da rendere corrente, con Invio che mantiene quello corrente. <Keyword id="?" /> elenca gli stili del disegno; un nome che il disegno non ha viene rifiutato e chiesto di nuovo. Gli stili si creano nella finestra Stile di testo che apre <Command id="STYLE" />.
 
 ## Missing
 

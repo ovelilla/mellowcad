@@ -357,7 +357,9 @@ ext lines) and Primary Units (Precision, Decimal separator, Zero suppression's T
 angular Precision), each tab's words AcDimRes' (`phase3/dimmod-0.png` to `-6.png`); OK applies
 the page's changes in one, Cancel drops them; the style New made is current once the manager
 closes (d05-4). ISO-25, the current style and one in use are not deleted. Assign per selection
-(the Properties palette's drop-down and the Edit menu's Dimension Style ▸: one undo step). A run of
+(the Properties palette's drop-down and the Edit menu's Dimension Style ▸: one undo step), and the
+ribbon's Dimension Style list, which restyles the selected dimensions or sets the current style
+(Ribbon, `docs/coverage/workspace.md`). A run of
 the manager, with everything made in it, is one step U names `DIMSTYLE` (`ACOESTIL` in Spanish,
 unverified) and puts the current style back (desktop d05; -DIMSTYLE's U, p05); `'DIMSTYLE` runs
 inside a command, which resumes as the manager closes, and a change made there joins that
@@ -441,7 +443,8 @@ typed waits for Apply; the next style picked, Set Current and New apply it first
 asks: **unverified**); Cancel drops it. New... opens New Text Style (d07-2,
 `phase3/new-text-style.png`): Style Name with the name New proposes, OK, Cancel. Standard, the
 current style and one in use are not deleted. Assign per selection (the drop-down: one undo step
-over every text, TEXT-D46); every style draws in Arial (Standard's font), measured from its
+over every text, attribute definitions too, TEXT-D46), and the ribbon's Text Style list, which
+restyles the selected text or sets the current style (Ribbon, `docs/coverage/workspace.md`); every style draws in Arial (Standard's font), measured from its
 advance widths. A run of the dialog, with everything made in it, is one step U names `STYLE`
 (`ESTILO` in Spanish, unverified) and puts TEXTSTYLE back (desktop d07; -STYLE's U, text/p320);
 `'STYLE` runs inside a command, which resumes as the dialog closes, and a change made there joins

@@ -2,7 +2,7 @@
 title: "Commande COTSTYLE (DIMSTYLE) dans AutoCAD"
 description: "Styles de cote dans AutoCAD en français : COTSTYLE (DIMSTYLE, alias CST), ISO-25, Nouveau, Définir courant, texte, flèches, échelle et unités. Essayez-le."
 figure: "Des cotes dessinées en ISO-25, le style courant : des flèches, le texte au-dessus de la ligne et une virgule comme séparateur décimal."
-sourceHash: "7bcae870d3ae"
+sourceHash: "b7333ee9b6b4"
 ---
 
 COTSTYLE (DIMSTYLE en anglais) gère les styles de cote du dessin : des ensembles nommés de paramètres, taille de la flèche, hauteur du texte, échelle générale, unités et le reste, que chaque cote reprend de son style. Un nouveau dessin commence avec ISO-25 comme style courant, le style métrique avec lequel AutoCAD commence. COTSTYLE ouvre le Gestionnaire des styles de cote, comme dans AutoCAD ; `'COTSTYLE`, tapé avec une apostrophe à l'intérieur d'une commande, s'ouvre sans terminer celle-ci.
@@ -25,7 +25,7 @@ Sélectionnez le style dans le gestionnaire, appuyez sur Modifier... et changez 
 
 ### Comment appliquer un style de cote à des cotes existantes ?
 
-Sélectionnez les cotes et choisissez le style dans la ligne Style de cote de la palette Propriétés, ou faites un clic droit dessus et choisissez-le sous Style de cote : une seule étape d'annulation dans les deux cas. Les nouvelles cotes prennent le style courant, que Définir courant change dans le gestionnaire.
+Sélectionnez les cotes et choisissez le style dans la ligne Style de cote de la palette Propriétés, ou faites un clic droit dessus et choisissez-le sous Style de cote : une seule étape d'annulation dans les deux cas. Les nouvelles cotes prennent le style courant, que Définir courant change dans le gestionnaire. La liste Style de cote du ruban (Annoter › Cotes, et le panneau déroulant de Début › Annotation) fait de même : avec des cotes sélectionnées, elle en change le style ; sans sélection, elle rend le style courant.
 
 ### Comment changer le séparateur décimal des cotes ?
 

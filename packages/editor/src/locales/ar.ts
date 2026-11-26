@@ -207,6 +207,8 @@ export const ar: EditorLocale = {
         "dimdiameter": "القطر",
         "textStyle": "نمط النص",
         "dimensionStyle": "نمط الأبعاد",
+        "manageTextStyles": "إدارة أنماط النص...",
+        "manageDimensionStyles": "إدارة أنماط الأبعاد...",
         "layerProperties": "خصائص الطبقة",
         "insert": "إدراج",
         "block": "إنشاء",

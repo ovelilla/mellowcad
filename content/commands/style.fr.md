@@ -2,7 +2,7 @@
 title: "Commande STYLE dans AutoCAD : styles de texte"
 description: "Comment STYLE (alias S) d'AutoCAD gère les styles de texte : nouveau, renommer, supprimer, définir courant, hauteur fixe, et leur effet sur TEXTE et TEXTMULT."
 figure: "Une plaque nominative : STYLE, puis TEXTE, dont l'option Style, avec ?, liste le style du dessin, Standard en Arial, et le nom de la plaque écrit avec lui."
-sourceHash: "5e9a49c82ada"
+sourceHash: "dc2db204a8ac"
 ---
 
 STYLE gère les styles de texte du dessin : ce avec quoi un texte est écrit. Chaque texte, texte multiligne et attribut a un style, et les nouveaux prennent le style courant, Standard dans un nouveau dessin. STYLE ouvre la boîte de dialogue Style de texte, comme dans AutoCAD. Une sélection faite avant la commande est abandonnée, comme la boîte de dialogue l'abandonne, et `'STYLE`, tapé avec une apostrophe à l'intérieur d'une commande, s'ouvre sans terminer celle-ci, qui reprend une fois la boîte de dialogue fermée.
@@ -21,7 +21,7 @@ L'aperçu de la boîte de dialogue. La police, son style et la grande police, le
 
 ### Comment changer le style de texte dans AutoCAD ?
 
-Pour le nouveau texte, rendez le style courant avec Définir courant dans la boîte de dialogue qu'ouvre STYLE, ou avec l'option <Keyword command="TEXT" id="Style" /> de <Command id="TEXT" />. Pour le texte déjà écrit, sélectionnez-le et choisissez le style dans la ligne Style de la palette Propriétés.
+Pour le nouveau texte, rendez le style courant avec Définir courant dans la boîte de dialogue qu'ouvre STYLE, ou avec l'option <Keyword command="TEXT" id="Style" /> de <Command id="TEXT" />. Pour le texte déjà écrit, sélectionnez-le et choisissez le style dans la ligne Style de la palette Propriétés. La liste Style de texte du ruban (Annoter › Texte, et le panneau déroulant de Début › Annotation) fait les deux : avec du texte sélectionné, elle en change le style ; sans sélection, elle rend le style courant.
 
 ### Comment changer la police d'un style de texte ?
 

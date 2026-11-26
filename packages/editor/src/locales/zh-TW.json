@@ -163,6 +163,8 @@
       "dimdiameter": "直徑",
       "textStyle": "文字型式",
       "dimensionStyle": "標註型式",
+      "manageTextStyles": "管理文字型式...",
+      "manageDimensionStyles": "管理標註型式...",
       "layerProperties": "圖層 性質",
       "insert": "插入",
       "block": "建立",

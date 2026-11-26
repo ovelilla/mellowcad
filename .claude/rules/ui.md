@@ -222,7 +222,6 @@ the ribbon, the bottom row from phase 4. **28 px**, icons 16, for the rest one p
   stacking context that traps a z-index set inside it.
 - A `Portal` takes `container={usePortalContainer()}` (ESLint): in Base UI's default, `<body>`, the
   root's tokens, `dir` and `lang` miss the popup.
-- Radix's asChild is the `render` prop.
 - `Select.Root` needs `items` (a value→label record) for the closed trigger to show the label, not
   the raw value. `onValueChange` can deliver `null`: guard before committing. A drop-down in a bar
   passes `below` (`alignItemWithTrigger` off), or its list covers its trigger.
@@ -242,10 +241,10 @@ the ribbon, the bottom row from phase 4. **28 px**, icons 16, for the rest one p
   dialog: `finalFocus={false}` and `focusSurface` on `onOpenChangeComplete`.
 - **React hands a portalled popup's events to what rendered it**: an ancestor's `onWheel` too,
   a palette's title bar's drag (`ownPress`).
-- **React listens on its root (Next's `document`), as the engine does**: a key a palette keeps
-  stops in `onKeyDownCapture`, or the engine's runs it too.
+- **React listens on its root (Next's `document`), as the engine does**: a key a palette or the
+  ribbon keeps (Delete on a closed list) stops in `onKeyDownCapture`, or the engine runs it too.
 - `Panel` (`toolbar-primitives.tsx`) does **not** forward props: `<PopoverTrigger render={<Panel>…} />`
-  drops the click handler and the popover silently never opens. Render the `Button` as the trigger
+  drops the click handler: the popover never opens. Render the `Button` as the trigger
   and wrap the whole `Popover` in the `Panel`.
 
 ## Where a control belongs

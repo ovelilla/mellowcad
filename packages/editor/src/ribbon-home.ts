@@ -72,6 +72,11 @@ export type RibbonControl =
   | { readonly kind: "attributeDisplay"; readonly size: ControlSize }
   /** The Visual Styles gallery (AcVisualStyleGalleryControl): VSCURRENT. */
   | { readonly kind: "visualStyles" }
+  /**
+   * The Text Style or Dimension Style list (AcTextStyleCombo,
+   * AcDimensionStyleGallery): the selection's style, or the current one.
+   */
+  | { readonly kind: "styleList"; readonly style: "text" | "dimension" }
 
 /** A column of up to three small controls, one row each. */
 export interface RibbonColumn {
@@ -402,10 +407,19 @@ export const HOME: readonly RibbonPanel[] = [
         ],
       }),
     ],
-    // Each style's button; its combo comes with the style dialogs (phase 3).
+    // Each style's button, a Spacer and its list; Multileader Style and
+    // Table Style, the other two rows, are not built.
     slideOut: [
-      [{ kind: "command", button: "textStyle" }],
-      [{ kind: "command", button: "dimensionStyle" }],
+      [
+        { kind: "command", button: "textStyle" },
+        SPACER,
+        { kind: "styleList", style: "text" },
+      ],
+      [
+        { kind: "command", button: "dimensionStyle" },
+        SPACER,
+        { kind: "styleList", style: "dimension" },
+      ],
     ],
   },
   {

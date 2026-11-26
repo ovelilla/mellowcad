@@ -207,6 +207,8 @@ export const zhCN: EditorLocale = {
         "dimdiameter": "直径",
         "textStyle": "文字样式",
         "dimensionStyle": "标注样式",
+        "manageTextStyles": "管理文字样式...",
+        "manageDimensionStyles": "管理标注样式...",
         "layerProperties": "图层 特性",
         "insert": "插入",
         "block": "创建",

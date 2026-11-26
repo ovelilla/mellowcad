@@ -3,7 +3,7 @@ title: "Estilos de cota en AutoCAD: ACOESTIL (DIMSTYLE)"
 metaTitle: "Estilo de cota en AutoCAD: ACOESTIL (DIMSTYLE)"
 description: "Cómo funciona ACOESTIL (DIMSTYLE) de AutoCAD en español: estilos de cota desde ISO-25, altura de texto, flechas, escala y separador decimal. Pruébalo gratis."
 figure: "Cotas dibujadas en ISO-25, el estilo actual: flechas, el texto sobre la línea y una coma como separador decimal."
-sourceHash: "7bcae870d3ae"
+sourceHash: "b7333ee9b6b4"
 ---
 
 ACOESTIL (DIMSTYLE en inglés) gestiona los estilos de cota del dibujo: conjuntos de parámetros con nombre, tamaño de flecha, altura de texto, escala general, unidades y demás, que cada cota toma de su estilo. Un dibujo nuevo empieza con ISO-25 como estilo actual, el estilo métrico con el que empieza AutoCAD. ACOESTIL abre el Administrador de estilos de cota, como en AutoCAD; escrito con un apóstrofo dentro de un comando, `'ACOESTIL`, se abre sin terminar ese comando.
@@ -26,7 +26,7 @@ Designa el estilo en el administrador, pulsa Modificar... y cambia Altura de tex
 
 ### ¿Cómo aplico un estilo de cota a cotas ya dibujadas?
 
-Designa las cotas y elige el estilo en la fila Estilo de cota de la paleta Propiedades, o haz clic derecho y elígelo en Estilo de cota: un solo paso de deshacer en los dos casos. Las cotas nuevas toman el estilo actual, que se cambia con Definir actual en el administrador.
+Designa las cotas y elige el estilo en la fila Estilo de cota de la paleta Propiedades, o haz clic derecho y elígelo en Estilo de cota: un solo paso de deshacer en los dos casos. Las cotas nuevas toman el estilo actual, que se cambia con Definir actual en el administrador. La lista Estilo de cota de la cinta de opciones (Anotar › Cotas, y el panel desplegable de Inicio › Anotación) hace lo mismo: con cotas seleccionadas les cambia el estilo; sin nada seleccionado, hace actual el estilo.
 
 ### ¿Cómo pongo punto en lugar de coma en las cotas?
 

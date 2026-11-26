@@ -207,6 +207,8 @@ export const es: EditorLocale = {
         "dimdiameter": "Diámetro",
         "textStyle": "Estilo de texto",
         "dimensionStyle": "Estilo de cota",
+        "manageTextStyles": "Administrar estilos de texto...",
+        "manageDimensionStyles": "Administrar estilos de cota...",
         "layerProperties": "Propiedades de capa",
         "insert": "Insertar",
         "block": "Crear",

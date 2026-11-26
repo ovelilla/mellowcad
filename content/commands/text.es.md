@@ -3,7 +3,7 @@ title: "Texto en AutoCAD: TEXTO (TEXT)"
 metaTitle: "Texto en AutoCAD: comando TEXTO (TEXT)"
 description: "Cómo funciona TEXTO (TEXT, alias T) de AutoCAD en español, solicitud a solicitud: punto inicial, altura, rotación y Justificar para alinear. Pruébalo gratis."
 figure: "Dos líneas de texto centradas en un rectángulo con la justificación medio centro: cada línea, un objeto propio."
-sourceHash: "44d0e1a420a7"
+sourceHash: "7ff166aadef6"
 ---
 
 TEXTO (TEXT en inglés) escribe texto en una línea. Precisas un punto inicial, una altura y un ángulo de rotación, y después escribes una línea y pulsas Intro: la línea se convierte en un objeto propio y la siguiente empieza una línea más abajo. Una línea vacía termina el comando. Si antes señalas otro punto, las líneas siguientes empiezan allí, y Esc conserva las líneas ya escritas y descarta la que estabas escribiendo. Para un párrafo que se ajusta a una anchura, en un solo objeto, usa <Command id="MTEXT" />.
@@ -18,7 +18,7 @@ Pregunta desde qué punto cuelga el texto: <Keyword id="Left" /> (por defecto), 
 
 ### Style
 
-Pide el nombre del estilo de texto que se hace actual; Intro conserva el que hay. <Keyword id="?" /> muestra los estilos del dibujo, y un nombre que el dibujo no tiene se rechaza y se vuelve a pedir. Los estilos se crean en la paleta que abre <Command id="STYLE" />.
+Pide el nombre del estilo de texto que se hace actual; Intro conserva el que hay. <Keyword id="?" /> muestra los estilos del dibujo, y un nombre que el dibujo no tiene se rechaza y se vuelve a pedir. Los estilos se crean en el cuadro de diálogo Estilo de texto que abre <Command id="STYLE" />.
 
 ## Missing
 

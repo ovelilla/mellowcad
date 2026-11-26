@@ -2,7 +2,7 @@
 title: "AutoCAD SZÖVEG (TEXT) parancs: egysoros szöveg"
 description: "Így működik az AutoCAD SZÖVEG (TEXT) parancsa: kezdőpont, magasság és elforgatás, Igazít és Stílus, soronként egy objektum. Próbálja ki ingyen, online."
 figure: "Két sor egysoros szöveg egy téglalap közepén, közép felező (KF) igazítással: minden sor önálló objektum."
-sourceHash: "44d0e1a420a7"
+sourceHash: "7ff166aadef6"
 ---
 
 A SZÖVEG (TEXT) parancs egysoros szöveget ír. Adjon meg egy kezdőpontot, egy magasságot és egy elforgatási szöget, majd gépeljen be egy sort, és nyomja meg az Enter billentyűt: a sor önálló objektum lesz, a következő pedig alatta kezdődik. Az üres sor befejezi a parancsot. Ha előtte máshová kattint, a következő sorok ott kezdődnek, az Esc pedig megtartja a már bevitt sorokat, és csak az éppen gépeltet dobja el. Ha egy adott szélességre tördelt bekezdést szeretne egyetlen objektumként, használja a <Command id="MTEXT" /> parancsot.
@@ -17,7 +17,7 @@ Azt kérdezi, hogyan álljon a szöveg a pontjához képest: <Keyword id="Left" 
 
 ### Style
 
-Az aktuálissá teendő szövegstílus nevét kéri; az Enter megtartja a meglévőt. A <Keyword id="?" /> kilistázza a rajz stílusait; a rajzban nem szereplő nevet a parancs elutasítja, és újra kérdez. A stílusok a <Command id="STYLE" /> parancs által megnyitott palettán készülnek.
+Az aktuálissá teendő szövegstílus nevét kéri; az Enter megtartja a meglévőt. A <Keyword id="?" /> kilistázza a rajz stílusait; a rajzban nem szereplő nevet a parancs elutasítja, és újra kérdez. A stílusok a <Command id="STYLE" /> parancs által megnyitott Szövegstílus párbeszédpanelen készülnek.
 
 ## Missing
 

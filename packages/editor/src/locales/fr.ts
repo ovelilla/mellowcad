@@ -203,6 +203,8 @@ export const fr: EditorLocale = {
         "dimdiameter": "Diamètre",
         "textStyle": "Style de texte",
         "dimensionStyle": "Style de cote",
+        "manageTextStyles": "Gérer les styles de texte...",
+        "manageDimensionStyles": "Gérer les styles de cote...",
         "layerProperties": "Propriétés des calques",
         "insert": "Insertion",
         "block": "Créer",

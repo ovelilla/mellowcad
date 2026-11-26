@@ -3,7 +3,7 @@ title: "Polecenie TEKST (TEXT) w AutoCADzie: tekst jednowierszowy"
 metaTitle: "Polecenie TEKST (TEXT) w AutoCADzie"
 description: "Jak działa polecenie TEKST (TEXT, skrót DT) w AutoCADzie: punkt początkowy, wysokość i obrót, Wyrównanie i Styl, jeden obiekt na wiersz."
 figure: "Dwa wiersze tekstu jednowierszowego wyśrodkowane w prostokącie, z wyrównaniem środek-środek: każdy wiersz to osobny obiekt."
-sourceHash: "44d0e1a420a7"
+sourceHash: "7ff166aadef6"
 ---
 
 Polecenie TEKST (TEXT) tworzy tekst jednowierszowy. Podajesz punkt początkowy, wysokość i kąt obrotu, a potem wpisujesz wiersz i naciskasz Enter: wiersz staje się osobnym obiektem, a następny zaczyna się wiersz niżej. Pusty wiersz kończy polecenie. Kliknięcie w innym miejscu przed końcem zaczyna kolejne wiersze w tym punkcie, a Esc zachowuje wiersze już wprowadzone i porzuca ten, który jest wpisywany. Akapit zawijany do szerokości, jako jeden obiekt, tworzy <Command id="MTEXT" />.
@@ -18,7 +18,7 @@ Pyta, gdzie tekst jest zaczepiony w swoim punkcie: <Keyword id="Left" /> (domyś
 
 ### Style
 
-Pyta o nazwę stylu tekstu, który ma się stać bieżący; Enter zachowuje obecny. <Keyword id="?" /> wypisuje style rysunku; nazwa, której rysunek nie ma, jest odrzucana i pytanie pada ponownie. Style tworzy się w palecie, którą otwiera <Command id="STYLE" />.
+Pyta o nazwę stylu tekstu, który ma się stać bieżący; Enter zachowuje obecny. <Keyword id="?" /> wypisuje style rysunku; nazwa, której rysunek nie ma, jest odrzucana i pytanie pada ponownie. Style tworzy się w oknie dialogowym Styl tekstu, które otwiera <Command id="STYLE" />.
 
 ## Missing
 

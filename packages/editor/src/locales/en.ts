@@ -207,6 +207,8 @@ export const en: EditorCatalog = {
         "dimdiameter": "Diameter",
         "textStyle": "Text Style",
         "dimensionStyle": "Dimension Style",
+        "manageTextStyles": "Manage Text Styles...",
+        "manageDimensionStyles": "Manage Dimension Styles...",
         "layerProperties": "Layer Properties",
         "insert": "Insert",
         "block": "Create",

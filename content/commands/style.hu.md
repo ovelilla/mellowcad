@@ -3,7 +3,7 @@ title: "Szövegstílus az AutoCAD-ben: STÍLUS (STYLE) parancs"
 metaTitle: "Szövegstílus az AutoCAD-ben: STÍLUS (STYLE)"
 description: "Így kezeli az AutoCAD STÍLUS (STYLE, ST) parancsa a szövegstílusokat: új, átnevezés, törlés, aktuálissá tétel, rögzített magasság. Próbálja ki ingyen."
 figure: "Névtábla: STÍLUS, majd SZÖVEG, amelynek Stílus ? opciója kilistázza a rajz stílusát, az Arial betűtípusú Standard stílust, és vele megírva a tábla felirata."
-sourceHash: "5e9a49c82ada"
+sourceHash: "dc2db204a8ac"
 ---
 
 A STÍLUS (STYLE) parancs a rajz szövegstílusait kezeli: azt, amivel a szöveg íródik. Minden szövegnek, bekezdéses szövegnek és attribútumnak van stílusa, az újak pedig az aktuális stílust kapják, amely új rajzban a Standard. A STÍLUS parancs a Szövegstílus párbeszédpanelt nyitja meg, ahogy az AutoCAD-ben. Az előtte kijelölt halmazt elveti, ahogy a párbeszédpanel is, és aposztróffal egy parancson belül begépelve (`'STÍLUS`) úgy nyílik meg, hogy az a parancs nem fejeződik be, hanem a párbeszédpanel bezárása után folytatódik.
@@ -22,7 +22,7 @@ STYLE. A magyar AutoCAD-ben a rövidítése `ST`, akárcsak az angolban, és a `
 
 ### Hogyan lehet szövegstílust váltani az AutoCAD-ben?
 
-Új szöveghez tegye aktuálissá a stílust az Aktuálissá tétel gombbal a STÍLUS parancs által megnyitott párbeszédpanelen, vagy a <Command id="TEXT" /> parancs <Keyword command="TEXT" id="Style" /> opciójával. Már megírt szövegnél jelölje ki a szöveget, és válassza ki a stílust a Tulajdonságok paletta Stílus sorában.
+Új szöveghez tegye aktuálissá a stílust az Aktuálissá tétel gombbal a STÍLUS parancs által megnyitott párbeszédpanelen, vagy a <Command id="TEXT" /> parancs <Keyword command="TEXT" id="Style" /> opciójával. Már megírt szövegnél jelölje ki a szöveget, és válassza ki a stílust a Tulajdonságok paletta Stílus sorában. A szalag Szövegstílus listája (Feliratozás › Szöveg, valamint a Kezdőlap › Feliratozás panel kibontott része) mindkettőre jó: kijelölt szövegnek a stílusát cseréli, kijelölés nélkül a stílust teszi aktuálissá.
 
 ### Hogyan lehet megváltoztatni egy szövegstílus betűtípusát?
 

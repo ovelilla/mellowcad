@@ -8,12 +8,12 @@
 > §5); el push que publique el ribbon espera la palabra del dueño. La fase 2 (la barra de título)
 > está hecha el 25/11, sus cuatro bloques del §6 del plan (Ayuda ▾, el nombre del dibujo, el menú
 > de la aplicación, Undo ▾ y Redo ▾; la lista Ayuda ▾ no se abrió ni con el ratón, así que sus filas
-> son las del menú Ayuda de acad.cuix). La fase 3 (las paletas y los diálogos de estilos) empezó
-> el 25/11 con su pasada por el escritorio, su bloque 1 del §6 del plan (STYLE y DIMSTYLE como
+> son las del menú Ayuda de acad.cuix). La fase 3 (las paletas y los diálogos de estilos) está
+> hecha el 26/11: su pasada por el escritorio, su bloque 1 del §6 del plan (STYLE y DIMSTYLE como
 > diálogos), el 2a (el armazón de las paletas: cada una aparte, flotante o acoplada), el 2b
 > (anclar y auto-ocultar), el 3a (el Layer Properties Manager por dentro), el 3b (Blocks por
-> dentro) y el 3c (Properties por dentro, 26/11); siguen las listas de estilos del ribbon (bloque 4),
-> que cierran la fase 3.
+> dentro), el 3c (Properties por dentro) y el 4 (las listas de estilos del ribbon); sigue la
+> fase 4 (el área de dibujo y la fila inferior).
 > Acordado el 7/11/2026 por el dueño. Se borra cuando la última fase esté hecha; hasta entonces
 > cada fase cerrada se marca aquí.
 
@@ -129,7 +129,7 @@ cada entrada, capturadas en la fase 0),
 Undo y Redo como botones divididos con su lista, la lista Ayuda ▾ con Send Feedback, y el nombre
 del dibujo en el título.
 
-### Fase 3 — las paletas y los diálogos de estilos
+### Fase 3 — las paletas y los diálogos de estilos (hecha el 26/11/2026)
 
 Properties, Layer Properties Manager y Blocks como paletas propias: flotantes dentro de la
 página, acoplables a los lados, con auto-ocultar, y su sitio y tamaño guardados en el

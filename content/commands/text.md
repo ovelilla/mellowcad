@@ -19,7 +19,7 @@ Asks where the text hangs from its point: <Keyword id="Left" /> (the default), <
 
 ### Style
 
-Asks for the name of the text style to make current, Enter keeping the one there is. <Keyword id="?" /> lists the drawing's styles; a name the drawing does not have is refused and asked again. Styles are made in the palette that <Command id="STYLE" /> opens.
+Asks for the name of the text style to make current, Enter keeping the one there is. <Keyword id="?" /> lists the drawing's styles; a name the drawing does not have is refused and asked again. Styles are made in the Text Style dialog that <Command id="STYLE" /> opens.
 
 ## Missing
 
