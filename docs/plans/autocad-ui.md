@@ -724,7 +724,7 @@ until the drawing reaches the row:
    checked, a pick running VSCURRENT as the ribbon's gallery does (`engine.setVisualStyle`: its
    echo and U's name from this menu **unverified**). `[–]`, Custom Visual Styles ▸, the other
    seven styles and the Visual Styles Manager stay Missing, undrawn. Closes VSCURRENT's row.
-4. **The ViewCube at rest** (D2): at rest the cube, its ring and the UCS menu, translucent; with
+4. **The ViewCube at rest** (D2; done 2026-11-26): at rest the cube, its ring and the UCS menu, translucent; with
    the pointer on it, a menu of it open or the focus in it, opaque, with Home at its top left,
    the roll arrows at its top right, the triangles of a face view and, at its bottom right, the
    menu's arrow, which opens the right-click menu (§2.5's `cube-hover`).

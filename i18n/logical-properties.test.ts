@@ -28,7 +28,9 @@ const ALLOWED: Record<string, Record<string, string>> = {
   "packages/editor/src/view-cube.tsx": {
     'side: "left"': "the cube's triangles, keyed to the sides of the screen",
     'side: "right"': "the cube's triangles, keyed to the sides of the screen",
-    "right-0": "the roll arrows are the cube's geometry (dir=ltr)",
+    "right-0":
+      "the roll arrows and the menu's arrow are the cube's geometry (dir=ltr)",
+    "left-0": "Home at the cube's top left is its geometry (dir=ltr)",
   },
   "packages/editor/src/ui/select.tsx": {
     "slide-in-from-right-2": "the entry of a popup given a physical side",

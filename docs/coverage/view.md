@@ -314,7 +314,7 @@ View"), and stays where it is let go however near a view (d05: 1.7° and 6.6° o
 one ZOOM Previous step; in a face view the roll arrows (a quarter turn about the line of sight,
 counterclockwise left, clockwise right, VIEWTWIST 90 and 270, offered on every face, fitted, d05)
 and four triangles pointing at it (the face on that side, a side face upright, the top or bottom
-keeping the roll); Home above the cube and in its menu restores the drawing's Home view and fits —
+keeping the roll); Home at the cube's top left and in its menu restores the drawing's Home view and fits —
 its orientation only, in the WCS, saved in the drawing, Top/Left/Front (SW Isometric) until set
 (**unverified**); the compass round its foot, North on the WCS's Y: a letter looks level from that
 side, upright, from the plan too (d05: S gives VIEWDIR 0,-1,0 from Top and from SW Isometric), and
@@ -324,7 +324,10 @@ UCS menu under it: its button the current UCS's name (WCS only for `*WORLD*`), t
 UCSs and an unsaved or orthographic current one, `Unnamed` (es `S-nombre`), checked · New UCS
 (ucs/d03-1, d03-5, d03-9, e01-8), run as UCS World / NAmed Restore / UCS, echoed and undone like them
 (2027 writes the prompts alone, without `UCS` or the answers, and U names `UCS GROUP`: no macro here
-echoes so, UCS-D103); 50 % opacity until the cursor is over it; in a
+echoes so, UCS-D103); at rest the cube, its ring and the UCS menu alone, at 50 % opacity; with the pointer
+on it (or the focus in it, or one of its menus open) opaque, with Home at its top left, the roll
+arrows at its top right, the triangles of a face view and its menu's arrow at its bottom right,
+which opens the right-click menu (plan §2.5: desktop a-cube-crop, cube-hover); in a
 right-to-left page its column sits top left with the palettes (no AutoCAD is right to left), the
 cube itself unmirrored
 

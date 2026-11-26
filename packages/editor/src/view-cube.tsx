@@ -21,6 +21,7 @@ import { Button } from "./ui/button"
 import { usePortalContainer } from "./ui/portal-container"
 import { cn } from "./utils"
 import { useEditorText } from "./editor-text"
+import { drawingFocus } from "./drawing-focus"
 import type { PieceProps } from "./piece"
 
 /** The cube's box (`size-36`): its SVG draws in a 0–1 box scaled to it. */
@@ -47,12 +48,31 @@ const TRIANGLES: readonly { side: ViewCubeSide; points: string }[] = [
 const MENU_ITEM =
   "relative flex cursor-default items-center rounded-sm py-1.5 pe-8 ps-2 text-ui outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground"
 
+/**
+ * What the cube shows only with the pointer on it (or the focus in it, or a
+ * menu of it open): Home, the roll arrows, the triangles and the menu's
+ * arrow. At rest AutoCAD draws the cube, its ring and the UCS menu alone
+ * (docs/plans/autocad-ui.md, §2.5: desktop a-cube-crop, cube-hover).
+ */
+const ON_HOVER =
+  "opacity-0 transition-opacity group-hover/cube:opacity-100 group-focus-within/cube:opacity-100 group-has-[[data-popup-open]]/cube:opacity-100 group-data-menu-open/cube:opacity-100"
+
+/**
+ * Hidden, those controls take no pointer, so a click on a grip under the
+ * cube's corners (ZOOM Extents may frame one there) is the drawing's; they
+ * take it as they show, the pointer already on the cube.
+ */
+const ON_HOVER_TARGET =
+  "pointer-events-none! group-hover/cube:pointer-events-auto! group-focus-within/cube:pointer-events-auto! group-has-[[data-popup-open]]/cube:pointer-events-auto! group-data-menu-open/cube:pointer-events-auto!"
+
 const MENU_POPUP =
   "min-w-44 origin-(--transform-origin) overflow-hidden rounded-md border bg-card/90 p-1 text-popover-foreground shadow-md backdrop-blur transition-[transform,opacity] outline-none data-ending-style:scale-95 data-ending-style:opacity-0 data-starting-style:scale-95 data-starting-style:opacity-0"
 
 /**
- * AutoCAD's ViewCube, top right of the drawing: Home above, the compass round
- * its foot and the UCS menu below. The engine projects it
+ * AutoCAD's ViewCube, top right of the drawing: the compass round its foot
+ * and the UCS menu below; Home at its top left, the roll arrows at its top
+ * right and its menu's arrow at its bottom right, shown with the pointer on
+ * it. The engine projects it
  * (`state.viewCube`); this only draws the zones it is given, highlights the
  * one under the cursor and hands back which was clicked or dragged.
  */
@@ -65,16 +85,16 @@ export function ViewCube({
   // Destructured, as the hook asks (React Compiler's ref lint).
   const { surface, press, move, release, cancel } = useViewCubeDrag(engine)
   const [hovered, setHovered] = React.useState<ViewCubePart | null>(null)
-  const [menuAt, setMenuAt] = React.useState<{ x: number; y: number } | null>(
-    null
-  )
+  // Where the cube's menu opens: a right-click's point, or the arrow's box,
+  // which it opens under in either direction.
+  const [menuAt, setMenuAt] = React.useState<DOMRect | null>(null)
   const cube = state.viewCube
 
   const anchor = React.useMemo(
     () =>
       menuAt
         ? {
-            getBoundingClientRect: () => new DOMRect(menuAt.x, menuAt.y, 0, 0),
+            getBoundingClientRect: () => menuAt,
           }
         : null,
     [menuAt]
@@ -90,25 +110,22 @@ export function ViewCube({
   // box can still be picked; ZOOM Extents may frame one there.
   return (
     <div
-      className="flex w-36 flex-col items-center gap-1 opacity-50 transition-opacity hover:opacity-100 has-[[data-popup-open]]:opacity-100 [&_button]:pointer-events-auto"
+      // The cube's menu has no trigger in it to mark open: the root is.
+      data-menu-open={menuAt !== null ? "" : undefined}
+      className="group/cube flex w-36 flex-col items-center gap-1 opacity-50 transition-opacity focus-within:opacity-100 hover:opacity-100 has-[[data-popup-open]]:opacity-100 data-menu-open:opacity-100 [&_button]:pointer-events-auto"
       onContextMenu={(event) => {
         event.preventDefault()
-        setMenuAt({ x: event.clientX, y: event.clientY })
+        setMenuAt(new DOMRect(event.clientX, event.clientY, 0, 0))
       }}
     >
-      <Button
-        size="icon-cube"
-        variant="ghost"
-        aria-label={t("home")}
-        title={t("home")}
-        onClick={() => engine.viewCubeHome()}
-      >
-        <House />
-      </Button>
-
       {/* The cube is geometry: its faces, labels, compass, triangles and roll
-          arrows are laid out on the screen and never mirror. */}
-      <div className="relative size-36" dir="ltr">
+          arrows are laid out on the screen and never mirror. Its box takes
+          the pointer once the pointer is on the cube, so it can cross to
+          Home or the menu's arrow in the corners; at rest it takes none. */}
+      <div
+        className="relative size-36 group-hover/cube:pointer-events-auto"
+        dir="ltr"
+      >
         <svg
           viewBox="0 0 1 1"
           className="size-full touch-none overflow-visible select-none"
@@ -231,21 +248,46 @@ export function ViewCube({
                 points={points}
                 role="button"
                 aria-label={t(`adjacent.${side}` as "adjacent.up")}
-                className="pointer-events-auto cursor-pointer fill-muted-foreground hover:fill-foreground"
+                className={cn(
+                  "cursor-pointer fill-muted-foreground hover:fill-foreground",
+                  ON_HOVER,
+                  ON_HOVER_TARGET
+                )}
                 onPointerDown={(event) => event.stopPropagation()}
-                onClick={() => engine.viewCubeAdjacent(side)}
+                onClick={() => {
+                  engine.viewCubeAdjacent(side)
+                  engine.focusSurface()
+                }}
               />
             ))}
         </svg>
 
+        <Button
+          size="icon-cube"
+          variant="ghost"
+          aria-label={t("home")}
+          title={t("home")}
+          className={cn("absolute top-0 left-0", ON_HOVER, ON_HOVER_TARGET)}
+          onClick={() => {
+            engine.viewCubeHome()
+            engine.focusSurface()
+          }}
+        >
+          <House />
+        </Button>
+
         {cube.faceView && (
-          <div className="absolute top-0 right-0 flex gap-0.5">
+          <div className={cn("absolute top-0 right-0 flex gap-0.5", ON_HOVER)}>
             <Button
               size="icon-cube"
               variant="ghost"
               aria-label={t("rollCounterclockwise")}
               title={t("rollCounterclockwise")}
-              onClick={() => engine.viewCubeRoll("counterclockwise")}
+              className={ON_HOVER_TARGET}
+              onClick={() => {
+                engine.viewCubeRoll("counterclockwise")
+                engine.focusSurface()
+              }}
             >
               <RotateCcw />
             </Button>
@@ -254,12 +296,30 @@ export function ViewCube({
               variant="ghost"
               aria-label={t("rollClockwise")}
               title={t("rollClockwise")}
-              onClick={() => engine.viewCubeRoll("clockwise")}
+              className={ON_HOVER_TARGET}
+              onClick={() => {
+                engine.viewCubeRoll("clockwise")
+                engine.focusSurface()
+              }}
             >
               <RotateCw />
             </Button>
           </div>
         )}
+
+        {/* The menu's arrow opens what a right-click on the cube opens. */}
+        <Button
+          size="icon-cube"
+          variant="ghost"
+          aria-label={t("label")}
+          aria-haspopup="menu"
+          className={cn("absolute right-0 bottom-0", ON_HOVER, ON_HOVER_TARGET)}
+          onClick={(event) => {
+            setMenuAt(event.currentTarget.getBoundingClientRect())
+          }}
+        >
+          <ChevronDown />
+        </Button>
       </div>
 
       <UcsMenu engine={engine} state={state} />
@@ -279,7 +339,10 @@ export function ViewCube({
             sideOffset={2}
             className="z-50"
           >
-            <Menu.Popup className={MENU_POPUP}>
+            <Menu.Popup
+              className={MENU_POPUP}
+              finalFocus={drawingFocus(engine)}
+            >
               <Menu.Item
                 className={MENU_ITEM}
                 onClick={() => engine.viewCubeHome()}
@@ -340,7 +403,7 @@ function UcsMenu({ engine, state }: { engine: CadEngine; state: EditorState }) {
           sideOffset={4}
           className="z-50"
         >
-          <Menu.Popup className={MENU_POPUP}>
+          <Menu.Popup className={MENU_POPUP} finalFocus={drawingFocus(engine)}>
             <Menu.Item
               className={MENU_ITEM}
               onClick={() => engine.restoreUcs(null)}

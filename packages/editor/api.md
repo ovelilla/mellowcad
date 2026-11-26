@@ -272,8 +272,10 @@ export declare function useRibbonLayout(): RibbonLayoutControl;
 
 export { ViewCube }
 /**
- * AutoCAD's ViewCube, top right of the drawing: Home above, the compass round
- * its foot and the UCS menu below. The engine projects it
+ * AutoCAD's ViewCube, top right of the drawing: the compass round its foot
+ * and the UCS menu below; Home at its top left, the roll arrows at its top
+ * right and its menu's arrow at its bottom right, shown with the pointer on
+ * it. The engine projects it
  * (`state.viewCube`); this only draws the zones it is given, highlights the
  * one under the cursor and hands back which was clicked or dragged.
  */
