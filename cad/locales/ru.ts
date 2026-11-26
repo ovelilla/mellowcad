@@ -625,7 +625,6 @@ export const ru: EngineLocale = {
         "attributes": "Атрибуты",
         "misc": "Разное",
         "dataPoints": "Опорные точки",
-        "selection": "Выбор",
         "linesArrows": "Линии и стрелки",
         "fit": "Размещение",
         "primaryUnits": "Основные единицы"

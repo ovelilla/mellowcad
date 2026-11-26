@@ -119,7 +119,7 @@ Autodesk's follow Taiwan: Columns 行數, Rows 列 (ax26res 1189, 1194), MINSERT
 | Shortcut menu | Clipboard; Copy with Base Point; Paste; Copy Selection; Deselect All | 剪貼簿; 以基準點複製; 貼上; 複本選取; 取消全選 | X RBN_00011049, ACAD_1974, ACAD_58, XLS_1005, ACAD_1931 |
 | Shortcut menu | Undo; Redo; Properties; Dimension Style | 退回; 重做; 性質; 標註型式 | X ACAD_639, ACAD_686, ACAD_334, ACAD_2000 |
 | Properties | Properties; General; No selection; Object type; \*VARIES\*; Custom color | 性質; 一般; 未選取; 物件類型; \*各種\*; 自訂顏色 | X ACAD_334; P acopmRes 133, 177; D acopmRes 133:1034; P ax26res 782, gridres 81 |
-| Properties | Color; Layer; Linetype; Lineweight; Text style; Dim style | 顏色; 圖層; 線型; 線粗; 文字型式; 標註型式 | P acopmRes 136–138, 140, 94; ax26res 148 |
+| Properties | Color; Layer; Linetype; Lineweight; Style (Text's); Dim style | 顏色; 圖層; 線型; 線粗; 型式; 標註型式 | P acopmRes 136–138, 140, 94; ax26res 148; ax26res 39 (the language pack's acadsharedlp.adix) |
 | Properties | Current color; linetype; lineweight; layer | 目前的顏色; 目前的線型; 目前的線粗; 目前的圖層 | P acadres 21504, 21505, 21529, 21502 |
 | Properties | Color of the selected objects (and its five siblings) | 選取物件的顏色 … † | † (選取的物件 as in T AcTaskDialogs 181) |
 | Layers | Layers (the toolbar: Layer Properties Manager, below) | 圖層 | X ID_PanelLayers; P LaytransRes 26; N AcLayer (刪除圖層(&D)); D AcDimRes 101:54536 |

@@ -696,7 +696,7 @@ export const ja: EditorLocale = {
       "linetypeLabel": "選択したオブジェクトの線種",
       "lineweight": "線の太さ",
       "lineweightLabel": "選択したオブジェクトの線の太さ",
-      "textStyle": "文字スタイル",
+      "style": "文字スタイル",
       "textStyleLabel": "選択したオブジェクトの文字スタイル",
       "dimStyle": "寸法スタイル",
       "dimStyleLabel": "選択したオブジェクトの寸法スタイル",

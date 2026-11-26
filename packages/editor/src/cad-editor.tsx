@@ -35,6 +35,7 @@ import {
   type PaletteLayout,
 } from "./palette-layout"
 import { PaletteLayoutProvider } from "./palette-layout-context"
+import { LayoutStorageProvider } from "./layout-storage-context"
 import {
   FloatingPalettes,
   PaletteDock,
@@ -89,6 +90,8 @@ export interface LayoutStorage {
   readonly palette?: string
   /** The status bar's Customization. */
   readonly statusBar?: string
+  /** The Properties palette's folded categories, per object type. */
+  readonly properties?: string
   /**
    * The ribbon's minimize state and what its button does, also read by the
    * `<head>` script.
@@ -361,62 +364,66 @@ function Workspace({
               },
             }}
           >
-            <main className="grid h-svh w-full grid-cols-[var(--palette-strip-start,0px)_var(--palette-dock-start,0px)_minmax(0,1fr)_var(--palette-dock-end,0px)_var(--palette-strip-end,0px)] grid-rows-[auto_auto_minmax(0,1fr)_auto_auto] overflow-hidden bg-card [grid-template-areas:'title_title_title_title_title'_'ribbon_ribbon_ribbon_ribbon_ribbon'_'stripStart_dockStart_canvas_dockEnd_stripEnd'_'command_command_command_command_command'_'status_status_status_status_status']">
-              <EditorZones
-                components={components}
-                ready={ready ? { engine, state } : null}
-                mark={mark}
-                languages={languages}
-                help={help !== undefined}
-                feedback={feedback}
-                statusBarKey={layoutStorage.statusBar}
-                sheet={sheet}
-                canvas={
-                  // The editor is the page: it takes every key, which the engine
-                  // leaves to whoever asks. The drawing is geometry: it never
-                  // mirrors, whatever the page.
-                  <CadCanvas
-                    store={store}
-                    scope="document"
-                    locale={engineLocale}
-                    palettes={() => openAtLoad(paletteLayoutAtLoad(paletteKey))}
-                    // AutoCAD opens its help in a browser: here, a tab of its own.
-                    onHelp={
-                      help &&
-                      ((command) => {
-                        window.open(
-                          helpUrl(help, command),
-                          "_blank",
-                          "noopener"
-                        )
-                      })
-                    }
-                    onEngine={(next) => {
-                      setEngine(next)
-                      onEngine?.(next)
-                    }}
-                    dir="ltr"
-                    className="absolute inset-0 h-full w-full touch-none outline-none"
-                    aria-label={t("canvas")}
-                  />
-                }
-              />
+            <LayoutStorageProvider value={layoutStorage}>
+              <main className="grid h-svh w-full grid-cols-[var(--palette-strip-start,0px)_var(--palette-dock-start,0px)_minmax(0,1fr)_var(--palette-dock-end,0px)_var(--palette-strip-end,0px)] grid-rows-[auto_auto_minmax(0,1fr)_auto_auto] overflow-hidden bg-card [grid-template-areas:'title_title_title_title_title'_'ribbon_ribbon_ribbon_ribbon_ribbon'_'stripStart_dockStart_canvas_dockEnd_stripEnd'_'command_command_command_command_command'_'status_status_status_status_status']">
+                <EditorZones
+                  components={components}
+                  ready={ready ? { engine, state } : null}
+                  mark={mark}
+                  languages={languages}
+                  help={help !== undefined}
+                  feedback={feedback}
+                  statusBarKey={layoutStorage.statusBar}
+                  sheet={sheet}
+                  canvas={
+                    // The editor is the page: it takes every key, which the engine
+                    // leaves to whoever asks. The drawing is geometry: it never
+                    // mirrors, whatever the page.
+                    <CadCanvas
+                      store={store}
+                      scope="document"
+                      locale={engineLocale}
+                      palettes={() =>
+                        openAtLoad(paletteLayoutAtLoad(paletteKey))
+                      }
+                      // AutoCAD opens its help in a browser: here, a tab of its own.
+                      onHelp={
+                        help &&
+                        ((command) => {
+                          window.open(
+                            helpUrl(help, command),
+                            "_blank",
+                            "noopener"
+                          )
+                        })
+                      }
+                      onEngine={(next) => {
+                        setEngine(next)
+                        onEngine?.(next)
+                      }}
+                      dir="ltr"
+                      className="absolute inset-0 h-full w-full touch-none outline-none"
+                      aria-label={t("canvas")}
+                    />
+                  }
+                />
 
-              {ready && (
-                <>
-                  <ShortcutMenu engine={engine} state={state} />
-                  <SnapOverrideMenu engine={engine} state={state} />
-                  <SelectionCyclingList engine={engine} state={state} />
-                  <UnitsDialog engine={engine} state={state} />
-                  <PointStyleDialog engine={engine} state={state} />
-                  <TextStyleDialog engine={engine} state={state} />
-                  <DimStyleDialog engine={engine} state={state} />
-                  <SaveAsDialog engine={engine} state={state} />
-                  <LockedObjectsDialog engine={engine} state={state} />
-                  <UnsavedTextDialog engine={engine} state={state} />
-                </>
-              )}
-            </main>
+                {ready && (
+                  <>
+                    <ShortcutMenu engine={engine} state={state} />
+                    <SnapOverrideMenu engine={engine} state={state} />
+                    <SelectionCyclingList engine={engine} state={state} />
+                    <UnitsDialog engine={engine} state={state} />
+                    <PointStyleDialog engine={engine} state={state} />
+                    <TextStyleDialog engine={engine} state={state} />
+                    <DimStyleDialog engine={engine} state={state} />
+                    <SaveAsDialog engine={engine} state={state} />
+                    <LockedObjectsDialog engine={engine} state={state} />
+                    <UnsavedTextDialog engine={engine} state={state} />
+                  </>
+                )}
+              </main>
+            </LayoutStorageProvider>
           </PaletteLayoutProvider>
         </RibbonLayoutProvider>
       </PortalContainerProvider>

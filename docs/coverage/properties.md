@@ -407,7 +407,22 @@ CHAFLAN), and Ctrl+1 shows and hides it as acad.cuix's `^C^C_properties` /
 PROPERTIESCLOSE run, echoed `_properties` (desktop workspace/d04), a group U names `GROUP
 PROPERTIES` / `GROUP PROPERTIESCLOSE` (d04), a preselection kept; `'PROPERTIES` opens it inside a
 running command, which resumes at once (d02-5); closed at first start, as AutoCAD's ("not
-displayed by default"), and open again on the next visit if it was left open; the object type drop-down at its top —
+displayed by default"), and open again on the next visit if it was left open; laid out as
+AutoCAD's (docs/plans/autocad-ui.md §2.8): the type list on top, then the categories in AutoCAD's
+order, each under its header (its title, the arrow at its end), folding by a click or Enter, which
+hand the keys to the drawing, or by Left and Right on the header (mirrored right to left; on a row
+the folding key goes up to its header), each fold kept on this device per object type and
+category, every category open at first, as AutoCAD's profile keeps them per class (Profile.aws's
+`PROP_STATE`, a `ZeroSelect` object for no selection; a mixed set under All is one more here);
+each row its label and its value in two columns, the label's 48.5 % (the profile's `COLUMNWIDTH`
+0.4854), a value at its cell's start, read-only ones greyed, on the editor's 28 px pitch where
+AutoCAD's is 19 (a value is a control; ui.md, Size), a label wrapping where it is longer than its
+column, the grid scrolled sideways under 288 px; the arrows step through the type list, the
+headers and the values, Home and End to the first and last, a letter types a command, Delete does
+nothing there; a text's Style (ax26res 39, es `Estilo`) in Text after its Contents (an attribute
+definition's Value, desktop blocks/d03-4), and Dim style first in Misc (desktop dimensions/d04-1);
+several types under All show General alone, their types in the drop-down, never as rows (d06-2);
+the object type drop-down at its top —
 `All (n)` and one entry per type with its count, the types by count, most first (`All (10)`,
 `Line (4)`, `Block Reference (3)`, `Circle (2)`, `Array (Rectangular) (1)`, desktop d06-2; es
 `Todos (7)`, `Línea (3)`, `Referencia a bloque (2)`, `Círculo (1)`, `Matriz (rectangular) (1)`,
@@ -476,4 +491,10 @@ text content, editing attribute values, MTEXT's rotation in the UCS
 (AutoCAD shows that one row there), a dimension's Z, the Normal rows on the other
 types (**unverified** which ones AutoCAD shows), the drop-down's order for types of one count (the
 order picked here, **unverified**), `Modify Property`'s Spanish name (the English words here,
-**unverified**: no Spanish palette edit was probed), Quick Select, Toggle PICKADD; a 3D polyline's 3D Visualization group (Material) and its Fit/Smooth's Quadratic and Cubic (es `Cuadrática`, `Cúbica`: ax26res.dll's `None;Quadratic;Cubic`), editable there, which a polyline PEDIT's Spline curve fitted would show (None here: the words are not in the catalogs yet); a fitted 2D polyline's palette, which AutoCAD titles `2D Polyline` (es `Polilínea 2D`) and gives a Fit/Smooth row, `Curve fit` after PEDIT's Fit (es `Ajuste de curva`; ax26res.dll's `None;Curve fit;Quadratic;Cubic`), and Area 302.5533 for an open one (desktop pedit/d02-4; inquiry.md), and its vertex rows (the frame's here)
+**unverified**: no Spanish palette edit was probed), the three buttons beside the type list,
+Toggle PICKADD, Select Objects and Quick Select (none is drawn: PICKADD is no variable here,
+and neither SELECT nor QSELECT exists); with nothing selected, the 3D Visualization, Plot style,
+View and Misc categories (desktop ui/2026-11-24, a-props); the folded category's arrow (**unverified**: no
+capture shows one folded) and whether AutoCAD starts some folded (**unverified**: every
+profile holds eight dimension classes with all but General folded, under English names even in
+the other languages, yet a rotated dimension showed them open, desktop dimensions/d04-1); a 3D polyline's 3D Visualization group (Material) and its Fit/Smooth's Quadratic and Cubic (es `Cuadrática`, `Cúbica`: ax26res.dll's `None;Quadratic;Cubic`), editable there, which a polyline PEDIT's Spline curve fitted would show (None here: the words are not in the catalogs yet); a fitted 2D polyline's palette, which AutoCAD titles `2D Polyline` (es `Polilínea 2D`) and gives a Fit/Smooth row, `Curve fit` after PEDIT's Fit (es `Ajuste de curva`; ax26res.dll's `None;Curve fit;Quadratic;Cubic`), and Area 302.5533 for an open one (desktop pedit/d02-4; inquiry.md), and its vertex rows (the frame's here)

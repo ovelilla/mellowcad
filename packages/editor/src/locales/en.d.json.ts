@@ -562,7 +562,7 @@ declare const source: {
     "linetypeLabel": string
     "lineweight": string
     "lineweightLabel": string
-    "textStyle": string
+    "style": string
     "textStyleLabel": string
     "dimStyle": string
     "dimStyleLabel": string

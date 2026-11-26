@@ -39,10 +39,29 @@ function SelectValue({
 function SelectTrigger({
   className,
   children,
+  onKeyDown,
   ...props
 }: SelectPrimitive.Trigger.Props): React.ReactElement {
   return (
     <SelectPrimitive.Trigger
+      onKeyDown={(event) => {
+        onKeyDown?.(event)
+        // WHY: a letter on a closed trigger is a command the engine types
+        // (it hears keys from a button), so Base UI's type-to-select must
+        // not also pick a value: `c` for CIRCLE set Color to Cyan. In a
+        // modal dialog the engine hears nothing and the letter picks, as a
+        // native select's does.
+        if (
+          event.key.length === 1 &&
+          event.key !== " " &&
+          !event.ctrlKey &&
+          !event.metaKey &&
+          !event.altKey &&
+          !event.currentTarget.closest('[role="dialog"][aria-modal="true"]')
+        ) {
+          event.preventBaseUIHandler()
+        }
+      }}
       data-slot="select-trigger"
       className={cn(
         "flex h-7 w-fit items-center justify-between gap-1.5 rounded-md border border-input bg-transparent py-2 ps-2.5 pe-2 text-ui whitespace-nowrap shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:text-faint-foreground aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 data-placeholder:text-muted-foreground *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-1.5 dark:bg-input/30 dark:hover:bg-input/50 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 disabled:[&_svg]:text-faint-foreground [&_svg:not([class*='size-'])]:size-4",

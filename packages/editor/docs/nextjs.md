@@ -191,6 +191,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     palette: PALETTE_KEY,
     ribbon: RIBBON_KEY,
     statusBar: "my-app:status-bar",
+    properties: "my-app:properties",
   }}
 />
 ```

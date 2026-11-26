@@ -725,7 +725,7 @@ export const ar: EditorLocale = {
       "linetypeLabel": "نوع خط العناصر المحددة",
       "lineweight": "وزن الخط",
       "lineweightLabel": "وزن خط العناصر المحددة",
-      "textStyle": "نمط النص",
+      "style": "النمط",
       "textStyleLabel": "نمط نص العناصر المحددة",
       "dimStyle": "نمط البُعد",
       "dimStyleLabel": "نمط بُعد العناصر المحددة",

@@ -3,16 +3,16 @@ title: "Paleta Właściwości w AutoCADzie: polecenie WŁAŚCIWOŚCI (PROPERTIES
 metaTitle: "Paleta Właściwości w AutoCADzie (PROPERTIES)"
 description: "Jak działa paleta Właściwości w AutoCADzie (WŁAŚCIWOŚCI, Ctrl+1): Ogólne i Geometria, *RÓŻNE*, jeden typ obiektów, bieżące ustawienia. Wypróbuj online."
 figure: "Okrąg wybrany, gdy żadne polecenie nie działa, z widocznymi uchwytami, potem WŁAŚCIWOŚCI: paleta otwiera się obok rysunku na wierszach okręgu."
-sourceHash: "70ec1a592dc6"
+sourceHash: "c8d7627a41a5"
 ---
 
 Polecenie WŁAŚCIWOŚCI (PROPERTIES) otwiera paletę Właściwości. Jak w AutoCADzie jest to paleta, a nie okno dialogowe: zostaje otwarta, gdy wybierasz i rysujesz, swobodnie nad rysunkiem albo zadokowana z boku, dopóki nie zamknie jej polecenie <Command id="PROPERTIESCLOSE" />. Ctrl+1 ją pokazuje i ukrywa, a polecenie wpisane z apostrofem, `'WŁAŚCIWOŚCI`, otwiera ją w trakcie innego polecenia. Na początku jest zamknięta, jak w AutoCADzie, i otwiera się znowu przy następnej wizycie, jeśli zostawisz ją otwartą.
 
-Gdy obiekty są wybrane, pokazuje ich właściwości, a każdą zmieniasz, wpisując lub wybierając nową wartość w jej wierszu. Najpierw jest grupa Ogólne, w kolejności AutoCADa: Kolor, Warstwa, Rodzaj linii, Szerokość linii i Grubość, z `*RÓŻNE*` tam, gdzie wybrane obiekty się różnią. Pod nią wiersze własne każdego typu: punkt początkowy i końcowy linii, jej długość i kąt; środek okręgu, promień, średnica, obwód i pole; wiersze łuku, elipsy, wierzchołki i szerokości polilinii, punkty splajnu, wiersze tekstu i odnośnika bloku. Współrzędne są w bieżącym LUW, a wiersze, które tylko informują, takie jak długość linii, są wyszarzone. Lista rozwijana na górze wymienia `Wszystkie` i każdy typ z liczbą obiektów: wybierz jeden, aby widzieć i edytować tylko ten typ. Gdy nic nie jest wybrane, grupa Ogólne pokazuje bieżącą warstwę, kolor, rodzaj linii i szerokość linii, które ustawia się tam dla nowych obiektów. Każda zmiana to jeden krok, który cofa <Command id="U" />.
+Gdy obiekty są wybrane, pokazuje ich właściwości, a każdą zmieniasz, wpisując lub wybierając nową wartość w jej wierszu. Najpierw jest grupa Ogólne, w kolejności AutoCADa: Kolor, Warstwa, Rodzaj linii, Szerokość linii i Grubość, z `*RÓŻNE*` tam, gdzie wybrane obiekty się różnią. Pod nią wiersze własne każdego typu: punkt początkowy i końcowy linii, jej długość i kąt; środek okręgu, promień, średnica, obwód i pole; wiersze łuku, elipsy, wierzchołki i szerokości polilinii, punkty splajnu, wiersze tekstu i odnośnika bloku. Współrzędne są w bieżącym LUW, a wiersze, które tylko informują, takie jak długość linii, są wyszarzone. Lista rozwijana na górze wymienia `Wszystkie` i każdy typ z liczbą obiektów: wybierz jeden, aby widzieć i edytować tylko ten typ. Gdy nic nie jest wybrane, grupa Ogólne pokazuje bieżącą warstwę, kolor, rodzaj linii i szerokość linii, które ustawia się tam dla nowych obiektów. Każda zmiana to jeden krok, który cofa <Command id="U" />. Jej kategorie zwija się nagłówkiem, a każda pozostaje zwinięta lub rozwinięta dla danego typu obiektu na tym urządzeniu, tak jak przechowuje je AutoCAD.
 
 ## Missing
 
-Skala rodzaju linii w grupie Ogólne dla kilku obiektów naraz albo, gdy nic nie jest wybrane, dla nowych obiektów (CELTSCALE); Styl wydruku, Przezroczystość i Hiperłącze oraz Materiał. Wierszy geometrii kilku obiektów jednego typu naraz, treści tekstu ani wartości atrybutów nie można tu edytować. Szybki wybór i przełącznik PICKADD.
+Skala rodzaju linii w grupie Ogólne dla kilku obiektów naraz albo, gdy nic nie jest wybrane, dla nowych obiektów (CELTSCALE); Styl wydruku, Przezroczystość i Hiperłącze oraz Materiał. Wierszy geometrii kilku obiektów jednego typu naraz, treści tekstu ani wartości atrybutów nie można tu edytować. Trzy przyciski obok listy typów (Przełącz wartość zmiennej systemowej PICKADD, Wybierz obiekty, Szybki wybór) oraz, gdy nic nie jest wybrane, wszystkie kategorie poza Ogólne.
 
 ## Questions
 

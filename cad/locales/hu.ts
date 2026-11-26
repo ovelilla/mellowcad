@@ -565,7 +565,6 @@ export const hu: EngineLocale = {
         "attributes": "Attribútumok",
         "misc": "Egyéb",
         "dataPoints": "Adatpontok",
-        "selection": "Kijelölés",
         "linesArrows": "Vonalak és nyilak",
         "fit": "Illesztés",
         "primaryUnits": "Elsődleges mértékegységek"

@@ -535,7 +535,6 @@ export const ja: EngineLocale = {
         "attributes": "属性",
         "misc": "その他",
         "dataPoints": "データ点",
-        "selection": "選択",
         "linesArrows": "線分と矢印",
         "fit": "フィット",
         "primaryUnits": "基本単位"

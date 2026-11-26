@@ -10,6 +10,7 @@ describe("the editor's storage keys", () => {
       palette: "easycad:palette:v1",
       statusBar: "easycad:status-bar:v1",
       ribbon: "mellowcad:ribbon:v1",
+      properties: "mellowcad:properties:v1",
     })
   })
 })

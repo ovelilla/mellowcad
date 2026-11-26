@@ -1807,8 +1807,8 @@ function singleEntityInfo(
         groups: [
           group("text", [
             // Editing the contents belongs to an in-place editor, not a
-            // numeric field, so it stays read-only here. The style is a
-            // picker in the palette's General section, not a row.
+            // numeric field, so it stays read-only here. The style is no
+            // row: the palette puts its picker after the contents (Style).
             row("contents", entity.value),
             row("justify", text.justify(entity.justify)),
             lengthRow("height", "textHeight", entity.height),
@@ -2487,24 +2487,13 @@ function multiEntityInfo(
   entities: ReadonlyArray<Entity>,
   text: EngineText
 ): SelectionInfo {
-  const counts = new Map<EntityType, number>()
-  for (const entity of entities) {
-    counts.set(entity.type, (counts.get(entity.type) ?? 0) + 1)
-  }
-
-  const rows: PropertyRow[] = []
-  for (const [type, count] of counts) {
-    rows.push({
-      id: type,
-      label: text.entity(type, count),
-      value: String(count),
-    })
-  }
-
+  // No category of their own: AutoCAD lists the types in the drop-down, never
+  // as rows, and shows General with what the objects share (desktop
+  // properties/d06-1, d06-2); the shared geometry rows are Missing.
   return {
     title: text.propertyTitle("objects", entities.length),
     count: entities.length,
     general: [],
-    groups: [{ id: "selection", title: text.propertyGroup("selection"), rows }],
+    groups: [],
   }
 }

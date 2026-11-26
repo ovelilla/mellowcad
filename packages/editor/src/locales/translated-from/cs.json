@@ -492,7 +492,7 @@
   "Properties.linetypeLabel": "Linetype of the selected objects",
   "Properties.lineweight": "Lineweight",
   "Properties.lineweightLabel": "Lineweight of the selected objects",
-  "Properties.textStyle": "Text style",
+  "Properties.style": "Style",
   "Properties.textStyleLabel": "Text style of the selected objects",
   "Properties.dimStyle": "Dim style",
   "Properties.dimStyleLabel": "Dim style of the selected objects",

@@ -136,10 +136,11 @@ objects and for unsaved text. The engine waits on their answer, so the editor al
   ```
 
   Without `help`, F1 is the browser's.
-- **`layoutStorage`** names the `localStorage` keys under which this browser remembers the palette
-  panel's width and fold (`palette`), the ribbon's minimize state (`ribbon`) and what the status
-  bar shows (`statusBar`). A part without a key is not remembered. On a page rendered on a server,
-  `palette` and `ribbon` need [their layout scripts](nextjs.md#the-palettes-at-the-first-paint)
-  too, or the panel and the ribbon show as they start until the scripts run, then change.
+- **`layoutStorage`** names the `localStorage` keys under which this browser remembers where each
+  palette shows and its size (`palette`), the ribbon's minimize state (`ribbon`), what the status
+  bar shows (`statusBar`) and which of the Properties palette's categories are folded, for each
+  type of object (`properties`). A part without a key is not remembered. On a page rendered on a
+  server, `palette` and `ribbon` need [their layout scripts](nextjs.md#the-palettes-at-the-first-paint)
+  too, or the palettes and the ribbon show as they start until the scripts run, then change.
 - **`sheet`** gives the drawing's cell an `id` and a `view-transition-name`, for a page that grows
   into the editor with a view transition.

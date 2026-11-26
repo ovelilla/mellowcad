@@ -561,7 +561,7 @@
     "linetypeLabel": "선택한 객체의 선종류",
     "lineweight": "선가중치",
     "lineweightLabel": "선택한 객체의 선가중치",
-    "textStyle": "문자 스타일",
+    "style": "스타일",
     "textStyleLabel": "선택한 객체의 문자 스타일",
     "dimStyle": "치수 스타일",
     "dimStyleLabel": "선택한 객체의 치수 스타일",

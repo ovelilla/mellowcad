@@ -565,7 +565,6 @@ export const ptBR: EngineLocale = {
         "attributes": "Atributos",
         "misc": "Diversos",
         "dataPoints": "Pontos de dados",
-        "selection": "Seleção",
         "linesArrows": "Linhas e setas",
         "fit": "Ajustar",
         "primaryUnits": "Unidades primárias"

@@ -700,7 +700,7 @@ export const zhCN: EditorLocale = {
       "linetypeLabel": "选定对象的线型",
       "lineweight": "线宽",
       "lineweightLabel": "选定对象的线宽",
-      "textStyle": "文字样式",
+      "style": "样式",
       "textStyleLabel": "选定对象的文字样式",
       "dimStyle": "标注样式",
       "dimStyleLabel": "选定对象的标注样式",

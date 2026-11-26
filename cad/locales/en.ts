@@ -567,7 +567,6 @@ export const en: EngineCatalog = {
         "attributes": "Attributes",
         "misc": "Misc",
         "dataPoints": "Data Points",
-        "selection": "Selection",
         "linesArrows": "Lines & Arrows",
         "fit": "Fit",
         "primaryUnits": "Primary Units",

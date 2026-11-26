@@ -699,7 +699,7 @@ export const es: EditorLocale = {
       "linetypeLabel": "Tipo de línea de los objetos seleccionados",
       "lineweight": "Grosor de línea",
       "lineweightLabel": "Grosor de línea de los objetos seleccionados",
-      "textStyle": "Estilo de texto",
+      "style": "Estilo",
       "textStyleLabel": "Estilo de texto de los objetos seleccionados",
       "dimStyle": "Estilo de cota",
       "dimStyleLabel": "Estilo de cota de los objetos seleccionados",

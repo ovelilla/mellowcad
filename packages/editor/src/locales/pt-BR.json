@@ -561,7 +561,7 @@
     "linetypeLabel": "Tipo de linha dos objetos selecionados",
     "lineweight": "Espessura de linha",
     "lineweightLabel": "Espessura de linha dos objetos selecionados",
-    "textStyle": "Estilo de texto",
+    "style": "Estilo",
     "textStyleLabel": "Estilo de texto dos objetos selecionados",
     "dimStyle": "Estilo de cota",
     "dimStyleLabel": "Estilo de cota dos objetos selecionados",

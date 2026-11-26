@@ -700,7 +700,7 @@ export const cs: EditorLocale = {
       "linetypeLabel": "Typ čáry vybraných objektů",
       "lineweight": "Tloušťka čáry",
       "lineweightLabel": "Tloušťka čáry vybraných objektů",
-      "textStyle": "Styl textu",
+      "style": "Styl",
       "textStyleLabel": "Styl textu vybraných objektů",
       "dimStyle": "Kótovací styl",
       "dimStyleLabel": "Kótovací styl vybraných objektů",

@@ -565,7 +565,6 @@ export const de: EngineLocale = {
         "attributes": "Attribute",
         "misc": "Sonstiges",
         "dataPoints": "Angleichungspunkte",
-        "selection": "Auswahl",
         "linesArrows": "Linien & Pfeile",
         "fit": "Anpassen",
         "primaryUnits": "Primäreinheiten"

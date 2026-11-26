@@ -700,7 +700,7 @@ export const en: EditorCatalog = {
       "linetypeLabel": "Linetype of the selected objects",
       "lineweight": "Lineweight",
       "lineweightLabel": "Lineweight of the selected objects",
-      "textStyle": "Text style",
+      "style": "Style",
       "textStyleLabel": "Text style of the selected objects",
       "dimStyle": "Dim style",
       "dimStyleLabel": "Dim style of the selected objects",

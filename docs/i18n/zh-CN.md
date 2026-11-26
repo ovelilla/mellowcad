@@ -109,7 +109,7 @@ MINSERT's Columns row 分栏 (ax26res 266).
 | Shortcut menu | Clipboard; Copy with Base Point; Paste; Copy Selection; Deselect All | 剪贴板; 带基点复制; 粘贴; 复制选择; 全部不选 | X RBN_00011049, ACAD_1974, ACAD_58, XLS_1005, ACAD_1931 |
 | Shortcut menu | Undo; Redo; Properties; Dimension Style | 放弃; 重做; 特性; 标注样式 | X ACAD_639, ACAD_686, ACAD_334, ACAD_2000 |
 | Properties | Properties; General; No selection; Object type; \*VARIES\*; Custom color | 特性; 常规; 无选择; 对象类型; \*多种\*; 自定义颜色 | X ACAD_334; P acopmRes 133, 177; D acopmRes 133:1034; P ax26res 782, gridres 81 |
-| Properties | Color; Layer; Linetype; Lineweight; Text style; Dim style | 颜色; 图层; 线型; 线宽; 文字样式; 标注样式 | P acopmRes 136–138, 140, 94; ax26res 148 |
+| Properties | Color; Layer; Linetype; Lineweight; Style (Text's); Dim style | 颜色; 图层; 线型; 线宽; 样式; 标注样式 | P acopmRes 136–138, 140, 94; ax26res 148; ax26res 39 (the language pack's acadsharedlp.adix) |
 | Properties | Current layer; color; linetype; lineweight | 当前图层; 当前颜色; 当前线型; 当前线宽 | P acadres 21502, 21504, 21505, 21529 |
 | Properties | Color of the selected objects (and its five siblings) | 选定对象的颜色 … | † (选定对象 as in AcTaskDialogs' 一个或多个选定对象已锁定) |
 | Layers | Layers; Current layer (the toolbar: Layer Properties Manager, below) | 图层; 当前图层 | X ID_PanelLayers; P LaytransRes 26; N AcLayer IDS_DEL_TITLE; D AcDimRes 101:54536; P acadres 21502 |

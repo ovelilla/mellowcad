@@ -696,7 +696,7 @@ export const de: EditorLocale = {
       "linetypeLabel": "Linientyp der ausgewählten Objekte",
       "lineweight": "Linienstärke",
       "lineweightLabel": "Linienstärke der ausgewählten Objekte",
-      "textStyle": "Textstil",
+      "style": "Stil",
       "textStyleLabel": "Textstil der ausgewählten Objekte",
       "dimStyle": "Bem-Stil",
       "dimStyleLabel": "Bemaßungsstil der ausgewählten Objekte",

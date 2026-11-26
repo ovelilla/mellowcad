@@ -40,8 +40,8 @@ keyboard listener. If a button needs one, the engine owes it a method (behind a 
 in `cad/adapters/`), or every host has to rewrite it. Failures are reported at the command prompt,
 never in a React banner. The exception is the layout, kept on the device as AutoCAD keeps it in
 the profile: the palettes' places (`palette-layout.ts`) and the ribbon's minimize
-state (`ribbon-layout.ts`), each read by a `<head>` script before any bundle, and the status bar's Customization (`status-bar-layout.ts`, read
-after mount), each under the host's key (`layoutStorage`; none, not kept), the site's frozen
+state (`ribbon-layout.ts`), read by a `<head>` script, and, read after mount, the status bar's
+Customization (`status-bar-layout.ts`) and Properties' folds (`properties-fold.ts`), each under the host's key (`layoutStorage`; none, not kept), the site's frozen
 (`lib/site.test.ts`).
 
 **`/draw?drawing=<name>` opens a drawing the site publishes** (an exercise's: the engine records
@@ -56,8 +56,7 @@ keep the query.
 **`/draw?open=<id>` opens a file another page handed over** (the DXF page's `DxfOpener`): the page
 keeps it in this browser's IndexedDB, one at a time and never on a server (`lib/handed-file.ts`),
 and `DrawEditor` takes it, deletes it, drops the query (a reload or a language link must not ask
-again) and opens it with the engine's `openFile`, as OPEN opens a pick: into the editor's own
-drawing, which it replaces.
+again) and opens it with the engine's `openFile`, as OPEN opens a pick, replacing the drawing.
 
 **`/draw#run=<script>` types a script** (an MCP answer's link; the whys in
 `lib/script-link.ts`, `lib/command-script.ts`): in one place of its own with its script
@@ -106,7 +105,8 @@ a second layout. This file owns the rule for the landing too.
   against the containing block, Chrome against the element. The canvas cell is not an island (the
   ViewCube's `inset-e` must follow the page); what is placed in the canvas's pixels uses physical
   `left`/`top`.
-- **A technical value in a palette is an island with `text-end`**, so `-12.5` never reads `12.5-`.
+- **A technical value in a palette is an island**, so `-12.5` never reads `12.5-`, at its cell's
+  start as AutoCAD's (`rtl:text-end` in it).
   A typeable one is an island with its unit, or the unit lands before the number. A numeric field
   is `DecimalInput` (text, `inputMode="decimal"`, arrows step it), never `type="number"` (ESLint): Chrome
   writes one in the browser's language (`3,75`) whatever the page's `lang`.
@@ -311,19 +311,19 @@ Each palette is a window of its own, never a popover: AutoCAD's are modeless, an
 a popover closes on the first click on the drawing. Which are open is `EngineState.palettes`,
 never `useState`, or typing `LAYER` could not open one; where each shows (floating, docked,
 anchored: docked with `autoHide`; its size) is the device's. Hover state lives in a
-component that unmounts with its node: no leave fires for a node gone. A new palette is a `PaletteId` (`PALETTES`), a command that calls
+component unmounting with its node: a node gone fires no leave. A new palette is a `PaletteId` (`PALETTES`), a command that calls
 `showPalette`, a branch in `PaletteContent`, its `PALETTE_SIZE` and, if View's Palettes panel has
 its toggle, a `RibbonToggle`.
 
 **Drawing content** (a block thumbnail) is the engine's `Scene` (`engine.buildBlockPreview`) painted
-by `CanvasScenePresenter`, never entities walked in a component, which can disagree with the drawing.
+by `CanvasScenePresenter`, never entities walked in a component (they can disagree).
 
 A palette's check is a `button role="checkbox"`: the engine leaves a native one its keys, so a
 letter there typed no command. A field whose Escape hands the keys back keeps its draft in a ref,
 or the blur that causes commits it.
 
-A popover (a status-bar menu) closes on a click on the canvas after the canvas handler ran: a
-guard on "is the command still running?" reads false. What stays up while one draws is a palette.
+A popover (a status-bar menu) closes on a canvas click after its handler ran: a guard "is the
+command still running?" reads false. What stays up while one draws is a palette.
 
 ## Icons
 

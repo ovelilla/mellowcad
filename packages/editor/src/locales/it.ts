@@ -700,7 +700,7 @@ export const it: EditorLocale = {
       "linetypeLabel": "Tipo di linea degli oggetti selezionati",
       "lineweight": "Spessore di linea",
       "lineweightLabel": "Spessore di linea degli oggetti selezionati",
-      "textStyle": "Stile di testo",
+      "style": "Stile",
       "textStyleLabel": "Stile di testo degli oggetti selezionati",
       "dimStyle": "Stile quota",
       "dimStyleLabel": "Stile quota degli oggetti selezionati",

@@ -265,7 +265,6 @@
   "interface.property.group.attributes": "Attributes",
   "interface.property.group.misc": "Misc",
   "interface.property.group.dataPoints": "Data Points",
-  "interface.property.group.selection": "Selection",
   "interface.property.group.linesArrows": "Lines & Arrows",
   "interface.property.group.fit": "Fit",
   "interface.property.group.primaryUnits": "Primary Units",

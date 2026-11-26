@@ -666,7 +666,14 @@ dialogs need nothing of the new frame:
      Rotation, each asked as the block goes in where checked, else its fields' values, kept by
      the engine for the program (`state.blockInsert`), so a click asks the point alone, as the
      profile starts them. Auto-Placement, Repeat Placement and Explode are Missing, undrawn.
-   - **3c**: Properties' categories that fold (P6).
+   - **3c** (done 2026-11-26): Properties (P6): the categories in AutoCAD's order, each folding by
+     its header, the folds kept on the device per object type and category, as the profile keeps
+     them per class (Profile.aws's `PROP_STATE`; no registry key holds them); rows as label and
+     value at the profile's `COLUMNWIDTH` 0.4854, on the editor's 28 px pitch (ui.md, Size); the
+     arrows through the type list, headers and values, Left and Right folding a header; Style in
+     Text and Dim style in Misc, where AutoCAD files them. Toggle PICKADD, Select Objects and Quick
+     Select are Missing, undrawn: none of the three exists here. A drop-down with no value
+     (`*VARIES*`) opened puts the keys in its list, as the 3a asked.
 4. **The ribbon's style combos**: Text Style and Dimension Style in Home › Annotation's slide-out
    and on Annotate (P7).
 

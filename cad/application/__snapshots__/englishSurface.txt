@@ -3742,7 +3742,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   properties: Rotated Dimension (1) {Linetype scale=1.00~} [Misc: Annotative=No] [Lines & Arrows: Arrow size=2.5, Ext line ext=1.25, Ext line offset=0.625] [Text: Text height=2.5, Text offset=0.625, Text position X=50.00~, Text position Y=26.88~, Text rotation=0°~, Measurement=100, Text override=~] [Fit: Dim scale overall=1] [Primary Units: Decimal separator=,, Suppress trailing zeros=Yes, Precision=0.00]
   prompt| Select dimensions to space:1 found
 > pick
-  properties: 2 objects (2) [Selection: Dimensions=2]
+  properties: 2 objects (2) 
   prompt| Select dimensions to space:1 found, 2 total
 > enter
   prompt: DIMSPACE Enter value or [Auto] <Auto>:
@@ -6026,7 +6026,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   tip: Combined arc segments form a circle.  Convert to circle?
   dyn: 
   options: [Y] Yes, [N] No
-  properties: 2 objects (2) [Selection: Arcs=2]
+  properties: 2 objects (2) 
   command| J JOIN 2 found
 > enter
   prompt: Command:
@@ -6585,7 +6585,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   options: -
   prompt| Select polyline or [Multiple]: M
 > ALL
-  properties: 3 objects (3) [Selection: Polylines=2, Line=1]
+  properties: 3 objects (3) 
   prompt| Select objects: ALL
   info| 3 found
 > enter
@@ -10515,11 +10515,11 @@ Specify next point or
 > select A2
   properties: Arc (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Start X=5.00, Start Y=0.00, Start Z=0.00, Center X=0.00~, Center Y=0.00~, Center Z=0.00~, End X=2.70, End Y=4.21, End Z=0.00, Radius=5.00 mm~, Start angle=0°~, End angle=57°~, Total angle=57°, Arc length=5.00 mm, Area=1.98 mm², Normal X=0.00, Normal Y=0.00, Normal Z=1.00]
 > select everything
-  properties: 32 objects (32) [Selection: Lines=2, Circles=2, Arcs=2, Ellipses=2, Polylines=2, Texts=13, Dimensions=5, Hatches=2, Block References=2]
+  properties: 32 objects (32) 
 > select one of each
-  properties: 9 objects (9) [Selection: Line=1, Circle=1, Arc=1, Ellipse=1, Polyline=1, Text=1, Dimension=1, Hatch=1, Block Reference=1]
+  properties: 9 objects (9) 
 > select two of each
-  properties: 18 objects (18) [Selection: Lines=2, Circles=2, Arcs=2, Ellipses=2, Polylines=2, Texts=2, Dimensions=2, Hatches=2, Block References=2]
+  properties: 18 objects (18) 
 
 ## selection cycling
 > start

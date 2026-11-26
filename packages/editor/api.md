@@ -435,6 +435,8 @@ export interface LayoutStorage {
     readonly palette?: string;
     /** The status bar's Customization. */
     readonly statusBar?: string;
+    /** The Properties palette's folded categories, per object type. */
+    readonly properties?: string;
     /**
      * The ribbon's minimize state and what its button does, also read by the
      * `<head>` script.

@@ -318,7 +318,6 @@ declare const source: {
         "attributes": string
         "misc": string
         "dataPoints": string
-        "selection": string
         "linesArrows": string
         "fit": string
         "primaryUnits": string

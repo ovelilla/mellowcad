@@ -561,7 +561,7 @@
     "linetypeLabel": "選取物件的線型",
     "lineweight": "線粗",
     "lineweightLabel": "選取物件的線粗",
-    "textStyle": "文字型式",
+    "style": "型式",
     "textStyleLabel": "選取物件的文字型式",
     "dimStyle": "標註型式",
     "dimStyleLabel": "選取物件的標註型式",

@@ -535,7 +535,6 @@ export const zhTW: EngineLocale = {
         "attributes": "屬性",
         "misc": "雜項",
         "dataPoints": "資料點",
-        "selection": "選取",
         "linesArrows": "線與箭頭",
         "fit": "填入",
         "primaryUnits": "主要單位"

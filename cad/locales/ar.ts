@@ -598,7 +598,6 @@ export const ar: EngineLocale = {
         "attributes": "السمات",
         "misc": "متفرقات",
         "dataPoints": "نقاط البيانات",
-        "selection": "التحديد",
         "linesArrows": "الخطوط والأسهم",
         "fit": "الملاءمة",
         "primaryUnits": "الوحدات الأساسية"

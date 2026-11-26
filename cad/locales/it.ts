@@ -565,7 +565,6 @@ export const it: EngineLocale = {
         "attributes": "Attributi",
         "misc": "Varie",
         "dataPoints": "Punti dei dati",
-        "selection": "Selezione",
         "linesArrows": "Linee e frecce",
         "fit": "Adatta",
         "primaryUnits": "Unità primarie"

@@ -495,6 +495,10 @@ el dueño dio a las sesiones el 6/11).
    comandos y la portada de la documentación en checo, guías de atajos, de coordenadas, de 2D a
    3D y de la planta, `edit-dxf` en polaco y chino) hasta la cuota, en la duodécima (`/hu`):
    1.781 en la cola, rehecha del sitemap.
+   **26/11, 07:44 UTC (sesión del 3c, Properties):** la tanda del día, 11 pedidas (`/hu` y sus
+   comandos, la planta y `open-dxf`; de 2D a 3D en polaco y chino; las coordenadas en ruso,
+   alemán, japonés y coreano; los ejercicios en checo) hasta la cuota, en la duodécima
+   (`/cs/docs/getting-started`): 1.770 en la cola, rehecha del sitemap.
 3. **Bing Webmaster Tools**: la clave responde ya en producción
    (`https://mellowcad.com/1eb5d0fec5dc99d5695b010f04667a07.txt`, 5/11); enviar el sitemap a IndexNow:
    `npm run indexnow` lista lo que enviaría y `npm run indexnow -- --send` lo envía (se niega si la

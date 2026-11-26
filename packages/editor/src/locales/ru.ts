@@ -698,7 +698,7 @@ export const ru: EditorLocale = {
       "linetypeLabel": "Тип линий выбранных объектов",
       "lineweight": "Вес линий",
       "lineweightLabel": "Вес линий выбранных объектов",
-      "textStyle": "Стиль текста",
+      "style": "Стиль",
       "textStyleLabel": "Стиль текста выбранных объектов",
       "dimStyle": "Размерный стиль",
       "dimStyleLabel": "Размерный стиль выбранных объектов",

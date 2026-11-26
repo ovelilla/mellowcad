@@ -625,7 +625,6 @@ export const cs: EngineLocale = {
         "attributes": "Atributy",
         "misc": "Různé",
         "dataPoints": "Datové body",
-        "selection": "Výběr",
         "linesArrows": "Čáry a šipky",
         "fit": "Přizpůsobit",
         "primaryUnits": "Primární jednotky"

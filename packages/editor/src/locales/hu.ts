@@ -700,7 +700,7 @@ export const hu: EditorLocale = {
       "linetypeLabel": "A kijelölt objektumok vonaltípusa",
       "lineweight": "Vonalvastagság",
       "lineweightLabel": "A kijelölt objektumok vonalvastagsága",
-      "textStyle": "Szövegstílus",
+      "style": "Stílus",
       "textStyleLabel": "A kijelölt objektumok szövegstílusa",
       "dimStyle": "Méretstílus",
       "dimStyleLabel": "A kijelölt objektumok méretstílusa",

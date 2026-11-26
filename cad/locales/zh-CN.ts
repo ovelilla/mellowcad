@@ -535,7 +535,6 @@ export const zhCN: EngineLocale = {
         "attributes": "属性",
         "misc": "其他",
         "dataPoints": "数据点",
-        "selection": "选择",
         "linesArrows": "直线和箭头",
         "fit": "调整",
         "primaryUnits": "主单位"

@@ -11,8 +11,9 @@
 > son las del menú Ayuda de acad.cuix). La fase 3 (las paletas y los diálogos de estilos) empezó
 > el 25/11 con su pasada por el escritorio, su bloque 1 del §6 del plan (STYLE y DIMSTYLE como
 > diálogos), el 2a (el armazón de las paletas: cada una aparte, flotante o acoplada), el 2b
-> (anclar y auto-ocultar), el 3a (el Layer Properties Manager por dentro) y el 3b (Blocks por
-> dentro); siguen Properties (3c) por dentro y las listas de estilos del ribbon.
+> (anclar y auto-ocultar), el 3a (el Layer Properties Manager por dentro), el 3b (Blocks por
+> dentro) y el 3c (Properties por dentro, 26/11); siguen las listas de estilos del ribbon (bloque 4),
+> que cierran la fase 3.
 > Acordado el 7/11/2026 por el dueño. Se borra cuando la última fase esté hecha; hasta entonces
 > cada fase cerrada se marca aquí.
 

@@ -699,7 +699,7 @@ export const pl: EditorLocale = {
       "linetypeLabel": "Rodzaj linii wybranych obiektów",
       "lineweight": "Szerokość linii",
       "lineweightLabel": "Szerokość linii wybranych obiektów",
-      "textStyle": "Styl tekstu",
+      "style": "Styl",
       "textStyleLabel": "Styl tekstu wybranych obiektów",
       "dimStyle": "Styl wymiarowania",
       "dimStyleLabel": "Styl wymiarowania wybranych obiektów",

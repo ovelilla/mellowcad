@@ -99,7 +99,7 @@ unverified there.
 | Shortcut menu | Clipboard; Copy with Base Point; Paste; Copy Selection; Deselect All | 클립보드; 기준점을 사용하여 복사; 붙여넣기; 선택 복사; 모두 선택해제 | X RBN_00011049, ACAD_1974, ACAD_58, XLS_1005, ACAD_1931 |
 | Shortcut menu | Undo; Redo; Properties; Dimension Style | 명령 취소; 명령 복구; 특성; 치수 스타일 | X ACAD_639, ACAD_686, ACAD_334, ACAD_2000 |
 | Properties | Properties; General; No selection; Object type; \*VARIES\*; Custom color | 특성; 일반; 선택 요소가 없습니다; 객체 유형; \*다양함\*; 사용자 색상 | P AcVMToolsRes 47008, acopmRes 133, 177; D acopmRes 133:1034; P ax26res 782, gridres 81 |
-| Properties | Color; Layer; Linetype; Lineweight; Text style; Dim style | 색상; 도면층; 선종류; 선가중치; 문자 스타일; 치수 스타일 | P acopmRes 136–138, 140, 94; ax26res 148 |
+| Properties | Color; Layer; Linetype; Lineweight; Style (Text's); Dim style | 색상; 도면층; 선종류; 선가중치; 스타일; 치수 스타일 | P acopmRes 136–138, 140, 94; ax26res 148; ax26res 39 (the language pack's acadsharedlp.adix) |
 | Properties | Current layer; color; linetype; lineweight | 현재 도면층; 현재 색상; 현재 선종류; 현재 선가중치 | P acadres 21502, 21504, 21505, 21529 |
 | Properties | Color of the selected objects (and its five siblings) | 선택한 객체의 색상 … | † |
 | Layers | Layers; Current layer (the toolbar: Layer Properties Manager, below) | 도면층; 현재 도면층 | X ID_PanelLayers; P LaytransRes 26; N AcLayer IDS_DEL_TITLE; D AcDimRes 101:54536; P acadres 21502 |
