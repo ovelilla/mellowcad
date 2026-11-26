@@ -206,9 +206,10 @@ export interface CadEditorProps {
 /**
  * The editor's docked workspace: a grid of named areas round the canvas, which
  * takes what is left. The engine resizes its drawing with the canvas, so ZOOM
- * Extents frames what is visible; nothing but the viewport controls, the
- * ViewCube with the navigation bar, the dynamic input and the menus at the
- * cursor sits on the drawing.
+ * Extents frames the drawing area; nothing but what AutoCAD puts there sits
+ * on the drawing: the viewport controls, the ViewCube with the navigation
+ * bar, the command line, the dynamic input, the floating palettes and the
+ * menus at the cursor.
  */
 export function CadEditor({
   editorLocale,
@@ -324,9 +325,9 @@ function Workspace({
   //
   // The frame is AutoCAD's, top to bottom (docs/plans/autocad-ui.md, §2.1):
   // the title bar, 32; the ribbon, 124 (its tab row and its panels); the
-  // drawing with the palettes; the command line, 36, until it floats over
-  // the drawing; the bottom row, 33. The title bar, the ribbon and the
-  // bottom row take AutoCAD's sizes; the rest, the editor's system of 28 px controls
+  // drawing with the palettes, the command line floating over its foot; the
+  // bottom row, 33. The title bar, the ribbon and the bottom row take
+  // AutoCAD's sizes; the rest, the editor's system of 28 px controls
   // (.claude/rules/ui.md, "Size"). Each zone sizes its content (`box-content`)
   // and its border lies outside it, or the border eats a pixel and every
   // control lands on a half pixel, which blurs its icon.
@@ -365,7 +366,7 @@ function Workspace({
             }}
           >
             <LayoutStorageProvider value={layoutStorage}>
-              <main className="grid h-svh w-full grid-cols-[var(--palette-strip-start,0px)_var(--palette-dock-start,0px)_minmax(0,1fr)_var(--palette-dock-end,0px)_var(--palette-strip-end,0px)] grid-rows-[auto_auto_minmax(0,1fr)_auto_auto] overflow-hidden bg-card [grid-template-areas:'title_title_title_title_title'_'ribbon_ribbon_ribbon_ribbon_ribbon'_'stripStart_dockStart_canvas_dockEnd_stripEnd'_'command_command_command_command_command'_'status_status_status_status_status']">
+              <main className="grid h-svh w-full grid-cols-[var(--palette-strip-start,0px)_var(--palette-dock-start,0px)_minmax(0,1fr)_var(--palette-dock-end,0px)_var(--palette-strip-end,0px)] grid-rows-[auto_auto_minmax(0,1fr)_auto] overflow-hidden bg-card [grid-template-areas:'title_title_title_title_title'_'ribbon_ribbon_ribbon_ribbon_ribbon'_'stripStart_dockStart_canvas_dockEnd_stripEnd'_'status_status_status_status_status']">
                 <EditorZones
                   components={components}
                   ready={ready ? { engine, state } : null}
@@ -479,7 +480,6 @@ export function EditorZones({
   // Clean Screen hides the palettes (one opened meanwhile shows) and closes
   // the ribbon; it is not on at the first paint, as AutoCAD does not save it.
   const ribbon = ready?.state.ribbon
-  const commandLine = ready?.state.commandLine
 
   // A column of docked palettes at the drawing's side: its width is CSS,
   // read off the root (palette-layout.ts), the head script's before the
@@ -498,8 +498,8 @@ export function EditorZones({
 
   // The strip of the palettes anchored at that side, outside its column. WHY
   // not clipped, and no stacking context of its own: the palette a tab
-  // slides out lies over the drawing and the floating palettes, while the
-  // strip stays under the command line's lists.
+  // slides out lies over the drawing, the floating palettes and the command
+  // line.
   const strip = (side: "start" | "end") =>
     Content && (
       <div
@@ -587,26 +587,23 @@ export function EditorZones({
             )}
 
             {Content && <FloatingPalettes />}
+
+            {/* The command window floats over the drawing's foot, as wide
+            as the drawing (§2.6): the canvas keeps its whole box, as
+            AutoCAD's drawing area runs under it (§2.1). Under the floating
+            palettes (z-20), which the drawing area holds whole, their
+            edges and title bars within reach. */}
+            {Command && (
+              <div className="absolute inset-x-0 bottom-0 z-15">
+                <Command {...ready} />
+              </div>
+            )}
           </>
         )}
       </div>
 
       {dock("end")}
       {strip("end")}
-
-      {/* One prompt line. Above the canvas in the stacking order: its
-      history and suggestions open upwards over the drawing. */}
-      {Command && (
-        <div
-          className={cn(
-            "relative z-10 [grid-area:command]",
-            (!commandLine || commandLine.visible || commandLine.buffer) &&
-              "box-content h-9 border-t"
-          )}
-        >
-          {ready && <Command {...ready} />}
-        </div>
-      )}
 
       {/* AutoCAD's bottom row, 33 (§2.1): its layout tabs at the start, not
       drawn (no layouts here), and the status bar laid from its end. */}

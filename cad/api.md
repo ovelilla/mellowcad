@@ -262,6 +262,16 @@ export declare class CadEngine {
     restoreUcs(name: string | null): boolean;
     /** A key in the host's command-line field: whether the engine took it (prevent the browser's). */
     commandLineKey(key: string): boolean;
+    /**
+     * The command window's close button, as Ctrl+9 hides it: the running
+     * command cancelled and `_commandlinehide` written.
+     */
+    closeCommandLine(): void;
+    /**
+     * Runs a command of the command window's Recent Commands
+     * (`state.commandLine.recentCommands`), cancelling the running one first.
+     */
+    runRecentCommand(name: string): boolean;
     toggleCommandLine(): void;
     toggleCommandHistory(): void;
     setCleanScreen(on: boolean): void;
@@ -879,6 +889,12 @@ export interface CommandLineUi {
     readonly takesSpaces: boolean;
     /** Scrollback: commands echoed, results and errors. */
     readonly lines: ReadonlyArray<CommandLineEntry>;
+    /**
+     * The command window's Recent Commands: the commands run this session,
+     * newest first, each once, by their names in the command language
+     * (`CIRCLE`, `LINEA`); {@link CadEngine.runRecentCommand} runs one.
+     */
+    readonly recentCommands: ReadonlyArray<string>;
     /** Autocomplete matches for the current buffer; empty when nothing typed. */
     readonly suggestions: ReadonlyArray<CommandSuggestion>;
     /**

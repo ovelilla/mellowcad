@@ -278,7 +278,7 @@ const placed = (
  * The floating palettes, over the drawing in the canvas cell: AutoCAD's
  * palettes float over the drawing area wherever they were left; here inside
  * it, as nothing leaves the page (plan §4, P3), so none covers the ribbon or
- * the command line.
+ * the bottom row; the command line floats under them.
  */
 export function FloatingPalettes(): ReactElement | null {
   const host = useContext(PaletteHostContext)

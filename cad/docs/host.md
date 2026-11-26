@@ -55,6 +55,8 @@ Everything the command line shows is `state.commandLine`:
 - `lines`: the history, each line with its `kind` (`command`, `prompt`, `info` or `error`), and
   `recent`, the last few lines AutoCAD shows above the prompt;
 - `suggestions`: the commands that match what is typed, for an autocomplete list;
+- `recentCommands`: the commands run this session, newest first, for AutoCAD's Recent Commands;
+  `runRecentCommand(name)` runs one, cancelling the running command;
 - `lang`: the language of the prompts, for the `lang` attribute of what shows them.
 
 A field to type commands in needs two calls: `setCommandLineText` for what is typed, and
@@ -197,7 +199,8 @@ opens what it opens in AutoCAD:
 - `state.unitsDialog`, `state.lockedObjectsDialog` and `state.unsavedTextDialog` are dialogs to
   show; `setUnitsDialog(false)`, `closeLockedObjectsDialog()` and `answerUnsavedText(answer)` close
   them.
-- `state.commandLine.visible` and `state.cleanScreen` say what Ctrl+9 and Ctrl+0 have hidden.
+- `state.commandLine.visible` and `state.cleanScreen` say what Ctrl+9 and Ctrl+0 have hidden;
+  `closeCommandLine()` is the command line's close button, which hides it as Ctrl+9 does.
 - `state.ribbon` says whether the ribbon shows (RIBBON, RIBBONCLOSE, Clean Screen), the tab in
   front and the member each drop-down shows, by ids the host chooses; `setRibbonTab` and
   `setRibbonMember` keep them for the session.

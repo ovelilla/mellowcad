@@ -321,8 +321,10 @@ export const en: EditorCatalog = {
     },
     "CommandLine": {
       "label": "Command line",
-      "placeholder": "Type a command (LINE, TR, CO…)",
-      "history": "Command history"
+      "typeCommand": "Type a command",
+      "history": "Command history",
+      "close": "Close",
+      "recentCommands": "Recent Commands"
     },
     "DynamicInput": {
       "locked": "locked"

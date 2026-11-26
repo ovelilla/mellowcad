@@ -3213,6 +3213,29 @@ export class CadRuntime extends Observable {
     )
   }
 
+  /**
+   * The command window's close button: Ctrl+9's hide, the running command
+   * cancelled and `_commandlinehide` written. WHY Ctrl+9's macro: the
+   * button's own is unread, and AutoCAD asks first (`Do you want to close
+   * the Command Line window?`, desktop workspace/d04-1), which is Missing.
+   * Hidden, the line shows only while something is typed: the button drops
+   * that text, and the line goes with it.
+   */
+  closeCommandLine(): void {
+    if (this.commandLineVisible) this.runCommandLineMacro()
+    else this.setCommandLineText("")
+  }
+
+  /**
+   * A pick in the command window's Recent Commands, which "reinitiates" the
+   * command (the help's "To Work With Entering Commands"): the running one
+   * cancelled, then `name` run as typed.
+   */
+  runRecentCommand(name: string): boolean {
+    if (this.activeTool.id !== "select") this.cancelCommand()
+    return this.runCommand(name)
+  }
+
   /** Shows or hides the command prompt (AutoCAD's Ctrl+9). */
   toggleCommandLine(): void {
     this.commandLineVisible = !this.commandLineVisible
@@ -8789,6 +8812,7 @@ export class CadRuntime extends Observable {
         buffer: this.commandLine.getBuffer(),
         takesSpaces: this.takesSpaces(),
         lines: this.commandLine.getLines(),
+        recentCommands: this.commandLine.getRecentCommands(),
         suggestions: matchCommands(
           this.suggestibleCommands(),
           this.commandLine.getBuffer()

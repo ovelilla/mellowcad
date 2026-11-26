@@ -321,8 +321,10 @@ export const cs: EditorLocale = {
     },
     "CommandLine": {
       "label": "Příkazový řádek",
-      "placeholder": "Zadejte příkaz (ÚSEČKA, OR, KO…)",
-      "history": "Historie příkazů"
+      "typeCommand": "Zadejte příkaz",
+      "history": "Historie příkazů",
+      "close": "Zavřít",
+      "recentCommands": "Historie příkazů"
     },
     "DynamicInput": {
       "locked": "uzamknuto"

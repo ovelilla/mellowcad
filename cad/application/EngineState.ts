@@ -458,6 +458,12 @@ export interface CommandLineUi {
   readonly takesSpaces: boolean
   /** Scrollback: commands echoed, results and errors. */
   readonly lines: ReadonlyArray<CommandLineEntry>
+  /**
+   * The command window's Recent Commands: the commands run this session,
+   * newest first, each once, by their names in the command language
+   * (`CIRCLE`, `LINEA`); {@link CadEngine.runRecentCommand} runs one.
+   */
+  readonly recentCommands: ReadonlyArray<string>
   /** Autocomplete matches for the current buffer; empty when nothing typed. */
   readonly suggestions: ReadonlyArray<CommandSuggestion>
   /**

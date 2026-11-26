@@ -317,8 +317,10 @@ export const ja: EditorLocale = {
     },
     "CommandLine": {
       "label": "コマンド ライン",
-      "placeholder": "ここにコマンドを入力(LINE、TR、CO…)",
-      "history": "コマンド ヒストリ"
+      "typeCommand": "ここにコマンドを入力",
+      "history": "コマンド ヒストリ",
+      "close": "閉じる",
+      "recentCommands": "最近使用したコマンド"
     },
     "DynamicInput": {
       "locked": "ロック"

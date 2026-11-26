@@ -321,8 +321,10 @@ export const ptBR: EditorLocale = {
     },
     "CommandLine": {
       "label": "Linha de comando",
-      "placeholder": "Digite um comando (LINHA, AP, CO…)",
-      "history": "Histórico de comandos"
+      "typeCommand": "Digite um comando",
+      "history": "Histórico de comandos",
+      "close": "Fechar",
+      "recentCommands": "Comandos recentes"
     },
     "DynamicInput": {
       "locked": "bloqueado"

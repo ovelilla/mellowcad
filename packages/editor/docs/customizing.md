@@ -1,9 +1,10 @@
 # Customizing the editor
 
 The editor is nine pieces round the drawing, in AutoCAD's frame: the title bar across the top,
-then the ribbon's band, the drawing with its palettes, the command line and the status bar. Each
-piece is a slot of the `components` prop: give it a component of your own and it renders in the
-piece's place, or give it `null` and the piece is gone, with the room it took. The ribbon's band
+then the ribbon's band, the drawing with its palettes and the command line floating over its foot,
+and the status bar. Each piece is a slot of the `components` prop: give it a component of your own
+and it renders in the piece's place, or give it `null` and the piece is gone, with the room it
+took. The ribbon's band
 keeps its height while the ribbon is open (`RIBBONCLOSE` closes it, `RIBBON` brings it back): the
 full ribbon's, or the one its minimize state takes, which a `Ribbon` of your own reads and sets
 with `useRibbonLayout()`.
@@ -15,7 +16,7 @@ with `useRibbonLayout()`.
 | `TitleBar`         | Across the top: the application menu, Quick Access and the save state       |
 | `Ribbon`           | Under it: the ribbon, Home, Insert, Annotate, 3D Tools and View             |
 | `PaletteContent`   | What Properties, the Layer Properties Manager and Blocks each hold          |
-| `CommandLine`      | Under the drawing: the command line and its history                         |
+| `CommandLine`      | On the drawing, along its foot: the command line and its history            |
 | `StatusBar`        | Across the bottom: the coordinates, the drafting modes and Customization    |
 | `ViewportControls` | On the drawing, top start corner: `[Top]`, the preset views                 |
 | `ViewCube`         | On the drawing, top end corner                                              |
@@ -62,7 +63,8 @@ export function MyTitleBar({ engine, state }: TitleBarProps) {
   [Building a host](../../../cad/docs/host.md) goes through the state and the calls piece by piece.
 - **It renders inside the editor's root**, in the piece's zone: the editor's colours, its fonts and
   its language reach it. The zone's size and border stay the editor's, so the drawing keeps its
-  place whatever the piece renders.
+  place whatever the piece renders. The command line has no zone: it floats over the drawing's
+  foot, as wide as the drawing, and a `CommandLine` of yours draws its own height there.
 - **Its classes are yours to compile.** The editor's stylesheet holds only the classes the editor
   uses. It is Tailwind 4's output, and Tailwind's classes are global: your `.flex` and the editor's
   are the same rule under Tailwind's default theme, and a theme of yours that changes the spacing

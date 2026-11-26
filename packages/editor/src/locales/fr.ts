@@ -317,8 +317,10 @@ export const fr: EditorLocale = {
     },
     "CommandLine": {
       "label": "Ligne de commande",
-      "placeholder": "Tapez une commande (LIGNE, AJ, CP…)",
-      "history": "Historique des commandes"
+      "typeCommand": "Entrez une commande",
+      "history": "Historique des commandes",
+      "close": "Fermer",
+      "recentCommands": "Commandes récentes"
     },
     "DynamicInput": {
       "locked": "verrouillé"

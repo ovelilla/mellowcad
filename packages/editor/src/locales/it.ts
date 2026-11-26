@@ -321,8 +321,10 @@ export const it: EditorLocale = {
     },
     "CommandLine": {
       "label": "Riga di comando",
-      "placeholder": "Digitare un comando (LINEA, TA, CP…)",
-      "history": "Cronologia dei comandi"
+      "typeCommand": "Digitare un comando",
+      "history": "Cronologia dei comandi",
+      "close": "Chiudi",
+      "recentCommands": "Comandi recenti"
     },
     "DynamicInput": {
       "locked": "bloccato"

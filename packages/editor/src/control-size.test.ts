@@ -10,12 +10,12 @@ const DIRS = ["packages/editor/src"]
 /**
  * A height or square size off the system (.claude/rules/ui.md, "Size"): every
  * control is 28 px (`h-7`, `size-7`), its icon 16 (`size-4`). A 20, 22, 24,
- * 32, 36 or 40 px control, AutoCAD's ribbon's 18, 21, 35,
+ * 25, 27, 32, 36 or 40 px control, AutoCAD's ribbon's 18, 21, 35,
  * 38, 45, 59, 62, 72, 86, 97 and 100, or an arbitrary one, is not, unless it
  * is AutoCAD's own measure, listed below with where it was taken.
  */
 const OFF_SYSTEM =
-  /(?<=^|[\s"'`:])(?:min-h|h|size)-(?:4\.5|5(?:\.25|\.5)?|6|8(?:\.75)?|9(?:\.5)?|10|11(?:\.25)?|12|14\.75|15\.5|18|21\.5|24\.25|25|31|\[[^\]]*\])(?=$|[\s"'`!])/g
+  /(?<=^|[\s"'`:])(?:min-h|h|size)-(?:4\.5|5(?:\.25|\.5)?|6(?:\.25|\.75)?|8(?:\.75)?|9(?:\.5)?|10|11(?:\.25)?|12|14\.75|15\.5|18|21\.5|24\.25|25|31|\[[^\]]*\])(?=$|[\s"'`!])/g
 
 /** Each exception with its reason, file → exact match → why. */
 const ALLOWED: Record<string, Record<string, string>> = {
@@ -42,7 +42,6 @@ const ALLOWED: Record<string, Record<string, string>> = {
       "the ribbon minimized to panel titles, AutoCAD's 45 (§2.3, Minimize states)",
     "h-6":
       "the ribbon minimized to its tabs, AutoCAD's 24 (§2.3, Minimize states)",
-    "h-9": "the docked command line: a control and 4 px either side",
   },
   "packages/editor/src/status-bar.tsx": {
     "h-6":
@@ -53,6 +52,15 @@ const ALLOWED: Record<string, Record<string, string>> = {
       "the application menu's 32 px glyphs, each entry's and each page item's (docs/plans/autocad-ui.md, §2.2)",
     "h-5.25":
       "a row of Undo's or Redo's list, AutoCAD's 21 on a pitch of 23 (§2.2, research/ui/2026-11-24/autocad/uia-pop-undo-list.txt)",
+  },
+  // The command window, AutoCAD's 27 high (docs/plans/autocad-ui.md, §2.6;
+  // research/ui/2026-11-24/autocad-mouse/uia2-cli-Button_2.txt).
+  "packages/editor/src/command-line.tsx": {
+    "size-5": "its close button, AutoCAD's 20 × 20",
+    "h-4.5": "Recent Commands, AutoCAD's 28 × 18",
+    "h-5": "a temporary prompt line's label, AutoCAD's list rows of 20",
+    "h-6.75": "the line itself, AutoCAD's 27",
+    "h-6.25": "the history's arrow at its end, AutoCAD's 15 × 25",
   },
   "packages/editor/src/palettes.tsx": {
     "h-5.5":

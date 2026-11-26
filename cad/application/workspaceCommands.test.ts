@@ -574,6 +574,46 @@ describe("the accelerators' macros", () => {
     expect(cad.state().commandLine.visible).toBe(true)
   })
 
+  it("the command window's close hides it as Ctrl+9, and only hides", () => {
+    const cad = inLine()
+    const from = cad.commandLog().length
+
+    cad.runtime.closeCommandLine()
+    expect(cad.commandLog().slice(from)).toEqual([CANCEL, "_commandlinehide"])
+    expect(cad.state().commandLine.visible).toBe(false)
+    // Hidden, it shows again while something is typed; closed then, the
+    // text goes and the line with it.
+    cad.runtime.setCommandLineText("L")
+    cad.runtime.closeCommandLine()
+    expect(cad.commandLog().slice(from)).toHaveLength(2)
+    expect(cad.state().commandLine.visible).toBe(false)
+    expect(cad.state().commandLine.buffer).toBe("")
+  })
+
+  it("lists the commands run, newest first, each once, and runs one again", () => {
+    const cad = createHarness()
+    written(cad, "LINE", "0,0", "10,0", "", "C", "0,0", "5", "L", "0,0")
+    written(cad, "5,5", "")
+    expect(cad.state().commandLine.recentCommands).toEqual(["LINE", "CIRCLE"])
+
+    // A pick in the middle of a command ends it and starts the one picked.
+    written(cad, "CIRCLE")
+    const from = cad.commandLog().length
+    expect(cad.runtime.runRecentCommand("LINE")).toBe(true)
+    expect(cad.commandLog().slice(from)).toEqual([
+      "Specify center point for circle or [3P/2P/Ttr (tan tan radius)]: *Cancel*",
+      "LINE",
+    ])
+    expect(cad.activeToolId()).toBe("line")
+    expect(cad.state().commandLine.recentCommands).toEqual(["LINE", "CIRCLE"])
+  })
+
+  it("lists the commands by their names in the command language", () => {
+    const cad = createHarness({ locale: es })
+    written(cad, "_LINE", "0,0", "10,0", "", "_CIRCLE", "0,0", "5")
+    expect(cad.state().commandLine.recentCommands).toEqual(["CIRCULO", "LINEA"])
+  })
+
   // ID_Save `^C^C_qsave `, ID_Saveas `^C^C_saveas `, ID_Open `^C^C_open `
   it("Ctrl+S ends LINE, then saves: _qsave", () => {
     const files = new MemoryFileTransport()

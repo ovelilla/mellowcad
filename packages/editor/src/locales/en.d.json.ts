@@ -278,8 +278,10 @@ declare const source: {
   }
   "CommandLine": {
     "label": string
-    "placeholder": string
+    "typeCommand": string
     "history": string
+    "close": string
+    "recentCommands": string
   }
   "DynamicInput": {
     "locked": string

@@ -317,8 +317,10 @@ export const ko: EditorLocale = {
     },
     "CommandLine": {
       "label": "명령행",
-      "placeholder": "명령 입력(LINE, TR, CO…)",
-      "history": "명령 사용 내역"
+      "typeCommand": "명령 입력",
+      "history": "명령 사용 내역",
+      "close": "닫기",
+      "recentCommands": "최근 명령"
     },
     "DynamicInput": {
       "locked": "잠금"

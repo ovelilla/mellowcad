@@ -671,6 +671,22 @@ export class CadEngine {
     return this.runtime.commandLineKey(key)
   }
 
+  /**
+   * The command window's close button, as Ctrl+9 hides it: the running
+   * command cancelled and `_commandlinehide` written.
+   */
+  closeCommandLine(): void {
+    this.runtime.closeCommandLine()
+  }
+
+  /**
+   * Runs a command of the command window's Recent Commands
+   * (`state.commandLine.recentCommands`), cancelling the running one first.
+   */
+  runRecentCommand(name: string): boolean {
+    return this.runtime.runRecentCommand(name)
+  }
+
   toggleCommandLine(): void {
     this.runtime.toggleCommandLine()
   }

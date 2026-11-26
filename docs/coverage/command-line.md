@@ -2,7 +2,15 @@
 
 ### Command window · Ctrl+9 · F2
 
-**Implemented:** one prompt line, as AutoCAD's starts: `Command:`, and while a command runs its name
+**Implemented:** AutoCAD's floating one-line window as it starts: over the foot of the drawing,
+as wide as it (between the docked palettes) and 27 high, the drawing running on under it (ZOOM
+Extents frames the whole drawing area, `docs/plans/autocad-ui.md` §2.1, §2.6); left to right its
+close, which hides it as Ctrl+9 does (the running command cancelled, `_commandlinehide` written),
+Recent Commands (the commands run this session, newest first, each once, by their names in the
+command language, `CIRCLE`; a pick cancels the running command and runs it as typed, "the command
+is reinitiated"), the prompt with its field, and the history's arrow at its end (close 20 × 20,
+Recent Commands 28 × 18, the arrow 15 × 25: desktop uia2-cli); the field hints `Type a command` at
+rest, no `Command:` written before it, and while a command runs its name
 and the question it asks — `LINE Specify next point or [Undo]:`, with the value Enter keeps
 (`<10.00>`), written at the drawing's precision as AutoCAD writes it at LUPREC (UNITS sets it;
 AutoCAD's `<10.0000>` is LUPREC 4), an angle at AUPREC's (`<90>`) — WHY 2 places in a new drawing,
@@ -81,7 +89,8 @@ prompt `'ZOOM` runs ZOOM (not transparently: an empty drawing's Extents says `Re
 `'AREA` and `'UCSICON` name the system variables, not the commands, there and mid-command, and
 every other variable SETVAR knows is typed by its name (workspace.md, SETVAR). Above the line, the running command's temporary prompt history
 (CLIPROMPTLINES 3: "displays above the command window while a command is in progress"; typed as a
-variable from 0 to 50, program-wide, a step U takes back, workspace/p214, p218), which fades
+variable from 0 to 50, program-wide, a step U takes back, workspace/p214, p218), each line on a
+translucent label of its own over the drawing, 20 high (desktop cli-now, uia2-cli), which fades
 once the command ends (after 6 s: AutoCAD documents no time); F2, or the arrow at its end, expands
 the whole history up to 12 lines over the drawing ("a list of commands and prompts that you have
 used to expand up … from the command line"), and Escape or a press on the drawing collapses it;
@@ -89,11 +98,14 @@ Ctrl+9 hides and shows it, from a field too, as acad.cuix's `^C^C_commandlinehid
 `^C^C_commandline` (ID_CmdLine): the running command cancelled and the macro written
 (`_commandlinehide`, desktop workspace/d04), COMMANDLINE and COMMANDLINEHIDE not being commands
 here, so no undo group (**unverified**: by analogy with Ctrl+1's `GROUP PROPERTIES` it would be
-`GROUP COMMANDLINEHIDE`, unprobed) and with no question (Missing); and it comes back while something is typed — WHY docked
-into the workspace's grid: nothing floats on the drawing here, but it behaves as the floating
-one-line window AutoCAD starts with (F2 opens the text window only on a docked one); its field
-hints `Type a command` only at `Command:`, and is empty while a command asks, as AutoCAD's is
-after `REGION Designe objetos:` (desktop regions/d01-1, d01-2, d02-1)
+`GROUP COMMANDLINEHIDE`, unprobed) and with no question (Missing); and it comes back while something is typed (F2 opens the text window only on a docked one); its
+field is empty while a command asks, as AutoCAD's is after `REGION Designe objetos:` (desktop
+regions/d01-1, d01-2, d02-1). **Unverified**: how F2's history looks over the drawing (here a
+translucent panel as wide as the line, up to 12 lines), whether the temporary lines fade while a
+command still runs (here only once it ends), how many commands Recent Commands keeps (here 50,
+Up and Down's history) and what its pick and the close button echo and name for U (here a typed
+name's and Ctrl+9's), and whether a floating palette lies over the line or under it (here
+over, so its edges stay within reach)
 
 **Missing:** the questions of every command but LINE, PLINE, CIRCLE, ARC, RECTANG, POLYGON, ELLIPSE,
 SPLINE, MOVE, COPY, STRETCH, ERASE, EXPLODE, JOIN, COPYCLIP, CUTCLIP, COPYBASE, ROTATE, SCALE,
@@ -105,9 +117,12 @@ ATTDEF, BLOCK, -INSERT, PASTECLIP and MATCHPROP (`Select objects:` and its count
 prompt lines), what was typed for a command's whole name or `_` and its global name (AutoCAD keeps
 `line` and `_line` as typed; here they echo the command language's name — WHY: the landing's scripts
 type `_CIRCLE` so that a Spanish reader sees CIRCULO), the text window (Ctrl+F2; TEXTSCR, es
-PANTTEXT), COMMANDLINE / COMMANDLINEHIDE (es LINEACOM / OCULTARLINEACOM), Ctrl+9's task dialog
+PANTTEXT), COMMANDLINE / COMMANDLINEHIDE (es LINEACOM / OCULTARLINEACOM), Ctrl+9's and the close button's task dialog
 asking "Do you want to close the Command Line window?" with "Always close the Command Line window"
-(desktop workspace/d04-1: here it hides at once), floating, resizing, transparency and the window's Customize menu, the dynamic prompt's
+(desktop workspace/d04-1: here it hides at once), moving the window by its grip, resizing it,
+docking it, its transparency and its Customize menu (Input Settings ▸, Lines of Prompt History,
+Input Search Options... | Transparency..., Options...), the right-click menu of the line (Recent
+Commands ▸, Input Settings ▸, Copy History, Paste to CommandLine…), the dynamic prompt's
 Down-arrow list, the system variables SETVAR does not know yet (workspace.md, SETVAR's Missing),
 the prompt line's head while one runs, the command's name without the apostrophe on the desktop
 (`MATCHPROP >>Select source object:`, workspace/d02-1; `'MATCHPROP >>…` here), **unverified**: the

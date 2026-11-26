@@ -51,7 +51,6 @@ const ZONES = [
   "canvas",
   "dockEnd",
   "stripEnd",
-  "command",
   "status",
 ]
 
@@ -122,7 +121,6 @@ describe("CadEditor's components", () => {
       "canvas",
       "dockEnd",
       "stripEnd",
-      "command",
     ])
     expect(
       zones(renderToString(createElement(CadEditor, { components: NONE })))

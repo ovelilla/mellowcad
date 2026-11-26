@@ -1,33 +1,41 @@
 "use client"
 
 import { useEffect, useRef, type ReactElement } from "react"
-import { ChevronUp } from "lucide-react"
+import { Menu } from "@base-ui/react/menu"
+import { ChevronDown, ChevronUp, SquareTerminal, X } from "lucide-react"
 
 import { cn } from "./utils"
+import { Button } from "./ui/button"
 import { TooltipProvider } from "./ui/tooltip"
+import { usePortalContainer } from "./ui/portal-container"
+import { DirectionProvider } from "./ui/direction"
 import type { CommandLineUi } from "@mellowcad/engine"
 import { useCommandLineInput } from "@mellowcad/react"
 
 import { IconAction } from "./toolbar-primitives"
+import { drawingFocus } from "./drawing-focus"
 import { useEditorText } from "./editor-text"
 import type { PieceProps } from "./piece"
 
-/** What floats above the prompt, over the drawing. */
+/** The expanded history and the suggestions, over the drawing above the line. */
 const ABOVE =
   "absolute inset-x-0 bottom-full border border-b-0 bg-card/90 px-2 py-0.5 font-mono whitespace-pre-wrap backdrop-blur"
 
 /**
- * AutoCAD's command line as it starts: one prompt line, with the temporary
- * prompt history of the running command above it (CLIPROMPTLINES, 3), and the
- * whole history expanded upwards over the drawing with F2 or the arrow at its
- * end. The engine owns the prompt, the history and the suggestions, so typing
- * on the drawing and typing in this field feed the same buffer.
+ * AutoCAD's command window as it starts: one line floating over the foot of
+ * the drawing, 27 high and as wide as it.
+ * Left to right: close, Recent Commands, the prompt with its field (`Type a
+ * command` at `Command:`), the history's arrow. Above it, over the drawing,
+ * the running command's temporary prompt lines (CLIPROMPTLINES, 3), each a
+ * label of its own, and the whole history expanded with F2 or the arrow. The
+ * engine owns the prompt, the history and the suggestions, so typing on the
+ * drawing and typing in this field feed the same buffer.
  */
 export function CommandLine({
   engine,
   state,
 }: PieceProps): ReactElement | null {
-  const { visible, historyOpen, prompt, buffer, suggestions, lang } =
+  const { visible, historyOpen, prompt, buffer, suggestions, command, lang } =
     state.commandLine
   const t = useEditorText("CommandLine")
   const input = useCommandLineInput(engine)
@@ -39,11 +47,15 @@ export function CommandLine({
 
   // WHY dir="ltr": the command line speaks the command language, left to
   // right in every locale (its prompts, typed coordinates and keywords).
+  // The measures are AutoCAD's (UI Automation, research/ui/2026-11-24/
+  // autocad-mouse/uia2-cli-Button_2.txt): close 20 × 20 and Recent Commands
+  // 28 × 18 at the start, 4 px under the top; the history's arrow 15 × 25 at
+  // the end. Customize, between them, is Missing.
   return (
     <TooltipProvider>
       <div
         dir="ltr"
-        className="pointer-events-auto relative flex h-full w-full items-center gap-2 ps-2 pe-1 font-mono"
+        className="pointer-events-auto relative flex h-6.75 w-full items-center gap-1 border-t bg-card/90 ps-1 font-mono backdrop-blur"
       >
         {/* Autocomplete sits above the prompt so it never covers the drawing
             below the cursor, matching AutoCAD's suggestion list. */}
@@ -74,22 +86,47 @@ export function CommandLine({
           <TemporaryLines commandLine={state.commandLine} />
         )}
 
-        <span
+        <IconAction
+          icon={X}
+          label={t("close")}
+          shortcut="Ctrl+9"
+          side="top"
+          className="size-5"
+          // The button goes with the line: the focus would fall to the page.
+          onClick={() => {
+            engine.closeCommandLine()
+            engine.focusSurface()
+          }}
+        />
+        <RecentCommands
+          names={state.commandLine.recentCommands}
           lang={lang}
-          className="shrink-0 whitespace-nowrap text-muted-foreground"
-        >
-          {prompt}
-        </span>
+          label={t("recentCommands")}
+          onRun={(name) => engine.runRecentCommand(name)}
+          finalFocus={drawingFocus(engine)}
+        />
+
+        {/* AutoCAD writes no `Command:` before its field: at rest the field
+            hints `Type a command`, and a command's prompt leaves it empty
+            (desktop regions/d01-2, d02-1). */}
+        {/* A prompt longer than a narrow drawing leaves (palettes docked at
+            both sides) gives way before the field: its start is cut, as the
+            keywords at its end are what one answers. */}
+        {command !== null && (
+          <span
+            lang={lang}
+            title={prompt}
+            className="ms-1 min-w-0 truncate whitespace-nowrap text-muted-foreground [direction:rtl]"
+          >
+            <bdi dir="ltr">{prompt}</bdi>
+          </span>
+        )}
         <input
           {...input}
           lang={lang}
           aria-label={t("label")}
-          className="h-full min-w-0 flex-1 bg-transparent text-foreground uppercase outline-none placeholder:text-faint-foreground placeholder:normal-case"
-          // AutoCAD's hint is `Command:`'s alone: a command's prompt leaves
-          // the field empty (desktop regions/d01-2, d02-1).
-          placeholder={
-            state.commandLine.command === null ? t("placeholder") : undefined
-          }
+          className="ms-1 h-full min-w-24 flex-1 bg-transparent text-foreground uppercase outline-none placeholder:text-faint-foreground placeholder:normal-case"
+          placeholder={command === null ? t("typeCommand") : undefined}
         />
         {/* The arrow at the command window's right end ("Press F2. Click the
             arrow at the right end of the command window"). */}
@@ -99,6 +136,8 @@ export function CommandLine({
           shortcut="F2"
           side="top"
           active={historyOpen}
+          // Under the line's border, a pixel over its foot, as AutoCAD's.
+          className="me-px h-6.25 w-3.75 self-start rounded-sm [&_svg]:size-3"
           onClick={() => engine.toggleCommandHistory()}
         />
       </div>
@@ -106,23 +145,92 @@ export function CommandLine({
   )
 }
 
+/**
+ * Recent Commands: the commands run this session, newest first, by their
+ * names in capitals; a pick runs one again (the help's "To Work With
+ * Entering Commands"). No tooltip: a trigger that opens a popup takes none.
+ */
+function RecentCommands({
+  names,
+  lang,
+  label,
+  onRun,
+  finalFocus,
+}: {
+  names: readonly string[]
+  lang: string
+  label: string
+  onRun: (name: string) => void
+  finalFocus: () => false
+}) {
+  const portal = usePortalContainer()
+  // WHY its own direction: the line is a left-to-right island, and its list,
+  // portalled out of it, would open towards the drawing's other side.
+  return (
+    <DirectionProvider direction="ltr">
+      <Menu.Root>
+        <Menu.Trigger
+          disabled={names.length === 0}
+          render={
+            <Button
+              variant="ghost"
+              aria-label={label}
+              className="h-4.5 w-7 gap-0 rounded-sm p-0 text-muted-foreground"
+            >
+              <SquareTerminal className="text-foreground" />
+              <ChevronDown className="size-2.5!" />
+            </Button>
+          }
+        />
+        <Menu.Portal container={portal}>
+          <Menu.Positioner
+            side="top"
+            align="start"
+            sideOffset={4}
+            className="z-50"
+          >
+            <Menu.Popup
+              finalFocus={finalFocus}
+              className="max-h-[min(24rem,var(--available-height))] min-w-44 origin-(--transform-origin) overflow-y-auto rounded-md border bg-card/90 p-1 text-popover-foreground shadow-md backdrop-blur transition-[transform,opacity] outline-none data-ending-style:scale-95 data-ending-style:opacity-0 data-starting-style:scale-95 data-starting-style:opacity-0"
+            >
+              {names.map((name) => (
+                <Menu.Item
+                  key={name}
+                  lang={lang}
+                  onClick={() => onRun(name)}
+                  className="relative flex cursor-default items-center rounded-sm py-1.5 ps-2 pe-8 font-mono text-ui outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground"
+                >
+                  {name}
+                </Menu.Item>
+              ))}
+            </Menu.Popup>
+          </Menu.Positioner>
+        </Menu.Portal>
+      </Menu.Root>
+    </DirectionProvider>
+  )
+}
+
 /** One line of the scrollback, as AutoCAD writes it. */
 function Line({
   line,
   idlePrompt,
+  className,
 }: {
   line: CommandLineUi["lines"][number]
   idlePrompt: string
+  className?: string
 }) {
   return (
     <div
-      className={
+      className={cn(
         line.kind === "error"
           ? "text-destructive"
           : line.kind === "command" || line.kind === "prompt"
             ? "text-foreground"
-            : "text-muted-foreground"
-      }
+            : "text-muted-foreground",
+        className
+      )}
     >
       {line.kind === "command" ? `${idlePrompt} ${line.text}` : line.text}
     </div>
@@ -130,9 +238,11 @@ function Line({
 }
 
 /**
- * The temporary prompt history: the last lines of the running command. Once
- * it ends they fade, so a report (ID, DIST) can still be read; the time is
- * ours, as AutoCAD documents none.
+ * The temporary prompt history: the last lines of the running command, each
+ * on a translucent label of its own over the drawing, 20 high, as AutoCAD's
+ * list draws them (uia2-cli-Button_2.txt: ListBoxItem 133 × 20). Once the
+ * command ends they fade, so a report (ID, DIST) can still be read; the time
+ * is ours, as AutoCAD documents none.
  */
 function TemporaryLines({ commandLine }: { commandLine: CommandLineUi }) {
   const { recent, command, idlePrompt, lang } = commandLine
@@ -145,13 +255,17 @@ function TemporaryLines({ commandLine }: { commandLine: CommandLineUi }) {
       lang={lang}
       aria-hidden
       className={cn(
-        ABOVE,
-        "pointer-events-none",
+        "pointer-events-none absolute inset-s-0 bottom-full mb-px flex max-w-full flex-col items-start font-mono whitespace-pre",
         command === null && "animate-prompt-fade"
       )}
     >
       {recent.map((line, index) => (
-        <Line key={index} line={line} idlePrompt={idlePrompt} />
+        <Line
+          key={index}
+          line={line}
+          idlePrompt={idlePrompt}
+          className="flex h-5 max-w-full items-center overflow-hidden bg-card/80 px-1.5 backdrop-blur"
+        />
       ))}
     </div>
   )

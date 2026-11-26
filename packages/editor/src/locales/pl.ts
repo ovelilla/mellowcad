@@ -321,8 +321,10 @@ export const pl: EditorLocale = {
     },
     "CommandLine": {
       "label": "Wiersz polecenia",
-      "placeholder": "Wpisz polecenie (LINIA, UT, K…)",
-      "history": "Historia poleceń"
+      "typeCommand": "Wpisz polecenie",
+      "history": "Historia poleceń",
+      "close": "Zamknij",
+      "recentCommands": "Ostatnie polecenia"
     },
     "DynamicInput": {
       "locked": "zablokowane"

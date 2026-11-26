@@ -317,8 +317,10 @@ export const de: EditorLocale = {
     },
     "CommandLine": {
       "label": "Befehlszeile",
-      "placeholder": "Befehl eingeben (LINIE, SU, KO…)",
-      "history": "Befehlsprotokoll"
+      "typeCommand": "Befehl eingeben",
+      "history": "Befehlsprotokoll",
+      "close": "Schließen",
+      "recentCommands": "Zuletzt ausgeführte Befehle"
     },
     "DynamicInput": {
       "locked": "gesperrt"

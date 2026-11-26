@@ -193,16 +193,16 @@ the ribbon, the bottom row. **28 px**, icons 16, for the rest one presses. AutoC
 24×22 pass WCAG 2.2's 2.5.8 by its spacing exception (a 24 px pitch). The ribbon's are plan
 §2.3's, its look the editor's tokens (decision 7).
 
-| What                                                                    | Size                                                                                     |
-| ----------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| The title bar; its application button; that menu's entry, document row  | 32 (`h-8`); 48 × 32, mark 20; 46 and 26, icons 32 (plan §2.2)                            |
-| A Quick Access button (`IconAction size="quick"`)                       | 24 × 22 (`h-5.5 w-6`), icon 16, one against the next from 56 px                          |
-| The ribbon, whole; minimized to panel buttons, titles, tabs             | 124 (`h-31`): the tab row, 24, and the panels, 100, each 97; 86, 45, 24 (`ribbon-*:`)    |
-| A ribbon button, large or small; a combo; a list's row                  | 72, icon 32; 22, icon 16, on a 24 pitch; 22; 38, icon 32 (`control-size.test.ts`)        |
-| An icon button (`Button size="icon"`, `IconAction`)                     | 28 × 28, its icon 16                                                                     |
-| A text button, a drop-down's trigger, a field, a tab, a row of a list   | 28 high (`Button`'s default, `SelectTrigger`, `h-7`)                                     |
-| The bottom row; a status bar tool (`size="status"`), a menu's arrow     | 33 (`h-8`, its border); 24 × 24, icon 16; 16 × 24, the mode's right-click its equivalent |
-| Zoom's arrow under its button; the docked command line; a palette's bar | 28 × 14, attached (2.5.8's exception); 36 (`h-9`); 22, buttons `size="palette"`          |
+| What                                                                   | Size                                                                                     |
+| ---------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| The title bar; its application button; that menu's entry, document row | 32 (`h-8`); 48 × 32, mark 20; 46 and 26, icons 32 (plan §2.2)                            |
+| A Quick Access button (`IconAction size="quick"`)                      | 24 × 22 (`h-5.5 w-6`), icon 16, one against the next from 56 px                          |
+| The ribbon, whole; minimized to panel buttons, titles, tabs            | 124 (`h-31`): the tab row, 24, and the panels, 100, each 97; 86, 45, 24 (`ribbon-*:`)    |
+| A ribbon button, large or small; a combo; a list's row                 | 72, icon 32; 22, icon 16, on a 24 pitch; 22; 38, icon 32 (`control-size.test.ts`)        |
+| An icon button (`Button size="icon"`, `IconAction`)                    | 28 × 28, its icon 16                                                                     |
+| A text button, a drop-down's trigger, a field, a tab, a row of a list  | 28 high (`Button`'s default, `SelectTrigger`, `h-7`)                                     |
+| The bottom row; a status bar tool (`size="status"`), a menu's arrow    | 33 (`h-8`, its border); 24 × 24, icon 16; 16 × 24, the mode's right-click its equivalent |
+| Zoom's arrow under its button; the command line; a palette's bar       | 28 × 14, attached (2.5.8's exception); 27 (plan §2.6); 22, buttons `size="palette"`      |
 
 - **A zone sizes its content** (`box-content`): its border lies outside those numbers. A border
   inside the box eats a pixel, every control lands on a half pixel and its icon blurs.
@@ -252,15 +252,16 @@ the ribbon, the bottom row. **28 px**, icons 16, for the rest one presses. AutoC
 Each bar's AutoCAD order is in its component's header comment; touch and phones are out of scope.
 
 - **The workspace is a grid of named areas** (`CadEditor`), AutoCAD's frame (plan §2.1): `title`,
-  `ribbon`, `stripStart` · `dockStart` · `canvas` · `dockEnd` · `stripEnd`, `command`, `status`. The ribbon zone goes while
-  `state.ribbon.open` is false. A control goes into a zone, never absolutely over the drawing; the canvas
-  takes what is left, so ZOOM Extents frames only what is visible.
+  `ribbon`, `stripStart` · `dockStart` · `canvas` · `dockEnd` · `stripEnd`, `status`. The ribbon zone goes while
+  `state.ribbon.open` is false. A control goes into a zone; the canvas takes what is left, AutoCAD's
+  drawing area, which ZOOM Extents frames.
 - **A piece a host may replace is a slot** of `CadEditorComponents` (`components`; `null` turns it
   off and its zone goes too, from the first paint). It takes `PieceProps`, plus only what the host
   gives `CadEditor` for it (`TitleBarProps`, `StatusBarProps`), never state of the workspace: its
   words come from `useEditorText`, its popups' container from `usePortalContainer`. The zone, its
-  size and border stay the editor's. A menu or dialog the engine opens and waits on is never a
-  slot. `packages/editor/src/cad-editor.test.ts` renders the slots against a stand-in engine.
+  size and border stay the editor's (the command line floats, its height its own). A menu or
+  dialog the engine opens and waits on is never a slot. `packages/editor/src/cad-editor.test.ts`
+  renders the slots against a stand-in engine.
 - **Every zone has its size in CSS before the engine mounts** (the bars' `h-8`, the ribbon's
   `h-31`, the palettes' `--palette-dock-*` and `--palette-strip-*`), never from its content: the
   canvas's first box is its final one, which the landing's view transition grows into and the
@@ -272,8 +273,8 @@ Each bar's AutoCAD order is in its component's header comment; touch and phones 
   anchored there is portalled and placed in the viewport, so its virtual anchor converts with
   `engine.clientFromScreen`; the raw state point lands off by the zones before the canvas.
 - **On the drawing only what AutoCAD puts there**: the viewport controls, the ViewCube with the
-  navigation bar, the dynamic input, the rollover tooltip, the menus at the cursor, the floating
-  and the slid-out palettes. A new control finds its zone. What sits there takes the pointer only
+  navigation bar, the command line at its foot, the dynamic input, the rollover tooltip, the menus
+  at the cursor, the floating and the slid-out palettes. A new control finds its zone. What sits there takes the pointer only
   where it is drawn (the ViewCube's box `pointer-events-none`, its parts `-auto`): ZOOM Extents
   frames up to 3 px from the edge, so a grip under the cube's box must stay pickable.
 - **After acting in a palette or bar, focus returns to the drawing** (`engine.focusSurface()`) — a

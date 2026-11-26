@@ -17,6 +17,7 @@ function render(command: string | null): string {
     suggestions: [],
     lines: [],
     recent: [],
+    recentCommands: [],
     command,
     lang: "en",
   }
@@ -34,5 +35,11 @@ describe("the command line's field", () => {
   it("shows its placeholder only while no command runs (desktop regions/d01-2)", () => {
     expect(render(null)).toContain("placeholder=")
     expect(render("REGION")).not.toContain("placeholder=")
+  })
+
+  // AutoCAD's floating line writes no `Command:` before its field at rest.
+  it("writes the prompt only while a command runs", () => {
+    expect(render(null)).not.toContain("Command:")
+    expect(render("REGION")).toContain("REGION Select objects:")
   })
 })

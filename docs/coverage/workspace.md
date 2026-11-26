@@ -457,7 +457,7 @@ opens it whole, and it folds as soon as the pointer leaves. Where each shows, it
 the columns' widths and which were open are kept on this device, the columns and strips laid out
 by the `<head>` script, so the drawing's first box is its final one — WHY inside the
 drawing area: a palette cannot leave the page (plan §4, P3), and floating over the ribbon or the
-command line would hide what AutoCAD keeps clear; WHY the title bar stays at the inline end: the
+bottom row would hide what AutoCAD keeps clear, the command line floating under them; WHY the title bar stays at the inline end: the
 side AutoCAD's takes by where it floats is **unverified** (plan §2.8: moved by its window it
 stayed on the right). **Unverified** (plan §2.8 captured one palette anchored at the right): how
 several tabs share a strip (here evenly, never shorter than a name), the order of a strip and a

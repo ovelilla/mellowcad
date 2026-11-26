@@ -317,8 +317,10 @@ export const hu: EditorLocale = {
     },
     "CommandLine": {
       "label": "Parancssor",
-      "placeholder": "Írjon be egy parancsot (VONAL, ME, M…)",
-      "history": "Parancselőzmények"
+      "typeCommand": "Írjon be egy parancsot",
+      "history": "Parancselőzmények",
+      "close": "Bezárás",
+      "recentCommands": "Legutóbbi parancsok"
     },
     "DynamicInput": {
       "locked": "zárolt"

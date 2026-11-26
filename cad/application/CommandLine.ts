@@ -178,6 +178,14 @@ export class CommandLineController extends Observable {
     this.recallIndex = null
   }
 
+  /**
+   * The commands run, newest first, each once, by the name the history
+   * wrote: the command window's Recent Commands.
+   */
+  getRecentCommands(): readonly string[] {
+    return this.history.toReversed()
+  }
+
   /** The command Enter repeats at the neutral prompt. */
   getLastCommand(): string | null {
     return this.history.length > 0

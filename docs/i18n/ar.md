@@ -134,7 +134,7 @@ marks a choice between competing terms that a native review should settle first 
 | Properties palette | Style (a text's row, in its Text category) | النمط † — ours: Arabic has no AutoCAD; النمط as the Text Style dialog's style, without its نص |
 | Drawing aids | Linetype scale (global scale factor), Drawing units, Precision | المقياس العام لأنواع الخطوط، وحدات الرسم، الدقة (L) |
 | Keys | Enter, Esc, Del, Ctrl, Shift, Tab, Spacebar | Enter، Esc، Del، Ctrl، Shift، Tab، المسافة: the keys keep the names printed on Arabic keyboards (M) |
-| Command line | Type a command | اكتب أمرًا (M) |
+| Command line | Type a command, Close, Recent Commands | اكتب أمرًا، إغلاق، الأوامر الأخيرة (M) |
 |  | Command history | سجل الأوامر (M) |
 | Shortcut menu | Shortcut menu; Repeat ‹command›, Enter, Cancel | القائمة المختصرة؛ تكرار ‹الأمر›، Enter، إلغاء (L) † — Enter is the key's printed name, as in Keys |
 |  | Clipboard; Osnap Overrides; Properties | الحافظة (M)؛ تجاوزات الالتقاط (L) †؛ الخصائص (M) |

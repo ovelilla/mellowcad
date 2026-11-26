@@ -708,7 +708,7 @@ until the drawing reaches the row:
    nothing after them). The layout tabs are not drawn (S2: no layouts); the row's start stays
    empty. The command line keeps its docked row until block 2. What is on at first (S4) waits
    for an untouched profile: unchanged, unverified.
-2. **The floating command line** (C1 to C4, D4): the command row leaves the grid; the line lies
+2. **The floating command line** (C1 to C4, D4; done 2026-11-26): the command row leaves the grid; the line lies
    over the bottom of the drawing, as wide as the canvas's cell (between the docked columns, as
    AutoCAD's spans its drawing area), 27 high; close at its start (Ctrl+9's hide; its question
    stays Missing), Recent Commands (the commands run this session, newest first, by name in

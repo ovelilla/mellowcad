@@ -11,9 +11,10 @@ export { CadEditor }
 /**
  * The editor's docked workspace: a grid of named areas round the canvas, which
  * takes what is left. The engine resizes its drawing with the canvas, so ZOOM
- * Extents frames what is visible; nothing but the viewport controls, the
- * ViewCube with the navigation bar, the dynamic input and the menus at the
- * cursor sits on the drawing.
+ * Extents frames the drawing area; nothing but what AutoCAD puts there sits
+ * on the drawing: the viewport controls, the ViewCube with the navigation
+ * bar, the command line, the dynamic input, the floating palettes and the
+ * menus at the cursor.
  */
 export declare function CadEditor(cadEditorProps: CadEditorProps): ReactElement;
 
@@ -132,11 +133,14 @@ export declare const ribbonLayoutScript: (key: string) => string;
 ```ts
 export { CommandLine }
 /**
- * AutoCAD's command line as it starts: one prompt line, with the temporary
- * prompt history of the running command above it (CLIPROMPTLINES, 3), and the
- * whole history expanded upwards over the drawing with F2 or the arrow at its
- * end. The engine owns the prompt, the history and the suggestions, so typing
- * on the drawing and typing in this field feed the same buffer.
+ * AutoCAD's command window as it starts: one line floating over the foot of
+ * the drawing, 27 high and as wide as it.
+ * Left to right: close, Recent Commands, the prompt with its field (`Type a
+ * command` at `Command:`), the history's arrow. Above it, over the drawing,
+ * the running command's temporary prompt lines (CLIPROMPTLINES, 3), each a
+ * label of its own, and the whole history expanded with F2 or the arrow. The
+ * engine owns the prompt, the history and the suggestions, so typing on the
+ * drawing and typing in this field feed the same buffer.
  */
 export declare function CommandLine(pieceProps: PieceProps): ReactElement | null;
 

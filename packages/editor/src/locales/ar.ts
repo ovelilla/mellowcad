@@ -321,8 +321,10 @@ export const ar: EditorLocale = {
     },
     "CommandLine": {
       "label": "سطر الأوامر",
-      "placeholder": "اكتب أمرًا (⁨LINE⁩، ⁨TR⁩، ⁨CO⁩…)",
-      "history": "سجل الأوامر"
+      "typeCommand": "اكتب أمرًا",
+      "history": "سجل الأوامر",
+      "close": "إغلاق",
+      "recentCommands": "الأوامر الأخيرة"
     },
     "DynamicInput": {
       "locked": "مقفل"

@@ -321,8 +321,10 @@ export const es: EditorLocale = {
     },
     "CommandLine": {
       "label": "Línea de comando",
-      "placeholder": "Escriba un comando (LINEA, RR, CP…)",
-      "history": "Historial de comandos"
+      "typeCommand": "Escriba un comando",
+      "history": "Historial de comandos",
+      "close": "Cerrar",
+      "recentCommands": "Comandos recientes"
     },
     "DynamicInput": {
       "locked": "bloqueado"

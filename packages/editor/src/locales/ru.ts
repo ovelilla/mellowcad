@@ -321,8 +321,10 @@ export const ru: EditorLocale = {
     },
     "CommandLine": {
       "label": "Командная строка",
-      "placeholder": "Введите команду (ОТРЕЗОК, ОБР, КП…)",
-      "history": "Журнал команд"
+      "typeCommand": "Введите команду",
+      "history": "Журнал команд",
+      "close": "Закрыть",
+      "recentCommands": "Последние команды"
     },
     "DynamicInput": {
       "locked": "заблокировано"

@@ -321,8 +321,10 @@ export const zhCN: EditorLocale = {
     },
     "CommandLine": {
       "label": "命令行",
-      "placeholder": "键入命令（LINE、TR、CO…）",
-      "history": "命令历史记录"
+      "typeCommand": "键入命令",
+      "history": "命令历史记录",
+      "close": "关闭",
+      "recentCommands": "最近使用的命令"
     },
     "DynamicInput": {
       "locked": "锁定"
