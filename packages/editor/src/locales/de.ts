@@ -135,6 +135,7 @@ export const de: EditorLocale = {
     },
     "Ribbon": {
       "tabs": {
+        "hatchCreation": "Schraffurerstellung",
         "home": "Start",
         "insert": "Einfügen",
         "annotate": "Beschriften",
@@ -143,6 +144,10 @@ export const de: EditorLocale = {
         "arrayCreation": "Anordnung erstellen"
       },
       "panels": {
+        "hatchBoundaries": "Umgrenzungen",
+        "hatchPattern": "Muster",
+        "hatchProperties": "Eigenschaften",
+        "hatchClose": "Schließen",
         "draw": "Zeichnen",
         "modify": "Ändern",
         "annotation": "Beschriftung",
@@ -173,6 +178,11 @@ export const de: EditorLocale = {
         "arrayClose": "Schließen"
       },
       "items": {
+        "hatchPickPoints": "Punkte wählen",
+        "hatchSelect": "Wahl",
+        "hatchSolid": "Kompakt",
+        "hatchPattern": "Muster",
+        "hatchClose": "Schraffurerstellung\nschließen",
         "line": "Linie",
         "polyline": "Polylinie",
         "circle": "Mittel, Radius",
@@ -327,6 +337,8 @@ export const de: EditorLocale = {
         "arrayClose": "Anordnung schließen"
       },
       "fields": {
+        "hatchAngle": "Winkel",
+        "hatchScale": "Schraffurmuster-Skalierung",
         "columns": "Spalten:",
         "columnSpacing": "Zwischen:",
         "rows": "Zeilen:",
@@ -342,6 +354,14 @@ export const de: EditorLocale = {
       },
       "pressF1": "F1 drücken, um weitere Hilfe zu erhalten",
       "tips": {
+        "hatchPickPoints": "Legt eine Schraffurumgrenzung aus vorhandenen Objekten fest, die einen geschlossenen Bereich um den angegebenen Punkt bilden.",
+        "hatchSelect": "Legt eine Schraffurumgrenzung aus ausgewählten Objekten fest, die einen geschlossenen Bereich bilden.",
+        "hatchType": "Gibt an, ob eine vordefinierte Schraffur oder Füllung oder eine benutzerdefinierte Schraffur erstellt werden soll.",
+        "hatchSolid": "Legt eine kompakte Füllung statt eines Schraffurmusters fest",
+        "hatchPattern": "Zeigt eine Auswahl von ANSI, ISO und anderen, dem Industriestandard entsprechenden Schraffurmustern",
+        "hatchAngle": "Gibt für das Schraffurmuster einen relativen Winkel zur X-Achse des aktuellen BKS an",
+        "hatchScale": "Erweitert oder verengt ein vordefiniertes oder benutzerspezifisches Schraffurmuster",
+        "hatchClose": "Beendet die Schraffurerstellung und schließt die kontextabhängige Registerkarte",
         "line": "Erstellt gerade Liniensegmente",
         "polyline": "Erstellt 2D-Polylinien",
         "circle": "Erstellt einen Kreis anhand eines Mittelpunkts und eines Radius",
@@ -511,6 +531,14 @@ export const de: EditorLocale = {
         "arrayClose": "Beendet den Befehl Reihe."
       },
       "tipTitles": {
+        "hatchPickPoints": "Punkte auswählen",
+        "hatchSelect": "Umgrenzungsobjekte auswählen",
+        "hatchType": "Schraffurtyp",
+        "hatchSolid": "Kompakt",
+        "hatchPattern": "Muster",
+        "hatchAngle": "Schraffurwinkel",
+        "hatchScale": "Schraffurmuster-Skalierung",
+        "hatchClose": "Schraffurerstellung schließen",
         "layerProperties": "Layereigenschaften",
         "insert": "Block einfügen",
         "ucsIcon": "BKS-Symbol",

@@ -129,15 +129,16 @@ export function registerCommands(
   // PURGE asks -PURGE's prompts here, as AutoCAD's console runs it (no Purge
   // dialog, BLOCKS-D2), so -PURGE is the same tool under its own name.
   register({ id: "-PURGE", tool: "purge", run: () => startTool("purge") })
-  // HATCH asks -HATCH's prompts here (no ribbon, HATCH-D31), so -HATCH is the
-  // same tool under its own name; only its Escape differs (HATCH-D45).
+  // -HATCH is HATCH's tool under its own name: HATCH with the ribbon closed
+  // asks its prompts (no Hatch and Gradient dialog, HATCH-D31); its Escape
+  // differs (HATCH-D45), and with the ribbon open HATCH asks the ribbon's.
   register({
     id: "-HATCH",
     tool: "hatch",
     run: () => {
-      startTool("hatch")
       const tool = runtime.listTools().find((t) => t.id === "hatch")
       if (tool instanceof HatchTool) tool.dashForm()
+      startTool("hatch")
     },
   })
   // COLOR, LINETYPE and LWEIGHT open dialogs in AutoCAD (Select Color, the

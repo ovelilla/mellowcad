@@ -139,6 +139,7 @@ export const it: EditorLocale = {
     },
     "Ribbon": {
       "tabs": {
+        "hatchCreation": "Creazione tratteggio",
         "home": "Inizio",
         "insert": "Inserisci",
         "annotate": "Annota",
@@ -147,6 +148,10 @@ export const it: EditorLocale = {
         "arrayCreation": "Creazione serie"
       },
       "panels": {
+        "hatchBoundaries": "Contorni",
+        "hatchPattern": "Modello",
+        "hatchProperties": "Proprietà",
+        "hatchClose": "Chiudi",
         "draw": "Disegna",
         "modify": "Edita",
         "annotation": "Annotazione",
@@ -177,6 +182,11 @@ export const it: EditorLocale = {
         "arrayClose": "Chiudi"
       },
       "items": {
+        "hatchPickPoints": "Seleziona punti",
+        "hatchSelect": "Seleziona",
+        "hatchSolid": "Solido",
+        "hatchPattern": "Modello",
+        "hatchClose": "Chiudi\nCreazione tratteggio",
         "line": "Linea",
         "polyline": "Polilinea",
         "circle": "Centro, Raggio",
@@ -331,6 +341,8 @@ export const it: EditorLocale = {
         "arrayClose": "Chiudi serie"
       },
       "fields": {
+        "hatchAngle": "Angolo",
+        "hatchScale": "Scala del modello di tratteggio",
         "columns": "Colonne:",
         "columnSpacing": "Tra:",
         "rows": "Righe:",
@@ -346,6 +358,14 @@ export const it: EditorLocale = {
       },
       "pressF1": "Premere F1 per ulteriori informazioni",
       "tips": {
+        "hatchPickPoints": "Definisce un contorno di tratteggio utilizzando gli oggetti esistenti che formano un'area chiusa attorno al punto specificato",
+        "hatchSelect": "Definisce un contorno di tratteggio utilizzando gli oggetti selezionati che formano un'area chiusa",
+        "hatchType": "Specifica se verrà creato un tratteggio o riempimento predefinito o un tratteggio definito dall'utente",
+        "hatchSolid": "Specifica un riempimento solido per un modello di tratteggio",
+        "hatchPattern": "Visualizza una selezione di modelli di tratteggio ANSI, ISO e conformi ad altri standard di settore",
+        "hatchAngle": "Specifica un angolo per il modello di tratteggio rispetto all'asse X dell'UCS corrente",
+        "hatchScale": "Espande o comprime un modello di tratteggio predefinito o personalizzato",
+        "hatchClose": "Interrompe la creazione del tratteggio e chiude la scheda contestuale corrispondente",
         "line": "Crea segmenti di linee rette",
         "polyline": "Crea una polilinea bidimensionale",
         "circle": "Crea un cerchio utilizzando un punto centrale e un raggio",
@@ -515,6 +535,14 @@ export const it: EditorLocale = {
         "arrayClose": "Consente di uscire dal comando Serie."
       },
       "tipTitles": {
+        "hatchPickPoints": "Scegli punti",
+        "hatchSelect": "Seleziona oggetti contorno",
+        "hatchType": "Tipo di tratteggio",
+        "hatchSolid": "Solido",
+        "hatchPattern": "Modello",
+        "hatchAngle": "Angolo tratteggio",
+        "hatchScale": "Scala del modello di tratteggio",
+        "hatchClose": "Chiudi Creazione tratteggio",
         "layerProperties": "Proprietà layer",
         "insert": "Inserisci blocco",
         "ucsIcon": "Icona UCS",

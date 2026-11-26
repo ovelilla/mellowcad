@@ -1217,17 +1217,31 @@ and Text frame rows (desktop d04-2), picking by the strokes (TEXT's), `?`'s 2027
 
 ### `HATCH` / `H` / `BH` / `BHATCH`, `-HATCH` / `-H` / `-BH` / `-BHATCH` · es `SOMBREA` / `SB` / `SMB` / `-SMB`, `-SOMBREA` · pt-BR `HACHURA` / `HC`, `-HACHURA` / `-H` · fr `HACHURES` / `H`, `-HACHURES` / `-H` · it `TRATTEGGIO` / `PTR` / `RE` / `RETINO`, `-TRATTEGGIO` / `-RE` · de `SCHRAFF` / `GS` / `SCH`, `-SCHRAFF` / `-SCH` · ru `ШТРИХ`, `-ШТРИХ` / `-Ш` · pl `KRESKUJ`, `-KRESKUJ` / `-KRE` · cs `ŠRAFY` / `HS` / `SF` / `HŠRAFY`, `-ŠRAFY` / `-HS` / `-SF` · hu `SRAFFOZ` / `SF` / `SR`, `-SRAFFOZ` / `-SF`
 
-**Implemented:** both names run one tool asking -HATCH's command line, headed and echoed by the
-name typed (`-SMB` is SOMBREA, acad.pgp; p200–p202, p255; WHY HATCH asks -HATCH's prompts: the
-Hatch Creation tab and the Hatch and Gradient dialog, where HATCH sets its properties, do not exist
-here, and the console's HATCH offers no Properties, p01): `Current hatch pattern:  ANGLE` (es
+**Implemented:** both names run one tool, headed and echoed by the name typed (`-SMB` is
+SOMBREA, acad.pgp; p200–p202, p255). **With the ribbon open** HATCH asks the ribbon's prompt,
+`Pick internal point or [Select objects/Undo]:` (st2027's 129, each command language's from its
+table: es `Designe un punto interno o [Seleccionar objetos/desHacer]`), with no `Current hatch
+pattern` line (desktop d01, d-session.log), until Enter makes the hatch; its Select objects asks
+`Select objects or [picK internal point/Undo]:` (50968; es `Seleccione objetos o [Designar punto
+interno/desHacer]`) after each selection, picK going back to the internal point, Undo the
+selection's own, Enter making the hatch and ending (**unverified**: no desktop pass); the two
+prompts' keywords are 31427's, the one of its candidates (16731, 62278) declaring every word they
+list (**unverified**: only a traced desktop run shows each prompt's `initget`). It shows Hatch
+Creation for the whole run (HATCHCREATION 1, d01-2; `docs/coverage/workspace.md`, Ribbon): Pick
+Points and Select switch the two modes; a pattern, Type, Angle and Scale set HPNAME, HPANG and
+HPSCALE as Properties sets them, inside the run, with no echo, refused in its prompts' words, the
+preview redrawn in them; Close Hatch Creation is `^M` (MM_1928), Enter. **With the ribbon closed**
+(RIBBONCLOSE, Clean Screen) HATCH asks -HATCH's prompts, as -HATCH does whatever the ribbon (WHY:
+there AutoCAD's HATCH opens the Hatch and Gradient dialog, HPDLGMODE 2, which does not exist here,
+and the console's HATCH offers no Properties, p01; HATCH-D31): `Current hatch pattern:  ANGLE` (es
 `Patrón de sombreado actual:`), then `Specify internal point or [Properties/Select objects]:` (es
-`Precise punto interno o [Propiedades/Designar objetos]`) until Enter makes the hatch; Enter at
+`Precise punto interno o [Propiedades/Designar objetos]`) until Enter makes the hatch. Enter at
 `Command:` repeats it by the name it ran as (p204), neither runs transparently (p205), and a run is
 one undo step U, REDO and UNDO name so, one that made nothing too (p239–p241, p247). **Escape**
 under HATCH makes the hatch of the boundaries gathered, at any prompt, in the run's step, and
-under -HATCH drops them (desktop d01-3, d02; WHY: the ribbon's HATCH has made the hatch at each
-pick, which Escape leaves; with no ribbon here it is made as the run ends, HATCH-D45). **The
+under -HATCH drops them (desktop d01-3, d02): the ribbon's HATCH has made the hatch at each pick,
+which Escape leaves (WHY made here as the run ends: one object of every boundary in the run's one
+step, as AutoCAD's grows at each pick, HATCH-D45). **The
 preview** (HPQUICKPREVIEW 1): at the internal point the area under the cursor shows hatched in the
 object's colour before a pick, traced as the cursor leaves the area it found (d01-1, d02-1); after
 a pick HATCH draws the hatch as it will be made and highlights the internal points' boundaries,
@@ -1356,7 +1370,15 @@ plane, **unverified**); chained open-object boundaries, HPGAPTOL, HPASSOC, HPSEP
 styles, -HATCH's other keywords (draW boundary, remove Boundaries, Advanced, DRaw order, Origin,
 ANnotative, hatch COlor, LAyer, Transparency) and `?`'s `Enter pattern(s) to list <*>:` with its
 pages (HATCH-D32), the console HATCH's own prompt (`Pick internal point or [Select objects/remove
-Boundaries]:`, p200) and the ribbon's (`[Select objects/Draw/Undo/seTtings]`, d01), BHATCH and
+Boundaries]:`, p200); the ribbon prompts' Draw and seTtings (no draW boundary, no Hatch and
+Gradient dialog) and the words 31427 declares besides (picK at the internal point, Boundaries,
+DEfine, ORigin, MAtch); Hatch Creation's Remove, Recreate and Boundaries' slide-out (Display
+Boundary Objects, Retain Boundaries, the boundary set), the Pattern gallery's tooltips (no `TT_`
+entry names one, **unverified**), Properties' Gradient and User defined types, Pattern Color,
+Background Color, Transparency, the gradient's colours and tint, its slide-out (Layer, Relative
+To Paper Space, Double, ISO Pen Width) and Scale's spin arrows (how far one steps
+**unverified**), the Origin and Options panels; the Angle slider's range (0 to 359 here) and the
+pattern Type › Pattern brings back from a solid fill (the last one set here), **unverified**; BHATCH and
 -BHATCH as commands of their own (typed whole they echo nothing more, and `-BH` echoes `-BHATCH`,
 p201, p255; here aliases: `BHATCH HATCH`, `-BH -HATCH`), making a gradient: -HATCH's Properties
 lists `[?/Solid/User defined/Gradient]` (g00), whose Gradient asks `Enter a gradient name or

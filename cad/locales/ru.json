@@ -1037,7 +1037,8 @@
         "Select objects": "Выбрать",
         "?": "?",
         "Solid": "Заливка",
-        "Undo": "Отменить"
+        "Undo": "Отменить",
+        "Pick internal point": "Указать"
       },
       "INSERT": {
         "?": "?",
@@ -1637,8 +1638,21 @@
       }
     },
     "promptKeywords": {
-      "peditMeshOption": {"eXit": "выХод", "X": "Х", "Undo": "Отменить"},
-      "peditMeshVertexOption": {"Regen": "РЕген", "Previous": "Пред", "Move": "ПЕренести", "eXit": "выХод"},
+      "selectObjectsOrPickInternalPoint": {
+        "Pick internal point": "Указать",
+        "Undo": "Отменить"
+      },
+      "pickInternalPointOr": {
+        "Select objects": "Выбрать",
+        "Undo": "Отменить"
+      },
+      "peditMeshOption": { "eXit": "выХод", "X": "Х", "Undo": "Отменить" },
+      "peditMeshVertexOption": {
+        "Regen": "РЕген",
+        "Previous": "Пред",
+        "Move": "ПЕренести",
+        "eXit": "выХод"
+      },
       "selectObjects": {
         "Window": "Рамка",
         "Last": "Последний",
@@ -1767,6 +1781,8 @@
       }
     },
     "prompts": {
+      "pickInternalPointOr": "Укажите внутреннюю точку или",
+      "selectObjectsOrPickInternalPoint": "Выберите объекты или",
       "enterMeshSizeM": "Размер сети в направлении M",
       "enterMeshSizeN": "Размер сети в направлении N",
       "specifyMeshVertex": "Положение вершины ({m}, {n})",
@@ -3481,7 +3497,8 @@
         "Spline curve": "СПлайн"
       },
       "HATCH": {
-        "Select objects": "Выбрать объекты"
+        "Select objects": "Выбрать объекты",
+        "Pick internal point": "Указать внутреннюю точку"
       },
       "BREAK": {
         "First point": "Первая точка"
@@ -3531,7 +3548,12 @@
       }
     },
     "promptKeywordLabels": {
-      "peditMeshOption": {"Edit vertex": "Вершина"},
+      "selectObjectsOrPickInternalPoint": { "Undo": "Отменить" },
+      "pickInternalPointOr": {
+        "Select objects": "Выбрать объекты",
+        "Undo": "Отменить"
+      },
+      "peditMeshOption": { "Edit vertex": "Вершина" },
       "ucsNewUcs": {
         "ZAxis": "ZОсь"
       },

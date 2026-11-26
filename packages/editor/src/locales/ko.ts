@@ -135,6 +135,7 @@ export const ko: EditorLocale = {
     },
     "Ribbon": {
       "tabs": {
+        "hatchCreation": "해치 작성",
         "home": "홈",
         "insert": "삽입",
         "annotate": "주석",
@@ -143,6 +144,10 @@ export const ko: EditorLocale = {
         "arrayCreation": "배열 작성"
       },
       "panels": {
+        "hatchBoundaries": "경계",
+        "hatchPattern": "패턴",
+        "hatchProperties": "특성",
+        "hatchClose": "닫기",
         "draw": "그리기",
         "modify": "수정",
         "annotation": "주석",
@@ -173,6 +178,11 @@ export const ko: EditorLocale = {
         "arrayClose": "닫기"
       },
       "items": {
+        "hatchPickPoints": "선택점",
+        "hatchSelect": "선택",
+        "hatchSolid": "솔리드",
+        "hatchPattern": "패턴",
+        "hatchClose": "닫기\n해치 작성",
         "line": "선",
         "polyline": "폴리선",
         "circle": "중심점, 반지름",
@@ -327,6 +337,8 @@ export const ko: EditorLocale = {
         "arrayClose": "배열 닫기"
       },
       "fields": {
+        "hatchAngle": "각도",
+        "hatchScale": "해치 패턴 축척",
         "columns": "열:",
         "columnSpacing": "사이:",
         "rows": "행:",
@@ -342,6 +354,14 @@ export const ko: EditorLocale = {
       },
       "pressF1": "도움말을 보려면 F1을 누르십시오",
       "tips": {
+        "hatchPickPoints": "지정된 점 주위로 닫힌 영역을 형성하는 기존 객체의 해치 경계를 결정합니다",
+        "hatchSelect": "닫힌 영역을 형성하는 선택한 객체의 해치 경계를 결정합니다",
+        "hatchType": "미리 정의된 해치나 채우기를 작성할지 아니면 사용자 정의 해치를 작성할지 지정합니다",
+        "hatchSolid": "해치 패턴 대신 솔리드 채우기를 지정합니다",
+        "hatchPattern": "선택한 ANSI, ISO 및 기타 업계 표준 해치 패턴을 표시합니다",
+        "hatchAngle": "현재 UCS의 X 축을 기준으로 해치 패턴의 각도를 지정합니다",
+        "hatchScale": "미리 정의된 해치 패턴 또는 사용자 지정 해치 패턴을 확장 또는 축소합니다",
+        "hatchClose": "해치 작성을 종료하고 상황별 탭을 닫습니다",
         "line": "직선 세그먼트를 작성합니다",
         "polyline": "2D 폴리선을 작성합니다",
         "circle": "중심점과 반지름을 사용하여 원을 작성합니다",
@@ -511,6 +531,14 @@ export const ko: EditorLocale = {
         "arrayClose": "베열 명령을 종료합니다."
       },
       "tipTitles": {
+        "hatchPickPoints": "점 선택",
+        "hatchSelect": "경계 객체 선택",
+        "hatchType": "해치 유형",
+        "hatchSolid": "솔리드",
+        "hatchPattern": "패턴",
+        "hatchAngle": "해치 각도",
+        "hatchScale": "해치 패턴 축척",
+        "hatchClose": "해치 작성 닫기",
         "layerProperties": "도면층 특성",
         "insert": "블록 삽입",
         "ucsIcon": "UCS 아이콘",

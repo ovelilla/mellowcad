@@ -23,12 +23,8 @@ import {
   makeArray,
   reportArrayType,
 } from "./arrayObject"
-import {
-  MAX_ARRAY_COUNT,
-  refuseText,
-  refusesCount,
-  takesCount,
-} from "./arrayCounts"
+import { MAX_ARRAY_COUNT, refusesCount, takesCount } from "./arrayCounts"
+import { refuseText } from "./refuseText"
 import { ArrayAtPrompt, ArrayPromptGrips } from "./arrayPromptGrips"
 import type { PromptId } from "../../locales/types"
 import type { ContextualEdit } from "../EngineState"
@@ -748,7 +744,7 @@ export class ArrayPathTool implements Tool {
       } else if (edit.toggle === "alignItems") {
         this.setLayout({ ...layout, align: !layout.align })
       } else return "unhandled"
-    } else {
+    } else if ("field" in edit) {
       if (edit.field !== "items" && edit.field !== "itemSpacing") {
         return "unhandled"
       }
@@ -780,7 +776,7 @@ export class ArrayPathTool implements Tool {
           this.setLayout({ ...layout, spacing: value, items })
         }
       } else return "unhandled"
-    }
+    } else return "unhandled"
     ctx.requestRender()
     return "continue"
   }

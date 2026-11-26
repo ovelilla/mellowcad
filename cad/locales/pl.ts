@@ -1829,7 +1829,8 @@ export const pl: EngineLocale = {
         "Select objects": "wyBierz",
         "?": "?",
         "Solid": "Pełny",
-        "Undo": "Cofnij"
+        "Undo": "Cofnij",
+        "Pick internal point": "wSKaż"
       },
       "INSERT": {
         "?": "?",
@@ -2433,6 +2434,14 @@ export const pl: EngineLocale = {
       }
     },
     "promptKeywords": {
+      "selectObjectsOrPickInternalPoint": {
+        "Pick internal point": "wSKaż",
+        "Undo": "Cofnij"
+      },
+      "pickInternalPointOr": {
+        "Select objects": "Wybierz",
+        "Undo": "Cofnij"
+      },
       "peditMeshOption": {
         "eXit": "konIec",
         "X": "I",
@@ -2572,6 +2581,8 @@ export const pl: EngineLocale = {
       }
     },
     "prompts": {
+      "pickInternalPointOr": "Wskaż punkt wewnętrzny lub",
+      "selectObjectsOrPickInternalPoint": "Wybierz obiekty lub",
       "enterMeshSizeM": "Podaj rozmiar siatki  w kierunku M",
       "enterMeshSizeN": "Podaj rozmiar siatki  w kierunku N",
       "specifyMeshVertex": [
@@ -9343,7 +9354,8 @@ export const pl: EngineLocale = {
         "Spline curve": "splaJn"
       },
       "HATCH": {
-        "Select objects": "wyBierz obiekty"
+        "Select objects": "wyBierz obiekty",
+        "Pick internal point": "wSKaż punkt wewnętrzny"
       },
       "BREAK": {
         "First point": "Pierwszy"
@@ -9393,6 +9405,13 @@ export const pl: EngineLocale = {
       }
     },
     "promptKeywordLabels": {
+      "selectObjectsOrPickInternalPoint": {
+        "Undo": "Cofnij"
+      },
+      "pickInternalPointOr": {
+        "Select objects": "Wybierz obiekty",
+        "Undo": "Cofnij"
+      },
       "peditMeshOption": {
         "Edit vertex": "Edwierzch"
       },

@@ -1044,7 +1044,8 @@
         "Select objects": "Auswählen",
         "?": "?",
         "Solid": "Kompakt",
-        "Undo": "Zurück"
+        "Undo": "Zurück",
+        "Pick internal point": "AUSwählen"
       },
       "INSERT": {
         "?": "?",
@@ -1644,8 +1645,18 @@
       }
     },
     "promptKeywords": {
-      "peditMeshOption": {"eXit": "EXit", "X": "X", "Undo": "Zurück"},
-      "peditMeshVertexOption": {"Regen": "REGen", "Previous": "Vorher", "Move": "Schieben", "eXit": "eXit"},
+      "selectObjectsOrPickInternalPoint": {
+        "Pick internal point": "AUSwählen",
+        "Undo": "Zurück"
+      },
+      "pickInternalPointOr": { "Select objects": "Wählen", "Undo": "Zurück" },
+      "peditMeshOption": { "eXit": "EXit", "X": "X", "Undo": "Zurück" },
+      "peditMeshVertexOption": {
+        "Regen": "REGen",
+        "Previous": "Vorher",
+        "Move": "Schieben",
+        "eXit": "eXit"
+      },
       "selectObjects": {
         "Window": "Fenster",
         "Last": "Letztes",
@@ -1772,6 +1783,8 @@
       }
     },
     "prompts": {
+      "pickInternalPointOr": "Internen Punkt wählen oder",
+      "selectObjectsOrPickInternalPoint": "Objekte wählen oder",
       "enterMeshSizeM": "Größe des Netzes in Richtung M eingeben",
       "enterMeshSizeN": "Größe des Netzes in Richtung N eingeben",
       "specifyMeshVertex": "Position des Kontrollpunkts eingeben ({m}, {n})",
@@ -3510,7 +3523,8 @@
         "Spline curve": "Kurvenlinie"
       },
       "HATCH": {
-        "Select objects": "objekte Wählen"
+        "Select objects": "objekte Wählen",
+        "Pick internal point": "interne punkte AUSwählen"
       },
       "BREAK": {
         "First point": "Erster punkt"
@@ -3560,7 +3574,12 @@
       }
     },
     "promptKeywordLabels": {
-      "peditMeshOption": {"Edit vertex": "BEarbeiten"},
+      "selectObjectsOrPickInternalPoint": { "Undo": "ZUrück" },
+      "pickInternalPointOr": {
+        "Select objects": "objekte Wählen",
+        "Undo": "Zurück"
+      },
+      "peditMeshOption": { "Edit vertex": "BEarbeiten" },
       "ucsNewUcs": {
         "ZAxis": "ZAchse"
       },

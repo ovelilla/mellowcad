@@ -139,6 +139,7 @@ export const zhTW: EditorLocale = {
     },
     "Ribbon": {
       "tabs": {
+        "hatchCreation": "填充線建立",
         "home": "常用",
         "insert": "插入",
         "annotate": "註解",
@@ -147,6 +148,10 @@ export const zhTW: EditorLocale = {
         "arrayCreation": "陣列建立"
       },
       "panels": {
+        "hatchBoundaries": "邊界",
+        "hatchPattern": "樣式",
+        "hatchProperties": "性質",
+        "hatchClose": "關閉",
         "draw": "繪製",
         "modify": "修改",
         "annotation": "註解",
@@ -177,6 +182,11 @@ export const zhTW: EditorLocale = {
         "arrayClose": "關閉"
       },
       "items": {
+        "hatchPickPoints": "點選點",
+        "hatchSelect": "選取",
+        "hatchSolid": "單色",
+        "hatchPattern": "樣式",
+        "hatchClose": "關閉\n「填充線建立」",
         "line": "線",
         "polyline": "聚合線",
         "circle": "中心點、半徑",
@@ -331,6 +341,8 @@ export const zhTW: EditorLocale = {
         "arrayClose": "關閉 陣列"
       },
       "fields": {
+        "hatchAngle": "角度",
+        "hatchScale": "填充線樣式比例",
         "columns": "行:",
         "columnSpacing": "間距:",
         "rows": "列:",
@@ -346,6 +358,14 @@ export const zhTW: EditorLocale = {
       },
       "pressF1": "按 F1 以取得更多說明",
       "tips": {
+        "hatchPickPoints": "透過繞指定點形成封閉區域的既有物件確定填充線邊界",
+        "hatchSelect": "透過形成封閉區域的所選物件確定填充線邊界",
+        "hatchType": "指定要建立預先定義的填充線或填滿，還是建立使用者定義的填充線",
+        "hatchSolid": "指定單色填滿而不是填充線樣式",
+        "hatchPattern": "顯示 ANSI、ISO 和其他業界標準填充線樣式的選集",
+        "hatchAngle": "指定填充線樣式相對於目前 UCS 中 X 軸的角度",
+        "hatchScale": "擴大或縮小預先定義的填充線樣式或自訂填充線樣式",
+        "hatchClose": "結束「填充線建立」並關閉關聯式頁籤",
         "line": "建立直線段",
         "polyline": "建立 2D 聚合線",
         "circle": "使用中心點和半徑建立一個圓",
@@ -515,6 +535,14 @@ export const zhTW: EditorLocale = {
         "arrayClose": "結束陣列指令。"
       },
       "tipTitles": {
+        "hatchPickPoints": "點選點",
+        "hatchSelect": "選取邊界物件",
+        "hatchType": "填充線類型",
+        "hatchSolid": "單色",
+        "hatchPattern": "樣式",
+        "hatchAngle": "填充線角度",
+        "hatchScale": "填充線樣式比例",
+        "hatchClose": "關閉「填充線建立」",
         "layerProperties": "圖層性質",
         "insert": "插入圖塊",
         "ucsIcon": "UCS 圖示",

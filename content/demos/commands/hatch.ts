@@ -43,7 +43,7 @@ function swatch(
     .type(`${SIDE},${SIDE}`)
     .enter()
   const chosen = square
-    .command("_HATCH")
+    .command("_-HATCH")
     .option("Properties")
     .type(name)
     .enter()
@@ -90,7 +90,7 @@ function gallery(): DemoScript {
 }
 
 /**
- * HATCH: ANSI31 chosen under Properties, one internal point, the circle an
+ * -HATCH: ANSI31 chosen under Properties, one internal point, the circle an
  * island; and a gallery of the patterns `?` lists, one square each.
  */
 export const sessions = {
@@ -108,7 +108,7 @@ export const sessions = {
         .enter()
         .type("14")
         .enter()
-        .command("_HATCH")
+        .command("_-HATCH")
         .option("Properties")
         .type("ANSI31")
         .enter()
@@ -118,7 +118,7 @@ export const sessions = {
         .click(8, 8)
         .enter(),
     },
-    from: "HATCH",
+    from: "-HATCH",
   },
   hatchPatterns: {
     figure: { script: gallery(), width: 640, height: 260, padding: 20 },

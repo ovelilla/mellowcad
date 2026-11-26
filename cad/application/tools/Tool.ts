@@ -592,14 +592,19 @@ export interface ContextualTabSource {
   readonly fields: readonly ContextualFieldSource[]
   readonly toggles?: Partial<Record<ContextualToggleId, boolean>>
   readonly method?: "divide" | "measure"
+  /** Hatch Creation's pattern (HPNAME's, as the registry names it). */
+  readonly pattern?: string
 }
 
 /** A contextual tab's field: its value and how its prompt writes it. */
 export interface ContextualFieldSource {
   readonly id: ContextualFieldId
   readonly value: number
-  /** A count, a length (LUPREC) or an angle (AUPREC), trailing zeros dropped. */
-  readonly kind: "count" | "distance" | "angle"
+  /**
+   * A count, a length (LUPREC), an angle (AUPREC) or a factor (`%.4f`, as
+   * HPSCALE's `<1.0000>`), trailing zeros dropped.
+   */
+  readonly kind: "count" | "distance" | "angle" | "factor"
   readonly disabled?: boolean
 }
 

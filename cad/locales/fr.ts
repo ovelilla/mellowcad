@@ -1781,7 +1781,8 @@ export const fr: EngineLocale = {
         "Select objects": "Sélectionner",
         "?": "?",
         "Solid": "Solide",
-        "Undo": "annUler"
+        "Undo": "annUler",
+        "Pick internal point": "cHoisir"
       },
       "INSERT": {
         "?": "?",
@@ -2385,6 +2386,14 @@ export const fr: EngineLocale = {
       }
     },
     "promptKeywords": {
+      "selectObjectsOrPickInternalPoint": {
+        "Pick internal point": "cHoisir",
+        "Undo": "annUler"
+      },
+      "pickInternalPointOr": {
+        "Select objects": "Sélectionner",
+        "Undo": "annUler"
+      },
       "peditMeshOption": {
         "eXit": "Quitter",
         "X": "Q",
@@ -2524,6 +2533,8 @@ export const fr: EngineLocale = {
       }
     },
     "prompts": {
+      "pickInternalPointOr": "Choisir un point interne ou",
+      "selectObjectsOrPickInternalPoint": "Sélectionnez des objets ou",
       "enterMeshSizeM": "Entrez la taille du maillage dans la direction M",
       "enterMeshSizeN": "Entrez la taille du maillage dans la direction N",
       "specifyMeshVertex": [
@@ -9229,7 +9240,8 @@ export const fr: EngineLocale = {
         "Spline curve": "courbe sPline"
       },
       "HATCH": {
-        "Select objects": "Sélectionner des objets"
+        "Select objects": "Sélectionner des objets",
+        "Pick internal point": "cHoisir un point interne"
       },
       "BREAK": {
         "First point": "Premier point"
@@ -9279,6 +9291,13 @@ export const fr: EngineLocale = {
       }
     },
     "promptKeywordLabels": {
+      "selectObjectsOrPickInternalPoint": {
+        "Undo": "annUler"
+      },
+      "pickInternalPointOr": {
+        "Select objects": "Sélectionner des objets",
+        "Undo": "annUler"
+      },
       "peditMeshOption": {
         "Edit vertex": "Modif-sommet"
       },

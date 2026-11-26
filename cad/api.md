@@ -442,6 +442,12 @@ export declare class CadEngine {
      * presenter. Null for an unknown or empty block.
      */
     buildBlockPreview(id: string, width: number, height: number): Scene | null;
+    /**
+     * A swatch of a hatch pattern (a name in `HATCH_PATTERNS`), `size` px
+     * square, as a scene for a presenter: Hatch Creation's gallery. Null for
+     * a pattern this build has not.
+     */
+    buildHatchSwatch(pattern: string, size: number): Scene | null;
     toggleLineweightDisplay(): void;
     /**
      * The drawing as the text of a drawing file: versioned JSON, in world
@@ -967,7 +973,8 @@ export type { ContextualEdit }
 /**
  * What a contextual tab's control asks of the running command, as its prompt
  * would take it: a field's typed text, a toggle flipped, a path array's
- * Method, or the tab's Close.
+ * Method, Hatch Creation's pattern (a name in `HATCH_PATTERNS`), its Type or
+ * how its boundaries are given (Pick Points, Select), or the tab's Close.
  */
 export type ContextualEdit = {
     readonly field: ContextualFieldId;
@@ -977,12 +984,18 @@ export type ContextualEdit = {
 } | {
     readonly method: "divide" | "measure";
 } | {
+    readonly pattern: string;
+} | {
+    readonly hatchType: "solid" | "pattern";
+} | {
+    readonly boundary: "pick" | "select";
+} | {
     readonly close: true;
 };
 
 export type { ContextualFieldId }
 /** A field of a contextual tab, by what it sets. */
-export type ContextualFieldId = "columns" | "columnSpacing" | "rows" | "rowSpacing" | "rowElevation" | "levels" | "levelSpacing" | "levelTotal" | "items" | "angleBetween" | "fillAngle" | "itemSpacing";
+export type ContextualFieldId = "columns" | "columnSpacing" | "rows" | "rowSpacing" | "rowElevation" | "levels" | "levelSpacing" | "levelTotal" | "items" | "angleBetween" | "fillAngle" | "itemSpacing" | "hatchAngle" | "hatchScale";
 
 export type { ContextualFieldUi }
 /** A field's value, written at the drawing's precision as its prompt's default is. */
@@ -996,7 +1009,8 @@ export type { ContextualTab }
 export interface ContextualTab {
     /**
      * Which tab: Array Creation for ARRAYRECT, ARRAYPOLAR or ARRAYPATH
-     * (ARRAYCREATION 1, 2, 3).
+     * (ARRAYCREATION 1, 2, 3); Hatch Creation for HATCH with the ribbon open
+     * (HATCHCREATION 1).
      */
     readonly id: ContextualTabId;
     /** Each field's value as its prompt offers it, and whether it is greyed. */
@@ -1005,11 +1019,16 @@ export interface ContextualTab {
     readonly toggles: Readonly<Partial<Record<ContextualToggleId, boolean>>>;
     /** A path array's Method (Divide or Measure); null on the others. */
     readonly method: "divide" | "measure" | null;
+    /**
+     * Hatch Creation's pattern, the name in `HATCH_PATTERNS` HPNAME holds
+     * (`SOLID` for a solid fill); null on the others.
+     */
+    readonly pattern: string | null;
 }
 
 export type { ContextualTabId }
 /** The contextual tabs a command opens. */
-export type ContextualTabId = "arrayCreationRectangular" | "arrayCreationPolar" | "arrayCreationPath";
+export type ContextualTabId = "arrayCreationRectangular" | "arrayCreationPolar" | "arrayCreationPath" | "hatchCreation";
 
 export type { ContextualToggleId }
 /** A toggle of a contextual tab. */

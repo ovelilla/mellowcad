@@ -208,6 +208,14 @@ export const TIP_SOURCES = {
   arrayMeasure: "TT_AcPathArrayMeasureMethod",
   arrayAlignItems: "TT_AcPathArrayAlignItemsToggle",
   arrayClose: "TT_AcArrayCreationClose",
+  hatchPickPoints: "TT_AcHatchPickPointsButton",
+  hatchSelect: "TT_AcHatchSelectObjectsButton",
+  hatchType: "TT_AcHatchTypeCombo",
+  hatchSolid: "TT_AcHatchTypeSolid",
+  hatchPattern: "TT_AcHatchTypePattern",
+  hatchAngle: "TT_AcHatchPatternAngleSlider",
+  hatchScale: "TT_AcHatchScaleSpinner",
+  hatchClose: "MM_1928",
 }
 
 function zipParts(path) {

@@ -135,6 +135,7 @@ export const ja: EditorLocale = {
     },
     "Ribbon": {
       "tabs": {
+        "hatchCreation": "ハッチング作成",
         "home": "ホーム",
         "insert": "挿入",
         "annotate": "注釈",
@@ -143,6 +144,10 @@ export const ja: EditorLocale = {
         "arrayCreation": "配列複写作成"
       },
       "panels": {
+        "hatchBoundaries": "境界",
+        "hatchPattern": "パターン",
+        "hatchProperties": "プロパティ",
+        "hatchClose": "閉じる",
         "draw": "作成",
         "modify": "修正",
         "annotation": "注釈",
@@ -173,6 +178,11 @@ export const ja: EditorLocale = {
         "arrayClose": "閉じる"
       },
       "items": {
+        "hatchPickPoints": "点をクリック",
+        "hatchSelect": "選択",
+        "hatchSolid": "塗り潰し",
+        "hatchPattern": "パターン",
+        "hatchClose": "ハッチング作成\nを閉じる",
         "line": "線分",
         "polyline": "ポリライン",
         "circle": "中心、半径",
@@ -327,6 +337,8 @@ export const ja: EditorLocale = {
         "arrayClose": "配列複写 を閉じる"
       },
       "fields": {
+        "hatchAngle": "角度",
+        "hatchScale": "ハッチング パターンの尺度",
         "columns": "列:",
         "columnSpacing": "間隔:",
         "rows": "行:",
@@ -342,6 +354,14 @@ export const ja: EditorLocale = {
       },
       "pressF1": "ヘルプを表示するには F1 キー",
       "tips": {
+        "hatchPickPoints": "指定した点を囲む、閉じた領域を形成する既存のオブジェクトからハッチング境界を決定",
+        "hatchSelect": "閉じた領域を形成するオブジェクトを選択してハッチング境界を決定",
+        "hatchType": "定義済みのハッチング、塗り潰し、ユーザ定義ハッチングのいずれでハッチングを作成するかを指定",
+        "hatchSolid": "ハッチング パターンを使用せずにソリッド塗り潰しを指定",
+        "hatchPattern": "ANSI、ISO、または産業標準のハッチング パターンを表示",
+        "hatchAngle": "ハッチング パターンの現在の UCS の X 軸に相対的な角度を指定",
+        "hatchScale": "定義済みまたはカスタム ハッチング パターンを拡大/縮小",
+        "hatchClose": "ハッチングの作成を終了し、コンテキスト タブを閉じる",
         "line": "直線セグメントを作成",
         "polyline": "2D ポリラインを作成",
         "circle": "中心と半径を指定して円を作成",
@@ -511,6 +531,14 @@ export const ja: EditorLocale = {
         "arrayClose": "配列複写コマンドを終了します。"
       },
       "tipTitles": {
+        "hatchPickPoints": "点をクリック",
+        "hatchSelect": "境界オブジェクトを選択",
+        "hatchType": "ハッチングのタイプ",
+        "hatchSolid": "塗り潰し",
+        "hatchPattern": "パターン",
+        "hatchAngle": "ハッチング角度",
+        "hatchScale": "ハッチング パターンの尺度",
+        "hatchClose": "ハッチング作成を閉じる",
         "layerProperties": "画層プロパティ管理",
         "insert": "ブロック挿入",
         "ucsIcon": "UCS アイコン",

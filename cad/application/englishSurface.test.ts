@@ -5,6 +5,7 @@ import {
   MemoryClipboard,
   MemoryFileTransport,
   createHarness,
+  ribbonClosed,
 } from "../../test/harness"
 import {
   arcOf,
@@ -639,24 +640,38 @@ describe("the engine's English surface", () => {
     walk("HATCH", createHarness({ entities: square() }), (s) =>
       s
         .do("HATCH", (c) => c.command("H"))
-        .do("quick preview", (c) => c.moveTo(at(50, 50)))
-        .do("P", (c) => answer(c, "P"))
-        .do("?", (c) => c.type("?"))
-        .do("enter", (c) => c.enter())
-        .do("P", (c) => answer(c, "P"))
-        .do("unknown pattern", (c) => c.type("NOPE"))
-        .do("enter", (c) => c.enter())
-        .do("ANSI31", (c) => c.type("ANSI31"))
-        .do("enter", (c) => c.enter())
-        .do("scale", (c) => c.type("0.0001"))
-        .do("enter", (c) => c.enter())
-        .do("angle", (c) => c.type("0"))
-        .do("enter", (c) => c.enter())
         .do("pick inside", (c) => c.click(at(50, 50)))
-        .do("pick outside", (c) => c.click(at(500, 500)))
         .do("S", (c) => answer(c, "S"))
         .do("pick object", (c) => c.click(at(50, 0)))
+        .do("K", (c) => answer(c, "K"))
+        .do("U", (c) => answer(c, "U"))
         .do("enter", (c) => c.enter())
+    )
+    // With the ribbon closed HATCH asks -HATCH's prompts (HATCH-D31).
+    walk(
+      "HATCH, the ribbon closed",
+      ribbonClosed({ entities: square() }),
+      (s) =>
+        s
+          .do("HATCH", (c) => c.command("H"))
+          .do("quick preview", (c) => c.moveTo(at(50, 50)))
+          .do("P", (c) => answer(c, "P"))
+          .do("?", (c) => c.type("?"))
+          .do("enter", (c) => c.enter())
+          .do("P", (c) => answer(c, "P"))
+          .do("unknown pattern", (c) => c.type("NOPE"))
+          .do("enter", (c) => c.enter())
+          .do("ANSI31", (c) => c.type("ANSI31"))
+          .do("enter", (c) => c.enter())
+          .do("scale", (c) => c.type("0.0001"))
+          .do("enter", (c) => c.enter())
+          .do("angle", (c) => c.type("0"))
+          .do("enter", (c) => c.enter())
+          .do("pick inside", (c) => c.click(at(50, 50)))
+          .do("pick outside", (c) => c.click(at(500, 500)))
+          .do("S", (c) => answer(c, "S"))
+          .do("pick object", (c) => c.click(at(50, 0)))
+          .do("enter", (c) => c.enter())
     )
     walk("-HATCH", createHarness({ entities: square() }), (s) =>
       s

@@ -1030,6 +1030,15 @@ export class CadEngine {
     return this.runtime.buildBlockPreview(id, width, height)
   }
 
+  /**
+   * A swatch of a hatch pattern (a name in `HATCH_PATTERNS`), `size` px
+   * square, as a scene for a presenter: Hatch Creation's gallery. Null for
+   * a pattern this build has not.
+   */
+  buildHatchSwatch(pattern: string, size: number): Scene | null {
+    return this.runtime.buildHatchSwatch(pattern, size)
+  }
+
   toggleLineweightDisplay(): void {
     this.runtime.toggleLineweightDisplay()
   }

@@ -15,7 +15,8 @@ import {
 } from "../input/coordinateInput"
 import { ScenePrimitive } from "../../scene/types"
 import { ObjectSelector } from "./objectSelection"
-import { refuseText, refusesCount, takesCount } from "./arrayCounts"
+import { refusesCount, takesCount } from "./arrayCounts"
+import { refuseText } from "./refuseText"
 import {
   ArrayAssociativity,
   arrayPreview,

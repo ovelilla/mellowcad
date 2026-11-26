@@ -1045,7 +1045,8 @@
         "Select objects": "Seleziona",
         "?": "?",
         "Solid": "Solido",
-        "Undo": "ANnulla"
+        "Undo": "ANnulla",
+        "Pick internal point": "SCegli"
       },
       "INSERT": {
         "?": "?",
@@ -1645,8 +1646,21 @@
       }
     },
     "promptKeywords": {
-      "peditMeshOption": {"eXit": "eSci", "X": "X", "Undo": "ANnulla"},
-      "peditMeshVertexOption": {"Regen": "RIgenera", "Previous": "Precedente", "Move": "SPosta", "eXit": "eSci"},
+      "selectObjectsOrPickInternalPoint": {
+        "Pick internal point": "SCegli",
+        "Undo": "Annulla"
+      },
+      "pickInternalPointOr": {
+        "Select objects": "SEleziona",
+        "Undo": "Annulla"
+      },
+      "peditMeshOption": { "eXit": "eSci", "X": "X", "Undo": "ANnulla" },
+      "peditMeshVertexOption": {
+        "Regen": "RIgenera",
+        "Previous": "Precedente",
+        "Move": "SPosta",
+        "eXit": "eSci"
+      },
       "selectObjects": {
         "Window": "Finestra",
         "Last": "Prec",
@@ -1773,6 +1787,8 @@
       }
     },
     "prompts": {
+      "pickInternalPointOr": "Selezionare il punto interno o",
+      "selectObjectsOrPickInternalPoint": "Selezionare oggetti o",
       "enterMeshSizeM": "Digitare dimensione M della mesh",
       "enterMeshSizeN": "Digitare dimensione N della mesh",
       "specifyMeshVertex": "Specificare posizione per il vertice ({m}, {n})",
@@ -3487,7 +3503,8 @@
         "Spline curve": "curva Spline"
       },
       "HATCH": {
-        "Select objects": "Seleziona oggetti"
+        "Select objects": "Seleziona oggetti",
+        "Pick internal point": "SCegli punto interno"
       },
       "BREAK": {
         "First point": "Primo punto"
@@ -3537,7 +3554,12 @@
       }
     },
     "promptKeywordLabels": {
-      "peditMeshOption": {"Edit vertex": "Edita vertici"},
+      "selectObjectsOrPickInternalPoint": { "Undo": "Annulla" },
+      "pickInternalPointOr": {
+        "Select objects": "SEleziona oggetti",
+        "Undo": "ANnulla"
+      },
+      "peditMeshOption": { "Edit vertex": "Edita vertici" },
       "ucsNewUcs": {
         "ZAxis": "Asse-z"
       },

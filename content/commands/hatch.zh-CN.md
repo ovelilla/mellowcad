@@ -3,38 +3,38 @@ title: "AutoCAD HATCH（图案填充）命令"
 metaTitle: "CAD 填充命令（HATCH）怎么用：图案与快捷键 H"
 description: "CAD 图案填充怎么操作：按提示顺序讲解 AutoCAD 的 HATCH（快捷键 H）：拾取内部点或选择对象、图案、比例和角度，以及孤岛。在浏览器中免费试用。"
 figure: "一个内有圆的矩形，从内部一点用 ANSI31 填充：圆作为孤岛保持空白。"
-sourceHash: "adab8ef70a51"
+sourceHash: "a79440617f68"
 ---
 
 HATCH（图案填充）命令用线条图案或实体填充一个闭合区域。在区域内拾取一点，命令会在周围的对象中找到边界，并将位于其中的对象（例如矩形中的圆或一段文字）作为孤岛保持空白；也可以选择围成该区域的对象。可以拾取任意多个区域：按 Enter 键或 Esc 键后，将它们全部创建为一个图案填充，位于当前图层上，置于边界之后。整个命令是一步，可以一次放弃。
 
-AutoCAD 的 HATCH 在“图案填充创建”选项卡或对话框中设置图案，MellowCAD 没有这些界面：这里在命令行中询问 <Command id="-HATCH" /> 所问的内容，图案在 <Keyword id="Properties" /> 下设置。两者只在按 Esc 键时不同：在 <Command id="-HATCH" /> 中，按 Esc 键会放弃已拾取的区域。每个图案填充都以上一个图案填充的图案、比例和角度开始：新图形中为 ANGLE，比例 1，角度 0。
+命令运行时，功能区显示“图案填充创建”选项卡，与 AutoCAD 相同：“拾取点”和“选择”、图案库、“图案填充类型”（“实体”或“图案”）、“角度”、“填充图案比例”和“关闭图案填充创建”。功能区关闭时，AutoCAD 会打开“图案填充和渐变色”对话框，MellowCAD 没有这个对话框：此时 HATCH 在命令行中询问 <Command id="-HATCH" /> 所问的内容，图案在 <Keyword id="Properties" /> 下设置。按 Esc 键会保留图案填充，而在 <Command id="-HATCH" /> 中，按 Esc 键会放弃已拾取的区域。每个图案填充都以上一个图案填充的图案、比例和角度开始：新图形中为 ANGLE，比例 1，角度 0。
 
 ## Options
 
 ### Properties
 
-询问图案名称（不区分大小写），并提供当前图案：<Keyword id="Solid" /> 用实体填充区域，<Keyword id="?" /> 列出图案及其说明，然后返回到指定内部点的提示。对于图案，命令接着询问比例（大于 0 的数，或用两点测量），然后询问角度（输入或用两点指定）。下一个图案填充保留这三项设置。
+在功能区关闭时或在 <Command id="-HATCH" /> 中，于命令行询问；功能区打开时，由选项卡设置同样的三项。询问图案名称（不区分大小写），并提供当前图案：<Keyword id="Solid" /> 用实体填充区域，<Keyword id="?" /> 列出图案及其说明，然后返回到指定内部点的提示。对于图案，命令接着询问比例（大于 0 的数，或用两点测量），然后询问角度（输入或用两点指定）。下一个图案填充保留这三项设置。
 
 <Session name="hatchPatterns" caption="SOLID 和 acadiso.pat 中的十一种图案，每种都以比例 1 填充在边长 30 的正方形中，AR-CONC 和 AR-SAND 的比例分别为 0.08 和 0.1。" />
 
 ### Select objects
 
-代替拾取内部点，选择围成区域的对象；按 Enter 键返回到指定内部点的提示。不围成任何区域的对象被忽略；如果没有一个对象围成区域，按 Enter 键时显示 <Message id="unableToHatchBoundary" />，不生成任何对象。面域提供其轮廓，其中的孔作为孤岛。
+代替拾取内部点，选择围成区域的对象；功能区打开时，每次选择后都会再次询问，<Keyword id="Pick internal point" /> 返回到指定内部点的提示，按 Enter 键结束命令；功能区关闭时，按 Enter 键返回到指定内部点的提示。不围成任何区域的对象被忽略；如果没有一个对象围成区域，按 Enter 键时显示 <Message id="unableToHatchBoundary" />，不生成任何对象。面域提供其轮廓，其中的孔作为孤岛。
 
 ### Undo
 
-提示中不列出，但可以输入：放弃最后拾取的点所找到的区域，然后再次询问，已选择的对象保持选中。没有可放弃的点时，显示 <Message id="noBoundaryToUndo" />。
+在功能区的提示中列出，在 <Command id="-HATCH" /> 的提示中不列出，但可以输入：放弃最后拾取的点所找到的区域，然后再次询问，已选择的对象保持选中；选择对象时，放弃最后一次选择。没有可放弃的点时，显示 <Message id="noBoundaryToUndo" />。
 
 ## Missing
 
-以椭圆和样条曲线作为边界：找不到它们围成的区域，带有此类边的面域也会被忽略。允许的间隙（HPGAPTOL）：区域必须完全闭合。关联图案填充，以及“普通”和“忽略”孤岛检测样式。渐变色、用户定义图案和 acadiso.pat 中的其余图案这里无法创建：只有 DXF 中的图案填充会带入它们，渐变色保留其颜色，图案保留其线条。-HATCH 的其他选项：绘图边界、删除边界、高级、绘图次序、原点、注释性、图案填充颜色、图层和透明度。HATCHEDIT 和图案填充编辑器（在 AutoCAD 中双击即可打开）。MIRRHATCH 1：镜像后的图案填充总是保留其图案角度。图案填充夹点的菜单。
+以椭圆和样条曲线作为边界：找不到它们围成的区域，带有此类边的面域也会被忽略。允许的间隙（HPGAPTOL）：区域必须完全闭合。关联图案填充，以及“普通”和“忽略”孤岛检测样式。渐变色、用户定义图案和 acadiso.pat 中的其余图案这里无法创建：只有 DXF 中的图案填充会带入它们，渐变色保留其颜色，图案保留其线条。-HATCH 的其他选项：绘图边界、删除边界、高级、绘图次序、原点、注释性、图案填充颜色、图层和透明度；功能区提示中的“绘制”和“设置”。“图案填充创建”选项卡中的“删除”和“重新创建”，“渐变色”和“用户定义”类型，颜色、透明度、原点和选项。HATCHEDIT 和图案填充编辑器（在 AutoCAD 中双击即可打开）。MIRRHATCH 1：镜像后的图案填充总是保留其图案角度。图案填充夹点的菜单。
 
 ## Questions
 
 ### CAD 图案填充的快捷键是什么？
 
-输入 `H`，然后按 Enter 键或空格键；也可以输入 `BH`。由于没有“图案填充创建”选项卡，命令在命令行中询问，与 `-H`（<Command id="-HATCH" />）相同。在任何语言版本的 AutoCAD 中都可以输入 `_HATCH`。
+输入 `H`，然后按 Enter 键或空格键；也可以输入 `BH`。它会打开“图案填充创建”选项卡；`-H`（<Command id="-HATCH" />）则在命令行中询问所有内容。在任何语言版本的 AutoCAD 中都可以输入 `_HATCH`。
 
 ### CAD 填充不了是什么原因？
 
@@ -42,11 +42,11 @@ AutoCAD 的 HATCH 在“图案填充创建”选项卡或对话框中设置图�
 
 ### CAD 有哪些填充图案？可以下载更多图案吗？
 
-提供 AutoCAD 公制图案文件 acadiso.pat 中的一部分：SOLID、ANGLE、ANSI31 到 ANSI38、AR-CONC、AR-SAND、BRICK、CROSS、DASH、DOTS、EARTH、HONEY、LINE、NET、NET3、SQUARE、STEEL 和 ZIGZAG。<Keyword id="Properties" /> 下的 <Keyword id="?" /> 可以列出它们。目前还不能加载自己的或下载的图案文件，但 DXF 中的图案填充无论使用什么图案，都会按 AutoCAD 的画法打开。
+提供 AutoCAD 公制图案文件 acadiso.pat 中的一部分：SOLID、ANGLE、ANSI31 到 ANSI38、AR-CONC、AR-SAND、BRICK、CROSS、DASH、DOTS、EARTH、HONEY、LINE、NET、NET3、SQUARE、STEEL 和 ZIGZAG。“图案填充创建”选项卡会显示它们；<Keyword id="Properties" /> 下的 <Keyword id="?" /> 可以列出它们。目前还不能加载自己的或下载的图案文件，但 DXF 中的图案填充无论使用什么图案，都会按 AutoCAD 的画法打开。
 
 ### CAD 填充比例怎么调？
 
-拾取前，在 <Keyword id="Properties" /> 下设置：比例在图案名称之后询问。创建后，选择图案填充，在“特性”选项板中重新输入“比例”，或用 <Command id="MATCHPROP" /> 将另一个图案填充的图案、比例和角度赋给它。比例太小、图案需要的线条过多时，显示 <Message id="hatchTooDense" />，不生成图案填充。
+拾取时，在“图案填充创建”选项卡的“填充图案比例”中设置，或在 <Command id="-HATCH" /> 的 <Keyword id="Properties" /> 下、图案名称之后设置。创建后，选择图案填充，在“特性”选项板中重新输入“比例”，或用 <Command id="MATCHPROP" /> 将另一个图案填充的图案、比例和角度赋给它。比例太小、图案需要的线条过多时，显示 <Message id="hatchTooDense" />，不生成图案填充。
 
 ### CAD 填充面积怎么查？
 

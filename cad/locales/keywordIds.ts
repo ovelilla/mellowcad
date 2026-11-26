@@ -285,7 +285,8 @@ export const KEYWORD_IDS: Readonly<Record<string, readonly string[]>> = {
     "Select objects",
     "?",
     "Solid",
-    "Undo"
+    "Undo",
+    "Pick internal point"
   ],
   "INSERT": [
     "?",

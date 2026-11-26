@@ -84,21 +84,23 @@ describe.each(RESETS)("after %s", (_, reset) => {
     cad.escape()
   })
 
-  it("HATCH offers ANGLE (HPNAME, hatch/p00, rectang/p303)", () => {
-    const cad = answer(session(), "_HATCH", "_P", "SOLID", "")
+  it("-HATCH offers ANGLE (HPNAME, hatch/p00, rectang/p303)", () => {
+    const cad = answer(session(), "_-HATCH", "_P", "SOLID", "")
     reset(cad)
-    answer(cad, "_HATCH", "_P")
-    expect(prompt(cad)).toBe("HATCH Enter a pattern name or [?/Solid] <ANGLE>:")
+    answer(cad, "_-HATCH", "_P")
+    expect(prompt(cad)).toBe(
+      "-HATCH Enter a pattern name or [?/Solid] <ANGLE>:"
+    )
     cad.escape()
   })
 
-  it("HATCH offers scale 1 and angle 0 (HPSCALE, HPANG, rectang/p303)", () => {
-    const cad = answer(session(), "_HATCH", "_P", "ANSI31", "2", "30", "")
+  it("-HATCH offers scale 1 and angle 0 (HPSCALE, HPANG, rectang/p303)", () => {
+    const cad = answer(session(), "_-HATCH", "_P", "ANSI31", "2", "30", "")
     reset(cad)
-    answer(cad, "_HATCH", "_P", "")
-    expect(prompt(cad)).toBe("HATCH Specify a scale for the pattern <1.0000>:")
+    answer(cad, "_-HATCH", "_P", "")
+    expect(prompt(cad)).toBe("-HATCH Specify a scale for the pattern <1.0000>:")
     answer(cad, "")
-    expect(prompt(cad)).toBe("HATCH Specify an angle for the pattern <0>:")
+    expect(prompt(cad)).toBe("-HATCH Specify an angle for the pattern <0>:")
     cad.escape()
   })
 

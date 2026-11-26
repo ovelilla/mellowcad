@@ -91,6 +91,7 @@ declare const source: {
   }
   "Ribbon": {
     "tabs": {
+      "hatchCreation": string
       "home": string
       "insert": string
       "annotate": string
@@ -99,6 +100,10 @@ declare const source: {
       "arrayCreation": string
     }
     "panels": {
+      "hatchBoundaries": string
+      "hatchPattern": string
+      "hatchProperties": string
+      "hatchClose": string
       "draw": string
       "modify": string
       "annotation": string
@@ -129,6 +134,11 @@ declare const source: {
       "arrayClose": string
     }
     "items": {
+      "hatchPickPoints": string
+      "hatchSelect": string
+      "hatchSolid": string
+      "hatchPattern": string
+      "hatchClose": string
       "line": string
       "polyline": string
       "circle": string
@@ -283,6 +293,8 @@ declare const source: {
       "arrayClose": string
     }
     "fields": {
+      "hatchAngle": string
+      "hatchScale": string
       "columns": string
       "columnSpacing": string
       "rows": string
@@ -298,6 +310,14 @@ declare const source: {
     }
     "pressF1": string
     "tips": {
+      "hatchPickPoints": string
+      "hatchSelect": string
+      "hatchType": string
+      "hatchSolid": string
+      "hatchPattern": string
+      "hatchAngle": string
+      "hatchScale": string
+      "hatchClose": string
       "line": string
       "polyline": string
       "circle": string
@@ -467,6 +487,14 @@ declare const source: {
       "arrayClose": string
     }
     "tipTitles": {
+      "hatchPickPoints": string
+      "hatchSelect": string
+      "hatchType": string
+      "hatchSolid": string
+      "hatchPattern": string
+      "hatchAngle": string
+      "hatchScale": string
+      "hatchClose": string
       "layerProperties": string
       "insert": string
       "ucsIcon": string

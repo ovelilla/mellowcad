@@ -120,8 +120,7 @@ a second layout. This file owns the rule for the landing too.
 
 The editor is `packages/editor/src/`: kebab-case, one primary component per file, the file named
 after its export (`layers-control.tsx` → `LayersControl`); its small satellites stay in the same
-file. Shared bar atoms live in `toolbar-primitives.tsx`, custom glyphs in `icons.tsx`, the
-primitives in `ui/`, the catalog in `locales/`. It reaches its own files relatively and the engine
+file. It reaches its own files relatively and the engine
 and the hooks by name (`test/packages.test.ts`): an `@/` import still compiles in the repo, against
 the site. `shadcn add` writes into the editor (`components.json`) with `@/` imports: make them
 relative, and its `import { cn } from "cn"` (the stock merge, blind to the type scale) the local
@@ -178,7 +177,7 @@ and line height; the editor's root starts every text, its popups too, as `text-u
   starts 12 px from its surface's edge: `px-3` in a palette, `p-3` in a popover, `p-1` + `ps-2` in a
   menu.
 - `packages/editor/src/type-scale.test.ts` holds the scale and the steps in the editor;
-  `cn()` keeps `text-ui` beside a colour (it knows the roles as sizes). The ViewCube's SVG sets its
+  `cn()` keeps `text-ui` beside a colour. The ViewCube's SVG sets its
   weight as an attribute (a class would size it too); its face names, sized to the face, are the
   one text outside the scale.
 - A new zone, palette or menu is checked in Chrome (`getComputedStyle` on every visible text):
@@ -240,6 +239,8 @@ the ribbon, the bottom row. **28 px**, icons 16, for the rest one presses. AutoC
   as an item acts is lost and Base UI focuses the trigger, whose next key is its own (a letter
   picks, Space opens). Give focus back in the popup's `finalFocus` (`drawingFocus(engine)`). A
   dialog: `finalFocus={false}` and `focusSurface` on `onOpenChangeComplete`.
+- **A popover closes on `focus-out`**, as a command's box takes the focus back: a ribbon
+  gallery's trigger, clicked, gives the drawing the keys (`focusSurface`).
 - **React hands a portalled popup's events to what rendered it**: an ancestor's `onWheel` too,
   a palette's title bar's drag (`ownPress`).
 - **React listens on its root (Next's `document`), as the engine does**: a key a palette or a

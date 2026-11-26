@@ -99,6 +99,22 @@ export type RibbonControl =
   | { readonly kind: "pathMethod" }
   /** A contextual tab's Close, ending its command (AcArrayCreationCloseButton). */
   | { readonly kind: "closeContextual"; readonly text: ItemId }
+  /**
+   * Hatch Creation's Pick Points and Select (AcHatchPickPointsButton,
+   * AcHatchSelectObjectsButton): how HATCH takes its boundaries.
+   */
+  | {
+      readonly kind: "hatchBoundary"
+      readonly boundary: "pick" | "select"
+      readonly size: ControlSize
+    }
+  /** Hatch Creation's pattern gallery (AcHatchPatternGallery): HPNAME. */
+  | { readonly kind: "hatchPatterns" }
+  /**
+   * Hatch Creation's Type, Angle and Scale (AcHatchTypeCombo,
+   * AcHatchPatternAngleSlider, AcHatchScaleSpinner), in their rows.
+   */
+  | { readonly kind: "hatchProperties" }
 
 /** A column of up to three small controls, one row each. */
 export interface RibbonColumn {

@@ -90,6 +90,7 @@
   },
   "Ribbon": {
     "tabs": {
+      "hatchCreation": "Création de hachures",
       "home": "Début",
       "insert": "Insertion",
       "annotate": "Annoter",
@@ -98,6 +99,10 @@
       "arrayCreation": "Création de réseau"
     },
     "panels": {
+      "hatchBoundaries": "Contours",
+      "hatchPattern": "Motif",
+      "hatchProperties": "Propriétés",
+      "hatchClose": "Fermer",
       "draw": "Dessin",
       "modify": "Modification",
       "annotation": "Annotation",
@@ -128,6 +133,11 @@
       "arrayClose": "Fermer"
     },
     "items": {
+      "hatchPickPoints": "Choisir des points",
+      "hatchSelect": "Sélection",
+      "hatchSolid": "Solide",
+      "hatchPattern": "Motif",
+      "hatchClose": "Fermer\nCréation de hachures",
       "line": "Ligne",
       "polyline": "Polyligne",
       "circle": "Centre, rayon",
@@ -282,6 +292,8 @@
       "arrayClose": "Fermer le réseau"
     },
     "fields": {
+      "hatchAngle": "Angle",
+      "hatchScale": "Echelle du motif de hachures",
       "columns": "Colonnes:",
       "columnSpacing": "Entre:",
       "rows": "Rangées:",
@@ -297,6 +309,14 @@
     },
     "pressF1": "Appuyez sur F1 pour obtenir de l'aide",
     "tips": {
+      "hatchPickPoints": "Détermine un contour de hachures à partir d'objets existants formant une zone fermée autour du point spécifié.",
+      "hatchSelect": "Détermine un contour de hachures à partir des objets sélectionnés qui forment une zone fermée.",
+      "hatchType": "Indique s'il faut créer un remplissage ou un hachurage prédéfini, ou des hachures définies par l'utilisateur",
+      "hatchSolid": "Spécifie un remplissage de solide au lieu d'un motif de hachures",
+      "hatchPattern": "Affiche une sélection de motifs de hachures ANSI, ISO et autres motifs standard",
+      "hatchAngle": "Indique l'angle du motif de hachures, par rapport à l'axe X du SCU courant",
+      "hatchScale": "Développe ou réduit un motif de hachures prédéfini ou personnalisé",
+      "hatchClose": "Quitte la création de hachures et ferme l'onglet contextuel",
       "line": "Crée des lignes droites",
       "polyline": "Crée une polyligne 2D",
       "circle": "Crée un cercle à l'aide d'un centre et d'un rayon",
@@ -466,6 +486,14 @@
       "arrayClose": "Quitte la commande Réseau."
     },
     "tipTitles": {
+      "hatchPickPoints": "Choisir des points",
+      "hatchSelect": "Sélectionner les objets de contour",
+      "hatchType": "Type de hachures",
+      "hatchSolid": "Solide",
+      "hatchPattern": "Motif",
+      "hatchAngle": "Angle de hachures",
+      "hatchScale": "Echelle du motif de hachures",
+      "hatchClose": "Fermer la création de hachures",
       "layerProperties": "Propriétés des calques",
       "insert": "Insérer bloc",
       "ucsIcon": "Icône du SCU",

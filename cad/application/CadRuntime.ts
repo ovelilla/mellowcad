@@ -250,6 +250,7 @@ import {
 } from "./ports"
 import { LayerPatch, nextLayerName, updateLayer } from "./runtimeLayers"
 import { buildBlockPreview, purgeBlocks } from "./runtimeBlocks"
+import { buildHatchSwatch } from "./drawingPreview"
 import {
   CommandPrompt,
   commandPrompt,
@@ -3377,7 +3378,9 @@ export class CadRuntime extends Observable {
             : withoutTrailingZeros(
                 field.kind === "angle"
                   ? formatAngle(field.value, settings)
-                  : formatLength(field.value, settings)
+                  : field.kind === "factor"
+                    ? field.value.toFixed(4)
+                    : formatLength(field.value, settings)
               ),
         disabled: field.disabled === true,
       }
@@ -3387,6 +3390,7 @@ export class CadRuntime extends Observable {
       fields,
       toggles: source.toggles ?? {},
       method: source.method ?? null,
+      pattern: source.pattern ?? null,
     }
   }
 
@@ -6763,6 +6767,11 @@ export class CadRuntime extends Observable {
     this.blockInsert = next
     this.invalidateState()
     return true
+  }
+
+  /** Hatch Creation's swatch of a pattern, `size` px square (`buildHatchSwatch`). */
+  buildHatchSwatch(pattern: string, size: number): Scene | null {
+    return buildHatchSwatch(this.document, pattern, size)
   }
 
   buildBlockPreview(id: BlockId, width: number, height: number): Scene | null {

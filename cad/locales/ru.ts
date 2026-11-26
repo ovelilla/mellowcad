@@ -1821,7 +1821,8 @@ export const ru: EngineLocale = {
         "Select objects": "Выбрать",
         "?": "?",
         "Solid": "Заливка",
-        "Undo": "Отменить"
+        "Undo": "Отменить",
+        "Pick internal point": "Указать"
       },
       "INSERT": {
         "?": "?",
@@ -2425,6 +2426,14 @@ export const ru: EngineLocale = {
       }
     },
     "promptKeywords": {
+      "selectObjectsOrPickInternalPoint": {
+        "Pick internal point": "Указать",
+        "Undo": "Отменить"
+      },
+      "pickInternalPointOr": {
+        "Select objects": "Выбрать",
+        "Undo": "Отменить"
+      },
       "peditMeshOption": {
         "eXit": "выХод",
         "X": "Х",
@@ -2564,6 +2573,8 @@ export const ru: EngineLocale = {
       }
     },
     "prompts": {
+      "pickInternalPointOr": "Укажите внутреннюю точку или",
+      "selectObjectsOrPickInternalPoint": "Выберите объекты или",
       "enterMeshSizeM": "Размер сети в направлении M",
       "enterMeshSizeN": "Размер сети в направлении N",
       "specifyMeshVertex": [
@@ -9852,7 +9863,8 @@ export const ru: EngineLocale = {
         "Spline curve": "СПлайн"
       },
       "HATCH": {
-        "Select objects": "Выбрать объекты"
+        "Select objects": "Выбрать объекты",
+        "Pick internal point": "Указать внутреннюю точку"
       },
       "BREAK": {
         "First point": "Первая точка"
@@ -9902,6 +9914,13 @@ export const ru: EngineLocale = {
       }
     },
     "promptKeywordLabels": {
+      "selectObjectsOrPickInternalPoint": {
+        "Undo": "Отменить"
+      },
+      "pickInternalPointOr": {
+        "Select objects": "Выбрать объекты",
+        "Undo": "Отменить"
+      },
       "peditMeshOption": {
         "Edit vertex": "Вершина"
       },

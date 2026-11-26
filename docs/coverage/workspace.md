@@ -445,11 +445,25 @@ field echoes at the command line (the BAML binds the fields to the array's prope
 whether a value refused there is said at the command line or in the box, a tooltip with no
 command's layout (here no command row, F1 asking for the running command), whether Direction is
 lit counter-clockwise, ARRAYPATH's `ARRAYCREATION 3` once its path is picked (p452 never reached
-it), whether Show Tabs or Show Panels list a contextual tab, and how it shows minimized
+it), whether Show Tabs or Show Panels list a contextual tab, and how it shows minimized. **Hatch
+Creation** (`--source RBN_01738148`), while HATCH runs with the ribbon open (HATCHCREATION 1, its
+rule `Activate="True"`; desktop hatch/d01-2; its prompts, `docs/coverage/draw.md`): Boundaries'
+Pick Points, large on one line as acad.CUIX writes it, and Select, small; Pattern's gallery, the
+patterns built in acadiso.pat's order, four cells of 74 × 70 a row, each the engine's swatch of
+its pattern (a square hatched a few repeats across, `buildHatchSwatch`, painted as a block's
+thumbnail is) over its name, the current one marked, the rows' up and down and an arrow opening
+every pattern under it, six across; Properties' Type (Solid, Pattern) in its first row and, after
+its Spacer, Angle (a slider of 157 with its name, 0 to 359, and a box of 50) and Scale (a box of
+177) in the second and third, greyed for a solid fill; Close Hatch Creation, its text broken where
+acad.CUIX breaks it (`Close&#xD;Hatch Creation`). Its words each culture's acad.CUIX (the tab,
+panels and buttons; Angle) and AcWindows' `TT_AcHatch…` (the tooltips, Solid and Pattern, Scale's
+name), Arabic's ours. **Unverified** as Array Creation's, and whether Angle and Scale grey for a
+solid fill
 
 **Missing:** the Parametric, Visualize, Manage, Output, Add-ins, Collaborate, Express Tools and
-Featured Apps tabs, nothing of theirs built; the contextual tabs Hatch Creation and Text Editor
-(phase 6, blocks 2 and 3), the selection's Array and Hatch Editor (block 4), the other contextual
+Featured Apps tabs, nothing of theirs built; the contextual tab Text Editor (phase 6, block 3),
+the selection's Array and Hatch Editor (block 4), Hatch Creation's controls HATCH does not have
+(`docs/coverage/draw.md`, HATCH's Missing), the other contextual
 tabs, whose features are not built (Block Editor, Edit Reference, Table Cell, External Reference,
 the underlays, Image, Mesh, Section Plane, Point Cloud, Geolocation); Array Creation's Base Point,
 Columns' and Rows' Total, ARRAYPOLAR's Rows and Levels and ARRAYPATH's Total, Rows, Levels, Tangent

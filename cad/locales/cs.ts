@@ -1840,7 +1840,8 @@ export const cs: EngineLocale = {
         "Select objects": "Vybrat",
         "?": "?",
         "Solid": "Barva",
-        "Undo": "Zpět"
+        "Undo": "Zpět",
+        "Pick internal point": "Vnitřní"
       },
       "INSERT": {
         "?": "?",
@@ -2444,6 +2445,14 @@ export const cs: EngineLocale = {
       }
     },
     "promptKeywords": {
+      "selectObjectsOrPickInternalPoint": {
+        "Pick internal point": "Vnitřní",
+        "Undo": "Zpět"
+      },
+      "pickInternalPointOr": {
+        "Select objects": "vYbrat",
+        "Undo": "Zpět"
+      },
       "peditMeshOption": {
         "eXit": "kOnec",
         "X": "O",
@@ -2583,6 +2592,8 @@ export const cs: EngineLocale = {
       }
     },
     "prompts": {
+      "pickInternalPointOr": "Vyberte vnitřní bod nebo",
+      "selectObjectsOrPickInternalPoint": "Vyberte objekty nebo",
       "enterMeshSizeM": "Zadejte rozměr sítě ve směru M",
       "enterMeshSizeN": "Zadejte rozměr sítě ve směru N",
       "specifyMeshVertex": [
@@ -9467,7 +9478,8 @@ export const cs: EngineLocale = {
         "Spline curve": "Spline"
       },
       "HATCH": {
-        "Select objects": "Vybrat objekty"
+        "Select objects": "Vybrat objekty",
+        "Pick internal point": "vybrat Vnitřní bod"
       },
       "BREAK": {
         "First point": "První bod"
@@ -9517,6 +9529,13 @@ export const cs: EngineLocale = {
       }
     },
     "promptKeywordLabels": {
+      "selectObjectsOrPickInternalPoint": {
+        "Undo": "Zpět"
+      },
+      "pickInternalPointOr": {
+        "Select objects": "vYbrat objekty",
+        "Undo": "Zpět"
+      },
       "peditMeshOption": {
         "Edit vertex": "Editace vrcholu"
       },

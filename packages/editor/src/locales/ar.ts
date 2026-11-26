@@ -139,6 +139,7 @@ export const ar: EditorLocale = {
     },
     "Ribbon": {
       "tabs": {
+        "hatchCreation": "إنشاء تهشير",
         "home": "الرئيسية",
         "insert": "إدراج",
         "annotate": "تعليقات توضيحية",
@@ -147,6 +148,10 @@ export const ar: EditorLocale = {
         "arrayCreation": "إنشاء مصفوفة"
       },
       "panels": {
+        "hatchBoundaries": "الحدود",
+        "hatchPattern": "النقش",
+        "hatchProperties": "الخصائص",
+        "hatchClose": "إغلاق",
         "draw": "رسم",
         "modify": "تعديل",
         "annotation": "التعليقات التوضيحية",
@@ -177,6 +182,11 @@ export const ar: EditorLocale = {
         "arrayClose": "إغلاق"
       },
       "items": {
+        "hatchPickPoints": "انتقاء نقاط",
+        "hatchSelect": "تحديد",
+        "hatchSolid": "مصمت",
+        "hatchPattern": "نقش",
+        "hatchClose": "إغلاق\nإنشاء التهشير",
         "line": "خط",
         "polyline": "خط متعدد",
         "circle": "المركز، نصف القطر",
@@ -331,6 +341,8 @@ export const ar: EditorLocale = {
         "arrayClose": "إغلاق المصفوفة"
       },
       "fields": {
+        "hatchAngle": "الزاوية",
+        "hatchScale": "مقياس نقش التهشير",
         "columns": "الأعمدة:",
         "columnSpacing": "بين:",
         "rows": "الصفوف:",
@@ -346,6 +358,14 @@ export const ar: EditorLocale = {
       },
       "pressF1": "اضغط ⁨F1⁩ للحصول على مزيد من التعليمات",
       "tips": {
+        "hatchPickPoints": "يحدد حد التهشير من الكائنات الموجودة التي تشكل مساحة مغلقة حول النقطة المحددة",
+        "hatchSelect": "يحدد حد التهشير من الكائنات المحددة التي تشكل مساحة مغلقة",
+        "hatchType": "يحدد ما إذا كان سيتم إنشاء تهشير أو تعبئة محددين مسبقًا، أو تهشير يحدده المستخدم",
+        "hatchSolid": "يحدد تعبئة مصمتة بدلاً من نقش تهشير",
+        "hatchPattern": "يعرض مجموعة مختارة من نقوش التهشير القياسية من ANSI وISO وغيرها من معايير الصناعة",
+        "hatchAngle": "يحدد زاوية لنقش التهشير بالنسبة إلى المحور X لنظام UCS الحالي",
+        "hatchScale": "يوسّع نقش تهشير محددًا مسبقًا أو مخصصًا أو يقلّصه",
+        "hatchClose": "يخرج من إنشاء التهشير ويغلق علامة التبويب السياقية",
         "line": "ينشئ مقاطع خطوط مستقيمة",
         "polyline": "ينشئ خطًا متعددًا ثنائي الأبعاد",
         "circle": "ينشئ دائرة باستخدام نقطة مركز ونصف قطر",
@@ -515,6 +535,14 @@ export const ar: EditorLocale = {
         "arrayClose": "يُنهي أمر المصفوفة."
       },
       "tipTitles": {
+        "hatchPickPoints": "انتقاء نقاط",
+        "hatchSelect": "تحديد كائنات الحدود",
+        "hatchType": "نوع التهشير",
+        "hatchSolid": "مصمت",
+        "hatchPattern": "نقش",
+        "hatchAngle": "زاوية التهشير",
+        "hatchScale": "مقياس نقش التهشير",
+        "hatchClose": "إغلاق إنشاء التهشير",
         "layerProperties": "خصائص الطبقة",
         "insert": "إدراج كتلة",
         "ucsIcon": "أيقونة نظام الإحداثيات",

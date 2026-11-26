@@ -9,7 +9,11 @@ import {
   loopOf,
   p,
 } from "../../test/builders"
-import { buildDrawingPreview, previewCamera } from "./drawingPreview"
+import {
+  buildDrawingPreview,
+  buildHatchSwatch,
+  previewCamera,
+} from "./drawingPreview"
 
 describe("buildDrawingPreview", () => {
   it("frames the whole drawing in the box, with only the objects drawn", () => {
@@ -113,5 +117,30 @@ describe("previewCamera", () => {
     const camera = previewCamera({ min: p(0, 0), max: p(10, 10) }, 100, 100)
     expect(camera.scale).toBeCloseTo(10)
     expect(camera.worldToScreen(p(5, 5))).toBeCloseToPoint(p(50, 50))
+  })
+})
+
+describe("buildHatchSwatch", () => {
+  it("draws a framed square of the pattern, a few repeats across", () => {
+    const document = documentWith([])
+    const ansi31 = buildHatchSwatch(document, "ANSI31", 32)!
+    const ansi32 = buildHatchSwatch(document, "ANSI32", 32)!
+    expect(ansi31.width).toBe(32)
+    // The frame's four sides and the pattern's lines, ANSI32's two families
+    // drawing about twice ANSI31's one (desktop hatch/d01-2).
+    const lines = (scene: typeof ansi31) =>
+      scene.primitives.filter((primitive) => primitive.kind === "segment")
+        .length
+    expect(lines(ansi31)).toBeGreaterThan(4)
+    expect(lines(ansi32)).toBeGreaterThan(lines(ansi31))
+  })
+
+  it("fills SOLID's, and draws nothing for a pattern this build has not", () => {
+    const document = documentWith([])
+    const solid = buildHatchSwatch(document, "SOLID", 32)!
+    expect(
+      solid.primitives.some((primitive) => primitive.kind === "path")
+    ).toBe(true)
+    expect(buildHatchSwatch(document, "HOUND", 32)).toBeNull()
   })
 })

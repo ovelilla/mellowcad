@@ -21,8 +21,9 @@
 > el extendido, el menú contextual del ribbon (Show Tabs, Show Panels, Show Panel Titles, Close;
 > 3D Tools y los paneles ocultos de View empiezan ocultos, como en AutoCAD) y el Customize ▾ del
 > acceso rápido; lo que solo el escritorio resuelve queda «unverified» y en el §7 del plan. La
-> fase 6 (pestañas contextuales) está en curso: su bloque 1 del §6 del plan (Array Creation) está
-> hecho el 26/11, sin pasada por el escritorio.
+> fase 6 (pestañas contextuales) está en curso: sus bloques 1 (Array Creation) y 2 (Hatch Creation
+> y los prompts de HATCH con el ribbon) del §6 del plan están hechos el 26/11, sin pasada por el
+> escritorio.
 > Acordado el 7/11/2026 por el dueño. Se borra cuando la última fase esté hecha; hasta entonces
 > cada fase cerrada se marca aquí.
 

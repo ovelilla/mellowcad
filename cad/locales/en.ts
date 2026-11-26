@@ -1545,7 +1545,8 @@ export const en: EngineCatalog = {
         "Smooth surface": "Smooth"
       },
       "HATCH": {
-        "Select objects": "Select"
+        "Select objects": "Select",
+        "Pick internal point": "picK"
       },
       "ATTDEF": {
         "Lock position": "Lock",
@@ -1655,6 +1656,14 @@ export const en: EngineCatalog = {
       }
     },
     "promptKeywords": {
+      "selectObjectsOrPickInternalPoint": {
+        "Pick internal point": "picK",
+        "Undo": "Undo"
+      },
+      "pickInternalPointOr": {
+        "Select objects": "Select",
+        "Undo": "Undo"
+      },
       "selectObjects": {
         "Window": "Window",
         "Last": "Last",
@@ -1794,6 +1803,8 @@ export const en: EngineCatalog = {
       }
     },
     "prompts": {
+      "pickInternalPointOr": "Pick internal point or",
+      "selectObjectsOrPickInternalPoint": "Select objects or",
       "length": "Length",
       "width": "Width",
       "angle": "Angle",
@@ -8478,7 +8489,8 @@ export const en: EngineCatalog = {
         "Desmooth": "Desmooth"
       },
       "HATCH": {
-        "Select objects": "Select objects"
+        "Select objects": "Select objects",
+        "Pick internal point": "picK internal point"
       },
       "BREAK": {
         "First point": "First point"
@@ -8528,6 +8540,13 @@ export const en: EngineCatalog = {
       }
     },
     "promptKeywordLabels": {
+      "selectObjectsOrPickInternalPoint": {
+        "Undo": "Undo"
+      },
+      "pickInternalPointOr": {
+        "Select objects": "Select objects",
+        "Undo": "Undo"
+      },
       "ucsNewUcs": {
         "ZAxis": "ZAxis"
       },

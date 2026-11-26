@@ -131,7 +131,9 @@ describe("the hero", () => {
         "OFFSET",
         "RECTANG",
         "LINE",
-        "HATCH",
+        // HATCH's command-line form: with the ribbon open HATCH takes its
+        // pattern from Hatch Creation, which a script does not press.
+        "-HATCH",
         "DIMDIAMETER",
         "DIMLINEAR",
         "CYLINDER",

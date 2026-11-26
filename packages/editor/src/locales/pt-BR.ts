@@ -139,6 +139,7 @@ export const ptBR: EditorLocale = {
     },
     "Ribbon": {
       "tabs": {
+        "hatchCreation": "Criação de hachura",
         "home": "Padrão",
         "insert": "Inserir",
         "annotate": "Anotação",
@@ -147,6 +148,10 @@ export const ptBR: EditorLocale = {
         "arrayCreation": "Criação de Matriz"
       },
       "panels": {
+        "hatchBoundaries": "Limites",
+        "hatchPattern": "Padrão",
+        "hatchProperties": "Propriedades",
+        "hatchClose": "Fechar",
         "draw": "Desenhar",
         "modify": "Modificar",
         "annotation": "Anotação",
@@ -177,6 +182,11 @@ export const ptBR: EditorLocale = {
         "arrayClose": "Fechar"
       },
       "items": {
+        "hatchPickPoints": "Selecionar pontos",
+        "hatchSelect": "Selecionar",
+        "hatchSolid": "Sólido",
+        "hatchPattern": "Padrão",
+        "hatchClose": "Fechar\nCriação de hachura",
         "line": "Linha",
         "polyline": "Polilinha",
         "circle": "Centro, Raio",
@@ -331,6 +341,8 @@ export const ptBR: EditorLocale = {
         "arrayClose": "Fechar matriz"
       },
       "fields": {
+        "hatchAngle": "Ângulo",
+        "hatchScale": "Escala do padrão de hachura",
         "columns": "Colunas:",
         "columnSpacing": "Entre:",
         "rows": "Linhas:",
@@ -346,6 +358,14 @@ export const ptBR: EditorLocale = {
       },
       "pressF1": "Pressione F1 para obter mais ajuda",
       "tips": {
+        "hatchPickPoints": "Determina um limite de hachura de objetos existentes que formam uma área fechada em torno do ponto especificado",
+        "hatchSelect": "Determina um limite de hachura de objetos selecionados que formam uma área fechada",
+        "hatchType": "Especifica se deve ser criado uma hachura ou preenchimento predefinida ou uma hachura definida pelo usuário",
+        "hatchSolid": "Especifica um preenchimento de sólido ao invés de um padrão de hachura",
+        "hatchPattern": "Exibe uma seleção de ANSI, ISO e outros padrões de hachura padrão da indústria",
+        "hatchAngle": "Especifica um ângulo para o padrão de hachura relativo ao eixo X do UCS atual",
+        "hatchScale": "Expande ou retrai um padrão de hachura predefinido ou personalizado",
+        "hatchClose": "Sai da criação da hachura e fecha a guia contextual",
         "line": "Cria segmentos de linha reta",
         "polyline": "Cria uma polilinha 2D",
         "circle": "Cria um círculo utilizando um ponto de centro e um raio",
@@ -515,6 +535,14 @@ export const ptBR: EditorLocale = {
         "arrayClose": "Sai do comando da matriz."
       },
       "tipTitles": {
+        "hatchPickPoints": "Selecionar pontos",
+        "hatchSelect": "Selecionar objetos de limite",
+        "hatchType": "Tipo de hachura",
+        "hatchSolid": "Sólido",
+        "hatchPattern": "Padrão",
+        "hatchAngle": "Ângulo da hachura",
+        "hatchScale": "Escala do padrão de hachura",
+        "hatchClose": "Fechar a criação da hachura",
         "layerProperties": "Propriedades da camada",
         "insert": "Inserir bloco",
         "ucsIcon": "Ícone UCS",

@@ -1037,7 +1037,8 @@
         "Select objects": "Vybrat",
         "?": "?",
         "Solid": "Barva",
-        "Undo": "Zpět"
+        "Undo": "Zpět",
+        "Pick internal point": "Vnitřní"
       },
       "INSERT": {
         "?": "?",
@@ -1637,8 +1638,18 @@
       }
     },
     "promptKeywords": {
-      "peditMeshOption": {"eXit": "kOnec", "X": "O", "Undo": "Zpět"},
-      "peditMeshVertexOption": {"Regen": "Regen", "Previous": "Zpátky", "Move": "posUv", "eXit": "kOnec"},
+      "selectObjectsOrPickInternalPoint": {
+        "Pick internal point": "Vnitřní",
+        "Undo": "Zpět"
+      },
+      "pickInternalPointOr": { "Select objects": "vYbrat", "Undo": "Zpět" },
+      "peditMeshOption": { "eXit": "kOnec", "X": "O", "Undo": "Zpět" },
+      "peditMeshVertexOption": {
+        "Regen": "Regen",
+        "Previous": "Zpátky",
+        "Move": "posUv",
+        "eXit": "kOnec"
+      },
       "selectObjects": {
         "Window": "OKno",
         "Last": "posLední",
@@ -1767,6 +1778,8 @@
       }
     },
     "prompts": {
+      "pickInternalPointOr": "Vyberte vnitřní bod nebo",
+      "selectObjectsOrPickInternalPoint": "Vyberte objekty nebo",
       "enterMeshSizeM": "Zadejte rozměr sítě ve směru M",
       "enterMeshSizeN": "Zadejte rozměr sítě ve směru N",
       "specifyMeshVertex": "Určete polohu vrcholu ({m}, {n})",
@@ -3485,7 +3498,8 @@
         "Spline curve": "Spline"
       },
       "HATCH": {
-        "Select objects": "Vybrat objekty"
+        "Select objects": "Vybrat objekty",
+        "Pick internal point": "vybrat Vnitřní bod"
       },
       "BREAK": {
         "First point": "První bod"
@@ -3535,7 +3549,12 @@
       }
     },
     "promptKeywordLabels": {
-      "peditMeshOption": {"Edit vertex": "Editace vrcholu"},
+      "selectObjectsOrPickInternalPoint": { "Undo": "Zpět" },
+      "pickInternalPointOr": {
+        "Select objects": "vYbrat objekty",
+        "Undo": "Zpět"
+      },
+      "peditMeshOption": { "Edit vertex": "Editace vrcholu" },
       "ucsNewUcs": {
         "ZAxis": "ZOsa"
       },

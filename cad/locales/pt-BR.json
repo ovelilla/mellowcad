@@ -1034,7 +1034,8 @@
         "Select objects": "Selecionar",
         "?": "?",
         "Solid": "Sólido",
-        "Undo": "Desfazer"
+        "Undo": "Desfazer",
+        "Pick internal point": "Escolher"
       },
       "INSERT": {
         "?": "?",
@@ -1632,8 +1633,21 @@
       }
     },
     "promptKeywords": {
-      "peditMeshOption": {"eXit": "SAir", "X": "SA", "Undo": "Desfazer"},
-      "peditMeshVertexOption": {"Regen": "Regenerar", "Previous": "Anterior", "Move": "Mover", "eXit": "Sair"},
+      "selectObjectsOrPickInternalPoint": {
+        "Pick internal point": "Escolher",
+        "Undo": "Desfazer"
+      },
+      "pickInternalPointOr": {
+        "Select objects": "Selecionar",
+        "Undo": "Desfazer"
+      },
+      "peditMeshOption": { "eXit": "SAir", "X": "SA", "Undo": "Desfazer" },
+      "peditMeshVertexOption": {
+        "Regen": "Regenerar",
+        "Previous": "Anterior",
+        "Move": "Mover",
+        "eXit": "Sair"
+      },
       "selectObjects": {
         "Window": "Janela",
         "Last": "Último",
@@ -1760,6 +1774,8 @@
       }
     },
     "prompts": {
+      "pickInternalPointOr": "Selecionar ponto interno ou",
+      "selectObjectsOrPickInternalPoint": "Selecionar objetos ou",
       "enterMeshSizeM": "Digitar o tamanho da malha na direção M",
       "enterMeshSizeN": "Digitar o tamanho da malha na direção N",
       "specifyMeshVertex": "Especificar a localização do vértice ({m}, {n})",
@@ -3463,7 +3479,8 @@
         "Spline curve": "curva Spline"
       },
       "HATCH": {
-        "Select objects": "Selecionar objetos"
+        "Select objects": "Selecionar objetos",
+        "Pick internal point": "Escolher ponto interno"
       },
       "BREAK": {
         "First point": "Primeiro ponto"
@@ -3502,7 +3519,12 @@
       }
     },
     "promptKeywordLabels": {
-      "peditMeshOption": {"Edit vertex": "Editar vértice"},
+      "selectObjectsOrPickInternalPoint": { "Undo": "Desfazer" },
+      "pickInternalPointOr": {
+        "Select objects": "Selecionar objetos",
+        "Undo": "Desfazer"
+      },
+      "peditMeshOption": { "Edit vertex": "Editar vértice" },
       "ucsNewUcs": { "ZAxis": "EIxo z" },
       "filletEdgeLoopOr": { "Edge": "arEsta" },
       "splineditOptionClosed": { "Reverse": "Reverter" },

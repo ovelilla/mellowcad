@@ -7,6 +7,7 @@ import {
   useLayoutEffect,
   useRef,
   useState,
+  type PointerEvent as ReactPointerEvent,
   type ReactElement,
   type RefObject,
 } from "react"
@@ -18,6 +19,11 @@ import {
   ArrowUpFromLine,
   Check,
   ChevronDown,
+  ChevronsDown,
+  ChevronUp,
+  Grid3x3,
+  Scaling,
+  SquareDashedMousePointer,
   ChevronsUp,
   CircleDashed,
   Columns3,
@@ -38,11 +44,13 @@ import {
   type LucideIcon,
 } from "lucide-react"
 
-import type {
-  CadEngine,
-  ContextualFieldId,
-  ContextualToggleId,
-  PaletteId,
+import {
+  CanvasScenePresenter,
+  HATCH_PATTERNS,
+  type CadEngine,
+  type ContextualFieldId,
+  type ContextualToggleId,
+  type PaletteId,
 } from "@mellowcad/engine"
 import { isImeKey, type EditorState } from "@mellowcad/react"
 import { cn } from "./utils"
@@ -1161,15 +1169,46 @@ function Control({
     case "closeContextual":
       return (
         <LargeButton
-          icon={LARGE_BUTTON_ICONS.arrayClose}
+          icon={LARGE_BUTTON_ICONS[control.text]}
           text={ctx.text(control.text)}
-          tip="arrayClose"
+          tip={control.text}
           ctx={ctx}
           onClick={() =>
             ctx.act(() => engine.editContextualTab({ close: true }))
           }
         />
       )
+    case "hatchBoundary": {
+      const item =
+        control.boundary === "pick" ? "hatchPickPoints" : "hatchSelect"
+      const act = () =>
+        ctx.act(() => engine.editContextualTab({ boundary: control.boundary }))
+      return control.size === "large" ? (
+        <LargeButton
+          icon={LARGE_BUTTON_ICONS[item]}
+          text={ctx.text(item)}
+          tip={item}
+          ctx={ctx}
+          // WHY one line: acad.CUIX's Text has no break (`Pick Points`),
+          // where Set Origin's and Close Hatch Creation's have their `&#xD;`.
+          oneLine
+          onClick={act}
+        />
+      ) : (
+        <SmallButton
+          icon={SquareDashedMousePointer}
+          label={ctx.text(item)}
+          withText={control.size === "small"}
+          tip={item}
+          ctx={ctx}
+          onClick={act}
+        />
+      )
+    }
+    case "hatchPatterns":
+      return <HatchPatterns ctx={ctx} />
+    case "hatchProperties":
+      return <HatchProperties ctx={ctx} />
   }
 }
 
@@ -1187,6 +1226,8 @@ const FIELD_ICONS: Readonly<Record<ContextualFieldId, LucideIcon>> = {
   angleBetween: RotateCcw,
   fillAngle: CircleDashed,
   itemSpacing: MoveHorizontal,
+  hatchAngle: RotateCcw,
+  hatchScale: Scaling,
 }
 
 /** Each field's tooltip, its AcWindows `TT_…` (Items: the polar or the path one's). */
@@ -1218,6 +1259,9 @@ function fieldTip(field: ContextualFieldId, ctx: Context): TipKey {
       return "arrayFillAngle"
     case "itemSpacing":
       return "arrayItemSpacing"
+    case "hatchAngle":
+    case "hatchScale":
+      return field
   }
 }
 
@@ -1254,19 +1298,10 @@ function Fields({
  */
 function Field({ field, ctx }: { field: ContextualFieldId; ctx: Context }) {
   const t = useEditorText("Ribbon")
-  const { engine } = ctx
-  const value = ctx.state.ribbon.contextual?.fields[field]
-  const [draft, setDraft] = useState<string | null>(null)
-  // WHY a ref: Escape's blur would commit the draft the state still holds.
-  const typed = useRef<string | null>(null)
-  if (!value) return null
+  if (!ctx.state.ribbon.contextual?.fields[field]) return null
   const Icon = FIELD_ICONS[field]
   const label = t(`fields.${field}`)
   const id = `ribbon-field-${field}`
-  const set = (text: string | null) => {
-    typed.current = text
-    setDraft(text)
-  }
   return (
     <Tip tip={fieldTip(field, ctx)} title={label} ctx={ctx}>
       <div className="col-span-3 grid h-5.5 grid-cols-subgrid items-center">
@@ -1274,36 +1309,72 @@ function Field({ field, ctx }: { field: ContextualFieldId; ctx: Context }) {
         <label htmlFor={id} className="pe-1 whitespace-nowrap">
           {label}
         </label>
-        <input
-          id={id}
-          type="text"
-          inputMode="decimal"
-          dir="ltr"
-          autoComplete="off"
-          spellCheck={false}
-          disabled={value.disabled}
-          value={draft ?? value.text}
-          onChange={(event) => set(event.target.value)}
-          onBlur={() => {
-            const text = typed.current
-            set(null)
-            if (text !== null && text.trim() !== "" && text !== value.text)
-              engine.editContextualTab({ field, text })
-          }}
-          onKeyDown={(event) => {
-            // An IME's Enter confirms a conversion, its Escape drops it.
-            if (isImeKey(event)) return
-            if (event.key === "Enter" || event.key === "Escape") {
-              event.preventDefault()
-              if (event.key === "Escape") set(null)
-              event.currentTarget.blur()
-              engine.focusSurface()
-            }
-          }}
-          className="h-5.5 w-24.5 rounded-sm border border-input bg-background px-1 text-ui outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:text-faint-foreground"
-        />
+        <FieldBox field={field} id={id} className="w-24.5" ctx={ctx} />
       </div>
     </Tip>
+  )
+}
+
+/** A field's box, as `Field` describes it; its width the caller's. */
+function FieldBox({
+  field,
+  id,
+  label,
+  className,
+  ctx,
+}: {
+  field: ContextualFieldId
+  id?: string
+  /** Its name, where no `label` element names it. */
+  label?: string
+  className: string
+  ctx: Context
+}) {
+  const { engine } = ctx
+  const value = ctx.state.ribbon.contextual?.fields[field]
+  const [draft, setDraft] = useState<string | null>(null)
+  // WHY a ref: Escape's blur would commit the draft the state still holds.
+  const typed = useRef<string | null>(null)
+  if (!value) return null
+  const set = (text: string | null) => {
+    typed.current = text
+    setDraft(text)
+  }
+  return (
+    <input
+      id={id}
+      aria-label={label}
+      type="text"
+      inputMode="decimal"
+      dir="ltr"
+      autoComplete="off"
+      spellCheck={false}
+      disabled={value.disabled}
+      value={draft ?? value.text}
+      onChange={(event) => set(event.target.value)}
+      onBlur={() => {
+        const text = typed.current
+        set(null)
+        // Retyped as shown too: a box may show what its prompt refuses (a
+        // scale under 0.00005 reads 0), refused then in its words.
+        if (text !== null && text.trim() !== "")
+          engine.editContextualTab({ field, text })
+      }}
+      onKeyDown={(event) => {
+        // An IME's Enter confirms a conversion, its Escape drops it.
+        if (isImeKey(event)) return
+        if (event.key === "Enter" || event.key === "Escape") {
+          event.preventDefault()
+          if (event.key === "Escape") set(null)
+          event.currentTarget.blur()
+          engine.focusSurface()
+        }
+      }}
+      className={cn(
+        "h-5.5 rounded-sm border border-input bg-background px-1 text-ui outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:text-faint-foreground",
+        className
+      )}
+    />
   )
 }
 
@@ -1534,9 +1605,12 @@ function ToolIcon({ id }: { id: string }): ReactElement {
 
 /**
  * A large button's text: on one line, or two parted at the space nearest its
- * middle, as AutoCAD writes Layer Properties and Match Properties.
+ * middle, as AutoCAD writes Layer Properties and Match Properties; where its
+ * text carries acad.CUIX's own break (`Close&#xD;Hatch Creation`), there.
  */
-function largeLines(text: string): string[] {
+function largeLines(text: string, oneLine = false): string[] {
+  if (oneLine) return [text]
+  if (text.includes("\n")) return text.split("\n", 2)
   const spaces = [...text.matchAll(/ /g)].map((match) => match.index)
   if (spaces.length === 0) return [text]
   const middle = text.length / 2
@@ -1583,6 +1657,7 @@ function LargeButton({
   tip,
   ctx,
   pressed,
+  oneLine = false,
   onClick,
 }: {
   icon: LargeIcon | undefined
@@ -1592,10 +1667,12 @@ function LargeButton({
   tip: TipKey | ItemId
   ctx: Context
   pressed?: boolean
+  /** Its text on one line, where acad.CUIX's has no break (`Pick Points`). */
+  oneLine?: boolean
   onClick: () => void
 }) {
   return (
-    <Tip tip={tip} title={text} ctx={ctx}>
+    <Tip tip={tip} title={text.replace("\n", " ")} ctx={ctx}>
       <button
         type="button"
         aria-pressed={pressed}
@@ -1609,7 +1686,7 @@ function LargeButton({
       >
         {Icon && <Icon className={mirrored ? "rtl:-scale-x-100" : undefined} />}
         <span className="mt-0.5 flex flex-col items-center">
-          {largeLines(text).map((line, i) => (
+          {largeLines(text, oneLine).map((line, i) => (
             <span key={i}>{line}</span>
           ))}
         </span>
@@ -2373,5 +2450,359 @@ function VisualStyles({ ctx }: { ctx: Context }) {
         </Popover.Positioner>
       </Popover.Portal>
     </Popover.Root>
+  )
+}
+
+/** The patterns built, in acadiso.pat's order: the gallery's (hatch/d01-2). */
+const PATTERNS: readonly string[] = HATCH_PATTERNS.map((pattern) => pattern.id)
+/** The cells the panel shows in a row, and the open gallery's (d01-2). */
+const ACROSS = 4
+const ACROSS_OPEN = 6
+
+/**
+ * Hatch Creation's Pattern gallery (AcHatchPatternGallery): a row of cells,
+ * 74 × 70, each the pattern's swatch over its name, the current one marked,
+ * then a column of 14 with the rows' up and down and the arrow that opens
+ * every pattern under it (desktop hatch/d01-2). A pick is HPNAME, as
+ * Properties' answer. WHY the up and down are out of the keys' way: the
+ * arrow's list holds every pattern, reached by the keyboard.
+ */
+function HatchPatterns({ ctx }: { ctx: Context }) {
+  const t = useEditorText("Ribbon")
+  const portal = usePortalContainer()
+  const [open, setOpen] = useState(false)
+  // The row scrolled to; null, the current pattern's.
+  const [row, setRow] = useState<number | null>(null)
+  const current = ctx.state.ribbon.contextual?.pattern ?? null
+  const rows = Math.ceil(PATTERNS.length / ACROSS)
+  const shown =
+    row ?? Math.floor(Math.max(0, PATTERNS.indexOf(current ?? "")) / ACROSS)
+  const pick = (pattern: string) =>
+    ctx.act(() => ctx.engine.editContextualTab({ pattern }))
+  const scroll =
+    "flex flex-1 items-center justify-center rounded-sm text-muted-foreground outline-none hover:bg-muted disabled:text-faint-foreground"
+  return (
+    <div className="mt-px flex h-18 rounded-sm border border-input">
+      <div className="flex">
+        {PATTERNS.slice(shown * ACROSS, (shown + 1) * ACROSS).map((pattern) => (
+          <PatternCell
+            key={pattern}
+            pattern={pattern}
+            current={pattern === current}
+            ctx={ctx}
+            onPick={() => pick(pattern)}
+          />
+        ))}
+      </div>
+      <div className="flex w-3.5 flex-col border-s border-input">
+        <button
+          type="button"
+          tabIndex={-1}
+          aria-hidden
+          disabled={shown === 0}
+          className={scroll}
+          onClick={() => {
+            setRow(shown - 1)
+            ctx.engine.focusSurface()
+          }}
+        >
+          <ChevronUp className="size-2.5" />
+        </button>
+        <button
+          type="button"
+          tabIndex={-1}
+          aria-hidden
+          disabled={shown >= rows - 1}
+          className={scroll}
+          onClick={() => {
+            setRow(shown + 1)
+            ctx.engine.focusSurface()
+          }}
+        >
+          <ChevronDown className="size-2.5" />
+        </button>
+        <Popover.Root open={open} onOpenChange={setOpen}>
+          <Popover.Trigger
+            aria-label={t("panels.hatchPattern")}
+            className={cn(scroll, "flex-none basis-4.5 aria-expanded:bg-muted")}
+            onClick={(event) => {
+              if (event.detail > 0) ctx.engine.focusSurface()
+            }}
+          >
+            <ChevronsDown aria-hidden className="size-2.5" />
+          </Popover.Trigger>
+          <Popover.Portal container={portal}>
+            <Popover.Positioner side="bottom" align="end" className="z-50">
+              {/* No focus taken or given back: the drawing keeps the keys,
+              as after the Visual Styles gallery. */}
+              <Popover.Popup
+                data-ribbon-list
+                initialFocus={false}
+                finalFocus={false}
+                className={cn(POPUP, "p-px")}
+              >
+                <div
+                  className="grid gap-0.5"
+                  style={{
+                    gridTemplateColumns: `repeat(${ACROSS_OPEN}, auto)`,
+                  }}
+                >
+                  {PATTERNS.map((pattern) => (
+                    <PatternCell
+                      key={pattern}
+                      pattern={pattern}
+                      current={pattern === current}
+                      ctx={ctx}
+                      onPick={() => {
+                        setOpen(false)
+                        setRow(null)
+                        pick(pattern)
+                      }}
+                    />
+                  ))}
+                </div>
+              </Popover.Popup>
+            </Popover.Positioner>
+          </Popover.Portal>
+        </Popover.Root>
+      </div>
+    </div>
+  )
+}
+
+/** A gallery cell: the pattern's 32 px swatch over its name, 74 × 70. */
+function PatternCell({
+  pattern,
+  current,
+  ctx,
+  onPick,
+}: {
+  pattern: string
+  current: boolean
+  ctx: Context
+  onPick: () => void
+}) {
+  return (
+    <button
+      type="button"
+      aria-pressed={current}
+      className="flex h-17.5 w-18.5 shrink-0 flex-col items-center justify-center gap-1 rounded-sm outline-none hover:bg-accent focus-visible:bg-accent aria-pressed:bg-active/15"
+      onClick={onPick}
+    >
+      <PatternSwatch engine={ctx.engine} pattern={pattern} />
+      {/* A pattern's name is drawing data, the same in every language. */}
+      <span dir="ltr" className="w-full truncate px-0.5 text-center">
+        {pattern}
+      </span>
+    </button>
+  )
+}
+
+/** A pattern's swatch, the engine's scene (`buildHatchSwatch`) painted, 32 px. */
+function PatternSwatch({
+  engine,
+  pattern,
+}: {
+  engine: CadEngine
+  pattern: string
+}) {
+  const ref = useRef<HTMLCanvasElement | null>(null)
+  useEffect(() => {
+    const canvas = ref.current
+    const context = canvas?.getContext("2d")
+    if (!canvas || !context) return
+    const scene = engine.buildHatchSwatch(pattern, SWATCH_PX)
+    if (!scene) return
+    const dpr = window.devicePixelRatio || 1
+    canvas.width = SWATCH_PX * dpr
+    canvas.height = SWATCH_PX * dpr
+    new CanvasScenePresenter().draw(context, scene, dpr)
+  }, [engine, pattern])
+  return (
+    <canvas
+      ref={ref}
+      aria-hidden
+      style={{ width: SWATCH_PX, height: SWATCH_PX }}
+      className="shrink-0"
+    />
+  )
+}
+
+const SWATCH_PX = 32
+
+/**
+ * Hatch Creation's Properties in AutoCAD's rows (hatch/d01-2): Type in the
+ * first sub-panel's first row; after its Spacer, Angle in the third
+ * sub-panel's second row and Scale in its third, their first row's
+ * Transparency not built.
+ */
+function HatchProperties({ ctx }: { ctx: Context }) {
+  return (
+    <div className="mt-px grid grid-cols-[auto_4px_auto] grid-rows-[repeat(3,22px)] gap-y-0.5">
+      <div className="col-start-1 row-start-1">
+        <HatchType ctx={ctx} />
+      </div>
+      <div className="col-start-3 row-start-2">
+        <HatchAngle ctx={ctx} />
+      </div>
+      <div className="col-start-3 row-start-3">
+        <HatchScale ctx={ctx} />
+      </div>
+    </div>
+  )
+}
+
+/**
+ * Type (AcHatchTypeCombo): its 16 px glyph and a combo of 178 × 22 listing
+ * the types built, Solid and Pattern; a pick is Properties' Solid, or the
+ * last pattern back.
+ */
+function HatchType({ ctx }: { ctx: Context }) {
+  const t = useEditorText("Ribbon")
+  const solid = ctx.state.ribbon.contextual?.pattern === "SOLID"
+  const items = {
+    solid: ctx.text("hatchSolid"),
+    pattern: ctx.text("hatchPattern"),
+  }
+  return (
+    <Select
+      items={items}
+      value={solid ? "solid" : "pattern"}
+      onValueChange={(type) => {
+        if (type !== "solid" && type !== "pattern") return
+        ctx.engine.editContextualTab({ hatchType: type })
+        ctx.engine.focusSurface()
+      }}
+    >
+      <Tip tip="hatchType" title={t("tipTitles.hatchType")} ctx={ctx}>
+        <div className="flex items-center">
+          <span
+            aria-hidden
+            className="flex w-5 justify-center text-muted-foreground"
+          >
+            <Grid3x3 className="size-4" />
+          </span>
+          <SelectTrigger
+            aria-label={t("tipTitles.hatchType")}
+            className={cn(COMBO, "w-44.5")}
+          >
+            <SelectValue>
+              {(type: string | null) =>
+                type === "solid" || type === "pattern" ? (
+                  <span className="truncate">{items[type]}</span>
+                ) : null
+              }
+            </SelectValue>
+          </SelectTrigger>
+        </div>
+      </Tip>
+      <SelectContent
+        align="start"
+        alignItemWithTrigger={false}
+        finalFocus={ctx.toDrawing}
+      >
+        <SelectItem value="solid">{items.solid}</SelectItem>
+        <SelectItem value="pattern">{items.pattern}</SelectItem>
+      </SelectContent>
+    </Select>
+  )
+}
+
+/** The Angle slider's range, AutoCAD's 0 to 359 degrees (**unverified**). */
+const ANGLE_MAX = 359
+
+/**
+ * Angle (AcHatchPatternAngleSlider): a slider of 157 with its name in it and
+ * a box of 50 with the value (d01-2). Dragging sets whole degrees from 0 to
+ * 359; the box takes what Properties' angle prompt takes. WHY the slider is
+ * for the pointer only, out of the keys' way: the box is the same value,
+ * typed, and its name.
+ */
+function HatchAngle({ ctx }: { ctx: Context }) {
+  const t = useEditorText("Ribbon")
+  const value = ctx.state.ribbon.contextual?.fields.hatchAngle
+  const last = useRef<number | null>(null)
+  if (!value) return null
+  const degrees = Number(value.text)
+  const at = Number.isFinite(degrees) ? Math.min(degrees, ANGLE_MAX) : 0
+  const label = t("fields.hatchAngle")
+  const slide = (event: ReactPointerEvent<HTMLDivElement>) => {
+    const box = event.currentTarget.getBoundingClientRect()
+    const share = Math.min(
+      1,
+      Math.max(0, (event.clientX - box.left) / box.width)
+    )
+    const next = Math.round(share * ANGLE_MAX)
+    if (next === last.current) return
+    last.current = next
+    ctx.engine.editContextualTab({ field: "hatchAngle", text: String(next) })
+  }
+  return (
+    <Tip tip="hatchAngle" title={label} ctx={ctx}>
+      <div className="flex h-5.5 items-center gap-px">
+        {/* An island: its value grows rightwards, as the box's figures. */}
+        <div
+          aria-hidden
+          dir="ltr"
+          className={cn(
+            "relative flex h-5.5 w-39.25 items-center rounded-sm border border-input bg-muted/40 ps-2 select-none",
+            value.disabled
+              ? "pointer-events-none text-faint-foreground"
+              : "cursor-ew-resize"
+          )}
+          onPointerDown={(event) => {
+            if (event.button !== 0) return
+            event.currentTarget.setPointerCapture(event.pointerId)
+            last.current = null
+            slide(event)
+          }}
+          onPointerMove={(event) => {
+            if (event.buttons & 1) slide(event)
+          }}
+          onPointerUp={() => ctx.engine.focusSurface()}
+          onPointerCancel={() => ctx.engine.focusSurface()}
+        >
+          <span
+            className="absolute inset-y-0.5 w-0.75 rounded-full bg-muted-foreground"
+            style={{ left: `calc(${at / ANGLE_MAX} * (100% - 3px))` }}
+          />
+          <span className="relative">{label}</span>
+        </div>
+        <FieldBox
+          field="hatchAngle"
+          label={label}
+          className="w-12.5"
+          ctx={ctx}
+        />
+      </div>
+    </Tip>
+  )
+}
+
+/**
+ * Scale (AcHatchScaleSpinner): its 16 px glyph and a box of 177 with the
+ * value, which takes what Properties' scale prompt takes. Its spin arrows
+ * are not drawn: how far one steps is **unverified**.
+ */
+function HatchScale({ ctx }: { ctx: Context }) {
+  const t = useEditorText("Ribbon")
+  const label = t("fields.hatchScale")
+  return (
+    <Tip tip="hatchScale" title={label} ctx={ctx}>
+      <div className="flex h-5.5 items-center">
+        <span
+          aria-hidden
+          className="flex w-5 justify-center text-muted-foreground"
+        >
+          <Scaling className="size-4" />
+        </span>
+        <FieldBox
+          field="hatchScale"
+          label={label}
+          className="w-44.25"
+          ctx={ctx}
+        />
+      </div>
+    </Tip>
   )
 }

@@ -212,12 +212,13 @@ describe("the ribbon's tooltips", () => {
   })
 
   it("name the command in capitals, the one F1 asks Help for", () => {
-    // Array Creation's `TT_…` name no command: their tooltips show none.
+    // Array Creation's and Hatch Creation's `TT_…` name no command, nor does
+    // Close Hatch Creation's `^M` (MM_1928): their tooltips show none.
     const commandless = Object.keys(words.tips).filter(
       (tip) => !(tip in words.tipCommands)
     )
-    expect(commandless).toHaveLength(20)
-    for (const tip of commandless) expect(tip).toMatch(/^array[A-Z]/)
+    expect(commandless).toHaveLength(28)
+    for (const tip of commandless) expect(tip).toMatch(/^(array|hatch)[A-Z]/)
     const commands = new Set(commandCatalog().map((command) => command.id))
     for (const [tip, command] of Object.entries(words.tipCommands)) {
       expect(String(command)).toMatch(/^[A-Z0-9-]+$/)

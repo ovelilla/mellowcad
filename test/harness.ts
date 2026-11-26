@@ -140,3 +140,13 @@ export function createHarness(options: HarnessOptions = {}): CadHarness {
   onTestFinished(() => harness.dispose())
   return harness
 }
+
+/**
+ * A harness with the ribbon closed, as RIBBONCLOSE leaves it: HATCH asks
+ * -HATCH's prompts there (HATCH-D31), the ones the console's probes record.
+ */
+export function ribbonClosed(options: HarnessOptions = {}): CadHarness {
+  const harness = createHarness(options)
+  harness.runtime.closeRibbon()
+  return harness
+}

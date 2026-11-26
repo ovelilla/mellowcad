@@ -1782,7 +1782,8 @@ export const ptBR: EngineLocale = {
         "Select objects": "Selecionar",
         "?": "?",
         "Solid": "Sólido",
-        "Undo": "Desfazer"
+        "Undo": "Desfazer",
+        "Pick internal point": "Escolher"
       },
       "INSERT": {
         "?": "?",
@@ -2386,6 +2387,14 @@ export const ptBR: EngineLocale = {
       }
     },
     "promptKeywords": {
+      "selectObjectsOrPickInternalPoint": {
+        "Pick internal point": "Escolher",
+        "Undo": "Desfazer"
+      },
+      "pickInternalPointOr": {
+        "Select objects": "Selecionar",
+        "Undo": "Desfazer"
+      },
       "peditMeshOption": {
         "eXit": "SAir",
         "X": "SA",
@@ -2525,6 +2534,8 @@ export const ptBR: EngineLocale = {
       }
     },
     "prompts": {
+      "pickInternalPointOr": "Selecionar ponto interno ou",
+      "selectObjectsOrPickInternalPoint": "Selecionar objetos ou",
       "enterMeshSizeM": "Digitar o tamanho da malha na direção M",
       "enterMeshSizeN": "Digitar o tamanho da malha na direção N",
       "specifyMeshVertex": [
@@ -9236,7 +9247,8 @@ export const ptBR: EngineLocale = {
         "Spline curve": "curva Spline"
       },
       "HATCH": {
-        "Select objects": "Selecionar objetos"
+        "Select objects": "Selecionar objetos",
+        "Pick internal point": "Escolher ponto interno"
       },
       "BREAK": {
         "First point": "Primeiro ponto"
@@ -9286,6 +9298,13 @@ export const ptBR: EngineLocale = {
       }
     },
     "promptKeywordLabels": {
+      "selectObjectsOrPickInternalPoint": {
+        "Undo": "Desfazer"
+      },
+      "pickInternalPointOr": {
+        "Select objects": "Selecionar objetos",
+        "Undo": "Desfazer"
+      },
       "peditMeshOption": {
         "Edit vertex": "Editar vértice"
       },

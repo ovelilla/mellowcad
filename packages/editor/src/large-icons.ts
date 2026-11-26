@@ -534,6 +534,17 @@ export const LARGE_BUTTON_ICONS: Readonly<Record<string, LargeIcon>> = {
   }),
   // Close: the check AutoCAD's Close buttons wear.
   arrayClose: largeIcon("ArrayClose", { d: ["M6 17 L13 24 L27 8"] }),
+  hatchClose: largeIcon("HatchClose", { d: ["M6 17 L13 24 L27 8"] }),
+  // Pick Points: a point picked inside a boundary.
+  hatchPickPoints: largeIcon("HatchPickPoints", {
+    d: ["M4 4 H28 V28 H4 Z", "M16 10 V22", "M10 16 H22"],
+  }),
+  // Hatch Creation's Properties, folded or minimized: a hatched swatch
+  // beside a field.
+  hatchProperties: largeIcon("HatchProperties", {
+    d: ["M4 5 H14 V15 H4 Z", "M18 8 H28", "M4 22 H28 V28 H4 Z"],
+    thin: ["M4 11 L10 5", "M8 15 L14 9"],
+  }),
   // World: the axes, and the globe they belong to.
   ucsWorld: largeIcon("UcsWorld", {
     d: [

@@ -38,9 +38,13 @@ import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import { ObjectSelector } from "./objectSelection"
 import type { PromptId } from "../../locales/types"
+import type { ContextualEdit } from "../EngineState"
+import { parseAngleDegrees, parseNumber } from "../../domain/units"
+import { refuseText } from "./refuseText"
 import {
   CommandOption,
   CommandOptionOutcome,
+  ContextualTabSource,
   PointerInput,
   QuestionInput,
   Tool,
@@ -57,10 +61,15 @@ const QUICK_PREVIEW_ID: EntityId = "__hatch_quick_preview__"
 const OUTLINE_ID: EntityId = "__hatch_outline__"
 
 /**
- * AutoCAD's HATCH and -HATCH, both asking at the command line as -HATCH asks
- * (WHY for HATCH: the Hatch Creation tab and the Hatch and Gradient dialog,
- * where HATCH sets its properties, do not exist here; -HATCH is the command
- * line's own, HATCH-D31): `Current hatch pattern:  ANGLE`, then `Specify
+ * AutoCAD's HATCH and -HATCH. With the ribbon open HATCH asks the ribbon's
+ * prompts, `Pick internal point or [Select objects/Undo]:` (st2027's 129, with
+ * no `Current hatch pattern` line, desktop hatch/d01) and its Select objects
+ * mode's `Select objects or [picK internal point/Undo]:` (50968), and shows
+ * Hatch Creation (HATCHCREATION 1), whose pattern, angle and scale set HPNAME,
+ * HPANG and HPSCALE as Properties' answers would. Draw and seTtings are not
+ * offered: no draW boundary, no Hatch and Gradient dialog. With the ribbon
+ * closed AutoCAD's HATCH opens that dialog, not built, so it asks as -HATCH
+ * does (WHY, HATCH-D31): `Current hatch pattern:  ANGLE`, then `Specify
  * internal point or [Properties/Select objects]:` until Enter makes the hatch.
  * Its two boundary routes are the two the prompt offers, in the same order:
  *
@@ -91,7 +100,11 @@ export class HatchTool implements Tool {
   private readonly selector = new ObjectSelector({
     takes: () => "wholeObjects",
     leavesPrevious: true,
-    done: (ctx) => this.enterPoint(ctx),
+    question: () =>
+      this.ribbon ? "selectObjectsOrPickInternalPoint" : "selectObjects",
+    // The ribbon's mode asks again after each selection, and Enter ends the
+    // command, as at its internal point (**unverified** on the desktop).
+    done: (ctx) => (this.ribbon ? this.finish(ctx) : this.enterPoint(ctx)),
   })
   private lastScreen: Vec2 | null = null
   /** The hatch the boundaries gathered make, rebuilt as they change. */
@@ -108,6 +121,16 @@ export class HatchTool implements Tool {
   private gathered = false
   /** Started as -HATCH, whose Escape drops what was gathered (desktop d02). */
   private dash = false
+  /** The next start is -HATCH's (`dashForm`). */
+  private startsDash = false
+  /** Started as HATCH with the ribbon open: its prompts and Hatch Creation. */
+  private ribbon = false
+  /**
+   * The pattern Hatch Creation's Type › Pattern brings back from a solid
+   * fill: HPNAME's as the run starts, or the last one set this session
+   * (**unverified** on the desktop).
+   */
+  private lastPattern: HatchPatternId = DEFAULT_HATCH_PATTERN_ID
   /** The run has made its hatch, or said why not: its end makes nothing. */
   private ended = false
   /**
@@ -124,9 +147,9 @@ export class HatchTool implements Tool {
   private patternScale = 1
   private patternAngle = 0
 
-  /** Started by the name -HATCH (`runtimeCommands`), after `onActivate`. */
+  /** Starts by the name -HATCH (`runtimeCommands`): said before `onActivate`. */
   dashForm(): void {
-    this.dash = true
+    this.startsDash = true
   }
 
   onActivate(ctx: ToolContext): void {
@@ -137,17 +160,27 @@ export class HatchTool implements Tool {
     ctx.selection.clear()
     this.picked = []
     this.gathered = false
-    this.dash = false
+    this.dash = this.startsDash
+    this.startsDash = false
+    // "When the ribbon is active, the Hatch Creation contextual tab is
+    // displayed. When the ribbon is off, the Hatch and Gradient dialog box is
+    // displayed" (HPDLGMODE 2).
+    this.ribbon = !this.dash && ctx.inquiry().ribbonState === 1
     this.ended = false
     this.forgetHover()
     this.readSettings(ctx)
+    if (!isSolidHatchPattern(this.patternId())) {
+      this.lastPattern = this.patternId()
+    }
     this.enterPoint(ctx)
   }
 
   onDeactivate(ctx: ToolContext): void {
-    // WHY: the ribbon's HATCH has made the hatch at each pick, so Escape
-    // leaves it made, where -HATCH's drops it (desktop d01-3, d02). With no
-    // ribbon here, HATCH makes it as it ends (HATCH-D45).
+    // The ribbon's HATCH has made the hatch at each pick, so Escape leaves it
+    // made, where -HATCH's drops it (desktop d01-3, d02). WHY made here as
+    // the run ends: one object of every boundary in the run's one step, as
+    // AutoCAD's grows it at each pick (HATCH-D45); HATCH with the ribbon
+    // closed, asking -HATCH's prompts, keeps HATCH's Escape.
     if (!this.dash && !this.ended) this.make(ctx)
     this.state = { phase: "point" }
     this.preview = null
@@ -197,11 +230,14 @@ export class HatchTool implements Tool {
 
   /**
    * Enter at Select objects closes the set and goes back to the internal
-   * point, an empty set too.
+   * point, an empty set too; at the ribbon's mode it ends the command.
    */
   onEnter(ctx: ToolContext): boolean {
     if (this.state.phase !== "select") return false
-    if (!this.selector.onEnter(ctx)) this.enterPoint(ctx)
+    if (!this.selector.onEnter(ctx)) {
+      if (this.ribbon) this.finish(ctx)
+      else this.enterPoint(ctx)
+    }
     ctx.requestRender()
     return true
   }
@@ -209,7 +245,7 @@ export class HatchTool implements Tool {
   question(): PromptId | ToolQuestion {
     switch (this.state.phase) {
       case "point":
-        return "specifyInternalPointOr"
+        return this.ribbon ? "pickInternalPointOr" : "specifyInternalPointOr"
       case "select":
         return this.selector.question()
       case "pattern":
@@ -246,12 +282,9 @@ export class HatchTool implements Tool {
       case "select":
         return this.selector.takes()
       case "scale":
-        return { refusal: "requiresDistanceOrNumberX" }
+        return SCALE_TAKES
       case "angle":
-        return {
-          refusal: "requiresAngle",
-          values: { points: "two", keyword: "no" },
-        }
+        return ANGLE_TAKES
       case "pattern":
         // What a command refused there leaves (`'LINE`, p234).
         return { refusal: "hatchPatternUnknown" }
@@ -261,16 +294,30 @@ export class HatchTool implements Tool {
   commandOptions(): readonly CommandOption[] {
     switch (this.state.phase) {
       case "point":
-        // -HATCH declares Undo here and lists it nowhere (table 25032).
-        return [
-          { id: "Properties" },
-          { id: "Select objects" },
-          { id: "Undo", hidden: true },
-        ]
+        // The ribbon's prompt lists Undo (129; its initget **unverified**, of
+        // 31427, 16731 and 62278 the one declaring every word it lists:
+        // 31427); -HATCH declares it here and lists it nowhere (table 25032).
+        return this.ribbon
+          ? [{ id: "Select objects" }, { id: "Undo" }]
+          : [
+              { id: "Properties" },
+              { id: "Select objects" },
+              { id: "Undo", hidden: true },
+            ]
       case "pattern":
         return [{ id: "?" }, { id: "Solid" }]
       case "select":
-        return this.selector.commandOptions()
+        // The ribbon's mode lists picK and Undo (50968), the selection's
+        // own Undo, which takes back what was selected last.
+        return this.ribbon && !this.selector.inMode()
+          ? [
+              { id: "Pick internal point" },
+              { id: "Undo" },
+              ...this.selector
+                .commandOptions()
+                .filter((option) => option.id !== "Undo"),
+            ]
+          : this.selector.commandOptions()
       default:
         return []
     }
@@ -289,6 +336,10 @@ export class HatchTool implements Tool {
       return "continue"
     }
     if (this.state.phase === "select") {
+      if (id === "Pick internal point" && !this.selector.inMode()) {
+        this.enterPoint(ctx)
+        return "continue"
+      }
       if (!this.selector.invokeOption(id, ctx)) return "unhandled"
       this.refreshPreview(ctx)
       return "continue"
@@ -350,6 +401,115 @@ export class HatchTool implements Tool {
       out.push(...this.selector.buildOverlay(ctx))
     }
     return out
+  }
+
+  /**
+   * Hatch Creation (HATCHCREATION 1, the whole run of HATCH with the ribbon
+   * open: desktop hatch/d01-2): the pattern, and Angle and Scale, greyed for
+   * a solid fill (**unverified** on the desktop).
+   */
+  contextualTab(): ContextualTabSource | null {
+    if (!this.ribbon || this.ended) return null
+    const solid = isSolidHatchPattern(this.patternId())
+    return {
+      id: "hatchCreation",
+      fields: [
+        {
+          id: "hatchAngle",
+          value: (this.patternAngle * 180) / Math.PI,
+          kind: "angle",
+          disabled: solid,
+        },
+        {
+          id: "hatchScale",
+          value: this.patternScale,
+          kind: "factor",
+          disabled: solid,
+        },
+      ],
+      pattern: this.patternId(),
+    }
+  }
+
+  /**
+   * Hatch Creation's controls, each as the prompt it stands for takes it,
+   * with no echo: Pick Points and Select the keywords that switch the
+   * boundaries' mode; a pattern, Type, Angle and Scale HPNAME, HPANG and
+   * HPSCALE as Properties sets them, inside the run (HATCH-D37), refused in
+   * its prompts' words; Close Hatch Creation `^M` (MM_1928), Enter.
+   */
+  editContextual(edit: ContextualEdit, ctx: ToolContext): CommandOptionOutcome {
+    if (!this.ribbon || this.ended) return "unhandled"
+    if ("close" in edit) {
+      this.conclude(ctx)
+      return "end"
+    }
+    if ("boundary" in edit) {
+      if (edit.boundary === "pick" && this.state.phase !== "point") {
+        this.selector.start()
+        this.enterPoint(ctx)
+      } else if (edit.boundary === "select" && this.state.phase === "point") {
+        this.enterSelect(ctx)
+      }
+      ctx.requestRender()
+      return "continue"
+    }
+    if ("pattern" in edit) {
+      const id = resolveHatchPatternId(edit.pattern)
+      if (id === null) return "unhandled"
+      this.choosePattern(id, ctx)
+    } else if ("hatchType" in edit) {
+      const solid = isSolidHatchPattern(this.patternId())
+      if (edit.hatchType === "solid" && !solid) this.choosePattern(SOLID, ctx)
+      if (edit.hatchType === "pattern" && solid) {
+        this.choosePattern(this.lastPattern, ctx)
+      }
+    } else if ("field" in edit) {
+      if (isSolidHatchPattern(this.patternId())) return "unhandled"
+      const text = edit.text.trim()
+      if (edit.field === "hatchAngle") {
+        const degrees = parseAngleDegrees(text)
+        if (degrees === null) refuseText(ANGLE_TAKES, ctx)
+        else {
+          this.patternAngle = normalizeAngle((degrees * Math.PI) / 180)
+          setCommandSettings({ hatchPatternAngle: this.patternAngle }, ctx)
+        }
+      } else if (edit.field === "hatchScale") {
+        const scale = parseNumber(text)
+        if (scale === null) refuseText(SCALE_TAKES, ctx)
+        else if (!(scale > 0)) {
+          ctx.report(ctx.text.message("positiveNonzero"), "error")
+        } else {
+          this.patternScale = scale
+          setCommandSettings({ hatchPatternScale: scale }, ctx)
+        }
+      } else return "unhandled"
+    } else return "unhandled"
+    this.restyle(ctx)
+    return "continue"
+  }
+
+  /** A pattern chosen on Hatch Creation: HPNAME as Properties sets it. */
+  private choosePattern(id: HatchPatternId, ctx: ToolContext): void {
+    this.patternName = id
+    if (!isSolidHatchPattern(id)) this.lastPattern = id
+    setCommandSettings({ hatchPatternName: id }, ctx)
+  }
+
+  /** The previews again, in the pattern, angle and scale just set. */
+  private restyle(ctx: ToolContext): void {
+    this.refreshPreview(ctx)
+    if (this.hover) {
+      const { face } = this.hover
+      this.hover = {
+        face,
+        hatch: withCurrentProperties(
+          this.build(face.loops, ctx, QUICK_PREVIEW_ID),
+          ctx
+        ),
+      }
+    }
+    ctx.requestRender()
   }
 
   /** The registry's pattern HPNAME names, its `_` aside. */
@@ -602,6 +762,12 @@ export class HatchTool implements Tool {
    * empty run ends silently (probes hatch/p204, p223, p226, p227).
    */
   private finish(ctx: ToolContext): void {
+    this.conclude(ctx)
+    ctx.endCommand()
+  }
+
+  /** What ends the run, Enter's or Close Hatch Creation's. */
+  private conclude(ctx: ToolContext): void {
     if (this.allLoops(ctx).length === 0 && !ctx.selection.isEmpty()) {
       ctx.report(ctx.text.message("unableToHatchBoundary"), "error")
     }
@@ -609,7 +775,6 @@ export class HatchTool implements Tool {
     // The boundary objects were only the answer to a prompt: HATCH leaves
     // nothing selected, so the palette does not go on describing them.
     ctx.selection.clear()
-    ctx.endCommand()
   }
 
   /**
@@ -642,9 +807,13 @@ export class HatchTool implements Tool {
   private enterPoint(ctx: ToolContext): void {
     this.state = { phase: "point" }
     this.refreshPreview(ctx)
-    ctx.report(
-      ctx.text.message("currentHatchPattern", { name: this.patternName })
-    )
+    // Hatch Creation shows the pattern: the ribbon's prompt writes no line
+    // of it (desktop hatch/d-session.log).
+    if (!this.ribbon) {
+      ctx.report(
+        ctx.text.message("currentHatchPattern", { name: this.patternName })
+      )
+    }
     ctx.dynamicInput.open({
       fields: [{ id: "point", kind: "coordinate" }],
       // A bare number is direct distance from LASTPOINT towards the cursor
@@ -733,6 +902,9 @@ export class HatchTool implements Tool {
 
   private setPattern(name: string, ctx: ToolContext): void {
     this.patternName = name
+    if (!isSolidHatchPattern(this.patternId())) {
+      this.lastPattern = this.patternId()
+    }
     setCommandSettings({ hatchPatternName: name }, ctx)
     // A solid fill has no spacing or direction to ask about.
     if (isSolidHatchPattern(this.patternId())) this.enterPoint(ctx)
@@ -793,6 +965,13 @@ export class HatchTool implements Tool {
 }
 
 const SOLID: HatchPatternId = SOLID_HATCH_PATTERN_ID
+
+/** What `Specify an angle for the pattern` and its scale refuse a word with (p208, p210). */
+const ANGLE_TAKES: QuestionInput = {
+  refusal: "requiresAngle",
+  values: { points: "two", keyword: "no" },
+}
+const SCALE_TAKES: QuestionInput = { refusal: "requiresDistanceOrNumberX" }
 
 /**
  * How far, in pixels, the cursor moves from where a trace found no area

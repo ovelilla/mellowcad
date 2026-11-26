@@ -429,7 +429,8 @@ export interface RibbonUi {
 export interface ContextualTab {
   /**
    * Which tab: Array Creation for ARRAYRECT, ARRAYPOLAR or ARRAYPATH
-   * (ARRAYCREATION 1, 2, 3).
+   * (ARRAYCREATION 1, 2, 3); Hatch Creation for HATCH with the ribbon open
+   * (HATCHCREATION 1).
    */
   readonly id: ContextualTabId
   /** Each field's value as its prompt offers it, and whether it is greyed. */
@@ -440,11 +441,19 @@ export interface ContextualTab {
   readonly toggles: Readonly<Partial<Record<ContextualToggleId, boolean>>>
   /** A path array's Method (Divide or Measure); null on the others. */
   readonly method: "divide" | "measure" | null
+  /**
+   * Hatch Creation's pattern, the name in `HATCH_PATTERNS` HPNAME holds
+   * (`SOLID` for a solid fill); null on the others.
+   */
+  readonly pattern: string | null
 }
 
 /** The contextual tabs a command opens. */
 export type ContextualTabId =
-  "arrayCreationRectangular" | "arrayCreationPolar" | "arrayCreationPath"
+  | "arrayCreationRectangular"
+  | "arrayCreationPolar"
+  | "arrayCreationPath"
+  | "hatchCreation"
 
 /** A field of a contextual tab, by what it sets. */
 export type ContextualFieldId =
@@ -460,6 +469,8 @@ export type ContextualFieldId =
   | "angleBetween"
   | "fillAngle"
   | "itemSpacing"
+  | "hatchAngle"
+  | "hatchScale"
 
 /** A toggle of a contextual tab. */
 export type ContextualToggleId =
@@ -474,12 +485,16 @@ export interface ContextualFieldUi {
 /**
  * What a contextual tab's control asks of the running command, as its prompt
  * would take it: a field's typed text, a toggle flipped, a path array's
- * Method, or the tab's Close.
+ * Method, Hatch Creation's pattern (a name in `HATCH_PATTERNS`), its Type or
+ * how its boundaries are given (Pick Points, Select), or the tab's Close.
  */
 export type ContextualEdit =
   | { readonly field: ContextualFieldId; readonly text: string }
   | { readonly toggle: ContextualToggleId }
   | { readonly method: "divide" | "measure" }
+  | { readonly pattern: string }
+  | { readonly hatchType: "solid" | "pattern" }
+  | { readonly boundary: "pick" | "select" }
   | { readonly close: true }
 
 /** Snapshot of the command line (AutoCAD's `Command:` prompt) for the UI. */

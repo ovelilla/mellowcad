@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest"
-import type { InsertEntity } from "../domain/entities"
+import type { HatchEntity, InsertEntity } from "../domain/entities"
 import { createHarness } from "../../test/harness"
-import { circleOf, lineOf, p } from "../../test/builders"
+import { circleOf, lineOf, p, rectOf } from "../../test/builders"
 
 /**
  * The ribbon's contextual tabs (docs/plans/autocad-ui.md, §6, phase 6): what
@@ -178,5 +178,149 @@ describe("Array Creation", () => {
       items: 11,
       align: false,
     })
+  })
+})
+
+/**
+ * Hatch Creation (RBN_01738148), while HATCH asks with the ribbon open
+ * (HATCHCREATION 1; desktop hatch/d01-2): its pattern, Angle and Scale are
+ * HPNAME, HPANG and HPSCALE as Properties sets them, inside the run.
+ */
+describe("Hatch Creation", () => {
+  const ROOM = () =>
+    createHarness({ entities: [rectOf(p(0, 0), p(100, 50), { id: "R" })] })
+  const hatch = (cad: ReturnType<typeof createHarness>) =>
+    cad.entities().find((e) => e.type === "hatch") as HatchEntity | undefined
+
+  it("opens with HATCH, in front, and gives the front back as Enter ends it", () => {
+    const cad = ROOM()
+    cad.runtime.setRibbonTab("insert")
+    cad.command("HATCH")
+    const tab = cad.state().ribbon.contextual
+    expect(tab?.id).toBe("hatchCreation")
+    expect(cad.state().ribbon.tab).toBe("hatchCreation")
+    expect(tab?.pattern).toBe("ANGLE")
+    expect(tab?.fields.hatchAngle).toEqual({ text: "0", disabled: false })
+    expect(tab?.fields.hatchScale).toEqual({ text: "1", disabled: false })
+    cad.click(p(50, 25)).enter()
+    expect(cad.state().ribbon.contextual).toBeNull()
+    expect(cad.state().ribbon.tab).toBe("insert")
+    expect(hatch(cad)).toBeDefined()
+  })
+
+  it("closes with Escape, keeping the hatch, and with Close Hatch Creation", () => {
+    const escaped = ROOM()
+    escaped.command("HATCH").click(p(50, 25)).escape()
+    expect(escaped.state().ribbon.contextual).toBeNull()
+    expect(hatch(escaped)).toBeDefined()
+
+    const closed = ROOM()
+    closed.command("HATCH").click(p(50, 25))
+    closed.runtime.editContextualTab({ close: true })
+    expect(closed.activeToolId()).toBe("select")
+    expect(closed.state().ribbon.contextual).toBeNull()
+    expect(hatch(closed)).toBeDefined()
+  })
+
+  it("is not shown by -HATCH, nor by HATCH with the ribbon closed", () => {
+    const dash = ROOM()
+    dash.command("-HATCH")
+    expect(dash.state().ribbon.contextual).toBeNull()
+    const closed = ROOM()
+    closed.runtime.closeRibbon()
+    closed.command("HATCH")
+    expect(closed.state().ribbon.contextual).toBeNull()
+  })
+
+  it("sets the pattern, angle and scale as Properties would, with no echo, in the run's one step", () => {
+    const cad = ROOM()
+    cad.command("HATCH").click(p(50, 25))
+    const before = cad.commandLog().length
+    cad.runtime.editContextualTab({ pattern: "ANSI31" })
+    cad.runtime.editContextualTab({ field: "hatchAngle", text: "-30" })
+    cad.runtime.editContextualTab({ field: "hatchScale", text: "2.5" })
+    expect(cad.commandLog().length).toBe(before)
+    const tab = cad.state().ribbon.contextual
+    expect(tab?.pattern).toBe("ANSI31")
+    expect(tab?.fields.hatchAngle?.text).toBe("330")
+    expect(tab?.fields.hatchScale?.text).toBe("2.5")
+    cad.enter()
+    expect(hatch(cad)).toMatchObject({ patternId: "ANSI31", patternScale: 2.5 })
+    expect(cad.runtime.document.getSettings().hatchPatternName).toBe("ANSI31")
+    // One U takes the hatch and the settings back (HATCH-D37).
+    cad.undo()
+    expect(hatch(cad)).toBeUndefined()
+    expect(cad.runtime.document.getSettings()).toMatchObject({
+      hatchPatternName: "ANGLE",
+      hatchPatternScale: 1,
+      hatchPatternAngle: 0,
+    })
+  })
+
+  it("refuses what Properties' prompts refuse, in their words", () => {
+    const cad = ROOM()
+    cad.command("HATCH")
+    cad.runtime.editContextualTab({ field: "hatchScale", text: "0" })
+    cad.runtime.editContextualTab({ field: "hatchScale", text: "abc" })
+    cad.runtime.editContextualTab({ field: "hatchAngle", text: "abc" })
+    expect(cad.commandLog().slice(-3)).toEqual([
+      "Value must be positive and nonzero.",
+      "Requires a distance (or numberX).",
+      "Requires valid numeric angle or two points.",
+    ])
+    expect(cad.state().ribbon.contextual?.fields.hatchScale?.text).toBe("1")
+  })
+
+  it("brings HPNAME's pattern back from Solid, as the run started with it", () => {
+    const cad = ROOM()
+    cad.command("HPNAME")
+    cad.runtime.setCommandLineText("NET")
+    cad.runtime.submitCommandLine()
+    cad.command("HATCH")
+    cad.runtime.editContextualTab({ hatchType: "solid" })
+    cad.runtime.editContextualTab({ hatchType: "pattern" })
+    expect(cad.state().ribbon.contextual?.pattern).toBe("NET")
+  })
+
+  it("switches Type between Solid and the last pattern, greying Angle and Scale", () => {
+    const cad = ROOM()
+    cad.command("HATCH")
+    cad.runtime.editContextualTab({ pattern: "NET" })
+    cad.runtime.editContextualTab({ hatchType: "solid" })
+    let tab = cad.state().ribbon.contextual
+    expect(tab?.pattern).toBe("SOLID")
+    expect(tab?.fields.hatchAngle?.disabled).toBe(true)
+    expect(tab?.fields.hatchScale?.disabled).toBe(true)
+    cad.runtime.editContextualTab({ hatchType: "pattern" })
+    tab = cad.state().ribbon.contextual
+    expect(tab?.pattern).toBe("NET")
+    expect(tab?.fields.hatchScale?.disabled).toBe(false)
+  })
+
+  it("switches the boundaries' mode by Pick Points and Select", () => {
+    const cad = ROOM()
+    cad.command("HATCH")
+    cad.runtime.editContextualTab({ boundary: "select" })
+    expect(cad.state().commandLine.prompt).toBe(
+      "HATCH Select objects or [picK internal point/Undo]:"
+    )
+    expect(cad.state().ribbon.contextual?.id).toBe("hatchCreation")
+    cad.click(p(50, 0))
+    cad.runtime.editContextualTab({ boundary: "pick" })
+    expect(cad.state().commandLine.prompt).toBe(
+      "HATCH Pick internal point or [Select objects/Undo]:"
+    )
+    cad.enter()
+    expect(hatch(cad)?.loops).toHaveLength(1)
+  })
+
+  it("stays open while a transparent command runs inside it", () => {
+    const cad = ROOM()
+    cad.command("HATCH")
+    cad.keyIn("'ZOOM")
+    expect(cad.state().commandLine.prompt).toMatch(/>>Specify corner of window/)
+    expect(cad.state().ribbon.contextual?.id).toBe("hatchCreation")
+    cad.escape()
+    expect(cad.state().ribbon.contextual?.id).toBe("hatchCreation")
   })
 })

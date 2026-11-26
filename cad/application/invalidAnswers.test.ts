@@ -401,7 +401,7 @@ describe("a wrong answer mid-command", () => {
 
   it("refuses at -HATCH's prompts as AutoCAD's console does", () => {
     const cad = createHarness({ entities: twoLines() })
-    cad.command("HATCH")
+    cad.command("-HATCH")
     answerLine(cad, "FOO")
     expect(cad.commandLog().at(-1)).toBe("2D point or option keyword required.")
     cad.option("Properties").enter()

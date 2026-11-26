@@ -18,7 +18,8 @@ import {
 import { drawingBox } from "../orbit"
 import { ObjectSelector } from "./objectSelection"
 import { selectedInDrawingOrder } from "./drawingOrder"
-import { refuseText, refusesCount, takesCount } from "./arrayCounts"
+import { refusesCount, takesCount } from "./arrayCounts"
+import { refuseText } from "./refuseText"
 import {
   ArrayAssociativity,
   arrayPreview,

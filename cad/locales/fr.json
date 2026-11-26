@@ -1037,7 +1037,8 @@
         "Select objects": "Sélectionner",
         "?": "?",
         "Solid": "Solide",
-        "Undo": "annUler"
+        "Undo": "annUler",
+        "Pick internal point": "cHoisir"
       },
       "INSERT": {
         "?": "?",
@@ -1637,8 +1638,21 @@
       }
     },
     "promptKeywords": {
-      "peditMeshOption": {"eXit": "Quitter", "X": "Q", "Undo": "annUler"},
-      "peditMeshVertexOption": {"Regen": "Régén", "Previous": "Précédent", "Move": "DEplacer", "eXit": "Quitter"},
+      "selectObjectsOrPickInternalPoint": {
+        "Pick internal point": "cHoisir",
+        "Undo": "annUler"
+      },
+      "pickInternalPointOr": {
+        "Select objects": "Sélectionner",
+        "Undo": "annUler"
+      },
+      "peditMeshOption": { "eXit": "Quitter", "X": "Q", "Undo": "annUler" },
+      "peditMeshVertexOption": {
+        "Regen": "Régén",
+        "Previous": "Précédent",
+        "Move": "DEplacer",
+        "eXit": "Quitter"
+      },
       "selectObjects": {
         "Window": "Fenêtre",
         "Last": "Dernier",
@@ -1765,6 +1779,8 @@
       }
     },
     "prompts": {
+      "pickInternalPointOr": "Choisir un point interne ou",
+      "selectObjectsOrPickInternalPoint": "Sélectionnez des objets ou",
       "enterMeshSizeM": "Entrez la taille du maillage dans la direction M",
       "enterMeshSizeN": "Entrez la taille du maillage dans la direction N",
       "specifyMeshVertex": "Spécifiez l'emplacement du sommet ({m}, {n})",
@@ -3479,7 +3495,8 @@
         "Spline curve": "courbe sPline"
       },
       "HATCH": {
-        "Select objects": "Sélectionner des objets"
+        "Select objects": "Sélectionner des objets",
+        "Pick internal point": "cHoisir un point interne"
       },
       "BREAK": {
         "First point": "Premier point"
@@ -3529,7 +3546,12 @@
       }
     },
     "promptKeywordLabels": {
-      "peditMeshOption": {"Edit vertex": "Modif-sommet"},
+      "selectObjectsOrPickInternalPoint": { "Undo": "annUler" },
+      "pickInternalPointOr": {
+        "Select objects": "Sélectionner des objets",
+        "Undo": "annUler"
+      },
+      "peditMeshOption": { "Edit vertex": "Modif-sommet" },
       "ucsNewUcs": {
         "ZAxis": "axEZ"
       },

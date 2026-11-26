@@ -90,6 +90,7 @@
   },
   "Ribbon": {
     "tabs": {
+      "hatchCreation": "图案填充创建",
       "home": "默认",
       "insert": "插入",
       "annotate": "注释",
@@ -98,6 +99,10 @@
       "arrayCreation": "阵列创建"
     },
     "panels": {
+      "hatchBoundaries": "边界",
+      "hatchPattern": "图案",
+      "hatchProperties": "特性",
+      "hatchClose": "关闭",
       "draw": "绘图",
       "modify": "修改",
       "annotation": "注释",
@@ -128,6 +133,11 @@
       "arrayClose": "关闭"
     },
     "items": {
+      "hatchPickPoints": "拾取点",
+      "hatchSelect": "选择",
+      "hatchSolid": "实体",
+      "hatchPattern": "图案",
+      "hatchClose": "关闭\n图案填充创建",
       "line": "直线",
       "polyline": "多段线",
       "circle": "圆心，半径",
@@ -282,6 +292,8 @@
       "arrayClose": "关闭 阵列"
     },
     "fields": {
+      "hatchAngle": "角度",
+      "hatchScale": "填充图案比例",
       "columns": "列数:",
       "columnSpacing": "介于:",
       "rows": "行数:",
@@ -297,6 +309,14 @@
     },
     "pressF1": "按 F1 键获得更多帮助",
     "tips": {
+      "hatchPickPoints": "根据围绕指定点形成封闭区域的现有对象确定图案填充边界",
+      "hatchSelect": "根据形成封闭区域的选定对象确定图案填充边界",
+      "hatchType": "指定是创建预定义的图案填充或填充还是创建用户定义的图案填充",
+      "hatchSolid": "指定实体填充而不是填充图案",
+      "hatchPattern": "显示选择的 ANSI、ISO 和其他行业标准填充图案",
+      "hatchAngle": "相对于当前 UCS 的 X 轴指定填充图案的角度",
+      "hatchScale": "展开或收拢预定义或自定义的填充图案",
+      "hatchClose": "退出图案填充创建并关闭上下文选项卡",
       "line": "创建直线段",
       "polyline": "创建二维多段线",
       "circle": "用圆心和半径创建圆",
@@ -466,6 +486,14 @@
       "arrayClose": "退出阵列命令。"
     },
     "tipTitles": {
+      "hatchPickPoints": "拾取点",
+      "hatchSelect": "选择边界对象",
+      "hatchType": "图案填充类型",
+      "hatchSolid": "实体",
+      "hatchPattern": "图案",
+      "hatchAngle": "图案填充角度",
+      "hatchScale": "填充图案比例",
+      "hatchClose": "关闭图案填充创建",
       "layerProperties": "图层特性",
       "insert": "插入块",
       "ucsIcon": "UCS 图标",

@@ -135,6 +135,7 @@ export const hu: EditorLocale = {
     },
     "Ribbon": {
       "tabs": {
+        "hatchCreation": "Sraffozás létrehozása",
         "home": "Kezdőlap",
         "insert": "Beszúrás",
         "annotate": "Feliratozás",
@@ -143,6 +144,10 @@ export const hu: EditorLocale = {
         "arrayCreation": "Kiosztás létrehozása"
       },
       "panels": {
+        "hatchBoundaries": "Határvonalak",
+        "hatchPattern": "Minta",
+        "hatchProperties": "Tulajdonságok",
+        "hatchClose": "Bezárás",
         "draw": "Rajz",
         "modify": "Módosítás",
         "annotation": "Feliratozás",
@@ -173,6 +178,11 @@ export const hu: EditorLocale = {
         "arrayClose": "Bezárás"
       },
       "items": {
+        "hatchPickPoints": "Pontok kijelölése",
+        "hatchSelect": "Kijelöl",
+        "hatchSolid": "Szilárdtest",
+        "hatchPattern": "Mintázat",
+        "hatchClose": "Sraffozás-létrehozás\nbezárása",
         "line": "Vonal",
         "polyline": "Vonallánc",
         "circle": "Középpont, Sugár",
@@ -327,6 +337,8 @@ export const hu: EditorLocale = {
         "arrayClose": "Kiosztás bezárása"
       },
       "fields": {
+        "hatchAngle": "Szög",
+        "hatchScale": "Sraffozási minta léptéke",
         "columns": "Oszlopok:",
         "columnSpacing": "Közöttük:",
         "rows": "Sorok:",
@@ -342,6 +354,14 @@ export const hu: EditorLocale = {
       },
       "pressF1": "További tudnivalókért nyomja meg az F1-et",
       "tips": {
+        "hatchPickPoints": "Sraffozási határvonalat ad meg egy adott pont körül zárt területet alkotó meglévő objektumokból",
+        "hatchSelect": "Sraffozási határvonalat ad zárt területet alkotó kijelölt objektumokból",
+        "hatchType": "Megadja, hogy előre definiált sraffozás vagy kitöltés, vagy felhasználói sraffozás jöjjön-e létre",
+        "hatchSolid": "Tömör kitöltést ad meg, nem pedig sraffozási mintát",
+        "hatchPattern": "Válogatást jelenít meg ANSI, ISO és egyéb ipari szabványként számon tartott sraffozási mintákból",
+        "hatchAngle": "Megadja a sraffozási minta szögét az aktuális FKR X tengelyéhez viszonyítva",
+        "hatchScale": "Széthúz vagy összenyom egy előre definiált vagy felhasználói sraffozási mintát",
+        "hatchClose": "A sraffozás létrehozásának leállítása és a környezetfüggő fül bezárása",
         "line": "Egyenes szakasz létrehozása",
         "polyline": "Kétdimenziós vonallánc létrehozása",
         "circle": "Kör létrehozása a középpont és a sugár felhasználásával",
@@ -511,6 +531,14 @@ export const hu: EditorLocale = {
         "arrayClose": "Kilépés a kiosztás parancsból."
       },
       "tipTitles": {
+        "hatchPickPoints": "Pontok kijelölése",
+        "hatchSelect": "Határvonal-objektumok kijelölése",
+        "hatchType": "Sraffozás típusa",
+        "hatchSolid": "Szilárdtest",
+        "hatchPattern": "Mintázat",
+        "hatchAngle": "Sraffozás szöge",
+        "hatchScale": "Sraffozási minta léptéke",
+        "hatchClose": "A sraffozás létrehozásának leállítása",
         "layerProperties": "Fóliatulajdonságok",
         "insert": "Blokk beszúrása",
         "ucsIcon": "FKR ikon",

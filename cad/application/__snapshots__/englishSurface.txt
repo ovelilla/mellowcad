@@ -1878,6 +1878,58 @@ ptype "Point Style" PTYPE
   properties: -
   cycling: -
 > HATCH
+  prompt: HATCH Pick internal point or [Select objects/Undo]:
+  asks: ""
+  tip: Pick internal point or
+  dyn: "X,Y"=""||*
+  options: [S] Select objects, [U] Undo
+  command| H HATCH
+> pick inside
+  prompt| Pick internal point or [Select objects/Undo]:
+  info| Selecting everything...
+  info| Selecting everything visible...
+  info| Analyzing the selected data...
+  info| Analyzing internal islands...
+> S
+  prompt: HATCH Select objects or [picK internal point/Undo]:
+  asks: 
+  tip: Select objects or
+  dyn: 
+  options: [K] picK internal point, [U] Undo
+  prompt| Pick internal point or [Select objects/Undo]: S
+> pick object
+  properties: Line (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
+  prompt| Select objects or [picK internal point/Undo]: 1 found
+> K
+  prompt: HATCH Pick internal point or [Select objects/Undo]:
+  asks: ""
+  tip: Pick internal point or
+  dyn: "X,Y"=""||*
+  options: [S] Select objects, [U] Undo
+  prompt| Select objects or [picK internal point/Undo]: K
+> U
+  prompt| Pick internal point or [Select objects/Undo]: U
+> enter
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  properties: -
+  prompt| Pick internal point or [Select objects/Undo]:
+  error| Unable to hatch the boundary.
+
+## HATCH, the ribbon closed
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> HATCH
   prompt: HATCH Specify internal point or [Properties/Select objects]:
   asks: ""
   tip: Specify internal point or

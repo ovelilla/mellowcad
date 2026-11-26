@@ -20,7 +20,11 @@ const CLOSE: RibbonPanel = {
  * (RBN_01740514, RBN_01740500, RBN_01740507): not drawn, as none of their
  * commands offers them, are Base Point, Columns' and Rows' Total (ARRAYRECT),
  * Rows and Levels (ARRAYPOLAR), and Total, Rows, Levels, Tangent Direction
- * and Z Direction (ARRAYPATH; docs/coverage/modify.md).
+ * and Z Direction (ARRAYPATH; docs/coverage/modify.md). Hatch Creation
+ * (RBN_01738148) has Boundaries' Pick Points and Select, Pattern, Properties'
+ * Type, Angle and Scale, and Close; the rest (Remove, Recreate, the colours,
+ * Transparency, Origin, Options, the slide-outs) is not built
+ * (docs/coverage/draw.md, HATCH).
  */
 export const CONTEXTUAL_TABS: Readonly<Record<ContextualTabId, RibbonTab>> = {
   arrayCreationRectangular: {
@@ -115,6 +119,40 @@ export const CONTEXTUAL_TABS: Readonly<Record<ContextualTabId, RibbonTab>> = {
         ],
       },
       CLOSE,
+    ],
+  },
+  hatchCreation: {
+    id: "hatchCreation",
+    panels: [
+      {
+        id: "hatchBoundaries",
+        icon: "hatchPickPoints",
+        slots: [
+          { kind: "hatchBoundary", boundary: "pick", size: "large" },
+          {
+            kind: "column",
+            rows: [
+              { kind: "hatchBoundary", boundary: "select", size: "small" },
+            ],
+          },
+        ],
+      },
+      {
+        id: "hatchPattern",
+        icon: "hatch",
+        slots: [{ kind: "hatchPatterns" }],
+      },
+      {
+        id: "hatchProperties",
+        icon: "hatchProperties",
+        slots: [{ kind: "hatchProperties" }],
+      },
+      {
+        id: "hatchClose",
+        icon: "hatchClose",
+        // Close Hatch Creation, `^M` (MM_1928): Enter.
+        slots: [{ kind: "closeContextual", text: "hatchClose" }],
+      },
     ],
   },
 }

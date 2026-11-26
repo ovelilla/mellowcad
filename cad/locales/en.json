@@ -1032,7 +1032,8 @@
         "Select objects": "Select",
         "?": "?",
         "Solid": "Solid",
-        "Undo": "Undo"
+        "Undo": "Undo",
+        "Pick internal point": "picK"
       },
       "INSERT": { "?": "?", "Scale": "Scale", "Rotate": "Rotate" },
       "MINSERT": { "?": "?", "Scale": "Scale", "Rotate": "Rotate" },
@@ -1564,6 +1565,11 @@
       }
     },
     "promptKeywords": {
+      "selectObjectsOrPickInternalPoint": {
+        "Pick internal point": "picK",
+        "Undo": "Undo"
+      },
+      "pickInternalPointOr": { "Select objects": "Select", "Undo": "Undo" },
       "selectObjects": {
         "Window": "Window",
         "Last": "Last",
@@ -1644,6 +1650,8 @@
       "leaderFormatOption": { "None": "None" }
     },
     "prompts": {
+      "pickInternalPointOr": "Pick internal point or",
+      "selectObjectsOrPickInternalPoint": "Select objects or",
       "length": "Length",
       "width": "Width",
       "angle": "Angle",
@@ -3307,7 +3315,10 @@
         "Smooth surface": "Smooth surface",
         "Desmooth": "Desmooth"
       },
-      "HATCH": { "Select objects": "Select objects" },
+      "HATCH": {
+        "Select objects": "Select objects",
+        "Pick internal point": "picK internal point"
+      },
       "BREAK": { "First point": "First point" },
       "ARRAYRECT": { "Unit cell": "Unit cell" },
       "ARRAYPOLAR": {
@@ -3336,6 +3347,11 @@
       }
     },
     "promptKeywordLabels": {
+      "selectObjectsOrPickInternalPoint": { "Undo": "Undo" },
+      "pickInternalPointOr": {
+        "Select objects": "Select objects",
+        "Undo": "Undo"
+      },
       "ucsNewUcs": { "ZAxis": "ZAxis" },
       "filletEdgeLoopOr": { "Edge": "Edge" },
       "splineditOptionClosed": { "Reverse": "Reverse" },

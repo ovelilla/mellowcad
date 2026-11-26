@@ -139,6 +139,7 @@ export const cs: EditorLocale = {
     },
     "Ribbon": {
       "tabs": {
+        "hatchCreation": "Vytváření šraf",
         "home": "Výchozí",
         "insert": "Vložit",
         "annotate": "Poznámky",
@@ -147,6 +148,10 @@ export const cs: EditorLocale = {
         "arrayCreation": "Vytvoření pole"
       },
       "panels": {
+        "hatchBoundaries": "Hranice",
+        "hatchPattern": "Vzor",
+        "hatchProperties": "Vlastnosti",
+        "hatchClose": "Zavřít",
         "draw": "Kreslit",
         "modify": "Modifikace",
         "annotation": "Poznámka",
@@ -177,6 +182,11 @@ export const cs: EditorLocale = {
         "arrayClose": "Zavřít"
       },
       "items": {
+        "hatchPickPoints": "Vybrat body",
+        "hatchSelect": "Vyber",
+        "hatchSolid": "Barva",
+        "hatchPattern": "Vzor",
+        "hatchClose": "Ukončit\nvytváření šraf",
         "line": "Úsečka",
         "polyline": "Křivka",
         "circle": "Střed, poloměr",
@@ -331,6 +341,8 @@ export const cs: EditorLocale = {
         "arrayClose": "Zavřít pole"
       },
       "fields": {
+        "hatchAngle": "Úhel",
+        "hatchScale": "Měřítko šrafovacího vzoru",
         "columns": "Sloupců:",
         "columnSpacing": "Mezi:",
         "rows": "Řádků:",
@@ -346,6 +358,14 @@ export const cs: EditorLocale = {
       },
       "pressF1": "Další nápovědu zobrazíte stisknutím klávesy F1.",
       "tips": {
+        "hatchPickPoints": "Určuje hranici šrafování vzniklou z existujících objektů, které tvoří uzavřenou plochu okolo určeného bodu.",
+        "hatchSelect": "Určuje hranici šrafování vzniklou z vybraných objektů, které tvoří uzavřenou plochu.",
+        "hatchType": "Určuje, zda se má vytvořit předdefinované šrafování či výplň nebo uživatelsky definované šrafování.",
+        "hatchSolid": "Určuje výplň tělesa namísto šrafovacího vzoru.",
+        "hatchPattern": "Zobrazuje šrafovací vzory podle norem ANSI, ISO a dalších průmyslových norem.",
+        "hatchAngle": "Určuje úhel šrafovacího vzoru vzhledem k ose X aktuálního USS.",
+        "hatchScale": "Roztahuje nebo zhušťuje předdefinovaný nebo vlastní šrafovací vzor.",
+        "hatchClose": "Ukončuje vytváření šraf a zavírá kontextovou kartu.",
         "line": "Vytvoří přímé čarové segmenty.",
         "polyline": "Vytvoří 2D křivku.",
         "circle": "Slouží k vytvoření kružnice pomocí středového bodu a poloměru.",
@@ -515,6 +535,14 @@ export const cs: EditorLocale = {
         "arrayClose": "Ukončí příkaz pole."
       },
       "tipTitles": {
+        "hatchPickPoints": "Vybrat body",
+        "hatchSelect": "Vybrat objekty hranice",
+        "hatchType": "Typ šraf",
+        "hatchSolid": "Barva",
+        "hatchPattern": "Vzor",
+        "hatchAngle": "Úhel šraf",
+        "hatchScale": "Měřítko šrafovacího vzoru",
+        "hatchClose": "Ukončit vytváření šraf",
         "layerProperties": "Vlastnosti hladiny",
         "insert": "Vložit blok",
         "ucsIcon": "Ikona USS",

@@ -139,6 +139,7 @@ export const pl: EditorLocale = {
     },
     "Ribbon": {
       "tabs": {
+        "hatchCreation": "Tworzenie kreskowania",
         "home": "Narzędzia główne",
         "insert": "Wstaw",
         "annotate": "Opisz",
@@ -147,6 +148,10 @@ export const pl: EditorLocale = {
         "arrayCreation": "Tworzenie szyku"
       },
       "panels": {
+        "hatchBoundaries": "Obwiednie",
+        "hatchPattern": "Wzór",
+        "hatchProperties": "Właściwości",
+        "hatchClose": "Zamknij",
         "draw": "Rysuj",
         "modify": "Zmień",
         "annotation": "Opis",
@@ -177,6 +182,11 @@ export const pl: EditorLocale = {
         "arrayClose": "Zamknij"
       },
       "items": {
+        "hatchPickPoints": "Wskaż punkty",
+        "hatchSelect": "Wybierz",
+        "hatchSolid": "Bryła",
+        "hatchPattern": "Wzór",
+        "hatchClose": "Zakończ\ntryb tworzenia kreskowania",
         "line": "Linia",
         "polyline": "Polilinia",
         "circle": "Środek, promień",
@@ -331,6 +341,8 @@ export const pl: EditorLocale = {
         "arrayClose": "Zamknij szyk"
       },
       "fields": {
+        "hatchAngle": "Kąt",
+        "hatchScale": "Skala wzoru kreskowania",
         "columns": "Kolumny:",
         "columnSpacing": "Między:",
         "rows": "Wiersze:",
@@ -346,6 +358,14 @@ export const pl: EditorLocale = {
       },
       "pressF1": "Aby uzyskać pomoc, naciśnij klawisz F1",
       "tips": {
+        "hatchPickPoints": "Pozwala na określenie obwiedni kreskowania na podstawie istniejących obiektów tworzących zamknięty obszar wokół określonego punktu",
+        "hatchSelect": "Umożliwia określenie obwiedni kreskowania na podstawie wybranych obiektów tworzących obszar zamknięty",
+        "hatchType": "Pozwala na określenie, czy utworzyć wstępnie zdefiniowane kreskowanie albo wypełnienie, czy kreskowanie zdefiniowane przez użytkownika",
+        "hatchSolid": "Umożliwia określenie pełnego wypełnienia zamiast wzoru kreskowania",
+        "hatchPattern": "Umożliwia wyświetlenie wyboru ANSI, ISO i innych wzorów kreskowania stanowiących branżowe standardy",
+        "hatchAngle": "Umożliwia określenie kąta wzoru kreskowania względem osi X bieżącego układu LUW",
+        "hatchScale": "Powoduje rozwijanie lub zwijanie wstępnie zdefiniowanego lub niestandardowego wzoru kreskowania",
+        "hatchClose": "Powoduje zakończenie trybu tworzenia kreskowania i zamknięcie karty kontekstowej",
         "line": "Tworzy segmenty prostoliniowe",
         "polyline": "Tworzy polilinię 2D",
         "circle": "Tworzy okrąg, używając punktu środkowego i promienia",
@@ -515,6 +535,14 @@ export const pl: EditorLocale = {
         "arrayClose": "Kończy działanie polecenia Szyk."
       },
       "tipTitles": {
+        "hatchPickPoints": "Wskaż punkty",
+        "hatchSelect": "Wybierz obiekty typu obwiednie",
+        "hatchType": "Typ kreskowania",
+        "hatchSolid": "Bryła",
+        "hatchPattern": "Wzór",
+        "hatchAngle": "Kąt kreskowania",
+        "hatchScale": "Skala wzoru kreskowania",
+        "hatchClose": "Zakończ tryb tworzenia kreskowania",
         "layerProperties": "Właściwości warstwy",
         "insert": "Wstaw blok",
         "ucsIcon": "Ikona LUW",

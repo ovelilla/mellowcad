@@ -1037,7 +1037,8 @@
         "Select objects": "wyBierz",
         "?": "?",
         "Solid": "Pełny",
-        "Undo": "Cofnij"
+        "Undo": "Cofnij",
+        "Pick internal point": "wSKaż"
       },
       "INSERT": {
         "?": "?",
@@ -1637,8 +1638,18 @@
       }
     },
     "promptKeywords": {
-      "peditMeshOption": {"eXit": "konIec", "X": "I", "Undo": "Cofaj"},
-      "peditMeshVertexOption": {"Regen": "rEgen", "Previous": "Poprz", "Move": "prZesuń", "eXit": "konIec"},
+      "selectObjectsOrPickInternalPoint": {
+        "Pick internal point": "wSKaż",
+        "Undo": "Cofnij"
+      },
+      "pickInternalPointOr": { "Select objects": "Wybierz", "Undo": "Cofnij" },
+      "peditMeshOption": { "eXit": "konIec", "X": "I", "Undo": "Cofaj" },
+      "peditMeshVertexOption": {
+        "Regen": "rEgen",
+        "Previous": "Poprz",
+        "Move": "prZesuń",
+        "eXit": "konIec"
+      },
       "selectObjects": {
         "Window": "okNo",
         "Last": "oStatni",
@@ -1767,6 +1778,8 @@
       }
     },
     "prompts": {
+      "pickInternalPointOr": "Wskaż punkt wewnętrzny lub",
+      "selectObjectsOrPickInternalPoint": "Wybierz obiekty lub",
       "enterMeshSizeM": "Podaj rozmiar siatki  w kierunku M",
       "enterMeshSizeN": "Podaj rozmiar siatki  w kierunku N",
       "specifyMeshVertex": "Określ położenie wierzchołka ({m}, {n})",
@@ -3485,7 +3498,8 @@
         "Spline curve": "splaJn"
       },
       "HATCH": {
-        "Select objects": "wyBierz obiekty"
+        "Select objects": "wyBierz obiekty",
+        "Pick internal point": "wSKaż punkt wewnętrzny"
       },
       "BREAK": {
         "First point": "Pierwszy"
@@ -3535,7 +3549,12 @@
       }
     },
     "promptKeywordLabels": {
-      "peditMeshOption": {"Edit vertex": "Edwierzch"},
+      "selectObjectsOrPickInternalPoint": { "Undo": "Cofnij" },
+      "pickInternalPointOr": {
+        "Select objects": "Wybierz obiekty",
+        "Undo": "Cofnij"
+      },
+      "peditMeshOption": { "Edit vertex": "Edwierzch" },
       "ucsNewUcs": {
         "ZAxis": "Ośz"
       },

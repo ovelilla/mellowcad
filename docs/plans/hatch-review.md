@@ -73,6 +73,11 @@ and the desktop's history are in `research/probes/hatch/` (gitignored).
 | HAT-03 to HAT-13 | U of the HP variables, `?`, two points, transparency, Unable to hatch, the Previous set, `_` names, `<%.4f>`, 330°, the listing, es ANSI31 | as the console | `d75557e` |
 | HAT-14, HAT-15 | coverage drift; weak tests | fixed; probes cited | `d75557e` |
 
+Revisited on 2026-11-26 by `docs/plans/autocad-ui.md` (phase 6, block 2), once the ribbon
+existed: HATCH-D31 holds only with the ribbon closed (open, HATCH asks the ribbon's prompts and
+shows Hatch Creation), and HATCH-D45's WHY is the hatch made as the run ends, no longer the ribbon's
+absence.
+
 Decisions added in the execution: HATCH-D75 (a mirrored block reference reflects its hatch's
 pattern), D76 (a nameless hatch before version 32 is ANSI31), D77 (the landing's demos name ANSI31
 at their old look), D78–D80 (text islands' boxes and where they count), D81–D86 (the HP variables

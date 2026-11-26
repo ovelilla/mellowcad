@@ -67,7 +67,7 @@ export const heroDrawing = demo({
   .type("36")
   .enter()
   .layer("HATCH")
-  .command("_HATCH")
+  .command("_-HATCH")
   .option("Properties")
   .type("ANSI31")
   .enter()

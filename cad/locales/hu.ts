@@ -1779,7 +1779,8 @@ export const hu: EngineLocale = {
         "Select objects": "kiJelölése",
         "?": "?",
         "Solid": "Tömör",
-        "Undo": "Vissza"
+        "Undo": "Vissza",
+        "Pick internal point": "kiJelölés"
       },
       "INSERT": {
         "?": "?",
@@ -2383,6 +2384,14 @@ export const hu: EngineLocale = {
       }
     },
     "promptKeywords": {
+      "selectObjectsOrPickInternalPoint": {
+        "Pick internal point": "kiJelölés",
+        "Undo": "Vissza"
+      },
+      "pickInternalPointOr": {
+        "Select objects": "Kiválasztása",
+        "Undo": "Vissza"
+      },
       "peditMeshOption": {
         "eXit": "KIlépés",
         "X": "X",
@@ -2522,6 +2531,8 @@ export const hu: EngineLocale = {
       }
     },
     "prompts": {
+      "pickInternalPointOr": "Válasszon ki belső pontot, vagy",
+      "selectObjectsOrPickInternalPoint": "Jelöljön ki objektumokat, vagy",
       "enterMeshSizeM": "Adja meg a háló méretét M irányban",
       "enterMeshSizeN": "Adja meg a háló méretét N irányban",
       "specifyMeshVertex": [
@@ -9202,7 +9213,8 @@ export const hu: EngineLocale = {
         "Spline curve": "SPline-görbe"
       },
       "HATCH": {
-        "Select objects": "objektumok kiJelölése"
+        "Select objects": "objektumok kiJelölése",
+        "Pick internal point": "belső pont kiJelölése"
       },
       "BREAK": {
         "First point": "Első pont"
@@ -9252,6 +9264,13 @@ export const hu: EngineLocale = {
       }
     },
     "promptKeywordLabels": {
+      "selectObjectsOrPickInternalPoint": {
+        "Undo": "Vissza"
+      },
+      "pickInternalPointOr": {
+        "Select objects": "objektumok Kiválasztása",
+        "Undo": "Vissza"
+      },
       "peditMeshOption": {
         "Edit vertex": "SZerkeszt töréspontot"
       },

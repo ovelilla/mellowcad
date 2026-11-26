@@ -32,8 +32,16 @@ import {
   rectOf,
   textOf,
 } from "../../../test/builders"
-import { createHarness } from "../../../test/harness"
+import { createHarness, ribbonClosed } from "../../../test/harness"
+import { cs } from "../../locales/cs"
+import { de } from "../../locales/de"
 import { es } from "../../locales/es"
+import { fr } from "../../locales/fr"
+import { hu } from "../../locales/hu"
+import { it as italian } from "../../locales/it"
+import { pl } from "../../locales/pl"
+import { ptBR } from "../../locales/pt-BR"
+import { ru } from "../../locales/ru"
 import { EXPLODED_LINES } from "./hatching.probes"
 
 /** The square boundary most of these tests hatch. */
@@ -59,7 +67,7 @@ function looseSquare(min: number, max: number) {
 // -HATCH, whose prompt HATCH keeps here (HATCH-D31).
 describe("HATCH boundary by Pick internal point", () => {
   it("is the prompt the command opens with (p100)", () => {
-    const h = createHarness({ entities: [SQUARE] })
+    const h = ribbonClosed({ entities: [SQUARE] })
     h.command("HATCH")
 
     expect(h.optionAbbreviations()).toEqual(["P", "S"])
@@ -152,7 +160,7 @@ describe("HATCH's unlisted Undo", () => {
 
   it("takes back the last internal point's boundary, silently (p104, p162)", () => {
     const h = typed(
-      createHarness({ entities: [SQUARE, SMALL] }),
+      ribbonClosed({ entities: [SQUARE, SMALL] }),
       "HATCH",
       "50,50",
       "225,25",
@@ -175,7 +183,7 @@ describe("HATCH's unlisted Undo", () => {
   it("leaves what Select objects took (p106, p107, p164)", () => {
     const window = ["S", "W", "190,-10", "260,60", ""]
     const picked = typed(
-      createHarness({ entities: [SQUARE, SMALL] }),
+      ribbonClosed({ entities: [SQUARE, SMALL] }),
       "HATCH",
       "50,50",
       ...window,
@@ -185,7 +193,7 @@ describe("HATCH's unlisted Undo", () => {
     expect(filled(picked)).toEqual([false, true])
 
     const selected = typed(
-      createHarness({ entities: [SQUARE, SMALL] }),
+      ribbonClosed({ entities: [SQUARE, SMALL] }),
       "HATCH",
       ...window,
       "U"
@@ -196,14 +204,14 @@ describe("HATCH's unlisted Undo", () => {
   })
 
   it("refuses anything else, and is answered in Autodesk's Spanish (p101, p124)", () => {
-    const h = typed(createHarness({ entities: [SQUARE] }), "HATCH", "FOO")
+    const h = typed(ribbonClosed({ entities: [SQUARE] }), "HATCH", "FOO")
     expect(h.commandLog().slice(-2)).toEqual([
       "Specify internal point or [Properties/Select objects]: FOO",
       "2D point or option keyword required.",
     ])
 
     const spanish = typed(
-      createHarness({ locale: es, entities: [SQUARE, SMALL] }),
+      ribbonClosed({ locale: es, entities: [SQUARE, SMALL] }),
       "SOMBREA",
       "50,50",
       "H",
@@ -243,7 +251,7 @@ function lastPointOf(h: ReturnType<typeof createHarness>): Vec2 {
 describe("HATCH's internal point against AutoCAD 2027 (probes hatch/p100–p168)", () => {
   it("gathers the boundary set once per run, and analyses islands only for an area found (p104, p119, p144)", () => {
     const h = typed(
-      createHarness({ entities: [ROOM, rectOf(p(200, 0), p(300, 50))] }),
+      ribbonClosed({ entities: [ROOM, rectOf(p(200, 0), p(300, 50))] }),
       "HATCH"
     )
     expect(written(h, "150,25")).toEqual([
@@ -269,7 +277,7 @@ describe("HATCH's internal point against AutoCAD 2027 (probes hatch/p100–p168)
   })
 
   it("says an area picked twice is specified already, and gathers nothing (p157)", () => {
-    const h = typed(createHarness({ entities: [ROOM] }), "HATCH", "50,25")
+    const h = typed(ribbonClosed({ entities: [ROOM] }), "HATCH", "50,25")
     expect(written(h, "60,30")).toEqual([
       `${PROMPT} 60,30`,
       "This area has already been specified.",
@@ -282,7 +290,7 @@ describe("HATCH's internal point against AutoCAD 2027 (probes hatch/p100–p168)
     expect(hatchGeometry(hatch).lines.length).toBeGreaterThan(0)
 
     const spanish = typed(
-      createHarness({ locale: es, entities: [ROOM] }),
+      ribbonClosed({ locale: es, entities: [ROOM] }),
       "SOMBREA",
       "50,25",
       "60,30"
@@ -300,7 +308,7 @@ describe("HATCH's internal point against AutoCAD 2027 (probes hatch/p100–p168)
 
   it("refuses a point on an object, after the gathering lines (p143, p122)", () => {
     const h = typed(
-      createHarness({ entities: [ROOM, rectOf(p(100, 0), p(300, 50))] }),
+      ribbonClosed({ entities: [ROOM, rectOf(p(100, 0), p(300, 50))] }),
       "HATCH"
     )
     expect(written(h, "100,25")).toEqual([
@@ -315,7 +323,7 @@ describe("HATCH's internal point against AutoCAD 2027 (probes hatch/p100–p168)
     expect(h.typeCounts().hatch).toBeUndefined()
 
     const spanish = typed(
-      createHarness({ locale: es, entities: [ROOM] }),
+      ribbonClosed({ locale: es, entities: [ROOM] }),
       "SOMBREA",
       "100,25"
     )
@@ -513,7 +521,7 @@ describe("HATCH's internal point against AutoCAD 2027 (probes hatch/p100–p168)
 // p245, p246; -hatch in erase/p222).
 describe("HATCH boundary by Select objects", () => {
   it("fills one selected closed polyline with the default pattern (p00, p222)", () => {
-    const h = createHarness({ entities: [SQUARE] })
+    const h = ribbonClosed({ entities: [SQUARE] })
     h.command("HATCH").option("Select objects").click(p(50, 0)).enter().enter()
 
     const hatch = hatchOnly(h.entities())
@@ -571,7 +579,7 @@ describe("HATCH boundary by Select objects", () => {
   // -hatch in erase/p222: Select objects finds an open line as it finds the
   // circle; tracing leaves it out.
   it("finds an object that closes no area, and leaves it out of the hatch", () => {
-    const h = createHarness({
+    const h = ribbonClosed({
       entities: [
         lineOf(p(0, 0), p(100, 0), { id: "A" }),
         circleOf(p(250, 250), 10, { id: "C" }),
@@ -595,7 +603,7 @@ describe("HATCH boundary by Select objects", () => {
   })
 
   it("makes nothing of objects that close no area, and says so (p223)", () => {
-    const h = createHarness({ entities: [lineOf(p(0, 0), p(100, 0))] })
+    const h = ribbonClosed({ entities: [lineOf(p(0, 0), p(100, 0))] })
     h.command("HATCH").option("Select objects").click(p(50, 0)).enter().enter()
 
     expect(h.commandLog().at(-1)).toBe("Unable to hatch the boundary.")
@@ -642,7 +650,7 @@ describe("HATCH boundary by Select objects", () => {
   })
 
   it("stays behind its boundary (HPDRAWORDER 3), for the eye and for the pick", () => {
-    const h = createHarness({ entities: [SQUARE] })
+    const h = ribbonClosed({ entities: [SQUARE] })
     h.command("HATCH").option("Properties").type("SOLID").enter()
     h.option("Select objects").click(p(50, 0)).enter().enter()
 
@@ -672,7 +680,7 @@ describe("HATCH boundary by Select objects", () => {
   })
 
   it("undoes the whole hatch in one step", () => {
-    const h = createHarness({ entities: [SQUARE] })
+    const h = ribbonClosed({ entities: [SQUARE] })
     h.command("HATCH").option("Select objects").click(p(50, 0)).enter().enter()
     expect(h.typeCounts().hatch).toBe(1)
 
@@ -697,7 +705,7 @@ describe("HATCH boundary by Select objects", () => {
 // p263).
 describe("HATCH Properties", () => {
   it("asks -HATCH's questions and writes them answered (p206, p208)", () => {
-    const h = createHarness({ entities: [SQUARE] })
+    const h = ribbonClosed({ entities: [SQUARE] })
     h.command("HATCH")
     expect(h.commandLog().at(-1)).toBe("Current hatch pattern:  ANGLE")
     expect(h.state().commandLine.prompt).toBe(
@@ -745,7 +753,7 @@ describe("HATCH Properties", () => {
   })
 
   it("asks in the words of Autodesk's Spanish table (p206, p208 es-ES)", () => {
-    const h = createHarness({ locale: es, entities: [SQUARE] })
+    const h = ribbonClosed({ locale: es, entities: [SQUARE] })
     h.command("SOMBREA")
     expect(h.commandLog().at(-1)).toBe("Patrón de sombreado actual:  ANGLE")
     expect(h.state().commandLine.prompt).toBe(
@@ -780,7 +788,7 @@ describe("HATCH Properties", () => {
   })
 
   it("takes Solid by its keyword and offers it back as the keyword (p215, p263)", () => {
-    const h = createHarness({ entities: [SQUARE] })
+    const h = ribbonClosed({ entities: [SQUARE] })
     h.command("HATCH").option("Properties").option("Solid")
     h.command("HATCH").option("Properties")
     expect(h.state().commandLine.prompt).toBe(
@@ -789,7 +797,7 @@ describe("HATCH Properties", () => {
   })
 
   it("skips the scale and angle prompts for a solid fill (p216)", () => {
-    const h = createHarness({ entities: [SQUARE] })
+    const h = ribbonClosed({ entities: [SQUARE] })
     h.command("HATCH").option("Properties").type("SOLID").enter()
 
     // Back at the internal point, its keywords offered again.
@@ -802,7 +810,7 @@ describe("HATCH Properties", () => {
   })
 
   it("asks for a scale then an angle for a real pattern (p208, p210)", () => {
-    const h = createHarness({ entities: [SQUARE] })
+    const h = ribbonClosed({ entities: [SQUARE] })
     h.command("HATCH").option("Properties").type("ANSI31").enter()
     expect(h.state().dynamicInput?.fields[0].label).toBe(
       "Specify a scale for the pattern"
@@ -821,7 +829,7 @@ describe("HATCH Properties", () => {
   })
 
   it("keeps the settings for the next hatch in the drawing (HPNAME/HPSCALE/HPANG, rectang/p303)", () => {
-    const h = createHarness({
+    const h = ribbonClosed({
       entities: [SQUARE, rectOf(p(200, 0), p(300, 100), { id: "sq2" })],
     })
     h.command("HATCH")
@@ -844,7 +852,7 @@ describe("HATCH Properties", () => {
   })
 
   it("re-asks and reports an unknown pattern name (p03)", () => {
-    const h = createHarness({ entities: [SQUARE] })
+    const h = ribbonClosed({ entities: [SQUARE] })
     h.command("HATCH").option("Properties").type("NOPE").enter()
 
     expect(h.commandLog().slice(-2)).toEqual([
@@ -927,6 +935,129 @@ function strokedIn(h: ReturnType<typeof createHarness>, color: string): number {
   }).length
 }
 
+// With the ribbon open HATCH asks the ribbon's prompts (st2027's 129 and 50968,
+// desktop d01 and d-session.log), each command language's from its table.
+describe("HATCH with the ribbon open", () => {
+  const RIBBON_PROMPTS = [
+    [undefined, "HATCH", "Pick internal point or [Select objects/Undo]:"],
+    [
+      es,
+      "SOMBREA",
+      "Designe un punto interno o [Seleccionar objetos/desHacer]:",
+    ],
+    [
+      ptBR,
+      "HACHURA",
+      "Selecionar ponto interno ou [Selecionar objetos/Desfazer]:",
+    ],
+    [
+      fr,
+      "HACHURES",
+      "Choisir un point interne ou [Sélectionner des objets/annUler]:",
+    ],
+    [
+      italian,
+      "TRATTEGGIO",
+      "Selezionare il punto interno o [SEleziona oggetti/ANnulla]:",
+    ],
+    [de, "SCHRAFF", "Internen Punkt wählen oder [objekte Wählen/Zurück]:"],
+    [ru, "ШТРИХ", "Укажите внутреннюю точку или [Выбрать объекты/Отменить]:"],
+    [pl, "KRESKUJ", "Wskaż punkt wewnętrzny lub [Wybierz obiekty/Cofnij]:"],
+    [cs, "ŠRAFY", "Vyberte vnitřní bod nebo [vYbrat objekty/Zpět]:"],
+    [
+      hu,
+      "SRAFFOZ",
+      "Válasszon ki belső pontot, vagy [objektumok Kiválasztása/Vissza]:",
+    ],
+  ] as const
+
+  it.each(RIBBON_PROMPTS)(
+    "asks 129 with no Current hatch pattern line (%#)",
+    (locale, name, asked) => {
+      const h = createHarness({ locale, entities: [ROOM] })
+      const before = h.commandLog().length
+      typed(h, name)
+      expect(h.state().commandLine.prompt).toBe(`${name} ${asked}`)
+      expect(h.commandLog().slice(before)).toEqual([name])
+    }
+  )
+
+  it("asks -HATCH's prompts under -HATCH, and HATCH's with the ribbon closed (HATCH-D31)", () => {
+    const dash = typed(createHarness({ entities: [ROOM] }), "-HATCH")
+    expect(dash.state().commandLine.prompt).toBe(`-HATCH ${PROMPT}`)
+    const closed = typed(createHarness({ entities: [ROOM] }), "RIBBONCLOSE")
+    typed(closed, "HATCH")
+    expect(closed.state().commandLine.prompt).toBe(`HATCH ${PROMPT}`)
+    expect(closed.state().ribbon.contextual).toBeNull()
+  })
+
+  it("makes the hatch at Enter, and keeps it at Escape (desktop d01-3)", () => {
+    const h = typed(createHarness({ entities: [ROOM] }), "HATCH")
+    expect(written(h, "50,25")).toEqual([
+      "Pick internal point or [Select objects/Undo]: 50,25",
+      "Selecting everything...",
+      "Selecting everything visible...",
+      "Analyzing the selected data...",
+      "Analyzing internal islands...",
+    ])
+    h.escape()
+    expect(h.typeCounts().hatch).toBe(1)
+
+    const entered = typed(
+      createHarness({ entities: [ROOM] }),
+      "HATCH",
+      "50,25",
+      ""
+    )
+    expect(entered.activeToolId()).toBe("select")
+    expect(entered.typeCounts().hatch).toBe(1)
+  })
+
+  it("asks 50968 at Select objects until picK, and Enter there ends it", () => {
+    const h = createHarness({ entities: [SQUARE] })
+    typed(h, "HATCH", "S")
+    expect(h.state().commandLine.prompt).toBe(
+      "HATCH Select objects or [picK internal point/Undo]:"
+    )
+    h.click(p(50, 0))
+    expect(h.state().commandLine.prompt).toMatch(/^HATCH Select objects or/)
+    typed(h, "K")
+    expect(h.state().commandLine.prompt).toBe(
+      "HATCH Pick internal point or [Select objects/Undo]:"
+    )
+    typed(h, "S")
+    h.enter()
+    expect(h.activeToolId()).toBe("select")
+    expect(hatchOnly(h.entities()).loops).toHaveLength(1)
+
+    const spanish = typed(
+      createHarness({ locale: es, entities: [SQUARE] }),
+      "SOMBREA",
+      "S"
+    )
+    expect(spanish.state().commandLine.prompt).toBe(
+      "SOMBREA Seleccione objetos o [Designar punto interno/desHacer]:"
+    )
+  })
+
+  it("takes back the last selection by the mode's Undo", () => {
+    const h = createHarness({
+      entities: [SQUARE, rectOf(p(200, 0), p(250, 50), { id: "small" })],
+    })
+    typed(h, "HATCH", "S")
+    h.click(p(50, 0)).click(p(225, 0))
+    typed(h, "U")
+    h.enter()
+    expect(hatchOnly(h.entities()).loops).toHaveLength(1)
+  })
+
+  it("is one undo step, named HATCH (p239)", () => {
+    const h = typed(createHarness({ entities: [ROOM] }), "HATCH", "50,25", "")
+    expect(written(h, "U").at(-1)).toBe("HATCH")
+    expect(h.typeCounts().hatch).toBeUndefined()
+  })
+})
+
 // HATCH and -HATCH against AutoCAD 2027's console (probes hatch/p200–p263) and
 // its desktop (d01: the ribbon's HATCH, d02: -HATCH).
 describe("HATCH and -HATCH, the command", () => {
@@ -941,13 +1072,13 @@ describe("HATCH and -HATCH, the command", () => {
   )
 
   it("runs HATCH as BHATCH (p255)", () => {
-    const h = typed(createHarness({ entities: [ROOM] }), "BHATCH")
+    const h = typed(ribbonClosed({ entities: [ROOM] }), "BHATCH")
     expect(h.state().commandLine.prompt).toBe(`HATCH ${PROMPT}`)
   })
 
   it("runs -HATCH as -SOMBREA and SOMBREA as SB, SMB and -SMB in Spanish (p202)", () => {
     const prompt = (name: string) =>
-      typed(createHarness({ locale: es, entities: [ROOM] }), name).state()
+      typed(ribbonClosed({ locale: es, entities: [ROOM] }), name).state()
         .commandLine.prompt
     const asked = "Precise punto interno o [Propiedades/Designar objetos]:"
     expect(prompt("-SOMBREA")).toBe(`-SOMBREA ${asked}`)
@@ -1460,14 +1591,14 @@ describe("hatch pattern geometry (acadiso.pat, probes hatch/p300–p307)", () =>
   })
 
   it("starts the pattern at a moved UCS's origin (p303: UCS origin 10,7)", () => {
-    const h = createHarness({ entities: [rectOf(p(0, 0), p(100, 50))] })
+    const h = ribbonClosed({ entities: [rectOf(p(0, 0), p(100, 50))] })
     typed(h, "UCS", "10,7", "")
     typed(h, "HATCH", "P", "ANSI31", "1", "0", "40,18", "")
     expectProbedLines(h.only<HatchEntity>("hatch"), "p303")
   })
 
   it("turns the pattern with a turned UCS (p304: UCS Z 30)", () => {
-    const h = createHarness({ entities: [rectOf(p(0, 0), p(100, 50))] })
+    const h = ribbonClosed({ entities: [rectOf(p(0, 0), p(100, 50))] })
     typed(h, "UCS", "Z", "30")
     typed(h, "HATCH", "P", "ANSI31", "1", "0")
     h.click(p(50, 25)).enter()
@@ -1540,13 +1671,13 @@ describe("hatch pattern geometry (acadiso.pat, probes hatch/p300–p307)", () =>
   // Probe hatch/p305: the console's words, en and es (tables 20134, 20772).
   it("refuses to create a hatch that is too dense, and says so (p305)", () => {
     const tooDense = ["P", "ANSI31", "0.0001", "0", "50,25", ""]
-    const h = typed(createHarness({ entities: [SQUARE] }), "HATCH", ...tooDense)
+    const h = typed(ribbonClosed({ entities: [SQUARE] }), "HATCH", ...tooDense)
     expect(h.typeCounts().hatch).toBeUndefined()
     expect(h.commandLog()).toContain(
       "Hatch spacing too dense, or dash size too small."
     )
     const es_ = typed(
-      createHarness({ locale: es, entities: [SQUARE] }),
+      ribbonClosed({ locale: es, entities: [SQUARE] }),
       "SOMBREA",
       ...tooDense
     )
@@ -1719,7 +1850,7 @@ describe("hatch as an object", () => {
   })
 
   it("survives a save and reload", () => {
-    const h = createHarness({ entities: [SQUARE] })
+    const h = ribbonClosed({ entities: [SQUARE] })
     h.command("HATCH")
       .option("Properties")
       .type("ANSI31")

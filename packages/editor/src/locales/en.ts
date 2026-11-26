@@ -139,6 +139,7 @@ export const en: EditorCatalog = {
     },
     "Ribbon": {
       "tabs": {
+        "hatchCreation": "Hatch Creation",
         "home": "Home",
         "insert": "Insert",
         "annotate": "Annotate",
@@ -147,6 +148,10 @@ export const en: EditorCatalog = {
         "arrayCreation": "Array Creation"
       },
       "panels": {
+        "hatchBoundaries": "Boundaries",
+        "hatchPattern": "Pattern",
+        "hatchProperties": "Properties",
+        "hatchClose": "Close",
         "draw": "Draw",
         "modify": "Modify",
         "annotation": "Annotation",
@@ -177,6 +182,11 @@ export const en: EditorCatalog = {
         "arrayClose": "Close"
       },
       "items": {
+        "hatchPickPoints": "Pick Points",
+        "hatchSelect": "Select",
+        "hatchSolid": "Solid",
+        "hatchPattern": "Pattern",
+        "hatchClose": "Close\nHatch Creation",
         "line": "Line",
         "polyline": "Polyline",
         "circle": "Center, Radius",
@@ -331,6 +341,8 @@ export const en: EditorCatalog = {
         "arrayClose": "Close Array"
       },
       "fields": {
+        "hatchAngle": "Angle",
+        "hatchScale": "Hatch Pattern Scale",
         "columns": "Columns:",
         "columnSpacing": "Between:",
         "rows": "Rows:",
@@ -346,6 +358,14 @@ export const en: EditorCatalog = {
       },
       "pressF1": "Press F1 for more help",
       "tips": {
+        "hatchPickPoints": "Determines a hatch boundary from existing objects that form an enclosed area around the specified point",
+        "hatchSelect": "Determines a hatch boundary from selected objects that form an enclosed area",
+        "hatchType": "Specifies whether to create a predefined hatch or fill, or a user-defined hatch",
+        "hatchSolid": "Specifies a solid fill instead of a hatch pattern",
+        "hatchPattern": "Displays a selection of ANSI, ISO, and other industry-standard hatch patterns",
+        "hatchAngle": "Specifies an angle for the hatch pattern relative to the X axis of the current UCS",
+        "hatchScale": "Expands or contracts a predefined or custom hatch pattern",
+        "hatchClose": "Exits hatch creation and closes the contextual tab",
         "line": "Creates straight line segments",
         "polyline": "Creates a 2D polyline",
         "circle": "Creates a circle using a center point and a radius",
@@ -515,6 +535,14 @@ export const en: EditorCatalog = {
         "arrayClose": "Exits the array command."
       },
       "tipTitles": {
+        "hatchPickPoints": "Pick Points",
+        "hatchSelect": "Select Boundary Objects",
+        "hatchType": "Hatch Type",
+        "hatchSolid": "Solid",
+        "hatchPattern": "Pattern",
+        "hatchAngle": "Hatch Angle",
+        "hatchScale": "Hatch Pattern Scale",
+        "hatchClose": "Close Hatch Creation",
         "layerProperties": "Layer Properties",
         "insert": "Insert Block",
         "ucsIcon": "UCS icon",

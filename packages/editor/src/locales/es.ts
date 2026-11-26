@@ -139,6 +139,7 @@ export const es: EditorLocale = {
     },
     "Ribbon": {
       "tabs": {
+        "hatchCreation": "Creación de sombreado",
         "home": "Inicio",
         "insert": "Inserción",
         "annotate": "Anotar",
@@ -147,6 +148,10 @@ export const es: EditorLocale = {
         "arrayCreation": "Creación de matriz"
       },
       "panels": {
+        "hatchBoundaries": "Contornos",
+        "hatchPattern": "Patrón",
+        "hatchProperties": "Propiedades",
+        "hatchClose": "Cerrar",
         "draw": "Dibujo",
         "modify": "Modificar",
         "annotation": "Anotación",
@@ -177,6 +182,11 @@ export const es: EditorLocale = {
         "arrayClose": "Cerrar"
       },
       "items": {
+        "hatchPickPoints": "Designar puntos",
+        "hatchSelect": "Seleccionar",
+        "hatchSolid": "Sólido",
+        "hatchPattern": "Patrón",
+        "hatchClose": "Cerrar\nCreación de sombreado",
         "line": "Línea",
         "polyline": "Polilínea",
         "circle": "Centro, Radio",
@@ -331,6 +341,8 @@ export const es: EditorLocale = {
         "arrayClose": "Cerrar matriz"
       },
       "fields": {
+        "hatchAngle": "Ángulo",
+        "hatchScale": "Escala de patrón de sombreado",
         "columns": "Columnas:",
         "columnSpacing": "Entre:",
         "rows": "Filas:",
@@ -346,6 +358,14 @@ export const es: EditorLocale = {
       },
       "pressF1": "Pulse F1 para obtener más ayuda",
       "tips": {
+        "hatchPickPoints": "Determina un contorno de sombreado a partir de objetos existentes que forman un área cerrada alrededor de un punto específico",
+        "hatchSelect": "Determina un contorno de sombreado a partir de objetos seleccionados que forman un área cerrada",
+        "hatchType": "Especifica si se debe crear un relleno o sombreado predefinido o un sombreado definido por el usuario",
+        "hatchSolid": "Especifica un relleno sólido en lugar de un patrón de sombreado",
+        "hatchPattern": "Muestra una selección de patrones de sombreado ANSI e ISO, además de otros patrones normalizados",
+        "hatchAngle": "Especifica un ángulo para el patrón de sombreado con respecto al eje X del SCP actual",
+        "hatchScale": "Amplía o reduce un patrón de sombreado predefinido o personalizado",
+        "hatchClose": "Termina la creación de sombreado y cierra la ficha contextual",
         "line": "Crea segmentos de línea recta",
         "polyline": "Crea polilíneas bidimensionales",
         "circle": "Crea un círculo mediante un centro y un radio",
@@ -515,6 +535,14 @@ export const es: EditorLocale = {
         "arrayClose": "Sale del comando MATRIZ."
       },
       "tipTitles": {
+        "hatchPickPoints": "Designar puntos",
+        "hatchSelect": "Seleccionar objetos de contorno",
+        "hatchType": "Tipo de sombreado",
+        "hatchSolid": "Sólido",
+        "hatchPattern": "Patrón",
+        "hatchAngle": "Ángulo de sombreado",
+        "hatchScale": "Escala de patrón de sombreado",
+        "hatchClose": "Cerrar Creación de sombreado",
         "layerProperties": "Propiedades de capa",
         "insert": "Insertar bloque",
         "ucsIcon": "Icono SCP",

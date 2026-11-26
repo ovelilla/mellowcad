@@ -1067,6 +1067,7 @@ declare const source: {
         "?": string
         "Solid": string
         "Undo": string
+        "Pick internal point": string
       }
       "INSERT": {
         "?": string
@@ -1670,6 +1671,14 @@ declare const source: {
       }
     }
     "promptKeywords": {
+      "selectObjectsOrPickInternalPoint": {
+        "Pick internal point": string
+        "Undo": string
+      }
+      "pickInternalPointOr": {
+        "Select objects": string
+        "Undo": string
+      }
       "selectObjects": {
         "Window": string
         "Last": string
@@ -1809,6 +1818,8 @@ declare const source: {
       }
     }
     "prompts": {
+      "pickInternalPointOr": string
+      "selectObjectsOrPickInternalPoint": string
       "length": string
       "width": string
       "angle": string
@@ -3528,6 +3539,7 @@ declare const source: {
       }
       "HATCH": {
         "Select objects": string
+        "Pick internal point": string
       }
       "BREAK": {
         "First point": string
@@ -3577,6 +3589,13 @@ declare const source: {
       }
     }
     "promptKeywordLabels": {
+      "selectObjectsOrPickInternalPoint": {
+        "Undo": string
+      }
+      "pickInternalPointOr": {
+        "Select objects": string
+        "Undo": string
+      }
       "ucsNewUcs": {
         "ZAxis": string
       }
