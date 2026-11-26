@@ -36,4 +36,5 @@ La web ya sirve el `.md` de cada página y `llms.txt`.
 ## 3. Decisiones que siguen en pie
 
 Del 2026-10-29, delegadas por el dueño: licencia MIT (el código, no el nombre ni el logo), sin tier
-de pago (se reconsidera solo si hay adopción), y nada sale hacia fuera sin su sí.
+de pago (se reconsidera solo si hay adopción), y nada sale hacia fuera sin su sí. Las ideas del
+dueño sobre una suscripción, sin acordar, están en `docs/next-paid-plan.md`.
