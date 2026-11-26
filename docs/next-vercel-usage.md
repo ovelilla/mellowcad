@@ -121,7 +121,11 @@ sustituciones DSTYLE. El congelado queda levantado; las lecturas de los días si
 vuelve. El push del 24/11 a las 08:40, de `43bb8b9b` a `48ce4a75`, con la palabra del dueño y tras
 la lectura del 24/11 (§3), llevó el chino tradicional, 3DMESH y la malla poligonal, los SCP con
 nombre en el DXF y R12 con la caja del punto 2.6 de §5 de `docs/next-dxf.md`; el CI y el
-despliegue, en verde, y la caché de Cloudflare purgada a las 08:55.
+despliegue, en verde, y la caché de Cloudflare purgada a las 08:55. El push del 26/11 a las 10:46,
+de `48ce4a75` a `9f9b5236`, con la palabra del dueño y tras la lectura del 26/11 (§3), llevó las
+fases 1 a 3 de `docs/next-autocad-ui.md` (el ribbon, la barra de título, las paletas y los
+diálogos de estilos); el CI y el despliegue, en verde, y la caché de Cloudflare purgada a las
+10:59.
 
 ## 5. La caché de Cloudflare delante de Vercel
 
