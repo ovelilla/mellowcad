@@ -119,8 +119,8 @@ function ZoomSplitButton({
             <Button
               variant="ghost"
               aria-label={t("zoom")}
-              // Half of the 28 px button above it, as the status bar's
-              // arrows are of their modes, laid under it.
+              // Half of the 28 px button above it, laid under it: attached,
+              // so the button is the equivalent target.
               className="h-3.5 w-7 rounded-sm p-0 text-muted-foreground"
             >
               <ChevronDown className="size-3!" />

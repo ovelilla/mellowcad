@@ -189,20 +189,20 @@ and line height; the editor's root starts every text, its popups too, as `text-u
 ## Size
 
 **AutoCAD's measures** where it has them (`docs/plans/autocad-ui.md`, decision 1): the title bar,
-the ribbon, the bottom row from phase 4. **28 px**, icons 16, for the rest one presses. AutoCAD's
+the ribbon, the bottom row. **28 px**, icons 16, for the rest one presses. AutoCAD's
 24×22 pass WCAG 2.2's 2.5.8 by its spacing exception (a 24 px pitch). The ribbon's are plan
 §2.3's, its look the editor's tokens (decision 7).
 
-| What                                                                    | Size                                                                                        |
-| ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| The title bar; its application button; that menu's entry, document row  | 32 (`h-8`); 48 × 32, mark 20; 46 and 26, icons 32 (plan §2.2)                               |
-| A Quick Access button (`IconAction size="quick"`)                       | 24 × 22 (`h-5.5 w-6`), icon 16, one against the next from 56 px                             |
-| The ribbon, whole; minimized to panel buttons, titles, tabs             | 124 (`h-31`): the tab row, 24, and the panels, 100, each 97; 86, 45, 24 (`ribbon-*:`)       |
-| A ribbon button, large or small; a combo; a list's row                  | 72, icon 32; 22, icon 16, on a 24 pitch; 22; 38, icon 32 (`control-size.test.ts`)           |
-| An icon button (`Button size="icon"`, `IconAction`)                     | 28 × 28, its icon 16                                                                        |
-| A text button, a drop-down's trigger, a field, a tab, a row of a list   | 28 high (`Button`'s default, `SelectTrigger`, `h-7`)                                        |
-| A mode's settings arrow (`size="icon-flyout"`), Zoom's under its button | 14 × 28, 28 × 14 — attached, so the 28 px mode is the equivalent target (2.5.8's exception) |
-| A docked bar (status bar, command line); a palette's title bar          | 36 (`h-9`): a control and 4 px either side; 22, buttons `size="palette"`                    |
+| What                                                                    | Size                                                                                     |
+| ----------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| The title bar; its application button; that menu's entry, document row  | 32 (`h-8`); 48 × 32, mark 20; 46 and 26, icons 32 (plan §2.2)                            |
+| A Quick Access button (`IconAction size="quick"`)                       | 24 × 22 (`h-5.5 w-6`), icon 16, one against the next from 56 px                          |
+| The ribbon, whole; minimized to panel buttons, titles, tabs             | 124 (`h-31`): the tab row, 24, and the panels, 100, each 97; 86, 45, 24 (`ribbon-*:`)    |
+| A ribbon button, large or small; a combo; a list's row                  | 72, icon 32; 22, icon 16, on a 24 pitch; 22; 38, icon 32 (`control-size.test.ts`)        |
+| An icon button (`Button size="icon"`, `IconAction`)                     | 28 × 28, its icon 16                                                                     |
+| A text button, a drop-down's trigger, a field, a tab, a row of a list   | 28 high (`Button`'s default, `SelectTrigger`, `h-7`)                                     |
+| The bottom row; a status bar tool (`size="status"`), a menu's arrow     | 33 (`h-8`, its border); 24 × 24, icon 16; 16 × 24, the mode's right-click its equivalent |
+| Zoom's arrow under its button; the docked command line; a palette's bar | 28 × 14, attached (2.5.8's exception); 36 (`h-9`); 22, buttons `size="palette"`          |
 
 - **A zone sizes its content** (`box-content`): its border lies outside those numbers. A border
   inside the box eats a pixel, every control lands on a half pixel and its icon blurs.
@@ -261,7 +261,7 @@ Each bar's AutoCAD order is in its component's header comment; touch and phones 
   words come from `useEditorText`, its popups' container from `usePortalContainer`. The zone, its
   size and border stay the editor's. A menu or dialog the engine opens and waits on is never a
   slot. `packages/editor/src/cad-editor.test.ts` renders the slots against a stand-in engine.
-- **Every zone has its size in CSS before the engine mounts** (the bars' `h-9`, the ribbon's
+- **Every zone has its size in CSS before the engine mounts** (the bars' `h-8`, the ribbon's
   `h-31`, the palettes' `--palette-dock-*` and `--palette-strip-*`), never from its content: the
   canvas's first box is its final one, which the landing's view transition grows into and the
   first view is centred in. A size this device remembers is decided by the `<head>` script on the

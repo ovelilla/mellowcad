@@ -16,7 +16,7 @@ empieza sin la palabra del dueño: cada una es un canal nuevo hacia fuera.
 Piezas del editor copiables, con sus primitivos bajo una ruta propia (`files[].target`), sin pisar
 los del usuario; solo Base UI. Se hace cuando alguien lo pida, no antes: el canal del editor es npm,
 porque lleva lógica y tiene que poder recibir arreglos, y sus primitivos son forks (`button` con
-`active`, `icon-flyout`, `cube`) que una copia congelaría. Lo que un segundo anfitrión tendría que
+`active`, `status`, `cube`) que una copia congelaría. Lo que un segundo anfitrión tendría que
 reimplementar para comportarse como AutoCAD vive en el motor o en los hooks de `@mellowcad/react`,
 así que una copia solo llevaría presentación.
 

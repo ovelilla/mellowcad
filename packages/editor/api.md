@@ -222,9 +222,8 @@ export { StatusBar }
 /**
  * AutoCAD's status bar, in the order of its 2026 reference: the coordinates,
  * MODEL, the drafting modes, Units, Clean Screen and, right-most,
- * Customization, which picks what shows. A mode with settings has a half
- * button of an arrow beside it, and a right-click on the mode opens the same
- * menu.
+ * Customization, which picks what shows. A mode with settings has its arrow
+ * beside it, and a right-click on the mode opens the same menu.
  */
 export declare function StatusBar(statusBarProps: StatusBarProps): ReactElement;
 

@@ -9,8 +9,8 @@ const DIRS = ["packages/editor/src"]
 
 /**
  * A height or square size off the system (.claude/rules/ui.md, "Size"): every
- * control is 28 px (`h-7`, `size-7`), its icon 16 (`size-4`), a docked bar 36
- * (`h-9`). A 20, 22, 24, 32 or 40 px control, AutoCAD's ribbon's 18, 21, 35,
+ * control is 28 px (`h-7`, `size-7`), its icon 16 (`size-4`). A 20, 22, 24,
+ * 32, 36 or 40 px control, AutoCAD's ribbon's 18, 21, 35,
  * 38, 45, 59, 62, 72, 86, 97 and 100, or an arbitrary one, is not, unless it
  * is AutoCAD's own measure, listed below with where it was taken.
  */
@@ -20,8 +20,10 @@ const OFF_SYSTEM =
 /** Each exception with its reason, file → exact match → why. */
 const ALLOWED: Record<string, Record<string, string>> = {
   "packages/editor/src/ui/button.tsx": {
-    "h-6": "the ViewCube's own buttons, drawn on it at its scale",
-    "size-6": "the ViewCube's own buttons, drawn on it at its scale",
+    "h-6":
+      "the ViewCube's own buttons, drawn on it at its scale; a status bar menu's arrow, AutoCAD's 16 × 24 (docs/plans/autocad-ui.md, §2.7)",
+    "size-6":
+      "the ViewCube's own buttons, drawn on it at its scale; a status bar tool, AutoCAD's 24 × 24 (§2.7)",
     "h-5.5":
       "a Quick Access button, AutoCAD's 24 × 22 on a 24 px pitch (docs/plans/autocad-ui.md, §2.2)",
     "h-8":
@@ -30,7 +32,8 @@ const ALLOWED: Record<string, Record<string, string>> = {
       "a palette's title bar button, AutoCAD's bar 22 across (docs/plans/autocad-ui.md, §2.8), on a 24 px pitch",
   },
   "packages/editor/src/cad-editor.tsx": {
-    "h-8": "the title bar, AutoCAD's 32 (docs/plans/autocad-ui.md, §2.1)",
+    "h-8":
+      "the title bar, AutoCAD's 32, and the bottom row, its 33: 32 and the border (docs/plans/autocad-ui.md, §2.1)",
     "h-31":
       "the ribbon whole, AutoCAD's tab row of 24 and its panels' 100 (§2.1)",
     "h-21.5":
@@ -39,8 +42,11 @@ const ALLOWED: Record<string, Record<string, string>> = {
       "the ribbon minimized to panel titles, AutoCAD's 45 (§2.3, Minimize states)",
     "h-6":
       "the ribbon minimized to its tabs, AutoCAD's 24 (§2.3, Minimize states)",
-    "h-9":
-      "the command line and the status bar: a control and 4 px either side",
+    "h-9": "the docked command line: a control and 4 px either side",
+  },
+  "packages/editor/src/status-bar.tsx": {
+    "h-6":
+      "the status bar's tools, AutoCAD's 24 high; Units, a text one, among them (docs/plans/autocad-ui.md, §2.7)",
   },
   "packages/editor/src/title-bar.tsx": {
     "size-8":
@@ -86,7 +92,8 @@ const ALLOWED: Record<string, Record<string, string>> = {
 const BUTTON_SIZES: Record<string, RegExp> = {
   default: /\bh-7\b/,
   icon: /\bsize-7\b/,
-  "icon-flyout": /\bh-7 w-3\.5\b/,
+  status: /\bsize-6\b/,
+  "status-flyout": /\bh-6 w-4\b/,
   quick: /\bh-5\.5 w-6\b/,
   application: /\bh-8 w-12\b/,
   palette: /\bsize-5\.5\b/,

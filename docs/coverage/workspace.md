@@ -7,7 +7,10 @@ Spanish — is in `git show fe31d76:docs/next-ui-redesign.md`, §5, and the comm
 
 **Implemented:** AutoCAD 2026's order: Coordinates, MODEL, Grid, Snap Mode ▾, Ortho Mode, Polar
 Tracking ▾, Object Snap Tracking, 2D Object Snap ▾, Lineweight, Selection Cycling ▾, Units, Clean
-Screen and Customization, the right-most; a mode's arrow and a right-click on the mode open the same
+Screen and Customization, the right-most, alone at the row's edge; laid from the end of AutoCAD's
+one bottom row of 33, where the layout tabs take its start (`docs/plans/autocad-ui.md`, §2.7), each
+tool 24 × 24 with a 16 px icon, 6 px under the row's top, a menu's arrow 16 × 24 beside its tool,
+the groups of Customization's list 3 px apart and the tools of one flush (desktop uia-1920); a mode's arrow and a right-click on the mode open the same
 menu ("Click on the arrow, or right-click anywhere on the Object Snap icon, to display the
 associated menu"): the object snaps and the selection list box as checkboxes, Polar's angles;
 Customization's checklist chooses what shows, the coordinates included, remembered on this device
@@ -24,12 +27,15 @@ CLEANSCREENON / CLEANSCREENOFF (d01), the ribbon's RIBBONCLOSE or RIBBON after i
 ribbon, as typed (see CLEANSCREENON; the button's own steps by analogy: it offers no UI Automation
 pattern, d13)
 
-**Missing:** Paper Space, Infer Constraints, Dynamic Input, Isometric Drafting, Transparency, 3D
+**Missing:** the layout tabs (their menu, Model, Layout1, Layout2 and New: no layouts here; the
+row's start stays empty), Paper Space, Infer Constraints, Dynamic Input, Isometric Drafting, Transparency, 3D
 Object Snap, Dynamic UCS, Selection Filtering, Gizmo, the annotation and viewport tools, Workspace
 Switching, Annotation Monitor, Quick Properties, Lock UI, Graphics Performance, Isolate Objects; the
 menus' "… Settings" items (the Drafting Settings dialog: Snap mode's spacing is typed in its popover
 instead), the right-click menus of Grid, Object Snap Tracking and Lineweight, the Coordinates menu
-(Relative, Geographic, Specific)
+(Relative, Geographic, Specific). **Unverified**: which tools are on at first — here all, where the
+profile measured had Coordinates, Lineweight, Selection Cycling and Units off (§2.7), a profile no
+probe had customised but not known to be untouched
 
 ### `UNITS` / `UN` / `DDUNITS` · es `UNIDADES` / `UNS` / `DDUNITS` · pt-BR `UNIDADES` / `UN` / `UNIDADESD` · fr `UNITES` / `UI` / `DDUNITS` · it `UNITA` / `UT` / `DDUNITS` · de `EINHEIT` · ru `ЕДИНИЦЫ` / `ЕД` / `ДИАЛЕДИН` · pl `JEDN` / `JED` / `ODJEDN` · cs `JEDNOTKY` / `JN` / `DIAJEDN` · hu `MÉRTEGYS` / `MES` / `DPMÉRTEGYS`
 

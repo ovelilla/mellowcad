@@ -324,9 +324,9 @@ function Workspace({
   //
   // The frame is AutoCAD's, top to bottom (docs/plans/autocad-ui.md, §2.1):
   // the title bar, 32; the ribbon, 124 (its tab row and its panels); the
-  // drawing with the palettes; the command line and the status bar, 36 each
-  // until they take AutoCAD's one bottom row. The title bar and the ribbon
-  // take AutoCAD's sizes; the rest, the editor's system of 28 px controls
+  // drawing with the palettes; the command line, 36, until it floats over
+  // the drawing; the bottom row, 33. The title bar, the ribbon and the
+  // bottom row take AutoCAD's sizes; the rest, the editor's system of 28 px controls
   // (.claude/rules/ui.md, "Size"). Each zone sizes its content (`box-content`)
   // and its border lies outside it, or the border eats a pixel and every
   // control lands on a half pixel, which blurs its icon.
@@ -608,8 +608,10 @@ export function EditorZones({
         </div>
       )}
 
+      {/* AutoCAD's bottom row, 33 (§2.1): its layout tabs at the start, not
+      drawn (no layouts here), and the status bar laid from its end. */}
       {Status && (
-        <div className="box-content flex h-9 min-w-0 items-center gap-2 border-t px-1 [grid-area:status]">
+        <div className="box-content flex h-8 min-w-0 items-center border-t px-0.5 [grid-area:status]">
           {ready && <Status {...ready} storageKey={statusBarKey} />}
         </div>
       )}

@@ -4,7 +4,7 @@ import { useState, type ReactNode, type ReactElement } from "react"
 import { Menu } from "@base-ui/react/menu"
 import {
   CheckIcon,
-  ChevronUp,
+  ChevronDown,
   Compass,
   Crosshair,
   Grid3x3,
@@ -59,6 +59,9 @@ const MENU_ITEM =
   "relative flex cursor-default items-center rounded-sm py-1.5 ps-2 pe-8 text-ui outline-hidden select-none data-disabled:text-faint-foreground data-highlighted:bg-accent data-highlighted:text-accent-foreground"
 const CHECK = <CheckIcon className="absolute inset-e-2 size-4 text-primary" />
 
+/** Two tools of one group, flush; gone when Customization hides both. */
+const GROUP = "flex shrink-0 empty:hidden"
+
 /** The status bar's props: a piece's, and where the host keeps its layout. */
 export interface StatusBarProps extends PieceProps {
   /** Where Customization is kept on this device; none, it is not kept. */
@@ -68,9 +71,8 @@ export interface StatusBarProps extends PieceProps {
 /**
  * AutoCAD's status bar, in the order of its 2026 reference: the coordinates,
  * MODEL, the drafting modes, Units, Clean Screen and, right-most,
- * Customization, which picks what shows. A mode with settings has a half
- * button of an arrow beside it, and a right-click on the mode opens the same
- * menu.
+ * Customization, which picks what shows. A mode with settings has its arrow
+ * beside it, and a right-click on the mode opens the same menu.
  */
 export function StatusBar({
   engine,
@@ -106,176 +108,198 @@ export function StatusBar({
     cleanScreen: t("cleanScreen"),
   }
 
+  // Laid from the row's end, as AutoCAD's: the coordinates' width, which
+  // changes as the cursor moves, moves nothing after them. A pixel under the
+  // row's middle: AutoCAD's tools stand 6 px under its top and 3 over its
+  // foot (research/ui/2026-11-24/autocad/uia-1920.txt).
   return (
     <TooltipProvider>
-      {shows("coordinates") && (
-        <Coordinates engine={engine} label={names.coordinates} />
-      )}
-
-      <div className="ms-auto flex shrink-0 items-center gap-0.5">
-        {/* WHY a label: in model space the button shows the last layout,
+      <div className="ms-auto mt-0.5 flex h-6 min-w-0 items-center">
+        {/* AutoCAD parts the groups of its Customization list by 3 px
+            (MODEL | Grid, Snap | Ortho, Polar | Object Snap Tracking,
+            Object Snap | …), its tools in a group flush (uia-1920.txt). */}
+        <div className="flex min-w-0 items-center gap-0.75">
+          {shows("coordinates") && (
+            <Coordinates engine={engine} label={names.coordinates} />
+          )}
+          {/* WHY a label: in model space the button shows the last layout,
             and there are no layouts here. */}
-        {shows("model") && (
-          <span title={names.model} className="px-2 text-muted-foreground">
-            {t("model")}
-          </span>
-        )}
-        {shows("grid") && (
-          <IconAction
-            icon={Grid3x3}
-            label={names.grid}
-            shortcut="F7"
-            side="top"
-            active={state.gridVisible}
-            onClick={() => engine.toggleGrid()}
-          />
-        )}
-        {shows("snap") && (
-          <SnapMode engine={engine} state={state} label={names.snap} />
-        )}
-        {shows("ortho") && (
-          <IconAction
-            icon={Crosshair}
-            label={names.ortho}
-            shortcut="F8"
-            side="top"
-            active={state.orthoActive}
-            onClick={() => engine.toggleOrtho()}
-          />
-        )}
-        {shows("polar") && (
-          <MenuMode
-            icon={Compass}
-            label={names.polar}
-            shortcut="F10"
-            settings={t("polarTrackingAngle")}
-            active={state.polarActive}
-            onToggle={() => engine.togglePolar()}
-          >
-            <Menu.RadioGroup
-              value={state.polarAngleStep}
-              // Choosing an increment turns polar on, silently, like AutoCAD.
-              onValueChange={(deg: number) => engine.choosePolarAngle(deg)}
+          {shows("model") && (
+            <span
+              title={names.model}
+              className="shrink-0 px-1.5 text-muted-foreground"
             >
-              {/* WHY plain: AutoCAD bolds each label's first number, and
+              {t("model")}
+            </span>
+          )}
+          <div className={GROUP}>
+            {shows("grid") && (
+              <IconAction
+                icon={Grid3x3}
+                label={names.grid}
+                shortcut="F7"
+                side="top"
+                size="status"
+                active={state.gridVisible}
+                onClick={() => engine.toggleGrid()}
+              />
+            )}
+            {shows("snap") && (
+              <SnapMode engine={engine} state={state} label={names.snap} />
+            )}
+          </div>
+          <div className={GROUP}>
+            {shows("ortho") && (
+              <IconAction
+                icon={Crosshair}
+                label={names.ortho}
+                shortcut="F8"
+                side="top"
+                size="status"
+                active={state.orthoActive}
+                onClick={() => engine.toggleOrtho()}
+              />
+            )}
+            {shows("polar") && (
+              <MenuMode
+                icon={Compass}
+                label={names.polar}
+                shortcut="F10"
+                settings={t("polarTrackingAngle")}
+                active={state.polarActive}
+                onToggle={() => engine.togglePolar()}
+              >
+                <Menu.RadioGroup
+                  value={state.polarAngleStep}
+                  // Choosing an increment turns polar on, silently, like AutoCAD.
+                  onValueChange={(deg: number) => engine.choosePolarAngle(deg)}
+                >
+                  {/* WHY plain: AutoCAD bolds each label's first number, and
                   the type roles have no bold figure (`ui.md`). The list is
                   an island: in Arabic it would read `...360 ,270 ,180 ,90`. */}
-              {POLAR_ANGLE_MENU.map(({ step, label }) => (
-                <Menu.RadioItem
-                  key={step}
-                  value={step}
-                  closeOnClick
-                  className={`${MENU_ITEM} font-mono`}
-                >
-                  <span dir="ltr">{label}</span>
-                  <Menu.RadioItemIndicator>{CHECK}</Menu.RadioItemIndicator>
-                </Menu.RadioItem>
-              ))}
-            </Menu.RadioGroup>
-          </MenuMode>
-        )}
-        {shows("otrack") && (
-          <IconAction
-            icon={Target}
-            label={names.otrack}
-            shortcut="F11"
-            side="top"
-            active={state.objectSnapTrackingActive}
-            onClick={() => engine.toggleObjectSnapTracking()}
-          />
-        )}
-        {shows("osnap") && (
-          <MenuMode
-            icon={Magnet}
-            label={names.osnap}
-            shortcut="F3"
-            settings={t("objectSnapSettings")}
-            active={state.snapActive}
-            onToggle={() => engine.toggleSnap()}
-          >
-            {(Object.values(SnapType) as SnapType[]).map((type) => {
-              const name = state.names.snaps[type]
-              return (
-                <Menu.CheckboxItem
-                  key={type}
-                  checked={state.snapEnabled[type]}
-                  closeOnClick={false}
-                  onCheckedChange={(checked) =>
-                    engine.setSnapEnabled(type, checked)
-                  }
-                  className={MENU_ITEM}
-                >
-                  {name}
-                  <Menu.CheckboxItemIndicator>
-                    {CHECK}
-                  </Menu.CheckboxItemIndicator>
-                </Menu.CheckboxItem>
-              )
-            })}
-          </MenuMode>
-        )}
-        {shows("lineweight") && (
-          <IconAction
-            icon={LineweightIcon}
-            label={names.lineweight}
-            side="top"
-            active={state.lwDisplay}
-            onClick={() => engine.toggleLineweightDisplay()}
-          />
-        )}
-        {shows("cycling") && (
-          <MenuMode
-            icon={SelectionCyclingIcon}
-            label={names.cycling}
-            shortcut="F4"
-            settings={t("selectionCyclingSettings")}
-            active={state.selectionCycling.active}
-            onToggle={() => engine.toggleSelectionCycling()}
-          >
-            <Menu.CheckboxItem
-              checked={state.selectionCycling.showList}
-              closeOnClick={false}
-              onCheckedChange={(checked) =>
-                engine.setSelectionCyclingList(checked)
-              }
-              className={MENU_ITEM}
+                  {POLAR_ANGLE_MENU.map(({ step, label }) => (
+                    <Menu.RadioItem
+                      key={step}
+                      value={step}
+                      closeOnClick
+                      className={`${MENU_ITEM} font-mono`}
+                    >
+                      <span dir="ltr">{label}</span>
+                      <Menu.RadioItemIndicator>{CHECK}</Menu.RadioItemIndicator>
+                    </Menu.RadioItem>
+                  ))}
+                </Menu.RadioGroup>
+              </MenuMode>
+            )}
+          </div>
+          <div className={GROUP}>
+            {shows("otrack") && (
+              <IconAction
+                icon={Target}
+                label={names.otrack}
+                shortcut="F11"
+                side="top"
+                size="status"
+                active={state.objectSnapTrackingActive}
+                onClick={() => engine.toggleObjectSnapTracking()}
+              />
+            )}
+            {shows("osnap") && (
+              <MenuMode
+                icon={Magnet}
+                label={names.osnap}
+                shortcut="F3"
+                settings={t("objectSnapSettings")}
+                active={state.snapActive}
+                onToggle={() => engine.toggleSnap()}
+              >
+                {(Object.values(SnapType) as SnapType[]).map((type) => {
+                  const name = state.names.snaps[type]
+                  return (
+                    <Menu.CheckboxItem
+                      key={type}
+                      checked={state.snapEnabled[type]}
+                      closeOnClick={false}
+                      onCheckedChange={(checked) =>
+                        engine.setSnapEnabled(type, checked)
+                      }
+                      className={MENU_ITEM}
+                    >
+                      {name}
+                      <Menu.CheckboxItemIndicator>
+                        {CHECK}
+                      </Menu.CheckboxItemIndicator>
+                    </Menu.CheckboxItem>
+                  )
+                })}
+              </MenuMode>
+            )}
+          </div>
+          {shows("lineweight") && (
+            <IconAction
+              icon={LineweightIcon}
+              label={names.lineweight}
+              side="top"
+              size="status"
+              active={state.lwDisplay}
+              onClick={() => engine.toggleLineweightDisplay()}
+            />
+          )}
+          {shows("cycling") && (
+            <MenuMode
+              icon={SelectionCyclingIcon}
+              label={names.cycling}
+              shortcut="F4"
+              settings={t("selectionCyclingSettings")}
+              active={state.selectionCycling.active}
+              onToggle={() => engine.toggleSelectionCycling()}
             >
-              {t("selectionList")}
-              <Menu.CheckboxItemIndicator>{CHECK}</Menu.CheckboxItemIndicator>
-            </Menu.CheckboxItem>
-          </MenuMode>
-        )}
-        {/* WHY the unit and the dialog: AutoCAD's Units shows the length
+              <Menu.CheckboxItem
+                checked={state.selectionCycling.showList}
+                closeOnClick={false}
+                onCheckedChange={(checked) =>
+                  engine.setSelectionCyclingList(checked)
+                }
+                className={MENU_ITEM}
+              >
+                {t("selectionList")}
+                <Menu.CheckboxItemIndicator>{CHECK}</Menu.CheckboxItemIndicator>
+              </Menu.CheckboxItem>
+            </MenuMode>
+          )}
+          {/* WHY the unit and the dialog: AutoCAD's Units shows the length
             format and a right-click changes it; Decimal is the only format
             here, so it shows what a unit is (INSUNITS) and opens UNITS. */}
-        {shows("units") && (
-          <Tooltip>
-            <TooltipTrigger
-              render={
-                <Button
-                  variant="ghost"
-                  // A whole width: the modes left of it stay on whole pixels.
-                  className="w-9 font-mono"
-                  aria-label={names.units}
-                  onClick={() => engine.openDrawingUnits()}
-                >
-                  {state.documentUnit}
-                </Button>
-              }
+          {shows("units") && (
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <Button
+                    variant="ghost"
+                    // A whole width: the modes left of it stay on whole pixels.
+                    className="h-6 w-9 shrink-0 font-mono"
+                    aria-label={names.units}
+                    onClick={() => engine.openDrawingUnits()}
+                  >
+                    {state.documentUnit}
+                  </Button>
+                }
+              />
+              <TooltipContent side="top">{names.units}</TooltipContent>
+            </Tooltip>
+          )}
+          {shows("cleanScreen") && (
+            <IconAction
+              icon={Maximize}
+              label={names.cleanScreen}
+              shortcut={keys("cleanScreen")}
+              side="top"
+              size="status"
+              active={state.cleanScreen.active}
+              onClick={() => engine.toggleCleanScreen()}
             />
-            <TooltipContent side="top">{names.units}</TooltipContent>
-          </Tooltip>
-        )}
-        {shows("cleanScreen") && (
-          <IconAction
-            icon={Maximize}
-            label={names.cleanScreen}
-            shortcut={keys("cleanScreen")}
-            side="top"
-            active={state.cleanScreen.active}
-            onClick={() => engine.toggleCleanScreen()}
-          />
-        )}
+          )}
+        </div>
 
         <Menu.Root>
           <Tooltip>
@@ -284,8 +308,11 @@ export function StatusBar({
                 <Menu.Trigger
                   render={
                     <Button
-                      size="icon"
+                      size="status"
                       variant="ghost"
+                      // AutoCAD's stands alone at the row's edge, apart
+                      // from the status bar.
+                      className="ms-0.5"
                       aria-label={t("customization")}
                     >
                       <MenuIcon />
@@ -326,7 +353,7 @@ function Coordinates({ engine, label }: { engine: CadEngine; label: string }) {
     <span
       dir="ltr"
       title={label}
-      className="truncate px-2 font-mono text-foreground tabular-nums"
+      className="min-w-0 truncate px-1.5 font-mono text-foreground tabular-nums"
     >
       {coordinates ?? "—"}
     </span>
@@ -345,7 +372,7 @@ function MenuPopup({ children }: { children: ReactNode }) {
   )
 }
 
-/** A mode with its settings arrow, the toggle and a half button attached. */
+/** A mode with its settings arrow: the toggle and the arrow beside it. */
 function MenuMode({
   icon,
   label,
@@ -365,12 +392,13 @@ function MenuMode({
 }) {
   const [open, setOpen] = useState(false)
   return (
-    <div className="flex items-center">
+    <div className="flex shrink-0 items-center">
       <IconAction
         icon={icon}
         label={label}
         shortcut={shortcut}
         side="top"
+        size="status"
         className="rounded-e-none"
         active={active}
         onClick={onToggle}
@@ -383,12 +411,12 @@ function MenuMode({
         <Menu.Trigger
           render={
             <Button
-              size="icon-flyout"
+              size="status-flyout"
               variant="ghost"
               className="rounded-s-none"
               aria-label={settings}
             >
-              <ChevronUp />
+              <ChevronDown />
             </Button>
           }
         />
@@ -415,12 +443,13 @@ function SnapMode({
   const t = useEditorText("StatusBar")
   const [open, setOpen] = useState(false)
   return (
-    <div className="flex items-center">
+    <div className="flex shrink-0 items-center">
       <IconAction
         icon={SnapModeIcon}
         label={label}
         shortcut="F9"
         side="top"
+        size="status"
         className="rounded-e-none"
         active={state.snapModeActive}
         onClick={() => engine.toggleSnapMode()}
@@ -433,12 +462,12 @@ function SnapMode({
         <PopoverTrigger
           render={
             <Button
-              size="icon-flyout"
+              size="status-flyout"
               variant="ghost"
               className="rounded-s-none"
               aria-label={t("snapSettings")}
             >
-              <ChevronUp />
+              <ChevronDown />
             </Button>
           }
         />

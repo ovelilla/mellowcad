@@ -694,7 +694,45 @@ dialogs need nothing of the new frame:
 
 The command line floating (C1 to C4, D4); the bottom row at AutoCAD's sizes and defaults (S1,
 S3 to S5); the viewport controls' visual style label and list (D1), which closes that row of
-VSCURRENT's Missing; the ViewCube at rest (D2); grips and highlight compared (D5).
+VSCURRENT's Missing; the ViewCube at rest (D2); grips and highlight compared (D5). Its desktop
+pass (§7) did not happen: the session had no word for it, so what needs it stays **unverified**
+in the coverage — S4 among it — and the rest is built. Blocks, a commit each, each leaving the
+editor whole; the bottom row goes first, as the command line, floating, has nowhere to float to
+until the drawing reaches the row:
+
+1. **The bottom row** (S1, S3, S5; done 2026-11-26): the status row of 33 (32 and its border),
+   AutoCAD's, its buttons 24 × 24 with their 16 px icons, a menu's arrow 16 wide beside its
+   button (40 in all), the groups 3 px apart, MODEL and Units 24 high, Customization 24 × 24
+   alone at the edge; the coordinates the status
+   bar's first tool, at its start (the bar is laid from the row's end, so their width moves
+   nothing after them). The layout tabs are not drawn (S2: no layouts); the row's start stays
+   empty. The command line keeps its docked row until block 2. What is on at first (S4) waits
+   for an untouched profile: unchanged, unverified.
+2. **The floating command line** (C1 to C4, D4): the command row leaves the grid; the line lies
+   over the bottom of the drawing, as wide as the canvas's cell (between the docked columns, as
+   AutoCAD's spans its drawing area), 27 high; close at its start (Ctrl+9's hide; its question
+   stays Missing), Recent Commands (the commands run this session, newest first, by name in
+   capitals, which the engine keeps and runs), the field with `Type a command` at `Command:`
+   and no `Command:` before it, the history's arrow at its end; Customize is Missing, undrawn.
+   The temporary prompt lines are labels of their own, one per line, over the drawing, fading
+   as they do now; F2's history opens above the line (its look **unverified**, §7). The canvas
+   keeps its box: like a floating palette the line covers the drawing's bottom and ZOOM Extents
+   frames the whole drawing area, AutoCAD's 857 at 1080 (§2.1).
+3. **The visual style's label** (D1): `[2D Wireframe]` after `[Top]`, a style off 2D Wireframe
+   labelled with table 18992's `(Fast)` (`[Hidden (Fast)]`, solid-inquiry/d03, d11); its list
+   the styles built in the order of §2.5's (2D Wireframe, Conceptual, Hidden), the current one
+   checked, a pick running VSCURRENT as the ribbon's gallery does (`engine.setVisualStyle`: its
+   echo and U's name from this menu **unverified**). `[–]`, Custom Visual Styles ▸, the other
+   seven styles and the Visual Styles Manager stay Missing, undrawn. Closes VSCURRENT's row.
+4. **The ViewCube at rest** (D2): at rest the cube, its ring and the UCS menu, translucent; with
+   the pointer on it, a menu of it open or the focus in it, opaque, with Home at its top left,
+   the roll arrows at its top right, the triangles of a face view and, at its bottom right, the
+   menu's arrow, which opens the right-click menu (§2.5's `cube-hover`).
+5. **Grips and highlight** (D5): the engine's grips, hover, hot grip, selection glow, crosshair
+   and pickbox drawn in Chrome beside §2.5's captures (`a-grips-crop`, `grip-hover-1`,
+   `grip-hot`, `crosshair`) at the same scale; each difference classified (revoked, platform,
+   missing) and the revoked ones fixed in the scene's `THEME` and the presenters, checked by the
+   harness where the engine computes them.
 
 ### Phase 5 — what the ribbon still lacks
 

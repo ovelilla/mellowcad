@@ -31,9 +31,11 @@ const VARIANTS = {
     default:
       "h-7 gap-1.5 px-2.5 has-data-[icon=inline-end]:pe-2 has-data-[icon=inline-start]:ps-2",
     icon: "size-7",
-    // A settings arrow: half of a 28 px button, attached to the mode it
-    // belongs to.
-    "icon-flyout": "h-7 w-3.5 [&_svg:not([class*='size-'])]:size-3",
+    // The status bar, at AutoCAD's measures (docs/plans/autocad-ui.md,
+    // §2.7): a tool 24 square, its icon 16; a menu's arrow 16 wide beside
+    // it, the two 40 across.
+    status: "size-6",
+    "status-flyout": "h-6 w-4 [&_svg:not([class*='size-'])]:size-3",
     // AutoCAD's title bar, at its measures (docs/plans/autocad-ui.md, §2.2):
     // a Quick Access button, 24 wide and 22 high, its icon 16, on a 24 px
     // pitch; the application button, 48 across the bar's 32.
