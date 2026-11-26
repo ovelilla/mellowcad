@@ -133,7 +133,7 @@
   --accent: oklch(0.269 0 0);
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.704 0.191 22.216);
-  /* The accent's text: the blue itself reads 4.1:1 on its own 15 % tint. */
+  /* The accent's text: the blue itself reads 4:1 on its own 15 % tint. */
   --active-foreground: color-mix(in oklab, var(--active), white 30%);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);

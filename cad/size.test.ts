@@ -35,9 +35,11 @@ const ISLAND_MAX_BYTES = 1 * KB
  * hatch's xdata, written in that chunk and read in the one a DXF opens with
  * (2026-11-23), to 504 KB for the ribbon's state, RIBBON and RIBBONCLOSE in
  * every language (2026-11-24), to 505 KB for the title bar's new drawing's name, Help and the
- * Quick Access Toolbar's lists of steps in every language (2026-11-25).
+ * Quick Access Toolbar's lists of steps in every language (2026-11-25), to 506 KB for the
+ * command line's Recent Commands, the visual style's `(Fast)` in every language and AutoCAD's
+ * grip colours (2026-11-26).
  */
-const ENGINE_MAX_GZIP_BYTES = 505 * KB
+const ENGINE_MAX_GZIP_BYTES = 506 * KB
 
 /**
  * A language's catalog, gzipped, against English's, which the engine carries:

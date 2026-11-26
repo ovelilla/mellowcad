@@ -167,8 +167,8 @@ export class ArrayPromptGrips {
 
   /**
    * What the main prompt draws over the array: its grips, the one under the
-   * cursor hot (d18-1, d01b-1); while one is hot none, but the dashed line
-   * from it to the cursor (d18c-1).
+   * cursor GRIPHOVER's pale red (d18-1, d01b-1); while one is hot none, but
+   * the dashed line from it to the cursor (d18c-1).
    */
   overlay(at: ArrayAtPrompt, ctx: ToolContext): ScenePrimitive[] {
     const toScreen = (point: Vec2) => ctx.viewport.worldToScreen(point)
@@ -180,7 +180,7 @@ export class ArrayPromptGrips {
     return this.grips(at).flatMap((grip) =>
       gripPrimitives(
         toScreen(grip.at),
-        this.hover !== null && sameSpot(grip, this.hover),
+        this.hover !== null && sameSpot(grip, this.hover) ? "hover" : false,
         grip.along ? "arrow" : "square",
         arrowOnScreen({ ...grip.at, z: 0 }, grip.along, ctx)
       )

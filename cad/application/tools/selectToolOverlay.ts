@@ -133,7 +133,9 @@ export function buildGrips(
   }
   for (const grip of selectedGrips(ctx)) {
     const at = ctx.viewport.worldToScreen(grip.world)
-    const hot = sameGrip(grip, hover)
+    // Under the pointer a grip is GRIPHOVER's, not yet GRIPHOT's: that is a
+    // grip taken (desktop grip-hover-1, grip-hot).
+    const hot = sameGrip(grip, hover) ? "hover" : false
     const entity = ctx.document.get(grip.entityId)
     if (
       entity &&

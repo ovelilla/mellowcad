@@ -448,8 +448,12 @@ grip was (a raised line's, `Ortho: 79.7743 < -Z`, desktop interaction3d/d06); a 
 its radius (desktop circle/d08, d09): a number typed while it is hot is the radius, from the centre
 (help GUID-01DE459C, desktop circle/d15), Ortho bends its drag as it bends a pick (**unverified**
 on AutoCAD's side), and in a rotated UCS the grips stay at the circle's own quadrants, where the
-Quadrant snap turns with the UCS (d15); blue squares 9 px across (GRIPSIZE's default), the one
-under the cursor red (d15); a grip's edit at `Command:` is one undo step U and REDO name `Grip
+Quadrant snap turns with the UCS (d15); a square grip 11 px across, 9 of GRIPCOLOR 150 (0,127,255)
+and a 1 px grey edge, the one under the cursor GRIPHOVER 11's pale red (255,127,127) and the one
+taken GRIPHOT 12's red (165,0,0), both a size up, 13 across with a dark edge (desktop
+a-grips-crop, grip-hover-1, grip-hot; `docs/plans/autocad-ui.md` §2.5); the crosshair's pick box 7
+across (PICKBOX 3, desktop crosshair), a pick still taking what lies 4 px off, as the console's
+probes found (primitives/p405, solid-edits/p314); a grip's edit at `Command:` is one undo step U and REDO name `Grip
 Edit` (es `Editar pinzamiento`, table 6001; desktop arrays/d14, pline/d09); an array's own grips, squares
 and arrows, and their drags: modify.md, the array object. A 3D polyline has a square grip at each vertex and none at its segments' middles (desktop 3dpoly/d01); a vertex goes to the point given, Z and all, as a line's end, and so does a spline's fit point or control vertex, whatever plane it lies in
 
@@ -458,8 +462,7 @@ and so Lengthen from a grip; an arc's hover menus (desktop arc/d07: the middle g
 `Radius`, an end's `Stretch`, `Lengthen`), so Radius and Lengthen from its grips, and a stretch
 typed while its middle grip is hot; the Length Change field after a Tab (DYNDIVIS) and the angle fields;
 the `** STRETCH **` prompt and its options at the command line, and the ribbon's Move during a grip
-edit switching it to `** MOVE **` (`_move` echoed after the STRETCH prompt, desktop workspace/d02-8); the hover colour apart from the
-dragged one (AutoCAD's hovered grip is pink, GRIPHOVER 11, the dragged one red), Enter (and Space)
+edit switching it to `** MOVE **` (`_move` echoed after the STRETCH prompt, desktop workspace/d02-8); Enter (and Space)
 cycling the grip modes — Enter keeps the edit hot, tracking-aware radius and angle drag,
 any grip but move on a tilted object (it keeps only its move grips); a polyline's hover menus (d07)
 — a vertex's `Stretch Vertex`, `Add Vertex`, `Remove Vertex` with its segments' lengths shown, a

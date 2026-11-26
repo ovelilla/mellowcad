@@ -3443,8 +3443,9 @@ describe("the main prompt's grips (AYG-03)", () => {
     expect(gripsShown(path).sort()).toEqual(["arrow@0 66,0", "square 60,0"])
   })
 
-  // desktop arrays/d01b-1 (es): the grip under the cursor is drawn hot.
-  it("draws the grip under the cursor hot", () => {
+  // desktop arrays/d01b-1 (es): the grip under the cursor is drawn pale red,
+  // GRIPHOVER's, not GRIPHOT's.
+  it("draws the grip under the cursor in GRIPHOVER's colour", () => {
     const cad = atMainPrompt("rectangular")
     cad.moveTo(p(-12, 0))
 
@@ -3454,7 +3455,7 @@ describe("the main prompt's grips (AYG-03)", () => {
       cad
         .scene()
         .primitives.some(
-          (prim) => prim.kind === "path" && prim.fill === THEME.gripHot
+          (prim) => prim.kind === "path" && prim.fill === THEME.gripHover
         )
     ).toBe(true)
   })

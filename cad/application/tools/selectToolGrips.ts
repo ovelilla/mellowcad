@@ -45,8 +45,28 @@ import {
 import { arrayGrips } from "./arrayGrips"
 import { arrayPlacement } from "../../domain/arrayEdits"
 
-/** Half-size (screen pixels) of the small square grips drawn on a selection. */
+/**
+ * Half the size (screen pixels) of the grips not square: a disc's radius, an
+ * arrow's, a segment's bar.
+ */
 export const GRIP_HALF_PX = 4
+
+/**
+ * Half the side of a square grip's fill and its edge's middle: 9 px of colour
+ * and a 1 px edge, 11 across, AutoCAD's at GRIPSIZE 5; a size up, 13, under
+ * the pointer or taken (desktop a-grips-crop, grip-hover-1, grip-hot).
+ */
+const SQUARE_GRIP_HALF_PX = 5
+const SQUARE_GRIP_HOT_HALF_PX = 6
+
+/**
+ * A grip's state: cold, under the pointer (`"hover"`, GRIPHOVER) or taken
+ * (`true`, GRIPHOT).
+ */
+export type GripHeat = boolean | "hover"
+
+const gripFill = (hot: GripHeat): string =>
+  hot === "hover" ? THEME.gripHover : hot ? THEME.gripHot : THEME.grip
 
 /** Screen-pixel radius within which a click grabs an endpoint grip. */
 export const GRIP_PICK_PX = 6
@@ -564,7 +584,8 @@ export function hitGrip(screen: Vec2, ctx: ToolContext): Grip | null {
   let bestDist = GRIP_PICK_PX
   for (const grip of selectedGrips(ctx)) {
     const at = ctx.viewport.worldToScreen(grip.world)
-    const dist = Math.hypot(at.x - screen.x, at.y - screen.y)
+    // Square, as a grip is drawn: the pointer on its corner is on it too.
+    const dist = Math.max(Math.abs(at.x - screen.x), Math.abs(at.y - screen.y))
     if (dist <= bestDist) {
       bestDist = dist
       best = grip
@@ -593,18 +614,18 @@ function segmentGripPoint(seg: PolylineSegmentGeometry): Vec2 {
 }
 
 /**
- * The scene primitives for one grip: a filled square in cold/hot colour, a
- * disc as wide where AutoCAD draws one round (a CV spline's vertices,
+ * The scene primitives for one grip, in its state's colour: a square with its
+ * edge, a disc where AutoCAD draws one round (a CV spline's vertices,
  * desktop spline/d09-1), or a triangle pointing `along` (a screen direction)
  * at an array's arrows (desktop arrays/d11).
  */
 export function gripPrimitives(
   at: Vec2,
-  hot: boolean,
+  hot: GripHeat,
   shape: GripShape = "square",
   along?: Vec2
 ): ScenePrimitive[] {
-  const color = hot ? THEME.gripHot : THEME.grip
+  const color = gripFill(hot)
   if (shape === "arrow") {
     const length = along ? V.length(along) : 0
     const u = along && length > 0 ? V.scale(along, 1 / length) : { x: 1, y: 0 }
@@ -635,14 +656,23 @@ export function gripPrimitives(
       },
     ]
   }
+  const half = hot ? SQUARE_GRIP_HOT_HALF_PX : SQUARE_GRIP_HALF_PX
   return [
     {
       kind: "rect",
-      min: { x: at.x - GRIP_HALF_PX, y: at.y - GRIP_HALF_PX },
-      width: GRIP_HALF_PX * 2,
-      height: GRIP_HALF_PX * 2,
+      min: { x: at.x - half, y: at.y - half },
+      width: half * 2,
+      height: half * 2,
       fill: color,
-      stroke: { color: "#ffffff", width: 1 },
+      stroke: {
+        color:
+          hot === "hover"
+            ? THEME.gripHoverEdge
+            : hot
+              ? THEME.gripHotEdge
+              : THEME.gripEdge,
+        width: 1,
+      },
     },
   ]
 }
@@ -651,7 +681,7 @@ export function gripPrimitives(
 export function pushGrip(
   out: ScenePrimitive[],
   at: Vec2,
-  hot: boolean,
+  hot: GripHeat,
   shape?: GripShape,
   along?: Vec2
 ): void {
@@ -667,7 +697,7 @@ export function pushSegmentGrip(
   out: ScenePrimitive[],
   at: Vec2,
   along: Vec2,
-  hot: boolean
+  hot: GripHeat
 ): void {
   const length = V.length(along)
   const u = length > 0 ? V.scale(along, 1 / length) : { x: 1, y: 0 }
@@ -682,7 +712,7 @@ export function pushSegmentGrip(
       V.sub(V.add(at, long), across),
     ],
     closed: true,
-    fill: hot ? THEME.gripHot : THEME.grip,
+    fill: gripFill(hot),
     stroke: { color: "#ffffff", width: 1 },
   })
 }

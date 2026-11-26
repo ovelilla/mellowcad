@@ -142,7 +142,7 @@ the root (`engine-package.md`); `color-scheme: dark` keeps native controls dark,
 - **One accent, `--active`**, the grips' blue, written on the root from `THEME.grip`: a tool or
   mode that is on, a flyout whose member runs, the chosen option in a status-bar popover —
   `Button`'s `variant="active"` (`bg-active/15 text-active-foreground`), or those classes off a
-  `Button`. `text-active` is for a glyph alone (as text on its own tint it reads 4.1:1). Never
+  `Button`. `text-active` is for a glyph alone (as text on its own tint it reads 4:1). Never
   `variant="default"` for state: `--primary` is near-white, so `bg-primary/N` is glare.
   `bg-accent` for a selected row, `text-primary` for check marks.
 - Docked zones are `bg-card`, parted by a `border` on the side facing their neighbour, no radius or

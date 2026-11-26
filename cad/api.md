@@ -2325,10 +2325,24 @@ export declare const THEME: {
      * does: blue at the edges, the object's colour paled beneath (desktop d15).
      */
     readonly selected: "rgba(59, 130, 246, 0.45)";
-    /** Cold selection grip (unselected handle) — AutoCAD's blue square. */
-    readonly grip: "#3b82f6";
-    /** Hot grip currently being dragged — AutoCAD's red square. */
-    readonly gripHot: "#ef4444";
+    /**
+     * A cold grip, AutoCAD's GRIPCOLOR 150 (desktop a-grips-crop: 0,127,255),
+     * and the edge round a square one (89,104,120).
+     */
+    readonly grip: "#007fff";
+    readonly gripEdge: "#596878";
+    /**
+     * A grip under the pointer, GRIPHOVER 11 (desktop grip-hover-1: 255,127,127),
+     * and the dark edge round a square one (58,53,60).
+     */
+    readonly gripHover: "#ff7f7f";
+    readonly gripHoverEdge: "#3a353c";
+    /**
+     * A grip taken, GRIPHOT 12 (desktop grip-hot: 165,0,0), and the dark edge
+     * round a square one (50,42,48).
+     */
+    readonly gripHot: "#a50000";
+    readonly gripHotEdge: "#322a30";
     /** A selected polar array's ring through its base point, grey (desktop arrays/d11-2). */
     readonly arrayRing: "#8a8f96";
     /** TRIM's ✕ beside the cursor (desktop trim/d01-1z). */

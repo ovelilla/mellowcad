@@ -728,7 +728,7 @@ until the drawing reaches the row:
    the pointer on it, a menu of it open or the focus in it, opaque, with Home at its top left,
    the roll arrows at its top right, the triangles of a face view and, at its bottom right, the
    menu's arrow, which opens the right-click menu (§2.5's `cube-hover`).
-5. **Grips and highlight** (D5): the engine's grips, hover, hot grip, selection glow, crosshair
+5. **Grips and highlight** (D5; done 2026-11-26): the engine's grips, hover, hot grip, selection glow, crosshair
    and pickbox drawn in Chrome beside §2.5's captures (`a-grips-crop`, `grip-hover-1`,
    `grip-hot`, `crosshair`) at the same scale; each difference classified (revoked, platform,
    missing) and the revoked ones fixed in the scene's `THEME` and the presenters, checked by the

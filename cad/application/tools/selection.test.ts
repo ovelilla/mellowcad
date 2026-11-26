@@ -1153,16 +1153,20 @@ describe("grips", () => {
       .scene()
       .primitives.filter(
         (q) =>
-          "fill" in q && (q.fill === THEME.grip || q.fill === THEME.gripHot)
+          "fill" in q &&
+          (q.fill === THEME.grip ||
+            q.fill === THEME.gripHover ||
+            q.fill === THEME.gripHot)
       )
     expect(grips.map((grip) => grip.kind)).toEqual([kind, kind, kind])
 
-    // The grip under the cursor, and the one dragged, keep the shape.
+    // The grip under the cursor (GRIPHOVER's), and the one dragged
+    // (GRIPHOT's), keep the shape.
     cad.moveTo(p(100, 100))
-    const hot = cad
+    const hovered = cad
       .scene()
-      .primitives.filter((q) => "fill" in q && q.fill === THEME.gripHot)
-    expect(hot.map((grip) => grip.kind)).toEqual([kind])
+      .primitives.filter((q) => "fill" in q && q.fill === THEME.gripHover)
+    expect(hovered.map((grip) => grip.kind)).toEqual([kind])
     cad.click(p(100, 100)).moveTo(p(100, 60))
     const dragged = cad
       .scene()

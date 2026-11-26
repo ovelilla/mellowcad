@@ -2929,8 +2929,16 @@ function alongZOnScreen(
   }
 }
 
-/** Half the side of the pick box the crosshair carries (screen px). */
+/** How near a pick takes an object or a face (screen px). */
 export const PICK_BOX_PX = 4
+
+/**
+ * Half the side of the pick box the crosshair draws: PICKBOX 3, a box 7
+ * across (desktop crosshair). WHY not {@link PICK_BOX_PX}: the picks the
+ * console's probes settled (primitives/p405, solid-edits/p314) take an
+ * object 4 px off, which 3 would miss.
+ */
+const PICK_BOX_DRAWN_PX = 3
 
 /**
  * Draws the AutoCAD-style crosshair in place of the OS cursor: two continuous
@@ -2962,7 +2970,7 @@ function pushCrosshair(
     stroke,
   })
   if (!cursor.pickbox) return
-  const s = PICK_BOX_PX
+  const s = PICK_BOX_DRAWN_PX
   out.push({
     kind: "rect",
     min: { x: x - s, y: y - s },
