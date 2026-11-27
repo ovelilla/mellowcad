@@ -10,6 +10,9 @@ Windows desktop.
 
 - **Probe in a drawing of your own**: `acad.sh com new` first, `acad.sh com close` at the end
   (closes without saving). Never type into, save or close a drawing you did not create.
+  `com close` closes the **active** one, and the active one can change under a probe (an `act`
+  or a `type` brought the owner's Dibujo1 back to the front, and a close lost it unsaved,
+  2026-11-27): read `com info` first and close only when the `*` marks your drawing.
 - **Leave settings as found.** `com netload` restores SECURELOAD itself; anything else you change
   (COMMANDLINE shown, DYNMODE, OSMODE…) you set back. Their profile persists in the registry.
 - **Close AutoCAD when the desktop work is done** (`com send "_QUIT\n"`, once `com info` shows only

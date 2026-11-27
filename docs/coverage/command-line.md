@@ -21,7 +21,12 @@ dynamic-input tooltip shows the question alone, up to its `or` (its keywords are
 it), or with its colon when it offers none. An alias is echoed as typed with the name it runs (`Command: l LINE`, es
 `Comando: l LINEA`); a command started from the ribbon is echoed as AutoCAD's ribbon macro
 (`^C^C_line`) echoes it, `Command: _line` (desktop line/d19; every other button's macro is
-**unverified**), and is a command run: Enter at `Command:` repeats it (probes circle/p159, p191,
+**unverified**), its `^C^C` cancelling the running command first, its own too, `*Cancel*` after
+its prompt (Line pressed while LINE runs starts it anew, the segments drawn kept: desktop
+2026-11-27, es `Precise punto siguiente o [desHacer]: *Cancelado*`, then `Comando: _line`; MTEXT's
+and TEXTEDIT's editor keep their text instead, as another command started does, AutoCAD's there
+**unverified**), and
+is a command run: Enter at `Command:` repeats it (probes circle/p159, p191,
 p192), and it is a menu group U names `LINE GROUP` (es `LINEA GRUPO`; desktop workspace/d02; the
 other buttons by analogy, `CIRCLE GROUP`), a typed LINE staying `LINE`; the ribbon's Circle modes run the ribbon's macros, `_circle`
 and the mode answered at its prompt, the prompt that answer opens written on the answer's line as the

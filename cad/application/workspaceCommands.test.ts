@@ -1068,6 +1068,38 @@ describe("the chrome's undo groups", () => {
 
     expect(written(cad, "_U", "_U")).toEqual(["U", "LINE", "U", "LINE GROUP"])
   })
+
+  // desktop 2026-11-27 (es): the ribbon's Line pressed while LINE runs,
+  // `^C^C_line`: `Precise punto siguiente o [desHacer]: *Cancelado*`, then
+  // `Comando: _line`, the segments drawn kept.
+  it("a tool's button cancels the running command, its own too, and starts anew", () => {
+    const cad = createHarness()
+    cad.tool("line")
+    written(cad, "0,0", "10,0", "10,10")
+    const from = cad.commandLog().length
+    cad.tool("line")
+    expect(cad.commandLog().slice(from)).toEqual([
+      "Specify next point or [Close/Undo]: *Cancel*",
+      "_line",
+    ])
+    expect(cad.state().commandLine.prompt).toBe("LINE Specify first point:")
+    expect(cad.entityCount).toBe(2)
+    written(cad, "50,50")
+    cad.tool("circle")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Specify next point or [Undo]: *Cancel*",
+      "_circle",
+    ])
+  })
+
+  it("leaves MTEXT's editor to keep its text, asking nothing", () => {
+    const cad = createHarness()
+    cad.command("MTEXT").click(p(0, 0)).click(p(100, -50)).type("HELLO")
+    cad.tool("line")
+    expect(cad.state().unsavedTextDialog).toBe(false)
+    expect(cad.state().commandLine.prompt).toBe("LINE Specify first point:")
+    expect(cad.entityCount).toBe(1)
+  })
 })
 
 // `AB CD` typed key by key at the command line is one answer at every name

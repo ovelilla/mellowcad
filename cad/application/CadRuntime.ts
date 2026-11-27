@@ -1312,11 +1312,15 @@ export class CadRuntime extends Observable {
    * macro `^C^C_line` echoes it, `Command: _line` (desktop line/d19), a mode
    * of another command's as that command (`_circle`, circle/d01), and it is a
    * command run Enter repeats (probes circle/p159, p191, p192), in a menu
-   * group U names `LINE GROUP` (desktop workspace/d02).
+   * group U names `LINE GROUP` (desktop workspace/d02). Its `^C^C` cancels
+   * the running command first, `*Cancel*` written after its prompt, its own
+   * too: Line pressed while LINE runs starts it anew, the segments drawn kept
+   * (desktop 2026-11-27, the Spanish profile: `Precise punto siguiente o
+   * [desHacer]: *Cancelado*`, then `Comando: _line`).
    */
   setActiveTool(id: string): void {
     const next = this.tools.get(id)
-    if (next === undefined || id === "select" || next === this.activeTool) {
+    if (next === undefined || id === "select") {
       this.switchTool(id)
       return
     }
@@ -1325,6 +1329,13 @@ export class CadRuntime extends Observable {
     if (next.transparentMacro && command !== undefined) {
       this.runTransparentMacro(command)
       return
+    }
+    // WHY not in MTEXT's or TEXTEDIT's editor: its Escape asks about the
+    // text (Unsaved Changes) or drops it, where another command started
+    // keeps it (`onDeactivate`); what AutoCAD's `^C^C` does there is
+    // unverified.
+    if (this.activeTool.id !== "select" && !this.inTextEditor()) {
+      this.cancelCommand()
     }
     // A command that no longer starts its tool (INSERT opens the Blocks
     // palette, the tool being -INSERT's), or another command of the tool's
@@ -4524,6 +4535,16 @@ export class CadRuntime extends Observable {
   private cancelOnce(): void {
     if (this.dynamicInputHasField()) this.cancelDynamicInput()
     else this.keyDown(plainKey("Escape"))
+  }
+
+  /** Whether MTEXT's or TEXTEDIT's editor is open on its text. */
+  private inTextEditor(): boolean {
+    if (this.activeTool.hasUnsavedText === undefined) return false
+    const id = this.dynamicInput.getActiveFieldId()
+    const field = this.dynamicInput
+      .getSession()
+      ?.fields.find((f) => f.id === id)
+    return field !== undefined && isContentField(field.kind)
   }
 
   private dynamicInputHasField(): boolean {
