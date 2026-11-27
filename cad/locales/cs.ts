@@ -6665,6 +6665,34 @@ export const cs: EngineLocale = {
           "z"
         ]
       ],
+      "listPolylineExtrusion": [
+        "Směr vysunutí vzhledem k USS:\n                   X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listLwExtrusion": [
+        "Směr vysunutí vzhledem k USS:\n                   X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
       "listLineFrom": [
         "                 z bod, X=",
         [
@@ -6888,6 +6916,20 @@ export const cs: EngineLocale = {
           "z"
         ]
       ],
+      "listArcCenter": [
+        "             střed bod, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
       "listRadius": [
         "           poloměr ",
         [
@@ -6908,6 +6950,12 @@ export const cs: EngineLocale = {
       ],
       "listArea": [
         "              plocha ",
+        [
+          "area"
+        ]
+      ],
+      "listCircleArea": [
+        "            plocha ",
         [
           "area"
         ]
@@ -6937,6 +6985,12 @@ export const cs: EngineLocale = {
         ]
       ],
       "listCurveArea": [
+        "                           Plocha: ",
+        [
+          "area"
+        ]
+      ],
+      "listEllipseArea": [
         "                           Plocha: ",
         [
           "area"

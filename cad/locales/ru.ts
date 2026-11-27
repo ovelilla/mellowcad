@@ -7032,6 +7032,34 @@ export const ru: EngineLocale = {
           "z"
         ]
       ],
+      "listPolylineExtrusion": [
+        "Направление выдавливания относительно ПСК:\n                   X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listLwExtrusion": [
+        "Направление выдавливания относительно ПСК:\n                   X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
       "listLineFrom": [
         "                от точки, X=",
         [
@@ -7255,6 +7283,20 @@ export const ru: EngineLocale = {
           "z"
         ]
       ],
+      "listArcCenter": [
+        "             центр точка, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
       "listRadius": [
         "            радиус ",
         [
@@ -7274,6 +7316,12 @@ export const ru: EngineLocale = {
         ]
       ],
       "listArea": [
+        "              площадь ",
+        [
+          "area"
+        ]
+      ],
+      "listCircleArea": [
         "              площадь ",
         [
           "area"
@@ -7304,6 +7352,12 @@ export const ru: EngineLocale = {
         ]
       ],
       "listCurveArea": [
+        "                          Площадь: ",
+        [
+          "area"
+        ]
+      ],
+      "listEllipseArea": [
         "                          Площадь: ",
         [
           "area"

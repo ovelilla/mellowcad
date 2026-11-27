@@ -6516,12 +6516,40 @@ export const it: EngineLocale = {
         " mm"
       ],
       "listThickness": [
-        "                   Altezza = ",
+        "                   Altezza =",
         [
           "thickness"
         ]
       ],
       "listExtrusion": [
+        "Direzione di estrusione relativa al sistema UCS:\n                   X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listPolylineExtrusion": [
+        "Direzione di estrusione relativa al sistema UCS:\n                   X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listLwExtrusion": [
         "Direzione di estrusione relativa al sistema UCS:\n                   X=",
         [
           "x"
@@ -6758,6 +6786,20 @@ export const it: EngineLocale = {
           "z"
         ]
       ],
+      "listArcCenter": [
+        "            centro punto, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
       "listRadius": [
         "            raggio ",
         [
@@ -6777,6 +6819,12 @@ export const it: EngineLocale = {
         ]
       ],
       "listArea": [
+        "              area ",
+        [
+          "area"
+        ]
+      ],
+      "listCircleArea": [
         "              area ",
         [
           "area"
@@ -6807,6 +6855,12 @@ export const it: EngineLocale = {
         ]
       ],
       "listCurveArea": [
+        "                             Area: ",
+        [
+          "area"
+        ]
+      ],
+      "listEllipseArea": [
         "                             Area: ",
         [
           "area"
@@ -7047,7 +7101,7 @@ export const it: EngineLocale = {
         ]
       ],
       "listLwPerimeter": [
-        "          perimetro   ",
+        "         perimetro   ",
         [
           "length"
         ]
@@ -7256,7 +7310,7 @@ export const it: EngineLocale = {
         ]
       ],
       "listTextPoint": [
-        "          ",
+        "  ",
         [
           "point"
         ],
@@ -7427,7 +7481,7 @@ export const it: EngineLocale = {
         ]
       ],
       "listMtextRotation": [
-        "Rotazione:       ",
+        "Rotazione:      ",
         [
           "angle"
         ]
@@ -7492,7 +7546,7 @@ export const it: EngineLocale = {
           {
             "horizontal": "orizzontale",
             "vertical": "verticale",
-            "rotated": "ruotata",
+            "rotated": "ruotato",
             "aligned": "allineata",
             "arc": "arco",
             "radial": "radiale",
@@ -7770,19 +7824,19 @@ export const it: EngineLocale = {
         ]
       ],
       "listInsertScaleX": [
-        "Fattore di scala X: ",
+        "Fattore di scala X:​    ",
         [
           "scale"
         ]
       ],
       "listInsertScaleY": [
-        "Fattore di scala Y: ",
+        "Fattore di scala Y:    ",
         [
           "scale"
         ]
       ],
       "listInsertScaleZ": [
-        "Fattore di scala Z: ",
+        "Fattore di scala Z:    ",
         [
           "scale"
         ]

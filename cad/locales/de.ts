@@ -6530,13 +6530,41 @@ export const de: EngineLocale = {
         " mm"
       ],
       "listThickness": [
-        "                   Objekthöhe =    ",
+        "                   Objekthöhe = ",
         [
           "thickness"
         ]
       ],
       "listExtrusion": [
-        "Extrusionsrichtung relativ zum BKS:\n                   X=",
+        "Hochzugsrichtung relativ zum BKS:\n                   X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listPolylineExtrusion": [
+        "Hochzugsrichtung relativ zum BKS:\n                   X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listLwExtrusion": [
+        "Hochzugsrichtung relativ zum BKS:\n                   X=",
         [
           "x"
         ],
@@ -6695,11 +6723,11 @@ export const de: EngineLocale = {
         ]
       ],
       "listLine3d": [
-        "                  3D-Länge  =",
+        "                  3D Länge  =",
         [
           "length"
         ],
-        ",  Winkel aus XY-Ebene = ",
+        ",  Winkel von XY-Ebene aus= ",
         [
           "angle"
         ]
@@ -6772,6 +6800,20 @@ export const de: EngineLocale = {
           "z"
         ]
       ],
+      "listArcCenter": [
+        "           Zentrum Punkt, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
       "listRadius": [
         "            Radius ",
         [
@@ -6785,12 +6827,18 @@ export const de: EngineLocale = {
         ]
       ],
       "listCircumference": [
-        "     Umfang     ",
+        "     Umfang ",
         [
           "length"
         ]
       ],
       "listArea": [
+        "              Fläche ",
+        [
+          "area"
+        ]
+      ],
+      "listCircleArea": [
         "              Fläche ",
         [
           "area"
@@ -6821,6 +6869,12 @@ export const de: EngineLocale = {
         ]
       ],
       "listCurveArea": [
+        "                           Fläche: ",
+        [
+          "area"
+        ]
+      ],
+      "listEllipseArea": [
         "                           Fläche: ",
         [
           "area"
@@ -7662,7 +7716,7 @@ export const de: EngineLocale = {
         ]
       ],
       "listDimensionTextAngle": [
-        "Textwinkel:     ",
+        "Textwinkel: ",
         [
           "angle"
         ]
@@ -7892,7 +7946,7 @@ export const de: EngineLocale = {
         ]
       ],
       "listArrayColumns": [
-        "                     Anzahl der Spalten:          ",
+        "                     Anzahl der Spalten:  ",
         [
           "count"
         ]
@@ -7904,7 +7958,7 @@ export const de: EngineLocale = {
         ]
       ],
       "listArrayRows": [
-        "                      Anzahl der Zeilen:          ",
+        "                      Anzahl der Zeilen:  ",
         [
           "count"
         ]
@@ -7922,7 +7976,7 @@ export const de: EngineLocale = {
         ]
       ],
       "listArrayLevels": [
-        "                      Anzahl der Ebenen:          ",
+        "                      Anzahl der Ebenen:  ",
         [
           "count"
         ]
@@ -7940,7 +7994,7 @@ export const de: EngineLocale = {
         ]
       ],
       "listArrayRadius": [
-        "                         Radius:    ",
+        "                         Radius:  ",
         [
           "radius"
         ]
@@ -7952,31 +8006,31 @@ export const de: EngineLocale = {
         ]
       ],
       "listArrayAngleBetween": [
-        "  Winkel zwischen den Elementen:         ",
+        "  Winkel zwischen den Elementen:  ",
         [
           "angle"
         ]
       ],
       "listArrayFillAngle": [
-        "                     Füllwinkel:        ",
+        "                     Füllwinkel:  ",
         [
           "angle"
         ]
       ],
       "listArrayItemSpacing": [
-        "           Elementabstand:     ",
+        "           Elementabstand:  ",
         [
           "spacing"
         ]
       ],
       "listArrayStartOffset": [
-        "           Anfangsversatz:     ",
+        "           Anfangsversatz:  ",
         [
           "spacing"
         ]
       ],
       "listArrayEndOffset": [
-        "               Endversatz:     ",
+        "               Endversatz:  ",
         [
           "spacing"
         ]

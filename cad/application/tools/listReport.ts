@@ -351,9 +351,14 @@ class Report {
     return tilted ? normal : null
   }
 
-  private sayExtrusion(entity: Entity): void {
+  /**
+   * WHY a key per kind: French words a POLYLINE's line `par rapport au SCU`
+   * (list/p121) and Hungarian an LWPOLYLINE's `Kihúzási irány` (inquiry/p436)
+   * where every other type's reads as the rest's.
+   */
+  private sayExtrusion(entity: Entity, id: MessageId = "listExtrusion"): void {
     const normal = this.extrusion(entity)
-    if (normal) this.say("listExtrusion", this.xyz(normal))
+    if (normal) this.say(id, this.xyz(normal))
   }
 
   /**
@@ -688,12 +693,16 @@ class Report {
     this.say("listCircumference", {
       length: this.n9(2 * Math.PI * circle.radius),
     })
-    this.say("listArea", { area: this.n9(Math.PI * circle.radius ** 2) })
+    // WHY a key of its own: Czech and Hungarian write a circle's area a
+    // column or three left of a polyline's (inquiry/p439 against p430).
+    this.say("listCircleArea", { area: this.n9(Math.PI * circle.radius ** 2) })
   }
 
   private arc(arc: ArcEntity): void {
     this.header("arc", arc)
-    this.say("listCenter", this.xyz(this.at(arc, arc.center)))
+    // WHY a key of its own: Russian words an ARC's `центр точка`, a CIRCLE's
+    // `центральная точка` (inquiry/p436, p439).
+    this.say("listArcCenter", this.xyz(this.at(arc, arc.center)))
     this.say("listRadius", { radius: this.n9(arc.radius) })
     let sweep = arc.endAngle - arc.startAngle
     while (sweep <= 0) sweep += 2 * Math.PI
@@ -719,7 +728,9 @@ class Report {
     this.header("ellipse", ellipse)
     const measured = objectArea(ellipse)
     if (isFullEllipse(ellipse)) {
-      this.say("listCurveArea", { area: this.length(measured?.area ?? 0) })
+      // WHY a key of its own: Brazilian Portuguese ends an ellipse's word with
+      // a full stop, `Área.`, a region's with a colon (p436, region/p13).
+      this.say("listEllipseArea", { area: this.length(measured?.area ?? 0) })
       this.say("listCurveCircumference", {
         length: this.length(measured?.around ?? 0),
       })
@@ -870,7 +881,7 @@ class Report {
     // to UCS": each console writes it so, where a CIRCLE's and a POLYLINE's
     // are the UCS's (list/p115, p201, p208; p205, p121).
     if (this.extrusion(poly)) {
-      this.say("listExtrusion", this.xyz(this.storedNormal(poly)))
+      this.say("listLwExtrusion", this.xyz(this.storedNormal(poly)))
     }
     const measured = objectArea(poly)
     // LWPOLYLINE's area, length and perimeter are written unpadded, three
@@ -955,7 +966,7 @@ class Report {
     const [startWidth, endWidth] = polylineWidth(poly, 0)
     this.say("listPolylineStartingWidth", { width: this.n9(startWidth) })
     this.say("listPolylineEndingWidth", { width: this.n9(endWidth) })
-    this.sayExtrusion(poly)
+    this.sayExtrusion(poly, "listPolylineExtrusion")
     const measured = objectArea(poly)
     this.say("listArea", { area: this.n9(measured?.area ?? 0) })
     this.say(poly.closed ? "listPolylinePerimeter" : "listLength", {

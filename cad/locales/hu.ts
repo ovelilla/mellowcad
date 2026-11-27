@@ -6524,6 +6524,34 @@ export const hu: EngineLocale = {
           "z"
         ]
       ],
+      "listPolylineExtrusion": [
+        "Kihúzás iránya az FKR-hez viszonyítva:\n                   X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listLwExtrusion": [
+        "Kihúzási irány az FKR-hez viszonyítva:\n                   X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
       "listLineFrom": [
         "             kezdő pont, X=",
         [
@@ -6747,6 +6775,20 @@ export const hu: EngineLocale = {
           "z"
         ]
       ],
+      "listArcCenter": [
+        "            Felező pont, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
       "listRadius": [
         "             sugár ",
         [
@@ -6767,6 +6809,12 @@ export const hu: EngineLocale = {
       ],
       "listArea": [
         "              terület ",
+        [
+          "area"
+        ]
+      ],
+      "listCircleArea": [
+        "           terület  ",
         [
           "area"
         ]
@@ -6796,6 +6844,12 @@ export const hu: EngineLocale = {
         ]
       ],
       "listCurveArea": [
+        "                          Terület: ",
+        [
+          "area"
+        ]
+      ],
+      "listEllipseArea": [
         "                          Terület: ",
         [
           "area"

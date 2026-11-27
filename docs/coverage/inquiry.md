@@ -125,7 +125,10 @@ p425); one undo step U names `LIST` (p440). The order is the set's as AutoCAD bu
 picked (p435), what one mode finds at once — ALL, a window, Previous — newest first (p420), a
 preselection newest first (p421). Each object's report is written at the command prompt in AutoCAD
 2027's columns, word for word in English and Spanish (acdb26res.dll's tables; the console,
-QAFLAGS 2, p400–p446): its type and `Layer: "0"` (es `Capa`), `Space: Model space` (es
+QAFLAGS 2, p400–p446) and in each other command language its console's words and columns (the
+probes each ran, `--select`, and list/p100, p101, p117, p121, p122, p123 in all: a circle's area,
+an arc's centre, a polyline's or an LWPOLYLINE's extrusion and an ellipse's area worded apart where
+one language does): its type and `Layer: "0"` (es `Capa`), `Space: Model space` (es
 `Espacio: Espacio modelo`), `Color: 1 (red)    Linetype: "DASHED"` when either is not ByLayer (an
 index colour 1–7 by number and name, any other index colour by number, `30`, a true colour
 `255,128,0`, even one whose RGB is an index colour's, colors/c01; a linetype as acadiso.lin names it,

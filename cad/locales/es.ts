@@ -6528,6 +6528,34 @@ export const es: EngineLocale = {
           "z"
         ]
       ],
+      "listPolylineExtrusion": [
+        "Dirección de extrusión relativa al SCP:\n                   X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listLwExtrusion": [
+        "Dirección de extrusión relativa al SCP:\n                   X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
       "listLineFrom": [
         "                de punto, X=",
         [
@@ -6751,6 +6779,20 @@ export const es: EngineLocale = {
           "z"
         ]
       ],
+      "listArcCenter": [
+        "            centro punto, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
       "listRadius": [
         "             radio ",
         [
@@ -6770,6 +6812,12 @@ export const es: EngineLocale = {
         ]
       ],
       "listArea": [
+        "              área ",
+        [
+          "area"
+        ]
+      ],
+      "listCircleArea": [
         "              área ",
         [
           "area"
@@ -6800,6 +6848,12 @@ export const es: EngineLocale = {
         ]
       ],
       "listCurveArea": [
+        "                             Área: ",
+        [
+          "area"
+        ]
+      ],
+      "listEllipseArea": [
         "                             Área: ",
         [
           "area"

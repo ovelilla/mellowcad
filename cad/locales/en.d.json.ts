@@ -3050,6 +3050,8 @@ declare const source: {
       "listLineweight": string
       "listThickness": string
       "listExtrusion": string
+      "listPolylineExtrusion": string
+      "listLwExtrusion": string
       "listLineFrom": string
       "listLineTo": string
       "listSolidFrom": string
@@ -3070,15 +3072,18 @@ declare const source: {
       "listAngleInXy": string
       "listAngleFromXy": string
       "listCenter": string
+      "listArcCenter": string
       "listRadius": string
       "listLwRadius": string
       "listCircumference": string
       "listArea": string
+      "listCircleArea": string
       "listStartAngle": string
       "listEndAngle": string
       "listLength": string
       "listTotalAngle": string
       "listCurveArea": string
+      "listEllipseArea": string
       "listCurveCircumference": string
       "listCurveLength": string
       "listEllipseCenter": string

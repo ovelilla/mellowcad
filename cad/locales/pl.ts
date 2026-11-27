@@ -6647,12 +6647,40 @@ export const pl: EngineLocale = {
         " mm"
       ],
       "listThickness": [
-        "                   Grubość =    ",
+        "                   Grubość = ",
         [
           "thickness"
         ]
       ],
       "listExtrusion": [
+        "Kierunek wzrostu grubości względem LUW:\n                   X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listPolylineExtrusion": [
+        "Kierunek wzrostu grubości względem LUW:\n                   X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listLwExtrusion": [
         "Kierunek wzrostu grubości względem LUW:\n                   X=",
         [
           "x"
@@ -6816,7 +6844,7 @@ export const pl: EngineLocale = {
         [
           "length"
         ],
-        ", Kąt względem pł. XY = ",
+        ", Kąt wzgl. pł. XY = ",
         [
           "angle"
         ]
@@ -6889,6 +6917,20 @@ export const pl: EngineLocale = {
           "z"
         ]
       ],
+      "listArcCenter": [
+        "            środek punkt, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
       "listRadius": [
         "           promień ",
         [
@@ -6913,6 +6955,12 @@ export const pl: EngineLocale = {
           "area"
         ]
       ],
+      "listCircleArea": [
+        "              pole ",
+        [
+          "area"
+        ]
+      ],
       "listStartAngle": [
         "          początek kąt ",
         [
@@ -6932,12 +6980,18 @@ export const pl: EngineLocale = {
         ]
       ],
       "listTotalAngle": [
-        "         całkowity kąt ",
+        "             kąt całkowity ",
         [
           "angle"
         ]
       ],
       "listCurveArea": [
+        "                             Pole: ",
+        [
+          "area"
+        ]
+      ],
+      "listEllipseArea": [
         "                             Pole: ",
         [
           "area"
@@ -7056,7 +7110,7 @@ export const pl: EngineLocale = {
           1,
           {
             "yes": "Płaski,",
-            "other": "Niepłaski,"
+            "other": "Nieplanarny,"
           }
         ],
         " ",
@@ -7308,7 +7362,7 @@ export const pl: EngineLocale = {
         ]
       ],
       "listPolylinePerimeter": [
-        "         obwód wieloboczny   ",
+        "         obwód wieloboczny ",
         [
           "length"
         ]
@@ -7633,7 +7687,7 @@ export const pl: EngineLocale = {
         ]
       ],
       "listDimensionRotation": [
-        " kąt obrotu:     ",
+        " kąt obrotu: ",
         [
           "angle"
         ]
@@ -7779,7 +7833,7 @@ export const pl: EngineLocale = {
         ]
       ],
       "listDimensionTextAngle": [
-        "kąt obrotu tekstu:     ",
+        "kąt obrotu tekstu: ",
         [
           "angle"
         ]
@@ -8009,7 +8063,7 @@ export const pl: EngineLocale = {
         ]
       ],
       "listArrayColumns": [
-        "            Liczba kolumn:          ",
+        "            Liczba kolumn:  ",
         [
           "count"
         ]
@@ -8021,7 +8075,7 @@ export const pl: EngineLocale = {
         ]
       ],
       "listArrayRows": [
-        "           Liczba wierszy:          ",
+        "           Liczba wierszy:  ",
         [
           "count"
         ]
@@ -8039,7 +8093,7 @@ export const pl: EngineLocale = {
         ]
       ],
       "listArrayLevels": [
-        "          Liczba poziomów:          ",
+        "          Liczba poziomów:  ",
         [
           "count"
         ]
@@ -8069,31 +8123,31 @@ export const pl: EngineLocale = {
         ]
       ],
       "listArrayAngleBetween": [
-        "    Kąt między elementami:         ",
+        "    Kąt między elementami:  ",
         [
           "angle"
         ]
       ],
       "listArrayFillAngle": [
-        "          Kąt wypełnienia:        ",
+        "          Kąt wypełnienia:  ",
         [
           "angle"
         ]
       ],
       "listArrayItemSpacing": [
-        "  Odstęp między elementami:     ",
+        "  Odstęp między elementami:  ",
         [
           "spacing"
         ]
       ],
       "listArrayStartOffset": [
-        "    Odsunięcie początkowe:     ",
+        "    Odsunięcie początkowe:  ",
         [
           "spacing"
         ]
       ],
       "listArrayEndOffset": [
-        "       Odsunięcie końcowe:     ",
+        "       Odsunięcie końcowe:  ",
         [
           "spacing"
         ]

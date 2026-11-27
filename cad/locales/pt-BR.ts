@@ -6536,6 +6536,34 @@ export const ptBR: EngineLocale = {
           "z"
         ]
       ],
+      "listPolylineExtrusion": [
+        "Direção de extrusão em relação ao UCS:\n                   X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listLwExtrusion": [
+        "Direção de extrusão em relação ao UCS:\n                   X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
       "listLineFrom": [
         "                do ponto, X=",
         [
@@ -6686,7 +6714,7 @@ export const ptBR: EngineLocale = {
         [
           "length"
         ],
-        ",  Ângulo do plano XY =     ",
+        ",  Ângulo do plano XY = ",
         [
           "angle"
         ]
@@ -6759,26 +6787,46 @@ export const ptBR: EngineLocale = {
           "z"
         ]
       ],
+      "listArcCenter": [
+        "            centro ponto, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
       "listRadius": [
-        "              raio    ",
+        "              raio ",
         [
           "radius"
         ]
       ],
       "listLwRadius": [
-        "              raio    ",
+        "            raio ",
         [
           "radius"
         ]
       ],
       "listCircumference": [
-        "     circunferência   ",
+        "     circunferência ",
         [
           "length"
         ]
       ],
       "listArea": [
-        "              área   ",
+        "              área ",
+        [
+          "area"
+        ]
+      ],
+      "listCircleArea": [
+        "              área ",
         [
           "area"
         ]
@@ -6796,7 +6844,7 @@ export const ptBR: EngineLocale = {
         ]
       ],
       "listLength": [
-        "            comprimento   ",
+        "            comprimento ",
         [
           "length"
         ]
@@ -6809,6 +6857,12 @@ export const ptBR: EngineLocale = {
       ],
       "listCurveArea": [
         "                             Área: ",
+        [
+          "area"
+        ]
+      ],
+      "listEllipseArea": [
+        "                             Área. ",
         [
           "area"
         ]
@@ -7030,7 +7084,7 @@ export const ptBR: EngineLocale = {
         ]
       ],
       "listLwConstantWidth": [
-        "    Largura constante      ",
+        "    Largura constante ",
         [
           "width"
         ]
@@ -7068,43 +7122,43 @@ export const ptBR: EngineLocale = {
         ]
       ],
       "listStartingWidth": [
-        "   largura inicial    ",
+        "    largura inicial ",
         [
           "width"
         ]
       ],
       "listEndingWidth": [
-        "     largura final    ",
+        "      largura final ",
         [
           "width"
         ]
       ],
       "listPolylineStartingWidth": [
-        "   largura inicial    ",
+        "   largura inicial ",
         [
           "width"
         ]
       ],
       "listPolylineEndingWidth": [
-        "     largura final    ",
+        "     largura final ",
         [
           "width"
         ]
       ],
       "listVertexEndingWidth": [
-        "     largura final    ",
+        "     largura final ",
         [
           "width"
         ]
       ],
       "listBulge": [
-        "            volume    ",
+        "             volume ",
         [
           "bulge"
         ]
       ],
       "listVertexBulge": [
-        "            volume    ",
+        "            volume ",
         [
           "bulge"
         ]
@@ -7138,25 +7192,25 @@ export const ptBR: EngineLocale = {
         ]
       ],
       "listPolylineStartAngle": [
-        "    ângulo inicial    ",
+        "       ângulo inicial ",
         [
           "angle"
         ]
       ],
       "listPolylineEndAngle": [
-        "      ângulo final    ",
+        "         ângulo final ",
         [
           "angle"
         ]
       ],
       "listVertexStartAngle": [
-        "    ângulo inicial    ",
+        "    ângulo inicial ",
         [
           "angle"
         ]
       ],
       "listVertexEndAngle": [
-        "      ângulo final    ",
+        "      ângulo final ",
         [
           "angle"
         ]
@@ -7166,25 +7220,25 @@ export const ptBR: EngineLocale = {
           "state",
           1,
           {
-            "open": "              Abrir",
-            "closed": "            Fechado",
+            "open": "             Abrir",
+            "closed": "           Fechado",
             "openSpline": "             Abrir spline",
-            "closedSpline": "            Fechado spline",
+            "closedSpline": "           Fechado spline",
             "openSpace": "             Abrir espaço",
-            "closedSpace": "            Fechado espaço",
+            "closedSpace": "           Fechado espaço",
             "openSplineSpace": "             Abrir spline espaço",
-            "other": "            Fechado spline espaço"
+            "other": "           Fechado spline espaço"
           }
         ]
       ],
       "listPolylinePerimeter": [
-        "         perímetro   ",
+        "         perímetro ",
         [
           "length"
         ]
       ],
       "listVertexPoint": [
-        "                em ponto, X=",
+        "                no ponto, X=",
         [
           "x"
         ],
@@ -7249,7 +7303,7 @@ export const ptBR: EngineLocale = {
         ],
         "\""
       ],
-      "listTextAnnotative": "                 Anotativo: Não",
+      "listTextAnnotative": "        Anotativo: Não",
       "listTypeface": [
         "             Estilo da fonte = ",
         [
@@ -7257,11 +7311,11 @@ export const ptBR: EngineLocale = {
         ]
       ],
       "listTextPoint": [
-        "            para o pon",
+        "  ",
         [
           "point"
         ],
-        ", X=",
+        " ponto, X=",
         [
           "x"
         ],
@@ -7295,7 +7349,7 @@ export const ptBR: EngineLocale = {
         ]
       ],
       "listTextHeight": [
-        "            altura    ",
+        "            altura ",
         [
           "height"
         ]
@@ -7307,19 +7361,19 @@ export const ptBR: EngineLocale = {
         ]
       ],
       "listTextRotation": [
-        "           rotação ângulo      ",
+        "           rotação ângulo ",
         [
           "angle"
         ]
       ],
       "listTextWidth": [
-        "           largura fator de escala    ",
+        "           largura fator de escala ",
         [
           "factor"
         ]
       ],
       "listTextOblique": [
-        "        inclinação ângulo      ",
+        "        inclinação ângulo ",
         [
           "angle"
         ]
@@ -7408,7 +7462,7 @@ export const ptBR: EngineLocale = {
         ]
       ],
       "listMtextWidth": [
-        "Largura:             ",
+        "Largura:          ",
         [
           "width"
         ]
@@ -7428,13 +7482,13 @@ export const ptBR: EngineLocale = {
         ]
       ],
       "listMtextRotation": [
-        "Rotação:                 ",
+        "Rotação:          ",
         [
           "angle"
         ]
       ],
       "listMtextHeight": [
-        "Altura do texto      ",
+        "Altura do texto   ",
         [
           "height"
         ]
@@ -7503,7 +7557,7 @@ export const ptBR: EngineLocale = {
         ]
       ],
       "listDimensionRotation": [
-        " rotação:     ",
+        " rotação: ",
         [
           "angle"
         ]
@@ -7649,7 +7703,7 @@ export const ptBR: EngineLocale = {
         ]
       ],
       "listDimensionTextAngle": [
-        "ângulo do texto:     ",
+        "ângulo do texto: ",
         [
           "angle"
         ]
@@ -7771,25 +7825,25 @@ export const ptBR: EngineLocale = {
         ]
       ],
       "listInsertScaleX": [
-        "Fator de escala X:    ",
+        "Fator de escala X: ",
         [
           "scale"
         ]
       ],
       "listInsertScaleY": [
-        "Fator de escala Y:    ",
+        "Fator de escala Y: ",
         [
           "scale"
         ]
       ],
       "listInsertScaleZ": [
-        "Fator de escala Z:    ",
+        "Fator de escala Z: ",
         [
           "scale"
         ]
       ],
       "listInsertRotation": [
-        "ângulo de rotação:     ",
+        "ângulo de rotação: ",
         [
           "angle"
         ]
@@ -7807,7 +7861,7 @@ export const ptBR: EngineLocale = {
         ]
       ],
       "listInsertConversion": [
-        "Conversão de unidade:    ",
+        "Conversão de unidade: ",
         [
           "factor"
         ]

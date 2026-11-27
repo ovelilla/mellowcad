@@ -6549,6 +6549,34 @@ export const fr: EngineLocale = {
           "z"
         ]
       ],
+      "listPolylineExtrusion": [
+        "Direction d'extrusion par rapport au SCU:\n                   X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listLwExtrusion": [
+        "Direction d'extrusion relative au SCU:\n                   X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
       "listLineFrom": [
         "                de point, X=",
         [
@@ -6772,6 +6800,20 @@ export const fr: EngineLocale = {
           "z"
         ]
       ],
+      "listArcCenter": [
+        "            centre point, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
       "listRadius": [
         "             rayon ",
         [
@@ -6791,6 +6833,12 @@ export const fr: EngineLocale = {
         ]
       ],
       "listArea": [
+        "              aire ",
+        [
+          "area"
+        ]
+      ],
+      "listCircleArea": [
         "              aire ",
         [
           "area"
@@ -6821,6 +6869,12 @@ export const fr: EngineLocale = {
         ]
       ],
       "listCurveArea": [
+        "                             Aire: ",
+        [
+          "area"
+        ]
+      ],
+      "listEllipseArea": [
         "                             Aire: ",
         [
           "area"

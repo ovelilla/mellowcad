@@ -5742,6 +5742,34 @@ export const en: EngineCatalog = {
           "z"
         ]
       ],
+      "listPolylineExtrusion": [
+        "Extrusion direction relative to UCS:\n                   X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listLwExtrusion": [
+        "Extrusion direction relative to UCS:\n                   X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
       "listLineFrom": [
         "              from point, X=",
         [
@@ -6016,6 +6044,20 @@ export const en: EngineCatalog = {
           "z"
         ]
       ],
+      "listArcCenter": [
+        "            center point, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
       "listRadius": [
         "            radius ",
         [
@@ -6035,6 +6077,12 @@ export const en: EngineCatalog = {
         ]
       ],
       "listArea": [
+        "              area ",
+        [
+          "area"
+        ]
+      ],
+      "listCircleArea": [
         "              area ",
         [
           "area"
@@ -6065,6 +6113,12 @@ export const en: EngineCatalog = {
         ]
       ],
       "listCurveArea": [
+        "                             Area: ",
+        [
+          "area"
+        ]
+      ],
+      "listEllipseArea": [
         "                             Area: ",
         [
           "area"
