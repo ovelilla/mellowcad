@@ -126,7 +126,12 @@ despliegue, en verde, y la caché de Cloudflare purgada a las 08:55. El push del
 de `48ce4a75` a `9f9b5236`, con la palabra del dueño y tras la lectura del 26/11 (§3), llevó las
 fases 1 a 3 de `docs/next-autocad-ui.md` (el ribbon, la barra de título, las paletas y los
 diálogos de estilos); el CI y el despliegue, en verde, y la caché de Cloudflare purgada a las
-10:59.
+10:59. El push del 27/11 a las 11:04, de `9f9b5236` a `b65df121`, con la palabra del dueño y tras
+la lectura del 27/11 (§3), llevó las fases 4 a 6 de `docs/next-autocad-ui.md` (la fila inferior,
+la línea de comandos flotante, el ViewCube y los grips; los tooltips, el menú contextual del
+ribbon y Customize; las pestañas contextuales, -HATCHEDIT con ellas) y la revisión de
+dependencias del 27/11; el CI y el despliegue, en verde, la caché de Cloudflare purgada a las
+11:19 e IndexNow con las 1.950 URL del sitemap (200).
 
 ## 5. La caché de Cloudflare delante de Vercel
 
