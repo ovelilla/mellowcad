@@ -2342,7 +2342,7 @@
   "commands.messages.layerLinetypeNotFound": "Linetype \"{name}\" not found.  Use LINETYPE command to load it.",
   "commands.messages.linetypeNotLoaded": "Linetype \"{name}\" not found.  Use LINETYPE command to load it.",
   "commands.messages.invalidLinetypeName": "Invalid linetype name.",
-  "commands.messages.cannotChangeThickness": "Cannot change thickness for {type, select, ellipse {ELLIPSE} spline {SPLINE} polyline3d {3D Polylines} mtext {MTEXT} dimension {DIMENSION} hatch {HATCH} other {BLOCKs}}.",
+  "commands.messages.cannotChangeThickness": "Cannot change thickness for {type, select, ellipse {ELLIPSE} spline {SPLINE} polyline3d {3D Polylines} mtext {MTEXT} dimension {DIMENSION} hatch {HATCH} region {REGION} solid3d {3DSOLID} face3d {3DFACEs} polygonMesh {3D Polygon Meshes} xline {XLINE} ray {RAY} wipeout {WIPEOUT} image {IMAGE} table {ACAD_TABLE} mleader {MULTILEADER} leader {LEADER} other {BLOCKs}}.",
   "commands.messages.invalidThroughPoint": "Invalid through point.",
   "commands.messages.cannotOffsetObject": "Cannot offset that object.",
   "commands.messages.cannotOffsetAtViewDirection": "Cannot offset that object at current view direction.",

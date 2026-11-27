@@ -3967,6 +3967,17 @@ export const it: EngineLocale = {
             "mtext": "MTEXT",
             "dimension": "QUOTA",
             "hatch": "TRATTEGGIO",
+            "region": "REGION",
+            "solid3d": "3DSOLID",
+            "face3d": "FACCE3D",
+            "polygonMesh": "Mesh poligonali 3D",
+            "xline": "XLINE",
+            "ray": "RAY",
+            "wipeout": "WIPEOUT",
+            "image": "IMAGE",
+            "table": "ACAD_TABLE",
+            "mleader": "MULTILEADER",
+            "leader": "LEADER",
             "other": "BLOCCHI"
           }
         ],

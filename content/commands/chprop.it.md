@@ -2,7 +2,7 @@
 title: "Comando CAPROP (CHPROP) in AutoCAD"
 description: "CAPROP (CHPROP) di AutoCAD in italiano: scegli gli oggetti, poi cambia colore, layer, tipo di linea e sua scala, spessore di linea dalla riga di comando."
 figure: "CAPROP su una linea attraverso il foro di una piastra: colore 1 e tipo di linea CENTER, un asse, sul layer in cui si trovava."
-sourceHash: "4ba30c3c6070"
+sourceHash: "1cba888e4b31"
 ---
 
 CAPROP cambia le proprietà degli oggetti che selezioni, dalla riga di comando: le righe Generale della tavolozza Proprietà, chieste come richieste. Seleziona gli oggetti, o selezionali prima del comando, poi scegli una proprietà da cambiare; ne chiede una di nuovo dopo ciascuna, finché Invio termina. La richiesta di ogni proprietà propone il valore dell'insieme come predefinito, <Message id="varies" /> dove gli oggetti differiscono, e Invio lì lascia a ogni oggetto il suo. Ciò che imposti è applicato al termine del comando, quindi Esc lascia ogni oggetto com'era. Gli oggetti su un layer bloccato sono contati e lasciati fuori, ciascuno mostrando <Message id="objectOnLockedLayer" />. L'intera esecuzione è un solo passo che <Command id="U" /> annulla.
@@ -35,7 +35,7 @@ Una distanza, digitata o misurata con due punti, anche negativa e zero. È impos
 
 ## Missing
 
-TRansparency, Material e Annotative, che qui gli oggetti non hanno, quindi la richiesta non li elenca. DaBlocco a Color, LType e LWeight, e Predefinito di LWeight. Un colore RGB uguale a un colore indicizzato è riletto come quello indicizzato: `255,0,0` è proposto come `1 (red)`. I libri di colori. Lo spessore di un testo e di una definizione di attributo, lasciato com'è. CHANGE, le cui Proprietà pongono la stessa richiesta con Quota.
+TRansparency, Material e Annotative, che qui gli oggetti non hanno, quindi la richiesta non li elenca. DaBlocco a Color, LType e LWeight, e Predefinito di LWeight. I libri di colori. Lo spessore di un testo e di una definizione di attributo, lasciato com'è. CHANGE, le cui Proprietà pongono la stessa richiesta con Quota.
 
 ## Questions
 

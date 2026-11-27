@@ -3,7 +3,7 @@ title: "Comando CHPROP (ALTPROP) no AutoCAD"
 metaTitle: "Alterar propriedades no AutoCAD: CHPROP"
 description: "Como funciona o CHPROP do AutoCAD em português, ALTPROP: mude cor, camada, tipo de linha e sua escala, espessura de linha ou espessura dos objetos, no prompt."
 figure: "O ALTPROP numa linha que atravessa o furo de uma placa: cor 1 e tipo de linha CENTER, um eixo, na camada em que estava."
-sourceHash: "4ba30c3c6070"
+sourceHash: "1cba888e4b31"
 ---
 
 O CHPROP, ALTPROP no AutoCAD em português, muda as propriedades dos objetos que você seleciona, na linha de comando: as linhas Geral da paleta Propriedades, perguntadas como prompts. Selecione os objetos, ou selecione-os antes do comando, e escolha uma propriedade a mudar; ele pede outra depois de cada uma, até que Enter o encerre. O prompt de cada propriedade oferece como padrão o valor do conjunto, <Message id="varies" /> onde os objetos diferem, e Enter ali deixa a cada objeto o seu. O que você define é aplicado quando o comando termina, então Esc deixa todos os objetos como estavam. Os objetos numa camada bloqueada são contados e deixados de fora, cada um dizendo <Message id="objectOnLockedLayer" />. A execução inteira é um passo que o <Command id="U" /> desfaz.
@@ -36,7 +36,7 @@ Uma distância, digitada ou medida por dois pontos, negativa e zero também. É 
 
 ## Missing
 
-TRansparência, Material e Anotativo, que os objetos aqui não têm, então o prompt não os lista. PorBloco em Cor, TIpolinha e ESplinha, e o Padrão de ESplinha. Uma true color igual a uma cor de índice volta como a de índice: `255,0,0` é oferecida como `1 (vermelho)`. Os livros de cores. A espessura de um texto e de uma definição de atributo, que ficam como estão. O ALTERAR (`_CHANGE`), cuja opção Propriedades faz o mesmo prompt com ELevação.
+TRansparência, Material e Anotativo, que os objetos aqui não têm, então o prompt não os lista. PorBloco em Cor, TIpolinha e ESplinha, e o Padrão de ESplinha. Os livros de cores. A espessura de um texto e de uma definição de atributo, que ficam como estão. O ALTERAR (`_CHANGE`), cuja opção Propriedades faz o mesmo prompt com ELevação.
 
 ## Questions
 

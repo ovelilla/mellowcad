@@ -2507,7 +2507,7 @@
       "layerLinetypeNotFound": "Linetype \"{name}\" not found.  Use LINETYPE command to load it.",
       "linetypeNotLoaded": "Linetype \"{name}\" not found.  Use LINETYPE command to load it.",
       "invalidLinetypeName": "Invalid linetype name.",
-      "cannotChangeThickness": "Cannot change thickness for {type, select, ellipse {ELLIPSE} spline {SPLINE} polyline3d {3D Polylines} mtext {MTEXT} dimension {DIMENSION} hatch {HATCH} other {BLOCKs}}.",
+      "cannotChangeThickness": "Cannot change thickness for {type, select, ellipse {ELLIPSE} spline {SPLINE} polyline3d {3D Polylines} mtext {MTEXT} dimension {DIMENSION} hatch {HATCH} region {REGION} solid3d {3DSOLID} face3d {3DFACEs} polygonMesh {3D Polygon Meshes} xline {XLINE} ray {RAY} wipeout {WIPEOUT} image {IMAGE} table {ACAD_TABLE} mleader {MULTILEADER} leader {LEADER} other {BLOCKs}}.",
       "invalidThroughPoint": "Invalid through point.",
       "cannotOffsetObject": "Cannot offset that object.",
       "cannotOffsetAtViewDirection": "Cannot offset that object at current view direction.",

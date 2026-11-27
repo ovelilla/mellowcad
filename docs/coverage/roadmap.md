@@ -65,9 +65,8 @@ its first vertex, and joined in space into a 3D polyline, or a spline where an a
 (3dpoly/p30–p78, modify.md's TRIM and JOIN). ARRAYRECT's Levels are done, stacked along the UCS's Z with
 their Total, default spacing, palette rows and file (arrays/p430–p444, modify.md's ARRAYRECT);
 a ring's and a path array's Levels and Rows are gaps of their own. OSNAPZ is done, every snap found as at 0 and put at ELEVATION's Z in the UCS
-(osnapz/o01–o10, drafting-aids.md's Object snaps); under OTRACK it is unverified. CHPROP is done, its Color, LAyer, LType, LWeight and
-Thickness as AutoCAD 2027's console asks them (chprop/p01–p22, properties.md's CHPROP); its
-ltScale waits for per-object ltscale, below. The point filters are done, `.X` to `.YZ` at
+(osnapz/o01–o10, drafting-aids.md's Object snaps); under OTRACK it is unverified. CHPROP is done, its Color, LAyer, LType, ltScale, LWeight and
+Thickness as AutoCAD 2027's console asks them (chprop/p01–p22, properties.md's CHPROP). The point filters are done, `.X` to `.YZ` at
 every point prompt and in the Point Filters menu, in the UCS (filters/f01–f63, d01–d05,
 drafting-aids.md's Point filters); at `Select objects:` they are a gap of their own. 3DPOLY and SPLINE
 3D are done: the objects whose stored points carry their Z (`draw.md`), a spline kept in its own
@@ -92,7 +91,7 @@ are done (3DMESH, draw.md). LIST is done, every type of the model listed as Auto
 2027's console lists it (inquiry/p400–p446, inquiry.md's LIST).
 
 Deferrable indefinitely at no extra cost: PASTEBLOCK/PASTEORIG/CUTBASE, DIMARC, DIMORDINATE, the
-modern `DIM` command, GROUP, LENGTHEN, ALIGN, per-object ltscale, isometric drafting
+modern `DIM` command, GROUP, LENGTHEN, ALIGN, isometric drafting
 mode.
 
 Blocks family, not on the near-term path: ByBlock resolution, inserting external drawing files +

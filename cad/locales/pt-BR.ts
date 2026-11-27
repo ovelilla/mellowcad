@@ -3971,6 +3971,17 @@ export const ptBR: EngineLocale = {
             "mtext": "MTEXT",
             "dimension": "DIMENSION",
             "hatch": "HATCH",
+            "region": "REGION",
+            "solid3d": "3DSOLID",
+            "face3d": "FACE3Ds",
+            "polygonMesh": "Malhas poligonais 3D",
+            "xline": "XLINE",
+            "ray": "RAY",
+            "wipeout": "WIPEOUT",
+            "image": "IMAGE",
+            "table": "ACAD_TABLE",
+            "mleader": "MULTILEADER",
+            "leader": "LEADER",
             "other": "BLOCOs"
           }
         ],

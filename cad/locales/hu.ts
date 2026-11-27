@@ -3966,6 +3966,17 @@ export const hu: EngineLocale = {
             "mtext": "MTEXT",
             "dimension": "DIMENSION",
             "hatch": "HATCH",
+            "region": "REGION",
+            "solid3d": "3DSOLID",
+            "face3d": "3DLAPok",
+            "polygonMesh": "3D poligonhálók",
+            "xline": "XLINE",
+            "ray": "RAY",
+            "wipeout": "WIPEOUT",
+            "image": "IMAGE",
+            "table": "ACAD_TABLE",
+            "mleader": "MULTILEADER",
+            "leader": "LEADER",
             "other": "BLOKKok"
           }
         ],

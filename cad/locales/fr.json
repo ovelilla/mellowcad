@@ -2646,7 +2646,7 @@
       "layerLinetypeNotFound": "Type de ligne \"{name}\" non trouvé. Utilisez TYPELIGNE pour le charger.",
       "linetypeNotLoaded": "Type de ligne \"{name}\" non trouvé. Utilisez la commande TYPELIGNE pour le charger.",
       "invalidLinetypeName": "Nom type de ligne incorrect.",
-      "cannotChangeThickness": "Impossible de changer la hauteur des {type, select, ellipse {ELLIPSE} spline {SPLINE} polyline3d {3D Polylignes} mtext {MTEXT} dimension {DIMENSION} hatch {HATCH} other {BLOCs}}.",
+      "cannotChangeThickness": "Impossible de changer la hauteur des {type, select, ellipse {ELLIPSE} spline {SPLINE} polyline3d {3D Polylignes} mtext {MTEXT} dimension {DIMENSION} hatch {HATCH} region {REGION} solid3d {3DSOLID} face3d {3DFACEs} polygonMesh {Surfaces maillées 3D} xline {XLINE} ray {RAY} wipeout {WIPEOUT} image {IMAGE} table {ACAD_TABLE} mleader {MULTILEADER} leader {LEADER} other {BLOCs}}.",
       "invalidThroughPoint": "Point incorrect.",
       "cannotOffsetObject": "L'objet ne peut pas être décalé.",
       "cannotOffsetAtViewDirection": "L'objet ne peut pas être décalé dans la direction de la vue courante.",

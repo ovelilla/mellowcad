@@ -2654,7 +2654,7 @@
       "layerLinetypeNotFound": "Tipo di linea \"{name}\" non trovato. Utilizzare il comando TLINEA per caricarlo.",
       "linetypeNotLoaded": "Tipo di linea \"{name}\" non trovato. Utilizzare il comando TLINEA per caricarlo.",
       "invalidLinetypeName": "Il nome tipo di linea non è valido.",
-      "cannotChangeThickness": "Impossibile cambiare l'altezza per {type, select, ellipse {ELLIPSE} spline {SPLINE} polyline3d {POLILINEE 3D} mtext {MTEXT} dimension {QUOTA} hatch {TRATTEGGIO} other {BLOCCHI}}.",
+      "cannotChangeThickness": "Impossibile cambiare l'altezza per {type, select, ellipse {ELLIPSE} spline {SPLINE} polyline3d {POLILINEE 3D} mtext {MTEXT} dimension {QUOTA} hatch {TRATTEGGIO} region {REGION} solid3d {3DSOLID} face3d {FACCE3D} polygonMesh {Mesh poligonali 3D} xline {XLINE} ray {RAY} wipeout {WIPEOUT} image {IMAGE} table {ACAD_TABLE} mleader {MULTILEADER} leader {LEADER} other {BLOCCHI}}.",
       "invalidThroughPoint": "Il punto specificato non è valido.",
       "cannotOffsetObject": "Impossibile eseguire l'offset di questo oggetto.",
       "cannotOffsetAtViewDirection": "Impossibile eseguire l'offset di questo oggetto nella direzione della vista corrente.",

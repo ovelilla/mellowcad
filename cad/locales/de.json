@@ -2674,7 +2674,7 @@
       "layerLinetypeNotFound": "Linientyp \"{name}\" nicht gefunden. Mit dem Befehl LINIENTYP laden.",
       "linetypeNotLoaded": "Linientyp \"{name}\" nicht gefunden. Mit dem Befehl LINIENTYP laden.",
       "invalidLinetypeName": "Ungültiger Linientyp Name.",
-      "cannotChangeThickness": "Kann Objekthöhe für {type, select, ellipse {ELLIPSE} spline {SPLINE} polyline3d {3D-Polylinien} mtext {MTEXT} dimension {BEMASSUNG} hatch {HATCH} other {BLÖCKE}} nicht ändern.",
+      "cannotChangeThickness": "Kann Objekthöhe für {type, select, ellipse {ELLIPSE} spline {SPLINE} polyline3d {3D-Polylinien} mtext {MTEXT} dimension {BEMASSUNG} hatch {HATCH} region {REGION} solid3d {3DSOLID} face3d {3DFLÄCHEn} polygonMesh {3D Polygon-Netze} xline {XLINE} ray {RAY} wipeout {WIPEOUT} image {IMAGE} table {ACAD_TABLE} mleader {MULTILEADER} leader {LEADER} other {BLÖCKE}} nicht ändern.",
       "invalidThroughPoint": "Ungültige Punkteingabe.",
       "cannotOffsetObject": "Dieses Objekt kann nicht versetzt werden.",
       "cannotOffsetAtViewDirection": "Dieses Objekt kann in der gegenwärtigen Ansichtsrichtung nicht versetzt werden.",

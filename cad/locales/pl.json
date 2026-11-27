@@ -2647,7 +2647,7 @@
       "layerLinetypeNotFound": "Nie znaleziono rodzaju linii \"{name}\". Wczytaj go poleceniem RODZLIN.",
       "linetypeNotLoaded": "Nie znaleziono rodzaju linii \"{name}\". Wczytaj go poleceniem RODZLIN.",
       "invalidLinetypeName": "Niewłaściwa nazwa obiektu typu rodzaj linii.",
-      "cannotChangeThickness": "Nie można zmienić grubości {type, select, ellipse {ELLIPSE} spline {SPLINE} polyline3d {polilinii 3D} mtext {MTEXT} dimension {DIMENSION} hatch {HATCH} other {bloków}}.",
+      "cannotChangeThickness": "Nie można zmienić grubości {type, select, ellipse {ELLIPSE} spline {SPLINE} polyline3d {polilinii 3D} mtext {MTEXT} dimension {DIMENSION} hatch {HATCH} region {REGION} solid3d {3DSOLID} face3d {obiektów typu 3WPOW} polygonMesh {siatek wielokątnych 3D} xline {XLINE} ray {RAY} wipeout {WIPEOUT} image {IMAGE} table {ACAD_TABLE} mleader {MULTILEADER} leader {LEADER} other {bloków}}.",
       "invalidThroughPoint": "Wskazano niewłaściwy punkt.",
       "cannotOffsetObject": "Tego obiektu nie można odsunąć.",
       "cannotOffsetAtViewDirection": "Nie można odsunąć tego obiektu przy bieżącym kierunku obserwacji.",

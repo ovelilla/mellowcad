@@ -3,7 +3,7 @@ title: "Tulajdonságok módosítása az AutoCAD-ben: TVÁLT (CHPROP) parancs"
 metaTitle: "Tulajdonságok módosítása: TVÁLT (CHPROP)"
 description: "Tulajdonságok módosítása az AutoCAD-ben a TVÁLT (CHPROP) paranccsal: szín, fólia, vonaltípus és léptéke, vonalvastagság vagy vastagság a parancssorban."
 figure: "TVÁLT egy lemez furatán átmenő vonalon: 1-es szín és CENTER vonaltípus, tengelyvonal azon a fólián, amelyen volt."
-sourceHash: "4ba30c3c6070"
+sourceHash: "1cba888e4b31"
 ---
 
 A TVÁLT (CHPROP) parancs a kijelölt objektumok tulajdonságait módosítja a parancssorban: a Tulajdonságok paletta Általános sorait kérdezi promptokként. Jelölje ki az objektumokat – vagy jelölje ki őket a parancs előtt –, majd válassza ki a módosítandó tulajdonságot; mindegyik után újra kérdez, amíg az Enter be nem fejezi. Minden tulajdonság promptja a készlet értékét kínálja fel alapértelmezésként, ahol az objektumok eltérnek, ott ezt: <Message id="varies" />, és ott az Enter minden objektumnak meghagyja a sajátját. A beállítottakat a parancs a végén alkalmazza, így az Esc minden objektumot változatlanul hagy. A zárolt fólián lévő objektumokat megszámolja és kihagyja, mindegyikre kiírva: <Message id="objectOnLockedLayer" />. A teljes futás egyetlen lépés, amelyet a <Command id="U" /> parancs visszavon.
@@ -36,7 +36,7 @@ Távolság, beírva vagy két ponttal megmérve, negatív és nulla is. A készl
 
 ## Missing
 
-Az átlátszóság, az Anyag és a Feliratozási tulajdonság, amelyek itt az objektumoknak nincsenek, így a prompt fel sem sorolja őket. A Blokk szerint a Szín, a Vonaltípus és a Vonalvastagság opciónál, valamint a Vonalvastagság Alapértelmezés értéke. Az indexszínnel egyező True Color színt indexszínként olvassa vissza: a `255,0,0` értéket `1 (vörös)` alakban kínálja fel. A színkatalógusok. A szövegek és attribútumdefiníciók vastagsága, amelyet változatlanul hagy. A VÁLT parancs, amelynek Tulajdonságok opciója ugyanezt a promptot kérdezi, a Szint opcióval együtt.
+Az átlátszóság, az Anyag és a Feliratozási tulajdonság, amelyek itt az objektumoknak nincsenek, így a prompt fel sem sorolja őket. A Blokk szerint a Szín, a Vonaltípus és a Vonalvastagság opciónál, valamint a Vonalvastagság Alapértelmezés értéke. A színkatalógusok. A szövegek és attribútumdefiníciók vastagsága, amelyet változatlanul hagy. A VÁLT parancs, amelynek Tulajdonságok opciója ugyanezt a promptot kérdezi, a Szint opcióval együtt.
 
 ## Questions
 

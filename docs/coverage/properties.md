@@ -337,17 +337,21 @@ lists, Transparency, the List drop-down
 a preselection taken at once (p14), Enter on nothing ending it silently (p17), each object on a
 locked layer said above the count, `The object is on a locked layer.` (es `El objeto está en una
 capa bloqueada.`), then counted and left out, `2 were on a locked layer.`, for ALL, a window and a
-preselection alike (p13, p13b); then `Enter property to change [Color/LAyer/LType/LWeight/Thickness]:`
-(es `Indique propiedad que cambiar [COlor/Capa/Tlínea/Grosorl/Alt-objeto]`, pt-BR `Inserir
-propriedade a alterar [Cor/CAmada/TIpolinha/ESplinha/espessURa]`, table 20403), asked again after
+preselection alike (p13, p13b); then `Enter property to change
+[Color/LAyer/LType/ltScale/LWeight/Thickness]:` (es `Indique propiedad que cambiar
+[COlor/Capa/Tlínea/Escalatl/Grosorl/Alt-objeto]`, pt-BR `Inserir propriedade a alterar
+[Cor/CAmada/TIpolinha/escalaTL/ESplinha/espessURa]`, table 20403), asked again after
 each property until Enter (`Invalid option keyword.` to FOO); each property's prompt offers the
 set's one value, `varies` (es `varía`, pt-BR `vários`, 20358) where the objects differ, or the
 value this run gave it (p01, p02, p02b, p11e), and Enter there keeps each object's own; what the
 run set is applied only as it ends, so Escape leaves every object as it was (p21: `(command)`
-cancels it and `entget` never saw the change); the whole run one undo step U and REDO name
+cancels it and `entget` never saw the change; on the desktop the set stays highlighted and
+unchanged until that Enter, chprop/d01); the whole run one undo step U and REDO name
 `CHPROP` (es `CAMBPROP`, pt-BR `ALTPROP`), UNDO 2 `CHPROP LINE` (p16), even a run that changed
 nothing (p01); not transparent (`** That command may not be invoked transparently **`), `'ZOOM`
-running at its value prompts and the property prompt (p15); Color asks `New color [Truecolor]
+running at its value prompts and the property prompt (p15), a non-transparent one refused there
+with the prompt's own refusal after (p104); one U also takes back a linetype the run loaded
+(p105); Color asks `New color [Truecolor]
 <BYLAYER>:` (es `Nuevo color [COlorverdadero] <PORCAPA>`, pt-BR `Nova cor [Truecolor]
 <PORCAMADA>`, 20409), offering `1 (red)`, `30` or `R,G,B` as -COLOR does, and takes and refuses what
 -COLOR takes and refuses, the same messages, `BY`'s question and Truecolor's `Red,Green,Blue:`
@@ -372,9 +376,12 @@ refused and asked again, `bylayer`; its unlisted `?` lists them and asks again i
 points.` (p10); it sets a line's, a circle's, an arc's and a polyline's along each one's own
 normal, whatever the UCS (p12), and of the others in the set each type is named once as the
 command ends, in the set's order — picks as picked, ALL and a preselection newest first — `Cannot
-change thickness for ELLIPSE.` (SPLINE, MTEXT, DIMENSION, HATCH; `3D Polylines`, 20362, and a
-reference's `BLOCKs`, 20407; es `Imposible cambiar la altura de objeto de ELLIPSE.`, `Polilíneas
-3D`, `BLOQUEs`), only when a thickness was typed (p11, p11b, p11d, p11e); ltScale (es `Escalatl`)
+change thickness for ELLIPSE.` (SPLINE, MTEXT, DIMENSION, HATCH, REGION, 3DSOLID, XLINE, RAY,
+WIPEOUT, IMAGE, ACAD_TABLE, MULTILEADER, LEADER, English in every language; `3D Polylines`, 20362,
+`3DFACEs`, 20360, `3D Polygon Meshes`, 20363, and once for every reference, MINSERT or array,
+`BLOCKs`, 20407; es `Imposible cambiar la altura de objeto de ELLIPSE.`, `Polilíneas 3D`,
+`3DCARAs`, `Mallas poligonales 3D`, `BLOQUEs`), only when a thickness was typed (p11, p11b, p11d,
+p11e, p100, p101 in every language); ltScale (es `Escalatl`)
 asks `Specify new linetype scale <1.0000>:` (20394 + 20399; es `Precise nueva escala del tipo de
 línea`), `<varies>` where the objects differ, a distance at LUPREC (p22), so two points give it
 too, −2 taken as 2, 0 `Value must be nonzero.` asked again (p08, p08b), and sets each object's
@@ -385,17 +392,15 @@ own; no ribbon button (no ribbon panel offers it)
 Annotative (`Make Annotative? [Yes/No] <No>:`; p17, p17b), none modelled, so none of them is
 listed; ByBlock (`BYBLOCK` at Color, LType and LWeight sets it, p04, p07, p09: here
 Color asks again as -COLOR does, LType says the name is not loaded, LWeight refuses it) and
-LWeight's `Default` (es `defecto`, p09s); Truecolor's colour kept apart from an index colour's
-(-COLOR's Missing: `255,0,0` reads back `1 (red)`, where AutoCAD offers `<255,0,0>`, p05);
-COlorbook; a linetype AutoCAD loads from acad.lin as it is named (English `DASHED` loads it
+LWeight's `Default` (es `defecto`, p09s); COlorbook, which AutoCAD lists at Color's prompt, `New color
+[Truecolor/COlorbook]`, in the console and on the desktop (p03, d02); a linetype AutoCAD loads from acad.lin as it is named (English `DASHED` loads it
 silently, p07; every linetype here is loaded) and its name as the file writes it (`DASHED`; here
 `Dashed`); a text's and an attribute definition's thickness, which AutoCAD sets (p11, p11d): none
 has one here, so they are left as they are, said nothing — WHY at the tool; the hidden keywords
 `Colour` (Color whole) and `Properties` / `Propertys` (asked again silently, p17); a pick on an
 object of a locked layer (here it finds nothing and starts a window, `command-line.md`; AutoCAD
 says it and counts it, p13b); CHANGE, whose Properties asks the same prompt with Elev
-(`[Color/Elev/LAyer/…]`, 20404, p18); **unverified**: whether the desktop draws the set as the run
-changes it (the console's database changes only as it ends, p21; here nothing changes before Enter)
+(`[Color/Elev/LAyer/…]`, 20404, p18)
 
 ### Properties palette · `PROPERTIES` / `PR` / `CH` / `MO` · `PROPERTIESCLOSE` · es `PROPIEDADES` / `PR` · `CERPROP` · pt-BR `PROPRIEDADES` / `ALT` / `PROPS` / `ALTPROPD` / `MODIFICARD` · `FECHARPROP` / `FPROP` · fr `PROPRIETES` / `PROP` / `PROPS` / `DDCHPROP` / `DDMODIFY` · `FERMERPROPRIETES` / `FRPROP` · it `PROPRIETA` / `PR` / `PRO` / `PROP` / `CH` / `DDCHPROP` / `DDMODIFY` · `CHIUDIPROP` / `CPR` · de `EIGENSCHAFTEN` · `EIGSCHLIESS` · ru `ОКНОСВ` / `ИЗ` / `ДИАЛСВОЙ` / `ДИАЛИЗМ` · `ОКНОСВЗАКР` / `ОСЗ` · pl `WŁAŚCIWOŚCI` / `CE` · `WŁAŚCIWOŚCIZAMKNIJ` / `CZ` · cs `VLASTNOSTI` / `VLA` / `VLAST` / `VT` · `ZAVŘIVL` / `VLZAV` · hu `TULAJDONSÁGOK` / `TUL` / `TVA` / `MD` · `TULAJDONSÁGOKBEZÁR` / `TBZ`
 **Implemented:** PROPERTIES opens the Properties palette, a modeless window of its own, floating

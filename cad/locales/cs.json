@@ -2647,7 +2647,7 @@
       "layerLinetypeNotFound": "Typ čáry \"{name}\" nebyl nalezen. Použijte příkaz TYPČ pro jeho načtení.",
       "linetypeNotLoaded": "Typ čáry \"{name}\" nebyl nalezen. Použijte příkaz TYPČ pro jeho načtení.",
       "invalidLinetypeName": "Neplatný název typ čáry.",
-      "cannotChangeThickness": "Nelze změnit tloušťku pro {type, select, ellipse {ELLIPSE} spline {SPLINE} polyline3d {3D křivky} mtext {MTEXT} dimension {DIMENSION} hatch {HATCH} other {BLOKy}}.",
+      "cannotChangeThickness": "Nelze změnit tloušťku pro {type, select, ellipse {ELLIPSE} spline {SPLINE} polyline3d {3D křivky} mtext {MTEXT} dimension {DIMENSION} hatch {HATCH} region {REGION} solid3d {3DSOLID} face3d {3D plochy} polygonMesh {3D mnohoúhelníkové sítě} xline {XLINE} ray {RAY} wipeout {WIPEOUT} image {IMAGE} table {ACAD_TABLE} mleader {MULTILEADER} leader {LEADER} other {BLOKy}}.",
       "invalidThroughPoint": "Neplatný bod.",
       "cannotOffsetObject": "Nelze vytvořit ekvidistantu k tomuto objektu.",
       "cannotOffsetAtViewDirection": "V aktuálním směru pohledu nelze vytvořit ekvidistantu k tomuto objektu.",

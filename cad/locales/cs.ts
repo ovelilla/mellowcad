@@ -4028,6 +4028,17 @@ export const cs: EngineLocale = {
             "mtext": "MTEXT",
             "dimension": "DIMENSION",
             "hatch": "HATCH",
+            "region": "REGION",
+            "solid3d": "3DSOLID",
+            "face3d": "3D plochy",
+            "polygonMesh": "3D mnohoúhelníkové sítě",
+            "xline": "XLINE",
+            "ray": "RAY",
+            "wipeout": "WIPEOUT",
+            "image": "IMAGE",
+            "table": "ACAD_TABLE",
+            "mleader": "MULTILEADER",
+            "leader": "LEADER",
             "other": "BLOKy"
           }
         ],

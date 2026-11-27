@@ -2652,7 +2652,7 @@
       "layerLinetypeNotFound": "A(z) \"{name}\" vonaltípus nem található. Betöltéséhez használja a VTÍPUS parancsot.",
       "linetypeNotLoaded": "A(z) \"{name}\" vonaltípus nem található. Betöltéséhez használja a VTÍPUS parancsot.",
       "invalidLinetypeName": "Érvénytelen vonaltípus név.",
-      "cannotChangeThickness": "{type, select, ellipse {ELLIPSE} spline {SPLINE} polyline3d {3D Vonalláncok} mtext {MTEXT} dimension {DIMENSION} hatch {HATCH} other {BLOKKok}} vastagsága nem változtatható meg.",
+      "cannotChangeThickness": "{type, select, ellipse {ELLIPSE} spline {SPLINE} polyline3d {3D Vonalláncok} mtext {MTEXT} dimension {DIMENSION} hatch {HATCH} region {REGION} solid3d {3DSOLID} face3d {3DLAPok} polygonMesh {3D poligonhálók} xline {XLINE} ray {RAY} wipeout {WIPEOUT} image {IMAGE} table {ACAD_TABLE} mleader {MULTILEADER} leader {LEADER} other {BLOKKok}} vastagsága nem változtatható meg.",
       "invalidThroughPoint": "Érvénytelen kijelölt pont.",
       "cannotOffsetObject": "Ezzel az objektummal nem szerkeszthető párhuzamos.",
       "cannotOffsetAtViewDirection": "Ezzel az objektummal az aktuális nézeti irányban párhuzamos nem szerkeszthető.",

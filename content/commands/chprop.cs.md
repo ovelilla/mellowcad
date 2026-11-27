@@ -3,7 +3,7 @@ title: "Změna vlastností v AutoCADu: příkaz ZMĚNAV (CHPROP)"
 metaTitle: "Změna vlastností v AutoCADu: ZMĚNAV"
 description: "Jak změnit vlastnosti objektů v AutoCADu příkazem ZMĚNAV (CHPROP): barvu, hladinu, typ čáry a jeho měřítko, tloušťku čáry nebo výšku na příkazovém řádku."
 figure: "ZMĚNAV na úsečce přes otvor desky: barva 1 a typ čáry CENTER, osa, v hladině, ve které byla."
-sourceHash: "4ba30c3c6070"
+sourceHash: "1cba888e4b31"
 ---
 
 Příkaz ZMĚNAV (CHPROP) mění vlastnosti vybraných objektů na příkazovém řádku: řádky oddílu Obecné palety Vlastnosti, kladené jako výzvy. Vyberte objekty, nebo je vyberte před příkazem, a pak zvolte vlastnost, kterou chcete změnit; po každé se zeptá na další, dokud příkaz neukončí Enter. Výzva každé vlastnosti nabízí jako výchozí hodnotu sady, <Message id="varies" /> tam, kde se objekty liší, a Enter v tomto místě ponechá každému objektu jeho vlastní. Co nastavíte, se použije při ukončení příkazu, takže Esc ponechá všechny objekty beze změny. Objekty v uzamknuté hladině se spočítají a vynechají, každý s hlášením <Message id="objectOnLockedLayer" />. Celé spuštění je jeden krok, který <Command id="U" /> vrátí zpět.
@@ -36,7 +36,7 @@ Vzdálenost zadaná číslem nebo změřená dvěma body, i záporná a nulová.
 
 ## Missing
 
-pRůhlednost, mAteriál a Poznámky, které objekty zde nemají, takže je výzva neuvádí. DleBlok u možností Barva, Typč a tLčáry a výchozí hodnota tloušťky čáry. Barva Truecolor shodná s barvou indexu se načte zpět jako barva indexu: `255,0,0` se nabídne jako `1 (červená)`. Knihy barev. Výška textu a definice atributu, které zůstanou beze změny. ZMĚNA, jejíž možnost Vlastnosti klade tutéž výzvu s možností Zdvih.
+pRůhlednost, mAteriál a Poznámky, které objekty zde nemají, takže je výzva neuvádí. DleBlok u možností Barva, Typč a tLčáry a výchozí hodnota tloušťky čáry. Knihy barev. Výška textu a definice atributu, které zůstanou beze změny. ZMĚNA, jejíž možnost Vlastnosti klade tutéž výzvu s možností Zdvih.
 
 ## Questions
 

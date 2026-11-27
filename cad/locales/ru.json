@@ -2648,7 +2648,7 @@
       "layerLinetypeNotFound": "Тип линий \"{name}\" не найден. Для загрузки используйте команду ТИПЛИН.",
       "linetypeNotLoaded": "Тип линий \"{name}\" не найден. Для загрузки используйте команду ТИПЛИН.",
       "invalidLinetypeName": "тип линий -- неверное имя.",
-      "cannotChangeThickness": "Невозможно изменить толщину для {type, select, ellipse {ELLIPSE} spline {SPLINE} polyline3d {3D-полилиний} mtext {MTEXT} dimension {DIMENSION} hatch {HATCH} other {блоков}}.",
+      "cannotChangeThickness": "Невозможно изменить толщину для {type, select, ellipse {ELLIPSE} spline {SPLINE} polyline3d {3D-полилиний} mtext {MTEXT} dimension {DIMENSION} hatch {HATCH} region {REGION} solid3d {3DSOLID} face3d {3D-граней} polygonMesh {полигональных 3D-сетей} xline {XLINE} ray {RAY} wipeout {WIPEOUT} image {IMAGE} table {ACAD_TABLE} mleader {MULTILEADER} leader {LEADER} other {блоков}}.",
       "invalidThroughPoint": "Неверная точка.",
       "cannotOffsetObject": "Не удается создать объект, подобный данному.",
       "cannotOffsetAtViewDirection": "Не удается создать объект, подобный данному, \nпри текущем направлении взгляда.",

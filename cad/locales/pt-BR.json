@@ -2641,7 +2641,7 @@
       "layerLinetypeNotFound": "Tipo de linha \"{name}\" não encontrado. Use o comando TIPOLINHA para carregá-lo.",
       "linetypeNotLoaded": "Tipo de linha \"{name}\" não encontrado. Use o comando TIPOLINHA para carregá-lo.",
       "invalidLinetypeName": "Nome tipo de linha inválido.",
-      "cannotChangeThickness": "Não é possível alterar a espessura para {type, select, ellipse {ELLIPSE} spline {SPLINE} polyline3d {Polilinhas 3D} mtext {MTEXT} dimension {DIMENSION} hatch {HATCH} other {BLOCOs}}.",
+      "cannotChangeThickness": "Não é possível alterar a espessura para {type, select, ellipse {ELLIPSE} spline {SPLINE} polyline3d {Polilinhas 3D} mtext {MTEXT} dimension {DIMENSION} hatch {HATCH} region {REGION} solid3d {3DSOLID} face3d {FACE3Ds} polygonMesh {Malhas poligonais 3D} xline {XLINE} ray {RAY} wipeout {WIPEOUT} image {IMAGE} table {ACAD_TABLE} mleader {MULTILEADER} leader {LEADER} other {BLOCOs}}.",
       "invalidThroughPoint": "Ponto de passagem inválido.",
       "cannotOffsetObject": "Não é possível deslocar esse objeto.",
       "cannotOffsetAtViewDirection": "Não é possível deslocar esse objeto na direção da vista atual.",

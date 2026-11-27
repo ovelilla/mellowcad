@@ -59,7 +59,7 @@ Inputs in `scripts/research/probes/<command>/`, transcripts in `research/probes/
 | chprop/p100–p101 | Thickness and ltScale on every other type, the refusal words | console, 10 languages |
 | chprop/p102–p110 | `_.CHPROP` and repeat; other prompts' keywords and `_BYLAYER`; transparency; U after a linetype load (`.plain`); a command typed mid-prompt; LASTPOINT after two points; `<varies>`; what is left selected; Escape at a value prompt | console, es and en |
 | chprop/d01 | the set while CHPROP asks: highlighted and unchanged until Enter | desktop en-US, COM and one click |
-| chprop/d02 | dynamic input: the property prompt lists its nine keywords at once; Color's box holds `1 (red)` selected; ltScale's `1.0000`; the desktop lists `[Truecolor/COlorbook]` | desktop en-US, keys |
+| chprop/d02 | dynamic input: the property prompt lists its nine keywords at once; Color's box holds `1 (red)` selected; ltScale's `1.0000`; `[Truecolor/COlorbook]` listed, as in the console | desktop en-US, keys |
 | list/p100–p123 | the linetype scale line, POINT, LUNITS and AUNITS, a fitted polyline's thickness and its END SEQUENCE, a closed spline-fit polyline, a 3D polyline's Spline and its area, a closed spline in no plane, ATTDEF tilted, every curve in Z30 and X90, a fitted polyline in Z30 and X90 (p103 en, p104 es only; p105 `.plain`) | console, es and en |
 | list/p200–p228 | each dimension kind in Z30 and X90, a hatch off the plane, CW polar and Divide path arrays, the arrays' rows, the header of every type, the primitives and sweeps in Z30 and X90, 2D SOLID, 3DFACE, XLINE, RAY, LEADER, WIPEOUT, INSERT, MINSERT, mesh, regions off the plane, a hatch's angle and origin, a table, an image, a multileader and a gradient in Z30 (p218–p220 and p228 by `runacc.sh -t -i` on the DXF fixtures, p219, p220, p228 en only) | console, es and en |
 | inquiry/p400–p446 | LIST's own probes, replayed through the harness in each language they ran in (row K) | console, 10 languages |
@@ -376,7 +376,7 @@ replay.
 
 `docs/coverage/inquiry.md` LIST (the findings, every unverified item settled, LSR-06, LSR-40,
 LSR-44, LSR-45 in Missing), `docs/coverage/properties.md` CHPROP (CHP-01, CHP-02, d01 verified,
-d02's `COlorbook` listed on the desktop), the roadmap (review 32 `done` with the area it owns,
+COlorbook listed by AutoCAD's Color prompt), the roadmap (review 32 `done` with the area it owns,
 CHP-03), the ten catalogs.
 
 ## 14. Template improvements
