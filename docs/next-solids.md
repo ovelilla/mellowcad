@@ -1,9 +1,9 @@
 # Sólidos 3D con núcleo propio — brief
 
-> **Estado:** la fase 6 está hecha: su entrega 6c (UCS Face, UCSDETECT, los subobjetos como
-> conjunto, 3DMOVE y 3DROTATE) el 27/11/2026, en cinco commits, sin push; las fases 1 a 5 y las
-> entregas 6a y 6b, el 1/11/2026. Lo siguiente es la fase 7 (SWEEP, LOFT). Se borra cuando la fase 7
-> esté hecha; hasta entonces cada fase cerrada se marca aquí.
+> **Estado:** la fase 7 (SWEEP, LOFT) está investigada y planeada en cinco entregas, 7a a 7e
+> (27/11/2026, §4); lo siguiente es la 7a, SWEEP sobre las superficies que ya hay. Las fases 1 a 6,
+> hechas (la 6c el 27/11/2026). Se borra cuando la fase 7 esté hecha; hasta entonces cada entrega
+> cerrada se marca aquí.
 
 ## 1. Objetivo
 
@@ -201,6 +201,71 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación en
    (Ø100 × 14, VSCURRENT Conceptual) se sale por abajo de la vista, también tras repetir ZOOM E.
    Comprobarlo en el arnés y contra la consola antes de 6c; un visitante que pruebe el 3D lo verá.
 7. **SWEEP, LOFT** y superficies NURBS generales; las booleanas y empalmes que las tocan.
+   **La investigación** (27/11/2026, consola en en-US y es-ES, trazada, con MPDUMP y MASSPROP:
+   `scripts/research/probes/sweep/` y `scripts/research/probes/loft/`): ACIS hace analítico lo que
+   puede y NURBS lo demás. SWEEP: un círculo por una recta, un cilindro (s01, 4712.3890); por un arco, un
+   toro (s03, 789.5683, Pappus); por una polilínea, un cilindro por tramo cortados a inglete, la
+   arista de la esquina una elipse (s04, 2261.9467, la longitud entera por el área); por una spline,
+   una NurbSurface bicúbica ajustada, 46 × 82 puntos de control, periódica en u (s05, 1221.8824:
+   la cifra de su aproximación); con Scale 0.5 por una recta, una NurbSurface aunque es un cono
+   (s08, 2748.8936, el tronco exacto). Los prompts: `Select objects to sweep or [MOde]:` (33780),
+   `Select sweep path or [Alignment/Base point/Scale/Twist]:` (33632; una selección de un objeto:
+   FOO da `*Invalid selection*` y la lista de modos; Intro acaba el comando sin hacer nada),
+   Alignment `Align sweep object perpendicular to path before sweep [Yes/No]<Yes>:` (33638/33639,
+   el último su defecto), Base point `Specify base point:`, Scale `Enter scale factor or
+   [Reference/Expression]<1.0000>:` (`Value must be positive and nonzero.`; Reference pide dos
+   longitudes y LIST dio 0.5 para 5 → 10, **por releer**), Twist `Enter twist angle or allow
+   banking for a non-planar sweep path [Bank/EXpression]<0.0000>:` (29554; Bank lo activa y el
+   defecto pasa a `<Bank>`, 33754; un ángulo lo apaga). Un recorrido en el plano del perfil sin
+   alinear: `Path curve is coplanar with or tangent to the plane of the profile curve.` y `Unable to
+   sweep 1 selected objects.` (s02, s09); el perfil mismo como recorrido, `Profile curve may not be
+   selected as path curve.` (s15). Alineado, el perfil lleva su base (la de EXTRUDE, o Base point)
+   al principio del recorrido, su normal a la tangente y su Y a tangente × X; adónde va su X
+   depende de la dirección del recorrido (a X por ±Y, a Y por +X: s13, s16–s21), **por fijar** antes
+   de construir. LIST: `Solid type = Sweep`, `Sweep length`, `Profile
+   rotation`, `Scale along path`, `Twist along path`, `Bank`. LOFT: `Select cross sections in
+   lofting order or [POint/Join multiple edges/MOde]:` (33616), ` 2 cross sections selected`,
+   `Enter an option [Guides/Path/Cross sections only/Settings] <Cross sections only>:` (34735); dos
+   círculos coaxiales dan un cono exacto (l01, 3665.1914), tres o un rectángulo y un círculo
+   NurbSurfaces (l02, l03); una sola sección, `At least two profiles must be selected.` (l04). El
+   escritorio (la vista previa al pasar por el recorrido, los pinzamientos, el cuadro Loft
+   Settings) quedó sin ver: una ventana ajena se abrió encima y se dejó para la entrega de cada
+   comando.
+
+   **El plan**, por lo que cada pieza necesita de la anterior; cada entrega con su investigación,
+   `new-command` por comando, `finish-feature`, un commit por pieza y la segunda lectura:
+   - **7a — SWEEP sobre las superficies que ya hay.** Todo el diálogo de SWEEP (MOde, Alignment,
+     Base point, Scale, Twist, Bank, Expression), y el sólido cuando el núcleo de la fase 3 lo hace
+     exacto: un perfil cerrado (círculo, elipse, polilínea, spline cerrada, cara de región) por una
+     recta, un arco o una polilínea plana de rectas y arcos, con las esquinas a inglete (los tramos
+     son extrusiones y revoluciones, el inglete el corte por el plano bisector de `solidEdits.ts` y
+     la unión de `solidBooleans.ts`); LIST, la paleta, el fichero. Un recorrido de spline, elipse o
+     polilínea 3D, un Scale distinto de 1 y un Twist distinto de 0 dicen `Unable to sweep 1 selected
+     objects.` hasta la 7b, anotado en su entrada. **Por qué cabe en una sesión:** no añade
+     superficies; usa lo que MASSPROP, Hidden, las booleanas y los subobjetos ya saben de
+     extrusiones y revoluciones, y su trabajo es el comando y su objeto, como EXTRUDE en la fase 3.
+   - **7b — la superficie de barrido general en el B-rep**: un perfil llevado por un recorrido
+     cualquiera, con su marco (alineado, inclinado o no), su escala y su torsión, evaluado de forma
+     exacta (no la NURBS ajustada de ACIS, cuya cifra es la de su aproximación: los tests comparan
+     con la exacta y anotan la diferencia como se hizo con k05); su evaluación y sus derivadas, la
+     inversión (de un punto a sus parámetros), la normal, la malla, las isolíneas, la silueta de
+     Hidden (el contorno en parámetros de toros y revoluciones), los cortes de un rayo
+     (subdivisión y Newton), la clasificación punto–sólido, MASSPROP por cuadratura de Gauss sobre
+     el dominio recortado, las transformaciones y el fichero. Con ella, SWEEP por splines,
+     polilíneas 3D y elipses, Scale y Twist, y EXTRUDE Path.
+   - **7c — LOFT** sobre una superficie NURBS de verdad (la de 7b para los métodos numéricos): el
+     paso por las secciones (Smooth fit, Ruled, Normal to, Draft angles), Cross sections only,
+     Guides, Path, POint, Join multiple edges, MOde, el cuadro Loft Settings y sus variables
+     (LOFTNORMALS, LOFTANG1/2, LOFTMAG1/2, LOFTPARAM), cerrado; los casos que ACIS hace analíticos
+     (l01).
+   - **7d — la intersección superficie–superficie general** (§5): puntos de partida por
+     subdivisión de los dominios, marcha predictor–corrector con la tolerancia única, las curvas
+     como NURBS de aristas; con ella las booleanas, SLICE y SECTION de las caras de 7b y 7c y de los
+     pares analíticos sin forma cerrada que `modify.md` deja aquí (cilindros cruzados, conos, toros,
+     extrusiones), y PRESSPULL sobre ellas.
+   - **7e — empalmes y chaflanes sobre caras cualesquiera**: la bola que rueda (una superficie de
+     barrido de 7b a lo largo de la curva de contacto), FILLETEDGE y CHAMFEREDGE junto a caras
+     curvas y generales, los dos radios que se encuentran (f01) y la cara estrecha (f05).
 
 ## 5. Riesgos
 

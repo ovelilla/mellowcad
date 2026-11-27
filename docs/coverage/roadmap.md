@@ -49,7 +49,10 @@ us to walk again, whereas a command costs the same before or after it.
    dynamic UCS (coordinate-systems.md, drafting-aids.md; `domain/solidFaceUcs.ts`), a solid's
    faces, edges and vertices as MOVE's, COPY's, ROTATE's, SCALE's and ERASE's set (command-line.md;
    the kernel's `geometry/subobjectEdits.ts`), 3DMOVE and 3DROTATE with their gizmos (modify.md;
-   `application/gizmos.ts`). Phase 7 (SWEEP, LOFT) is next.
+   `application/gizmos.ts`). Phase 7 (SWEEP, LOFT) is researched and planned in five deliveries
+   (2026-11-27, the brief's §4): 7a SWEEP on the surfaces the kernel has, 7b the general swept
+   surface, 7c LOFT on a NURBS surface, 7d the general surface–surface intersection under the
+   booleans, 7e blends on any face; 7a is next.
    The rest of the visual styles are wanted by the owner (2026-11-08), a delivery of their own
    after phase 6, not yet scheduled: VSCURRENT's Wireframe, Shaded, Shaded with edges, Shades of
    Gray, Sketchy and X-ray, and the viewport controls' visual style menu to switch them as
