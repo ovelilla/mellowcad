@@ -242,9 +242,9 @@ describe("Clean Screen", () => {
     idle.runtime.closeRibbon()
     expect(idle.commandLog().slice(at).join("\n")).toContain("_RibbonClose")
     expect(idle.state().ribbon.open).toBe(false)
-    // RIBBONCLOSE's step, an empty one (U of it opens nothing), in a menu's
-    // group as an accelerator's (U's name on the desktop unverified).
-    expect(written(idle, "U")).toEqual(["U", "RIBBONCLOSE GROUP"])
+    // RIBBONCLOSE's step, an empty one (U of it opens nothing), the menu's
+    // empty step (desktop 2026-11-27: `GROUP RIBBONCLOSE`).
+    expect(written(idle, "U")).toEqual(["U", "GROUP RIBBONCLOSE"])
     expect(idle.state().ribbon.open).toBe(false)
 
     const cad = createHarness()

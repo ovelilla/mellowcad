@@ -308,11 +308,13 @@ drop-down titles are missing": "The drop-down arrow is present, but there is no 
 the panel keeping its 97, the rows 7 under its top and the bar 7 under them (desktop 2026-11-26,
 `rc-after-titles`). Close is a macro, `^C^C_RibbonClose`: the running command cancelled,
 `_RibbonClose` written, the ribbon closed as RIBBONCLOSE closes it (desktop 2026-11-26,
-`rc-close`: `Specify next point or [Undo]: *Cancel*`, `Command: _RibbonClose`), a menu's step (U's
-name **unverified**: here `RIBBONCLOSE GROUP`). What
-is shown is this device's, kept as the minimize state is. **Unverified**: where AutoCAD keeps it
-(the workspace or the profile), and whether the names leave a folded panel's button or the
-minimized states too (here they stay). Home (`docs/plans/autocad-ui.md`, §2.3; acad.cuix's
+`rc-close`: `Specify next point or [Undo]: *Cancel*`, `Command: _RibbonClose`), a menu's step U names
+`GROUP RIBBONCLOSE`, leaving the ribbon closed (desktop 2026-11-27). What
+is shown is this device's, kept as the minimize state is — WHY: AutoCAD keeps it in the workspace
+(acad.cuix's WorkspaceRoot: `WSRibbonRoot`'s `ShowPanelTitleInHorizontalOrientation`, each tab's
+and panel's reference's `Show`; the registry unchanged by the menu, desktop 2026-11-27), and there
+are no workspaces here. With the titles hidden a folded panel's button and the minimized states
+keep their names, as here (nt-fold900, nt-min1, nt-min2). Home (`docs/plans/autocad-ui.md`, §2.3; acad.cuix's
 RibbonRoot, `node scripts/research/ribbon.mjs --tab Home --built`): its tab row, 24, and its panels,
 100, each 97 high (4, its rows' 72, 3 and a title bar of 18), with what the engine has in acad.cuix's
 rows and order — Draw, Modify, Annotation, Layers, Block, Properties, Utilities and Clipboard. Large

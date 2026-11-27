@@ -375,11 +375,14 @@ macro AutoCAD's button runs (acad.cuix: `'_pan`, `'_zoom _e`, `'_zoom _w`, `'_zo
 box, and as the command at the Command prompt, writing ZOOM's first prompt with its answer, a step
 U names as a menu's and nothing joins (`'ZOOM GROUP`, `'PAN GROUP`, es `GRUPO`; In doubles the view,
 VIEWSIZE 120 → 60, d07; "started from the menu are not combined"); its lists open towards the
-middle of the drawing
+middle of the drawing; at rest the bar is faded to about half, whole under the pointer (desktop
+2026-11-27, nb-rest, nb-hover2), as the ViewCube
 
 **Missing:** SteeringWheels and ShowMotion, Realtime, All, Dynamic, Scale, Center and Object in the
 Zoom list (AutoCAD's: Zoom Extents, Window, Previous, Realtime, All, Dynamic, Scale, Center, Object,
-In, Out; d07-3), the Orbit list (Free and Continuous Orbit), NAVBAR and NAVBARDISPLAY as a command and a
+In, Out; d07-3), the Orbit list (Free and Continuous Orbit), its buttons' tooltips as AutoCAD's (the
+name, a description and at once a paragraph, Pan's `Moves the view planar to the screen.` and how
+to drag: nb-hover2; here the name and the alias), NAVBAR and NAVBARDISPLAY as a command and a
 variable, the bar's menu (docking positions, unlinking from the ViewCube, customising its tools)
 
 A view is a parallel projection from any direction (there is no perspective). Window and crossing

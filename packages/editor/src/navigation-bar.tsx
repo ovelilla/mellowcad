@@ -53,7 +53,9 @@ export function NavigationBar({ engine, state }: PieceProps): ReactElement {
         role="toolbar"
         aria-orientation="vertical"
         aria-label={t("label")}
-        className="pointer-events-auto flex flex-col items-center gap-0.5 rounded-md border bg-card/90 p-0.5 shadow-md backdrop-blur"
+        // At rest faded as the ViewCube is, whole under the pointer or the
+        // keys (desktop 2026-11-27, nb-rest, nb-hover2: about half).
+        className="pointer-events-auto flex flex-col items-center gap-0.5 rounded-md border bg-card/90 p-0.5 opacity-50 shadow-md backdrop-blur transition-opacity focus-within:opacity-100 hover:opacity-100 has-[[data-popup-open]]:opacity-100"
       >
         <IconAction
           icon={Hand}

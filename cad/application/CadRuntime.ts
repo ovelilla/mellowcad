@@ -3345,16 +3345,20 @@ export class CadRuntime extends Observable {
    * RIBBON and RIBBONCLOSE: no echo, and a step U names as invoked that U
    * and REDO leave as they are — the ribbon stays as the command left it
    * (desktop workspace/d09). With Clean Screen on, RIBBON shows the ribbon
-   * and Clean Screen stays (d12).
+   * and Clean Screen stays (d12). Run by a menu's macro it is the menu's
+   * empty step, `GROUP RIBBONCLOSE` (desktop 2026-11-27, the ribbon's own
+   * Close).
    */
   ribbonStep(open: boolean): void {
     if (this.ribbonOpen !== open) {
       this.ribbonOpen = open
       this.invalidateState()
     }
+    const [name] = this.text.commandNames(open ? "RIBBON" : "RIBBONCLOSE")
     this.history.recordEmpty(
-      this.startingName ??
-        this.text.commandNames(open ? "RIBBON" : "RIBBONCLOSE")[0]
+      this.inMenuGroup
+        ? this.text.message("emptyMenuStep", { command: name })
+        : (this.startingName ?? name)
     )
   }
 
@@ -3363,7 +3367,8 @@ export class CadRuntime extends Observable {
    * macro as `^C^C_RibbonClose`: the running command cancelled and
    * `_RibbonClose` written, RIBBONCLOSE run (desktop 2026-11-26, rc-close:
    * `Specify next point or [Undo]: *Cancel*`, then `Command: _RibbonClose`).
-   * A menu's step, as an accelerator's (U's name unverified).
+   * A menu's step, as an accelerator's, U naming it `GROUP RIBBONCLOSE` and
+   * leaving the ribbon closed (desktop 2026-11-27).
    */
   closeRibbon(): void {
     if (this.ribbonOpen) this.runAccelerator("RIBBONCLOSE", "_RibbonClose")
