@@ -522,7 +522,7 @@ entire path: lit at first, Items greyed and all that fit, a new Between filling 
 toggle is turned off or a count is typed at the count's prompt, its Fill entire path lighting it
 again (a spacing typed at Items while it is lit offers all that fit there, **unverified**; a
 grip's spacing fills again too; a count given under Divide turns it off as well, Measure then
-keeping that count, p334); under Divide it is unlit and greyed (**unverified**: only Measure was seen)
+keeping that count, p334); under Divide it is not there, Items' glyph alone as Between's (desktop 2026-11-27, ap-divide)
 
 **Missing:** the array's grips' menus, as ARRAYRECT's; the array following its path
 (p407: STRETCH of the path's end from 100 to 50 leaves 9 items; WHY not built: the array keeps the

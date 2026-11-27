@@ -321,6 +321,18 @@ describe("the contextual tab", () => {
     expect(html).toMatch(/id="ribbon-field-items"[^>]*disabled=""/)
   })
 
+  // Desktop 2026-11-27, ap-divide: under Divide Items has its glyph alone.
+  it("draws no count toggle under Divide, Items then typed", () => {
+    const html = renderRibbon((cad) => {
+      cad.command("LINE").type("0,5").enter().type("20,5").enter().enter()
+      cad.command("CIRCLE").type("0,0").enter().type("1").enter()
+      cad.select(cad.latest().id).command("ARRAYPATH").click({ x: 10, y: 5 })
+      cad.option("Method").option("Divide")
+    })
+    expect(html).not.toContain('aria-label="Item Count"')
+    expect(html).not.toMatch(/id="ribbon-field-items"[^>]*disabled=""/)
+  })
+
   it("shows the selection's Array tab with its Totals, and no Close Array", () => {
     const html = renderRibbon((cad) => {
       arrayRect(cad)
