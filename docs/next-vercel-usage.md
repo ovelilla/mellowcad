@@ -135,7 +135,12 @@ dependencias del 27/11; el CI y el despliegue, en verde, la caché de Cloudflare
 `b65df121` a `36e99f1c`, por petición expresa del dueño (excepción al uno al día), llevó el botón
 de una herramienta que cancela el comando en marcha como `^C^C`, la pestaña 3D Tools y los paneles
 de View visibles de entrada por decisión del dueño y el plegado de Draw por debajo de 800; el CI y
-el despliegue, en verde, y la caché de Cloudflare purgada a las 12:33.
+el despliegue, en verde, y la caché de Cloudflare purgada a las 12:33. Un tercer push ese día, a las
+15:15, de `36e99f1c` a `68c97678`, con la palabra expresa del dueño, llevó la pasada por el
+escritorio de lo que la interfaz de AutoCAD dejó sin verificar (el cursor congelado al salir del
+dibujo, TEXTEDIT y los tooltips de Text Editor, Hatch Editor, el ribbon en gris con el editor de
+texto abierto, ARRAYPATH bajo Divide, U tras el Close del ribbon y la barra de navegación
+atenuada); el CI y el despliegue, en verde, y la caché de Cloudflare purgada a las 15:29.
 
 ## 5. La caché de Cloudflare delante de Vercel
 
