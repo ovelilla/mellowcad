@@ -1,0 +1,23 @@
+_QAFLAGS
+2
+(defun d (e) (mapcar (quote (lambda (k) (assoc k (entget e)))) (quote (0 8 62 6 48 370 39 210))))
+_LINE
+0,0
+10,0
+
+_CHPROP
+_L
+
+'_LINE
+'ORTHOMODE
+1
+_T
+'ORTHOMODE
+0
+3
+_C
+'_LINE
+2
+
+(d (entlast))
+(getvar "ORTHOMODE")

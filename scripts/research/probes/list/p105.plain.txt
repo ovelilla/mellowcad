@@ -1,0 +1,13 @@
+QAFLAGS
+2
+_LINE
+0,0
+10,0
+
+_LIST
+_L
+
+_U
+_REDO
+_UNDO
+2

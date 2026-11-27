@@ -1,0 +1,13 @@
+QAFLAGS
+2
+_LINE
+0,0
+10,0
+
+_LIST
+'_ZOOM
+_E
+'ORTHOMODE
+1
+_L
+

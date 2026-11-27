@@ -1,0 +1,29 @@
+_QAFLAGS
+2
+HPASSOC
+0
+_ZOOM
+_W
+-200,-200
+300,300
+_UCS
+_Z
+30
+_RECTANG
+0,0
+100,50
+_-HATCH
+_P
+ANSI31
+2
+0
+10,10
+
+_UCS
+_W
+(cdr (assoc 52 (entget (entlast))))
+(cdr (assoc 41 (entget (entlast))))
+_EXPLODE
+_L
+
+(entget (entlast))

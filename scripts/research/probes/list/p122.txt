@@ -1,0 +1,10 @@
+QAFLAGS
+2
+_UCS
+_X
+90
+_POINT
+1,2
+_LIST
+_L
+

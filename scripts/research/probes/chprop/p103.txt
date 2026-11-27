@@ -1,0 +1,29 @@
+_QAFLAGS
+2
+(defun d (e) (mapcar (quote (lambda (k) (assoc k (entget e)))) (quote (0 8 62 6 48 370 39 210))))
+_LINE
+0,0
+10,0
+
+_CHPROP
+_L
+
+_C
+_LA
+_S
+
+_LA
+_C
+_BYLAYER
+
+_LT
+_BYLAYER
+_LW
+_BYLAYER
+_S
+FOO
+1/2
+_T
+1e1
+
+(d (entlast))
