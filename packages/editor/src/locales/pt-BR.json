@@ -880,6 +880,7 @@
     "locked": "bloqueado"
   },
   "StatusBar": {
+    "dynamicUcs": "UCS dinâmico",
     "coordinates": "Coordenadas",
     "model": "MODELO",
     "modelSpace": "Espaço do modelo",

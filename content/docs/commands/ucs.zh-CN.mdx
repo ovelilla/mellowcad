@@ -25,7 +25,7 @@ UCS 命令设置用户坐标系：在空间中任意位置的原点以及 X 轴�
 
 ### `Face` (`F`) [#face]
 
-将 UCS 与实体的面对齐：光标下的面会亮显，UCS 图标显示 UCS 将要放置的位置，单击即选中该面，原点位于拾取点，Z 指向实体外侧。X 沿该面上离光标进入该面之处最近的边；如果该边竖直，X 则保持水平。之后，`Next` 沿视线切换到其后的下一个面（在边上则切换到该边的另一个面），`Xflip` 和 `Yflip` 将 UCS 绕其 X 轴或 Y 轴旋转半圈，按 Enter 键接受。拾取点下没有实体的面时，显示 `No 3D solid, surface or mesh detected.`。
+将 UCS 与实体的面对齐：光标下的面会亮显，UCS 图标显示 UCS 将要放置的位置，单击即选中该面，原点位于拾取点，Z 指向实体外侧。X 沿该面上离光标进入该面之处最近的边；如果该边竖直，X 则保持水平。之后，`Next` 沿视线切换到其后的下一个面（在边上则切换到该边的另一个面），`Xflip` 和 `Yflip` 将 UCS 绕其 X 轴或 Y 轴旋转半圈，按 Enter 键接受。拾取点下没有实体的面时，显示 `No 3D solid, surface or mesh detected.`，UCS 结束。
 
 ### `NAmed` (`NA`) [#named]
 
@@ -65,7 +65,7 @@ UCS 命令设置用户坐标系：在空间中任意位置的原点以及 X 轴�
 
 ## 尚不支持的功能 [#missing]
 
-不能对曲面和网格使用 `Face`，因为 MellowCAD 没有曲面和网格；在实体上也没有它的窗口和栏选模式。第一个提示中列出的“应用”和“截面”在这里会被拒绝，因为只有一个视口，也没有截面对象。没有 UCS 对话框（UCSMAN）、图标的夹点及其右键菜单，放置新 UCS 时图标也不会显示它。十字光标不随 UCS 旋转：它在屏幕上保持直立，直到 [`PLAN`](/docs/commands/plan) 使视图与 UCS 对齐。没有 UCSFOLLOW、UCSVP 和动态 UCS。不能对标注使用 `OBject`，拾取时也没有“编组”。正交 UCS 不保留其深度。长列表中没有“按 ENTER 键继续”的暂停。
+不能对曲面和网格使用 `Face`，因为 MellowCAD 没有曲面和网格；在实体上也没有它的窗口和栏选模式。第一个提示中列出的“应用”和“截面”在这里会被拒绝，因为只有一个视口，也没有截面对象。没有 UCS 对话框（UCSMAN）、图标的夹点及其右键菜单，放置新 UCS 时图标也不会显示它。十字光标不随 UCS 旋转：它在屏幕上保持直立，直到 [`PLAN`](/docs/commands/plan) 使视图与 UCS 对齐。没有 UCSFOLLOW 和 UCSVP。不能对标注使用 `OBject`，拾取时也没有“编组”。正交 UCS 不保留其深度。长列表中没有“按 ENTER 键继续”的暂停。
 
 [功能及尚缺部分详解（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/coordinate-systems.md#ucs--es-scp--pt-br-ucs--ucsdd--fr-scu--dducs--it-ucs--dducs--de-bks--dducs--ru-пск--диалпск--pl-luw--cs-uss--hu-fkr--dpfkr)
 

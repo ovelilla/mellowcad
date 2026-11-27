@@ -26,7 +26,7 @@ Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejn
 
 ### `POWierzchnia` (`POW`) [#face]
 
-Wyrównuje LUW do powierzchni bryły: powierzchnia pod kursorem zostaje podświetlona, a symbol LUW pokazuje, gdzie trafiłby LUW, i kliknięcie go przyjmuje, z początkiem we wskazanym punkcie i osią Z skierowaną na zewnątrz bryły. Oś X biegnie wzdłuż tej krawędzi powierzchni, która jest najbliżej miejsca, w którym kursor na nią wszedł, albo poziomo, gdy ta krawędź stoi pionowo. Potem `Następna` przechodzi do następnej powierzchni za nią w kierunku patrzenia (na krawędzi do jej drugiej powierzchni), `odwróćX` i `odwróćY` obracają LUW o pół obrotu wokół jego osi X lub Y, a Enter go przyjmuje. Punkt, pod którym nie ma powierzchni żadnej bryły, daje komunikat `Nie wykryto bryły 3D, powierzchni lub siatki.`.
+Wyrównuje LUW do powierzchni bryły: powierzchnia pod kursorem zostaje podświetlona, a symbol LUW pokazuje, gdzie trafiłby LUW, i kliknięcie go przyjmuje, z początkiem we wskazanym punkcie i osią Z skierowaną na zewnątrz bryły. Oś X biegnie wzdłuż tej krawędzi powierzchni, która jest najbliżej miejsca, w którym kursor na nią wszedł, albo poziomo, gdy ta krawędź stoi pionowo. Potem `Następna` przechodzi do następnej powierzchni za nią w kierunku patrzenia (na krawędzi do jej drugiej powierzchni), `odwróćX` i `odwróćY` obracają LUW o pół obrotu wokół jego osi X lub Y, a Enter go przyjmuje. Punkt, pod którym nie ma powierzchni żadnej bryły, daje komunikat `Nie wykryto bryły 3D, powierzchni lub siatki.`, a polecenie kończy działanie.
 
 ### `nAZwana` (`AZ`) [#named]
 
@@ -66,7 +66,7 @@ Pyta o nowy początek (Enter zachowuje bieżący), a potem o punkt na dodatniej 
 
 ## Czego jeszcze nie robi [#missing]
 
-`POWierzchnia` na obiektach powierzchniowych i siatkach, których MellowCAD nie ma, oraz jej tryby Okno i Krawędź na bryle. Zastosuj i Przekrój, wymienione przy pierwszym monicie i tutaj odrzucane, bo jest jedna rzutnia i nie ma obiektów przekroju. Okno dialogowe LUW (MENLUW), uchwyty symbolu i jego menu skrótów oraz symbol pokazujący nowy LUW podczas jego umieszczania. Kursor obracający się razem z LUW: pozostaje prosto na ekranie, dopóki [`PLAN`](/docs/commands/plan) nie wyrówna z nim widoku. UCSFOLLOW, UCSVP i dynamiczny LUW. `oBiekt` dla wymiaru oraz Grupa przy wskazaniu. Głębokość, którą zachowuje ortogonalny LUW. Pauza `Naciśnij klawisz ENTER by kontynuować:` w długiej liście.
+`POWierzchnia` na obiektach powierzchniowych i siatkach, których MellowCAD nie ma, oraz jej tryby Okno i Krawędź na bryle. Zastosuj i Przekrój, wymienione przy pierwszym monicie i tutaj odrzucane, bo jest jedna rzutnia i nie ma obiektów przekroju. Okno dialogowe LUW (MENLUW), uchwyty symbolu i jego menu skrótów oraz symbol pokazujący nowy LUW podczas jego umieszczania. Kursor obracający się razem z LUW: pozostaje prosto na ekranie, dopóki [`PLAN`](/docs/commands/plan) nie wyrówna z nim widoku. UCSFOLLOW i UCSVP. `oBiekt` dla wymiaru oraz Grupa przy wskazaniu. Głębokość, którą zachowuje ortogonalny LUW. Pauza `Naciśnij klawisz ENTER by kontynuować:` w długiej liście.
 
 [Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/coordinate-systems.md#ucs--es-scp--pt-br-ucs--ucsdd--fr-scu--dducs--it-ucs--dducs--de-bks--dducs--ru-пск--диалпск--pl-luw--cs-uss--hu-fkr--dpfkr)
 

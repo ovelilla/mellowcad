@@ -383,6 +383,13 @@ const TRIPOD: LucideIconNode[] = [
   ["path", { d: "M10 14 L3 21", key: "z" }],
 ]
 
+/** Dynamic UCS: the axes laid on a face. */
+export const DynamicUcsIcon: LucideIcon = createLucideIcon("DynamicUcs", [
+  ["path", { d: "M2 20 L8 14 H22 L16 20 Z", key: "face" }],
+  ["path", { d: "M12 17 V4", key: "z" }],
+  ["path", { d: "M12 17 H19", key: "x" }],
+])
+
 /** World UCS: the axes, and the globe they belong to. */
 export const UcsWorldIcon: LucideIcon = createLucideIcon("UcsWorld", [
   ["path", { d: "M3 3 V21 H21", key: "axes" }],

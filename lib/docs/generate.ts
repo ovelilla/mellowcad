@@ -195,6 +195,7 @@ const MODE_LABELS: Record<ShortcutMode, readonly [string, string]> = {
   commandLine: ["CommandLine", "label"],
   objectSnap: ["StatusBar", "objectSnap"],
   selectionCycling: ["StatusBar", "selectionCycling"],
+  dynamicUcs: ["StatusBar", "dynamicUcs"],
   grid: ["StatusBar", "grid"],
   ortho: ["StatusBar", "ortho"],
   snapMode: ["StatusBar", "snapMode"],

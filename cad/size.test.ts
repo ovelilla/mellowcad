@@ -44,9 +44,10 @@ const ISLAND_MAX_BYTES = 1 * KB
  * dialog (2026-11-26), to 510 KB for the selection's Array tab and ARRAYPATH's count toggle
  * (2026-11-27), to 511 KB for -HATCHEDIT in every command language and the selection's Hatch
  * Editor tab (2026-11-27), to 512 KB for the cursor frozen off the drawing
- * (2026-11-27), to 514 KB for UCS Face on a solid's faces (2026-11-27).
+ * (2026-11-27), to 514 KB for UCS Face on a solid's faces (2026-11-27), to 515 KB
+ * for the dynamic UCS (2026-11-27).
  */
-const ENGINE_MAX_GZIP_BYTES = 514 * KB
+const ENGINE_MAX_GZIP_BYTES = 515 * KB
 
 /**
  * A language's catalog, gzipped, against English's, which the engine carries:

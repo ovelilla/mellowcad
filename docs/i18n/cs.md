@@ -114,7 +114,10 @@ The drafting toggles are composed by AutoCAD and in no table, so the Czech deskt
 (names/d01, 17/11/2026, `/language cs-CZ`): `<Krok ano>` (F9), `<Uchop ano>` (F3; the table's
 «Uchopení objektů» is not what it prints), `<Orto ano>`, `<Polárně ano>` (F10), `<Trasování
 uchopení objektů ano>` (F11) and `<Rastr ano>` (F7), each with `ne`; Selection Cycling
-`<Přepínání výběru zapnuto>` and `vypnuto`; Esc `*Storno*`. `Z` after a LINE undoes it; `OBDÉLNÍK`
+`<Přepínání výběru zapnuto>` and `vypnuto`; Esc `*Storno*`. The F6 echo,
+` <Dynamický USS zapnuto>` / ` <Dynamický USS vypnuto>`, is composed from table 33750's
+`Dynamický USS` and the other aids' echoes; **unverified** (the desktop pass, ucs/d11, was in
+English; no table holds it). `Z` after a LINE undoes it; `OBDÉLNÍK`
 draws a rectangle. Polar along Z writes `Polárně: 2.2178 < +Z` and `… < -Z` (LINE from 0,0,0 in SW
 isometric, names/d02), in the plane `Polárně: 2.5272 < 0°`. The ViewCube's faces are drawn in
 capitals, SHORA, ZDOLA, ZEPŘEDU, ZEZADU, ZLEVA, ZPRAVA (where AcVMToolsRes 632 says «Zpátky»), its

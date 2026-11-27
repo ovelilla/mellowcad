@@ -643,6 +643,7 @@ export const SYSTEM_VARIABLES: readonly SystemVariable[] = [
   heldInteger("SPLMETHOD", 0, 1),
   heldInteger("TEXTEDITMODE", 0, 1),
   heldInteger("TRIMEXTENDMODE", 0, 1),
+  heldInteger("UCSDETECT", 0, 1),
 ]
 
 const BY_NAME = new Map(

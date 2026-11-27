@@ -929,6 +929,7 @@ export const en: EditorCatalog = {
       "locked": "locked"
     },
     "StatusBar": {
+      "dynamicUcs": "Dynamic UCS",
       "coordinates": "Coordinates",
       "model": "MODEL",
       "modelSpace": "Model space",

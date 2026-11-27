@@ -929,6 +929,7 @@ export const zhTW: EditorLocale = {
       "locked": "已鎖住"
     },
     "StatusBar": {
+      "dynamicUcs": "動態 UCS",
       "coordinates": "座標",
       "model": "模型",
       "modelSpace": "模型空間",

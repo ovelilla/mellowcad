@@ -22,6 +22,7 @@ const MODE_STATE: Record<ShortcutMode, (state: EngineState) => boolean> = {
   commandLine: (state) => state.commandLine.visible,
   objectSnap: (state) => state.snapActive,
   selectionCycling: (state) => state.selectionCycling.active,
+  dynamicUcs: (state) => state.dynamicUcsActive,
   grid: (state) => state.gridVisible,
   ortho: (state) => state.orthoActive,
   snapMode: (state) => state.snapModeActive,

@@ -2617,6 +2617,7 @@ declare const source: {
       "polar": string
     }
     "messages": {
+      "dynamicUcsMode": string
       "unknownCommand": string
       "cancel": string
       "commandCancelled": string

@@ -3670,6 +3670,18 @@ export const de: EngineLocale = {
       "polar": "Abst<Winkel"
     },
     "messages": {
+      "dynamicUcsMode": [
+        " <Dynamisches BKS ",
+        [
+          "state",
+          1,
+          {
+            "on": "ein",
+            "other": "aus"
+          }
+        ],
+        ">"
+      ],
       "cannotTrimPolygonMesh": "Polygonnetz\nSTUTZEN von Objekt nicht möglich",
       "cannotExtendPolygonMesh": "Polygonnetz\nDEHNEN von Objekt nicht möglich.",
       "polygonMeshNoCoordinateSystem": "3D-Polygonnetz Objekt definiert kein Koordinatensystem",

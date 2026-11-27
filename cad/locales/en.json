@@ -2447,6 +2447,7 @@
       "polar": "Dist'<'Ang"
     },
     "messages": {
+      "dynamicUcsMode": " '<'Dynamic UCS {state, select, on {on} other {off}}>",
       "unknownCommand": "Unknown command \"{name}\".  Press F1 for help.",
       "cancel": "*Cancel*",
       "commandCancelled": "*Cancel*",

@@ -25,7 +25,7 @@ Il motore la disegna e scrive la cronologia come la digiteresti: le richieste ne
 
 ### `Faccia` (`F`) [#face]
 
-Allinea l'UCS a una faccia di un solido: la faccia sotto il cursore si illumina e l'icona UCS mostra dove andrebbe l'UCS, e un clic lo prende, con l'origine nel punto indicato e la Z rivolta fuori dal solido. La X corre lungo lo spigolo della faccia più vicino al punto in cui il cursore vi è entrato, oppure resta orizzontale dove quello spigolo è verticale. Poi `Seguente` passa alla faccia successiva dietro di essa lungo la tua linea di vista (su uno spigolo, all'altra sua faccia), `invertiX` e `invertiY` fanno compiere all'UCS mezzo giro attorno al suo asse X o Y, e Invio lo accetta. Un punto senza la faccia di un solido sotto di sé segnala `Nessun solido, superficie o mesh 3D rilevata.`.
+Allinea l'UCS a una faccia di un solido: la faccia sotto il cursore si illumina e l'icona UCS mostra dove andrebbe l'UCS, e un clic lo prende, con l'origine nel punto indicato e la Z rivolta fuori dal solido. La X corre lungo lo spigolo della faccia più vicino al punto in cui il cursore vi è entrato, oppure resta orizzontale dove quello spigolo è verticale. Poi `Seguente` passa alla faccia successiva dietro di essa lungo la tua linea di vista (su uno spigolo, all'altra sua faccia), `invertiX` e `invertiY` fanno compiere all'UCS mezzo giro attorno al suo asse X o Y, e Invio lo accetta. Un punto senza la faccia di un solido sotto di sé segnala `Nessun solido, superficie o mesh 3D rilevata.`, e UCS termina.
 
 ### `NOme` (`NO`) [#named]
 
@@ -65,7 +65,7 @@ Una nuova origine, con Invio che mantiene quella corrente, poi un punto sull'ass
 
 ## Cosa non fa ancora [#missing]
 
-`Faccia` su superfici e mesh, che MellowCAD non ha, e le sue modalità finestra e intercetta su un solido. Applica e SEzione, elencati alla prima richiesta e rifiutati qui, dato che c'è una sola vista e non ci sono oggetti sezione. La finestra UCS (UCSMAN), i grip dell'icona e il suo menu contestuale, e l'icona che mostra il nuovo UCS mentre lo posizioni. Il reticolo che ruota con l'UCS: resta in posizione verticale sullo schermo finché [`PIANA`](/docs/commands/plan) non allinea la vista a esso. UCSFOLLOW, UCSVP e l'UCS dinamico. `OGgetto` su una quota, e Gruppo alla sua selezione. La profondità che un UCS ortogonale conserva. La pausa, Premere INVIO per continuare, in un lungo elenco.
+`Faccia` su superfici e mesh, che MellowCAD non ha, e le sue modalità finestra e intercetta su un solido. Applica e SEzione, elencati alla prima richiesta e rifiutati qui, dato che c'è una sola vista e non ci sono oggetti sezione. La finestra UCS (UCSMAN), i grip dell'icona e il suo menu contestuale, e l'icona che mostra il nuovo UCS mentre lo posizioni. Il reticolo che ruota con l'UCS: resta in posizione verticale sullo schermo finché [`PIANA`](/docs/commands/plan) non allinea la vista a esso. UCSFOLLOW e UCSVP. `OGgetto` su una quota, e Gruppo alla sua selezione. La profondità che un UCS ortogonale conserva. La pausa, Premere INVIO per continuare, in un lungo elenco.
 
 [Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/coordinate-systems.md#ucs--es-scp--pt-br-ucs--ucsdd--fr-scu--dducs--it-ucs--dducs--de-bks--dducs--ru-пск--диалпск--pl-luw--cs-uss--hu-fkr--dpfkr)
 

@@ -3649,6 +3649,18 @@ export const it: EngineLocale = {
       "polar": "Dist<Ang"
     },
     "messages": {
+      "dynamicUcsMode": [
+        " <UCS dinamico ",
+        [
+          "state",
+          1,
+          {
+            "on": "attivato",
+            "other": "disattivato"
+          }
+        ],
+        ">"
+      ],
       "cannotTrimPolygonMesh": "Mesh poligonale\nImpossibile tagliare questo oggetto.",
       "cannotExtendPolygonMesh": "Mesh poligonale\nImpossibile estendere questo oggetto.",
       "polygonMeshNoCoordinateSystem": "L'oggetto Mesh poligonale 3D non definisce un sistema di coordinate",

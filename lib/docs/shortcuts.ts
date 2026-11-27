@@ -18,6 +18,7 @@ export type ShortcutMode =
   | "commandHistory"
   | "objectSnap"
   | "selectionCycling"
+  | "dynamicUcs"
   | "grid"
   | "ortho"
   | "snapMode"
@@ -54,6 +55,7 @@ export const SHORTCUT_SECTIONS = [
       { keys: [{ key: "F2" }], action: { mode: "commandHistory" } },
       { keys: [{ key: "F3" }], action: { mode: "objectSnap" } },
       { keys: [{ key: "F4" }], action: { mode: "selectionCycling" } },
+      { keys: [{ key: "F6" }], action: { mode: "dynamicUcs" } },
       { keys: [{ key: "F7" }], action: { mode: "grid" } },
       { keys: [{ key: "F8" }, { key: "L", ctrl: true }], action: { mode: "ortho" } },
       { keys: [{ key: "F9" }], action: { mode: "snapMode" } },

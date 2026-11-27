@@ -25,7 +25,7 @@ The engine draws it and writes its history as you would type it: the prompts in 
 
 ### `Face` (`F`) [#face]
 
-Aligns the UCS with a face of a solid: the face under the cursor glows and the UCS icon shows where the UCS would go, and a click takes it, the origin at the point picked and Z out of the solid. X runs along the face's edge nearest where the cursor came onto it, or level where that edge stands upright. Then `Next` goes to the next face behind it along your line of sight (on an edge, to its other face), `Xflip` and `Yflip` turn the UCS half round its X or Y axis, and Enter accepts it. A point with no solid's face under it says `No 3D solid, surface or mesh detected.`.
+Aligns the UCS with a face of a solid: the face under the cursor glows and the UCS icon shows where the UCS would go, and a click takes it, the origin at the point picked and Z out of the solid. X runs along the face's edge nearest where the cursor came onto it, or level where that edge stands upright. Then `Next` goes to the next face behind it along your line of sight (on an edge, to its other face), `Xflip` and `Yflip` turn the UCS half round its X or Y axis, and Enter accepts it. A point with no solid's face under it says `No 3D solid, surface or mesh detected.`, and UCS ends.
 
 ### `NAmed` (`NA`) [#named]
 
@@ -65,7 +65,7 @@ A new origin, Enter keeping the current one, then a point on the positive Z axis
 
 ## What it does not do yet [#missing]
 
-`Face` on surfaces and meshes, which MellowCAD has not, and its window and fence modes on a solid. Apply and SEction, listed at the first prompt and refused here, since there is one viewport and there are no section objects. The UCS dialog (UCSMAN), the icon's grips and its right-click menu, and the icon showing the new UCS while you place it. The crosshair turning with the UCS: it stays upright on screen until [`PLAN`](/docs/commands/plan) lines the view up with it. UCSFOLLOW, UCSVP and the dynamic UCS. `OBject` on a dimension, and Group at its pick. The depth an orthographic UCS keeps. The pause, Press ENTER to continue, in a long list.
+`Face` on surfaces and meshes, which MellowCAD has not, and its window and fence modes on a solid. Apply and SEction, listed at the first prompt and refused here, since there is one viewport and there are no section objects. The UCS dialog (UCSMAN), the icon's grips and its right-click menu, and the icon showing the new UCS while you place it. The crosshair turning with the UCS: it stays upright on screen until [`PLAN`](/docs/commands/plan) lines the view up with it. UCSFOLLOW and UCSVP. `OBject` on a dimension, and Group at its pick. The depth an orthographic UCS keeps. The pause, Press ENTER to continue, in a long list.
 
 [What it does and still lacks, in detail (in English)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/coordinate-systems.md#ucs--es-scp--pt-br-ucs--ucsdd--fr-scu--dducs--it-ucs--dducs--de-bks--dducs--ru-пск--диалпск--pl-luw--cs-uss--hu-fkr--dpfkr)
 

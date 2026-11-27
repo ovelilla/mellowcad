@@ -3,7 +3,7 @@ title: "SCP en AutoCAD: comando SCP (UCS)"
 metaTitle: "SCP en AutoCAD: comando SCP (UCS) y sus opciones"
 description: "Cómo funciona SCP (UCS) de AutoCAD en español: origen y 3 puntos, Objeto, Vista, girar en X, Y y Z, ejeZ, los SCP guardados y el Universal. Pruébalo gratis."
 figure: "Un prisma visto desde el sureste: SCP desplaza el origen a su cara superior, y un círculo dibujado después en 30,20 queda sobre esa cara, no en el suelo."
-sourceHash: "217908def9dc"
+sourceHash: "d70280c9f3cf"
 ---
 
 SCP (UCS en inglés) define el sistema de coordenadas personales: un origen y unos ejes X e Y en cualquier lugar del espacio, de modo que su plano XY puede inclinarse. Las coordenadas que escribes se leen en él, y lo que dibujas queda en su plano XY: con el origen desplazado a la cara superior de un prisma, un círculo con centro en `30,20` queda sobre esa cara. Primero dice el nombre del SCP actual —`*UNIVERSAL*`, `*SIN NOMBRE*` o el nombre con el que se guardó— y después pide el nuevo origen o una opción; Intro ahí vuelve al SCU. Un punto es el origen, con su Z, y un punto sin Z queda a la elevación actual. Después, un punto en la parte positiva del eje X y un punto en el plano XY, leídos en el SCP actual: Intro en cualquiera de los dos conserva los ejes como están. Un punto desplaza el SCP; tres lo giran en cualquier dirección.
@@ -14,7 +14,7 @@ Los comandos trabajan entonces en el plano XY del SCP: <Command id="LINE" /> y <
 
 ### Face
 
-Alinea el SCP con una cara de un sólido: la cara bajo el cursor se ilumina y el icono del SCP muestra dónde quedaría el SCP, y un clic lo toma, con el origen en el punto designado y Z hacia fuera del sólido. X sigue la arista de la cara más cercana al punto por donde el cursor entró en ella, o queda horizontal donde esa arista está en vertical. Después, <Keyword id="Next" /> pasa a la cara siguiente detrás de ella en tu línea de visión (en una arista, a su otra cara), <Keyword id="Xflip" /> y <Keyword id="Yflip" /> giran el SCP media vuelta alrededor de su eje X o Y, e Intro lo acepta. Un punto sin ninguna cara de un sólido debajo dice <Message id="noSolidSurfaceOrMesh" />.
+Alinea el SCP con una cara de un sólido: la cara bajo el cursor se ilumina y el icono del SCP muestra dónde quedaría el SCP, y un clic lo toma, con el origen en el punto designado y Z hacia fuera del sólido. X sigue la arista de la cara más cercana al punto por donde el cursor entró en ella, o queda horizontal donde esa arista está en vertical. Después, <Keyword id="Next" /> pasa a la cara siguiente detrás de ella en tu línea de visión (en una arista, a su otra cara), <Keyword id="Xflip" /> y <Keyword id="Yflip" /> giran el SCP media vuelta alrededor de su eje X o Y, e Intro lo acepta. Un punto sin ninguna cara de un sólido debajo dice <Message id="noSolidSurfaceOrMesh" />, y SCP termina.
 
 ### NAmed
 
@@ -54,7 +54,7 @@ Un nuevo origen, o Intro para conservar el actual, y después un punto en la par
 
 ## Missing
 
-<Keyword id="Face" /> en superficies y mallas, que MellowCAD no tiene, y sus modos ventana y borde en un sólido. Aplicar y Sección, que la primera solicitud admite y aquí se rechazan, porque hay una sola ventana gráfica y no hay objetos de sección. El cuadro de diálogo SCP (UCSMAN), los pinzamientos del icono y su menú contextual, y el icono mostrando el nuevo SCP mientras lo colocas. La cruz del cursor girando con el SCP: se queda recta en la pantalla hasta que <Command id="PLAN" /> alinea la vista con él. UCSFOLLOW, UCSVP y el SCP dinámico. <Keyword id="OBject" /> sobre una cota, y Grupo en su designación. La profundidad que conserva un SCP ortogonal. La pausa en una lista larga, que espera a que pulses Intro para continuar.
+<Keyword id="Face" /> en superficies y mallas, que MellowCAD no tiene, y sus modos ventana y borde en un sólido. Aplicar y Sección, que la primera solicitud admite y aquí se rechazan, porque hay una sola ventana gráfica y no hay objetos de sección. El cuadro de diálogo SCP (UCSMAN), los pinzamientos del icono y su menú contextual, y el icono mostrando el nuevo SCP mientras lo colocas. La cruz del cursor girando con el SCP: se queda recta en la pantalla hasta que <Command id="PLAN" /> alinea la vista con él. UCSFOLLOW y UCSVP. <Keyword id="OBject" /> sobre una cota, y Grupo en su designación. La profundidad que conserva un SCP ortogonal. La pausa en una lista larga, que espera a que pulses Intro para continuar.
 
 ## Questions
 

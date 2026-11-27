@@ -229,7 +229,10 @@ What English words alike and Italian words per command or per state needs a prom
 The drafting toggles are composed by AutoCAD and in no table, so the Italian desktop settled them
 (names/d01, 12/11/2026, `/language it-IT`): `<Snap on>` (F9), `<Osnap on>` (F3), `<Orto on>`,
 `<Polare on>`, `<Puntamento snap ad oggetto on>` (F11) and `<Griglia on>`, each with `off`, as
-English; only Selection Cycling's says `<Selezione ciclica attivata>` and `disattivata`. Five of the
+English; only Selection Cycling's says `<Selezione ciclica attivata>` and `disattivata`. The F6 echo,
+` <UCS dinamico attivato>` / ` <UCS dinamico disattivato>`, is composed from table 33750's
+`UCS dinamico` and the other aids' echoes; **unverified** (the desktop pass, ucs/d11, was in
+English; no table holds it). Five of the
 seven, worded from the tables before, were wrong (`attivato`, `disattivato`). Held by
 `italianPrompts.test.ts`. Polar along Z writes `Polare: 17.8609 < +Z` and `Polare: 18.5899 < -Z`
 (LINEA from 0,0,0 in SO assonometrico), `feedback.polarZ`'s form. The ViewCube's faces, each seen

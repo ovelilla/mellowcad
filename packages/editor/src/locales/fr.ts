@@ -925,6 +925,7 @@ export const fr: EditorLocale = {
       "locked": "verrouillé"
     },
     "StatusBar": {
+      "dynamicUcs": "SCU dynamique",
       "coordinates": "Coordonnées",
       "model": "OBJET",
       "modelSpace": "Espace objet",

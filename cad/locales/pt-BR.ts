@@ -3653,6 +3653,18 @@ export const ptBR: EngineLocale = {
       "polar": "Dist<Ang"
     },
     "messages": {
+      "dynamicUcsMode": [
+        " <UCS dinâmico ",
+        [
+          "state",
+          1,
+          {
+            "on": "ativado",
+            "other": "desativado"
+          }
+        ],
+        ">"
+      ],
       "cannotTrimPolygonMesh": "Malha poligonal\nNão é possível APARAR este objeto.",
       "cannotExtendPolygonMesh": "Malha poligonal\nNão é possível ESTENDER este objeto.",
       "polygonMeshNoCoordinateSystem": "o objeto Malha poligonal 3D não define um sistema de coordenadas",

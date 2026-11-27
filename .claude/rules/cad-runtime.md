@@ -116,7 +116,7 @@ tilted object is measured by its outline on the screen (`planDistanceToEntity`, 
 ## The UCS frame (`UcsFrame`)
 
 Tools and the pointer pipeline work in the frame of the UCS's XY plane (`ucsFrame.ts`,
-`CadRuntime.frame`, remade when the UCS changes): `frame.document` reads every object there
+`CadRuntime.frame`, remade when the UCS or `dynamicUcs` changes): `frame.document` reads every object there
 (cached), `frame.viewport` is `Viewport.inFrame(axes)`, `frame.ucs` the UCS as the frame sees it.
 
 - The resolver, snaps, tracking, picking, the cursor, the polar guide and the scene's aids read

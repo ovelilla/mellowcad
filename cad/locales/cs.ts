@@ -3710,6 +3710,18 @@ export const cs: EngineLocale = {
       "polar": "Vzd<Úhel"
     },
     "messages": {
+      "dynamicUcsMode": [
+        " <Dynamický USS ",
+        [
+          "state",
+          1,
+          {
+            "on": "zapnuto",
+            "other": "vypnuto"
+          }
+        ],
+        ">"
+      ],
       "cannotTrimPolygonMesh": "mnohoúhelníková síť\nTento objekt nelze oříznout.",
       "cannotExtendPolygonMesh": "mnohoúhelníková síť\nTento objekt nelze prodloužit.",
       "polygonMeshNoCoordinateSystem": "Objekt 3D mnohoúhelníková síť nedefinuje souřadnicový systém",

@@ -925,6 +925,7 @@ export const hu: EditorLocale = {
       "locked": "zárolt"
     },
     "StatusBar": {
+      "dynamicUcs": "Dinamikus FKR",
       "coordinates": "Koordináták",
       "model": "MODELL",
       "modelSpace": "Modelltér",

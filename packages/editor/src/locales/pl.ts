@@ -929,6 +929,7 @@ export const pl: EditorLocale = {
       "locked": "zablokowane"
     },
     "StatusBar": {
+      "dynamicUcs": "Dynamiczny LUW",
       "coordinates": "Współrzędne",
       "model": "MODEL",
       "modelSpace": "Obszar modelu",

@@ -498,6 +498,8 @@ export interface HeldValues {
   readonly POLARANG: number
   readonly POLARDIST: number
   readonly SELECTIONCYCLING: number
+  /** 1 lays the work plane on a solid's planar face under the cursor (F6). */
+  readonly UCSDETECT: number
   readonly CLIPROMPTLINES: number
   /** In the UCS. */
   readonly LASTPOINT: Vec3

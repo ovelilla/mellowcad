@@ -3641,6 +3641,18 @@ export const es: EngineLocale = {
       "polar": "Dist<Ang"
     },
     "messages": {
+      "dynamicUcsMode": [
+        " <SCP dinámico ",
+        [
+          "state",
+          1,
+          {
+            "on": "activado",
+            "other": "desactivado"
+          }
+        ],
+        ">"
+      ],
       "cannotTrimPolygonMesh": "Malla poligonal\nObjeto no procesado por RECORTA.",
       "cannotExtendPolygonMesh": "Malla poligonal\nObjeto no procesado por ALARGA.",
       "polygonMeshNoCoordinateSystem": "El objeto malla poligonal 3D no define el sistema de coordenadas",

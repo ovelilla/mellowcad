@@ -929,6 +929,7 @@ export const ar: EditorLocale = {
       "locked": "مقفل"
     },
     "StatusBar": {
+      "dynamicUcs": "نظام إحداثيات المستخدم الديناميكي",
       "coordinates": "الإحداثيات",
       "model": "النموذج",
       "modelSpace": "فضاء النموذج",

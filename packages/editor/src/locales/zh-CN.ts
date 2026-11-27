@@ -929,6 +929,7 @@ export const zhCN: EditorLocale = {
       "locked": "锁定"
     },
     "StatusBar": {
+      "dynamicUcs": "动态 UCS",
       "coordinates": "坐标",
       "model": "模型",
       "modelSpace": "模型空间",

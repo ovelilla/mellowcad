@@ -3651,6 +3651,18 @@ export const fr: EngineLocale = {
       "polar": "Dist<Ang"
     },
     "messages": {
+      "dynamicUcsMode": [
+        " <SCU dynamique ",
+        [
+          "state",
+          1,
+          {
+            "on": "activé",
+            "other": "désactivé"
+          }
+        ],
+        ">"
+      ],
       "cannotTrimPolygonMesh": "Surface maillée\nImpossible d'AJUSTER cet objet.",
       "cannotExtendPolygonMesh": "Surface maillée\nImpossible de prolonger cet objet.",
       "polygonMeshNoCoordinateSystem": "Surface maillée 3D objet ne définit pas un système de coordonnées",

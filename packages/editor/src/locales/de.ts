@@ -925,6 +925,7 @@ export const de: EditorLocale = {
       "locked": "gesperrt"
     },
     "StatusBar": {
+      "dynamicUcs": "Dynamisches BKS",
       "coordinates": "Koordinaten",
       "model": "MODELL",
       "modelSpace": "Modellbereich",

@@ -929,6 +929,7 @@ export const ptBR: EditorLocale = {
       "locked": "bloqueado"
     },
     "StatusBar": {
+      "dynamicUcs": "UCS dinâmico",
       "coordinates": "Coordenadas",
       "model": "MODELO",
       "modelSpace": "Espaço do modelo",

@@ -881,6 +881,7 @@ declare const source: {
     "locked": string
   }
   "StatusBar": {
+    "dynamicUcs": string
     "coordinates": string
     "model": string
     "modelSpace": string

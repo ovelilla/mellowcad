@@ -925,6 +925,7 @@ export const ja: EditorLocale = {
       "locked": "ロック"
     },
     "StatusBar": {
+      "dynamicUcs": "ダイナミック UCS",
       "coordinates": "座標",
       "model": "モデル",
       "modelSpace": "モデル空間",

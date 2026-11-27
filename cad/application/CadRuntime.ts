@@ -36,9 +36,14 @@ import { LINEWEIGHT_BYLAYER, Lineweight } from "../domain/lineweights"
 import {
   Ucs,
   isWorldUcs,
+  ucsFromAxes,
   ucsPointToWorld,
   worldPointToUcs,
 } from "../domain/ucs"
+import { FaceAxes, faceAxesAt } from "../domain/solidFaceUcs"
+import { subobjectEdgeEntities } from "../domain/solidSubobjects"
+import { facesUnder, visibleSolids } from "./facePick"
+import { glow } from "./tools/ghostLook"
 import {
   DraftingModes,
   formatAngle,
@@ -472,6 +477,24 @@ export class CadRuntime extends Observable {
   /** What a tool working in the WCS sees. */
   private readonly worldContext: ToolContext
   private frameCache: UcsFrame | null = null
+  /** UCSDETECT, a registry variable: here it lasts the session. */
+  private ucsDetect = 1
+  /**
+   * The dynamic UCS the work plane lies in, on a solid's planar face: over
+   * it at a drawing command's first point, `held` from that point to the
+   * command's end ({@link detectFace}). `at` is the cursor's point on the
+   * face, where the icon shows it until then.
+   */
+  private dynamicUcs: {
+    readonly id: EntityId
+    readonly face: number
+    readonly axes: FaceAxes
+    readonly ucs: Ucs
+    readonly at: Vec3
+    readonly held: boolean
+  } | null = null
+  /** Whether the running command has been given a point: the dynamic UCS is acquired only before. */
+  private firstPointTaken = false
 
   private readonly tools = new Map<string, Tool>()
   private activeTool: Tool
@@ -1254,7 +1277,7 @@ export class CadRuntime extends Observable {
    * remade whenever the UCS changes.
    */
   private get frame(): UcsFrame {
-    const ucs = this.document.getSettings().ucs
+    const ucs = this.dynamicUcs?.ucs ?? this.document.getSettings().ucs
     let frame = this.frameCache
     if (!frame || frame.source !== ucs) {
       frame = new UcsFrame(ucs, this.viewport, this.document)
@@ -1503,6 +1526,8 @@ export class CadRuntime extends Observable {
     )
     if (this.typedZoom) this.zoomCombines = zoom
     this.history.nameCommand(next.id === "select" ? null : this.startingName)
+    this.dynamicUcs = null
+    this.firstPointTaken = false
     this.resetTracking()
     // An override left pending ends with its command (probe offset/p294).
     this.snapping.clearOverride()
@@ -1640,6 +1665,9 @@ export class CadRuntime extends Observable {
   private suspend(command: CommandDefinition, clear: boolean): void {
     const tool = command.makeTool?.() ?? this.registeredTool(command)
     if (!tool) return
+    // A transparent command reads in the UCS: a face's under the cursor is
+    // the interrupted one's first point's, which none was given yet.
+    this.dropDynamicUcs()
     // What was typed was this answer, not the running command's.
     if (clear) this.dynamicInput.clearTexts()
     this.suspendedStack.push({
@@ -2265,6 +2293,93 @@ export class CadRuntime extends Observable {
         : null
     const point = this.pointGiven ?? moved ?? this.pointTyped
     if (point !== null) this.lastPoint = point
+    if (point !== null && this.activeTool === asked.tool)
+      this.holdDynamicUcs(point)
+  }
+
+  /**
+   * The first point of a command the dynamic UCS serves: a face under it
+   * holds the UCS there, its origin at the point, until the command ends
+   * (desktop ucs/d11-3: the icon at the line's first point, its second off
+   * the box still on the face's plane); off a face none is acquired after.
+   */
+  private holdDynamicUcs(point: Vec3): void {
+    if (this.firstPointTaken || !DYNAMIC_UCS_TOOLS.has(this.activeTool.id)) {
+      return
+    }
+    this.firstPointTaken = true
+    const dyn = this.dynamicUcs
+    if (!dyn) return
+    this.dynamicUcs = {
+      ...dyn,
+      ucs: { ...dyn.ucs, origin: point },
+      at: point,
+      held: true,
+    }
+  }
+
+  /**
+   * The dynamic UCS (UCSDETECT, F6): at the first point of a command that
+   * draws, the work plane lies on the planar face of a solid under the
+   * cursor, laid as UCS Face lays it, its X kept while the cursor stays on
+   * that face, its edges glowing blue (desktop ucs/d11-1, d11-2, d11-6: LINE
+   * and BOX); never at a later prompt (d11-4) nor a command that draws
+   * nothing (MOVE's base point, d11-5), nor on a curved face (About Aligning
+   * the UCS Dynamically With Faces).
+   */
+  private detectFace(screen: Vec2): void {
+    const dyn = this.dynamicUcs
+    if (dyn?.held) return
+    const engaged =
+      this.ucsDetect === 1 &&
+      !this.firstPointTaken &&
+      this.suspended === null &&
+      DYNAMIC_UCS_TOOLS.has(this.activeTool.id) &&
+      this.wantsPoint()
+    const hit = engaged
+      ? facesUnder(
+          visibleSolids(this.document),
+          this.viewport.screenToFacing(screen),
+          this.viewport.direction
+        )[0]
+      : undefined
+    const solid = hit && this.document.get(hit.id)
+    if (
+      !hit ||
+      solid?.type !== "solid3d" ||
+      solid.brep.faces[hit.face]?.surface.kind !== "plane"
+    ) {
+      if (dyn) {
+        this.dynamicUcs = null
+        this.resetTracking()
+      }
+      return
+    }
+    // On the same face the UCS stays as it was and only the icon follows:
+    // a frame remade per move would read every object again. Acquired
+    // tracking points go with a face left, as with any UCS changed.
+    if (dyn && dyn.id === hit.id && dyn.face === hit.face) {
+      this.dynamicUcs = { ...dyn, at: hit.point }
+      return
+    }
+    const axes = faceAxesAt(solid.brep, hit.face, hit.point)
+    const ucs = axes && ucsFromAxes(axes.origin, axes.xAxis, axes.yAxis)
+    this.dynamicUcs = ucs
+      ? { id: hit.id, face: hit.face, axes, ucs, at: hit.point, held: false }
+      : null
+    this.resetTracking()
+  }
+
+  /** The face the dynamic UCS lies on, glowing by its edges until held (desktop ucs/d11-1). */
+  private dynamicUcsOverlay(): ScenePrimitive[] {
+    const dyn = this.dynamicUcs
+    if (!dyn || dyn.held) return []
+    const solid = this.frame.document.get(dyn.id)
+    if (solid?.type !== "solid3d") return []
+    return subobjectEdgeEntities(solid, {
+      kind: "face",
+      index: dyn.face,
+    }).flatMap((edge) => glow(this.toolContext, edge))
   }
 
   /**
@@ -5092,6 +5207,7 @@ export class CadRuntime extends Observable {
       osnap: this.snapping.isActive(),
       otrack: this.tracking.isActive(),
       cycling: this.cycling.getValue(),
+      ducs: this.ucsDetect === 1,
     }
   }
 
@@ -5113,6 +5229,7 @@ export class CadRuntime extends Observable {
       this.cycling.setValue(aids.cycling)
       this.refreshCycling()
     }
+    if (aids.ducs !== undefined) this.setUcsDetect(aids.ducs ? 1 : 0)
     this.refreshSnapAtCursor()
   }
 
@@ -5171,7 +5288,8 @@ export class CadRuntime extends Observable {
       | "polarMode"
       | "otrackMode"
       | "gridMode"
-      | "selectionCyclingMode",
+      | "selectionCyclingMode"
+      | "dynamicUcsMode",
     on: boolean
   ): void {
     const text = this.text.message(id, { state: on ? "on" : "off" })
@@ -5232,6 +5350,7 @@ export class CadRuntime extends Observable {
     | "POLARANG"
     | "POLARDIST"
     | "SELECTIONCYCLING"
+    | "UCSDETECT"
     | "CLIPROMPTLINES"
     | "LASTPOINT"
   > {
@@ -5275,6 +5394,10 @@ export class CadRuntime extends Observable {
           this.refreshSnapAtCursor()
         },
       },
+      UCSDETECT: {
+        read: () => this.ucsDetect,
+        write: (value) => this.setUcsDetect(value),
+      },
       CLIPROMPTLINES: {
         read: () => this.cliPromptLines,
         write: (count) => {
@@ -5293,6 +5416,31 @@ export class CadRuntime extends Observable {
         },
       },
     }
+  }
+
+  /**
+   * The dynamic UCS (UCSDETECT), by F6 or the status bar: `<Dynamic UCS
+   * on>` (desktop ucs/d11, the English profile's; in no string table).
+   */
+  toggleDynamicUcs(): void {
+    this.toggleAid(() => this.setUcsDetect(this.ucsDetect === 1 ? 0 : 1))
+    this.echoAid("dynamicUcsMode", this.ucsDetect === 1)
+    this.refreshSnapAtCursor()
+  }
+
+  private setUcsDetect(value: number): void {
+    this.ucsDetect = value
+    // One held by a point given stays to the command's end: the tool keeps
+    // that point in its frame.
+    if (value !== 1) this.dropDynamicUcs()
+    this.invalidateState()
+  }
+
+  /** The dynamic UCS over a face, while no point holds it. */
+  private dropDynamicUcs(): void {
+    if (!this.dynamicUcs || this.dynamicUcs.held) return
+    this.dynamicUcs = null
+    this.resetTracking()
   }
 
   /** Selection cycling (SELECTIONCYCLING), by F4 or the status bar. */
@@ -7430,7 +7578,10 @@ export class CadRuntime extends Observable {
   buildScene(): Scene {
     const settings = this.document.getSettings()
     const { frame } = this
-    const preview = this.activeTool.previewUcs?.(this.toolContext) ?? null
+    const dynamic = this.dynamicUcs
+    const preview =
+      this.activeTool.previewUcs?.(this.toolContext) ??
+      (dynamic ? { ...dynamic.ucs, origin: dynamic.at } : null)
     return buildScene({
       camera: this.viewport,
       lang: this.text.commandTag,
@@ -7483,6 +7634,7 @@ export class CadRuntime extends Observable {
       tracking: this.sceneTracking(),
       parallelReferenceIds: this.parallelRefs.getAcquired(),
       toolOverlay: [
+        ...this.dynamicUcsOverlay(),
         ...(this.activeTool.buildOverlay?.(this.toolContext) ?? []),
         ...this.measuringOverlay(),
       ],
@@ -7797,6 +7949,10 @@ export class CadRuntime extends Observable {
     this.pointerShift = e.shiftKey
     this.lastPointerScreen = e.screen
     this.releaseHeldPressOnDrag(e)
+    // WHY only here: the face under the pointer as it moves, never where a
+    // command's start or an answer replays it, so a point typed without
+    // moving is read in the UCS, as the console's, which has no cursor.
+    this.detectFace(e.screen)
     this.updateSnap(e.screen)
     const input = this.buildPointerInput(e)
     this.activeTool.onPointerMove?.(input, this.toolContext)
@@ -8024,6 +8180,7 @@ export class CadRuntime extends Observable {
   pointerLeave(frozen = false): void {
     this.rollover = null
     this.pointerFrozen = frozen
+    if (!frozen) this.dropDynamicUcs()
     if (!frozen) {
       this.currentSnap = null
       this.snapMarker = null
@@ -8190,6 +8347,13 @@ export class CadRuntime extends Observable {
     // F11 toggles Object snap tracking, matching AutoCAD's shortcut.
     if (e.key === "F11") {
       this.toggleObjectSnapTracking()
+      this.host.requestRender()
+      return true
+    }
+
+    // F6 toggles the dynamic UCS (UCSDETECT), matching AutoCAD's shortcut.
+    if (e.key === "F6") {
+      this.toggleDynamicUcs()
       this.host.requestRender()
       return true
     }
@@ -9041,6 +9205,7 @@ export class CadRuntime extends Observable {
           dimensionStyle: this.shortcutMenuDimensionStyle(),
         }),
       orthoActive: this.constraints.isEnabled(ConstraintType.Ortho),
+      dynamicUcsActive: this.ucsDetect === 1,
       polarActive: this.constraints.isEnabled(ConstraintType.Polar),
       polarAngleStep: this.constraints.getPolarAngleStep(),
       objectSnapTrackingActive: this.tracking.isActive(),
@@ -9249,7 +9414,47 @@ interface DraftingAids {
   readonly otrack: boolean
   /** SELECTIONCYCLING, its sign on or off. */
   readonly cycling: number
+  /** UCSDETECT. */
+  readonly ducs: boolean
 }
+
+/**
+ * The commands whose first point the dynamic UCS serves: those that draw an
+ * object from a point. LINE and BOX are the desktop's (ucs/d11); the rest are
+ * the help's "while creating an object", unverified one by one.
+ */
+const DYNAMIC_UCS_TOOLS: ReadonlySet<string> = new Set([
+  "line",
+  "polyline",
+  "polyline3d",
+  "xline",
+  "ray",
+  "point",
+  "circle",
+  "circlediameter",
+  "circle2p",
+  "circle3p",
+  "arc",
+  "arcsce",
+  "arccse",
+  "ellipse",
+  "ellipsecenter",
+  "ellipsearc",
+  "spline",
+  "splinefit",
+  "splinecv",
+  "rectangle",
+  "polygon",
+  "text",
+  "mtext",
+  "box",
+  "wedge",
+  "cylinder",
+  "cone",
+  "sphere",
+  "torus",
+  "pyramid",
+])
 
 /** How a view gesture's undo step is made ({@link CadRuntime.viewGesture}). */
 interface ViewGesture {

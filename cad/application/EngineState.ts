@@ -742,6 +742,8 @@ export interface EngineState {
   /** The shortcut menu a right-click opened, or null when it is closed. */
   readonly shortcutMenu: ShortcutMenuUi | null
   readonly orthoActive: boolean
+  /** The dynamic UCS (AutoCAD's UCSDETECT / F6) on/off. */
+  readonly dynamicUcsActive: boolean
   /** Polar tracking (AutoCAD's POLAR / F10) on/off. */
   readonly polarActive: boolean
   /** Polar tracking angle increment in degrees (e.g. 45). */

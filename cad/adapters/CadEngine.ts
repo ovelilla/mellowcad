@@ -323,6 +323,11 @@ export class CadEngine {
     this.runtime.toggleSelectionCycling()
   }
 
+  /** The dynamic UCS (UCSDETECT), as F6 and its status-bar button toggle it. */
+  toggleDynamicUcs(): void {
+    this.runtime.toggleDynamicUcs()
+  }
+
   setSelectionCyclingList(showList: boolean): void {
     this.runtime.setSelectionCyclingList(showList)
   }

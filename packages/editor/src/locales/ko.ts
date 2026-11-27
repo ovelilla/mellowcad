@@ -925,6 +925,7 @@ export const ko: EditorLocale = {
       "locked": "잠금"
     },
     "StatusBar": {
+      "dynamicUcs": "동적 UCS",
       "coordinates": "좌표",
       "model": "모형",
       "modelSpace": "모형 공간",

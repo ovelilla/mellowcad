@@ -3,7 +3,7 @@ title: "AutoCAD FKR (UCS) parancs: felhasználói koordináta-rendszer"
 metaTitle: "AutoCAD FKR (UCS): koordináta-rendszer"
 description: "Így mozgatja és forgatja az AutoCAD FKR (UCS) parancsa a felhasználói koordináta-rendszert: origó és 3 pont, Objektum, Nézet, X, Y, Z, ZTeng, Neve, Világ."
 figure: "Téglatest délkeletről nézve: az FKR parancs a tetejére helyezi az origót, és az utána a 30,20 pontba rajzolt kör a felső lapon fekszik, nem a talajon."
-sourceHash: "217908def9dc"
+sourceHash: "d70280c9f3cf"
 ---
 
 Az FKR (UCS) parancs a felhasználói koordináta-rendszert állítja be: egy origót és X, Y tengelyt a tér bármely pontján, így az XY síkja meg is dőlhet. A begépelt koordinátákat ebben értelmezi a program, és amit rajzol, az az XY síkjában fekszik: ha az origót egy téglatest tetejére helyezi, a `30,20` középpontú kör a tetején lesz. Először kiírja az aktuális FKR nevét – `*VILÁG*`, `*NÉVTELEN*` vagy azt a nevet, amelyen elmentették –, majd az új origót vagy egy opciót kér; ott az Enter visszatér a Világhoz. A megadott pont lesz az origó, a Z koordinátájával együtt, a Z nélküli pont pedig az aktuális szintmagasságon fekszik. Ezután egy pontot kér a pozitív X tengelyen és egy pontot az XY síkon, az aktuális FKR-ben értelmezve: bármelyiknél az Enter változatlanul hagyja a tengelyeket. Egy pont eltolja az FKR-t, három bármilyen irányba elfordítja.
@@ -14,7 +14,7 @@ A parancsok ezután az FKR XY síkjában dolgoznak: a <Command id="LINE" /> és 
 
 ### Face
 
-Az FKR-t egy szilárdtest lapjához igazítja: a kurzor alatti lap kiemelődik, az FKR ikon pedig megmutatja, hová kerülne az FKR, és egy kattintás ezt veszi át: az origó a kijelölt pontra kerül, a Z tengely a szilárdtestből kifelé mutat. Az X tengely a lapnak azon éle mentén fut, amely a legközelebb van ahhoz a helyhez, ahol a kurzor a lapra érkezett, vagy vízszintesen, ha az az él függőlegesen áll. Ezután a <Keyword id="Next" /> a nézési irányban mögötte lévő következő lapra lép (élen az él másik lapjára), az <Keyword id="Xflip" /> és az <Keyword id="Yflip" /> fél fordulattal elforgatja az FKR-t az X, illetve az Y tengelye körül, az Enter pedig elfogadja. Ha egy pont alatt nincs szilárdtest lapja, ez jelenik meg: <Message id="noSolidSurfaceOrMesh" />.
+Az FKR-t egy szilárdtest lapjához igazítja: a kurzor alatti lap kiemelődik, az FKR ikon pedig megmutatja, hová kerülne az FKR, és egy kattintás ezt veszi át: az origó a kijelölt pontra kerül, a Z tengely a szilárdtestből kifelé mutat. Az X tengely a lapnak azon éle mentén fut, amely a legközelebb van ahhoz a helyhez, ahol a kurzor a lapra érkezett, vagy vízszintesen, ha az az él függőlegesen áll. Ezután a <Keyword id="Next" /> a nézési irányban mögötte lévő következő lapra lép (élen az él másik lapjára), az <Keyword id="Xflip" /> és az <Keyword id="Yflip" /> fél fordulattal elforgatja az FKR-t az X, illetve az Y tengelye körül, az Enter pedig elfogadja. Ha egy pont alatt nincs szilárdtest lapja, ez jelenik meg: <Message id="noSolidSurfaceOrMesh" />, és az FKR parancs befejeződik.
 
 ### NAmed
 
@@ -54,7 +54,7 @@ Az FKR-t a Z tengelye körül forgatja, ahogy az <Keyword id="X" /> az X körül
 
 ## Missing
 
-A <Keyword id="Face" /> felületeken és hálókon, amelyek a MellowCAD-ben nincsenek, valamint az Ablak és a Felfűz mód szilárdtesten. Az alKalmaz és a MEtszet opció, amelyek az első promptnál megjelennek, de itt el vannak utasítva, mivel csak egy nézetablak van, és nincsenek metszetobjektumok. Az FKR párbeszédpanel (FKRKEZ), az ikon fogói és a helyi menüje, valamint az, hogy az ikon az elhelyezés közben mutassa az új FKR-t. A szálkereszt elfordulása az FKR-rel: a képernyőn függőleges marad, amíg az <Command id="PLAN" /> parancs a nézetet hozzá nem igazítja. Az UCSFOLLOW, az UCSVP és a dinamikus FKR. Az <Keyword id="OBject" /> opció méretre, és a Csoport a kijelölésénél. Az ortografikus FKR által megtartott mélység. A szünet hosszú listánál: `A folytatáshoz nyomja meg az ENTER billentyűt:`.
+A <Keyword id="Face" /> felületeken és hálókon, amelyek a MellowCAD-ben nincsenek, valamint az Ablak és a Felfűz mód szilárdtesten. Az alKalmaz és a MEtszet opció, amelyek az első promptnál megjelennek, de itt el vannak utasítva, mivel csak egy nézetablak van, és nincsenek metszetobjektumok. Az FKR párbeszédpanel (FKRKEZ), az ikon fogói és a helyi menüje, valamint az, hogy az ikon az elhelyezés közben mutassa az új FKR-t. A szálkereszt elfordulása az FKR-rel: a képernyőn függőleges marad, amíg az <Command id="PLAN" /> parancs a nézetet hozzá nem igazítja. Az UCSFOLLOW és az UCSVP. Az <Keyword id="OBject" /> opció méretre, és a Csoport a kijelölésénél. Az ortografikus FKR által megtartott mélység. A szünet hosszú listánál: `A folytatáshoz nyomja meg az ENTER billentyűt:`.
 
 ## Questions
 

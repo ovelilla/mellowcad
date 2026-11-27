@@ -200,9 +200,9 @@ UCS Icon at Origin, Properties...), es Universal, Previo · SCP guardado ▸ (Gu
 en origen, Propiedades...); its World `_ucs` `_w`, U `UCS`; d02-6c to d02-9, e01-1c to e01-3), the
 icon previewing the UCS being made — at the cursor at the origin prompts, turned towards it at X
 and the rotation, placed where OBject's hover would put it — and the crosshair turned to the new
-UCS at the XY point (d04-1 to d04-5, d06-1; the scene draws one icon, the current UCS's,
-UCS-D101), UCSFOLLOW, UCSVP,
-UCSDETECT, the crosshair turning with the UCS (it stays upright on screen; PLAN makes the two agree),
+UCS at the XY point (d04-1 to d04-5, d06-1; the scene draws the icon of a UCS a command previews,
+Face's and the dynamic UCS's, and these prompts preview none, UCS-D101), UCSFOLLOW, UCSVP, the
+crosshair turning with the UCS (it stays upright on screen; PLAN makes the two agree),
 the X axis of a closed spline a mode finds at OBject (UCB-13): its first point is the origin, as here,
 but 2027's X on p434's is (0.5364, −0.8440), which is neither its start tangent (p438, here's
 (0.4148, −0.9099)) nor towards a control point (p439); no rule found yet

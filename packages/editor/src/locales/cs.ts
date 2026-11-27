@@ -929,6 +929,7 @@ export const cs: EditorLocale = {
       "locked": "uzamknuto"
     },
     "StatusBar": {
+      "dynamicUcs": "Dynamický USS",
       "coordinates": "Souřadnice",
       "model": "MODEL",
       "modelSpace": "Modelový prostor",

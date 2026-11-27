@@ -2,7 +2,7 @@
 title: "Befehl BKS (UCS) in AutoCAD"
 description: "Wie BKS (UCS) in AutoCAD das Benutzerkoordinatensystem verschiebt und dreht, Schritt für Schritt: Ursprung, 3 Punkte, Objekt, Ansicht, X, Y, Z."
 figure: "Ein Quader aus Südosten gesehen: BKS verschiebt den Ursprung auf seine Oberseite, und ein danach bei 30,20 gezeichneter Kreis liegt auf der Deckfläche, nicht am Boden."
-sourceHash: "217908def9dc"
+sourceHash: "d70280c9f3cf"
 ---
 
 BKS (UCS) legt das Benutzerkoordinatensystem fest: einen Ursprung und X- und Y-Achsen an beliebiger Stelle im Raum, sodass seine XY-Ebene auch geneigt sein kann. Die Koordinaten, die Sie eingeben, werden darin gelesen, und was Sie zeichnen, liegt in seiner XY-Ebene: Mit dem Ursprung auf der Oberseite eines Quaders liegt ein Kreis mit dem Mittelpunkt `30,20` auf der Oberseite. Zuerst meldet der Befehl den Namen des aktuellen BKS, `*WORLD*`, `*NO NAME*` oder den Namen, unter dem es gespeichert wurde, und fragt dann nach dem neuen Ursprung oder einer Option; die Eingabetaste kehrt dort zum WKS zurück. Ein Punkt ist der Ursprung, mit seinem Z-Wert; ein Punkt ohne Z-Wert liegt auf der aktuellen Erhebung. Danach folgen ein Punkt auf der positiven X-Achse und ein Punkt auf der XY-Ebene, gelesen im aktuellen BKS: Die Eingabetaste bei einem von beiden behält die Achsen bei. Ein Punkt verschiebt das BKS, drei drehen es beliebig.
@@ -13,7 +13,7 @@ Die Befehle arbeiten danach in der XY-Ebene des BKS: <Command id="LINE" /> und <
 
 ### Face
 
-Richtet das BKS an einer Fläche eines Volumenkörpers aus: Die Fläche unter dem Cursor wird hervorgehoben, und das BKS-Symbol zeigt, wohin das BKS käme; ein Klick übernimmt es, mit dem Ursprung am gewählten Punkt und Z aus dem Volumenkörper heraus. X verläuft entlang der Kante der Fläche, die der Stelle am nächsten liegt, an der der Cursor die Fläche erreichte, oder waagerecht, wo diese Kante senkrecht steht. Danach wechselt <Keyword id="Next" /> zur nächsten Fläche dahinter entlang Ihrer Blickrichtung (an einer Kante zu deren anderer Fläche), <Keyword id="Xflip" /> und <Keyword id="Yflip" /> drehen das BKS um 180 Grad um seine X- bzw. Y-Achse, und die Eingabetaste übernimmt es. Ein Punkt, unter dem keine Fläche eines Volumenkörpers liegt, ergibt <Message id="noSolidSurfaceOrMesh" />.
+Richtet das BKS an einer Fläche eines Volumenkörpers aus: Die Fläche unter dem Cursor wird hervorgehoben, und das BKS-Symbol zeigt, wohin das BKS käme; ein Klick übernimmt es, mit dem Ursprung am gewählten Punkt und Z aus dem Volumenkörper heraus. X verläuft entlang der Kante der Fläche, die der Stelle am nächsten liegt, an der der Cursor die Fläche erreichte, oder waagerecht, wo diese Kante senkrecht steht. Danach wechselt <Keyword id="Next" /> zur nächsten Fläche dahinter entlang Ihrer Blickrichtung (an einer Kante zu deren anderer Fläche), <Keyword id="Xflip" /> und <Keyword id="Yflip" /> drehen das BKS um 180 Grad um seine X- bzw. Y-Achse, und die Eingabetaste übernimmt es. Ein Punkt, unter dem keine Fläche eines Volumenkörpers liegt, ergibt <Message id="noSolidSurfaceOrMesh" />, und BKS endet.
 
 ### NAmed
 
@@ -53,7 +53,7 @@ Ein neuer Ursprung, wobei die Eingabetaste den aktuellen behält, dann ein Punkt
 
 ## Missing
 
-<Keyword id="Face" /> an Flächenobjekten und Netzen, die MellowCAD nicht hat, sowie seine Modi Fenster und Zaun an einem Volumenkörper. Apply und SEction, bei der ersten Eingabeaufforderung aufgeführt und hier abgelehnt, da es einen Ansichtsbereich und keine Schnittobjekte gibt. Der BKS-Dialog (UCSMAN), die Griffe des Symbols und sein Kontextmenü sowie das Symbol, das beim Platzieren das neue BKS zeigt. Das Fadenkreuz, das sich mit dem BKS dreht: Es bleibt auf dem Bildschirm aufrecht, bis <Command id="PLAN" /> die Ansicht danach ausrichtet. UCSFOLLOW, UCSVP und das dynamische BKS. <Keyword id="OBject" /> an einer Bemaßung und Group bei seiner Auswahl. Die Tiefe, die ein orthogonales BKS behält. Die Pause, Press ENTER to continue, in einer langen Liste.
+<Keyword id="Face" /> an Flächenobjekten und Netzen, die MellowCAD nicht hat, sowie seine Modi Fenster und Zaun an einem Volumenkörper. Apply und SEction, bei der ersten Eingabeaufforderung aufgeführt und hier abgelehnt, da es einen Ansichtsbereich und keine Schnittobjekte gibt. Der BKS-Dialog (UCSMAN), die Griffe des Symbols und sein Kontextmenü sowie das Symbol, das beim Platzieren das neue BKS zeigt. Das Fadenkreuz, das sich mit dem BKS dreht: Es bleibt auf dem Bildschirm aufrecht, bis <Command id="PLAN" /> die Ansicht danach ausrichtet. UCSFOLLOW und UCSVP. <Keyword id="OBject" /> an einer Bemaßung und Group bei seiner Auswahl. Die Tiefe, die ein orthogonales BKS behält. Die Pause, Press ENTER to continue, in einer langen Liste.
 
 ## Questions
 

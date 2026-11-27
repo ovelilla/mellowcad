@@ -3,7 +3,7 @@ title: "Polecenie LUW (UCS) w AutoCADzie: lokalny układ współrzędnych"
 metaTitle: "Polecenie LUW (UCS) w AutoCADzie"
 description: "Jak polecenie LUW (UCS) w AutoCADzie przesuwa i obraca lokalny układ współrzędnych: początek i 3 punkty, Obiekt, Widok, X, Y, Z, Ośz, Nazwana, Globalny."
 figure: "Prostopadłościan widziany z południowego wschodu: LUW przenosi początek na jego górę, a okrąg narysowany potem w 30,20 leży na górnej ścianie, nie na ziemi."
-sourceHash: "217908def9dc"
+sourceHash: "d70280c9f3cf"
 ---
 
 Polecenie LUW (UCS) ustala lokalny układ współrzędnych: początek oraz osie X i Y w dowolnym miejscu przestrzeni, więc jego płaszczyzna XY może być nachylona. Wpisywane współrzędne są w nim odczytywane, a to, co rysujesz, leży w jego płaszczyźnie XY: po przeniesieniu początku na górę prostopadłościanu okrąg o środku w `30,20` leży na górze. Najpierw podaje nazwę bieżącego układu LUW – `*GLOBALNY*`, `*BEZ NAZWY*` albo nazwę, pod którą go zapisano – a potem pyta o nowy początek lub opcję; Enter w tym miejscu wraca do układu globalnego. Punkt jest początkiem, ze swoją współrzędną Z, a punkt bez Z leży na bieżącym poziomie. Następnie pyta o punkt na dodatniej osi X i punkt na płaszczyźnie XY, odczytywane w bieżącym układzie LUW: Enter przy którymkolwiek pozostawia osie bez zmian. Jeden punkt przesuwa LUW, trzy obracają go dowolnie.
@@ -14,7 +14,7 @@ Polecenia działają potem w płaszczyźnie XY układu LUW: <Command id="LINE" /
 
 ### Face
 
-Wyrównuje LUW do powierzchni bryły: powierzchnia pod kursorem zostaje podświetlona, a symbol LUW pokazuje, gdzie trafiłby LUW, i kliknięcie go przyjmuje, z początkiem we wskazanym punkcie i osią Z skierowaną na zewnątrz bryły. Oś X biegnie wzdłuż tej krawędzi powierzchni, która jest najbliżej miejsca, w którym kursor na nią wszedł, albo poziomo, gdy ta krawędź stoi pionowo. Potem <Keyword id="Next" /> przechodzi do następnej powierzchni za nią w kierunku patrzenia (na krawędzi do jej drugiej powierzchni), <Keyword id="Xflip" /> i <Keyword id="Yflip" /> obracają LUW o pół obrotu wokół jego osi X lub Y, a Enter go przyjmuje. Punkt, pod którym nie ma powierzchni żadnej bryły, daje komunikat <Message id="noSolidSurfaceOrMesh" />.
+Wyrównuje LUW do powierzchni bryły: powierzchnia pod kursorem zostaje podświetlona, a symbol LUW pokazuje, gdzie trafiłby LUW, i kliknięcie go przyjmuje, z początkiem we wskazanym punkcie i osią Z skierowaną na zewnątrz bryły. Oś X biegnie wzdłuż tej krawędzi powierzchni, która jest najbliżej miejsca, w którym kursor na nią wszedł, albo poziomo, gdy ta krawędź stoi pionowo. Potem <Keyword id="Next" /> przechodzi do następnej powierzchni za nią w kierunku patrzenia (na krawędzi do jej drugiej powierzchni), <Keyword id="Xflip" /> i <Keyword id="Yflip" /> obracają LUW o pół obrotu wokół jego osi X lub Y, a Enter go przyjmuje. Punkt, pod którym nie ma powierzchni żadnej bryły, daje komunikat <Message id="noSolidSurfaceOrMesh" />, a polecenie kończy działanie.
 
 ### NAmed
 
@@ -54,7 +54,7 @@ Pyta o nowy początek (Enter zachowuje bieżący), a potem o punkt na dodatniej 
 
 ## Missing
 
-<Keyword id="Face" /> na obiektach powierzchniowych i siatkach, których MellowCAD nie ma, oraz jej tryby Okno i Krawędź na bryle. Zastosuj i Przekrój, wymienione przy pierwszym monicie i tutaj odrzucane, bo jest jedna rzutnia i nie ma obiektów przekroju. Okno dialogowe LUW (MENLUW), uchwyty symbolu i jego menu skrótów oraz symbol pokazujący nowy LUW podczas jego umieszczania. Kursor obracający się razem z LUW: pozostaje prosto na ekranie, dopóki <Command id="PLAN" /> nie wyrówna z nim widoku. UCSFOLLOW, UCSVP i dynamiczny LUW. <Keyword id="OBject" /> dla wymiaru oraz Grupa przy wskazaniu. Głębokość, którą zachowuje ortogonalny LUW. Pauza `Naciśnij klawisz ENTER by kontynuować:` w długiej liście.
+<Keyword id="Face" /> na obiektach powierzchniowych i siatkach, których MellowCAD nie ma, oraz jej tryby Okno i Krawędź na bryle. Zastosuj i Przekrój, wymienione przy pierwszym monicie i tutaj odrzucane, bo jest jedna rzutnia i nie ma obiektów przekroju. Okno dialogowe LUW (MENLUW), uchwyty symbolu i jego menu skrótów oraz symbol pokazujący nowy LUW podczas jego umieszczania. Kursor obracający się razem z LUW: pozostaje prosto na ekranie, dopóki <Command id="PLAN" /> nie wyrówna z nim widoku. UCSFOLLOW i UCSVP. <Keyword id="OBject" /> dla wymiaru oraz Grupa przy wskazaniu. Głębokość, którą zachowuje ortogonalny LUW. Pauza `Naciśnij klawisz ENTER by kontynuować:` w długiej liście.
 
 ## Questions
 

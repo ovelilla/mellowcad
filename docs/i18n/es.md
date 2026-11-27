@@ -361,7 +361,9 @@ origen/Origen` from the 2026 help and the same captures;
   console's, `Copia de {name}` the tables' (AcDimRes 155, acdb26res 10211). POLYGON's refusals are
   the 2027 console's (polygon/p02, p08). **Unverified:** the file errors, the clipboard and FROM
   notes (ours), block and dimension style not found (`blockUndefined`, `noMatchingDimStyles`: no
-  transcript pairs them) and `Capa{n}` (partial).
+  transcript pairs them) and `Capa{n}` (partial). The F6 echo, ` <SCP dinámico activado>` /
+  ` <SCP dinámico desactivado>`, is composed from table 33750's `SCP dinámico` and the other
+  aids' echoes; **unverified** (the desktop pass, ucs/d11, was in English; no table holds it).
 - **Sources beyond the help pages:** the Spanish alias guides
   ([2022 Product
   Insights](https://help.autodesk.com/cloudhelp/2022/ESP/AutoCAD-Product-Insights/files/GUID-DB0E87C4-2223-49ED-84F9-FBB3B6BA65A9.htm),

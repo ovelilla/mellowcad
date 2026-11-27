@@ -9,16 +9,19 @@ import {
 const KEY = "host:status-bar"
 
 describe("the status bar's customization", () => {
-  it("hides only the tools it knows", () => {
+  it("hides only the tools it knows, and Dynamic UCS until shown", () => {
     expect([
       ...parseHiddenStatusItems(JSON.stringify(["grid", "model", "nope"])),
-    ]).toEqual(["model", "grid"])
+    ]).toEqual(["model", "grid", "dynamicUcs"])
+    expect([
+      ...parseHiddenStatusItems(JSON.stringify(["grid", "+dynamicUcs"])),
+    ]).toEqual(["grid"])
   })
 
   it.each([null, "", "{", "{}", '"grid"'])(
-    "shows every tool when nothing usable is stored (%s)",
+    "shows every tool but Dynamic UCS when nothing usable is stored (%s)",
     (stored) => {
-      expect(parseHiddenStatusItems(stored).size).toBe(0)
+      expect([...parseHiddenStatusItems(stored)]).toEqual(["dynamicUcs"])
     }
   )
 
@@ -33,8 +36,10 @@ describe("the status bar's customization", () => {
 
     rememberHiddenStatusItems(KEY, new Set(["units", "coordinates"]))
 
-    expect(store.get(KEY)).toBe('["coordinates","units"]')
+    expect(store.get(KEY)).toBe('["coordinates","units","+dynamicUcs"]')
     expect([...readHiddenStatusItems(KEY)]).toEqual(["coordinates", "units"])
+    rememberHiddenStatusItems(KEY, new Set(["dynamicUcs"]))
+    expect(store.get(KEY)).toBe('["dynamicUcs"]')
   })
 
   it("remembers nothing without a key", () => {
@@ -49,17 +54,17 @@ describe("the status bar's customization", () => {
     rememberHiddenStatusItems(undefined, new Set(["units"]))
 
     expect([...store.keys()]).toEqual([KEY])
-    expect(readHiddenStatusItems(undefined).size).toBe(0)
+    expect([...readHiddenStatusItems(undefined)]).toEqual(["dynamicUcs"])
   })
 
-  it("shows every tool when storage is blocked", () => {
+  it("shows the first bar when storage is blocked", () => {
     vi.stubGlobal("window", {
       get localStorage(): Storage {
         throw new Error("blocked")
       },
     })
 
-    expect(readHiddenStatusItems(KEY).size).toBe(0)
+    expect([...readHiddenStatusItems(KEY)]).toEqual(["dynamicUcs"])
     expect(() =>
       rememberHiddenStatusItems(KEY, new Set(["grid"]))
     ).not.toThrow()

@@ -3,7 +3,7 @@ title: "AutoCAD UCS 指令"
 metaTitle: "CAD 座標系統 UCS 用法與回到世界座標"
 description: "AutoCAD UCS 依提示順序移動與旋轉使用者座標系統：原點與三點、物件、視圖、X、Y、Z、Z 軸、具名與世界。可以在瀏覽器中免費試用。"
 figure: "從東南方檢視的方塊：UCS 將原點移到方塊頂面，之後在 30,20 繪製的圓位於頂面上，而不是地面上。"
-sourceHash: "217908def9dc"
+sourceHash: "d70280c9f3cf"
 ---
 
 UCS 設定使用者座標系統：空間中任何位置的原點與 X、Y 軸，因此其 XY 平面可以傾斜。您輸入的座標在其中讀取，繪製的物件位於其 XY 平面上：原點移到方塊頂面後，中心點在 `30,20` 的圓就位於頂面上。它先說明目前 UCS 的名稱（`*WORLD*`、`*NO NAME*` 或儲存時的名稱），再要求新的原點或選項；在此按 Enter 會回到世界。一點即為原點，包含其 Z 值；沒有 Z 值的點位於目前的高程。接著要求正 X 軸上的一點與 XY 平面上的一點，以目前的 UCS 讀取：在任一提示按 Enter，軸都保持不變。一點會移動 UCS；三點則可以將它轉到任何方向。
@@ -14,7 +14,7 @@ UCS 設定使用者座標系統：空間中任何位置的原點與 X、Y 軸，
 
 ### Face
 
-將 UCS 對齊實體的面：游標下方的面會亮顯，UCS 圖示會顯示 UCS 將放置的位置，按一下即選取該面，原點位於點選的點，Z 軸朝向實體外側。X 軸沿著該面上最靠近游標進入該面之處的邊；若該邊直立，X 軸則保持水平。之後，<Keyword id="Next" /> 會沿您的視線切換到其後方的下一個面（在邊上則切換到該邊的另一個面），<Keyword id="Xflip" /> 和 <Keyword id="Yflip" /> 會將 UCS 繞其 X 軸或 Y 軸旋轉半圈，按 Enter 則接受。點選處下方沒有實體的面時，顯示 <Message id="noSolidSurfaceOrMesh" />。
+將 UCS 對齊實體的面：游標下方的面會亮顯，UCS 圖示會顯示 UCS 將放置的位置，按一下即選取該面，原點位於點選的點，Z 軸朝向實體外側。X 軸沿著該面上最靠近游標進入該面之處的邊；若該邊直立，X 軸則保持水平。之後，<Keyword id="Next" /> 會沿您的視線切換到其後方的下一個面（在邊上則切換到該邊的另一個面），<Keyword id="Xflip" /> 和 <Keyword id="Yflip" /> 會將 UCS 繞其 X 軸或 Y 軸旋轉半圈，按 Enter 則接受。點選處下方沒有實體的面時，顯示 <Message id="noSolidSurfaceOrMesh" />，指令隨即結束。
 
 ### NAmed
 
@@ -54,7 +54,7 @@ UCS 設定使用者座標系統：空間中任何位置的原點與 X、Y 軸，
 
 ## Missing
 
-曲面與網格上的 <Keyword id="Face" />：MellowCAD 沒有這兩種物件；以及它在實體上的窗選與籬選模式。第一個提示列出的「套用」與「剖面」在此會被拒絕，因為只有一個視埠，也沒有剖面物件。UCS 對話方塊（UCSMAN）、圖示的掣點及其右鍵功能表，以及放置新 UCS 時圖示的即時顯示。十字游標隨 UCS 旋轉：在 <Command id="PLAN" /> 將視圖與 UCS 對齊之前，它在螢幕上保持直立。UCSFOLLOW、UCSVP 與動態 UCS。標註上的 <Keyword id="OBject" />，以及其點選時的「群組」。正投影 UCS 保留的深度。長清單中的暫停「按 Enter 繼續」。
+曲面與網格上的 <Keyword id="Face" />：MellowCAD 沒有這兩種物件；以及它在實體上的窗選與籬選模式。第一個提示列出的「套用」與「剖面」在此會被拒絕，因為只有一個視埠，也沒有剖面物件。UCS 對話方塊（UCSMAN）、圖示的掣點及其右鍵功能表，以及放置新 UCS 時圖示的即時顯示。十字游標隨 UCS 旋轉：在 <Command id="PLAN" /> 將視圖與 UCS 對齊之前，它在螢幕上保持直立。UCSFOLLOW 與 UCSVP。標註上的 <Keyword id="OBject" />，以及其點選時的「群組」。正投影 UCS 保留的深度。長清單中的暫停「按 Enter 繼續」。
 
 ## Questions
 

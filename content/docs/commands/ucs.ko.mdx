@@ -25,7 +25,7 @@ UCS 명령은 사용자 좌표계를 설정합니다. 공간 어디에나 원점
 
 ### `Face` (`F`) [#face]
 
-솔리드의 면에 UCS를 맞춥니다. 커서 아래의 면이 강조 표시되고 UCS 아이콘이 UCS가 놓일 위치를 보여 주며, 클릭하면 그 면을 선택합니다. 원점은 선택한 점에 놓이고, Z는 솔리드 바깥쪽을 향합니다. X는 커서가 면에 들어온 곳에 가장 가까운 면의 모서리를 따르며, 그 모서리가 수직으로 서 있으면 수평이 됩니다. 그다음 `Next`는 시선 방향으로 그 뒤에 있는 다음 면으로 넘어가고(모서리 위에서는 그 모서리의 다른 면으로), `Xflip`과 `Yflip`은 UCS를 X축 또는 Y축을 중심으로 반 바퀴 돌리며, Enter 키로 수락합니다. 아래에 솔리드의 면이 없는 점에서는 `No 3D solid, surface or mesh detected.`라는 메시지를 표시합니다.
+솔리드의 면에 UCS를 맞춥니다. 커서 아래의 면이 강조 표시되고 UCS 아이콘이 UCS가 놓일 위치를 보여 주며, 클릭하면 그 면을 선택합니다. 원점은 선택한 점에 놓이고, Z는 솔리드 바깥쪽을 향합니다. X는 커서가 면에 들어온 곳에 가장 가까운 면의 모서리를 따르며, 그 모서리가 수직으로 서 있으면 수평이 됩니다. 그다음 `Next`는 시선 방향으로 그 뒤에 있는 다음 면으로 넘어가고(모서리 위에서는 그 모서리의 다른 면으로), `Xflip`과 `Yflip`은 UCS를 X축 또는 Y축을 중심으로 반 바퀴 돌리며, Enter 키로 수락합니다. 아래에 솔리드의 면이 없는 점에서는 `No 3D solid, surface or mesh detected.`라는 메시지를 표시하고 명령이 끝납니다.
 
 ### `NAmed` (`NA`) [#named]
 
@@ -65,7 +65,7 @@ UCS를 X축을 중심으로 돌립니다. 기본값은 90도이며, 각도를 �
 
 ## 아직 지원하지 않는 것 [#missing]
 
-표면과 메시에 대한 `Face`: MellowCAD에는 표면과 메시가 없습니다. 솔리드에서 쓰는 윈도우 및 울타리 모드. 첫 프롬프트에 나열되지만 여기서는 거부되는 Apply와 SEction: 뷰포트가 하나뿐이고 단면 객체가 없기 때문입니다. UCS 대화상자(UCSMAN), 아이콘의 그립과 오른쪽 클릭 메뉴, 그리고 배치하는 동안 새 UCS를 보여 주는 아이콘. UCS를 따라 도는 십자선: [`PLAN`](/docs/commands/plan)으로 뷰를 UCS에 맞출 때까지 화면에서 똑바로 서 있습니다. UCSFOLLOW, UCSVP, 동적 UCS. 치수에 대한 `OBject`와 선택할 때의 그룹. 정투영 UCS가 유지하는 깊이. 긴 목록에서의 일시 정지(Press ENTER to continue).
+표면과 메시에 대한 `Face`: MellowCAD에는 표면과 메시가 없습니다. 솔리드에서 쓰는 윈도우 및 울타리 모드. 첫 프롬프트에 나열되지만 여기서는 거부되는 Apply와 SEction: 뷰포트가 하나뿐이고 단면 객체가 없기 때문입니다. UCS 대화상자(UCSMAN), 아이콘의 그립과 오른쪽 클릭 메뉴, 그리고 배치하는 동안 새 UCS를 보여 주는 아이콘. UCS를 따라 도는 십자선: [`PLAN`](/docs/commands/plan)으로 뷰를 UCS에 맞출 때까지 화면에서 똑바로 서 있습니다. UCSFOLLOW와 UCSVP. 치수에 대한 `OBject`와 선택할 때의 그룹. 정투영 UCS가 유지하는 깊이. 긴 목록에서의 일시 정지(Press ENTER to continue).
 
 [기능과 아직 없는 기능 자세히 보기(영어)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/coordinate-systems.md#ucs--es-scp--pt-br-ucs--ucsdd--fr-scu--dducs--it-ucs--dducs--de-bks--dducs--ru-пск--диалпск--pl-luw--cs-uss--hu-fkr--dpfkr)
 

@@ -929,6 +929,7 @@ export const ru: EditorLocale = {
       "locked": "заблокировано"
     },
     "StatusBar": {
+      "dynamicUcs": "Динамическая ПСК",
       "coordinates": "Координаты",
       "model": "МОДЕЛЬ",
       "modelSpace": "Пространство модели",

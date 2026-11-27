@@ -929,6 +929,7 @@ export const es: EditorLocale = {
       "locked": "bloqueado"
     },
     "StatusBar": {
+      "dynamicUcs": "SCP dinámico",
       "coordinates": "Coordenadas",
       "model": "MODELO",
       "modelSpace": "Espacio modelo",

@@ -2,7 +2,7 @@
 title: "Commande SCU (UCS) dans AutoCAD"
 description: "Comment SCU (UCS) d'AutoCAD déplace et fait pivoter le système de coordonnées utilisateur : origine et 3 points, Objet, Vue, X, Y, Z, axeZ, Nommé, Général."
 figure: "Une boîte vue du sud-est : SCU déplace l'origine sur son dessus, et un cercle dessiné ensuite en 30,20 se trouve sur la face supérieure, pas au sol."
-sourceHash: "217908def9dc"
+sourceHash: "d70280c9f3cf"
 ---
 
 SCU (UCS) définit le système de coordonnées utilisateur : une origine et des axes X et Y n'importe où dans l'espace, si bien que son plan XY peut s'incliner. Les coordonnées que vous tapez y sont lues, et ce que vous dessinez se trouve dans son plan XY : avec l'origine déplacée sur le dessus d'une boîte, un cercle de centre `30,20` se trouve sur le dessus. La commande dit d'abord le nom du SCU courant (`*GENERAL*`, `*AUCUN NOM*` ou le nom sous lequel il a été sauvé), puis demande la nouvelle origine ou une option ; Entrée y ramène au SCG, le système de coordonnées général. Un point est l'origine, avec son Z, et un point sans Z se trouve à l'élévation courante. Puis un point sur la partie positive de l'axe X et un point sur le plan XY, lus dans le SCU courant : Entrée à l'une ou l'autre de ces invites garde les axes tels quels. Un point déplace le SCU ; trois le font pivoter dans n'importe quelle direction.
@@ -13,7 +13,7 @@ Les commandes travaillent alors dans le plan XY du SCU : <Command id="LINE" /> 
 
 ### Face
 
-Aligne le SCU sur une face d'un solide : la face sous le curseur s'éclaire et l'icône du SCU montre où irait le SCU, et un clic le prend, l'origine au point désigné et Z sortant du solide. X suit l'arête de la face la plus proche de l'endroit où le curseur y est entré, ou reste horizontal là où cette arête est verticale. Ensuite, <Keyword id="Next" /> passe à la face suivante derrière elle le long de votre ligne de visée (sur une arête, à son autre face), <Keyword id="Xflip" /> et <Keyword id="Yflip" /> font faire au SCU un demi-tour autour de son axe X ou Y, et Entrée l'accepte. Un point sous lequel il n'y a aucune face de solide affiche <Message id="noSolidSurfaceOrMesh" />.
+Aligne le SCU sur une face d'un solide : la face sous le curseur s'éclaire et l'icône du SCU montre où irait le SCU, et un clic le prend, l'origine au point désigné et Z sortant du solide. X suit l'arête de la face la plus proche de l'endroit où le curseur y est entré, ou reste horizontal là où cette arête est verticale. Ensuite, <Keyword id="Next" /> passe à la face suivante derrière elle le long de votre ligne de visée (sur une arête, à son autre face), <Keyword id="Xflip" /> et <Keyword id="Yflip" /> font faire au SCU un demi-tour autour de son axe X ou Y, et Entrée l'accepte. Un point sous lequel il n'y a aucune face de solide affiche <Message id="noSolidSurfaceOrMesh" />, et SCU se termine.
 
 ### NAmed
 
@@ -53,7 +53,7 @@ Une nouvelle origine, Entrée gardant l'origine courante, puis un point sur la p
 
 ## Missing
 
-<Keyword id="Face" /> sur les surfaces et les maillages, que MellowCAD n'a pas, et ses modes fenêtre et trajet sur un solide. Appliquer et SEction, que la première invite accepte et qui sont refusées ici, puisqu'il n'y a qu'une fenêtre et pas d'objets de coupe. La boîte de dialogue SCU (GESTSCU), les poignées de l'icône et son menu contextuel, et l'icône montrant le nouveau SCU pendant que vous le placez. Le réticule qui tourne avec le SCU : il reste droit à l'écran jusqu'à ce que <Command id="PLAN" /> aligne la vue sur lui. UCSFOLLOW, UCSVP et le SCU dynamique. <Keyword id="OBject" /> sur une cote, et Groupe à sa désignation. La profondeur que garde un SCU orthogonal. La pause, Appuyez sur ENTREE pour continuer, dans une longue liste.
+<Keyword id="Face" /> sur les surfaces et les maillages, que MellowCAD n'a pas, et ses modes fenêtre et trajet sur un solide. Appliquer et SEction, que la première invite accepte et qui sont refusées ici, puisqu'il n'y a qu'une fenêtre et pas d'objets de coupe. La boîte de dialogue SCU (GESTSCU), les poignées de l'icône et son menu contextuel, et l'icône montrant le nouveau SCU pendant que vous le placez. Le réticule qui tourne avec le SCU : il reste droit à l'écran jusqu'à ce que <Command id="PLAN" /> aligne la vue sur lui. UCSFOLLOW et UCSVP. <Keyword id="OBject" /> sur une cote, et Groupe à sa désignation. La profondeur que garde un SCU orthogonal. La pause, Appuyez sur ENTREE pour continuer, dans une longue liste.
 
 ## Questions
 

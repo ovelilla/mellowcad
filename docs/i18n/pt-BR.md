@@ -330,7 +330,9 @@ own desktop reviews (line/d10, d27, workspace/d01, draw's d05); the evidence is
 - **The toggles' lines** (d01): `<Snap ativado>`, `<Osnap ativado>`, `<Polar ativado>`,
   `<Rastreamento de snap ao objeto ativado>`, `<Ciclo de seleção ativado>` as worded; two
   corrected: Ortho is `<Ortogonal ativado>` (not `Orto`) and Grid `<Grade ativado>`, masculine
-  like Spanish's `<Rejilla activado>` (not `ativada`).
+  like Spanish's `<Rejilla activado>` (not `ativada`). The F6 echo, ` <UCS dinâmico ativado>` /
+  ` <UCS dinâmico desativado>`, is composed from table 33750's `UCS dinâmico` and the other
+  aids' echoes; **unverified** (the desktop pass, ucs/d11, was in English; no table holds it).
 - **Polar's tooltip** (d02): `Polar: 75.7945 < 0°`, English's words and form.
 - **ATTEDIT's dialog prompt** (d04): `EDITARATRIB Selecionar referência de bloco:`, as worded
   (atteditRes 1).

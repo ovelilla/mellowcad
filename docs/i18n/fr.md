@@ -255,7 +255,10 @@ The drafting toggles are composed by AutoCAD and in no table, so the French desk
 (names/d01, 9/11/2026, `/language fr-FR`): `<Accrochage actif>` (F9; not `Résolution`), `<Accrobj
 actif>`, `<Ortho actif>`, `<Polaire actif>`, `<Repérage d'accrochage aux objets actif>` and
 `<Grille actif>`, the grid's in the masculine as pt-BR's `Grade`, each with `inactif`; only
-Selection Cycling's says `<Cycle de sélection activé>` and `désactivé` (16646). Table 33112's
+Selection Cycling's says `<Cycle de sélection activé>` and `désactivé` (16646). The F6 echo,
+` <SCU dynamique activé>` / ` <SCU dynamique désactivé>`, is composed from table 33750's
+`SCU dynamique` and the other aids' echoes; **unverified** (the desktop pass, ucs/d11, was in
+English; no table holds it). Table 33112's
 `Accrobj activé` is not the line F3 writes. Held by `frenchPrompts.test.ts`.
 
 Polar along Z writes `Polaire: 27.6186 < +Z` and `Polaire: 25.8968 < -Z` (names/d02, LIGNE from

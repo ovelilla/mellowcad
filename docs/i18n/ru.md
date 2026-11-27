@@ -227,7 +227,10 @@ stands until each gets an id of its own:
 The drafting toggles are composed by AutoCAD and in no table, so the Russian desktop settled them
 (names/d01, 13/11/2026, `/language ru-RU`): `<Шаг вкл>` (F9), `<Привязка вкл>` (F3), `<Орто вкл>`,
 `<Полярная вкл>`, `<Объектное отслеживание вкл>` (F11) and `<Сетка вкл>`, each with `откл`;
-Selection Cycling ends with a full stop, `<Циклический выбор вкл.>` and `откл.`. Held by
+Selection Cycling ends with a full stop, `<Циклический выбор вкл.>` and `откл.`. The F6 echo,
+` <Динамическая ПСК вкл.>` / ` <Динамическая ПСК откл.>`, is composed from table 33750's
+`Динамическая ПСК` and the other aids' echoes; **unverified** (the desktop pass, ucs/d11, was in
+English; no table holds it). Held by
 `russianPrompts.test.ts`. Polar along Z writes `Полярная: 4.8340 < +Z` and `… < -Z` (LINE from
 0,0,0 in SW isometric, names/d02). The ViewCube's faces, compass and UCS menu: names/d05.
 

@@ -4,7 +4,7 @@ metaTitle: "UCS in AutoCAD: command, options and World"
 description: "How AutoCAD's UCS moves and turns the user coordinate system, prompt by prompt: origin and 3 points, Object, View, X, Y, Z, ZAxis, Named, World. Try it free."
 figure: "A box seen from the south-east: UCS moves the origin to its top, and a circle drawn at 30,20 after it lies on the top face, not on the ground."
 related: ["PLAN", "3DORBIT", "BOX", "EXTRUDE"]
-coverage: "6764629e9635"
+coverage: "d97eda1acd8f"
 ---
 
 UCS sets the user coordinate system: an origin and X and Y axes anywhere in space, so its XY plane can tilt. The coordinates you type are read in it, and what you draw lies in its XY plane: with the origin moved to a box's top, a circle centred at `30,20` lies on the top. It first says the current UCS's name — `*WORLD*`, `*NO NAME*` or the name it was saved under — then asks for the new origin or an option; Enter there goes back to World. A point is the origin, with its Z, and a point without a Z lies at the current elevation. Then a point on the positive X axis and a point on the XY plane, read in the current UCS: Enter at either keeps the axes as they are. One point moves the UCS; three turn it any way.
@@ -15,7 +15,7 @@ The commands then work in the UCS's XY plane: <Command id="LINE" /> and <Command
 
 ### Face
 
-Aligns the UCS with a face of a solid: the face under the cursor glows and the UCS icon shows where the UCS would go, and a click takes it, the origin at the point picked and Z out of the solid. X runs along the face's edge nearest where the cursor came onto it, or level where that edge stands upright. Then <Keyword id="Next" /> goes to the next face behind it along your line of sight (on an edge, to its other face), <Keyword id="Xflip" /> and <Keyword id="Yflip" /> turn the UCS half round its X or Y axis, and Enter accepts it. A point with no solid's face under it says <Message id="noSolidSurfaceOrMesh" />.
+Aligns the UCS with a face of a solid: the face under the cursor glows and the UCS icon shows where the UCS would go, and a click takes it, the origin at the point picked and Z out of the solid. X runs along the face's edge nearest where the cursor came onto it, or level where that edge stands upright. Then <Keyword id="Next" /> goes to the next face behind it along your line of sight (on an edge, to its other face), <Keyword id="Xflip" /> and <Keyword id="Yflip" /> turn the UCS half round its X or Y axis, and Enter accepts it. A point with no solid's face under it says <Message id="noSolidSurfaceOrMesh" />, and UCS ends.
 
 ### NAmed
 
@@ -55,7 +55,7 @@ A new origin, Enter keeping the current one, then a point on the positive Z axis
 
 ## Missing
 
-<Keyword id="Face" /> on surfaces and meshes, which MellowCAD has not, and its window and fence modes on a solid. Apply and SEction, listed at the first prompt and refused here, since there is one viewport and there are no section objects. The UCS dialog (UCSMAN), the icon's grips and its right-click menu, and the icon showing the new UCS while you place it. The crosshair turning with the UCS: it stays upright on screen until <Command id="PLAN" /> lines the view up with it. UCSFOLLOW, UCSVP and the dynamic UCS. <Keyword id="OBject" /> on a dimension, and Group at its pick. The depth an orthographic UCS keeps. The pause, Press ENTER to continue, in a long list.
+<Keyword id="Face" /> on surfaces and meshes, which MellowCAD has not, and its window and fence modes on a solid. Apply and SEction, listed at the first prompt and refused here, since there is one viewport and there are no section objects. The UCS dialog (UCSMAN), the icon's grips and its right-click menu, and the icon showing the new UCS while you place it. The crosshair turning with the UCS: it stays upright on screen until <Command id="PLAN" /> lines the view up with it. UCSFOLLOW and UCSVP. <Keyword id="OBject" /> on a dimension, and Group at its pick. The depth an orthographic UCS keeps. The pause, Press ENTER to continue, in a long list.
 
 ## Questions
 

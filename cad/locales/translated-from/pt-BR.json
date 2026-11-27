@@ -2272,6 +2272,7 @@
   "commands.format.optionValue": "{keyword}: {value}",
   "commands.format.cartesian": "X,Y",
   "commands.format.polar": "Dist'<'Ang",
+  "commands.messages.dynamicUcsMode": " '<'Dynamic UCS {state, select, on {on} other {off}}>",
   "commands.messages.cannotTrimPolygonMesh": "Polygon Mesh\nCannot TRIM this object.",
   "commands.messages.cannotExtendPolygonMesh": "Polygon Mesh\nCannot EXTEND this object.",
   "commands.messages.polygonMeshNoCoordinateSystem": "3D Polygon Mesh object does not define a coordinate system",

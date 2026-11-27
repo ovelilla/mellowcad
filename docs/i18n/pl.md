@@ -122,7 +122,10 @@ The drafting toggles are composed by AutoCAD and in no table, so the Polish desk
 (names/d01, 16/11/2026, `/language pl-PL`): `<Skok włącz>` (F9), `<Stałe tryby lokalizacji
 włącz>` (F3), `<Orto włącz>`, `<Biegunowy włącz>` (F10), `<Śledzenie lokalizacji włącz>` (F11)
 and `<Siatka włącz>` (F7), each with `wyłącz`; Selection Cycling `<Wybieranie cykliczne
-włączone>` and `wyłączone`; Esc `*Anulowano*`. Polar along Z writes `Biegunowy: 3.5966 < +Z` and
+włączone>` and `wyłączone`; Esc `*Anulowano*`. The F6 echo, ` <Dynamiczny LUW włączony>` /
+` <Dynamiczny LUW wyłączony>`, is composed from table 33750's `Dynamiczny LUW` and the other
+aids' echoes; **unverified** (the desktop pass, ucs/d11, was in English; no table holds it).
+Polar along Z writes `Biegunowy: 3.5966 < +Z` and
 `… < -Z` (LINE from 0,0,0 in SW isometric, names/d02), in the plane `Biegunowy: 2.5010 < 0°`. The
 ViewCube's faces are drawn in capitals, GÓRA, DÓŁ, PRZÓD, TYŁ, LEWO, PRAWO (where AcVMToolsRes
 632 says «Wstecz»), its compass `Pn`, `W`, `Pd`, `Z`, the UCS menu `GUW`, `Nowy GUW`, `Nienazwany`

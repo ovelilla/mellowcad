@@ -3691,6 +3691,18 @@ export const ru: EngineLocale = {
       "polar": "Расстояние<Угол"
     },
     "messages": {
+      "dynamicUcsMode": [
+        " <Динамическая ПСК ",
+        [
+          "state",
+          1,
+          {
+            "on": "вкл.",
+            "other": "откл."
+          }
+        ],
+        ">"
+      ],
       "cannotTrimPolygonMesh": "Полигональные сети\nНевозможно применить команду ОБРЕЗАТЬ к этому объекту.",
       "cannotExtendPolygonMesh": "Полигональные сети\nЭтот объект невозможно УДЛИНИТЬ.",
       "polygonMeshNoCoordinateSystem": "Объект ЗD полигональная сеть не определяет систему координат",

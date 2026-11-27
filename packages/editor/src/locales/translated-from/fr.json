@@ -833,6 +833,7 @@
   "CommandLine.close": "Close",
   "CommandLine.recentCommands": "Recent Commands",
   "DynamicInput.locked": "locked",
+  "StatusBar.dynamicUcs": "Dynamic UCS",
   "StatusBar.coordinates": "Coordinates",
   "StatusBar.model": "MODEL",
   "StatusBar.modelSpace": "Model space",

@@ -226,7 +226,10 @@ orthographic Bottom (`Unten`). Where one id still serves two wordings, one comma
 The drafting toggles are composed by AutoCAD and in no table, so the German desktop settled them
 (names/d01, 13/11/2026, `/language de-DE`): `<Fang ein>` (F9), `<Ofang ein>` (F3), `<Ortho ein>`,
 `<Polar ein>`, `<Objektfangspur ein>` (F11) and `<Raster ein>`, each with `aus`; Selection
-Cycling words its two lines apart, `<Wechselnde Auswahl ein>` and `<Auswahl wechseln aus>`. Held
+Cycling words its two lines apart, `<Wechselnde Auswahl ein>` and `<Auswahl wechseln aus>`. The
+F6 echo, ` <Dynamisches BKS ein>` / ` <Dynamisches BKS aus>`, is composed from table 33750's
+`Dynamisches BKS` and the other aids' echoes; **unverified** (the desktop pass, ucs/d11, was in
+English; no table holds it). Held
 by `germanPrompts.test.ts`. Polar along Z writes `Polar: 6.6533 < +Z` and `Polar: 6.5589 < -Z`
 (LINIE from 0,0,0 in ISO-Ansicht SW, names/d02), `feedback.polarZ`'s form. The ViewCube's faces
 OBEN, UNTEN, VORNE, HINTEN, LINKS, RECHTS, the compass N, O, S, W, the UCS menu `WKS`, `Neues

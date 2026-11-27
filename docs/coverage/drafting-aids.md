@@ -397,6 +397,37 @@ last undo step (see Object snaps) — WHY F4 as well: browsers keep Ctrl+W
 a click after Shift+Space opens the list again (**unverified**: d12-7 opened it, but the probe's
 click moves the cursor first, which restarts the stack)
 
+### Dynamic UCS (F6) · UCSDETECT
+
+**Implemented:** on by default (UCSDETECT 1, a registry variable: it lasts the session; typed as a
+variable, SETVAR, 0 or 1, transparent, ucs/p519); F6 and the status bar's Dynamic UCS (es `SCP
+dinámico`, table 33750), which the bar leaves out until Customization shows it, as AutoCAD's does,
+toggle it, writing ` <Dynamic UCS on>` / ` <Dynamic UCS off>` (desktop ucs/d11, the English
+profile's; in no table) and taken back with the last undo step (see Object snaps). At the first
+point of a command that draws (LINE and BOX on the desktop, d11-2, d11-6; PLINE, 3DPOLY, XLINE,
+RAY, POINT, CIRCLE, ARC, ELLIPSE, SPLINE, RECTANG, POLYGON, TEXT, MTEXT and the other primitives
+the help's "while creating an object", **unverified** one by one), the planar face of a solid under
+the cursor lays the work plane, as UCS Face lays the UCS (`docs/coverage/coordinate-systems.md`):
+the face's edges glow blue and the UCS icon shows it at the cursor (d11-1, d11-2); the point picked
+holds it, its icon there, until the command ends, its later points off the face still on that
+plane (d11-3: a line from the box's front face to the empty space beside it lies in the face's
+plane), and the UCS is as it was after. Never at a later prompt (d11-4), at a command that draws
+nothing (MOVE's base point, d11-5), on a curved face (About Aligning the UCS Dynamically With
+Faces), nor where the cursor has not moved over the face: a point typed without moving it is read
+in the UCS, as the console's, which has no cursor.
+
+**Missing:** the crosshair turned to the face's axes (here it stays upright on the screen, as with
+any UCS: coordinate-systems.md); planar mesh elements and point cloud segments (there are none
+here); 3DALIGN, 3DMOVE's Respect Dynamic UCS and the other commands the
+help names with it, and those that draw here but are left out (SOLID, 3DFACE, LEADER, WIPEOUT,
+INSERT, the dimensions: **unverified** whether AutoCAD serves them); **unverified** the other
+languages' ` <… on>` wording (`docs/i18n/<tag>.md`), whether a point typed with the cursor over a
+face is read in the face's UCS, whether LINE's Undo back to its first point lets another face be
+acquired (here the plane stays), and whether OTRACK's acquired points survive the cursor crossing
+from one face to another (here they go, as with any UCS changed); F6 or UCSDETECT 0 once a point
+holds the face's plane leaves it to the command's end, a transparent command reads in the UCS
+(both **unverified**)
+
 ### Selecting with no command
 
 **Implemented:** PICKADD at its default 2: a pick adds its object to the set, Shift+pick removes it

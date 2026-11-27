@@ -40,7 +40,12 @@ import {
 
 import { IconAction } from "./toolbar-primitives"
 import { DecimalInput } from "./decimal-input"
-import { LineweightIcon, SelectionCyclingIcon, SnapModeIcon } from "./icons"
+import {
+  DynamicUcsIcon,
+  LineweightIcon,
+  SelectionCyclingIcon,
+  SnapModeIcon,
+} from "./icons"
 import { useEditorText } from "./editor-text"
 import type { PieceProps } from "./piece"
 
@@ -104,6 +109,7 @@ export function StatusBar({
     osnap: t("objectSnap"),
     lineweight: t("showLineweight"),
     cycling: t("selectionCycling"),
+    dynamicUcs: t("dynamicUcs"),
     units: t("units"),
     cleanScreen: t("cleanScreen"),
   }
@@ -266,6 +272,17 @@ export function StatusBar({
                 <Menu.CheckboxItemIndicator>{CHECK}</Menu.CheckboxItemIndicator>
               </Menu.CheckboxItem>
             </MenuMode>
+          )}
+          {shows("dynamicUcs") && (
+            <IconAction
+              icon={DynamicUcsIcon}
+              label={names.dynamicUcs}
+              shortcut="F6"
+              side="top"
+              size="status"
+              active={state.dynamicUcsActive}
+              onClick={() => engine.toggleDynamicUcs()}
+            />
           )}
           {/* WHY the unit and the dialog: AutoCAD's Units shows the length
             format and a right-click changes it; Decimal is the only format

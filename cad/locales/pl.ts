@@ -3699,6 +3699,18 @@ export const pl: EngineLocale = {
       "polar": "Odl<Kąt"
     },
     "messages": {
+      "dynamicUcsMode": [
+        " <Dynamiczny LUW ",
+        [
+          "state",
+          1,
+          {
+            "on": "włączony",
+            "other": "wyłączony"
+          }
+        ],
+        ">"
+      ],
       "cannotTrimPolygonMesh": "Siatka wielokątna\nNie można PRZYCIĄĆ tego obiektu.",
       "cannotExtendPolygonMesh": "Siatka wielokątna\nNie można wydłużyć tego obiektu.",
       "polygonMeshNoCoordinateSystem": "Siatka wielokątna 3D nie definiuje układu współrzędnych",

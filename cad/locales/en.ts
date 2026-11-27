@@ -2911,6 +2911,18 @@ export const en: EngineCatalog = {
       "polar": "Dist<Ang"
     },
     "messages": {
+      "dynamicUcsMode": [
+        " <Dynamic UCS ",
+        [
+          "state",
+          1,
+          {
+            "on": "on",
+            "other": "off"
+          }
+        ],
+        ">"
+      ],
       "unknownCommand": [
         "Unknown command \"",
         [

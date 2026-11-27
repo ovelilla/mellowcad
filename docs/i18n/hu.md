@@ -126,7 +126,10 @@ them (names/d01, 19/11/2026, `/language hu-HU`): `<Raszter Be>` (F9), `<Traszter
 `<Orto Be>`, `<Poláris Be>` (F10), `<Tárgyraszterkövetés Be>` (F11) and `<Háló Be>` (F7), each
 with `Ki`; Selection Cycling `<Ciklikus kiválasztás bekapcsolva>` and `<Ciklikus kiválasztás
 ki>`; Esc `*Megszakítva*`; an unknown command `A(z) "X" ismeretlen parancs. Információért nyomja
-meg az F1 billentyűt.` Polar along Z writes `Poláris: 6.3230 < +Z` and `… < -Z` (LINE from 0,0,0
+meg az F1 billentyűt.` The F6 echo, ` <Dinamikus FKR bekapcsolva>` / ` <Dinamikus FKR ki>`, is
+composed from table 33750's `Dinamikus FKR` and the other aids' echoes; **unverified** (the
+desktop pass, ucs/d11, was in English; no table holds it). Polar along Z writes
+`Poláris: 6.3230 < +Z` and `… < -Z` (LINE from 0,0,0
 in SW isometric, names/d02), in the plane `Poláris: 5.5735 < 0°`. The ViewCube's faces are drawn in
 capitals, FELÜL, ELÖL, HÁTUL, BAL, JOBB (ALUL, AcVMToolsRes 630, is the face no view showed), its
 compass `É`, `K`, `D`, `NY`, the UCS menu `VKR`, `Névtelen` (names/d05). The ribbon's Home tab is

@@ -3650,6 +3650,18 @@ export const hu: EngineLocale = {
       "polar": "Táv<Szög"
     },
     "messages": {
+      "dynamicUcsMode": [
+        " <Dinamikus FKR ",
+        [
+          "state",
+          1,
+          {
+            "on": "bekapcsolva",
+            "other": "ki"
+          }
+        ],
+        ">"
+      ],
       "cannotTrimPolygonMesh": "poligonháló\nAz objektum nem METSZhető el.",
       "cannotExtendPolygonMesh": "poligonháló\nAz objektumra nem alkalmazható az ELÉR parancs.",
       "polygonMeshNoCoordinateSystem": "3D poligonháló objektum nem határoz meg koordináta-rendszert",

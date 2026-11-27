@@ -26,7 +26,7 @@ Le moteur la dessine et écrit son historique tel que vous le taperiez : les in
 
 ### `Face` (`F`) [#face]
 
-Aligne le SCU sur une face d'un solide : la face sous le curseur s'éclaire et l'icône du SCU montre où irait le SCU, et un clic le prend, l'origine au point désigné et Z sortant du solide. X suit l'arête de la face la plus proche de l'endroit où le curseur y est entré, ou reste horizontal là où cette arête est verticale. Ensuite, `Suivant` passe à la face suivante derrière elle le long de votre ligne de visée (sur une arête, à son autre face), `inverserX` et `inverserY` font faire au SCU un demi-tour autour de son axe X ou Y, et Entrée l'accepte. Un point sous lequel il n'y a aucune face de solide affiche `Aucun solide ou maillage ni aucune surface 3D n'ont été détectés.`.
+Aligne le SCU sur une face d'un solide : la face sous le curseur s'éclaire et l'icône du SCU montre où irait le SCU, et un clic le prend, l'origine au point désigné et Z sortant du solide. X suit l'arête de la face la plus proche de l'endroit où le curseur y est entré, ou reste horizontal là où cette arête est verticale. Ensuite, `Suivant` passe à la face suivante derrière elle le long de votre ligne de visée (sur une arête, à son autre face), `inverserX` et `inverserY` font faire au SCU un demi-tour autour de son axe X ou Y, et Entrée l'accepte. Un point sous lequel il n'y a aucune face de solide affiche `Aucun solide ou maillage ni aucune surface 3D n'ont été détectés.`, et SCU se termine.
 
 ### `NOmmé` (`NO`) [#named]
 
@@ -66,7 +66,7 @@ Une nouvelle origine, Entrée gardant l'origine courante, puis un point sur la p
 
 ## Ce qu'elle ne fait pas encore [#missing]
 
-`Face` sur les surfaces et les maillages, que MellowCAD n'a pas, et ses modes fenêtre et trajet sur un solide. Appliquer et SEction, que la première invite accepte et qui sont refusées ici, puisqu'il n'y a qu'une fenêtre et pas d'objets de coupe. La boîte de dialogue SCU (GESTSCU), les poignées de l'icône et son menu contextuel, et l'icône montrant le nouveau SCU pendant que vous le placez. Le réticule qui tourne avec le SCU : il reste droit à l'écran jusqu'à ce que [`REPERE`](/docs/commands/plan) aligne la vue sur lui. UCSFOLLOW, UCSVP et le SCU dynamique. `OBjet` sur une cote, et Groupe à sa désignation. La profondeur que garde un SCU orthogonal. La pause, Appuyez sur ENTREE pour continuer, dans une longue liste.
+`Face` sur les surfaces et les maillages, que MellowCAD n'a pas, et ses modes fenêtre et trajet sur un solide. Appliquer et SEction, que la première invite accepte et qui sont refusées ici, puisqu'il n'y a qu'une fenêtre et pas d'objets de coupe. La boîte de dialogue SCU (GESTSCU), les poignées de l'icône et son menu contextuel, et l'icône montrant le nouveau SCU pendant que vous le placez. Le réticule qui tourne avec le SCU : il reste droit à l'écran jusqu'à ce que [`REPERE`](/docs/commands/plan) aligne la vue sur lui. UCSFOLLOW et UCSVP. `OBjet` sur une cote, et Groupe à sa désignation. La profondeur que garde un SCU orthogonal. La pause, Appuyez sur ENTREE pour continuer, dans une longue liste.
 
 [Ce qu'elle fait et ce qui lui manque, en détail (en anglais)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/coordinate-systems.md#ucs--es-scp--pt-br-ucs--ucsdd--fr-scu--dducs--it-ucs--dducs--de-bks--dducs--ru-пск--диалпск--pl-luw--cs-uss--hu-fkr--dpfkr)
 
