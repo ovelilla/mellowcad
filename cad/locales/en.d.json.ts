@@ -24,6 +24,7 @@ declare const source: {
       "rectangle": string
       "polygon": string
       "hatch": string
+      "hatchedit": string
       "block": string
       "insert": string
       "attedit": string
@@ -639,6 +640,7 @@ declare const source: {
       "POLYGON": string[]
       "HATCH": string[]
       "-HATCH": string[]
+      "-HATCHEDIT": string[]
       "BLOCK": string[]
       "-BLOCK": string[]
       "INSERT": string[]
@@ -1068,6 +1070,13 @@ declare const source: {
         "Solid": string
         "Undo": string
         "Pick internal point": string
+      }
+      "-HATCHEDIT": {
+        "DIsassociate": string
+        "Properties": string
+        "CAncel": string
+        "?": string
+        "Solid": string
       }
       "INSERT": {
         "?": string
@@ -1866,6 +1875,14 @@ declare const source: {
       "patternName": string
       "patternScale": string
       "patternAngle": string
+      "patternScaleVaries": string
+      "patternAngleVaries": string
+      "selectHatchObjects": string
+      "enterHatchOption": string
+      "enterHatchOptionSet": string
+      "hatchOptionSetDefault": string
+      "hatchPatternVaries": string
+      "hatchValueVaries": string
       "blockName": string
       "blockExists": string
       "redefineIt": string
@@ -2289,6 +2306,7 @@ declare const source: {
       "alignArrayedItemsToPath": string
       "specifyInternalPointOr": string
       "enterPatternNameOr": string
+      "enterPatternNameOrVaries": string
       "specifyStartPointOfText": string
       "specifyStartPointOfTextOr": string
       "specifyCenterPointOfText": string
@@ -2516,6 +2534,8 @@ declare const source: {
     "promptForms": {
       "specifySideToOffset": string
       "convertToPolylines": string
+      "enterPatternNameOrVaries": string
+      "patternAngleVaries": string
       "currentLayerOff": string
       "purgeBlock": string
       "purgeLinetype": string
@@ -2533,6 +2553,8 @@ declare const source: {
       "solidHeightTopOr": string
     }
     "answerForms": {
+      "patternScaleVaries": string
+      "patternAngleVaries": string
       "dimStyleRedefine": string
       "mredoCount": string
       "presspullHeightOr": string
@@ -2722,6 +2744,8 @@ declare const source: {
       "blockUndefined": string
       "insertXref": string
       "hatchPatternUnknown": string
+      "hatchObjectRequired": string
+      "hatchObjectsRemoved": string
       "hatchTooDense": string
       "hatchNoBoundary": string
       "noBoundaryToUndo": string
@@ -3541,6 +3565,10 @@ declare const source: {
         "Select objects": string
         "Pick internal point": string
       }
+      "-HATCHEDIT": {
+        "DIsassociate": string
+        "Properties": string
+      }
       "BREAK": {
         "First point": string
       }
@@ -3616,6 +3644,10 @@ declare const source: {
       }
       "peditMeshOption": {
         "Edit vertex": string
+      }
+      "enterHatchOptionSet": {
+        "DIsassociate": string
+        "Properties": string
       }
     }
     "listing": {

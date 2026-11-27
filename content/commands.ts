@@ -129,6 +129,7 @@ export const COMMAND_FILING: Readonly<Record<string, Filing>> = {
   BREAKATPOINT: { group: "modify" },
   SPLINEDIT: { group: "modify" },
   PEDIT: { group: "modify" },
+  "-HATCHEDIT": { group: "modify" },
   ERASE: { group: "modify" },
   MATCHPROP: { group: "modify" },
   CHPROP: { group: "modify" },

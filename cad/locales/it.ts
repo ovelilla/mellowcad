@@ -28,6 +28,7 @@ export const it: EngineLocale = {
       "rectangle": "Rettangolo",
       "polygon": "Poligono",
       "hatch": "Tratteggio",
+      "hatchedit": "Edita tratteggio (riga di comando)",
       "block": "Crea blocco",
       "insert": "Inserisci blocco",
       "attedit": "Edita attributi",
@@ -951,6 +952,9 @@ export const it: EngineLocale = {
         "-TRATTEGGIO",
         "-RE"
       ],
+      "-HATCHEDIT": [
+        "-EDITATRATT"
+      ],
       "BLOCK": [
         "BLOCCO",
         "B",
@@ -1782,6 +1786,13 @@ export const it: EngineLocale = {
         "Undo": "ANnulla",
         "Pick internal point": "SCegli"
       },
+      "-HATCHEDIT": {
+        "DIsassociate": "DIssocia",
+        "Properties": "Proprietà",
+        "CAncel": "Annulla",
+        "?": "?",
+        "Solid": "Solido"
+      },
       "INSERT": {
         "?": "?",
         "Scale": "Scala",
@@ -2598,6 +2609,14 @@ export const it: EngineLocale = {
       "patternName": "Digitare un nome di modello",
       "patternScale": "Specificare una scala per il modello",
       "patternAngle": "Specificare un angolo per il modello",
+      "patternScaleVaries": "Specificare una scala per il modello",
+      "patternAngleVaries": "Specificare un angolo per il modello",
+      "selectHatchObjects": "Selezionare oggetti tratteggio",
+      "enterHatchOption": "Digitare un'opzione di tratteggio",
+      "enterHatchOptionSet": "Digitare opzione di tratteggio",
+      "hatchOptionSetDefault": "Proprietà",
+      "hatchPatternVaries": "varie",
+      "hatchValueVaries": "varie",
       "blockName": "Digitare nome del blocco o",
       "blockExists": [
         "Il blocco \"",
@@ -3100,6 +3119,7 @@ export const it: EngineLocale = {
       "alignArrayedItemsToPath": "Allineare gli oggetti disposti in serie alla traiettoria?",
       "specifyInternalPointOr": "Specificare il punto interno o",
       "enterPatternNameOr": "Digitare un nome di modello o",
+      "enterPatternNameOrVaries": "Digitare un nome di modello o",
       "specifyStartPointOfText": "Specificare il punto iniziale del testo",
       "specifyStartPointOfTextOr": "Specificare il punto iniziale del testo o",
       "specifyCenterPointOfText": "Specificare il centro del testo",
@@ -3344,9 +3364,13 @@ export const it: EngineLocale = {
       "undoEverything": "open",
       "viewOrthographic": "spaced",
       "sliceStartOr": "spaced",
-      "solidHeightTopOr": "spaced"
+      "solidHeightTopOr": "spaced",
+      "enterPatternNameOrVaries": "open",
+      "patternAngleVaries": "spaced"
     },
     "answerForms": {
+      "patternScaleVaries": "spaced",
+      "patternAngleVaries": "spaced",
       "dimStyleRedefine": "tight",
       "mredoCount": "spaced",
       "presspullHeightOr": "tight",
@@ -4366,6 +4390,13 @@ export const it: EngineLocale = {
       ],
       "insertXref": "** Errore: impossibile inserire xrif. Usare XRIF Attacca.",
       "hatchPatternUnknown": "Il nome del modello è sconosciuto.",
+      "hatchObjectRequired": "L'oggetto selezionato deve essere un oggetto di tratteggio.",
+      "hatchObjectsRemoved": [
+        [
+          "count"
+        ],
+        " oggetti rimossi dal gruppo di selezione."
+      ],
       "hatchTooDense": "La spaziatura del tratteggio è troppo fitta oppure le dimensioni del trattino sono troppo ridotte.",
       "hatchNoBoundary": "Non è stato trovato un contorno del tratteggio valido.",
       "noBoundaryToUndo": "Nessun contorno da annullare.",
@@ -9229,6 +9260,10 @@ export const it: EngineLocale = {
         "Select objects": "Seleziona oggetti",
         "Pick internal point": "SCegli punto interno"
       },
+      "-HATCHEDIT": {
+        "DIsassociate": "DIssocia",
+        "Properties": "Proprietà"
+      },
       "BREAK": {
         "First point": "Primo punto"
       },
@@ -9304,6 +9339,10 @@ export const it: EngineLocale = {
       },
       "peditMultipleOption": {
         "Ltype gen": "Tipolinea gen."
+      },
+      "enterHatchOptionSet": {
+        "DIsassociate": "Dissocia",
+        "Properties": "Proprietà"
       }
     },
     "listing": {

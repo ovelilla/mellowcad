@@ -28,6 +28,7 @@ export const zhTW: EngineLocale = {
       "rectangle": "矩形",
       "polygon": "多邊形",
       "hatch": "填充線",
+      "hatchedit": "填充線編輯(指令行)",
       "block": "建立圖塊",
       "insert": "插入圖塊",
       "attedit": "編輯屬性",

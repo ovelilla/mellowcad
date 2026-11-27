@@ -11,6 +11,8 @@ HATCH fills a closed area with a pattern of lines, or solid. Pick a point inside
 
 While it runs, the ribbon shows the Hatch Creation tab, as AutoCAD's does: Pick Points and Select, the pattern gallery, Type (Solid or Pattern), Angle, Scale and Close Hatch Creation. With the ribbon closed AutoCAD opens the Hatch and Gradient dialog, which MellowCAD does not have: there HATCH asks at the command line what `-HATCH` asks, the pattern under `Properties`. Escape keeps the hatch, where under `-HATCH` it drops the areas. Each hatch starts with the pattern, scale and angle the last one was given: ANGLE, at scale 1 and angle 0, in a new drawing.
 
+Select hatches and the ribbon shows the Hatch Editor tab, as AutoCAD's does: a pattern, Type, Angle or Scale picked there changes them through -HATCHEDIT, which can be typed too, the hatches staying selected; Close Hatch Editor lets them go.
+
 - **Command:** `HATCH`
 - **Aliases:** `H`, `BH`, `BHATCH`
 - **Panel:** [Draw](/docs/commands#draw)
@@ -40,7 +42,7 @@ Listed at the ribbon's prompt, and taken unlisted at `-HATCH`'s: it takes back t
 
 ## What it does not do yet [#missing]
 
-Ellipses and splines as boundaries: an area they close is not found, and a region with such an edge is left out. Gap tolerance (HPGAPTOL): an area must be closed exactly. Associative hatches, the Normal and Ignore island styles. Gradients, user-defined patterns and the rest of acadiso.pat's patterns are not made here: only a DXF's hatches bring them, gradients in their colours and patterns with their lines. -HATCH's other options: drawing a boundary, removing boundaries, Advanced, draw order, origin, annotative, colour, layer and transparency; the ribbon prompt's Draw and Settings. Of Hatch Creation, Remove and Recreate, the Gradient and User defined types, colours, transparency, origin and options. HATCHEDIT and the Hatch Editor, which a double-click opens in AutoCAD. MIRRHATCH 1: a mirrored hatch always keeps its pattern's angle. The menus of a hatch's grips.
+Ellipses and splines as boundaries: an area they close is not found, and a region with such an edge is left out. Gap tolerance (HPGAPTOL): an area must be closed exactly. Associative hatches, the Normal and Ignore island styles. Gradients, user-defined patterns and the rest of acadiso.pat's patterns are not made here: only a DXF's hatches bring them, gradients in their colours and patterns with their lines. -HATCH's other options: drawing a boundary, removing boundaries, Advanced, draw order, origin, annotative, colour, layer and transparency; the ribbon prompt's Draw and Settings. Of Hatch Creation, Remove and Recreate, the Gradient and User defined types, colours, transparency, origin and options. HATCHEDIT's dialog, and the double-click that opens the Hatch Editor in AutoCAD; of the Hatch Editor, the boundaries, colours, transparency, origin and options. MIRRHATCH 1: a mirrored hatch always keeps its pattern's angle. The menus of a hatch's grips.
 
 [What it does and still lacks, in detail (in English)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#hatch--h--bh--bhatch--hatch---h---bh---bhatch--es-sombrea--sb--smb---smb--sombrea--pt-br-hachura--hc--hachura---h--fr-hachures--h--hachures---h--it-tratteggio--ptr--re--retino--tratteggio---re--de-schraff--gs--sch--schraff---sch--ru-штрих--штрих---ш--pl-kreskuj--kreskuj---kre--cs-šrafy--hs--sf--hšrafy--šrafy---hs---sf--hu-sraffoz--sf--sr--sraffoz---sf)
 

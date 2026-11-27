@@ -435,7 +435,8 @@ export interface ContextualTab {
    * (HATCHCREATION 1); Text Editor while MTEXT's or TEXTEDIT's in-place
    * editor is open on a multiline text (AcTextEditorInProgress); Array at
    * `Command:` with one array selected (AcRectangularAssociativeArraySelected
-   * and its polar and path twins).
+   * and its polar and path twins); Hatch Editor at `Command:` with hatches
+   * only selected (AcHatchSelected).
    */
   readonly id: ContextualTabId
   /** Each field's value as its prompt offers it, and whether it is greyed. */
@@ -467,6 +468,7 @@ export type ContextualTabId =
   | "arraySelectionRectangular"
   | "arraySelectionPolar"
   | "arraySelectionPath"
+  | "hatchEditor"
 
 /** A field of a contextual tab, by what it sets. */
 export type ContextualFieldId =
@@ -509,7 +511,9 @@ export interface ContextualFieldUi {
  * Method, Hatch Creation's pattern (a name in `HATCH_PATTERNS`), its Type or
  * how its boundaries are given (Pick Points, Select), Text Editor's style or
  * Justification, or the tab's Close. On the selection's Array tab, the same
- * edits act on the array selected, as its Properties palette rows do.
+ * edits act on the array selected, as its Properties palette rows do; on
+ * Hatch Editor a pattern, Type, Angle or Scale runs -HATCHEDIT on the hatches
+ * selected, its prompts written, and Close is its CAncel.
  */
 export type ContextualEdit =
   | { readonly field: ContextualFieldId; readonly text: string }

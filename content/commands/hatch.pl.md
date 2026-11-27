@@ -3,12 +3,14 @@ title: "Kreskowanie w AutoCADzie: polecenie KRESKUJ (HATCH)"
 metaTitle: "Kreskowanie w AutoCADzie: polecenie KRESKUJ"
 description: "Jak kreskować w AutoCADzie poleceniem KRESKUJ (HATCH), monit po monicie: punkt wewnątrz lub obiekty obwiedni, wzór, skala, kąt, wyspy. Wypróbuj za darmo online."
 figure: "Prostokąt z okręgiem w środku, zakreskowany wzorem ANSI31 z jednego punktu wewnątrz: okrąg zostaje pusty jako wyspa."
-sourceHash: "c7c3effeb1c0"
+sourceHash: "e0fc9a2fa81f"
 ---
 
 Polecenie KRESKUJ (HATCH) wypełnia zamknięty obszar wzorem linii albo jednolicie. Wskaż punkt wewnątrz obszaru, a polecenie znajdzie jego obwiednię w otaczających go obiektach, pozostawiając puste to, co leży w środku, jako wyspę – okrąg w prostokącie, tekst; albo wybierz obiekty, które go ograniczają. Wskaż tyle obszarów, ile chcesz: Enter lub Esc tworzy z nich wszystkich jedno kreskowanie, na bieżącej warstwie, pod swoją obwiednią. Całe polecenie to jeden krok cofania.
 
 Podczas działania polecenia wstążka pokazuje kartę kontekstową Tworzenie kreskowania, tak jak w AutoCADzie: Wskaż punkty i Wybierz, galerię wzorów, Typ kreskowania (Bryła lub Wzór), Kąt, Skala wzoru kreskowania i Zakończ tryb tworzenia kreskowania. Przy zamkniętej wstążce AutoCAD otwiera okno dialogowe Kreskowanie i wypełnienie, którego MellowCAD nie ma: wtedy KRESKUJ pyta w wierszu polecenia o to, o co pyta polecenie <Command id="-HATCH" />, wzór w opcji <Keyword id="Properties" />. Klawisz Esc zachowuje kreskowanie, a w poleceniu <Command id="-HATCH" /> porzuca obszary. Każde kreskowanie zaczyna od wzoru, skali i kąta, jakie dostało ostatnie: w nowym rysunku ANGLE, w skali 1 i pod kątem 0.
+
+Gdy wybrane są kreskowania, wstążka pokazuje kartę Edytor kreskowania, tak jak w AutoCADzie: wybrany tam wzór, typ, kąt lub skala zmienia je poleceniem -EDKRESK, które można też wpisać, a kreskowania pozostają wybrane; Zamknij Edytor kreskowania je zwalnia.
 
 ## Options
 
@@ -28,7 +30,7 @@ Jest na liście przy monicie wstążki, a przy monicie polecenia <Command id="-H
 
 ## Missing
 
-Elipsy i splajny jako obwiednie: obszar, który zamykają, nie jest znajdowany, a region z taką krawędzią jest pomijany. Tolerancja przerwy (HPGAPTOL): obszar musi być dokładnie zamknięty. Kreskowania skojarzone, style wysp Normalny i Ignoruj. Gradienty, wzory użytkownika i reszta wzorów z acadiso.pat nie powstają tutaj: przynoszą je tylko kreskowania z pliku DXF, gradienty w swoich kolorach, a wzory wraz z liniami. Pozostałe opcje polecenia -KRESKUJ: rysowanie obwiedni, usuwanie obwiedni, Zaawansowane, porządek wyświetlania, początek, opisowe, kolor, warstwa i przezroczystość; opcje Rysuj i Ustawienia monitu wstążki. Z karty Tworzenie kreskowania: Usuń i Odtwórz, typy Gradient i Użytkownika, kolory, przezroczystość, początek i opcje. Polecenie EDKRESK i Edytor kreskowania, które w AutoCADzie otwiera dwukrotne kliknięcie. MIRRHATCH 1: odbite kreskowanie zawsze zachowuje kąt swojego wzoru. Menu uchwytów kreskowania.
+Elipsy i splajny jako obwiednie: obszar, który zamykają, nie jest znajdowany, a region z taką krawędzią jest pomijany. Tolerancja przerwy (HPGAPTOL): obszar musi być dokładnie zamknięty. Kreskowania skojarzone, style wysp Normalny i Ignoruj. Gradienty, wzory użytkownika i reszta wzorów z acadiso.pat nie powstają tutaj: przynoszą je tylko kreskowania z pliku DXF, gradienty w swoich kolorach, a wzory wraz z liniami. Pozostałe opcje polecenia -KRESKUJ: rysowanie obwiedni, usuwanie obwiedni, Zaawansowane, porządek wyświetlania, początek, opisowe, kolor, warstwa i przezroczystość; opcje Rysuj i Ustawienia monitu wstążki. Z karty Tworzenie kreskowania: Usuń i Odtwórz, typy Gradient i Użytkownika, kolory, przezroczystość, początek i opcje. Okno dialogowe polecenia EDKRESK i dwukrotne kliknięcie, które w AutoCADzie otwiera Edytor kreskowania; z tej karty obwiednie, kolory, przezroczystość, początek i opcje. MIRRHATCH 1: odbite kreskowanie zawsze zachowuje kąt swojego wzoru. Menu uchwytów kreskowania.
 
 ## Questions
 

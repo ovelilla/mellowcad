@@ -2,12 +2,14 @@
 title: "Hachura no AutoCAD: comando HACHURA (HATCH)"
 description: "Como funciona o HATCH do AutoCAD em português, HACHURA (alias HC): ponto interno ou objetos, padrão, escala, ângulo e ilhas. Experimente grátis online."
 figure: "Um retângulo com um círculo dentro, hachurado com ANSI31 a partir de um ponto interno: o círculo fica livre, como ilha."
-sourceHash: "c7c3effeb1c0"
+sourceHash: "e0fc9a2fa81f"
 ---
 
 O HATCH, HACHURA no AutoCAD em português, preenche uma área fechada com um padrão de linhas, ou sólido. Indique um ponto dentro da área e ele encontra o limite nos objetos ao redor, deixando livre como ilha o que está dentro — um círculo num retângulo, um texto —; ou selecione os objetos que a limitam. Indique quantas áreas quiser: Enter, ou Esc, faz uma só hachura de todas, na camada atual e atrás do seu limite. O comando inteiro é um passo que o Desfazer reverte.
 
 Enquanto ela é executada, a faixa de opções mostra a guia contextual Criação de hachura, como a do AutoCAD: Selecionar pontos e Selecionar, a galeria de padrões, Tipo de hachura (Sólido ou Padrão), Ângulo, Escala do padrão de hachura e Fechar Criação de hachura. Com a faixa de opções fechada, o AutoCAD abre a caixa de diálogo Hachura e Gradiente, que o MellowCAD não tem: aí a HACHURA pergunta na linha de comando o mesmo que o <Command id="-HATCH" />, com o padrão em <Keyword id="Properties" />. O Esc mantém a hachura, enquanto no <Command id="-HATCH" /> ele descarta as áreas. Cada hachura começa com o padrão, a escala e o ângulo dados à anterior: ANGLE, na escala 1 e ângulo 0, num desenho novo.
+
+Com hachuras selecionadas, a faixa de opções mostra a guia Editor de hachura, como a do AutoCAD: o padrão, o tipo, o ângulo ou a escala escolhidos ali os alteram com -EDITARHACH, que também pode ser digitado, e as hachuras continuam selecionadas; Fechar Editor de hachura as solta.
 
 ## Options
 
@@ -27,7 +29,7 @@ Aparece no prompt da faixa de opções, e é aceito sem aparecer no do <Command 
 
 ## Missing
 
-Elipses e splines como limite: uma área que elas fecham não é encontrada, e uma região com uma aresta assim fica de fora. Tolerância de lacunas (HPGAPTOL): a área tem que estar totalmente fechada. Hachuras associativas, os estilos de ilha Normal e Ignorar. Gradientes, padrões definidos pelo usuário e o resto dos padrões do acadiso.pat não são criados aqui: só as hachuras de um DXF os trazem, os gradientes nas suas cores e os padrões com as suas linhas. As outras opções do <Command id="-HATCH" />: desenhar um limite, remover limites, opções avançadas, ordem de desenho, origem, anotativo, cor, camada e transparência; as opções Desenhar e Configurações do prompt da faixa de opções. Da Criação de hachura, Remover e Recriar, os tipos Gradiente e Definido pelo usuário, as cores, a transparência, a origem e as opções. A edição de hachuras (`_HATCHEDIT`) e a sua guia contextual, que no AutoCAD um clique duplo abre. MIRRHATCH 1: uma hachura espelhada sempre mantém o ângulo do seu padrão. Os menus dos grips de uma hachura.
+Elipses e splines como limite: uma área que elas fecham não é encontrada, e uma região com uma aresta assim fica de fora. Tolerância de lacunas (HPGAPTOL): a área tem que estar totalmente fechada. Hachuras associativas, os estilos de ilha Normal e Ignorar. Gradientes, padrões definidos pelo usuário e o resto dos padrões do acadiso.pat não são criados aqui: só as hachuras de um DXF os trazem, os gradientes nas suas cores e os padrões com as suas linhas. As outras opções do <Command id="-HATCH" />: desenhar um limite, remover limites, opções avançadas, ordem de desenho, origem, anotativo, cor, camada e transparência; as opções Desenhar e Configurações do prompt da faixa de opções. Da Criação de hachura, Remover e Recriar, os tipos Gradiente e Definido pelo usuário, as cores, a transparência, a origem e as opções. A caixa de diálogo da edição de hachuras (`_HATCHEDIT`) e o clique duplo que no AutoCAD abre o Editor de hachura; dessa guia, os limites, as cores, a transparência, a origem e as opções. MIRRHATCH 1: uma hachura espelhada sempre mantém o ângulo do seu padrão. Os menus dos grips de uma hachura.
 
 ## Questions
 

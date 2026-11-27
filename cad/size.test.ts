@@ -42,9 +42,10 @@ const ISLAND_MAX_BYTES = 1 * KB
  * every command language, Hatch Creation's answers and its gallery's swatches (2026-11-26), to
  * 509 KB for Text Editor's tab, MTEXT's and TEXTEDIT's answers to it and its Text Style Change
  * dialog (2026-11-26), to 510 KB for the selection's Array tab and ARRAYPATH's count toggle
- * (2026-11-27).
+ * (2026-11-27), to 511 KB for -HATCHEDIT in every command language and the selection's Hatch
+ * Editor tab (2026-11-27).
  */
-const ENGINE_MAX_GZIP_BYTES = 510 * KB
+const ENGINE_MAX_GZIP_BYTES = 511 * KB
 
 /**
  * A language's catalog, gzipped, against English's, which the engine carries:

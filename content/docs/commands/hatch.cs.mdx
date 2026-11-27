@@ -11,6 +11,8 @@ Příkaz ŠRAFY (HATCH) vyplní uzavřenou oblast vzorem čar nebo plnou výpln�
 
 Během běhu příkazu ukazuje pás karet kontextovou kartu Vytváření šraf, stejně jako v AutoCADu: Vybrat body a Vyber, galerii vzorů, Typ šraf (Barva nebo Vzor), Úhel, Měřítko šrafovacího vzoru a Ukončit vytváření šraf. Se zavřeným pásem karet AutoCAD otevře dialog Šrafování a gradient, který MellowCAD nemá: tehdy se příkaz ŠRAFY na příkazovém řádku ptá na to, na co se ptá příkaz `-ŠRAFY`, vzor v možnosti `vLastnosti`. Klávesa Esc šrafy ponechá, kdežto v příkazu `-ŠRAFY` oblasti zahodí. Každé šrafy začínají se vzorem, měřítkem a úhlem, které dostaly poslední: v novém výkresu ANGLE, v měřítku 1 a pod úhlem 0.
 
+Jsou-li vybrány šrafy, pás karet ukáže kartu Editor šraf, stejně jako v AutoCADu: vzor, typ, úhel nebo měřítko zvolené na ní je změní příkazem -ŠRAFEDIT, který lze i napsat, a šrafy zůstanou vybrané; Ukončit Editor šraf výběr zruší.
+
 - **Příkaz:** `ŠRAFY`
 - **Anglicky:** `HATCH`, zadávaný jako `_HATCH` v libovolném jazyce
 - **Aliasy:** `HS`, `SF`, `HŠRAFY`
@@ -41,7 +43,7 @@ Ve výzvě pásu karet uvedena je, ve výzvě příkazu `-ŠRAFY` uvedena není,
 
 ## Co zatím neumí [#missing]
 
-Elipsy a spline jako hranice: oblast, kterou uzavírají, se nenajde a oblast vytvořená příkazem OBLAST s takovou hranou se vynechá. Tolerance mezer (HPGAPTOL): oblast musí být přesně uzavřená. Asociativní šrafy, styly šrafování Normální a Ignorovat. Gradienty, uživatelsky definované vzory a ostatní vzory z acadiso.pat se zde nevytvářejí: přinášejí je jen šrafy ze souboru DXF, gradienty v jejich barvách a vzory i s jejich čarami. Ostatní možnosti příkazu -ŠRAFY: nakreslení hranice, odebrání hranic, Pokročilé, pořadí kreslení, počátek, Poznámky, barva, hladina a průhlednost; možnosti Kreslit a Nastavení ve výzvě pásu karet. Z karty Vytváření šraf: Odebrat a Znovu vytvořit, typy Gradient a Uživatelsky definovaný, barvy, průhlednost, počátek a možnosti. Příkaz ŠRAFEDIT a Editor šraf, které v AutoCADu otevře dvojklik. MIRRHATCH 1: zrcadlené šrafy si vždy ponechají úhel svého vzoru. Nabídky uzlů šraf.
+Elipsy a spline jako hranice: oblast, kterou uzavírají, se nenajde a oblast vytvořená příkazem OBLAST s takovou hranou se vynechá. Tolerance mezer (HPGAPTOL): oblast musí být přesně uzavřená. Asociativní šrafy, styly šrafování Normální a Ignorovat. Gradienty, uživatelsky definované vzory a ostatní vzory z acadiso.pat se zde nevytvářejí: přinášejí je jen šrafy ze souboru DXF, gradienty v jejich barvách a vzory i s jejich čarami. Ostatní možnosti příkazu -ŠRAFY: nakreslení hranice, odebrání hranic, Pokročilé, pořadí kreslení, počátek, Poznámky, barva, hladina a průhlednost; možnosti Kreslit a Nastavení ve výzvě pásu karet. Z karty Vytváření šraf: Odebrat a Znovu vytvořit, typy Gradient a Uživatelsky definovaný, barvy, průhlednost, počátek a možnosti. Dialog příkazu ŠRAFEDIT a dvojklik, který v AutoCADu otevře Editor šraf; z této karty hranice, barvy, průhlednost, počátek a možnosti. MIRRHATCH 1: zrcadlené šrafy si vždy ponechají úhel svého vzoru. Nabídky uzlů šraf.
 
 [Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#hatch--h--bh--bhatch--hatch---h---bh---bhatch--es-sombrea--sb--smb---smb--sombrea--pt-br-hachura--hc--hachura---h--fr-hachures--h--hachures---h--it-tratteggio--ptr--re--retino--tratteggio---re--de-schraff--gs--sch--schraff---sch--ru-штрих--штрих---ш--pl-kreskuj--kreskuj---kre--cs-šrafy--hs--sf--hšrafy--šrafy---hs---sf--hu-sraffoz--sf--sr--sraffoz---sf)
 

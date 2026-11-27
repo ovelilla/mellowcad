@@ -27,6 +27,7 @@ export const en: EngineCatalog = {
       "rectangle": "Rectangle",
       "polygon": "Polygon",
       "hatch": "Hatch",
+      "hatchedit": "Hatch Edit (command line)",
       "block": "Create block",
       "insert": "Insert block",
       "attedit": "Edit attributes",
@@ -956,6 +957,9 @@ export const en: EngineCatalog = {
         "-BH",
         "-BHATCH"
       ],
+      "-HATCHEDIT": [
+        "-HATCHEDIT"
+      ],
       "BLOCK": [
         "BLOCK",
         "B",
@@ -1851,6 +1855,14 @@ export const en: EngineCatalog = {
       "patternName": "Enter a pattern name",
       "patternScale": "Specify a scale for the pattern",
       "patternAngle": "Specify an angle for the pattern",
+      "patternScaleVaries": "Specify a scale for the pattern",
+      "patternAngleVaries": "Specify an angle for the pattern",
+      "selectHatchObjects": "Select hatch objects",
+      "enterHatchOption": "Enter hatch option",
+      "enterHatchOptionSet": "Enter hatch option",
+      "hatchOptionSetDefault": "Properties",
+      "hatchPatternVaries": "varies",
+      "hatchValueVaries": "varies",
       "blockName": "Enter block name or",
       "blockExists": [
         "Block \"",
@@ -2353,6 +2365,7 @@ export const en: EngineCatalog = {
       "alignArrayedItemsToPath": "Align arrayed items to path?",
       "specifyInternalPointOr": "Specify internal point or",
       "enterPatternNameOr": "Enter a pattern name or",
+      "enterPatternNameOrVaries": "Enter a pattern name or",
       "specifyStartPointOfText": "Specify start point of text",
       "specifyStartPointOfTextOr": "Specify start point of text or",
       "specifyCenterPointOfText": "Specify center point of text",
@@ -2602,6 +2615,8 @@ export const en: EngineCatalog = {
     "promptForms": {
       "specifySideToOffset": "spaced",
       "convertToPolylines": "open",
+      "enterPatternNameOrVaries": "open",
+      "patternAngleVaries": "spaced",
       "currentLayerOff": "open",
       "purgeBlock": "open",
       "purgeLinetype": "open",
@@ -2619,6 +2634,8 @@ export const en: EngineCatalog = {
       "solidHeightTopOr": "spaced"
     },
     "answerForms": {
+      "patternScaleVaries": "spaced",
+      "patternAngleVaries": "spaced",
       "dimStyleRedefine": "tight",
       "mredoCount": "spaced",
       "presspullHeightOr": "tight",
@@ -3536,6 +3553,13 @@ export const en: EngineCatalog = {
       ],
       "insertXref": "** Error: Cannot INSERT an Xref. Use XREF Attach, instead.",
       "hatchPatternUnknown": "Unknown pattern name.",
+      "hatchObjectRequired": "Selected object must be a hatch object.",
+      "hatchObjectsRemoved": [
+        [
+          "count"
+        ],
+        " objects removed from selection set."
+      ],
       "hatchTooDense": "Hatch spacing too dense, or dash size too small.",
       "hatchNoBoundary": "Valid hatch boundary not found.",
       "noBoundaryToUndo": "No boundary to Undo.",
@@ -8492,6 +8516,10 @@ export const en: EngineCatalog = {
         "Select objects": "Select objects",
         "Pick internal point": "picK internal point"
       },
+      "-HATCHEDIT": {
+        "DIsassociate": "DIsassociate",
+        "Properties": "Properties"
+      },
       "BREAK": {
         "First point": "First point"
       },
@@ -8567,6 +8595,10 @@ export const en: EngineCatalog = {
       },
       "peditMeshOption": {
         "Edit vertex": "Edit vertex"
+      },
+      "enterHatchOptionSet": {
+        "DIsassociate": "DIsassociate",
+        "Properties": "Properties"
       }
     },
     "listing": {

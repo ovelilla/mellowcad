@@ -535,6 +535,9 @@ export const LARGE_BUTTON_ICONS: Readonly<Record<string, LargeIcon>> = {
   // Close: the check AutoCAD's Close buttons wear.
   arrayClose: largeIcon("ArrayClose", { d: ["M6 17 L13 24 L27 8"] }),
   hatchClose: largeIcon("HatchClose", { d: ["M6 17 L13 24 L27 8"] }),
+  hatchEditorClose: largeIcon("HatchEditorClose", {
+    d: ["M6 17 L13 24 L27 8"],
+  }),
   textClose: largeIcon("TextClose", { d: ["M6 17 L13 24 L27 8"] }),
   // Justification: an A in a frame with its nine attachment points' corners.
   textJustification: largeIcon("TextJustification", {

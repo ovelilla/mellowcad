@@ -28,6 +28,7 @@ export const ja: EngineLocale = {
       "rectangle": "長方形",
       "polygon": "ポリゴン",
       "hatch": "ハッチング",
+      "hatchedit": "ハッチング編集(コマンド ライン)",
       "block": "ブロック作成",
       "insert": "ブロック挿入",
       "attedit": "属性編集",

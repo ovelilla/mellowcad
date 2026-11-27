@@ -302,7 +302,8 @@ export declare class CadEngine {
      * value — a field's typed text, a toggle, a path array's Method — or the
      * tab's Close, which ends the command as its eXit does. A value its prompt
      * refuses is put back, nothing said. At `Command:`, the selection's tab
-     * (Array) acts on the object selected as its Properties row would.
+     * acts on the objects selected: Array's as its Properties row would, Hatch
+     * Editor's through -HATCHEDIT, as AutoCAD's macros run it.
      */
     editContextualTab(edit: ContextualEdit): void;
     /**
@@ -983,7 +984,9 @@ export type { ContextualEdit }
  * Method, Hatch Creation's pattern (a name in `HATCH_PATTERNS`), its Type or
  * how its boundaries are given (Pick Points, Select), Text Editor's style or
  * Justification, or the tab's Close. On the selection's Array tab, the same
- * edits act on the array selected, as its Properties palette rows do.
+ * edits act on the array selected, as its Properties palette rows do; on
+ * Hatch Editor a pattern, Type, Angle or Scale runs -HATCHEDIT on the hatches
+ * selected, its prompts written, and Close is its CAncel.
  */
 export type ContextualEdit = {
     readonly field: ContextualFieldId;
@@ -1026,7 +1029,8 @@ export interface ContextualTab {
      * (HATCHCREATION 1); Text Editor while MTEXT's or TEXTEDIT's in-place
      * editor is open on a multiline text (AcTextEditorInProgress); Array at
      * `Command:` with one array selected (AcRectangularAssociativeArraySelected
-     * and its polar and path twins).
+     * and its polar and path twins); Hatch Editor at `Command:` with hatches
+     * only selected (AcHatchSelected).
      */
     readonly id: ContextualTabId;
     /** Each field's value as its prompt offers it, and whether it is greyed. */
@@ -1048,7 +1052,7 @@ export interface ContextualTab {
 
 export type { ContextualTabId }
 /** The contextual tabs a command opens. */
-export type ContextualTabId = "arrayCreationRectangular" | "arrayCreationPolar" | "arrayCreationPath" | "hatchCreation" | "textEditor" | "arraySelectionRectangular" | "arraySelectionPolar" | "arraySelectionPath";
+export type ContextualTabId = "arrayCreationRectangular" | "arrayCreationPolar" | "arrayCreationPath" | "hatchCreation" | "textEditor" | "arraySelectionRectangular" | "arraySelectionPolar" | "arraySelectionPath" | "hatchEditor";
 
 export type { ContextualToggleId }
 /** A toggle of a contextual tab. */

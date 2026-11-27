@@ -74,7 +74,11 @@ is BAML, one `TaskDialog_<n>` block per dialog); `acad.cuix` names each item by 
 languages (`PopMenuRoot.cui` the shortcut menus, `RibbonRoot.cui` the ribbon's `Text`). For an
 installed pack the same DLLs sit in the install's `<culture>/` beside `en-US/`, and `acad.cuix` in
 `UserDataCache/<culture>/Support/`.
-`docs/i18n/pt-BR.md` cites them so. `node scripts/research/propose-interface.mjs --lang <tag>
+`docs/i18n/pt-BR.md` cites them so.
+What a ribbon control with no acad.cuix macro types (a contextual tab's gallery, box or list) is
+often a format string among AcWindows.dll's .NET user strings, UTF-16 beside its control's
+names: Hatch Editor's `'^R_-hatchedit\n_p\n{0}\n\n\n` (`docs/plans/autocad-ui.md`, §6, phase 6,
+block 5). Read them before asking the desktop. `node scripts/research/propose-interface.mjs --lang <tag>
 --catalog engine|editor [--like <tag>]` does that pairing for a whole catalog, by id, into
 `research/proposals/<tag>-<catalog>.md`: each English label's wordings with their sources, one
 word in several cases counted once, and `--like` settling a label as a language already in did.

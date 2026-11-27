@@ -28,6 +28,7 @@ export const pl: EngineLocale = {
       "rectangle": "Prostokąt",
       "polygon": "Wielobok",
       "hatch": "Kreskowanie",
+      "hatchedit": "Edycja kreskowania (wiersz poleceń)",
       "block": "Utwórz blok",
       "insert": "Wstaw blok",
       "attedit": "Edycja atrybutów",
@@ -1008,6 +1009,9 @@ export const pl: EngineLocale = {
         "-KRESKUJ",
         "-KRE"
       ],
+      "-HATCHEDIT": [
+        "-EDKRESK"
+      ],
       "BLOCK": [
         "BLOK",
         "B",
@@ -1832,6 +1836,13 @@ export const pl: EngineLocale = {
         "Undo": "Cofnij",
         "Pick internal point": "wSKaż"
       },
+      "-HATCHEDIT": {
+        "DIsassociate": "usuńZespolenie",
+        "Properties": "Właściwości",
+        "CAncel": "ANuluj",
+        "?": "?",
+        "Solid": "Pełny"
+      },
       "INSERT": {
         "?": "?",
         "Scale": "Skala",
@@ -2648,6 +2659,14 @@ export const pl: EngineLocale = {
       "patternName": "Wprowadź nazwę wzoru",
       "patternScale": "Określ skalę wzoru",
       "patternAngle": "Określ kąt obrotu wzoru",
+      "patternScaleVaries": "Określ skalę wzoru",
+      "patternAngleVaries": "Określ kąt dla wzoru",
+      "selectHatchObjects": "Wybierz obiekty typu kreskowanie",
+      "enterHatchOption": "Podaj opcję kreskowania",
+      "enterHatchOptionSet": "Podaj opcję kreskowania",
+      "hatchOptionSetDefault": "Właściwości",
+      "hatchPatternVaries": "różne",
+      "hatchValueVaries": "różne",
       "blockName": "Podaj nazwę bloku lub",
       "blockExists": [
         "Blok \"",
@@ -3150,6 +3169,7 @@ export const pl: EngineLocale = {
       "alignArrayedItemsToPath": "Czy dopasować elementy w szyku do ścieżki?",
       "specifyInternalPointOr": "Określ punkt wewnętrzny lub",
       "enterPatternNameOr": "Wprowadź nazwę wzoru lub",
+      "enterPatternNameOrVaries": "Podaj nazwę wzoru lub",
       "specifyStartPointOfText": "Określ punkt początkowy tekstu",
       "specifyStartPointOfTextOr": "Określ punkt początkowy tekstu lub",
       "specifyCenterPointOfText": "Określ punkt środkowy tekstu",
@@ -3394,9 +3414,13 @@ export const pl: EngineLocale = {
       "undoEverything": "open",
       "viewOrthographic": "spaced",
       "sliceStartOr": "spaced",
-      "solidHeightTopOr": "spaced"
+      "solidHeightTopOr": "spaced",
+      "enterPatternNameOrVaries": "open",
+      "patternAngleVaries": "spaced"
     },
     "answerForms": {
+      "patternScaleVaries": "spaced",
+      "patternAngleVaries": "spaced",
       "dimStyleRedefine": "tight",
       "mredoCount": "spaced",
       "presspullHeightOr": "tight",
@@ -4497,6 +4521,13 @@ export const pl: EngineLocale = {
       ],
       "insertXref": "** Błąd: Nie można WSTAWIĆ odnośnika zewnętrznego; użyj polecenia ODNOŚNIK Dołącz.",
       "hatchPatternUnknown": "Nieznana nazwa wzoru.",
+      "hatchObjectRequired": "Wybrany obiekt musi być obiektem kreskowania.",
+      "hatchObjectsRemoved": [
+        "Liczba usuniętych obiektów ze zbioru wskazań: ",
+        [
+          "count"
+        ]
+      ],
       "hatchTooDense": "Kreskowanie jest zbyt gęste lub rozmiar kreski zbyt mały.",
       "hatchNoBoundary": "Nie znaleziono prawidłowej obwiedni kreskowania.",
       "noBoundaryToUndo": "Brak obwiedni do cofnięcia.",
@@ -9357,6 +9388,10 @@ export const pl: EngineLocale = {
         "Select objects": "wyBierz obiekty",
         "Pick internal point": "wSKaż punkt wewnętrzny"
       },
+      "-HATCHEDIT": {
+        "DIsassociate": "usuń Zespolenie",
+        "Properties": "Właściwości"
+      },
       "BREAK": {
         "First point": "Pierwszy"
       },
@@ -9432,6 +9467,10 @@ export const pl: EngineLocale = {
       },
       "peditMultipleOption": {
         "Ltype gen": "rodzajLinii"
+      },
+      "enterHatchOptionSet": {
+        "DIsassociate": "usuń Zespolenie",
+        "Properties": "Właściwości"
       }
     },
     "listing": {

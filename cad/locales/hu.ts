@@ -28,6 +28,7 @@ export const hu: EngineLocale = {
       "rectangle": "Téglalap",
       "polygon": "Sokszög",
       "hatch": "Sraffozás",
+      "hatchedit": "Sraffozás módosítása (parancssor)",
       "block": "Blokk létrehozása",
       "insert": "Blokk beszúrása",
       "attedit": "Attribútumok szerkesztése",
@@ -950,6 +951,9 @@ export const hu: EngineLocale = {
         "-SRAFFOZ",
         "-SF"
       ],
+      "-HATCHEDIT": [
+        "-SRAFFEDIT"
+      ],
       "BLOCK": [
         "BLOKK",
         "B",
@@ -1782,6 +1786,13 @@ export const hu: EngineLocale = {
         "Undo": "Vissza",
         "Pick internal point": "kiJelölés"
       },
+      "-HATCHEDIT": {
+        "DIsassociate": "megSZüntetése",
+        "Properties": "Tulajdonságok",
+        "CAncel": "MÉgse",
+        "?": "?",
+        "Solid": "Tömör"
+      },
       "INSERT": {
         "?": "?",
         "Scale": "Lépték",
@@ -2598,6 +2609,14 @@ export const hu: EngineLocale = {
       "patternName": "Adja meg a minta nevét",
       "patternScale": "Adja meg a minta méretarányát",
       "patternAngle": "Adja meg a minta dőlésszögét",
+      "patternScaleVaries": "Adja meg a minta méretarányát",
+      "patternAngleVaries": "Adja meg a minta dőlésszögét",
+      "selectHatchObjects": "Válasszon sraffozási objektumokat",
+      "enterHatchOption": "Válasszon a sraffozási opciók közül",
+      "enterHatchOptionSet": "Válasszon a sraffozási opciók közül",
+      "hatchOptionSetDefault": "Tulajdonságok",
+      "hatchPatternVaries": "változó",
+      "hatchValueVaries": "változó",
       "blockName": "Adja meg a blokk nevét vagy",
       "blockExists": [
         "\"",
@@ -3101,6 +3120,7 @@ export const hu: EngineLocale = {
       "alignArrayedItemsToPath": "Kiosztott elemek illesztése az útvonalhoz?",
       "specifyInternalPointOr": "Adjon meg belső pontot, vagy",
       "enterPatternNameOr": "Adja meg a minta nevét, vagy",
+      "enterPatternNameOrVaries": "Adja meg a minta nevét, vagy",
       "specifyStartPointOfText": "Adja meg a szöveg kezdőpontját",
       "specifyStartPointOfTextOr": "Adja meg a szöveg kezdőpontját vagy",
       "specifyCenterPointOfText": "Adja meg a szöveg középpontját",
@@ -3345,9 +3365,13 @@ export const hu: EngineLocale = {
       "undoEverything": "open",
       "viewOrthographic": "spaced",
       "sliceStartOr": "spaced",
-      "solidHeightTopOr": "spaced"
+      "solidHeightTopOr": "spaced",
+      "enterPatternNameOrVaries": "open",
+      "patternAngleVaries": "spaced"
     },
     "answerForms": {
+      "patternScaleVaries": "spaced",
+      "patternAngleVaries": "spaced",
       "dimStyleRedefine": "tight",
       "mredoCount": "spaced",
       "presspullHeightOr": "tight",
@@ -4362,6 +4386,13 @@ export const hu: EngineLocale = {
       ],
       "insertXref": "** Hiba: Xref nem illeszthető be. Használja az XREF Illeszt parancsot.",
       "hatchPatternUnknown": "Ismeretlen mintanév.",
+      "hatchObjectRequired": "A választott objektumnak sraffozásnak kell lennie.",
+      "hatchObjectsRemoved": [
+        [
+          "count"
+        ],
+        " objektum el lett távolítva a kiválasztási halmazból."
+      ],
       "hatchTooDense": "A sraffozás túl sűrű, vagy a vonalak mérete túl kicsi.",
       "hatchNoBoundary": "Érvényes sraffozási határvonal nem található.",
       "noBoundaryToUndo": "Nincs Visszavonható határvonal.",
@@ -9216,6 +9247,10 @@ export const hu: EngineLocale = {
         "Select objects": "objektumok kiJelölése",
         "Pick internal point": "belső pont kiJelölése"
       },
+      "-HATCHEDIT": {
+        "DIsassociate": "asszociativitás megSZüntetése",
+        "Properties": "Tulajdonságok"
+      },
       "BREAK": {
         "First point": "Első pont"
       },
@@ -9291,6 +9326,10 @@ export const hu: EngineLocale = {
       },
       "peditMultipleOption": {
         "Ltype gen": "VTípus gen"
+      },
+      "enterHatchOptionSet": {
+        "DIsassociate": "asszociativitás megSZüntetése",
+        "Properties": "Tulajdonságok"
       }
     },
     "listing": {

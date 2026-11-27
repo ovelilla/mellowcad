@@ -216,12 +216,12 @@ describe("the ribbon's tooltips", () => {
 
   it("name the command in capitals, the one F1 asks Help for", () => {
     // Array Creation's, Hatch Creation's and Text Editor's `TT_…` name no
-    // command, nor does Close Hatch Creation's `^M` (MM_1928): their
-    // tooltips show none.
+    // command, nor do Close Hatch Creation's `^M` (MM_1928) and Close Hatch
+    // Editor's (MM_1932, no CLICommand): their tooltips show none.
     const commandless = Object.keys(words.tips).filter(
       (tip) => !(tip in words.tipCommands)
     )
-    expect(commandless).toHaveLength(31)
+    expect(commandless).toHaveLength(32)
     for (const tip of commandless)
       expect(tip).toMatch(/^(array|hatch|text)[A-Z]/)
     const commands = new Set(commandCatalog().map((command) => command.id))

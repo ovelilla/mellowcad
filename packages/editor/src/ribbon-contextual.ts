@@ -28,6 +28,11 @@ const CLOSE: RibbonPanel = {
  * gallery and height, Paragraph's Justification and Close; Annotative, Mask,
  * Formatting, Bullets and Numbering, Line Spacing, the paragraph alignments,
  * Insert, Spell Check, Tools and Options are not built (MTEXT's Missing).
+ * Hatch Editor, the selection's (RBN_01738281: hatches only selected), has
+ * Pattern, Properties' Type, Angle and Scale, and Close Hatch Editor, each
+ * running -HATCHEDIT on the selection as AutoCAD's does; Boundaries (Pick
+ * Points, Select, Remove, Recreate), the colours, Transparency, Origin and
+ * Options are not built (docs/coverage/draw.md, HATCH and -HATCHEDIT).
  * Array, the selection's (RBN_01740317, RBN_01740329, RBN_01740323), has
  * Type, the counts, spacings and Totals, a ring's Rotate Items and Direction
  * and a path's Method and Align Items: the array's Properties rows. Not drawn:
@@ -248,6 +253,27 @@ export const CONTEXTUAL_TABS: Readonly<Record<ContextualTabId, RibbonTab>> = {
         icon: "hatchClose",
         // Close Hatch Creation, `^M` (MM_1928): Enter.
         slots: [{ kind: "closeContextual", text: "hatchClose" }],
+      },
+    ],
+  },
+  hatchEditor: {
+    id: "hatchEditor",
+    panels: [
+      {
+        id: "hatchPattern",
+        icon: "hatch",
+        slots: [{ kind: "hatchPatterns" }],
+      },
+      {
+        id: "hatchProperties",
+        icon: "hatchProperties",
+        slots: [{ kind: "hatchProperties" }],
+      },
+      {
+        id: "hatchEditorClose",
+        icon: "hatchEditorClose",
+        // Close Hatch Editor, `^R^C^C_-HATCHEDIT _CA` (MM_1932).
+        slots: [{ kind: "closeContextual", text: "hatchEditorClose" }],
       },
     ],
   },

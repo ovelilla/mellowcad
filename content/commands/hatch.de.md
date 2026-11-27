@@ -2,12 +2,14 @@
 title: "Befehl SCHRAFF (HATCH) in AutoCAD"
 description: "Wie SCHRAFF (HATCH, Alias SCH, GS) in AutoCAD eine Fläche schraffiert, Schritt für Schritt: Punkt oder Objekte, Muster, Maßstab, Winkel, Inseln. Zum Testen."
 figure: "Ein Rechteck mit einem Kreis darin, mit ANSI31 von einem Punkt innerhalb schraffiert: Der Kreis bleibt frei, eine Insel."
-sourceHash: "c7c3effeb1c0"
+sourceHash: "e0fc9a2fa81f"
 ---
 
 SCHRAFF (HATCH) füllt eine geschlossene Fläche mit einem Linienmuster oder voll. Wählen Sie einen Punkt innerhalb der Fläche, und der Befehl findet die Begrenzung in den Objekten ringsum und lässt frei, was darin liegt, als Insel: einen Kreis in einem Rechteck, einen Text; oder wählen Sie die Objekte, die sie begrenzen. Wählen Sie beliebig viele Flächen: Die Eingabetaste oder Esc macht aus allen eine Schraffur, auf dem aktuellen Layer, hinter ihrer Begrenzung. Der ganze Befehl ist ein Rückgängig-Schritt.
 
 Während er läuft, zeigt die Multifunktionsleiste die Registerkarte „Schraffurerstellung“, wie die von AutoCAD: „Punkte wählen“ und „Wahl“, den Musterkatalog, „Schraffurtyp“ („Kompakt“ oder „Muster“), „Winkel“, „Schraffurmuster-Skalierung“ und „Schraffurerstellung schließen“. Bei geschlossener Multifunktionsleiste öffnet AutoCAD das Dialogfeld „Schraffur und Abstufung“, das MellowCAD nicht hat: Dort stellt SCHRAFF in der Befehlszeile dieselben Fragen wie <Command id="-HATCH" />, das Muster unter <Keyword id="Properties" />. Esc behält die Schraffur, während es unter <Command id="-HATCH" /> die Flächen verwirft. Jede Schraffur beginnt mit dem Muster, dem Maßstab und dem Winkel, die die letzte erhalten hat: ANGLE, mit Maßstab 1 und Winkel 0, in einer neuen Zeichnung.
+
+Sind Schraffuren gewählt, zeigt die Multifunktionsleiste die Registerkarte „Schraffur-Editor“, wie die von AutoCAD: Ein dort gewähltes Muster, ein Typ, ein Winkel oder eine Skalierung ändert sie über -SCHRAFFEDIT, das sich auch eingeben lässt, und die Schraffuren bleiben gewählt; „Schraffur-Editor schließen“ gibt sie frei.
 
 ## Options
 
@@ -27,7 +29,7 @@ An der Eingabeaufforderung der Multifunktionsleiste aufgeführt, an der von <Com
 
 ## Missing
 
-Ellipsen und Splines als Begrenzung: Eine Fläche, die sie schließen, wird nicht gefunden, und eine Region mit einer solchen Kante wird ausgelassen. Lückentoleranz (HPGAPTOL): Eine Fläche muss genau geschlossen sein. Assoziative Schraffuren, die Inselerkennungsstile Normal und Ignorieren. Abstufungen, benutzerdefinierte Muster und die übrigen Muster von acadiso.pat werden hier nicht erstellt: Nur die Schraffuren einer DXF bringen sie mit, Abstufungen in ihren Farben und Muster mit ihren Linien. Die weiteren Optionen von -HATCH: Begrenzung zeichnen, Begrenzungen entfernen, Erweitert, Zeichnungsreihenfolge, Ursprung, Annotativ, Farbe, Layer und Transparenz; die Optionen Zeichnen und Einstellungen der Eingabeaufforderung der Multifunktionsleiste. Von „Schraffurerstellung“: „Entfern“ und „Neu erstellen“, die Typen Abstufung und Benutzerdefiniert, Farben, Transparenz, Ursprung und Optionen. SCHRAFFEDIT (HATCHEDIT) und der Schraffureditor, den in AutoCAD ein Doppelklick öffnet. MIRRHATCH 1: Eine gespiegelte Schraffur behält immer den Winkel ihres Musters. Die Menüs der Griffe einer Schraffur.
+Ellipsen und Splines als Begrenzung: Eine Fläche, die sie schließen, wird nicht gefunden, und eine Region mit einer solchen Kante wird ausgelassen. Lückentoleranz (HPGAPTOL): Eine Fläche muss genau geschlossen sein. Assoziative Schraffuren, die Inselerkennungsstile Normal und Ignorieren. Abstufungen, benutzerdefinierte Muster und die übrigen Muster von acadiso.pat werden hier nicht erstellt: Nur die Schraffuren einer DXF bringen sie mit, Abstufungen in ihren Farben und Muster mit ihren Linien. Die weiteren Optionen von -HATCH: Begrenzung zeichnen, Begrenzungen entfernen, Erweitert, Zeichnungsreihenfolge, Ursprung, Annotativ, Farbe, Layer und Transparenz; die Optionen Zeichnen und Einstellungen der Eingabeaufforderung der Multifunktionsleiste. Von „Schraffurerstellung“: „Entfern“ und „Neu erstellen“, die Typen Abstufung und Benutzerdefiniert, Farben, Transparenz, Ursprung und Optionen. Das Dialogfeld von SCHRAFFEDIT (HATCHEDIT) und der Doppelklick, der in AutoCAD den Schraffur-Editor öffnet; von dieser Registerkarte die Umgrenzungen, die Farben, die Transparenz, der Ursprung und die Optionen. MIRRHATCH 1: Eine gespiegelte Schraffur behält immer den Winkel ihres Musters. Die Menüs der Griffe einer Schraffur.
 
 ## Questions
 

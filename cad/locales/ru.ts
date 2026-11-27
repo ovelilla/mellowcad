@@ -28,6 +28,7 @@ export const ru: EngineLocale = {
       "rectangle": "Прямоугольник",
       "polygon": "Полигон",
       "hatch": "Штриховка",
+      "hatchedit": "Редактирование штриховки (командная строка)",
       "block": "Создать блок",
       "insert": "Вставить блок",
       "attedit": "Редактировать атрибуты",
@@ -1010,6 +1011,9 @@ export const ru: EngineLocale = {
         "-ШТРИХ",
         "-Ш"
       ],
+      "-HATCHEDIT": [
+        "-РЕДШТРИХ"
+      ],
       "BLOCK": [
         "БЛОК",
         "Б",
@@ -1823,6 +1827,13 @@ export const ru: EngineLocale = {
         "Solid": "Заливка",
         "Undo": "Отменить",
         "Pick internal point": "Указать"
+      },
+      "-HATCHEDIT": {
+        "DIsassociate": "Неассоциативная",
+        "Properties": "Свойства",
+        "CAncel": "Отмена",
+        "?": "?",
+        "Solid": "Заливка"
       },
       "INSERT": {
         "?": "?",
@@ -2640,6 +2651,14 @@ export const ru: EngineLocale = {
       "patternName": "Имя образца",
       "patternScale": "Масштаб штриховки",
       "patternAngle": "Наклон штриховки",
+      "patternScaleVaries": "Задайте масштаб образца",
+      "patternAngleVaries": "Задайте угол для образца",
+      "selectHatchObjects": "Выберите объекты штриховки",
+      "enterHatchOption": "Задайте параметр штриховки",
+      "enterHatchOptionSet": "Задайте параметр штриховки",
+      "hatchOptionSetDefault": "Свойства",
+      "hatchPatternVaries": "переменная",
+      "hatchValueVaries": "переменная",
       "blockName": "Имя блока или",
       "blockExists": [
         "Блок \"",
@@ -3142,6 +3161,7 @@ export const ru: EngineLocale = {
       "alignArrayedItemsToPath": "Выровнять элементы массива по траектории?",
       "specifyInternalPointOr": "Внутренняя точка или",
       "enterPatternNameOr": "Имя образца или",
+      "enterPatternNameOrVaries": "Имя образца или",
       "specifyStartPointOfText": "Укажите начальную точку текста",
       "specifyStartPointOfTextOr": "Укажите начальную точку текста или",
       "specifyCenterPointOfText": "Укажите центральную точку текста",
@@ -3386,9 +3406,13 @@ export const ru: EngineLocale = {
       "undoEverything": "open",
       "viewOrthographic": "tight",
       "sliceStartOr": "spaced",
-      "solidHeightTopOr": "spaced"
+      "solidHeightTopOr": "spaced",
+      "enterPatternNameOrVaries": "open",
+      "patternAngleVaries": "spaced"
     },
     "answerForms": {
+      "patternScaleVaries": "spaced",
+      "patternAngleVaries": "spaced",
       "dimStyleRedefine": "tight",
       "mredoCount": "spaced",
       "presspullHeightOr": "tight",
@@ -4523,6 +4547,14 @@ export const ru: EngineLocale = {
       ],
       "insertXref": "** Ошибка: Не удается вставить Вн-ссылку. Используйте \"ССЫЛКА Вставить\".",
       "hatchPatternUnknown": "Неизвестное имя образца.",
+      "hatchObjectRequired": "Выбранный объект должен быть объектом штриховки.",
+      "hatchObjectsRemoved": [
+        "Удалено объектов из набора: ",
+        [
+          "count"
+        ],
+        "."
+      ],
       "hatchTooDense": "Либо слишком плотна штриховка, либо слишком мала длина штриха.",
       "hatchNoBoundary": "Не найден допустимый контур штриховки.",
       "noBoundaryToUndo": "Нет контуров для отмены.",
@@ -9866,6 +9898,10 @@ export const ru: EngineLocale = {
         "Select objects": "Выбрать объекты",
         "Pick internal point": "Указать внутреннюю точку"
       },
+      "-HATCHEDIT": {
+        "DIsassociate": "Неассоциативная",
+        "Properties": "Свойства"
+      },
       "BREAK": {
         "First point": "Первая точка"
       },
@@ -9941,6 +9977,10 @@ export const ru: EngineLocale = {
       },
       "peditMultipleOption": {
         "Ltype gen": "Типлин"
+      },
+      "enterHatchOptionSet": {
+        "DIsassociate": "Неассоциативная",
+        "Properties": "Свойства"
       }
     },
     "listing": {

@@ -22,6 +22,7 @@
   "interface.tool.rectangle": "Rectangle",
   "interface.tool.polygon": "Polygon",
   "interface.tool.hatch": "Hatch",
+  "interface.tool.hatchedit": "Hatch Edit (command line)",
   "interface.tool.block": "Create block",
   "interface.tool.insert": "Insert block",
   "interface.tool.attedit": "Edit attributes",

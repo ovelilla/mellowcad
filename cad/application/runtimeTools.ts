@@ -10,6 +10,7 @@ import { SplineTool, defaultSplineSettings } from "./tools/SplineTool"
 import { RectangleTool } from "./tools/RectangleTool"
 import { PolygonTool } from "./tools/PolygonTool"
 import { HatchTool } from "./tools/HatchTool"
+import { HatchEditTool } from "./tools/HatchEditTool"
 import { BlockTool } from "./tools/BlockTool"
 import { InsertTool } from "./tools/InsertTool"
 import { TextTool } from "./tools/TextTool"
@@ -161,6 +162,7 @@ export function defaultTools(
     new RectangleTool(),
     new PolygonTool(),
     new HatchTool(),
+    new HatchEditTool(),
     new BlockTool(),
     insert,
     new InsertTool("minsert", insert.name),

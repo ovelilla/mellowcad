@@ -69,6 +69,7 @@ const TRANSPARENT_COMMANDS: ReadonlySet<string> = new Set([
   "PROPERTIES",
   "LAYER",
   "BLOCKSPALETTE",
+  "-HATCHEDIT",
 ])
 
 /**

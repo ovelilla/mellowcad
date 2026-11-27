@@ -28,6 +28,7 @@ export const ar: EngineLocale = {
       "rectangle": "مستطيل",
       "polygon": "مضلع",
       "hatch": "تهشير",
+      "hatchedit": "تحرير التهشير (سطر الأوامر)",
       "block": "إنشاء كتلة",
       "insert": "إدراج كتلة",
       "attedit": "تحرير السمات",

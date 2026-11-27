@@ -9,9 +9,10 @@
 > floating command line, the visual style's label, the ViewCube at rest, the grips); phase 5 done
 > on 2026-11-26, its three blocks (§6: the tooltips, the right-click menu,
 > Customize ▾), the desktop pass of both done the same day with phase 6's session (§7); phase 6
-> in progress: blocks 1 (Array Creation) and 2 (Hatch Creation) done and checked on the desktop on
-> 2026-11-26, block 3 (Text Editor) done the same day, checked on the desktop before it was built,
-> and block 4 (the selection's tabs) captured that evening (§6, §7), to be built next.
+> done on 2026-11-27, its five blocks (§6): 1 (Array Creation) and 2 (Hatch Creation) done and
+> checked on the desktop on 2026-11-26, 3 (Text Editor) done the same day, checked on the desktop
+> before it was built, 4 (the selection's Array tab) and 5 (-HATCHEDIT and Hatch Editor) on
+> 2026-11-27 without the desktop; what only the desktop can still say is in §7.
 > The brief is `docs/next-autocad-ui.md`; where its phases and this plan differ, this plan rules
 > (the brief says so) and the brief was corrected the same day.
 
@@ -789,7 +790,7 @@ Blocks, a commit each, each leaving the editor whole:
    Render, Sheet Set Manager, Workspace, More Commands..., Show Menu Bar and Show Below the Ribbon
    stay Missing, undrawn.
 
-### Phase 6 — contextual tabs
+### Phase 6 — contextual tabs (done 2026-11-27)
 
 Hatch Creation, Text Editor and Array as tabs that follow their command (R10). Each is a
 command's own interface, so each goes through its command's review and research. Blocks 1 and 2
@@ -902,25 +903,34 @@ Blocks, a commit each, each leaving the editor whole:
    greyed while it fills and a new Between filling again; under Divide the toggle is unlit and greyed (**unverified**).
    **Show Panels** on a contextual tab already listed the tab's own panels, each checked, as
    AutoCAD's (arraypath-showpanels): the menu takes the tab in front, contextual too.
-5. **Hatch Editor** (the selection's, hatches only: AcHatchSelected, `Selection.Count >= 1 &&
-   Selection.ContainsOnly("Hatch")` and HATCHCREATION 0), the next session's block, moved from
-   block 4 because it stands on a command not built here: its gallery's pick is `'_-hatchedit`
+5. **Hatch Editor** (done 2026-11-27, without the desktop; the selection's, hatches only:
+   AcHatchSelected, `Selection.Count >= 1 && Selection.ContainsOnly("Hatch")` and HATCHCREATION
+   0), moved from block 4 because it stands on -HATCHEDIT: its gallery's pick is `'_-hatchedit`
    on the selection (`… <Properties>: _p`, `Enter a pattern name … <ANSI31>: ANSI32`, scale and
-   angle; U names `'-HATCHEDIT GROUP`, sel-hatch-ansi32). So it starts with skill `new-command`
-   for -HATCHEDIT, its Properties option at least: the console of 2026-11-27 (English, traced)
-   asks `Select hatch objects:` (a set, every selection mode, SUbobject and Object too; a
-   non-hatch is dropped with `Selected object must be a hatch object.` and `1 objects removed
-   from selection set.`), then `Enter hatch option [DIsassociate/Style/Properties/DRaw
-   order/ADd boundaries/Remove boundaries/recreate Boundary/ASsociate/separate
-   Hatches/Origin/ANnotative/hatch COlor/LAyer/Transparency] <Properties>:`, its initget adding
-   the hidden boundarY, SPace, MAtch and CAncel; Style asks `Enter hatching style
-   [Ignore/Outer/Normal] <Outer>:`. Then the tab: Boundaries (Pick Points, Select, Remove,
-   Recreate), Pattern, Properties (Type, colours, Transparency, Angle, Scale), Origin (Set
-   Origin), Options (Associative, Annotative, Match Properties), Close Hatch Editor
-   (sel-hatch-pattern, -solid), each with what -HATCHEDIT has here, the rest in HATCH's Missing;
-   what the Angle and Scale boxes and Type write, and Close Hatch Editor's macro, read first
-   (`ribbon.mjs --source RBN_01738281`; the desktop: a selection echoed a stray
-   `'_-hatchedit_pANGLE`).
+   angle; U names `'-HATCHEDIT GROUP`, sel-hatch-ansi32, the tab still open after it). So it
+   started with skill `new-command` for -HATCHEDIT (`docs/coverage/draw.md`), its probes
+   hatchedit/p01–p16 in English and Spanish, traced, and p01, p03 and p14 in the other seven
+   command languages: `Select hatch objects:`, a set, what is no hatch said once and dropped
+   (`1 objects removed from selection set.`, 36075), the prompt again when no hatch is left;
+   `Enter hatch option […] <Properties>:`, one hatch's list (25501) or several's (57409, worded
+   apart in Italian and listed in English in pt-BR), here `[DIsassociate/Properties]` with
+   CAncel hidden; Properties' name, scale and angle with `varies` where the set differs (the
+   name's with no colon after it, 23404; the scale's and angle's their own tables, 57236 and
+   42883), DIsassociate ending it as it does on a non-associative hatch (p13), transparent (p06),
+   HPNAME left, HPLASTPATTERN set (p16). Close Hatch Editor's macro is acad.cuix's MM_1932,
+   `^R^C^C_-HATCHEDIT _CA`; what Angle, Scale and Type type is in AcWindows.dll's strings,
+   `'^R_-hatchedit\n_p\n…`: a pattern `{0}\n\n\n`, Angle `\n\n{0}\n`, Scale `\n{0}\n\n\n`,
+   Solid `SOLID\n`, User `USER\n\n\n\n`, Gradient `_G\n\n\n\n`, and Type › Pattern the
+   pattern's macro with HPLASTPATTERN; the colour's, transparency's, layer's, Annotative's and
+   Disassociate's are there too, for the options not built. The stray `'_-hatchedit_pANGLE` the
+   desktop echoed was that pattern macro, ANGLE being the profile's pattern. Built: the engine's
+   `hatchEditor` tab from `selectionContextualTab`, the first hatch's pattern, angle and scale
+   shown; each control types its macro's answers (`hatchEditorAnswers`), its prompts written, the
+   hatches kept selected; a value its box refuses types nothing; Scale's last Enter left out
+   (where it goes **unverified**: at `Command:` it would repeat the command). Not drawn (decision
+   3), each in -HATCHEDIT's Missing: Boundaries (ADd and Remove boundaries, recreate Boundary),
+   the colours, Transparency, the slide-outs, Origin and Options; a double-click on a hatch
+   (HATCHEDIT's dialog) neither.
 
 ## 7. Desktop blocks still owed
 
@@ -934,7 +944,7 @@ start of its phase and with the owner's word first (`gui.md`):
 | 3 | done 2026-11-25 (§2.8, §2.9): a palette docked, anchored and auto-hidden and its properties menu with the mouse; New Text Style and each tab of Modify Dimension Style without it (`research/ui/2026-11-25/phase3`) |
 | 4 | done 2026-11-26 with phase 6's session (§6, phase 4; `research/ui/2026-11-26`): ~~the command line's history open (F2) and its Recent Commands and Customize menus~~ (cl-f2, cl-recent2, cl-custom); still owed, each **unverified** in its coverage entry: the status bar and the floating line's width of a profile nobody has touched (S4: the profile measured has been used by every probe); the navigation bar under the pointer |
 | 5 | done 2026-11-26 with phase 6's session (§6, phase 5; `research/ui/2026-11-26`): ~~where a ribbon tooltip opens and whether Circle's names its member; whether a second tooltip opens at once; whether a pick in the right-click menu closes it, whether its Close cancels a running command or echoes, a title bar's height without its name; Customize ▾'s arrow, where a command added goes and whether a pick closes its list~~; still owed: whether the names leave a folded panel or the minimized states, where AutoCAD keeps what the menu shows, U's name after the menu's Close |
-| 6 | done 2026-11-26 in the evening's pass (`research/ui/2026-11-26/phase6-blocks3-4-notes.txt`): ~~Direction's lit state~~ (lit at the default fill, counter-clockwise: sel-arr-polar, as here); ~~ARRAYPATH's tab once the path is picked~~ (arraypath-tab: ARRAYCREATION 3 as here; Items greyed under Measure by the count's toggle, Fill entire path: built by block 4, §6); ~~Show Panels on a contextual tab~~ (it lists the tab's own panels, each checked: arraypath-showpanels, as here, block 4); ~~Hatch Creation's own boxes refusing in silence~~ (Scale 0 and −2 put back to 1, no line: hatch-scale-refuse, as here); ~~whether HATCH's mode lasts across a restart~~ (it does, a profile setting: here for the session, `docs/coverage/draw.md`, HATCH); ~~the selection's tabs~~ (§6, phase 6, block 4). Still owed, with block 5's session: where the text stands as MTEXT's and TEXTEDIT's Justification changes, letters typed in the height box, whether Justification and Close Text Editor show a tooltip (block 3); ARRAYPATH's count toggle under Divide (block 4); Hatch Editor's Angle, Scale and Type writes (block 5). Before that, blocks 1 and 2 done 2026-11-26 with this phase's session (§6, phase 6; `research/ui/2026-11-26`): ~~whether a field's edit echoes, where a refused value is said, a tooltip with no command, Show Tabs on a contextual tab, the tab minimized; a traced run of HATCH with the ribbon open in English and Spanish, what Enter and Undo do at 50968, whether Angle and Scale grey for a solid fill, the Angle slider's range, the pattern Type › Pattern brings back, Scale's spin step and the gallery's tooltips; a capture of Text Editor and of Array Creation~~ |
+| 6 | done 2026-11-26 in the evening's pass (`research/ui/2026-11-26/phase6-blocks3-4-notes.txt`): ~~Direction's lit state~~ (lit at the default fill, counter-clockwise: sel-arr-polar, as here); ~~ARRAYPATH's tab once the path is picked~~ (arraypath-tab: ARRAYCREATION 3 as here; Items greyed under Measure by the count's toggle, Fill entire path: built by block 4, §6); ~~Show Panels on a contextual tab~~ (it lists the tab's own panels, each checked: arraypath-showpanels, as here, block 4); ~~Hatch Creation's own boxes refusing in silence~~ (Scale 0 and −2 put back to 1, no line: hatch-scale-refuse, as here); ~~whether HATCH's mode lasts across a restart~~ (it does, a profile setting: here for the session, `docs/coverage/draw.md`, HATCH); ~~the selection's tabs~~ (§6, phase 6, block 4). Still owed, the session of block 5 having had no desktop (2026-11-27): where the text stands as MTEXT's and TEXTEDIT's Justification changes, letters typed in the height box, whether Justification and Close Text Editor show a tooltip (block 3); ARRAYPATH's count toggle under Divide (block 4); Hatch Editor's Angle, Scale and Type as the desktop writes them (read from AcWindows.dll's strings, not seen), where Scale's last Enter goes, what its boxes show for hatches that differ and the tab after Close Hatch Editor (block 5). Before that, blocks 1 and 2 done 2026-11-26 with this phase's session (§6, phase 6; `research/ui/2026-11-26`): ~~whether a field's edit echoes, where a refused value is said, a tooltip with no command, Show Tabs on a contextual tab, the tab minimized; a traced run of HATCH with the ribbon open in English and Spanish, what Enter and Undo do at 50968, whether Angle and Scale grey for a solid fill, the Angle slider's range, the pattern Type › Pattern brings back, Scale's spin step and the gallery's tooltips; a capture of Text Editor and of Array Creation~~ |
 
 Without the mouse, `acad.sh act` opens a drop-down, a slide-out, a folded panel, the status
 bar's menus, Undo's list and the command line's two menus, and `acad.sh tree` reads their rows

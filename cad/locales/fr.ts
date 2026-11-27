@@ -28,6 +28,7 @@ export const fr: EngineLocale = {
       "rectangle": "Rectangle",
       "polygon": "Polygone",
       "hatch": "Hachures",
+      "hatchedit": "Modifier les hachures (ligne de commande)",
       "block": "Créer un bloc",
       "insert": "Insérer bloc",
       "attedit": "Modifier attributs",
@@ -950,6 +951,9 @@ export const fr: EngineLocale = {
         "-HACHURES",
         "-H"
       ],
+      "-HATCHEDIT": [
+        "-EDITHACH"
+      ],
       "BLOCK": [
         "BLOC",
         "B",
@@ -1784,6 +1788,13 @@ export const fr: EngineLocale = {
         "Undo": "annUler",
         "Pick internal point": "cHoisir"
       },
+      "-HATCHEDIT": {
+        "DIsassociate": "Dissocier",
+        "Properties": "Propriétés",
+        "CAncel": "annUler",
+        "?": "?",
+        "Solid": "Solide"
+      },
       "INSERT": {
         "?": "?",
         "Scale": "Echelle",
@@ -2600,6 +2611,14 @@ export const fr: EngineLocale = {
       "patternName": "Entrez un nom de motif",
       "patternScale": "Spécifiez l'échelle du motif",
       "patternAngle": "Spécifiez l'angle du motif",
+      "patternScaleVaries": "Spécifiez l'échelle du motif",
+      "patternAngleVaries": "Spécifiez un angle pour le motif",
+      "selectHatchObjects": "Sélectionnez les objets de hachures",
+      "enterHatchOption": "Entrez l'option de hachures",
+      "enterHatchOptionSet": "Entrez l'option de hachures",
+      "hatchOptionSetDefault": "Propriétés",
+      "hatchPatternVaries": "varie",
+      "hatchValueVaries": "varie",
       "blockName": "Entrez le nom du bloc ou",
       "blockExists": [
         "Le bloc \"",
@@ -3102,6 +3121,7 @@ export const fr: EngineLocale = {
       "alignArrayedItemsToPath": "Aligner les éléments en réseau à la trajectoire ?",
       "specifyInternalPointOr": "Spécifiez le point interne ou",
       "enterPatternNameOr": "Entrez un nom de motif ou",
+      "enterPatternNameOrVaries": "Entrez un nom de motif ou",
       "specifyStartPointOfText": "Spécifiez le point de départ du texte",
       "specifyStartPointOfTextOr": "Spécifiez le point de départ du texte ou",
       "specifyCenterPointOfText": "Spécifiez le centre du texte",
@@ -3346,9 +3366,13 @@ export const fr: EngineLocale = {
       "undoEverything": "open",
       "viewOrthographic": "tight",
       "sliceStartOr": "spaced",
-      "solidHeightTopOr": "spaced"
+      "solidHeightTopOr": "spaced",
+      "enterPatternNameOrVaries": "open",
+      "patternAngleVaries": "spaced"
     },
     "answerForms": {
+      "patternScaleVaries": "spaced",
+      "patternAngleVaries": "spaced",
       "dimStyleRedefine": "tight",
       "mredoCount": "spaced",
       "presspullHeightOr": "tight",
@@ -4369,6 +4393,13 @@ export const fr: EngineLocale = {
       ],
       "insertXref": "** Erreur: impossible d' INSERER une Xréf. Utilisez XREF AJouter.",
       "hatchPatternUnknown": "Nom du motif de hachures inconnu.",
+      "hatchObjectRequired": "L'objet sélectionné doit être un objet de hachures.",
+      "hatchObjectsRemoved": [
+        [
+          "count"
+        ],
+        " objets supprimés du jeu de sélection."
+      ],
       "hatchTooDense": "Les hachures sont trop denses ou la taille des discontinuités est trop petite.",
       "hatchNoBoundary": "Auncun contour de hachures correct n'a été trouvé.",
       "noBoundaryToUndo": "Il n'y a pas de contour à annuler.",
@@ -9243,6 +9274,10 @@ export const fr: EngineLocale = {
         "Select objects": "Sélectionner des objets",
         "Pick internal point": "cHoisir un point interne"
       },
+      "-HATCHEDIT": {
+        "DIsassociate": "Dissocier",
+        "Properties": "Propriétés"
+      },
       "BREAK": {
         "First point": "Premier point"
       },
@@ -9318,6 +9353,10 @@ export const fr: EngineLocale = {
       },
       "peditMultipleOption": {
         "Ltype gen": "Typeligne gén"
+      },
+      "enterHatchOptionSet": {
+        "DIsassociate": "Dissocier",
+        "Properties": "Propriétés"
       }
     },
     "listing": {

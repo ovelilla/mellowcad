@@ -288,6 +288,7 @@ export const TOOL_COMMANDS: Readonly<Record<string, string>> = {
   rectangle: "RECTANG",
   polygon: "POLYGON",
   hatch: "HATCH",
+  hatchedit: "-HATCHEDIT",
   block: "BLOCK",
   insert: "INSERT",
   minsert: "MINSERT",

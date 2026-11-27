@@ -472,7 +472,18 @@ Creation, its text broken where acad.CUIX breaks it (`Close&#xD;Hatch Creation`)
 culture's acad.CUIX (the tab, panels and buttons; Angle) and AcWindows' `TT_AcHatch…` (the
 tooltips, Solid and Pattern, Scale's name), Arabic's ours. At 1280 AutoCAD's folds Pattern to a
 button and Boundaries' small buttons to icons (es1280-hatch): the fold here follows its rule,
-shedding only what does not fit, and what is built fits. **Text Editor** (`--source ID_MText_Tab`),
+shedding only what does not fit, and what is built fits. **Hatch Editor**, the selection's
+(`--source RBN_01738281`; AcHatchSelected: hatches only selected, HATCHCREATION 0), at `Command:`:
+Pattern's gallery, Properties' Type, Angle and Scale, drawn as Hatch Creation's and showing the
+first hatch's pattern, angle and scale, and Close Hatch Editor (`Close&#xD;Hatch Editor`). Each
+control runs -HATCHEDIT on the selection as AcWindows.dll's macros type it (`'^R_-hatchedit\n_p\n…`,
+read from its strings): a pattern `_p`, its name, Enter and Enter; Type › Solid `_p SOLID`,
+Type › Pattern the same with HPLASTPATTERN; Angle `_p`, Enter, Enter and the angle; Scale `_p`,
+Enter, the scale and Enter. Its prompts are written, `'_-hatchedit 1 found` first, a step U
+names `'-HATCHEDIT GROUP`, and the hatches stay selected, the tab open (desktop
+sel-hatch-ansi32); a value its box refuses types nothing. Close Hatch Editor is `^R^C^C_-HATCHEDIT
+_CA` (MM_1932), which drops the selection. Its words each culture's acad.CUIX (the tab, Close's
+button) and MM_1932's HelpString (its tooltip, with no command row), Arabic's ours. **Text Editor** (`--source ID_MText_Tab`),
 while MTEXT's in-place editor is open, or TEXTEDIT's on an MTEXT (AcTextEditorInProgress; desktop
 2026-11-26, mtext-tab-crop, mtext-just-menu; what each control does, `docs/coverage/draw.md`,
 MTEXT): Style's gallery (AcIPEFontStyleGallery, 184 × 74), the drawing's text styles by name, two
@@ -486,8 +497,14 @@ buttons, the gallery's name), AcWindows' `TT_AcIPEFontSizeCombo`, acmtedRes 1024
 attachments) and AcTaskDialogs' TaskDialog_7 (Text Style Change), Arabic's ours
 
 **Missing:** the Parametric, Visualize, Manage, Output, Add-ins, Collaborate, Express Tools and
-Featured Apps tabs, nothing of theirs built; Hatch Editor, the selection's (it runs
--HATCHEDIT, not built: `docs/plans/autocad-ui.md`, §6, phase 6, block 5), the selection's Array
+Featured Apps tabs, nothing of theirs built; Hatch Editor's Boundaries (Pick Points, Select,
+Remove, Recreate: -HATCHEDIT's ADd and Remove boundaries and recreate Boundary, not built), the
+colours, Transparency, its slide-outs, Origin and Options (`docs/coverage/draw.md`, -HATCHEDIT's
+Missing), Scale's macro's last Enter (its place **unverified**), what its boxes and Type show for hatches
+that differ (here the first's, **unverified**), Close Hatch Editor with every hatch selected on a
+locked layer (its macro's `_CA` then refused at `Select hatch objects:`, as here, **unverified**;
+its other controls do nothing then), a double-click on a hatch opening it (DBLCLKEDIT's
+HATCHEDIT: its dialog not built); the selection's Array
 tab's ARRAYEDIT controls (`docs/coverage/modify.md`, ARRAY), Hatch Creation's controls HATCH does not have
 (`docs/coverage/draw.md`, HATCH's Missing), the other contextual
 tabs, whose features are not built (Block Editor, Edit Reference, Table Cell, External Reference,

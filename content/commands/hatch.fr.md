@@ -2,12 +2,14 @@
 title: "Commande HACHURES (HATCH) dans AutoCAD"
 description: "Hachures dans AutoCAD en français avec HACHURES (HATCH, alias H), invite par invite : point interne ou objets, motif, échelle, angle, îlots. Essayez-le."
 figure: "Un rectangle avec un cercle dedans, hachuré en ANSI31 depuis un point intérieur : le cercle reste libre, un îlot."
-sourceHash: "c7c3effeb1c0"
+sourceHash: "e0fc9a2fa81f"
 ---
 
 HACHURES (HATCH) remplit une zone fermée d'un motif de lignes, ou d'un remplissage plein. Cliquez un point dans la zone : la commande trouve le contour dans les objets qui l'entourent, et laisse libre ce qui se trouve à l'intérieur comme un îlot (un cercle dans un rectangle, un texte) ; ou sélectionnez les objets qui la délimitent. Cliquez dans autant de zones que vous voulez : Entrée, ou Echap, en fait un seul objet de hachures, sur le calque courant, derrière son contour. La commande entière est une seule étape, qu'Annuler défait.
 
 Pendant qu'elle s'exécute, le ruban affiche l'onglet contextuel Création de hachures, comme celui d'AutoCAD : Choisir des points et Sélection, la galerie de motifs, Type de hachures (Solide ou Motif), Angle, Echelle du motif de hachures et Fermer Création de hachures. Ruban fermé, AutoCAD ouvre la boîte de dialogue Hachures et gradient, que MellowCAD n'a pas : là, HACHURES demande sur la ligne de commande ce que demande <Command id="-HATCH" />, le motif sous <Keyword id="Properties" />. Echap garde les hachures, alors que sous <Command id="-HATCH" /> il abandonne les zones. Chaque objet de hachures commence avec le motif, l'échelle et l'angle donnés au précédent : ANGLE, à l'échelle 1 et à l'angle 0, dans un nouveau dessin.
+
+Avec des hachures sélectionnées, le ruban affiche l'onglet Editeur de hachures, comme celui d'AutoCAD : le motif, le type, l'angle ou l'échelle choisis là les modifient par -EDITHACH, que l'on peut aussi taper, et les hachures restent sélectionnées ; Fermer Editeur de hachures les libère.
 
 ## Options
 
@@ -27,7 +29,7 @@ Présente dans la liste de l'invite du ruban, et acceptée hors liste à celle d
 
 ## Missing
 
-Les ellipses et les splines comme contours : une zone qu'elles ferment n'est pas trouvée, et une région avec une telle arête est écartée. La tolérance d'espaces (HPGAPTOL) : une zone doit être exactement fermée. Les hachures associatives, les styles d'îlots Normal et Ignorer. Les gradients, les motifs définis par l'utilisateur et le reste des motifs d'acadiso.pat ne se créent pas ici : seules les hachures d'un DXF les apportent, les gradients dans leurs couleurs et les motifs avec leurs lignes. Les autres options de <Command id="-HATCH" /> : dessiner un contour, supprimer des contours, options avancées, ordre de tracé, origine, annotatif, couleur, calque et transparence ; les options Dessiner et Paramètres de l'invite du ruban. De Création de hachures, Supprimer et Recréer, les types Gradient et Utilisateur, les couleurs, la transparence, l'origine et les options. EDITHACH (HATCHEDIT) et l'onglet contextuel Editeur de hachures, qu'un double-clic ouvre dans AutoCAD. MIRRHATCH 1 : des hachures symétriques gardent toujours l'angle de leur motif. Les menus des poignées des hachures.
+Les ellipses et les splines comme contours : une zone qu'elles ferment n'est pas trouvée, et une région avec une telle arête est écartée. La tolérance d'espaces (HPGAPTOL) : une zone doit être exactement fermée. Les hachures associatives, les styles d'îlots Normal et Ignorer. Les gradients, les motifs définis par l'utilisateur et le reste des motifs d'acadiso.pat ne se créent pas ici : seules les hachures d'un DXF les apportent, les gradients dans leurs couleurs et les motifs avec leurs lignes. Les autres options de <Command id="-HATCH" /> : dessiner un contour, supprimer des contours, options avancées, ordre de tracé, origine, annotatif, couleur, calque et transparence ; les options Dessiner et Paramètres de l'invite du ruban. De Création de hachures, Supprimer et Recréer, les types Gradient et Utilisateur, les couleurs, la transparence, l'origine et les options. La boîte de dialogue d'EDITHACH (HATCHEDIT) et le double-clic qui ouvre l'Editeur de hachures dans AutoCAD ; de cet onglet, les contours, les couleurs, la transparence, l'origine et les options. MIRRHATCH 1 : des hachures symétriques gardent toujours l'angle de leur motif. Les menus des poignées des hachures.
 
 ## Questions
 

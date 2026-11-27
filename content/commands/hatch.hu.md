@@ -3,12 +3,14 @@ title: "Sraffozás az AutoCAD-ben: SRAFFOZ (HATCH) parancs"
 metaTitle: "Sraffozás az AutoCAD-ben: SRAFFOZ (HATCH)"
 description: "Sraffozás az AutoCAD SRAFFOZ (HATCH, SF) parancsával: belső pont vagy határoló objektumok, minta, lépték, szög, szigetek. Próbálja ki ingyen, online."
 figure: "Egy téglalap benne egy körrel, egyetlen belső pontból ANSI31 mintával sraffozva: a kör üresen marad, sziget lesz."
-sourceHash: "c7c3effeb1c0"
+sourceHash: "e0fc9a2fa81f"
 ---
 
 A SRAFFOZ (HATCH) parancs zárt területet tölt ki vonalakból álló mintával vagy tömören. Válasszon egy pontot a területen belül, és a parancs megkeresi a határvonalat a körülötte lévő objektumokban, szigetként üresen hagyva, ami benne van – egy kört a téglalapban, egy szöveget –; vagy jelölje ki a területet határoló objektumokat. Tetszőleges számú területet választhat: az Enter vagy az Esc mindegyikből egyetlen sraffozást készít, az aktuális fólián, a határvonala mögött. A teljes parancs egyetlen lépés, amely a Vissza paranccsal visszavonható.
 
 Futás közben a szalag a Sraffozás létrehozása szalaglapot mutatja, ahogy az AutoCAD-é: Pontok kijelölése és Kijelöl, a mintagaléria, Sraffozás típusa (Szilárdtest vagy Mintázat), Szög, Sraffozási minta léptéke és Sraffozás-létrehozás bezárása. Bezárt szalag mellett az AutoCAD a Sraffozás és átmenet párbeszédpanelt nyitja meg, amely a MellowCAD-ben nincs meg: ilyenkor a SRAFFOZ a parancssorban azt kérdezi, amit a <Command id="-HATCH" /> parancs, a mintát a <Keyword id="Properties" /> opció alatt. Az Esc megtartja a sraffozást, a <Command id="-HATCH" /> parancsban viszont elveti a területeket. Minden sraffozás azzal a mintával, léptékkel és szöggel indul, amelyet az előző kapott: új rajzban ez az ANGLE, 1-es léptékkel és 0 szöggel.
+
+Kijelölt sraffozásoknál a szalag a Sraffozásszerkesztő szalaglapot mutatja, ahogy az AutoCAD-é: az ott választott minta, típus, szög vagy lépték a -SRAFFEDIT paranccsal módosítja őket, amely be is gépelhető, a sraffozások pedig kijelölve maradnak; A Sraffozásszerkesztő bezárása elengedi őket.
 
 ## Options
 
@@ -28,7 +30,7 @@ A szalag promptja felsorolja, a <Command id="-HATCH" /> promptja nem sorolja fel
 
 ## Missing
 
-Ellipszisek és spline-ok mint határvonalak: az általuk közrezárt terület nem található meg, és az ilyen élű lemez kimarad. Hézagtűrés (HPGAPTOL): a területnek pontosan zártnak kell lennie. Asszociatív sraffozások, a Normál és a Belső (Ignore) szigetstílus. Színátmenetek, felhasználói minták és az acadiso.pat többi mintája itt nem hozható létre: csak egy DXF sraffozásai hozzák magukkal őket, a színátmeneteket a színeikkel, a mintákat a vonalaikkal. A -SRAFFOZ többi opciója: határvonal rajzolása, határvonalak eltávolítása, További beállítások, megjelenítési sorrend, kezdőpont, feliratozási, szín, fólia és átlátszóság; a szalag promptjának Rajzolás és Beállítások opciója. A Sraffozás létrehozása szalaglapról a Kivon és a Létrehozás újra, az Átmenet és a Felhasználói típus, a színek, az átlátszóság, a kezdőpont és a beállítások. A SRAFFEDIT (HATCHEDIT) parancs és a Sraffozásszerkesztő, amelyet az AutoCAD-ben dupla kattintás nyit meg. A MIRRHATCH 1: a tükrözött sraffozás mindig megtartja a minta szögét. A sraffozás fogóinak menüi.
+Ellipszisek és spline-ok mint határvonalak: az általuk közrezárt terület nem található meg, és az ilyen élű lemez kimarad. Hézagtűrés (HPGAPTOL): a területnek pontosan zártnak kell lennie. Asszociatív sraffozások, a Normál és a Belső (Ignore) szigetstílus. Színátmenetek, felhasználói minták és az acadiso.pat többi mintája itt nem hozható létre: csak egy DXF sraffozásai hozzák magukkal őket, a színátmeneteket a színeikkel, a mintákat a vonalaikkal. A -SRAFFOZ többi opciója: határvonal rajzolása, határvonalak eltávolítása, További beállítások, megjelenítési sorrend, kezdőpont, feliratozási, szín, fólia és átlátszóság; a szalag promptjának Rajzolás és Beállítások opciója. A Sraffozás létrehozása szalaglapról a Kivon és a Létrehozás újra, az Átmenet és a Felhasználói típus, a színek, az átlátszóság, a kezdőpont és a beállítások. A SRAFFEDIT (HATCHEDIT) párbeszédpanelje és a dupla kattintás, amely az AutoCAD-ben a Sraffozásszerkesztőt nyitja meg; erről a szalaglapról a határvonalak, a színek, az átlátszóság, a kezdőpont és a beállítások. A MIRRHATCH 1: a tükrözött sraffozás mindig megtartja a minta szögét. A sraffozás fogóinak menüi.
 
 ## Questions
 

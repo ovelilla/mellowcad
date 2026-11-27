@@ -2,12 +2,14 @@
 title: "Comando TRATTEGGIO (HATCH) in AutoCAD"
 description: "Il tratteggio in AutoCAD in italiano con TRATTEGGIO (HATCH, alias PTR, RE), richiesta per richiesta: punto interno o oggetti, modello, scala, angolo, isole."
 figure: "Un rettangolo con un cerchio dentro, tratteggiato con ANSI31 da un punto interno: il cerchio resta libero, un'isola."
-sourceHash: "c7c3effeb1c0"
+sourceHash: "e0fc9a2fa81f"
 ---
 
 TRATTEGGIO (HATCH in inglese) riempie un'area chiusa con un modello di linee, oppure pieno. Seleziona un punto all'interno dell'area e trova il contorno negli oggetti attorno, lasciando libero ciò che sta all'interno come un'isola, un cerchio in un rettangolo, un testo; oppure seleziona gli oggetti che la delimitano. Seleziona quante aree vuoi: Invio, o Esc, ne fa un solo tratteggio, sul layer corrente, dietro il suo contorno. L'intero comando è un solo passo che Annulla ripristina.
 
 Mentre è in esecuzione, la barra multifunzione mostra la scheda Creazione tratteggio, come quella di AutoCAD: Seleziona punti e Seleziona, la raccolta dei modelli, Tipo di tratteggio (Solido o Modello), Angolo, Scala del modello di tratteggio e Chiudi Creazione tratteggio. Con la barra multifunzione chiusa AutoCAD apre la finestra di dialogo Tratteggio e sfumatura, che MellowCAD non ha: lì TRATTEGGIO chiede nella riga di comando ciò che chiede <Command id="-HATCH" />, il modello sotto <Keyword id="Properties" />. Esc mantiene il tratteggio, mentre sotto <Command id="-HATCH" /> scarta le aree. Ogni tratteggio parte con il modello, la scala e l'angolo dati all'ultimo: ANGLE, con scala 1 e angolo 0, in un nuovo disegno.
+
+Con dei tratteggi selezionati, la barra multifunzione mostra la scheda Editor tratteggio, come quella di AutoCAD: il modello, il tipo, l'angolo o la scala scelti lì li modificano con -EDITATRATT, che si può anche digitare, e i tratteggi restano selezionati; Chiudi Editor tratteggio li rilascia.
 
 ## Options
 
@@ -27,7 +29,7 @@ Elencata alla richiesta della barra multifunzione, e accettata senza essere elen
 
 ## Missing
 
-Ellissi e spline come contorni: un'area che chiudono non viene trovata, e una regione con un bordo di quel tipo viene lasciata fuori. Tolleranza di spazio (HPGAPTOL): un'area deve essere chiusa con esattezza. Tratteggi associativi, gli stili di isole Normale e Ignora. Sfumature, modelli definiti dall'utente e il resto dei modelli di acadiso.pat non si creano qui: solo i tratteggi di un DXF li portano, le sfumature nei loro colori e i modelli con le loro linee. Le altre opzioni di -TRATTEGGIO: disegnare un contorno, rimuovere contorni, Avanzate, ordine di visualizzazione, origine, annotativo, colore, layer e trasparenza; le opzioni Disegna e Impostazioni della richiesta della barra multifunzione. Di Creazione tratteggio, Cancella e Ricrea, i tipi Sfumatura e Definito utente, i colori, la trasparenza, l'origine e le opzioni. MODIFICATRATT e l'editor dei tratteggi, che in AutoCAD si apre con un doppio clic. MIRRHATCH 1: un tratteggio riflesso mantiene sempre l'angolo del suo modello. I menu dei grip di un tratteggio.
+Ellissi e spline come contorni: un'area che chiudono non viene trovata, e una regione con un bordo di quel tipo viene lasciata fuori. Tolleranza di spazio (HPGAPTOL): un'area deve essere chiusa con esattezza. Tratteggi associativi, gli stili di isole Normale e Ignora. Sfumature, modelli definiti dall'utente e il resto dei modelli di acadiso.pat non si creano qui: solo i tratteggi di un DXF li portano, le sfumature nei loro colori e i modelli con le loro linee. Le altre opzioni di -TRATTEGGIO: disegnare un contorno, rimuovere contorni, Avanzate, ordine di visualizzazione, origine, annotativo, colore, layer e trasparenza; le opzioni Disegna e Impostazioni della richiesta della barra multifunzione. Di Creazione tratteggio, Cancella e Ricrea, i tipi Sfumatura e Definito utente, i colori, la trasparenza, l'origine e le opzioni. La finestra di dialogo di MODIFICATRATT e il doppio clic che in AutoCAD apre l'Editor tratteggio; di quella scheda, i contorni, i colori, la trasparenza, l'origine e le opzioni. MIRRHATCH 1: un tratteggio riflesso mantiene sempre l'angolo del suo modello. I menu dei grip di un tratteggio.
 
 ## Questions
 

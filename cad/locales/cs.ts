@@ -28,6 +28,7 @@ export const cs: EngineLocale = {
       "rectangle": "Obdélník",
       "polygon": "Polygon",
       "hatch": "Šrafování",
+      "hatchedit": "Upravit šrafy (příkazový řádek)",
       "block": "Vytvořit blok",
       "insert": "Vložit blok",
       "attedit": "Upravit atributy",
@@ -1011,6 +1012,9 @@ export const cs: EngineLocale = {
         "-HS",
         "-SF"
       ],
+      "-HATCHEDIT": [
+        "-ŠRAFEDIT"
+      ],
       "BLOCK": [
         "BLOK",
         "B",
@@ -1843,6 +1847,13 @@ export const cs: EngineLocale = {
         "Undo": "Zpět",
         "Pick internal point": "Vnitřní"
       },
+      "-HATCHEDIT": {
+        "DIsassociate": "Neasociativní",
+        "Properties": "Vlastnosti",
+        "CAncel": "zrUšit",
+        "?": "?",
+        "Solid": "Barva"
+      },
       "INSERT": {
         "?": "?",
         "Scale": "Měřítko",
@@ -2659,6 +2670,14 @@ export const cs: EngineLocale = {
       "patternName": "Zadejte název vzoru",
       "patternScale": "Určete měřítko vzoru",
       "patternAngle": "Určete úhel vzoru",
+      "patternScaleVaries": "Určete měřítko vzoru",
+      "patternAngleVaries": "Určete úhel vzoru",
+      "selectHatchObjects": "Vyberte objekty šrafování",
+      "enterHatchOption": "Zadejte možnost šrafování",
+      "enterHatchOptionSet": "Zadejte možnost šrafování",
+      "hatchOptionSetDefault": "Vlastnosti",
+      "hatchPatternVaries": "různé",
+      "hatchValueVaries": "různé ",
       "blockName": "Zadejte název bloku nebo",
       "blockExists": [
         "Blok \"",
@@ -3161,6 +3180,7 @@ export const cs: EngineLocale = {
       "alignArrayedItemsToPath": "Zarovnat položky v poli do trajektorie?",
       "specifyInternalPointOr": "Určete vnitřní bod nebo",
       "enterPatternNameOr": "Zadejte název vzoru nebo",
+      "enterPatternNameOrVaries": "Zadejte název vzoru nebo",
       "specifyStartPointOfText": "Zadejte počáteční bod textu",
       "specifyStartPointOfTextOr": "Zadejte počáteční bod textu nebo",
       "specifyCenterPointOfText": "Zadejte středový bod textu",
@@ -3405,9 +3425,13 @@ export const cs: EngineLocale = {
       "undoEverything": "open",
       "viewOrthographic": "spaced",
       "sliceStartOr": "spaced",
-      "solidHeightTopOr": "spaced"
+      "solidHeightTopOr": "spaced",
+      "enterPatternNameOrVaries": "open",
+      "patternAngleVaries": "spaced"
     },
     "answerForms": {
+      "patternScaleVaries": "spaced",
+      "patternAngleVaries": "spaced",
       "dimStyleRedefine": "tight",
       "mredoCount": "spaced",
       "presspullHeightOr": "tight",
@@ -4482,6 +4506,14 @@ export const cs: EngineLocale = {
       ],
       "insertXref": "** Chyba: Nelze vložit xref. Místo toho použijte XREF Připoj.",
       "hatchPatternUnknown": "Neznámý název vzoru.",
+      "hatchObjectRequired": "Vybraný objekt musí být objekt šrafování.",
+      "hatchObjectsRemoved": [
+        "Objekty (celkem ",
+        [
+          "count"
+        ],
+        ") byly odstraněny z výběrové množiny."
+      ],
       "hatchTooDense": "Rozteč šrafů je příliš hustá nebo je velikost teček příliš malá.",
       "hatchNoBoundary": "Nenalezena platná hranice šrafování.",
       "noBoundaryToUndo": "Žádná hranice pro Zpět.",
@@ -9481,6 +9513,10 @@ export const cs: EngineLocale = {
         "Select objects": "Vybrat objekty",
         "Pick internal point": "vybrat Vnitřní bod"
       },
+      "-HATCHEDIT": {
+        "DIsassociate": "Neasociativní",
+        "Properties": "Vlastnosti"
+      },
       "BREAK": {
         "First point": "První bod"
       },
@@ -9556,6 +9592,10 @@ export const cs: EngineLocale = {
       },
       "peditMultipleOption": {
         "Ltype gen": "tYpčgen"
+      },
+      "enterHatchOptionSet": {
+        "DIsassociate": "Neasociativní",
+        "Properties": "Vlastnosti"
       }
     },
     "listing": {

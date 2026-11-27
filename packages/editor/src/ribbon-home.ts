@@ -616,6 +616,10 @@ export const TYPED: ReadonlySet<string> = new Set([
   "solidedit",
   // -PAN is typed: the ribbon's and the navigation bar's Pan are PAN's.
   "dashpan",
+  // -HATCHEDIT is typed: Home › Modify's Edit Hatch runs HATCHEDIT's dialog
+  // (`^C^C_hatchedit`), not built; the Hatch Editor tab runs -HATCHEDIT on
+  // the selection through its controls, as AutoCAD's does.
+  "hatchedit",
   // VIEW is typed: here it is -VIEW's presets (the viewport controls' menu),
   // and the ribbon's View Manager (`^C^C_view`) opens a dialog not built.
   "view",

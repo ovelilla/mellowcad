@@ -1421,7 +1421,53 @@ the hatch); the grips' hover menus (Stretch / Origin Point / Hatch Angle / Hatch
 centre, Add / Remove Vertex at a vertex, Add Vertex / Convert to Arc at an edge, d03-2 to d03-4);
 the palette's Spacing, ISO pen width, Double and Background color rows (greyed for a predefined
 pattern); a double-click, which in AutoCAD opens the Hatch Editor tab and Quick Properties
-(d08-2): HATCHEDIT/HE, the Hatch Editor and Quick Properties
+(d08-2): HATCHEDIT/HE (its dialog; -HATCHEDIT is built, its entry) and Quick Properties
+
+### `-HATCHEDIT` · es `-EDITSOMB` · pt-BR `-EDITARHACH` · fr `-EDITHACH` · it `-EDITATRATT` · de `-SCHRAFFEDIT` · ru `-РЕДШТРИХ` · pl `-EDKRESK` · cs `-ŠRAFEDIT` · hu `-SRAFFEDIT`
+
+**Implemented:** `Select hatch objects:` (table 30192; hu `Válasszon sraffozási objektumokat`,
+44337, as its console asks), a set by every selection mode, its refusal listing SUbobject and
+Object too (probe hatchedit/p14), a preselection counted after the echo (p07), a hatch on a locked
+layer counted and left out, `1 was on a locked layer.` (p15); as the set closes, what is no hatch
+is said once, `Selected object must be a hatch object.` (29640), counted, `n objects removed from
+selection set.` (36075, `1 objects` too), and dropped, the prompt asked again when no hatch is
+left (p03, p14), Enter on an empty set ending the command in silence (p04). Then `Enter hatch
+option [DIsassociate/Properties] <Properties>:`, one hatch's list (25501) or several's (57409),
+worded apart in some languages: it `Digitare opzione di tratteggio [Dissocia/…]`, and pt-BR's
+listed in English with its default `<Propriedades>` (p03 in each command language, traced);
+`Invalid option keyword.` to FOO (p10). **Properties** (Enter) asks -HATCH's Properties: `Enter
+a pattern name or [?/Solid] <ANSI31>:`, `Specify a scale for the pattern <1.0000>:`, `Specify an
+angle for the pattern <0>:`, each offering the set's one value or, where its hatches differ,
+`varies` (a word of its own per language: es `varía`, de `Variiert`, cs `<různé >` at the scale
+and angle; the name's `<varies>` with no colon after it, 23404; pt-BR's angle `padrão<varia>:`,
+42883), Enter keeping each hatch's own (p03, p11, p12); the varying scale's and angle's prompts
+their own tables (57236, 42883: es `Especifique una escala para el patrón <varía>:`); a solid
+fill, at Solid or kept at Enter, asks nothing more (p02); refusals in -HATCH's words (`Unknown
+pattern name.`, `Value must be positive and nonzero.`, `Requires a distance (or numberX).`,
+`Requires valid numeric angle or two points.`, p09). The set changes as the angle is answered,
+each hatch's pattern read again as the palette's Scale and Angle read it (`docs/coverage/draw.md`,
+HATCH: a User-defined one made again, acad.pat's inch lines given way to acadiso.pat's, one this
+build lacks keeping its lines), a new pattern dropping the lines, type and gradient the hatch
+carried; HPNAME, HPSCALE and HPANG are left (p01); HPLASTPATTERN, the last pattern -HATCHEDIT gave
+(ANSI31 at first, a solid fill not among them, p16), kept for the session. **DIsassociate** ends
+the command: a hatch here is never associative, and AutoCAD's on a non-associative hatch does
+nothing more (p13). **CAncel**, unlisted (25502's initget), ends it leaving the set (p05, p07;
+Close Hatch Editor's `^R^C^C_-HATCHEDIT _CA`). One undo step U names `-HATCHEDIT` (es
+`-EDITSOMB`), a run that changed nothing too (p01, p05). Transparent: `'-HATCHEDIT` inside LINE
+heads its prompts `>>`, LINE's U taking it back with it (p06). The **Hatch Editor** tab runs it on
+the selection (`docs/coverage/workspace.md`, Ribbon).
+
+**Missing:** Style (`Enter hatching style [Ignore/Outer/Normal] <Outer>:`, 25778: no island
+style but Outer here), DRaw order, ADd boundaries, Remove boundaries, recreate Boundary,
+ASsociate, separate Hatches, Origin, ANnotative, hatch COlor, LAyer and Transparency, and the
+hidden boundarY, SPace and MAtch (none built here: an option typed is `Invalid option keyword.`);
+Properties' User defined and Gradient (`[?/Solid/User defined/Gradient]` lists them, as -HATCH's);
+`?`'s `Enter pattern(s) to list <*>:` and its pages (here the list at once, then the name asked
+again: where AutoCAD's pages lead is **unverified**, p08); a set's name shown `<_SOLID>` as the
+object keeps what was typed (p02: here the registry's `SOLID`); the hatch changed only as the run
+ends, so Escape before the angle leaves it (AutoCAD's at Escape there **unverified**: the console
+cannot press it); HPLASTPATTERN as -HATCH leaves it (p16: the HPNAME before Properties') and
+typed as a variable, and shared with HATCH's Type › Pattern (here each command keeps its own); the angle in a turned UCS (here the world's, as the palette's: AutoCAD's **unverified**); HATCHEDIT and HE, its dialog (the Hatch Edit dialog box, not built)
 
 ### `REGION` / `REG` · es `REGION` / `REG` · pt-BR `REGIAO` / `REG` · fr `REGION` / `REG` · it `REGIONE` / `REG` · de `REGION` / `RIO` · ru `ОБЛАСТЬ` / `ОБЛ` · pl `REGION` / `REG` · cs `OBLAST` / `OBL` · hu `LEMEZ` / `LEM`
 

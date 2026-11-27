@@ -21,12 +21,12 @@
 > 3D Tools y los paneles ocultos de View empiezan ocultos, como en AutoCAD) y el Customize ▾ del
 > acceso rápido. Las fases 4 y 5 quedan verificadas en el escritorio el 26/11, con la sesión de la
 > fase 6 (la comparación lado a lado y sus arreglos; lo poco que no resolvió sigue en el §7 del
-> plan). La fase 6 (pestañas contextuales) está en curso: sus bloques 1 (Array Creation) y 2
-> (Hatch Creation y los prompts de HATCH con el ribbon) del §6 del plan están hechos el 26/11 y
-> verificados en el escritorio ese día, y el 3 (Text Editor) también, comprobado en el escritorio
-> antes de construirlo; el 4 (la pestaña Array de la selección, con el botón de Items de
-> ARRAYPATH y Show Panels del §7) está hecho el 27/11 sin escritorio, y queda el 5 (Hatch Editor),
-> que se apoya en -HATCHEDIT, aún sin construir: la siguiente sesión, como dice el §6 del plan.
+> plan). La fase 6 (pestañas contextuales) está hecha el 27/11, sus cinco bloques del §6 del plan: el 1 (Array Creation) y el 2
+> (Hatch Creation y los prompts de HATCH con el ribbon) el 26/11, verificados en el escritorio ese
+> día, el 3 (Text Editor) también, comprobado en el escritorio antes de construirlo, y el 4 (la
+> pestaña Array de la selección, con el botón de Items de ARRAYPATH y Show Panels del §7) y el 5
+> (-HATCHEDIT y Hatch Editor) el 27/11 sin escritorio; lo que solo el escritorio puede decir
+> sigue en el §7 del plan.
 > Después del rediseño, una fase 7 anotada por el dueño el 26/11 y por valorar: un
 > aviso de novedades en el editor (§4).
 > Acordado el 7/11/2026 por el dueño. Se borra cuando la última fase esté hecha; hasta entonces
@@ -175,7 +175,7 @@ Los tooltips como los de AutoCAD, el menú contextual del ribbon con «Show Tabs
 (y entonces se revisa qué pestañas y paneles se muestran de entrada) y la lista «Customize» del
 acceso rápido.
 
-### Fase 6 — pestañas contextuales
+### Fase 6 — pestañas contextuales (hecha el 27/11/2026)
 
 Hatch Creation, Text Editor y Array como pestañas que siguen a su comando. Cada una es la
 interfaz de un comando, así que pasa por la revisión y la investigación de ese comando.

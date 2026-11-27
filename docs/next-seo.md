@@ -499,6 +499,10 @@ el dueño dio a las sesiones el 6/11).
    comandos, la planta y `open-dxf`; de 2D a 3D en polaco y chino; las coordenadas en ruso,
    alemán, japonés y coreano; los ejercicios en checo) hasta la cuota, en la duodécima
    (`/cs/docs/getting-started`): 1.770 en la cola, rehecha del sitemap.
+   **27/11, 09:15 UTC (sesión del Hatch Editor):** la tanda del día, 11 pedidas (las guías de
+   inicio, de atajos y `edit-dxf` en checo y en húngaro, de 2D a 3D en checo, `/hu/docs` y sus
+   ejercicios, las coordenadas en polaco y en chino) hasta la cuota, en la duodécima
+   (`/hu/docs/2d-to-3d`): 1.759 en la cola, rehecha del sitemap.
 3. **Bing Webmaster Tools**: la clave responde ya en producción
    (`https://mellowcad.com/1eb5d0fec5dc99d5695b010f04667a07.txt`, 5/11); enviar el sitemap a IndexNow:
    `npm run indexnow` lista lo que enviaría y `npm run indexnow -- --send` lo envía (se niega si la

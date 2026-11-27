@@ -28,6 +28,7 @@ export const zhCN: EngineLocale = {
       "rectangle": "矩形",
       "polygon": "多边形",
       "hatch": "图案填充",
+      "hatchedit": "图案填充编辑(命令行)",
       "block": "创建块",
       "insert": "插入块",
       "attedit": "编辑属性",

@@ -1,0 +1,6 @@
+---
+"@mellowcad/engine": minor
+"@mellowcad/editor": minor
+---
+
+-HATCHEDIT, typed or transparent: `Select hatch objects:`, what is no hatch said and dropped, then `Enter hatch option [DIsassociate/Properties] <Properties>:`, whose Properties gives the set a pattern, a scale and an angle as AutoCAD 2027's console does, `varies` where its hatches differ, one step U names `-HATCHEDIT`; CAncel, unlisted, leaves them. Hatches selected at `Command:` show AutoCAD's Hatch Editor contextual tab: Pattern, Type, Angle and Scale run -HATCHEDIT on them as AutoCAD's macros do, its prompts written, a step U names `'-HATCHEDIT GROUP`, the hatches kept selected; Close Hatch Editor is its CAncel. `ContextualTabId` gains `hatchEditor`. New catalog keys: `commands.names.-HATCHEDIT`, `commands.keywords.-HATCHEDIT`, `commands.keywordLabels.-HATCHEDIT`, the prompts `selectHatchObjects`, `enterHatchOption`, `enterHatchOptionSet`, `enterPatternNameOrVaries`, `patternScaleVaries` and `patternAngleVaries` with their forms, the phrases `hatchOptionSetDefault`, `hatchPatternVaries` and `hatchValueVaries`, the messages `hatchObjectRequired` and `hatchObjectsRemoved`, and `interface.tool.hatchedit`; the editor's catalogs gain the tab's name and Close Hatch Editor's words.

@@ -28,6 +28,7 @@ export const ptBR: EngineLocale = {
       "rectangle": "Retângulo",
       "polygon": "Polígono",
       "hatch": "Hachura",
+      "hatchedit": "Editar hachura (linha de comando)",
       "block": "Criar bloco",
       "insert": "Inserir bloco",
       "attedit": "Editar atributos",
@@ -948,6 +949,9 @@ export const ptBR: EngineLocale = {
         "-HACHURA",
         "-H"
       ],
+      "-HATCHEDIT": [
+        "-EDITARHACH"
+      ],
       "BLOCK": [
         "BLOCO",
         "CB",
@@ -1785,6 +1789,13 @@ export const ptBR: EngineLocale = {
         "Undo": "Desfazer",
         "Pick internal point": "Escolher"
       },
+      "-HATCHEDIT": {
+        "DIsassociate": "DESassociar",
+        "Properties": "Propriedades",
+        "CAncel": "canceLAr",
+        "?": "?",
+        "Solid": "Sólido"
+      },
       "INSERT": {
         "?": "?",
         "Scale": "Escala",
@@ -2601,6 +2612,14 @@ export const ptBR: EngineLocale = {
       "patternName": "Insira um nome de padrão",
       "patternScale": "Especificar escala para o padrão",
       "patternAngle": "Especificar ângulo para o padrão",
+      "patternScaleVaries": "Especifique uma escala para o padrão",
+      "patternAngleVaries": "Especifique um ângulo para o padrão",
+      "selectHatchObjects": "Selecionar objetos de hachura",
+      "enterHatchOption": "Insira uma opção de hachura",
+      "enterHatchOptionSet": "Insira uma opção de hachura",
+      "hatchOptionSetDefault": "Propriedades",
+      "hatchPatternVaries": "varia",
+      "hatchValueVaries": "varia",
       "blockName": "Inserir nome do bloco ou",
       "blockExists": [
         "O bloco \"",
@@ -3104,6 +3123,7 @@ export const ptBR: EngineLocale = {
       "alignArrayedItemsToPath": "Alinhar itens dispostos em matriz ao caminho?",
       "specifyInternalPointOr": "Especifique um ponto interno ou",
       "enterPatternNameOr": "Insira um nome de padrão ou",
+      "enterPatternNameOrVaries": "Insira um nome de padrão ou",
       "specifyStartPointOfText": "Especificar o ponto inicial do texto",
       "specifyStartPointOfTextOr": "Especificar o ponto inicial do texto ou",
       "specifyCenterPointOfText": "Especificar o ponto central do texto",
@@ -3348,7 +3368,9 @@ export const ptBR: EngineLocale = {
       "undoEverything": "open",
       "viewOrthographic": "spaced",
       "sliceStartOr": "open",
-      "solidHeightTopOr": "spaced"
+      "solidHeightTopOr": "spaced",
+      "enterPatternNameOrVaries": "open",
+      "patternAngleVaries": "tight"
     },
     "answerForms": {
       "dimStyleRedefine": "tight",
@@ -3376,7 +3398,9 @@ export const ptBR: EngineLocale = {
       "specifyDistanceBetweenLevelsOr": "spaced",
       "specifyIncrementingElevationBetweenRows": "spaced",
       "selectArcCircleLineOrVertex": "spaced",
-      "enterThirdCvPointOr": "spaced"
+      "enterThirdCvPointOr": "spaced",
+      "patternScaleVaries": "tight",
+      "patternAngleVaries": "tight"
     },
     "promptTails": {
       "layerColor": ""
@@ -4369,6 +4393,13 @@ export const ptBR: EngineLocale = {
       ],
       "insertXref": "** Erro: Não é possível INSERIR uma refex. Em vez disso, utilize Anexar REFEX.",
       "hatchPatternUnknown": "Nome de padrão desconhecido.",
+      "hatchObjectRequired": "O objeto selecionado deve ser um objeto de hachura.",
+      "hatchObjectsRemoved": [
+        [
+          "count"
+        ],
+        " objetos removidos do conjunto de seleção."
+      ],
       "hatchTooDense": "Espaçamento de hachura denso demais, ou tamanho do traço pequeno demais.",
       "hatchNoBoundary": "Não foi encontrado nenhum limite de hachura válido.",
       "noBoundaryToUndo": "Não há limites a serem desfeitos.",
@@ -9250,6 +9281,10 @@ export const ptBR: EngineLocale = {
         "Select objects": "Selecionar objetos",
         "Pick internal point": "Escolher ponto interno"
       },
+      "-HATCHEDIT": {
+        "DIsassociate": "DESassociar",
+        "Properties": "Propriedades"
+      },
       "BREAK": {
         "First point": "Primeiro ponto"
       },
@@ -9325,6 +9360,10 @@ export const ptBR: EngineLocale = {
       },
       "peditMultipleOption": {
         "Ltype gen": "gerar Tipolinha"
+      },
+      "enterHatchOptionSet": {
+        "DIsassociate": "DIsassociate",
+        "Properties": "Properties"
       }
     },
     "listing": {

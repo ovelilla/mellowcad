@@ -28,6 +28,7 @@ export const es: EngineLocale = {
       "rectangle": "Rectángulo",
       "polygon": "Polígono",
       "hatch": "Sombreado",
+      "hatchedit": "Editar sombreado (línea de comando)",
       "block": "Crear bloque",
       "insert": "Insertar bloque",
       "attedit": "Editar atributos",
@@ -950,6 +951,9 @@ export const es: EngineLocale = {
       "-HATCH": [
         "-SOMBREA"
       ],
+      "-HATCHEDIT": [
+        "-EDITSOMB"
+      ],
       "BLOCK": [
         "BLOQUE",
         "BQ",
@@ -1774,6 +1778,13 @@ export const es: EngineLocale = {
         "Undo": "desHacer",
         "Pick internal point": "Designar"
       },
+      "-HATCHEDIT": {
+        "DIsassociate": "Disociar",
+        "Properties": "Propiedades",
+        "CAncel": "canceLar",
+        "?": "?",
+        "Solid": "Sólido"
+      },
       "INSERT": {
         "?": "?",
         "Scale": "Escala",
@@ -2590,6 +2601,14 @@ export const es: EngineLocale = {
       "patternName": "Indique nombre de patrón",
       "patternScale": "Precise escala del patrón",
       "patternAngle": "Precise ángulo del patrón",
+      "patternScaleVaries": "Especifique una escala para el patrón",
+      "patternAngleVaries": "Especifique un ángulo para el patrón",
+      "selectHatchObjects": "Designe objetos de sombreado",
+      "enterHatchOption": "Indique opción de sombreado",
+      "enterHatchOptionSet": "Indique opción de sombreado",
+      "hatchOptionSetDefault": "Propiedades",
+      "hatchPatternVaries": "varía",
+      "hatchValueVaries": "varía",
       "blockName": "Indique nombre de bloque o",
       "blockExists": [
         "El bloque \"",
@@ -3092,6 +3111,7 @@ export const es: EngineLocale = {
       "alignArrayedItemsToPath": "¿Alinear elementos de matriz con el camino?",
       "specifyInternalPointOr": "Precise punto interno o",
       "enterPatternNameOr": "Indique nombre de patrón o",
+      "enterPatternNameOrVaries": "Indique nombre de patrón o",
       "specifyStartPointOfText": "Precise punto inicial de texto",
       "specifyStartPointOfTextOr": "Precise punto inicial de texto o",
       "specifyCenterPointOfText": "Precise punto central de texto",
@@ -3336,9 +3356,13 @@ export const es: EngineLocale = {
       "undoEverything": "open",
       "viewOrthographic": "tight",
       "sliceStartOr": "spaced",
-      "solidHeightTopOr": "spaced"
+      "solidHeightTopOr": "spaced",
+      "enterPatternNameOrVaries": "open",
+      "patternAngleVaries": "spaced"
     },
     "answerForms": {
+      "patternScaleVaries": "spaced",
+      "patternAngleVaries": "spaced",
       "dimStyleRedefine": "tight",
       "mredoCount": "spaced",
       "presspullHeightOr": "tight",
@@ -4353,6 +4377,13 @@ export const es: EngineLocale = {
       ],
       "insertXref": "* Error: imposible insertar una refX. Utilice REFX Enlazar.",
       "hatchPatternUnknown": "Nombre de patrón desconocido.",
+      "hatchObjectRequired": "El objeto designado debe ser un objeto de sombreado.",
+      "hatchObjectsRemoved": [
+        [
+          "count"
+        ],
+        " objetos eliminados del conjunto de selección."
+      ],
       "hatchTooDense": "Intervalo de sombreado demasiado denso o trazo demasiado pequeño.",
       "hatchNoBoundary": "No se ha encontrado un contorno de sombreado válido.",
       "noBoundaryToUndo": "Ningún contorno por deshacer.",
@@ -9232,6 +9263,10 @@ export const es: EngineLocale = {
         "Select objects": "Designar objetos",
         "Pick internal point": "Designar punto interno"
       },
+      "-HATCHEDIT": {
+        "DIsassociate": "Disociar",
+        "Properties": "Propiedades"
+      },
       "BREAK": {
         "First point": "Primer punto"
       },
@@ -9307,6 +9342,10 @@ export const es: EngineLocale = {
       },
       "peditMultipleOption": {
         "Ltype gen": "generarTlínea"
+      },
+      "enterHatchOptionSet": {
+        "DIsassociate": "Disociar",
+        "Properties": "Propiedades"
       }
     },
     "listing": {

@@ -24,6 +24,7 @@
       "rectangle": "Прямоугольник",
       "polygon": "Полигон",
       "hatch": "Штриховка",
+      "hatchedit": "Редактирование штриховки (командная строка)",
       "block": "Создать блок",
       "insert": "Вставить блок",
       "attedit": "Редактировать атрибуты",
@@ -612,6 +613,7 @@
       "POLYGON": ["МН-УГОЛ", "МН"],
       "HATCH": ["ШТРИХ"],
       "-HATCH": ["-ШТРИХ", "-Ш"],
+      "-HATCHEDIT": ["-РЕДШТРИХ"],
       "BLOCK": ["БЛОК", "Б", "ACADBLOCKDIALOG", "BMOD", "СБЛОК"],
       "-BLOCK": ["-БЛОК", "-Б"],
       "INSERT": ["ВСТАВИТЬ", "В", "УРЛВСТАВЬ", "ДИАЛВСТ"],
@@ -1039,6 +1041,13 @@
         "Solid": "Заливка",
         "Undo": "Отменить",
         "Pick internal point": "Указать"
+      },
+      "-HATCHEDIT": {
+        "DIsassociate": "Неассоциативная",
+        "Properties": "Свойства",
+        "CAncel": "Отмена",
+        "?": "?",
+        "Solid": "Заливка"
       },
       "INSERT": {
         "?": "?",
@@ -1838,6 +1847,14 @@
       "patternName": "Имя образца",
       "patternScale": "Масштаб штриховки",
       "patternAngle": "Наклон штриховки",
+      "patternScaleVaries": "Задайте масштаб образца",
+      "patternAngleVaries": "Задайте угол для образца",
+      "selectHatchObjects": "Выберите объекты штриховки",
+      "enterHatchOption": "Задайте параметр штриховки",
+      "enterHatchOptionSet": "Задайте параметр штриховки",
+      "hatchOptionSetDefault": "Свойства",
+      "hatchPatternVaries": "переменная",
+      "hatchValueVaries": "переменная",
       "blockName": "Имя блока или",
       "blockExists": "Блок \"{name}\" уже существует. Переопределить его?",
       "redefineIt": "Переопределить его?",
@@ -2261,6 +2278,7 @@
       "alignArrayedItemsToPath": "Выровнять элементы массива по траектории?",
       "specifyInternalPointOr": "Внутренняя точка или",
       "enterPatternNameOr": "Имя образца или",
+      "enterPatternNameOrVaries": "Имя образца или",
       "specifyStartPointOfText": "Укажите начальную точку текста",
       "specifyStartPointOfTextOr": "Укажите начальную точку текста или",
       "specifyCenterPointOfText": "Укажите центральную точку текста",
@@ -2493,9 +2511,13 @@
       "undoEverything": "open",
       "viewOrthographic": "tight",
       "sliceStartOr": "spaced",
-      "solidHeightTopOr": "spaced"
+      "solidHeightTopOr": "spaced",
+      "enterPatternNameOrVaries": "open",
+      "patternAngleVaries": "spaced"
     },
     "answerForms": {
+      "patternScaleVaries": "spaced",
+      "patternAngleVaries": "spaced",
       "dimStyleRedefine": "tight",
       "mredoCount": "spaced",
       "presspullHeightOr": "tight",
@@ -2693,6 +2715,8 @@
       "blockUndefined": "Блок \"{name}\" не определен",
       "insertXref": "** Ошибка: Не удается вставить Вн-ссылку. Используйте \"ССЫЛКА Вставить\".",
       "hatchPatternUnknown": "Неизвестное имя образца.",
+      "hatchObjectRequired": "Выбранный объект должен быть объектом штриховки.",
+      "hatchObjectsRemoved": "Удалено объектов из набора: {count}.",
       "hatchTooDense": "Либо слишком плотна штриховка, либо слишком мала длина штриха.",
       "hatchNoBoundary": "Не найден допустимый контур штриховки.",
       "noBoundaryToUndo": "Нет контуров для отмены.",
@@ -3500,6 +3524,10 @@
         "Select objects": "Выбрать объекты",
         "Pick internal point": "Указать внутреннюю точку"
       },
+      "-HATCHEDIT": {
+        "DIsassociate": "Неассоциативная",
+        "Properties": "Свойства"
+      },
       "BREAK": {
         "First point": "Первая точка"
       },
@@ -3571,6 +3599,10 @@
       },
       "peditMultipleOption": {
         "Ltype gen": "Типлин"
+      },
+      "enterHatchOptionSet": {
+        "DIsassociate": "Неассоциативная",
+        "Properties": "Свойства"
       }
     },
     "listing": {

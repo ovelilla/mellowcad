@@ -218,6 +218,7 @@ export const TIP_SOURCES = {
   hatchAngle: "TT_AcHatchPatternAngleSlider",
   hatchScale: "TT_AcHatchScaleSpinner",
   hatchClose: "MM_1928",
+  hatchEditorClose: "MM_1932",
   textHeight: "TT_AcIPEFontSizeCombo",
 }
 

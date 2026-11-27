@@ -24,6 +24,7 @@
       "rectangle": "직사각형",
       "polygon": "폴리곤",
       "hatch": "해치",
+      "hatchedit": "해치 편집(명령행)",
       "block": "블록 작성",
       "insert": "블록 삽입",
       "attedit": "속성 편집",

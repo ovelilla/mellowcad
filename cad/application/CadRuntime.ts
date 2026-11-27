@@ -156,6 +156,7 @@ import {
   ToolContext,
 } from "./tools/Tool"
 import { MeasureTool } from "./tools/MeasureTool"
+import { HatchEditTool } from "./tools/HatchEditTool"
 import { InsertTool } from "./tools/InsertTool"
 import { PolylineEditTool } from "./tools/PolylineEditTool"
 import { SplineEditTool, splineConversion } from "./tools/SplineEditTool"
@@ -325,6 +326,7 @@ import {
 } from "./runtimeProperties"
 import {
   editSelectionTab,
+  hatchEditorAnswers,
   selectionContextualTab,
 } from "./runtimeSelectionTabs"
 import {
@@ -3433,7 +3435,13 @@ export class CadRuntime extends Observable {
     if (this.suspendedStack.length > 0) return
     if (!this.activeTool.contextualTab) {
       if (this.activeTool.id !== "select") return
-      if (!selectionContextualTab(this.document, this.selection.toArray())) {
+      const tab = selectionContextualTab(
+        this.document,
+        this.selection.toArray()
+      )
+      if (!tab) return
+      if (tab.id === "hatchEditor") {
+        this.editHatchSelection(edit)
         return
       }
       // A locked array is left out as the Properties palette leaves it, its
@@ -3466,6 +3474,45 @@ export class CadRuntime extends Observable {
       return
     }
     this.applyContextualEdit(edit)
+  }
+
+  /**
+   * A Hatch Editor control: `'_-hatchedit` run on the selected hatches as a
+   * menu macro, its answers typed in turn (`hatchEditorAnswers`), a step U
+   * names `'-HATCHEDIT GROUP` (desktop sel-hatch-ansi32); Close Hatch Editor
+   * is its `^R^C^C_-HATCHEDIT _CA` (MM_1932), which drops them. After any
+   * other the hatches stay selected and the tab open, as the desktop's did
+   * after a pattern (sel-hatch-ansi32), where a command run here drops the
+   * selection as it ends.
+   */
+  private editHatchSelection(edit: ContextualEdit): void {
+    if ("close" in edit) {
+      this.runMacroAnswering("-HATCHEDIT", "_-HATCHEDIT", "_CA")
+      return
+    }
+    // Hatches all on a locked layer are left as the Properties palette leaves
+    // them: -HATCHEDIT would ask for a set again, and the macro's answers
+    // would land there (what AutoCAD's tab does then is unverified).
+    if (this.editableIds("selection").length === 0) return
+    const ids = this.selection.toArray()
+    const tool = this.tools.get("hatchedit")
+    const answers = hatchEditorAnswers(
+      this.document,
+      ids,
+      edit,
+      tool instanceof HatchEditTool ? tool.lastPatternUsed() : "ANSI31"
+    )
+    if (!answers) return
+    this.runTransparentMacro("-HATCHEDIT")
+    for (const answer of answers) {
+      if (this.activeTool.id === "select") break
+      this.setCommandLineText(answer)
+      this.submitCommandLine()
+    }
+    if (this.activeTool.id !== "select") return
+    this.selection.set(ids.filter((id) => this.document.get(id) !== undefined))
+    this.invalidateState()
+    this.host.requestRender()
   }
 
   /**

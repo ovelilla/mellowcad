@@ -742,7 +742,8 @@ export class CadEngine {
    * value — a field's typed text, a toggle, a path array's Method — or the
    * tab's Close, which ends the command as its eXit does. A value its prompt
    * refuses is put back, nothing said. At `Command:`, the selection's tab
-   * (Array) acts on the object selected as its Properties row would.
+   * acts on the objects selected: Array's as its Properties row would, Hatch
+   * Editor's through -HATCHEDIT, as AutoCAD's macros run it.
    */
   editContextualTab(edit: ContextualEdit): void {
     this.runtime.editContextualTab(edit)

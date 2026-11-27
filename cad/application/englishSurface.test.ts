@@ -684,6 +684,30 @@ describe("the engine's English surface", () => {
         .do("enter", (c) => c.enter())
         .do("enter", (c) => c.enter())
     )
+    const hatches = [
+      ...square(),
+      hatchOf([loopOf(p(0, 0), p(100, 100))], { id: "H1" }),
+      hatchOf([loopOf(p(200, 0), p(300, 100))], {
+        id: "H2",
+        patternId: "ANSI37",
+        patternScale: 2,
+      }),
+    ]
+    walk("-HATCHEDIT", createHarness({ entities: hatches }), (s) =>
+      s
+        .do("-HATCHEDIT", (c) => c.command("-HATCHEDIT"))
+        .do("ALL", (c) => submit(c, "ALL"))
+        .do("close the set", (c) => c.enter())
+        .do("Properties", (c) => c.enter())
+        .do("?", (c) => submit(c, "?"))
+        .do("ANSI32", (c) => submit(c, "ANSI32"))
+        .do("keep the scales", (c) => c.enter())
+        .do("angle", (c) => submit(c, "30"))
+        .do("-HATCHEDIT again", (c) => c.command("-HATCHEDIT"))
+        .do("L", (c) => submit(c, "L"))
+        .do("close the set", (c) => c.enter())
+        .do("CA", (c) => submit(c, "CA"))
+    )
   })
 
   it("makes and places blocks", () => {

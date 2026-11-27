@@ -1,7 +1,15 @@
 import { describe, expect, it } from "vitest"
 import type { HatchEntity, InsertEntity, MTextEntity } from "../domain/entities"
 import { type CadHarness, createHarness } from "../../test/harness"
-import { circleOf, lineOf, p, rectOf } from "../../test/builders"
+import {
+  circleOf,
+  hatchOf,
+  lineOf,
+  loopOf,
+  p,
+  rectOf,
+} from "../../test/builders"
+import type { ContextualEdit } from "./EngineState"
 
 /**
  * The ribbon's contextual tabs (docs/plans/autocad-ui.md, §6, phase 6): what
@@ -731,5 +739,130 @@ describe("Text Editor", () => {
     cad.runtime.editContextualTab({ close: true })
     expect(mtext(cad)).toMatchObject({ styleId: s5, height: 5 })
     cad.escape()
+  })
+})
+
+describe("Hatch Editor, the selection's tab", () => {
+  const hatches = () =>
+    createHarness({
+      entities: [
+        hatchOf([loopOf(p(0, 0), p(10, 10))], {
+          id: "H1",
+          patternId: "ANSI31",
+        }),
+        hatchOf([loopOf(p(20, 0), p(30, 10))], {
+          id: "H2",
+          patternId: "ANSI37",
+        }),
+        lineOf(p(0, 50), p(100, 50), { id: "L" }),
+      ],
+    })
+  const typed = (cad: CadHarness, text: string) => {
+    const from = cad.commandLog().length
+    cad.runtime.setCommandLineText(text)
+    cad.runtime.submitCommandLine()
+    return cad.commandLog().slice(from)
+  }
+  const edited = (cad: CadHarness, edit: ContextualEdit) => {
+    const from = cad.commandLog().length
+    cad.runtime.editContextualTab(edit)
+    return cad.commandLog().slice(from)
+  }
+
+  // AcHatchSelected: `Selection.Count >= 1 && Selection.ContainsOnly("Hatch")`.
+  it("opens with hatches only selected, their pattern, angle and scale shown", () => {
+    const cad = hatches()
+    cad.select("H1", "H2")
+    const tab = cad.state().ribbon.contextual
+    expect(tab?.id).toBe("hatchEditor")
+    expect(cad.state().ribbon.tab).toBe("hatchEditor")
+    expect(tab?.pattern).toBe("ANSI31")
+    expect(tab?.fields.hatchAngle).toEqual({ text: "0", disabled: false })
+    expect(tab?.fields.hatchScale).toEqual({ text: "1", disabled: false })
+    cad.select("L")
+    expect(cad.state().ribbon.contextual).toBeNull()
+    cad.escape().select("H1").command("MOVE")
+    expect(cad.state().ribbon.contextual).toBeNull()
+  })
+
+  // desktop sel-hatch-ansi32: the gallery's pick writes -HATCHEDIT's prompts,
+  // the tab stays, U names `'-HATCHEDIT GROUP`.
+  it("runs '_-hatchedit on the selection for a pattern, the hatch kept selected", () => {
+    const cad = hatches()
+    cad.select("H1")
+    expect(edited(cad, { pattern: "ANSI32" })).toEqual([
+      "'_-hatchedit 1 found",
+      "Enter hatch option [DIsassociate/Properties] <Properties>: _p",
+      "Enter a pattern name or [?/Solid] <ANSI31>: ANSI32",
+      "Specify a scale for the pattern <1.0000>:",
+      "Specify an angle for the pattern <0>:",
+    ])
+    expect(cad.byId<HatchEntity>("H1").patternId).toBe("ANSI32")
+    expect(cad.selectedIds()).toEqual(["H1"])
+    expect(cad.state().ribbon.contextual?.pattern).toBe("ANSI32")
+    cad.escape()
+    expect(typed(cad, "_U")).toEqual(["U", "'-HATCHEDIT GROUP"])
+    expect(cad.byId<HatchEntity>("H1").patternId).toBe("ANSI31")
+  })
+
+  // AcWindows.dll: `'^R_-hatchedit\n_p\n\n\n{0}\n`, `…\n_p\n\n{0}\n\n\n`,
+  // `…\n_p\nSOLID\n`, and the pattern's macro with HPLASTPATTERN.
+  it("types the angle, the scale and Type as their macros do", () => {
+    const cad = hatches()
+    cad.select("H1")
+    expect(edited(cad, { field: "hatchAngle", text: "30" }).slice(-3)).toEqual([
+      "Enter a pattern name or [?/Solid] <ANSI31>:",
+      "Specify a scale for the pattern <1.0000>:",
+      "Specify an angle for the pattern <0>: 30",
+    ])
+    expect(edited(cad, { field: "hatchScale", text: "2" }).slice(-2)).toEqual([
+      "Specify a scale for the pattern <1.0000>: 2",
+      "Specify an angle for the pattern <30>:",
+    ])
+    expect(cad.state().ribbon.contextual?.fields.hatchScale?.text).toBe("2")
+    expect(edited(cad, { hatchType: "solid" }).slice(-1)).toEqual([
+      "Enter a pattern name or [?/Solid] <ANSI31>: SOLID",
+    ])
+    expect(cad.state().ribbon.contextual?.fields.hatchAngle?.disabled).toBe(
+      true
+    )
+    // HPLASTPATTERN: ANSI31 at first (probe hatchedit/p16).
+    expect(edited(cad, { hatchType: "pattern" }).slice(-3, -2)).toEqual([
+      "Enter a pattern name or [?/Solid] <SOLID>: ANSI31",
+    ])
+    expect(cad.byId<HatchEntity>("H1").patternId).toBe("ANSI31")
+  })
+
+  it("leaves hatches on a locked layer, as the palette leaves them", () => {
+    const cad = hatches()
+    const locked = cad.runtime.createLayer("Locked")
+    cad.runtime.document.update({
+      ...cad.byId<HatchEntity>("H1"),
+      layerId: locked,
+    })
+    cad.runtime.updateLayer(locked, { locked: true })
+    cad.select("H1")
+    expect(edited(cad, { pattern: "ANSI32" })).toEqual([])
+    expect(cad.byId<HatchEntity>("H1").patternId).toBe("ANSI31")
+  })
+
+  it("refuses in silence what its box refuses, typing nothing", () => {
+    const cad = hatches()
+    cad.select("H1")
+    expect(edited(cad, { field: "hatchScale", text: "0" })).toEqual([])
+    expect(edited(cad, { field: "hatchAngle", text: "abc" })).toEqual([])
+    expect(cad.state().commandLine.command).toBeNull()
+  })
+
+  // MM_1932: `^R^C^C_-HATCHEDIT _CA`.
+  it("closes with Close Hatch Editor, dropping the selection", () => {
+    const cad = hatches()
+    cad.select("H1")
+    expect(edited(cad, { close: true })).toEqual([
+      "_-HATCHEDIT 1 found",
+      "Enter hatch option [DIsassociate/Properties] <Properties>: _CA",
+    ])
+    expect(cad.selectedIds()).toEqual([])
+    expect(cad.state().ribbon.contextual).toBeNull()
   })
 })

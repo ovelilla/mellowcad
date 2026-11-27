@@ -288,6 +288,13 @@ export const KEYWORD_IDS: Readonly<Record<string, readonly string[]>> = {
     "Undo",
     "Pick internal point"
   ],
+  "-HATCHEDIT": [
+    "DIsassociate",
+    "Properties",
+    "CAncel",
+    "?",
+    "Solid"
+  ],
   "INSERT": [
     "?",
     "Scale",

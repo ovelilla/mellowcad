@@ -24,6 +24,7 @@
       "rectangle": "Obdélník",
       "polygon": "Polygon",
       "hatch": "Šrafování",
+      "hatchedit": "Upravit šrafy (příkazový řádek)",
       "block": "Vytvořit blok",
       "insert": "Vložit blok",
       "attedit": "Upravit atributy",
@@ -612,6 +613,7 @@
       "POLYGON": ["POLYGON", "POL"],
       "HATCH": ["ŠRAFY", "HS", "SF", "HŠRAFY"],
       "-HATCH": ["-ŠRAFY", "-HS", "-SF"],
+      "-HATCHEDIT": ["-ŠRAFEDIT"],
       "BLOCK": ["BLOK", "B", "ACADBLOCKDIALOG", "BVYTVOŘ", "VYTVOŘB", "BMOD"],
       "-BLOCK": ["-BLOK", "-B"],
       "INSERT": ["VLOŽ", "VL", "VLOŽURL"],
@@ -1039,6 +1041,13 @@
         "Solid": "Barva",
         "Undo": "Zpět",
         "Pick internal point": "Vnitřní"
+      },
+      "-HATCHEDIT": {
+        "DIsassociate": "Neasociativní",
+        "Properties": "Vlastnosti",
+        "CAncel": "zrUšit",
+        "?": "?",
+        "Solid": "Barva"
       },
       "INSERT": {
         "?": "?",
@@ -1835,6 +1844,14 @@
       "patternName": "Zadejte název vzoru",
       "patternScale": "Určete měřítko vzoru",
       "patternAngle": "Určete úhel vzoru",
+      "patternScaleVaries": "Určete měřítko vzoru",
+      "patternAngleVaries": "Určete úhel vzoru",
+      "selectHatchObjects": "Vyberte objekty šrafování",
+      "enterHatchOption": "Zadejte možnost šrafování",
+      "enterHatchOptionSet": "Zadejte možnost šrafování",
+      "hatchOptionSetDefault": "Vlastnosti",
+      "hatchPatternVaries": "různé",
+      "hatchValueVaries": "různé ",
       "blockName": "Zadejte název bloku nebo",
       "blockExists": "Blok \"{name}\" již existuje. Předefinovat jej?",
       "redefineIt": "Předefinovat jej?",
@@ -2258,6 +2275,7 @@
       "alignArrayedItemsToPath": "Zarovnat položky v poli do trajektorie?",
       "specifyInternalPointOr": "Určete vnitřní bod nebo",
       "enterPatternNameOr": "Zadejte název vzoru nebo",
+      "enterPatternNameOrVaries": "Zadejte název vzoru nebo",
       "specifyStartPointOfText": "Zadejte počáteční bod textu",
       "specifyStartPointOfTextOr": "Zadejte počáteční bod textu nebo",
       "specifyCenterPointOfText": "Zadejte středový bod textu",
@@ -2490,9 +2508,13 @@
       "undoEverything": "open",
       "viewOrthographic": "spaced",
       "sliceStartOr": "spaced",
-      "solidHeightTopOr": "spaced"
+      "solidHeightTopOr": "spaced",
+      "enterPatternNameOrVaries": "open",
+      "patternAngleVaries": "spaced"
     },
     "answerForms": {
+      "patternScaleVaries": "spaced",
+      "patternAngleVaries": "spaced",
       "dimStyleRedefine": "tight",
       "mredoCount": "spaced",
       "presspullHeightOr": "tight",
@@ -2692,6 +2714,8 @@
       "blockUndefined": "Blok \"{name}\" není definován.",
       "insertXref": "** Chyba: Nelze vložit xref. Místo toho použijte XREF Připoj.",
       "hatchPatternUnknown": "Neznámý název vzoru.",
+      "hatchObjectRequired": "Vybraný objekt musí být objekt šrafování.",
+      "hatchObjectsRemoved": "Objekty (celkem {count}) byly odstraněny z výběrové množiny.",
       "hatchTooDense": "Rozteč šrafů je příliš hustá nebo je velikost teček příliš malá.",
       "hatchNoBoundary": "Nenalezena platná hranice šrafování.",
       "noBoundaryToUndo": "Žádná hranice pro Zpět.",
@@ -3501,6 +3525,10 @@
         "Select objects": "Vybrat objekty",
         "Pick internal point": "vybrat Vnitřní bod"
       },
+      "-HATCHEDIT": {
+        "DIsassociate": "Neasociativní",
+        "Properties": "Vlastnosti"
+      },
       "BREAK": {
         "First point": "První bod"
       },
@@ -3572,6 +3600,10 @@
       },
       "peditMultipleOption": {
         "Ltype gen": "tYpčgen"
+      },
+      "enterHatchOptionSet": {
+        "DIsassociate": "Neasociativní",
+        "Properties": "Vlastnosti"
       }
     },
     "listing": {

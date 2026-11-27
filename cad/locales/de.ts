@@ -28,6 +28,7 @@ export const de: EngineLocale = {
       "rectangle": "Rechteck",
       "polygon": "Polygon",
       "hatch": "Schraffur",
+      "hatchedit": "Schraffur bearbeiten (Befehlszeile)",
       "block": "Block erstellen",
       "insert": "Block einfügen",
       "attedit": "Attribute bearbeiten",
@@ -949,6 +950,9 @@ export const de: EngineLocale = {
         "-SCHRAFF",
         "-SCH"
       ],
+      "-HATCHEDIT": [
+        "-SCHRAFFEDIT"
+      ],
       "BLOCK": [
         "BLOCK",
         "BL",
@@ -1780,6 +1784,13 @@ export const de: EngineLocale = {
         "Undo": "Zurück",
         "Pick internal point": "AUSwählen"
       },
+      "-HATCHEDIT": {
+        "DIsassociate": "Loslösen",
+        "Properties": "Eigenschaften",
+        "CAncel": "Abbrechen",
+        "?": "?",
+        "Solid": "Kompakt"
+      },
       "INSERT": {
         "?": "?",
         "Scale": "Faktor",
@@ -2596,6 +2607,14 @@ export const de: EngineLocale = {
       "patternName": "Muster eingeben",
       "patternScale": "Maßstab für Muster angeben",
       "patternAngle": "Winkel für Muster angeben",
+      "patternScaleVaries": "Maßstab für Muster angeben",
+      "patternAngleVaries": "Winkel für Muster angeben",
+      "selectHatchObjects": "Schraffurobjekte wählen",
+      "enterHatchOption": "Schraffuroption eingeben",
+      "enterHatchOptionSet": "Schraffuroption eingeben",
+      "hatchOptionSetDefault": "Eigenschaften",
+      "hatchPatternVaries": "Variiert",
+      "hatchValueVaries": "Variiert",
       "blockName": "Blocknamen eingeben oder",
       "blockExists": [
         "Block \"",
@@ -3099,6 +3118,7 @@ export const de: EngineLocale = {
       "alignArrayedItemsToPath": "Angeordnete Elemente am Pfad ausrichten?",
       "specifyInternalPointOr": "Internen Punkt angeben oder",
       "enterPatternNameOr": "Muster eingeben oder",
+      "enterPatternNameOrVaries": "Muster eingeben oder",
       "specifyStartPointOfText": "Startpunkt des Texts  angeben",
       "specifyStartPointOfTextOr": "Startpunkt des Texts  oder",
       "specifyCenterPointOfText": "Mittelpunkt des Texts  angeben",
@@ -3343,9 +3363,13 @@ export const de: EngineLocale = {
       "undoEverything": "open",
       "viewOrthographic": "tight",
       "sliceStartOr": "spaced",
-      "solidHeightTopOr": "beforeTail"
+      "solidHeightTopOr": "beforeTail",
+      "enterPatternNameOrVaries": "open",
+      "patternAngleVaries": "spaced"
     },
     "answerForms": {
+      "patternScaleVaries": "spaced",
+      "patternAngleVaries": "spaced",
       "dimStyleRedefine": "tight",
       "mredoCount": "spaced",
       "presspullHeightOr": "tight",
@@ -4386,6 +4410,13 @@ export const de: EngineLocale = {
       ],
       "insertXref": "** Fehler: Kann XRef nicht einfügen. Bitte XREF Anhang verwenden.",
       "hatchPatternUnknown": "Unbekannter Mustername.",
+      "hatchObjectRequired": "Gewähltes Objekt muss ein Schraffurobjekt sein.",
+      "hatchObjectsRemoved": [
+        [
+          "count"
+        ],
+        " Objekte aus dem Auswahlsatz entfernt."
+      ],
       "hatchTooDense": "Schraffurabstand zu eng oder Strichgröße zu klein.",
       "hatchNoBoundary": "Konnte keine gültige Schraffurumgrenzung finden.",
       "noBoundaryToUndo": "Keine Umgrenzung rückgängig zu machen.",
@@ -9234,6 +9265,10 @@ export const de: EngineLocale = {
         "Select objects": "objekte Wählen",
         "Pick internal point": "interne punkte AUSwählen"
       },
+      "-HATCHEDIT": {
+        "DIsassociate": "Loslösen",
+        "Properties": "Eigenschaften"
+      },
       "BREAK": {
         "First point": "Erster punkt"
       },
@@ -9309,6 +9344,10 @@ export const de: EngineLocale = {
       },
       "peditMultipleOption": {
         "Ltype gen": "LInientyp"
+      },
+      "enterHatchOptionSet": {
+        "DIsassociate": "Loslösen",
+        "Properties": "Eigenschaften"
       }
     },
     "listing": {

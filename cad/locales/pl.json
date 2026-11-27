@@ -24,6 +24,7 @@
       "rectangle": "Prostokąt",
       "polygon": "Wielobok",
       "hatch": "Kreskowanie",
+      "hatchedit": "Edycja kreskowania (wiersz poleceń)",
       "block": "Utwórz blok",
       "insert": "Wstaw blok",
       "attedit": "Edycja atrybutów",
@@ -612,6 +613,7 @@
       "POLYGON": ["WIELOBOK", "WBO"],
       "HATCH": ["KRESKUJ"],
       "-HATCH": ["-KRESKUJ", "-KRE"],
+      "-HATCHEDIT": ["-EDKRESK"],
       "BLOCK": ["BLOK", "B", "BMOD", "ODTBLOK", "TBLOK"],
       "-BLOCK": ["-BLOK", "-B"],
       "INSERT": ["WSTAW", "W", "WSTAWURL", "ODWSTAW"],
@@ -1039,6 +1041,13 @@
         "Solid": "Pełny",
         "Undo": "Cofnij",
         "Pick internal point": "wSKaż"
+      },
+      "-HATCHEDIT": {
+        "DIsassociate": "usuńZespolenie",
+        "Properties": "Właściwości",
+        "CAncel": "ANuluj",
+        "?": "?",
+        "Solid": "Pełny"
       },
       "INSERT": {
         "?": "?",
@@ -1835,6 +1844,14 @@
       "patternName": "Wprowadź nazwę wzoru",
       "patternScale": "Określ skalę wzoru",
       "patternAngle": "Określ kąt obrotu wzoru",
+      "patternScaleVaries": "Określ skalę wzoru",
+      "patternAngleVaries": "Określ kąt dla wzoru",
+      "selectHatchObjects": "Wybierz obiekty typu kreskowanie",
+      "enterHatchOption": "Podaj opcję kreskowania",
+      "enterHatchOptionSet": "Podaj opcję kreskowania",
+      "hatchOptionSetDefault": "Właściwości",
+      "hatchPatternVaries": "różne",
+      "hatchValueVaries": "różne",
       "blockName": "Podaj nazwę bloku lub",
       "blockExists": "Blok \"{name}\" już istnieje. Czy go przedefiniować?",
       "redefineIt": "Czy go przedefiniować?",
@@ -2258,6 +2275,7 @@
       "alignArrayedItemsToPath": "Czy dopasować elementy w szyku do ścieżki?",
       "specifyInternalPointOr": "Określ punkt wewnętrzny lub",
       "enterPatternNameOr": "Wprowadź nazwę wzoru lub",
+      "enterPatternNameOrVaries": "Podaj nazwę wzoru lub",
       "specifyStartPointOfText": "Określ punkt początkowy tekstu",
       "specifyStartPointOfTextOr": "Określ punkt początkowy tekstu lub",
       "specifyCenterPointOfText": "Określ punkt środkowy tekstu",
@@ -2490,9 +2508,13 @@
       "undoEverything": "open",
       "viewOrthographic": "spaced",
       "sliceStartOr": "spaced",
-      "solidHeightTopOr": "spaced"
+      "solidHeightTopOr": "spaced",
+      "enterPatternNameOrVaries": "open",
+      "patternAngleVaries": "spaced"
     },
     "answerForms": {
+      "patternScaleVaries": "spaced",
+      "patternAngleVaries": "spaced",
       "dimStyleRedefine": "tight",
       "mredoCount": "spaced",
       "presspullHeightOr": "tight",
@@ -2692,6 +2714,8 @@
       "blockUndefined": "Nie zdefiniowano bloku \"{name}\"",
       "insertXref": "** Błąd: Nie można WSTAWIĆ odnośnika zewnętrznego; użyj polecenia ODNOŚNIK Dołącz.",
       "hatchPatternUnknown": "Nieznana nazwa wzoru.",
+      "hatchObjectRequired": "Wybrany obiekt musi być obiektem kreskowania.",
+      "hatchObjectsRemoved": "Liczba usuniętych obiektów ze zbioru wskazań: {count}",
       "hatchTooDense": "Kreskowanie jest zbyt gęste lub rozmiar kreski zbyt mały.",
       "hatchNoBoundary": "Nie znaleziono prawidłowej obwiedni kreskowania.",
       "noBoundaryToUndo": "Brak obwiedni do cofnięcia.",
@@ -3501,6 +3525,10 @@
         "Select objects": "wyBierz obiekty",
         "Pick internal point": "wSKaż punkt wewnętrzny"
       },
+      "-HATCHEDIT": {
+        "DIsassociate": "usuń Zespolenie",
+        "Properties": "Właściwości"
+      },
       "BREAK": {
         "First point": "Pierwszy"
       },
@@ -3572,6 +3600,10 @@
       },
       "peditMultipleOption": {
         "Ltype gen": "rodzajLinii"
+      },
+      "enterHatchOptionSet": {
+        "DIsassociate": "usuń Zespolenie",
+        "Properties": "Właściwości"
       }
     },
     "listing": {

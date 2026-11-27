@@ -92,6 +92,7 @@ declare const source: {
   "Ribbon": {
     "tabs": {
       "hatchCreation": string
+      "hatchEditor": string
       "home": string
       "insert": string
       "annotate": string
@@ -106,6 +107,7 @@ declare const source: {
       "hatchPattern": string
       "hatchProperties": string
       "hatchClose": string
+      "hatchEditorClose": string
       "draw": string
       "modify": string
       "annotation": string
@@ -144,6 +146,7 @@ declare const source: {
       "hatchSolid": string
       "hatchPattern": string
       "hatchClose": string
+      "hatchEditorClose": string
       "line": string
       "polyline": string
       "circle": string
@@ -329,6 +332,7 @@ declare const source: {
       "hatchAngle": string
       "hatchScale": string
       "hatchClose": string
+      "hatchEditorClose": string
       "line": string
       "polyline": string
       "circle": string
@@ -509,6 +513,7 @@ declare const source: {
       "hatchAngle": string
       "hatchScale": string
       "hatchClose": string
+      "hatchEditorClose": string
       "layerProperties": string
       "insert": string
       "ucsIcon": string
