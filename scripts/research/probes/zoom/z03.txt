@@ -1,0 +1,14 @@
+_LINE
+0,0
+70.710678,70.710678
+
+_UCS
+_Z
+45
+_PLAN
+_C
+_ZOOM
+_E
+(getvar "VIEWCTR")
+(getvar "VIEWSIZE")
+(getvar "VIEWTWIST")

@@ -1,0 +1,16 @@
+_CYLINDER
+-90,-150,0
+50
+14
+_VSCURRENT
+_C
+_-VIEW
+_SWISO
+_ZOOM
+_E
+(getvar "VIEWCTR")
+(getvar "VIEWSIZE")
+(getvar "SCREENSIZE")
+(getvar "VIEWDIR")
+(getvar "EXTMIN")
+(getvar "EXTMAX")

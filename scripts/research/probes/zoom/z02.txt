@@ -1,0 +1,9 @@
+_CIRCLE
+0,0
+50
+_-VIEW
+_SWISO
+_ZOOM
+_E
+(getvar "VIEWCTR")
+(getvar "VIEWSIZE")

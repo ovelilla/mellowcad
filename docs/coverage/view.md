@@ -20,8 +20,13 @@ or no height by the other (p156, p157), one of no size ends ZOOM with `*Invalid*
 towards the cursor, Window's first corner's from LASTPOINT, an opposite corner's from the first
 corner, as `@` there is (p127–p130; the corners and a factor leave LASTPOINT, a point at the first
 prompt sets it, p121, p131, p135); Extents and All frame what is drawn with about 3 px a side
-(p100, p108), silently, since 2027 regenerates only when the view leaves what it generated and
-nothing is generated ahead here (p100, p108, p161); with nothing drawn they say
+(p100, p108) — in an upright plan the objects' extents, in a 3D view or a turned plan the box of
+EXTMIN and EXTMAX (the WCS's, whatever the UCS) as the view sees it, not the objects' outlines
+(zoom/z01–z03: a cylinder Ø100 × 14 in SW Isometric 94.1265 high where its outline is 69.2, a
+circle 82.5671, a line in a plan turned 45° its box's diagonal, 101.124; Object frames its set so
+too, and the preset views theirs, **unverified**) —, silently,
+since 2027 regenerates only when the view leaves what it generated and nothing is generated ahead
+here (p100, p108, p161); with nothing drawn they say
 `Regenerating model.` (p136, p137), and transparently refuse with
 `** Requires a regen, cannot be transparent.` (es
 `** Regeneración necesaria, no puede ser transparente.`) and leave the view (a factor still zooms

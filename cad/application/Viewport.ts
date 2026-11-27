@@ -15,6 +15,8 @@ import {
   Bounds,
   Entity,
   entitiesBounds,
+  entitiesWorldBox,
+  entityFromOcs,
   rotateEntity,
   isInfiniteLine,
 } from "../domain/entities"
@@ -134,6 +136,16 @@ export class Viewport extends Observable {
     view.core = this.core
     view.frame = axes
     return view
+  }
+
+  /** The rotation of the WCS this instance reads points in ({@link inFrame}), or `null`. */
+  get frameAxes(): Axes3 | null {
+    return this.frame
+  }
+
+  /** The same view, its points read in the WCS. */
+  get inWorld(): Viewport {
+    return this.core.owner
   }
 
   /** The camera's axes as this instance reads them. */
@@ -499,11 +511,51 @@ export function entitiesViewBounds(
   viewport: Viewport,
   blocks?: BlockLookup
 ): Bounds | null {
+  const frame = viewport.frameAxes
+  if (frame) {
+    // WHY back in the WCS: the box framed is EXTMIN and EXTMAX's, whose axes
+    // are the WCS's whatever the UCS. Read in a tilted UCS's frame it was the
+    // UCS's box (a top view under UCS X 30 framed 144.9 for 101.1). The frame
+    // is a rotation, so the view's own coordinates are the same in both.
+    return entitiesViewBounds(
+      entities.map((entity) => entityFromOcs(entity, frame.z)),
+      viewport.inWorld,
+      blocks
+    )
+  }
   // An XLINE or a RAY has no extents (xline/i08), in any view.
   const finite = entities.filter((entity) => !isInfiniteLine(entity))
-  const onScreen = viewport.isPlan
-    ? finite.filter((entity) => drawsTilted(entity, blocks))
-    : finite
+  const { x: c, y: s } = viewport.right
+  if (!viewport.isPlan || s !== 0 || c !== 1) {
+    // WHY the box: off an upright plan AutoCAD frames the extents' box
+    // (EXTMIN, EXTMAX) as the view sees it, not the objects' outlines: a
+    // cylinder Ø100 × 14 in SW Isometric 94.1265 high where its outline is
+    // 69.2 (zoom/z01), a circle 82.5671 (z02), a line in a twisted plan its
+    // box's diagonal (z03). In an upright plan the two are one.
+    const box = entitiesWorldBox(finite, blocks)
+    if (!box) return null
+    const corners: Vec2[] = []
+    for (const x of [box.min.x, box.max.x]) {
+      for (const y of [box.min.y, box.max.y]) {
+        for (const z of [box.min.z, box.max.z]) {
+          corners.push(
+            viewport.screenToView(viewport.worldToScreen({ x, y, z }))
+          )
+        }
+      }
+    }
+    return {
+      min: {
+        x: Math.min(...corners.map((p) => p.x)),
+        y: Math.min(...corners.map((p) => p.y)),
+      },
+      max: {
+        x: Math.max(...corners.map((p) => p.x)),
+        y: Math.max(...corners.map((p) => p.y)),
+      },
+    }
+  }
+  const onScreen = finite.filter((entity) => drawsTilted(entity, blocks))
   let bounds: Bounds | null = null
   const include = (p: Vec2) => {
     bounds = bounds
@@ -524,11 +576,8 @@ export function entitiesViewBounds(
       for (const point of line) include(viewport.screenToView(point))
     }
   }
-  if (!viewport.isPlan) return bounds
   const level = entitiesBounds(
-    entities
-      .filter((entity) => !drawsTilted(entity, blocks))
-      .map((entity) => entityInView(entity, viewport)),
+    entities.filter((entity) => !drawsTilted(entity, blocks)),
     blocks
   )
   if (level) {

@@ -185,6 +185,64 @@ describe("ZOOM", () => {
     expect(cad.activeToolId()).toBe("select")
   })
 
+  it("Extents frames the extents' box as a 3D or twisted view sees it (zoom/z01–z03)", () => {
+    // The console's screen, 942 × 534: VIEWSIZE is the box's height on it
+    // and the 3 px a side, never the objects' own outline (the cylinder's is
+    // 69.2 high, the circle's 57.7).
+    const framedSize = (...typed: string[]) => {
+      const cad = createHarness()
+      return cad.runtime.withViewSize(942, 534, () => {
+        answer(cad, ...typed, "_ZOOM", "_E")
+        return { size: viewSize(cad), viewport: cad.runtime.viewport }
+      })
+    }
+    const cylinder = framedSize(
+      "_CYLINDER",
+      "-90,-150,0",
+      "50",
+      "14",
+      "_-VIEW",
+      "_SWISO"
+    )
+    expect(cylinder.size).toBeCloseTo(94.1265, 1)
+    // VIEWCTR -83,-143,0: the line of sight through the box's centre.
+    expect(
+      cylinder.viewport.worldToScreen({ x: -90, y: -150, z: 7 })
+    ).toBeCloseToPoint(p(471, 267))
+    const circle = framedSize("_CIRCLE", "0,0", "50", "_-VIEW", "_SWISO")
+    expect(circle.size).toBeCloseTo(82.5671, 1)
+    const line = framedSize(
+      "_LINE",
+      "0,0",
+      "70.710678,70.710678",
+      "",
+      "_UCS",
+      "_Z",
+      "45",
+      "_PLAN",
+      "_C"
+    )
+    expect(line.size).toBeCloseTo(101.124, 1)
+    // EXTMIN and EXTMAX are the WCS's whatever the UCS: a tilted one frames
+    // the same box, though ZOOM reads the drawing in its frame.
+    for (const tilt of [
+      ["_X", "30"],
+      ["_Y", "40"],
+    ]) {
+      const tilted = framedSize(
+        "_CYLINDER",
+        "-90,-150,0",
+        "50",
+        "14",
+        "_-VIEW",
+        "_SWISO",
+        "_UCS",
+        ...tilt
+      )
+      expect(tilted.size).toBeCloseTo(94.1265, 1)
+    }
+  })
+
   it("All behaves like Extents (there are no drawing limits)", () => {
     const entities = [
       lineOf(p(0, 0), p(400, 0)),

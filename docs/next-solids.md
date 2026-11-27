@@ -196,10 +196,11 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación en
    (tamaño, colores, qué se ilumina, el arrastre, los prompts trazados con su `initget`) y el menú
    contextual del gizmo. Lo que se decida dejar fuera (el menú del gizmo, DEFAULTGIZMO a `Command:`,
    GTLOCATION, 3DSCALE) va a Missing de cada entrada.
-   **Visto el 6/11/2026 (sesión 05 de la visibilidad, en el navegador, sin sonda de AutoCAD):**
-   ZOOM Extensión en Isométrica SO no encuadra un sólido: el cilindro de la brida de la landing
-   (Ø100 × 14, VSCURRENT Conceptual) se sale por abajo de la vista, también tras repetir ZOOM E.
-   Comprobarlo en el arnés y contra la consola antes de 6c; un visitante que pruebe el 3D lo verá.
+   **Resuelto el 27/11/2026** lo visto el 6/11 en el navegador (ZOOM Extensión en Isométrica SO
+   dejaba el cilindro de la brida, Ø100 × 14, de borde a borde, su canto bajo la línea de comandos
+   flotante): el motor encuadraba el contorno de los objetos, y AutoCAD, en una vista 3D o una planta
+   girada, la caja de EXTMIN y EXTMAX tal como la ve la vista (zoom/z01–z03: 94.1265 donde el
+   contorno mide 69.2); la entrada de ZOOM en `docs/coverage/view.md`.
 7. **SWEEP, LOFT** y superficies NURBS generales; las booleanas y empalmes que las tocan.
    **La investigación** (27/11/2026, consola en en-US y es-ES, trazada, con MPDUMP y MASSPROP:
    `scripts/research/probes/sweep/` y `scripts/research/probes/loft/`): ACIS hace analítico lo que
