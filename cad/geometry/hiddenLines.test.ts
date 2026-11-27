@@ -12,6 +12,7 @@ import { extrusionBrep, revolutionBrep } from "./sweeps"
 import { pointInSolid } from "./brepQueries"
 import { brepBox } from "./solids"
 import { ViewLine, viewLines } from "./hiddenLines"
+import graze from "./hiddenLines.graze.json"
 
 const X: Vec3 = { x: 1, y: 0, z: 0 }
 const Y: Vec3 = { x: 0, y: 1, z: 0 }
@@ -159,6 +160,15 @@ describe("hidden lines", () => {
 const ORACLE_STEPS = 16
 
 /**
+ * How far inside a solid the oracle's point must be to hide what is behind
+ * it. WHY over the model's tolerance: a ray that runs a hair inside a face
+ * grazes it, as the kernel reads it; down an elliptical cylinder's axis,
+ * 7.5e-9 off it, the far rim's ray drifts 5e-7 in, which the level, scaled
+ * by 2 across an ellipse half as wide, measured as 1e-6.
+ */
+const GRAZE = 2e-6
+
+/**
  * Whether a wire is seen edge-on: an arc in a plane along the view, a
  * segment down it. Its front and back are drawn on one line, so which of
  * them shows is no matter; the generator lands there (a turn's rim seen
@@ -195,7 +205,7 @@ function expectNothingInFront(breps: Brep[], w: Vec3, kind = ""): void {
       for (let k = 1; k <= ORACLE_STEPS; k++) {
         const q = add3(p, scale3(unit, (2 * reach * k) / ORACLE_STEPS))
         for (const x of breps) {
-          expect(pointInSolid(x, q, 1e-6), kind).not.toBe("inside")
+          expect(pointInSolid(x, q, GRAZE), kind).not.toBe("inside")
         }
       }
     }
@@ -395,5 +405,161 @@ describe("hidden lines of any solids", () => {
       { x: 364.211, y: 141.264, z: 83.264 }
     )
     expectNothingInFront([slant, near], X, "slant/box")
+  })
+
+  it("hide a cylinder's far rim behind a 3° turn on its axis (a shrunk counterexample)", () => {
+    // Seen down their axis the turn hides 3° of the rim, less than a stretch
+    // it is tested in: only where the rim crosses the turn's ends is it cut.
+    const turn = revolutionBrep(
+      {
+        axes: { x: X, y: Y, z: Z },
+        elevation: 0,
+        faces: [
+          {
+            loops: [
+              [
+                {
+                  kind: "arc",
+                  center: { x: 0, y: 48 },
+                  radius: 47,
+                  startAngle: 0,
+                  sweep: 2 * Math.PI,
+                },
+              ],
+            ],
+          },
+        ],
+      },
+      { x: 0, y: 0, z: 0 },
+      X,
+      Y,
+      0,
+      0.05
+    )
+    const rod = roundBrep({ x: -234, y: 0, z: 0 }, X, Y, 27, 27, 468, 1)
+    const w = { x: 1, y: 5e-7, z: 0 }
+    expectNothingInFront([turn, rod], w, "revolve/cylinder")
+    // The far rim's point halfway round the turn: drawn hidden, never shown.
+    const behind = { x: -234, y: 27 * Math.cos(0.025), z: 27 * Math.sin(0.025) }
+    const [, lines] = viewLines([turn, rod], w)
+    const through = lines.filter((l) =>
+      wirePoints(l.wire, 4096).some((q) => length3(sub3(q, behind)) < 0.05)
+    )
+    expect(through.map((l) => l.visible)).toEqual([false])
+  })
+
+  it("hide a cylinder behind a ring turned on its axis, seen a hair off square to it (a shrunk counterexample)", () => {
+    // An ellipse turned whole about Y, coming within 0.005 of it, the
+    // cylinder through its hole: seen down Z, 2e-9 off square to the axis.
+    const ring = revolutionBrep(
+      {
+        axes: { x: X, y: Y, z: Z },
+        elevation: 0,
+        faces: [
+          {
+            loops: [
+              [
+                {
+                  kind: "ellipse",
+                  center: { x: 0, y: 0 },
+                  majorAxis: { x: 0, y: 0.25 },
+                  ratio: 0.5,
+                  startParam: 0,
+                  sweep: 2 * Math.PI,
+                },
+              ],
+            ],
+          },
+        ],
+      },
+      { x: 0.13, y: 0, z: 0 },
+      Y,
+      { x: -1, y: 0, z: 0 },
+      0,
+      2 * Math.PI
+    )
+    const rod = roundBrep(
+      { x: 0.13, y: -0.663, z: 0 },
+      Y,
+      X,
+      0.0765,
+      0.0765,
+      1.326,
+      1
+    )
+    expectNothingInFront(
+      [ring, rod],
+      { x: 0, y: 2e-9, z: 1 },
+      "revolve/cylinder"
+    )
+  })
+
+  it("show a cylinder through a ring's hole, seen down their axis", () => {
+    // A bump turned whole about X: the rays across it, cast to count its
+    // faces, meet its profile right where they stop coming that near the
+    // axis, which the distance's branch of the revolution's hits finds only
+    // cut at that end (it was never wrong before that branch).
+    const ring = revolutionBrep(
+      {
+        axes: { x: X, y: Y, z: Z },
+        elevation: 0,
+        faces: [
+          {
+            loops: [
+              [
+                {
+                  kind: "spline",
+                  curve: {
+                    degree: 3,
+                    knots: [0, 0, 0, 0, 1, 1, 1, 1],
+                    controlPoints: [
+                      { x: 626.63, y: 0.08, z: 0 },
+                      { x: 629.54, y: 15.2, z: 0 },
+                      { x: 647, y: 15.2, z: 0 },
+                      { x: 649.91, y: 0.08, z: 0 },
+                    ],
+                  },
+                  from: 0,
+                  to: 1,
+                },
+                {
+                  kind: "line",
+                  start: { x: 649.91, y: 0.08 },
+                  end: { x: 626.63, y: 0.08 },
+                },
+              ],
+            ],
+          },
+        ],
+      },
+      { x: 0, y: 30.135, z: 0 },
+      { x: -1, y: 0, z: 0 },
+      { x: 0, y: -1, z: 0 },
+      0,
+      2 * Math.PI
+    )
+    const rod = roundBrep(
+      { x: 82.17, y: 30.135, z: 0 },
+      { x: -1, y: 0, z: 0 },
+      { x: 0, y: -1, z: 0 },
+      11.35,
+      11.35,
+      164.34,
+      1
+    )
+    expectNothingInFront([ring, rod], X, "revolve/cylinder")
+  })
+
+  it("let a far rim graze its own elliptical cylinder seen a hair off its axis (a shrunk counterexample)", () => {
+    // A test of the oracle ({@link GRAZE}): seen 7.5e-9 off its axis, the far
+    // rim's rays drift 5e-7 into the rod, a graze, where the box's crossings
+    // put samples. The case flips on the last bit of its numbers, so it is
+    // kept as found.
+    const { rod, across, toViewer } = graze as unknown as {
+      rod: Brep
+      across: Brep
+      toViewer: Vec3
+    }
+    expectNothingInFront([rod, across], toViewer, "extrude/box")
   })
 })

@@ -60,6 +60,8 @@ export interface ViewLine {
 interface ViewCurve {
   readonly trace: Pick<EdgeTrace, "t0" | "t1" | "point">
   piece(from: number, to: number): Wire | null
+  /** A line: one chord is the whole of it, seen along the view. */
+  readonly straight?: boolean
 }
 
 /**
@@ -86,20 +88,24 @@ const OUTLINE_CELLS = { u: 96, v: 48 }
 /**
  * The runs of `[from, to]` where `inside` holds: `stretches` middles tested,
  * and where two disagree the change pinned between them, as isoRuns does.
+ * `breaks` cut the stretches further, each piece tested at its middle: where
+ * a change can lie, so that a run narrower than a stretch is still found.
  */
 export function runsWhere(
   inside: (t: number) => boolean,
   from: number,
   to: number,
-  stretches: number
+  stretches: number,
+  breaks: readonly number[] = []
 ): (readonly [number, number])[] {
   const step = (to - from) / stretches
-  const flags = Array.from({ length: stretches }, (_, i) =>
-    inside(from + step * (i + 0.5))
-  )
+  const mids = breaks.length
+    ? middles(from, to, stretches, breaks)
+    : Array.from({ length: stretches }, (_, i) => from + step * (i + 0.5))
+  const flags = mids.map(inside)
   const change = (i: number): number => {
-    let lo = from + step * (i + 0.5)
-    let hi = from + step * (i + 1.5)
+    let lo = mids[i]
+    let hi = mids[i + 1]
     const was = flags[i]
     for (let k = 0; k < VIEW_STEPS; k++) {
       const m = (lo + hi) / 2
@@ -110,7 +116,7 @@ export function runsWhere(
   }
   const out: [number, number][] = []
   let start: number | null = flags[0] ? from : null
-  for (let i = 0; i + 1 < stretches; i++) {
+  for (let i = 0; i + 1 < mids.length; i++) {
     if (flags[i] === flags[i + 1]) continue
     const t = change(i)
     if (flags[i]) {
@@ -120,6 +126,44 @@ export function runsWhere(
   }
   if (start !== null) out.push([start, to])
   return out
+}
+
+/**
+ * A piece of a stretch narrower than this share of it is not tested apart:
+ * a curve's own ends, where the edges beside it cross it, and what no view
+ * would draw.
+ */
+const SLIVER = 1e-3
+
+/** The middles of `[from, to]` cut into `stretches` and at each of `breaks` within it. */
+function middles(
+  from: number,
+  to: number,
+  stretches: number,
+  breaks: readonly number[]
+): number[] {
+  const step = (to - from) / stretches
+  const least = step * SLIVER
+  const cuts = [
+    ...Array.from({ length: stretches }, (_, i) => from + step * i),
+    to,
+    ...breaks.filter((t) => t > from + least && t < to - least),
+  ].sort((a, b) => a - b)
+  // The stretches' own middles stay tested too: a run around one whose ends
+  // no crossing marks is still found as it was without the breaks.
+  const out = Array.from(
+    { length: stretches },
+    (_, i) => from + step * (i + 0.5)
+  )
+  let last = cuts[0]
+  for (let i = 1; i < cuts.length; i++) {
+    if (cuts[i] - last < least && i < cuts.length - 1) continue
+    out.push((last + cuts[i]) / 2)
+    last = cuts[i]
+  }
+  return out
+    .sort((a, b) => a - b)
+    .filter((t, i, all) => i === 0 || t > all[i - 1])
 }
 
 /** The stretches a curve over `[t0, t1]` is tested in: more round a longer turn. */
@@ -169,7 +213,7 @@ function edgeCurve(
       }
     }
   }
-  return { trace, piece, angular: trace.angular }
+  return { trace, piece, angular: trace.angular, straight: c.kind === "line" }
 }
 
 /** The cosine between the normal at `(u, v)` and `w`: zero where the surface turns edge-on to the view, and at a pole. */
@@ -259,6 +303,7 @@ export function faceOutlines(brep: Brep, face: BrepFace, w: Vec3): ViewCurve[] {
               t1: b,
               point: (t) => surfacePoint(s, ur, t),
             },
+            straight: true,
             piece: (from, to) => ({
               kind: "line",
               start: surfacePoint(s, ur, from),
@@ -635,11 +680,17 @@ function extrusionHits(
 }
 
 /**
+ * Below this cosine between a line and a revolution's axis, the line is read
+ * as across the axis ({@link revolutionHits}).
+ */
+const ALONG_AXIS = 0.1
+
+/**
  * Where the line `o + t w` meets a revolution: read in a half-plane through
  * the axis, the line's height and distance from the axis are what the
- * profile's must be, so its parameter is found where they agree. A line
- * square to the axis keeps one height: the profile's points at it, each
- * met where the line comes as far from the axis.
+ * profile's must be, so its parameter is found where they agree. Along the
+ * axis the height gives `t`; across it the distance does, nearer and
+ * farther, and the profile's height must then be the line's there.
  */
 function revolutionHits(
   o: Vec3,
@@ -659,7 +710,7 @@ function revolutionHits(
     return { h, rr: Math.max(dot3(q, q) - h * h, 0) }
   }
   const [a, b] = profileRange(s)
-  if (Math.abs(wa) > 1e-9) {
+  if (Math.abs(wa) > ALONG_AXIS) {
     const tOf = (v: number) => (meridian(v).h - h0) / wa
     return signRoots(
       (v) => {
@@ -671,12 +722,26 @@ function revolutionHits(
       RAY_SAMPLES
     ).map(tOf)
   }
+  // WHY not the height here too: nearly square to the axis the line's height
+  // hardly changes, `t` from it is a division by almost nothing, and the
+  // samples missed the hair of the profile where it is met (a ruling of a
+  // cylinder 1e-9 off square, behind a ring on its axis). The height is kept
+  // for the rest, as exact there and about four times cheaper.
+  const disc = (v: number) => qb * qb - 4 * qa * (qc - meridian(v).rr)
+  // Cut where the line stops coming that near the axis: there its nearer
+  // and farther meetings with the profile's circle are one, and a meeting
+  // between the last sample and that end is found only against it.
+  const cuts = [a, ...signRoots(disc, a, b, RAY_SAMPLES), b]
   const out: number[] = []
-  for (const v of signRoots((x) => meridian(x).h - h0, a, b, RAY_SAMPLES)) {
-    const disc = qb * qb - 4 * qa * (qc - meridian(v).rr)
-    if (!(qa > 0) || disc < 0) continue
-    const root = Math.sqrt(disc)
-    out.push((-qb - root) / (2 * qa), (-qb + root) / (2 * qa))
+  for (let i = 0; i + 1 < cuts.length; i++) {
+    const [p, q] = [cuts[i], cuts[i + 1]]
+    if (!(q > p) || disc((p + q) / 2) < 0) continue
+    for (const side of [-1, 1]) {
+      const tAt = (v: number) =>
+        (-qb + side * Math.sqrt(Math.max(disc(v), 0))) / (2 * qa)
+      const g = (v: number) => h0 + wa * tAt(v) - meridian(v).h
+      for (const v of signRoots(g, p, q, RAY_SAMPLES)) out.push(tAt(v))
+    }
   }
   return out
 }
@@ -774,6 +839,98 @@ function shadowsOver(
   )
 }
 
+/** A curve seen along the view: chords across it, each point with the parameter it was taken at. */
+interface FlatCurve {
+  readonly ts: readonly number[]
+  readonly a: readonly number[]
+  readonly b: readonly number[]
+  /** How near the viewer each point is, along `w`. */
+  readonly d: readonly number[]
+  readonly box: readonly [number, number, number, number]
+}
+
+/** Chords a curve is seen as, per stretch it is tested in, to find where it crosses another. */
+const FLAT_CHORDS = 1
+
+function flatCurve(
+  trace: ViewCurve["trace"],
+  frame: ViewFrame,
+  chords: number
+): FlatCurve {
+  const ts: number[] = []
+  const a: number[] = []
+  const b: number[] = []
+  const d: number[] = []
+  for (let i = 0; i <= chords; i++) {
+    const t = trace.t0 + ((trace.t1 - trace.t0) * i) / chords
+    const p = trace.point(t)
+    ts.push(t)
+    a.push(dot3(p, frame.e1))
+    b.push(dot3(p, frame.e2))
+    d.push(dot3(p, frame.w))
+  }
+  return {
+    ts,
+    a,
+    b,
+    d,
+    box: [Math.min(...a), Math.min(...b), Math.max(...a), Math.max(...b)],
+  }
+}
+
+const boxesMeet = (
+  p: FlatCurve["box"],
+  q: FlatCurve["box"],
+  pad: number
+): boolean =>
+  p[0] <= q[2] + pad &&
+  q[0] <= p[2] + pad &&
+  p[1] <= q[3] + pad &&
+  q[1] <= p[3] + pad
+
+/**
+ * The parameters of `c` where its chords cross those of `o` nearer the
+ * viewer than it by over `gap`, read off its own chord: where `o` runs
+ * behind, its face is behind `c` too, and hides nothing there.
+ */
+function flatCrossings(
+  c: FlatCurve,
+  o: FlatCurve,
+  pad: number,
+  gap: number
+): number[] {
+  if (!boxesMeet(c.box, o.box, pad)) return []
+  const out: number[] = []
+  for (let i = 0; i + 1 < c.ts.length; i++) {
+    const a0 = c.a[i]
+    const b0 = c.b[i]
+    const da = c.a[i + 1] - a0
+    const db = c.b[i + 1] - b0
+    const chord: FlatCurve["box"] = [
+      Math.min(a0, a0 + da),
+      Math.min(b0, b0 + db),
+      Math.max(a0, a0 + da),
+      Math.max(b0, b0 + db),
+    ]
+    if (!boxesMeet(chord, o.box, pad)) continue
+    for (let j = 0; j + 1 < o.ts.length; j++) {
+      const ea = o.a[j + 1] - o.a[j]
+      const eb = o.b[j + 1] - o.b[j]
+      const den = da * eb - db * ea
+      if (den === 0) continue
+      const fa = o.a[j] - a0
+      const fb = o.b[j] - b0
+      const s = (fa * eb - fb * ea) / den
+      const r = (fa * db - fb * da) / den
+      if (s < 0 || s > 1 || r < 0 || r > 1) continue
+      const depth = c.d[i] + (c.d[i + 1] - c.d[i]) * s
+      if (o.d[j] + (o.d[j + 1] - o.d[j]) * r <= depth + gap) continue
+      out.push(c.ts[i] + (c.ts[i + 1] - c.ts[i]) * s)
+    }
+  }
+  return out
+}
+
 /**
  * Directions a ray is cast in, after the view's, to count the faces it
  * crosses: one that meets an edge cannot tell, and the next is tried.
@@ -856,18 +1013,69 @@ export function viewLines(
     1
   )
   const gap = Math.max(MODEL_TOLERANCE, reach * 1e-9)
-  return breps.map((brep) => {
-    const curves: (ViewCurve & { angular?: boolean })[] = []
-    for (let i = 0; i < brep.edges.length; i++) {
-      const c = edgeCurve(brep, i)
-      if (c) curves.push(c)
+  type Curve = ViewCurve & { angular?: boolean }
+  const seen = breps.map((brep) => {
+    const edges = brep.edges.map((_, i) => edgeCurve(brep, i))
+    const outlines = new Map<BrepFace, Curve[]>(
+      brep.faces.map((face) => [face, faceOutlines(brep, face, w)])
+    )
+    return { edges, outlines }
+  })
+  const flats = new Map<Curve, FlatCurve>()
+  const flatOf = (c: Curve): FlatCurve => {
+    let f = flats.get(c)
+    if (!f) {
+      f = flatCurve(
+        c.trace,
+        frame,
+        c.straight ? 1 : FLAT_CHORDS * stretchesOf(c.trace, c.angular ?? false)
+      )
+      flats.set(c, f)
     }
-    for (const face of brep.faces) curves.push(...faceOutlines(brep, face, w))
+    return f
+  }
+  const bounds = new Map<BrepFace, Curve[]>()
+  const boundOf = (sh: Shadow): Curve[] => {
+    let found = bounds.get(sh.face)
+    if (!found) {
+      const { edges, outlines } = seen[breps.indexOf(sh.brep)]
+      found = [
+        ...sh.face.loops.flatMap((loop) =>
+          loop.flatMap((co) => edges[co.edge] ?? [])
+        ),
+        ...(outlines.get(sh.face) ?? []),
+      ]
+      bounds.set(sh.face, found)
+    }
+    return found
+  }
+  return breps.map((brep, index) => {
+    const { edges, outlines } = seen[index]
+    const curves: Curve[] = [
+      ...edges.filter((c): c is NonNullable<typeof c> => c !== null),
+      ...brep.faces.flatMap((face) => outlines.get(face) ?? []),
+    ]
     const out: ViewLine[] = []
     for (const curve of curves) {
       const { t0, t1 } = curve.trace
       if (!(t1 > t0)) continue
       const near = shadowsOver(curve.trace, frame, shadows, gap)
+      // WHY: a face hides a stretch of a curve only up to where, seen along
+      // the view, the curve crosses the face's edges or outline: there the
+      // samples are cut too, or a solid thinner than a stretch in front of
+      // it (a 3° wedge before a cylinder's far rim) is missed.
+      const breaks: number[] = []
+      if (near.length) {
+        const flat = flatOf(curve)
+        for (const sh of near) {
+          for (const other of boundOf(sh)) {
+            if (other === curve || !(other.trace.t1 > other.trace.t0)) continue
+            breaks.push(
+              ...flatCrossings(flat, flatOf(other), MODEL_TOLERANCE, gap)
+            )
+          }
+        }
+      }
       const shown =
         near.length === 0
           ? [[t0, t1] as const]
@@ -875,7 +1083,8 @@ export function viewLines(
               (t) => !hidden(curve.trace.point(t), frame, near, gap),
               t0,
               t1,
-              stretchesOf(curve.trace, curve.angular ?? false)
+              stretchesOf(curve.trace, curve.angular ?? false),
+              breaks
             )
       let at = t0
       const push = (from: number, to: number, visible: boolean) => {
