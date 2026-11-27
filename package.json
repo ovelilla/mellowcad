@@ -71,7 +71,7 @@
     "babel-plugin-react-compiler": "^1.0.0",
     "eslint": "^10.15.0",
     "eslint-config-next": "16.4.6",
-    "fast-check": "^4.10.2",
+    "fast-check": "^4.11.0",
     "prettier": "^3.10.1",
     "prettier-plugin-tailwindcss": "^0.8.0",
     "schema-dts": "^2.1.0",
