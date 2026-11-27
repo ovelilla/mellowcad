@@ -291,8 +291,10 @@ name after a reload (the auto-save keeps the drawing, not its file's name: it co
 
 **Implemented:** the tabs of Drafting & Annotation that hold something built, in its order —
 Home, Insert, Annotate, 3D Tools, View — the tab in front the engine's for the session
-(`state.ribbon.tab`), 3D Tools and View's Visual Styles, Coordinates and Navigate hidden at first,
-as the workspace hides them (`docs/plans/autocad-ui.md`, decision 4, revisited in phase 5).
+(`state.ribbon.tab`), 3D Tools and View's Visual Styles, Coordinates and Navigate shown at first.
+WHY shown, where the workspace hides them: the owner's choice of 2026-11-27, the 3D tools in sight
+with no 3D Modeling workspace to switch to (`docs/plans/autocad-ui.md`, decision 4); a device
+that kept only the hiding of that day's deploy shows them too.
 **The right-click menu** (§2.3, R13), on the tab row or a panel, at the pointer: Show Tabs ▸, a
 check per tab built, Show Panels ▸, a check per panel of the tab in front, | Show Panel Titles,
 checked, | Close (desktop `autocad-mouse/ribbon-rclick`, `ribbon-show-tabs`, `ribbon-show-panels`

@@ -61,18 +61,32 @@ export interface RibbonLayout {
 }
 
 /**
- * What a device starts with: the full ribbon, the button cycling, and what
- * Drafting & Annotation hides hidden — the 3D Tools tab and View's Visual
- * Styles, Coordinates and Navigate panels (docs/plans/autocad-ui.md, §2.3 and
- * decision 4), which Show Tabs and Show Panels bring back.
+ * What a device starts with: the full ribbon, the button cycling, every tab
+ * and panel shown. WHY not Drafting & Annotation's hidden 3D Tools tab and
+ * View's Visual Styles, Coordinates and Navigate panels: the owner wants the
+ * 3D tools in sight (2026-11-27; docs/plans/autocad-ui.md, decision 4), and
+ * there is no 3D Modeling workspace here to switch to. Show Tabs and Show
+ * Panels hide them as AutoCAD's do.
  */
 export const RIBBON_LAYOUT: RibbonLayout = {
   state: "full",
   mode: "cycle",
-  hiddenTabs: ["tools3d"],
-  hiddenPanels: ["visualStyles", "coordinates", "navigate"],
+  hiddenTabs: [],
+  hiddenPanels: [],
   panelTitles: true,
 }
+
+/**
+ * What a device stored from 2026-11-27's deploy, which hid them, without
+ * touching Show Tabs or Show Panels: read as no choice made, so it gets the
+ * tools shown too. A device that hid something else keeps its choice, and
+ * what is stored from now on carries {@link SHOWN_AT_FIRST}, so hiding the
+ * same four again is kept.
+ */
+const HIDDEN_AT_FIRST = {
+  tabs: ["tools3d"],
+  panels: ["visualStyles", "coordinates", "navigate"],
+} as const
 
 const isState = (value: unknown): value is RibbonState =>
   (RIBBON_STATES as readonly unknown[]).includes(value)
@@ -89,6 +103,18 @@ export function resolveRibbonLayout(stored: unknown): RibbonLayout {
     Array.isArray(list) && list.every((id) => typeof id === "string")
       ? (list as string[])
       : fallback
+  const untouched =
+    value[SHOWN_AT_FIRST] !== true &&
+    sameIds(value.hiddenTabs, HIDDEN_AT_FIRST.tabs) &&
+    sameIds(value.hiddenPanels, HIDDEN_AT_FIRST.panels)
+  if (untouched) {
+    return resolveRibbonLayout({
+      ...value,
+      hiddenTabs: [],
+      hiddenPanels: [],
+      [SHOWN_AT_FIRST]: true,
+    })
+  }
   return {
     state: isState(value.state) ? value.state : RIBBON_LAYOUT.state,
     mode: isMode(value.mode) ? value.mode : RIBBON_LAYOUT.mode,
@@ -99,6 +125,17 @@ export function resolveRibbonLayout(stored: unknown): RibbonLayout {
         ? value.panelTitles
         : RIBBON_LAYOUT.panelTitles,
   }
+}
+
+/** The mark of a layout stored since every tab and panel starts shown. */
+const SHOWN_AT_FIRST = "shownAtFirst"
+
+function sameIds(list: unknown, ids: readonly string[]): boolean {
+  return (
+    Array.isArray(list) &&
+    list.length === ids.length &&
+    ids.every((id) => list.includes(id))
+  )
 }
 
 /**
@@ -136,7 +173,10 @@ export function rememberRibbon(
 ): void {
   if (key === undefined) return
   try {
-    window.localStorage.setItem(key, JSON.stringify(layout))
+    window.localStorage.setItem(
+      key,
+      JSON.stringify({ ...layout, [SHOWN_AT_FIRST]: true })
+    )
   } catch {
     // Not remembered: the next visit opens with the full ribbon.
   }

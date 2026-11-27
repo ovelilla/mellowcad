@@ -121,8 +121,8 @@ export const ANNOTATE: readonly RibbonPanel[] = [
 ]
 
 /**
- * 3D Tools, a hidden tab of Drafting & Annotation shown here (decision 4,
- * R9): Modeling, Solid Editing and Coordinates (`--tab "3D Tools"
+ * 3D Tools, a hidden tab of Drafting & Annotation shown here at first, the
+ * owner's choice (decision 4, R9; `RIBBON_LAYOUT`): Modeling, Solid Editing and Coordinates (`--tab "3D Tools"
  * --built`). Surfaces, Mesh, Section and Selection hold nothing built.
  */
 export const TOOLS_3D: readonly RibbonPanel[] = [

@@ -149,35 +149,42 @@ describe("the ribbon's tabs", () => {
     expect(view).not.toContain(">Draw<")
   })
 
-  // Drafting & Annotation's order; 3D Tools hidden as the workspace has it
-  // until Show Tabs brings it back (decision 4, revisited in phase 5).
+  // Drafting & Annotation's order; 3D Tools shown at first, the owner's
+  // choice where the workspace hides it, until Show Tabs hides it (decision 4).
   it("are Home, Insert, Annotate, 3D Tools and View, in that order", () => {
     const tabs = (html: string) =>
       [...html.matchAll(/role="tab"[^>]*>([^<]+)</g)].map((m) => m[1])
-    expect(tabs(renderRibbon())).toEqual(["Home", "Insert", "Annotate", "View"])
-    expect(tabs(renderRibbon(undefined, "full", { hiddenTabs: [] }))).toEqual([
+    expect(tabs(renderRibbon())).toEqual([
       "Home",
       "Insert",
       "Annotate",
       "3D Tools",
       "View",
     ])
+    const hidden = { hiddenTabs: ["tools3d"] }
+    expect(tabs(renderRibbon(undefined, "full", hidden))).toEqual([
+      "Home",
+      "Insert",
+      "Annotate",
+      "View",
+    ])
   })
 
-  it("show View without Visual Styles, Coordinates and Navigate at first", () => {
+  it("show View with Visual Styles, Coordinates and Navigate at first", () => {
     const view = (shown?: Partial<RibbonLayout>) =>
       renderRibbon((cad) => cad.runtime.setRibbonTab("view"), "full", shown)
-    expect(view()).not.toContain(">Visual Styles<")
-    expect(view()).not.toContain(">Navigate<")
-    expect(view({ hiddenPanels: [] })).toContain(">Visual Styles<")
-    expect(view({ hiddenPanels: [] })).toContain(">Navigate<")
+    expect(view()).toContain(">Visual Styles<")
+    expect(view()).toContain(">Navigate<")
+    const hidden = { hiddenPanels: ["visualStyles", "navigate"] }
+    expect(view(hidden)).not.toContain(">Visual Styles<")
+    expect(view(hidden)).not.toContain(">Navigate<")
   })
 
   it("put the first tab shown in front of a hidden one, the names off without titles", () => {
     const html = renderRibbon(
       (cad) => cad.runtime.setRibbonTab("tools3d"),
       "full",
-      { panelTitles: false }
+      { hiddenTabs: ["tools3d"], panelTitles: false }
     )
     expect(html).toContain('aria-label="Home"')
     expect(html).not.toContain(">Draw<")

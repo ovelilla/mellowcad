@@ -424,7 +424,7 @@ in `docs/coverage/`, never a dead button.
 | R6 | Panels shed text and fold from the right as the window narrows | none | Revoked, in the measured order | 1 |
 | R7 | Layers and Properties are panels of Home | groups of the top bar | Revoked | 1 |
 | R8 | Styles, Blocks and the command line are toggled from View › Palettes | toggles at the end of the top bar | Revoked | 1 |
-| R9 | 3D Tools is a hidden tab of the workspace; 3D work has the 3D Modeling workspace | the 3D tools in the palette | Equal since phase 5: hidden at first, shown by Show Tabs and Show Panels (decision 4); until then they showed, unreachable hidden | 1, 5 (block 2, done) |
+| R9 | 3D Tools is a hidden tab of the workspace; 3D work has the 3D Modeling workspace | the 3D tools in the palette | Shown at first, the owner's choice of 2026-11-27 (decision 4); Show Tabs and Show Panels hide them as AutoCAD's; from phase 5 to that day they started hidden, as the workspace has them | 1, 5 (block 2, done) |
 | R10 | Contextual tabs (Hatch Creation, Text Editor, Array) while their command runs | the command's prompts only | Revoked: the engine's tab (`state.ribbon.contextual`), Array Creation first, then Hatch Creation with HATCH's ribbon prompts; the others Missing until their block | 6 (blocks 1 and 2, done) |
 | R11 | Tooltips: the name, a description, the command and `Press F1 for more help` | the name and the alias | Revoked: §2.3's four parts, each culture's words (acad.CUIX, AcWindows, AcCommandToolTips) | 5 (block 1, done) |
 | R12 | RIBBON and RIBBONCLOSE; Clean Screen closes the ribbon | neither command; Clean Screen hides the palette and the top bar's groups | Revoked | 1 |
@@ -503,9 +503,11 @@ colour scheme. Each has its WHY in its coverage entry already.
 3. **A tab or panel with nothing built is not drawn**; a panel is drawn with what it has, in
    AutoCAD's rows, and its coverage entry lists the rest. So: Home without Groups and View; no
    Parametric, Manage, Output, Add-ins, Collaborate, Express Tools or Featured Apps.
-4. **The 3D Tools tab and View's hidden panels start hidden** (R9), as Drafting & Annotation has
-   them, and the ribbon's right-click Show Tabs and Show Panels show them (revisited in phase 5,
-   block 2: until then they showed, unreachable hidden).
+4. **The 3D Tools tab and View's hidden panels start shown** (R9), the owner's choice of
+   2026-11-27: Drafting & Annotation hides them, but there is no 3D Modeling workspace here to
+   switch to, and the owner wants the 3D tools in sight. The ribbon's right-click Show Tabs and
+   Show Panels hide them as AutoCAD's do. (Phase 5, block 2, had made them start hidden, as the
+   workspace has them; until then they showed, unreachable hidden.)
 5. **The icons stay ours**, drawn at 16 and at 32 on lucide's metrics; a large button needs the
    32 px drawing of its tool, not the 16 px one scaled.
 6. **One block per commit and the gate once per block**, each block leaving the editor whole: the
@@ -778,7 +780,8 @@ Blocks, a commit each, each leaving the editor whole:
    Show Related Tool Palette Group, Tool Palette Group and Undock stay Missing, undrawn (no tool
    palettes, no docking). **Decision 4 is revisited**: with Show Tabs and Show Panels here, the
    WHY that showed 3D Tools and View's Visual Styles, Coordinates and Navigate is gone, so they
-   start hidden, as Drafting & Annotation has them, and the menu shows them. What is shown is the
+   start hidden, as Drafting & Annotation has them, and the menu shows them (revisited again on
+   2026-11-27 by the owner: shown at first, decision 4). What is shown is the
    device's, kept as the minimize state is (where AutoCAD keeps it, the workspace or the profile,
    **unverified**). Show Panel Titles: Autodesk's support article "Ribbon panel drop-down titles are
    missing" settles it — "The drop-down arrow is present, but there is no text": the title bar

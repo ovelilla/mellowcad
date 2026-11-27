@@ -68,15 +68,16 @@ describe("the ribbon's minimize state", () => {
     )
   })
 
-  // Drafting & Annotation hides 3D Tools and View's Visual Styles,
-  // Coordinates and Navigate (plan §2.3, decision 4): Show Tabs and Show
-  // Panels bring them back, the device keeping what they show.
+  // Every tab and panel shown, 3D Tools and View's Visual Styles,
+  // Coordinates and Navigate too, which Drafting & Annotation hides: the
+  // owner's choice (plan, decision 4). Show Tabs and Show Panels hide them,
+  // the device keeping what they show.
   it("starts full and cycling, and reads what is stored leniently", () => {
     expect(RIBBON_LAYOUT).toEqual({
       state: "full",
       mode: "cycle",
-      hiddenTabs: ["tools3d"],
-      hiddenPanels: ["visualStyles", "coordinates", "navigate"],
+      hiddenTabs: [],
+      hiddenPanels: [],
       panelTitles: true,
     })
     expect(resolveRibbonLayout(null)).toEqual(RIBBON_LAYOUT)
@@ -95,6 +96,34 @@ describe("the ribbon's minimize state", () => {
         panelTitles: false,
       })
     ).toEqual({ ...RIBBON_LAYOUT, hiddenTabs: [], panelTitles: false })
+  })
+
+  it("shows the 3D tools to a device that only stored the deploy's hiding", () => {
+    const stored = {
+      state: "panelTitles",
+      hiddenTabs: ["tools3d"],
+      hiddenPanels: ["visualStyles", "coordinates", "navigate"],
+    }
+    expect(resolveRibbonLayout(stored)).toEqual({
+      ...RIBBON_LAYOUT,
+      state: "panelTitles",
+    })
+    // One stored since, hiding the same four, keeps them hidden.
+    expect(
+      resolveRibbonLayout({ ...stored, shownAtFirst: true })
+    ).toMatchObject({
+      hiddenTabs: ["tools3d"],
+      hiddenPanels: ["visualStyles", "coordinates", "navigate"],
+    })
+    // One that hid something of its own keeps it all.
+    expect(
+      resolveRibbonLayout({ ...stored, hiddenPanels: ["visualStyles"] })
+    ).toEqual({
+      ...RIBBON_LAYOUT,
+      state: "panelTitles",
+      hiddenTabs: ["tools3d"],
+      hiddenPanels: ["visualStyles"],
+    })
   })
 
   // plan §2.3: the ribbon below the title bar in each state.

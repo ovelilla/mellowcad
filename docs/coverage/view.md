@@ -251,7 +251,7 @@ as in 2D Wireframe, in its colours (p301, p302); a fillet's tangent edges are dr
 plan a cylinder or a cone shows its circle alone (p307); a solid on a layer that is off neither
 shows nor hides another (p309; frozen layers are not modelled). A click takes the solid whose face
 is nearest the viewer under it, never one by an edge a face hides (p314: 2D Wireframe takes the
-edge's solid), and the object snaps still find every edge (p313). The ribbon's View › Visual Styles gallery (a panel shown by its right-click Show Panels, hidden at first as AutoCAD's) sets the style with no echo, a step U names `VSCURRENT GROUP` (`docs/coverage/workspace.md`, Ribbon), and so does the viewport controls' style label (see Viewport controls).
+edge's solid), and the object snaps still find every edge (p313). The ribbon's View › Visual Styles gallery (shown at first, the owner's choice where AutoCAD's workspace hides it; its right-click Show Panels hides it) sets the style with no echo, a step U names `VSCURRENT GROUP` (`docs/coverage/workspace.md`, Ribbon), and so does the viewport controls' style label (see Viewport controls).
 
 **Missing:** Wireframe, Realistic, Shaded, shaded with Edges, shades of Gray, SKetchy, X-ray and
 Other (`Enter a visual style name or [?]:`, es `Indique un nombre de estilo visual o [?]`, pt-BR

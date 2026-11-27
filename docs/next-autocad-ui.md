@@ -18,7 +18,8 @@
 > visual, el ViewCube en reposo y los grips. La fase 5 (lo que le falta al ribbon) está hecha el
 > 26/11, sus tres bloques del §6 del plan: los tooltips de AutoCAD con
 > el extendido, el menú contextual del ribbon (Show Tabs, Show Panels, Show Panel Titles, Close;
-> 3D Tools y los paneles ocultos de View empiezan ocultos, como en AutoCAD) y el Customize ▾ del
+> 3D Tools y los paneles ocultos de View empezaban ocultos, como en AutoCAD, y desde el 27/11 se
+> muestran de entrada por decisión del dueño) y el Customize ▾ del
 > acceso rápido. Las fases 4 y 5 quedan verificadas en el escritorio el 26/11, con la sesión de la
 > fase 6 (la comparación lado a lado y sus arreglos; lo poco que no resolvió sigue en el §7 del
 > plan). La fase 6 (pestañas contextuales) está hecha el 27/11, sus cinco bloques del §6 del plan: el 1 (Array Creation) y el 2
@@ -98,8 +99,9 @@ editor, la tabla de diferencias y las fases. Lo que cambió respecto a lo acorda
   fila con la barra de estado: la fase 4 lo iguala y devuelve esa altura al dibujo.
 - **La pestaña 3D Tools**, que el espacio «Drafting & Annotation» tiene oculta, se mostraba aquí, y
   también los paneles ocultos de View (Visual Styles, Coordinates, Navigate), mientras no hubo
-  menú «Show Tabs» para llegar a ellos; desde la fase 5 empiezan ocultos, como en AutoCAD, y el
-  menú contextual del ribbon los muestra.
+  menú «Show Tabs» para llegar a ellos; la fase 5 los ocultó de entrada, como en AutoCAD, y el
+  27/11 el dueño decidió mostrarlos de entrada (quiere las herramientas 3D a la vista y aquí no hay
+  espacio de trabajo «3D Modeling»); el menú contextual del ribbon los oculta como el de AutoCAD.
 - **Dos fases nuevas**: la 5 (tooltips, el menú contextual del ribbon, personalizar el acceso
   rápido) y la 6 (pestañas contextuales: Hatch Creation, Text Editor, Array).
 - **Dos pasadas por el escritorio** el mismo día: la primera sin ratón, por UI Automation, con el
