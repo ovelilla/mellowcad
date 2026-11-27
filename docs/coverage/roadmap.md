@@ -119,9 +119,6 @@ first time a frame on the largest real DXFs (moving the cursor, zoom, pan), then
 
 ## Command reviews
 
-**Paused behind visibility** (`docs/next-seo.md`): on 2026-11-05 the owner put being found ahead of
-every feature, so review 32 and phase 6c wait until its sessions are done.
-
 Before more features, every implemented command is reviewed against AutoCAD 2027, one at a time,
 with skill `command-review`, in this order. A review **owns** the cross-cutting areas it lists: it
 reviews each in full, and the reviews after it cite its plan and check only their own contract

@@ -1,37 +1,22 @@
 # La interfaz de AutoCAD — brief
 
-> **Estado:** en curso desde el 24/11/2026, agotada la cola de la visibilidad (`docs/next-seo.md`):
-> la fase 0 (inventario y plan) está hecha y su plan, `docs/plans/autocad-ui.md`, manda sobre las
-> fases de §4, que se corrigieron con él; la fase 1 (el marco y el ribbon) está hecha el 24/11,
-> sus cinco bloques del §6 del plan (el estado del ribbon en el motor, el marco, Home, las otras
-> pestañas, minimizar y plegar), el 2 y el 3 revisados ese día (la revisión corta con Fable de
-> §5); el push que publique el ribbon espera la palabra del dueño. La fase 2 (la barra de título)
-> está hecha el 25/11, sus cuatro bloques del §6 del plan (Ayuda ▾, el nombre del dibujo, el menú
-> de la aplicación, Undo ▾ y Redo ▾; la lista Ayuda ▾ no se abrió ni con el ratón, así que sus filas
-> son las del menú Ayuda de acad.cuix). La fase 3 (las paletas y los diálogos de estilos) está
-> hecha el 26/11: su pasada por el escritorio, su bloque 1 del §6 del plan (STYLE y DIMSTYLE como
-> diálogos), el 2a (el armazón de las paletas: cada una aparte, flotante o acoplada), el 2b
-> (anclar y auto-ocultar), el 3a (el Layer Properties Manager por dentro), el 3b (Blocks por
-> dentro), el 3c (Properties por dentro) y el 4 (las listas de estilos del ribbon). La fase 4 (el
-> área de dibujo y la fila inferior) está hecha el 26/11, sus cinco bloques del
-> §6 del plan: la fila inferior de 33, la línea de comandos flotante, la etiqueta del estilo
-> visual, el ViewCube en reposo y los grips. La fase 5 (lo que le falta al ribbon) está hecha el
-> 26/11, sus tres bloques del §6 del plan: los tooltips de AutoCAD con
-> el extendido, el menú contextual del ribbon (Show Tabs, Show Panels, Show Panel Titles, Close;
-> 3D Tools y los paneles ocultos de View empezaban ocultos, como en AutoCAD, y desde el 27/11 se
-> muestran de entrada por decisión del dueño) y el Customize ▾ del
-> acceso rápido. Las fases 4 y 5 quedan verificadas en el escritorio el 26/11, con la sesión de la
-> fase 6 (la comparación lado a lado y sus arreglos; lo poco que no resolvió sigue en el §7 del
-> plan). La fase 6 (pestañas contextuales) está hecha el 27/11, sus cinco bloques del §6 del plan: el 1 (Array Creation) y el 2
-> (Hatch Creation y los prompts de HATCH con el ribbon) el 26/11, verificados en el escritorio ese
-> día, el 3 (Text Editor) también, comprobado en el escritorio antes de construirlo, y el 4 (la
-> pestaña Array de la selección, con el botón de Items de ARRAYPATH y Show Panels del §7) y el 5
-> (-HATCHEDIT y Hatch Editor) el 27/11 sin escritorio; lo que solo el escritorio puede decir
-> sigue en el §7 del plan.
-> Después del rediseño, una fase 7 anotada por el dueño el 26/11 y por valorar: un
-> aviso de novedades en el editor (§4).
-> Acordado el 7/11/2026 por el dueño. Se borra cuando la última fase esté hecha; hasta entonces
-> cada fase cerrada se marca aquí.
+> **Estado:** las fases 1 a 6 están hechas y publicadas (el último push, el 27/11/2026 a las
+> 15:15, `docs/next-vercel-usage.md` §4); del §7 del plan, `docs/plans/autocad-ui.md`, quedan dos
+> capturas del escritorio: la lista Ayuda ▾ (fase 2, sus filas aún las del menú Ayuda de
+> acad.cuix) y los anchos de la barra de estado y de la línea flotante en un perfil sin tocar (fase
+> 4), cada una **unverified** en su entrada de cobertura. La fase 7 (el aviso de novedades, §4),
+> anotada por el dueño el 26/11, está sin acordar y espera su palabra: no se empieza sin ella, y
+> el brief se queda mientras no esté decidida.
+>
+> Cómo se llegó: la fase 0 (inventario y plan) el 24/11, y su plan manda sobre las fases de §4. La
+> fase 1 (el marco y el ribbon) el 24/11; la 2 (la barra de título: Ayuda ▾, el nombre del dibujo,
+> el menú de la aplicación, Undo ▾ y Redo ▾) el 25/11; la 3 (las paletas y los diálogos de estilos)
+> el 26/11; la 4 (el área de dibujo y la fila inferior) y la 5 (los tooltips, el menú contextual
+> del ribbon y el Customize ▾ del acceso rápido; 3D Tools y los paneles ocultos de View se muestran
+> de entrada por decisión del dueño del 27/11) el 26/11, verificadas en el escritorio ese día; la 6
+> (las pestañas contextuales) el 27/11, con su pasada por el escritorio ese mismo día. Cada fase,
+> sus bloques en el §6 del plan. Acordado el 7/11/2026 por el dueño; se borra cuando la última
+> fase esté hecha.
 
 ## 1. Objetivo
 
