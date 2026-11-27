@@ -715,7 +715,9 @@ export function toolsOn(panels: readonly RibbonPanel[]): Set<string> {
  * Annotation and Modify's third column (1600), Modify's second column
  * (1536) and its first (1440); then the panels fold from the right —
  * Clipboard and Utilities (1440), Properties (1366), Block and Layers
- * (1152), Annotation (900), Modify (800). Draw was still whole at 800. Of
+ * (1152), Annotation (900), Modify (800). Draw was still whole at 800
+ * and folds last, below it (the owner's capture of 2026-11-27, a window
+ * about 750 wide: every panel of Home a button, Draw too). Of
  * the steps the desktop showed at one width, a panel's shedding goes before
  * a fold and the rest right to left: their order within it is unverified. Groups and View, not built, fold in AutoCAD's
  * among them.
@@ -735,4 +737,5 @@ export const HOME_FOLD: readonly RibbonFoldStep[] = [
   { panel: "layers", step: "fold" },
   { panel: "annotation", step: "fold" },
   { panel: "modify", step: "fold" },
+  { panel: "draw", step: "fold" },
 ]

@@ -57,9 +57,10 @@ export function reductionsOf(panel: RibbonPanel): readonly RibbonReduction[] {
  * The order a tab's panels shed width and fold in as the window narrows:
  * the tab's own, as measured on the desktop (Home's), else the rule Home's
  * shows — every panel sheds its width first, the last panel first, then the
- * panels fold from the right, all but the first. WHY a rule: Insert,
- * Annotate, 3D Tools and View hold so little here that they fit at 1280;
- * their order on the desktop is unverified.
+ * panels fold from the right, the first last (as Home's Draw, the owner's
+ * capture of 2026-11-27). WHY a rule: Insert, Annotate, 3D Tools and View
+ * hold so little here that they fit at 1280; their order on the desktop is
+ * unverified.
  */
 export function foldSteps(tab: RibbonTab): readonly RibbonFoldStep[] {
   if (tab.fold) return tab.fold
@@ -69,8 +70,7 @@ export function foldSteps(tab: RibbonTab): readonly RibbonFoldStep[] {
     reductionsOf(panel).forEach(() =>
       steps.push({ panel: panel.id, step: "reduce" })
     )
-  for (const panel of fromRight.slice(0, -1))
-    steps.push({ panel: panel.id, step: "fold" })
+  for (const panel of fromRight) steps.push({ panel: panel.id, step: "fold" })
   return steps
 }
 

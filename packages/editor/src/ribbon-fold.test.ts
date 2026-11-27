@@ -20,7 +20,7 @@ const panel = (id: string) => {
 describe("Home's fold", () => {
   // Each step must name a panel of Home and a reduction it has, or the
   // order measured on the desktop silently loses a step.
-  it("takes each panel's reductions and folds every panel but Draw", () => {
+  it("takes each panel's reductions and folds every panel, Draw last", () => {
     const steps = foldSteps(home)
     expect(steps).toBe(HOME_FOLD)
     for (const p of HOME) {
@@ -29,7 +29,7 @@ describe("Home's fold", () => {
       )
       expect(reduces.length, p.id).toBe(reductionsOf(p).length)
       const folds = steps.filter((s) => s.panel === p.id && s.step === "fold")
-      expect(folds.length, p.id).toBe(p.id === "draw" ? 0 : 1)
+      expect(folds.length, p.id).toBe(1)
       // A panel sheds its width before it folds.
       const last = steps.findLastIndex((s) => s.panel === p.id)
       if (folds.length > 0) expect(steps[last].step, p.id).toBe("fold")
@@ -52,29 +52,29 @@ describe("Home's fold", () => {
     expect(panelShape(panel("properties"), 1).narrowCombos).toBe(true)
   })
 
-  it("leaves every panel whole at level 0 and only Draw at the last", () => {
+  // The owner's capture of 2026-11-27: under 800, Draw folds too.
+  it("leaves every panel whole at level 0, Draw at the last but one, none at the last", () => {
     const whole = foldAt(home, 0)
     for (const p of HOME)
       expect(whole.get(p.id)).toEqual({ reduced: 0, folded: false })
-    const last = foldAt(home, HOME_FOLD.length)
+    const butOne = foldAt(home, HOME_FOLD.length - 1)
     for (const p of HOME)
-      expect(last.get(p.id)?.folded, p.id).toBe(p.id !== "draw")
+      expect(butOne.get(p.id)?.folded, p.id).toBe(p.id !== "draw")
+    const last = foldAt(home, HOME_FOLD.length)
+    for (const p of HOME) expect(last.get(p.id)?.folded, p.id).toBe(true)
   })
 })
 
 describe("another tab's fold", () => {
   // Their order on the desktop is unverified here (they fit at 1280): every
   // panel sheds first, the last first, then they fold from the right.
-  it("sheds from the right, then folds from the right, all but the first", () => {
+  it("sheds from the right, then folds from the right, the first last", () => {
     for (const tab of RIBBON_TABS.slice(1)) {
       const steps = foldSteps(tab)
       const firstFold = steps.findIndex((s) => s.step === "fold")
       expect(steps.slice(firstFold).every((s) => s.step === "fold")).toBe(true)
       expect(steps.slice(firstFold).map((s) => s.panel)).toEqual(
-        tab.panels
-          .slice(1)
-          .map((p) => p.id)
-          .reverse()
+        tab.panels.map((p) => p.id).reverse()
       )
     }
   })

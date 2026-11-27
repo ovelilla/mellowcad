@@ -229,7 +229,8 @@ slide-out's rows already out**, the title bar at its foot:
 
 Modify at 133 is its twelve tools as icons; Annotation at 148 keeps Text and Dimension large and
 drops the small ones' text; Block at 159 and Layers keep their large buttons. Draw was still
-whole at 800. Insert, Annotate and View (block5, `uia-w<width>-<Tab>.txt`) do the same: every
+whole at 800, and folds below it, the last (the owner's capture of 2026-11-27, Spanish, a window
+about 750 wide: every panel of Home a button, Dibujo too). Insert, Annotate and View (block5, `uia-w<width>-<Tab>.txt`) do the same: every
 panel sheds width first, then they fold from the right (Insert's Location, Linking & Extraction,
 Data and Import at 1024; Annotate's Annotation Scaling, Markup and Tables at 1440; View's Interface
 at 1024) — on AutoCAD's whole content, which is far more than is built here.
