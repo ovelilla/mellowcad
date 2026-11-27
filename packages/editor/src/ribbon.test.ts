@@ -283,6 +283,25 @@ describe("the contextual tab", () => {
     expect(html.match(/>Total:</g)).toHaveLength(1)
   })
 
+  // Desktop 2026-11-27 (bt-home, bt-tree): with MTEXT's editor open Home's
+  // buttons are disabled, Text Editor's not.
+  it("greys every other tab's panels while the text editor is open", () => {
+    const editing = (tab?: "home", minimized: RibbonState = "full") =>
+      renderRibbon((cad) => {
+        cad.command("MTEXT").click({ x: 0, y: 0 }).click({ x: 50, y: -20 })
+        cad.type("Kept")
+        if (tab) cad.runtime.setRibbonTab(tab)
+      }, minimized)
+    expect(editing("home")).toMatch(/<fieldset disabled=""[^>]*>.*>Line</)
+    // Minimized to its panels' buttons or titles too.
+    expect(editing("home", "panelButtons")).toMatch(
+      /<fieldset disabled=""[^>]*>.*>Draw</
+    )
+    expect(editing("home", "panelTitles")).toContain("<fieldset disabled")
+    expect(editing()).not.toContain("<fieldset disabled")
+    expect(renderRibbon()).not.toContain("<fieldset disabled")
+  })
+
   it("is gone once the command ends, Show Tabs never listing it", () => {
     const html = renderRibbon((cad) => {
       arrayRect(cad)

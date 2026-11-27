@@ -503,7 +503,9 @@ Justification (81 × 72), its list the nine attachments in rows of 24, each with
 check at the current one; Close Text Editor, broken where acad.CUIX breaks it. Justification's
 and Close's tooltips are their name alone, the rule and `Press F1 for more help`, no `TT_`
 describing them (desktop 2026-11-27, tip-just, tip-close); the height box's, its `TT_` (tip-height). The Quick Access Toolbar
-is greyed while it shows (mtext-tab-tree). Its words each culture's acad.CUIX (tab, panels,
+is greyed while it shows (mtext-tab-tree), and so is every other tab's panels, their tabs still
+picked (desktop 2026-11-27, bt-home, bt-tree: Home's Draw disabled under MTEXT's and TEXTEDIT's
+editor). Its words each culture's acad.CUIX (tab, panels,
 buttons, the gallery's name), AcWindows' `TT_AcIPEFontSizeCombo`, acmtedRes 1024–1032 (the
 attachments) and AcTaskDialogs' TaskDialog_7 (Text Style Change), Arabic's ours
 

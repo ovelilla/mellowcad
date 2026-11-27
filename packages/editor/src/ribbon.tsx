@@ -9,6 +9,7 @@ import {
   useState,
   type PointerEvent as ReactPointerEvent,
   type ReactElement,
+  type ReactNode,
   type RefObject,
 } from "react"
 import { flushSync } from "react-dom"
@@ -325,14 +326,16 @@ export function Ribbon({ engine, state }: PieceProps): ReactElement {
                   : "h-5.25 pt-px"
               )}
             >
-              {front.panels.map((panel) => (
-                <PanelPopup
-                  key={panel.id}
-                  panel={panel}
-                  as={layout.state === "panelButtons" ? "button" : "title"}
-                  ctx={ctx}
-                />
-              ))}
+              <UnderTextEditor tab={front} ctx={ctx}>
+                {front.panels.map((panel) => (
+                  <PanelPopup
+                    key={panel.id}
+                    panel={panel}
+                    as={layout.state === "panelButtons" ? "button" : "title"}
+                    ctx={ctx}
+                  />
+                ))}
+              </UnderTextEditor>
             </Tabs.Panel>
           )}
         {front && layout.state === "tabs" && (
@@ -520,21 +523,54 @@ function FoldingRow({ tab, ctx }: { tab: RibbonTab; ctx: Context }) {
       wrapped, and the fold measured the row's width, never theirs (Arabic,
       Japanese and Chinese at 1280 kept a level 44 px too wide). */}
       <div ref={content} className="flex w-max shrink-0">
-        {tab.panels.map((panel) => {
-          const fold = folds.get(panel.id) ?? { reduced: 0, folded: false }
-          return fold.folded ? (
-            <PanelPopup key={panel.id} panel={panel} as="folded" ctx={ctx} />
-          ) : (
-            <PanelView
-              key={panel.id}
-              panel={panel}
-              shape={panelShape(panel, fold.reduced)}
-              ctx={ctx}
-            />
-          )
-        })}
+        <UnderTextEditor tab={tab} ctx={ctx}>
+          {tab.panels.map((panel) => {
+            const fold = folds.get(panel.id) ?? { reduced: 0, folded: false }
+            return fold.folded ? (
+              <PanelPopup key={panel.id} panel={panel} as="folded" ctx={ctx} />
+            ) : (
+              <PanelView
+                key={panel.id}
+                panel={panel}
+                shape={panelShape(panel, fold.reduced)}
+                ctx={ctx}
+              />
+            )
+          })}
+        </UnderTextEditor>
       </div>
     </div>
+  )
+}
+
+/**
+ * A tab's panels, every control greyed while the text editor is open on
+ * another tab, as AutoCAD's (desktop 2026-11-27, bt-home, bt-tree: Home's
+ * Draw disabled under MTEXT's and TEXTEDIT's editor), so no button reaches
+ * the editor; a lit toggle loses its tint too.
+ */
+function UnderTextEditor({
+  tab,
+  ctx,
+  children,
+}: {
+  tab: RibbonTab
+  ctx: Context
+  children: ReactNode
+}) {
+  const greyed =
+    ctx.state.ribbon.contextual?.id === "textEditor" && tab.id !== "textEditor"
+  return (
+    <fieldset
+      disabled={greyed}
+      className={cn(
+        "contents",
+        greyed &&
+          "pointer-events-none [&_*]:text-faint-foreground [&_[aria-pressed=true]]:bg-transparent"
+      )}
+    >
+      {children}
+    </fieldset>
   )
 }
 
