@@ -21,12 +21,20 @@ export function DynamicInput({
 
   if (!di) return null
 
+  // WHY z-40: AutoCAD's tooltip is a window over everything, near the
+  // drawing's foot over its floating command line and the bottom row
+  // (desktop 2026-11-27, en: `Specify first point:` and its boxes below the
+  // cursor, past the drawing area); here over what the canvas cell holds,
+  // the command line (z-15) and the floating palettes (z-20), under the
+  // popups (z-50). The cell is a stacking context of its own in /draw
+  // (its `viewTransitionName`), so a slid-out palette (z-30, beside it)
+  // still covers it there.
   return (
     <div
       {...box}
       dir="ltr"
       lang={state.commandLine.lang}
-      className="pointer-events-none absolute z-[5] flex flex-wrap gap-1"
+      className="pointer-events-none absolute z-40 flex flex-wrap gap-1"
       style={{ left: di.screen.x + 16, top: di.screen.y + 20 + di.clearance }}
     >
       {/* The dynamic prompt: the question alone, its keywords in the chips;

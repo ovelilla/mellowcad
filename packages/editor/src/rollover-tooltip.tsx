@@ -22,7 +22,7 @@ export function RolloverTooltip({
     <div
       key={rollover.id}
       role="tooltip"
-      className="pointer-events-none absolute z-[5] grid grid-cols-[auto_auto] gap-x-4 rounded-md border bg-popover/95 p-2 text-popover-foreground shadow-md transition-opacity delay-500 starting:opacity-0"
+      className="pointer-events-none absolute z-40 grid grid-cols-[auto_auto] gap-x-4 rounded-md border bg-popover/95 p-2 text-popover-foreground shadow-md transition-opacity delay-500 starting:opacity-0"
       style={{ left: rollover.at.x + 21, top: rollover.at.y + 27 }}
     >
       <div className="col-span-2 pb-1 text-title text-foreground">

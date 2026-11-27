@@ -331,9 +331,16 @@ nothing marked, each further Down (or Up) moves the mark around it, Enter picks 
 the Command menu does (echoed `_Close`) and Escape shuts the list, the command going on (desktop d11;
 help: "press the DOWN ARROW key until a dot is displayed next to the option. Press Enter") — WHY the
 options also show as chips under the prompt at all times: they are the always-visible list, the open
-one shown by its brighter chips and the marked one by the selected row's colour
+one shown by its brighter chips and the marked one by the selected row's colour. The tooltip
+(and the rollover tooltip) is drawn over the command line, the bottom row and the floating palettes, under the popups and a slid-out palette: near the drawing's foot its
+prompt and boxes stay under the cursor, over the floating command line and the bottom row, as
+AutoCAD's do (desktop 2026-11-27, en, `Specify first point:` at the foot and past it; at the
+screen's edge AutoCAD moves it left, here the page's edge **unverified**)
 
-**Missing:** a numeric `<default>` shows only as the box's placeholder (where the box is not reading
+**Missing:** the crosshair, with the tooltip, kept where it was as the pointer leaves the drawing
+area (AutoCAD freezes both there, over its bottom row and its floating command line: desktop
+2026-11-27; here the crosshair goes, the tooltip stays, over a floating palette too; the snap
+marker, the rubber band, the rollover and the tooltip over a palette then **unverified**); a numeric `<default>` shows only as the box's placeholder (where the box is not reading
 the cursor), not in the prompt; turning dynamic input off — F12 and DYNMODE (F12 writes no echo in
 AutoCAD, desktop d10, d27; here the key is left to the browser); the Up arrow's recent input (help:
 "Press the Up Arrow key to display recent input"); **unverified**: Enter with the list open and
