@@ -2932,7 +2932,7 @@ const ATTACHMENTS: readonly Attachment[] = [
  * glyph over `Justification` and an arrow; its list the nine attachments,
  * rows of 24 with each one's letters after it and a check at the edited
  * text's (desktop, 2026-11-26, mtext-just-menu). A pick writes no line.
- * No tooltip: AutoCAD's tables hold none for it.
+ * Its tooltip its name alone (desktop 2026-11-27, tip-just).
  */
 function TextJustification({ ctx }: { ctx: Context }) {
   const t = useEditorText("Ribbon")
@@ -2940,17 +2940,25 @@ function TextJustification({ ctx }: { ctx: Context }) {
   const current = ctx.state.ribbon.contextual?.attachment ?? null
   return (
     <Menu.Root>
-      <Menu.Trigger
-        className={cn(
-          BUTTON,
-          "h-18 min-w-9.5 flex-col justify-start px-0.5 pt-0.75",
-          WHOLE_EVEN
-        )}
+      <Tip
+        tip="textJustification"
+        title={ctx.text("textJustification")}
+        ctx={ctx}
       >
-        <LargeGlyph action="textJustification" />
-        <span className="mt-0.5">{ctx.text("textJustification")}</span>
-        <ChevronDown aria-hidden className="size-2.5" />
-      </Menu.Trigger>
+        <div className="flex shrink-0">
+          <Menu.Trigger
+            className={cn(
+              BUTTON,
+              "h-18 min-w-9.5 flex-col justify-start px-0.5 pt-0.75",
+              WHOLE_EVEN
+            )}
+          >
+            <LargeGlyph action="textJustification" />
+            <span className="mt-0.5">{ctx.text("textJustification")}</span>
+            <ChevronDown aria-hidden className="size-2.5" />
+          </Menu.Trigger>
+        </div>
+      </Tip>
       <Menu.Portal container={portal}>
         <Menu.Positioner
           side="bottom"

@@ -496,8 +496,9 @@ MTEXT): Style's gallery (AcIPEFontStyleGallery, 184 × 74), the drawing's text s
 cells of 82 × 70 a row, each a sample over its name, its tooltip the name alone; the height box
 (AcIPEFontSizeCombo, 100 × 22) in Style's second row, Annotative's first left empty; Paragraph's
 Justification (81 × 72), its list the nine attachments in rows of 24, each with its letters, a
-check at the current one; Close Text Editor, broken where acad.CUIX breaks it. Justification and
-Close have no tooltip: no `TT_` names them (unverified on the desktop). The Quick Access Toolbar
+check at the current one; Close Text Editor, broken where acad.CUIX breaks it. Justification's
+and Close's tooltips are their name alone, the rule and `Press F1 for more help`, no `TT_`
+describing them (desktop 2026-11-27, tip-just, tip-close); the height box's, its `TT_` (tip-height). The Quick Access Toolbar
 is greyed while it shows (mtext-tab-tree). Its words each culture's acad.CUIX (tab, panels,
 buttons, the gallery's name), AcWindows' `TT_AcIPEFontSizeCombo`, acmtedRes 1024–1032 (the
 attachments) and AcTaskDialogs' TaskDialog_7 (Text Style Change), Arabic's ours

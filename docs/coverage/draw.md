@@ -1204,10 +1204,13 @@ AcTextEditorInProgress) while the in-place editor is open, here or in TEXTEDIT o
 drawing's text styles, two cells a row, which sets the edited text's style, with the editor empty
 at once and with text in it after AutoCAD's task dialog `Multiline Text - Text Style Change`
 (AcTaskDialogs' TaskDialog_7; Yes applies it, No leaves it); its height box, the text's height
-(0 and below put back with nothing said), its list the one height it shows; Paragraph's
-Justification, the nine attachments of acmtedRes 1024–1032 (`Top Left TL`…), the text hung off
-the new one in the box the corners drew (from Width, off its point; TEXTEDIT keeps the insertion
-point: both **unverified**); Close Text Editor, which keeps the text as Ctrl+Enter does. A style
+(0 and below, or letters, put back with nothing said: desktop 2026-11-27, te-height-enter), its
+list the one height it shows; Paragraph's Justification, the nine attachments of acmtedRes
+1024–1032 (`Top Left TL`…), the text hung off the new one in the box the corners drew (desktop
+2026-11-27: Middle Center at the box's centre, mt-mc; from Width, off its point, **unverified**),
+and in TEXTEDIT the text kept where it stands, its point moved to the new attachment of its frame,
+the defined width (or the widest line past it) by the text's height (te-\*, te2-\*: Middle Center to Bottom Center down half
+the line, to Bottom Left half the width left); Close Text Editor, which keeps the text as Ctrl+Enter does. A style
 or height sets the object's, never TEXTSTYLE or TEXTSIZE, and the next run starts without them
 (desktop: S5 picked, the object S5 at 5, TEXTSTYLE Standard, TEXTSIZE 2.5). No line is written.
 The Quick Access Toolbar is greyed while the tab shows. What is typed on the drawing while the

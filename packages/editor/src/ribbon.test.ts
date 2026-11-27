@@ -25,7 +25,7 @@ import {
 } from "./ribbon-home"
 import { RIBBON_TABS } from "./ribbon-tabs"
 import { en } from "./locales/en"
-import { HELP_INSTEAD } from "./ribbon-tip"
+import { HELP_INSTEAD, isTip } from "./ribbon-tip"
 import { editorTags, readEditorCatalog } from "../../../scripts/locales/editor"
 
 const PANELS = RIBBON_TABS.flatMap((tab) => tab.panels)
@@ -240,6 +240,16 @@ describe("the ribbon's tooltips", () => {
         expect(commands.has(String(command)), tip).toBe(false)
         if (instead) expect(commands.has(instead), tip).toBe(true)
       } else expect(commands.has(String(command)), tip).toBe(true)
+    }
+  })
+
+  // Desktop 2026-11-27 (tip-just, tip-close): Text Editor's Justification
+  // and Close Text Editor show their name, the rule and F1's line, no more.
+  it("names Justification and Close Text Editor alone", () => {
+    for (const tip of ["textJustification", "textClose"]) {
+      expect(isTip(tip), tip).toBe(true)
+      expect(tip in words.tips, tip).toBe(false)
+      expect(tip in words.tipCommands, tip).toBe(false)
     }
   })
 

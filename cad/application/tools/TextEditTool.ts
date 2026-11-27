@@ -8,7 +8,9 @@ import {
   attributeTag,
   closestOnEntity,
   mtextContents,
+  mtextLayout,
   mtextPlainText,
+  mtextToWorld,
 } from "../../domain/entities"
 import { UpdateEntityCommand } from "../commands/entityCommands"
 import { SessionSettingCommand } from "../commands/settingsCommands"
@@ -238,9 +240,8 @@ export class TextEditTool implements Tool {
   /**
    * Text Editor's controls on the multiline text being edited, written with
    * its wording as the editor closes: a style (its fixed height, or the
-   * object's own without one), a height, a Justification about the object's
-   * insertion point (unverified), or Close Text Editor, which keeps the edit
-   * as Ctrl+Enter does.
+   * object's own without one), a height, a Justification, or Close Text
+   * Editor, which keeps the edit as Ctrl+Enter does.
    */
   editContextual(edit: ContextualEdit, ctx: ToolContext): CommandOptionOutcome {
     if (this.state.phase !== "edit") return "unhandled"
@@ -271,7 +272,7 @@ export class TextEditTool implements Tool {
         height: style.height > 0 ? style.height : base,
       }
     } else if ("attachment" in edit) {
-      next = { ...target, attachment: edit.attachment }
+      next = reattached(target, ctx.dynamicInput.getText("value"), edit)
     }
     if (!next) return "unhandled"
     this.state = { phase: "edit", target: next }
@@ -606,3 +607,25 @@ type TextEditToolState =
   /** Mode's own question, which of TEXTEDITMODE's two. */
   | { readonly phase: "mode" }
   | { readonly phase: "edit"; readonly target: EditableText }
+
+/**
+ * The text kept where it stands, its insertion point moved to the new
+ * attachment of its frame (the defined width, or the widest line past it, by
+ * the height of what the editor holds): desktop 2026-11-27, TEXTEDIT's Middle Center to Bottom Center down
+ * half the line's height, then to Bottom Left half the width to the left.
+ */
+function reattached(
+  target: MTextEntity,
+  value: string,
+  { attachment }: { attachment: MTextEntity["attachment"] }
+): MTextEntity {
+  const { x0, x1, y0, y1 } = mtextLayout({
+    ...target,
+    contents: mtextContents(value),
+  })
+  const column = attachment[1]
+  const row = attachment[0]
+  const x = column === "l" ? x0 : column === "r" ? x1 : (x0 + x1) / 2
+  const y = row === "t" ? y1 : row === "b" ? y0 : (y0 + y1) / 2
+  return { ...target, attachment, position: mtextToWorld(target, x, y) }
+}

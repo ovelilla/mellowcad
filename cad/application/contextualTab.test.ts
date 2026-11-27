@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest"
-import type { HatchEntity, InsertEntity, MTextEntity } from "../domain/entities"
+import {
+  mtextLayout,
+  type HatchEntity,
+  type InsertEntity,
+  type MTextEntity,
+} from "../domain/entities"
 import { type CadHarness, createHarness } from "../../test/harness"
 import {
   circleOf,
@@ -641,11 +646,13 @@ describe("Text Editor", () => {
     cad.escape()
   })
 
-  it("puts back a height of 0 or below, in silence", () => {
+  // Letters too: desktop 2026-11-27, te-height-enter (`abc` back to 2.5).
+  it("puts back a height of 0 or below, or letters, in silence", () => {
     const { cad } = editing()
     const before = cad.commandLog().length
     cad.runtime.editContextualTab({ field: "textHeight", text: "0" })
     cad.runtime.editContextualTab({ field: "textHeight", text: "-3" })
+    cad.runtime.editContextualTab({ field: "textHeight", text: "abc" })
     expect(cad.commandLog().length).toBe(before)
     expect(cad.state().ribbon.contextual?.fields.textHeight?.text).toBe("2.5")
     cad.escape()
@@ -708,6 +715,28 @@ describe("Text Editor", () => {
     expect(mtext(cad).position).toBeCloseToPoint(p(200, -100))
   })
 
+  // Desktop 2026-11-27 (te-*, te2-*): TEXTEDIT's Middle Center to Bottom
+  // Center moved the point down half the line's 2.5, then to Bottom Left half
+  // the width (100.688) to the left; the text never moved.
+  it("keeps TEXTEDIT's text where it stands, its point moved to the Justification", () => {
+    const cad = createHarness()
+    cad.command("MTEXT").click(p(0, 0)).click(p(100, -30))
+    cad.type("Hello world").enter()
+    cad.command("TEXTEDIT").click(p(3, -1))
+    const height = -mtextLayout(mtext(cad)).y0
+    // AutoCAD's frame 2.5 high; Arimo's ink stands a little taller
+    // (`measureTextInk`).
+    expect(Math.abs(height - 2.5)).toBeLessThan(0.1)
+    cad.runtime.editContextualTab({ attachment: "mc" })
+    cad.runtime.editContextualTab({ attachment: "bc" })
+    cad.runtime.editContextualTab({ attachment: "bl" })
+    cad.runtime.editContextualTab({ attachment: "br" })
+    cad.runtime.editContextualTab({ close: true })
+    expect(mtext(cad).attachment).toBe("br")
+    expect(mtext(cad).position).toBeCloseToPoint(p(100, -height))
+    cad.escape()
+  })
+
   it("shows TEXTEDIT's multiline text and writes what it sets with the wording", () => {
     const { cad, s5 } = withS5()
     cad.command("MTEXT").click(p(0, 0)).click(p(200, -100))
@@ -726,7 +755,9 @@ describe("Text Editor", () => {
       attachment: "mc",
       styleId: "Standard",
     })
-    expect(mtext(cad).position).toBeCloseToPoint(p(0, 0))
+    // The text stays: its point goes to the middle of its frame.
+    const frame = mtextLayout({ ...mtext(cad), attachment: "tl" })
+    expect(mtext(cad).position).toBeCloseToPoint(p(100, frame.y0 / 2))
     cad.escape()
     cad.undo()
     expect(mtext(cad)).toMatchObject({ height: 2.5, attachment: "tl" })

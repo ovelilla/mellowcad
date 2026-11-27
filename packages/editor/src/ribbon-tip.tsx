@@ -17,9 +17,21 @@ export type TipKey = keyof RibbonWords["tips"]
 /** A tooltip that names its command. */
 type CommandTip = keyof RibbonWords["tipCommands"]
 
+/**
+ * The controls whose tooltip is their name alone, a rule and `Press F1 for
+ * more help`, with no description or command: Text Editor's Justification and
+ * Close Text Editor, which no `TT_` describes (desktop 2026-11-27, tip-just,
+ * tip-close).
+ */
+const NAME_ONLY = ["textJustification", "textClose"] as const
+type NameOnlyTip = (typeof NAME_ONLY)[number]
+
 /** Whether a ribbon item has a tooltip: a list's row (Manage Text Styles...) has none. */
-export function isTip(key: string): key is TipKey {
-  return key in en.messages.Ribbon.tips
+export function isTip(key: string): key is TipKey | NameOnlyTip {
+  return (
+    key in en.messages.Ribbon.tips ||
+    (NAME_ONLY as readonly string[]).includes(key)
+  )
 }
 
 /**
@@ -74,7 +86,7 @@ export function RibbonTip({
   lang,
   children,
 }: {
-  tip: TipKey
+  tip: TipKey | NameOnlyTip
   /** The button's name, where AutoCAD's tooltip has none of its own (`tipTitles`). */
   title: string
   engine: CadEngine
@@ -97,7 +109,7 @@ export function RibbonTip({
   const command = tip in words.tipCommands ? (tip as CommandTip) : null
   const help =
     tip in HELP_INSTEAD
-      ? (HELP_INSTEAD[tip] ?? null)
+      ? (HELP_INSTEAD[tip as TipKey] ?? null)
       : command && String(words.tipCommands[command])
   // A language that leaves a key out shows English's, so English says which
   // controls have an extended paragraph or a title of their own.
@@ -189,7 +201,9 @@ export function RibbonTip({
             )}
           >
             <span className="text-title text-foreground">{name}</span>
-            <span className="mt-1">{t(`tips.${tip}`)}</span>
+            {tip in words.tips && (
+              <span className="mt-1">{t(`tips.${tip as TipKey}`)}</span>
+            )}
             {extended && paragraph !== null && (
               <span className="mt-2 whitespace-pre-line">{paragraph}</span>
             )}
