@@ -131,7 +131,11 @@ la lectura del 27/11 (§3), llevó las fases 4 a 6 de `docs/next-autocad-ui.md` 
 la línea de comandos flotante, el ViewCube y los grips; los tooltips, el menú contextual del
 ribbon y Customize; las pestañas contextuales, -HATCHEDIT con ellas) y la revisión de
 dependencias del 27/11; el CI y el despliegue, en verde, la caché de Cloudflare purgada a las
-11:19 e IndexNow con las 1.950 URL del sitemap (200).
+11:19 e IndexNow con las 1.950 URL del sitemap (200). Un segundo push ese día, a las 12:20, de
+`b65df121` a `36e99f1c`, por petición expresa del dueño (excepción al uno al día), llevó el botón
+de una herramienta que cancela el comando en marcha como `^C^C`, la pestaña 3D Tools y los paneles
+de View visibles de entrada por decisión del dueño y el plegado de Draw por debajo de 800; el CI y
+el despliegue, en verde, y la caché de Cloudflare purgada a las 12:33.
 
 ## 5. La caché de Cloudflare delante de Vercel
 
