@@ -2095,6 +2095,9 @@ export const it: EngineLocale = {
         "Object": "Oggetto"
       },
       "UCS": {
+        "Yflip": "invertiY",
+        "Xflip": "invertiX",
+        "Next": "Seguente",
         "NAmed": "NOme",
         "OBject": "OGgetto",
         "Previous": "Precedente",
@@ -2542,6 +2545,9 @@ export const it: EngineLocale = {
       }
     },
     "prompts": {
+      "ucsFaceFlipAccept": "accetta",
+      "ucsFaceAccept": "Accetta",
+      "ucsFaceFlip": "Digitare un'opzione",
       "pickInternalPointOr": "Selezionare il punto interno o",
       "selectObjectsOrPickInternalPoint": "Selezionare oggetti o",
       "enterMeshSizeM": "Digitare dimensione M della mesh",
@@ -9405,6 +9411,10 @@ export const it: EngineLocale = {
       }
     },
     "promptKeywordLabels": {
+      "ucsFaceFlip": {
+        "Xflip": "invertiX",
+        "Yflip": "invertiY"
+      },
       "selectObjectsOrPickInternalPoint": {
         "Undo": "Annulla"
       },

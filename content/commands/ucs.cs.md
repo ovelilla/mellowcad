@@ -3,7 +3,7 @@ title: "Příkaz USS (UCS) v AutoCADu: uživatelský souřadnicový systém"
 metaTitle: "Příkaz USS (UCS) v AutoCADu"
 description: "Jak příkaz USS (UCS) v AutoCADu posouvá a otáčí uživatelský souřadnicový systém: počátek a 3 body, Objekt, Pohled, X, Y, Z, ZOsa, Pojmenovaný, Globální."
 figure: "Kvádr viděný od jihovýchodu: USS přesune počátek na jeho horní plochu a kružnice nakreslená potom v 30,20 leží na horní ploše, ne na zemi."
-sourceHash: "8ac3b844fe16"
+sourceHash: "217908def9dc"
 ---
 
 Příkaz USS (UCS) nastaví uživatelský souřadnicový systém: počátek a osy X a Y kdekoli v prostoru, takže jeho rovina XY může být skloněná. Zapsané souřadnice se v něm čtou a to, co kreslíte, leží v jeho rovině XY: po přesunu počátku na horní plochu kvádru leží kružnice se středem v `30,20` na horní ploše. Nejprve uvede název aktuálního USS – `*GLOBÁLNÍ*`, `*BEZ NÁZVU*` nebo název, pod kterým byl uložen – a pak se zeptá na nový počátek nebo možnost; Enter na tomto místě se vrátí ke globálnímu systému. Bod je počátkem, se svou souřadnicí Z, a bod bez Z leží v aktuální výšce. Pak se zeptá na bod na kladné ose X a bod v rovině XY, čtené v aktuálním USS: Enter v kterékoli z těchto výzev ponechá osy beze změny. Jeden bod USS posune, tři ho natočí libovolně.
@@ -14,7 +14,7 @@ Příkazy pak pracují v rovině XY systému USS: <Command id="LINE" /> a <Comma
 
 ### Face
 
-Vypsaná tak, jak ji vypisuje AutoCAD 2027, k zarovnání USS s plochou tělesa. MellowCAD se na plochu zeptá, ale zatím se k ní nezarovná: žádný výběr ji nenajde.
+Zarovná USS s plochou tělesa: plocha pod kurzorem se zvýrazní a ikona USS ukáže, kam by se USS umístil, a kliknutí jej převezme, s počátkem ve vybraném bodě a osou Z směřující ven z tělesa. Osa X vede podél té hrany plochy, která je nejblíže místu, kde na ni kurzor vstoupil, nebo vodorovně, pokud tato hrana stojí svisle. Pak <Keyword id="Next" /> přejde na další plochu za ní ve směru pohledu (na hraně na její druhou plochu), <Keyword id="Xflip" /> a <Keyword id="Yflip" /> otočí USS o půl otáčky kolem jeho osy X nebo Y a Enter jej přijme. Bod, pod kterým není žádná plocha tělesa, vede ke zprávě <Message id="noSolidSurfaceOrMesh" />.
 
 ### NAmed
 
@@ -54,7 +54,7 @@ Zeptá se na nový počátek (Enter ponechá aktuální) a pak na bod na kladné
 
 ## Missing
 
-<Keyword id="Face" />, která zarovná USS s plochou tělesa: zeptá se na ni, ale zatím žádnou nenajde. Použít a Řez, vypsané v první výzvě a zde odmítnuté, protože je jen jeden výřez a neexistují objekty řezu. Dialog USS (SPRUSS), uzly ikony a její místní nabídka a ikona, která ukazuje nový USS při jeho umisťování. Nitkový kříž, který se otáčí spolu s USS: zůstává na obrazovce rovně, dokud <Command id="PLAN" /> nevyrovná pohled s USS. UCSFOLLOW, UCSVP a dynamický USS. <Keyword id="OBject" /> u kóty a Skupina při výběru. Hloubka, kterou ortogonální USS zachovává. Pauza `Pokračujte stisknutím klávesy ENTER:` v dlouhém výpisu.
+<Keyword id="Face" /> u povrchů a sítí, které MellowCAD nemá, a její režimy Okno a Napříč u tělesa. Použít a Řez, vypsané v první výzvě a zde odmítnuté, protože je jen jeden výřez a neexistují objekty řezu. Dialog USS (SPRUSS), uzly ikony a její místní nabídka a ikona, která ukazuje nový USS při jeho umisťování. Nitkový kříž, který se otáčí spolu s USS: zůstává na obrazovce rovně, dokud <Command id="PLAN" /> nevyrovná pohled s USS. UCSFOLLOW, UCSVP a dynamický USS. <Keyword id="OBject" /> u kóty a Skupina při výběru. Hloubka, kterou ortogonální USS zachovává. Pauza `Pokračujte stisknutím klávesy ENTER:` v dlouhém výpisu.
 
 ## Questions
 
@@ -72,4 +72,4 @@ Globální souřadnicový systém (GSS) se nikdy nehýbe; uživatelský souřadn
 
 ### Jak kreslit na plochu 3D tělesa?
 
-Přesuňte na ni USS. Na horní ploše kvádru stačí samotný počátek: USS, pak roh horní plochy, pak Enter, jako v ukázce. Na boku zadejte tři body: počátek v rohu, bod podél hrany pro X a ještě jeden na ploše pro Y. Pak kreslete: co nakreslíte, leží na ploše.
+Přesuňte na ni USS. USS, <Keyword id="Face" />, pak klikněte na plochu a stiskněte Enter: USS leží na ní, s osou Z ven z tělesa. Na horní ploše kvádru stačí i samotný počátek: USS, pak roh horní plochy, pak Enter, jako v ukázce. Pak kreslete: co nakreslíte, leží na ploše.

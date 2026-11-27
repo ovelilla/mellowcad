@@ -2098,6 +2098,9 @@ export const ptBR: EngineLocale = {
         "Object": "Objeto"
       },
       "UCS": {
+        "Yflip": "inverterY",
+        "Xflip": "inverterX",
+        "Next": "Próximo",
         "NAmed": "NOMeado",
         "OBject": "OBjeto",
         "Previous": "Anterior",
@@ -2545,6 +2548,9 @@ export const ptBR: EngineLocale = {
       }
     },
     "prompts": {
+      "ucsFaceFlipAccept": "aceitar",
+      "ucsFaceAccept": "aceitar",
+      "ucsFaceFlip": "Inserir uma opção",
       "pickInternalPointOr": "Selecionar ponto interno ou",
       "selectObjectsOrPickInternalPoint": "Selecionar objetos ou",
       "enterMeshSizeM": "Digitar o tamanho da malha na direção M",
@@ -9426,6 +9432,10 @@ export const ptBR: EngineLocale = {
       }
     },
     "promptKeywordLabels": {
+      "ucsFaceFlip": {
+        "Xflip": "inverterX",
+        "Yflip": "inverterY"
+      },
       "selectObjectsOrPickInternalPoint": {
         "Undo": "Desfazer"
       },

@@ -1354,6 +1354,9 @@
         "Object": "Objekt"
       },
       "UCS": {
+        "Yflip": "Yumkehren",
+        "Xflip": "Xumkehren",
+        "Next": "Nächstes",
         "NAmed": "bENannt",
         "OBject": "OBjekt",
         "Previous": "VOrher",
@@ -1792,6 +1795,9 @@
       }
     },
     "prompts": {
+      "ucsFaceFlipAccept": "Akzeptieren",
+      "ucsFaceAccept": "bestätigen",
+      "ucsFaceFlip": "Option eingeben",
       "pickInternalPointOr": "Internen Punkt wählen oder",
       "selectObjectsOrPickInternalPoint": "Objekte wählen oder",
       "enterMeshSizeM": "Größe des Netzes in Richtung M eingeben",
@@ -3611,6 +3617,7 @@
       }
     },
     "promptKeywordLabels": {
+      "ucsFaceFlip": { "Xflip": "Xumkehren", "Yflip": "Yumkehren" },
       "selectObjectsOrPickInternalPoint": { "Undo": "ZUrück" },
       "pickInternalPointOr": {
         "Select objects": "objekte Wählen",

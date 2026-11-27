@@ -2145,6 +2145,9 @@ export const pl: EngineLocale = {
         "Object": "oBiekt"
       },
       "UCS": {
+        "Yflip": "odwróćY",
+        "Xflip": "odwróćX",
+        "Next": "Następna",
         "NAmed": "nAZwana",
         "OBject": "oBiekt",
         "Previous": "Poprzedni",
@@ -2592,6 +2595,9 @@ export const pl: EngineLocale = {
       }
     },
     "prompts": {
+      "ucsFaceFlipAccept": "Akceptuj",
+      "ucsFaceAccept": "akceptuj",
+      "ucsFaceFlip": "Podaj opcję",
       "pickInternalPointOr": "Wskaż punkt wewnętrzny lub",
       "selectObjectsOrPickInternalPoint": "Wybierz obiekty lub",
       "enterMeshSizeM": "Podaj rozmiar siatki  w kierunku M",
@@ -9533,6 +9539,10 @@ export const pl: EngineLocale = {
       }
     },
     "promptKeywordLabels": {
+      "ucsFaceFlip": {
+        "Xflip": "odwróćX",
+        "Yflip": "odwróćY"
+      },
       "selectObjectsOrPickInternalPoint": {
         "Undo": "Cofnij"
       },

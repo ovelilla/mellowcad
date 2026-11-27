@@ -2,7 +2,7 @@
 title: "Comando UCS in AutoCAD"
 description: "Come UCS di AutoCAD sposta e ruota il sistema di coordinate utente: origine e 3 punti, Oggetto, Vista, X, Y, Z, Asse-z, Nome, Globale. Provalo."
 figure: "Un parallelepipedo visto da sud-est: UCS sposta l'origine sulla sua sommità, e un cerchio disegnato in 30,20 dopo di esso giace sulla faccia superiore, non sul terreno."
-sourceHash: "8ac3b844fe16"
+sourceHash: "217908def9dc"
 ---
 
 UCS imposta il sistema di coordinate utente: un'origine e gli assi X e Y ovunque nello spazio, così il suo piano XY può inclinarsi. Le coordinate che digiti vengono lette in esso, e ciò che disegni giace nel suo piano XY: con l'origine spostata sulla sommità di un parallelepipedo, un cerchio centrato in `30,20` giace sulla sommità. Indica prima il nome dell'UCS corrente, `*WORLD*`, `*NO NAME*` o il nome con cui è stato salvato, poi chiede la nuova origine o un'opzione; Invio lì torna a Globale. Un punto è l'origine, con la sua Z, e un punto senza Z giace alla quota corrente. Poi un punto sull'asse X positivo e un punto sul piano XY, letti nell'UCS corrente: Invio all'uno o all'altro mantiene gli assi com'erano. Un punto sposta l'UCS; tre lo ruotano in qualsiasi modo.
@@ -13,7 +13,7 @@ I comandi lavorano poi nel piano XY dell'UCS: <Command id="LINE" /> e <Command i
 
 ### Face
 
-Elencata come la elenca AutoCAD 2027, per allineare l'UCS a una faccia di un solido. MellowCAD chiede la faccia, ma non allinea ancora a una: ogni selezione non ne trova nessuna.
+Allinea l'UCS a una faccia di un solido: la faccia sotto il cursore si illumina e l'icona UCS mostra dove andrebbe l'UCS, e un clic lo prende, con l'origine nel punto indicato e la Z rivolta fuori dal solido. La X corre lungo lo spigolo della faccia più vicino al punto in cui il cursore vi è entrato, oppure resta orizzontale dove quello spigolo è verticale. Poi <Keyword id="Next" /> passa alla faccia successiva dietro di essa lungo la tua linea di vista (su uno spigolo, all'altra sua faccia), <Keyword id="Xflip" /> e <Keyword id="Yflip" /> fanno compiere all'UCS mezzo giro attorno al suo asse X o Y, e Invio lo accetta. Un punto senza la faccia di un solido sotto di sé segnala <Message id="noSolidSurfaceOrMesh" />.
 
 ### NAmed
 
@@ -53,7 +53,7 @@ Una nuova origine, con Invio che mantiene quella corrente, poi un punto sull'ass
 
 ## Missing
 
-<Keyword id="Face" />, che allinea l'UCS a una faccia di un solido: ne chiede una ma non ne trova ancora nessuna. Applica e SEzione, elencati alla prima richiesta e rifiutati qui, dato che c'è una sola vista e non ci sono oggetti sezione. La finestra UCS (UCSMAN), i grip dell'icona e il suo menu contestuale, e l'icona che mostra il nuovo UCS mentre lo posizioni. Il reticolo che ruota con l'UCS: resta in posizione verticale sullo schermo finché <Command id="PLAN" /> non allinea la vista a esso. UCSFOLLOW, UCSVP e l'UCS dinamico. <Keyword id="OBject" /> su una quota, e Gruppo alla sua selezione. La profondità che un UCS ortogonale conserva. La pausa, Premere INVIO per continuare, in un lungo elenco.
+<Keyword id="Face" /> su superfici e mesh, che MellowCAD non ha, e le sue modalità finestra e intercetta su un solido. Applica e SEzione, elencati alla prima richiesta e rifiutati qui, dato che c'è una sola vista e non ci sono oggetti sezione. La finestra UCS (UCSMAN), i grip dell'icona e il suo menu contestuale, e l'icona che mostra il nuovo UCS mentre lo posizioni. Il reticolo che ruota con l'UCS: resta in posizione verticale sullo schermo finché <Command id="PLAN" /> non allinea la vista a esso. UCSFOLLOW, UCSVP e l'UCS dinamico. <Keyword id="OBject" /> su una quota, e Gruppo alla sua selezione. La profondità che un UCS ortogonale conserva. La pausa, Premere INVIO per continuare, in un lungo elenco.
 
 ## Questions
 
@@ -71,4 +71,4 @@ Il sistema di coordinate globale (WCS) non si muove mai; il sistema di coordinat
 
 ### Come si disegna su una faccia di un solido 3D?
 
-Sposta l'UCS su di essa. Sulla sommità di un parallelepipedo basta la sua origine: UCS, poi un angolo della sommità, poi Invio, come fa la sessione. Per un lato, indica tre punti: l'origine in un angolo, un punto lungo uno spigolo per X, e uno ancora sulla faccia per Y. Poi disegna: ciò che disegni giace sulla faccia.
+Sposta l'UCS su di essa. UCS, <Keyword id="Face" />, poi fai clic sulla faccia e premi Invio: l'UCS giace su di essa, con la Z rivolta fuori dal solido. Sulla sommità di un parallelepipedo basta anche la sola origine: UCS, poi un angolo della sommità, poi Invio, come fa la sessione. Poi disegna: ciò che disegni giace sulla faccia.

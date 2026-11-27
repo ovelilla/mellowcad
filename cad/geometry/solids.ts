@@ -314,13 +314,16 @@ export function boxBrep(corner: Vec3, u: Vec3, v: Vec3, w: Vec3): Brep {
       [6, 2],
       [7, 3],
     ],
+    // Each loop starts where ACIS's does (solid-edits/p244's MPDUMP): the
+    // top's at the corner along u, a side's at its top corner going down.
+    // UCS Face lays X along the first of two edges as near (ucs/p545, p550).
     [
-      [4, 5, 6, 7],
-      [0, 3, 2, 1],
-      [0, 1, 5, 4],
-      [3, 0, 4, 7],
-      [2, 3, 7, 6],
-      [1, 2, 6, 5],
+      [5, 6, 7, 4],
+      [2, 1, 0, 3],
+      [4, 0, 1, 5],
+      [7, 3, 0, 4],
+      [6, 2, 3, 7],
+      [5, 1, 2, 6],
     ]
   )
 }

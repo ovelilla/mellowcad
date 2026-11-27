@@ -2156,6 +2156,9 @@ export const cs: EngineLocale = {
         "Object": "oBjekt"
       },
       "UCS": {
+        "Yflip": "Yotoč",
+        "Xflip": "Xotoč",
+        "Next": "Další",
         "NAmed": "poJMenovaný",
         "OBject": "obJekt",
         "Previous": "Předchozí",
@@ -2603,6 +2606,9 @@ export const cs: EngineLocale = {
       }
     },
     "prompts": {
+      "ucsFaceFlipAccept": "akceptovat",
+      "ucsFaceAccept": "použít",
+      "ucsFaceFlip": "Zadejte možnost",
       "pickInternalPointOr": "Vyberte vnitřní bod nebo",
       "selectObjectsOrPickInternalPoint": "Vyberte objekty nebo",
       "enterMeshSizeM": "Zadejte rozměr sítě ve směru M",
@@ -9658,6 +9664,10 @@ export const cs: EngineLocale = {
       }
     },
     "promptKeywordLabels": {
+      "ucsFaceFlip": {
+        "Xflip": "Xotočit",
+        "Yflip": "Yotoč"
+      },
       "selectObjectsOrPickInternalPoint": {
         "Undo": "Zpět"
       },

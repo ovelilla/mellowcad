@@ -2095,6 +2095,9 @@ export const hu: EngineLocale = {
         "Object": "Objektum"
       },
       "UCS": {
+        "Yflip": "Yfordít",
+        "Xflip": "Xfordít",
+        "Next": "Következő",
         "NAmed": "NEve",
         "OBject": "OBjektum",
         "Previous": "eLŐző",
@@ -2542,6 +2545,9 @@ export const hu: EngineLocale = {
       }
     },
     "prompts": {
+      "ucsFaceFlipAccept": "elfogadás",
+      "ucsFaceAccept": "elfogad",
+      "ucsFaceFlip": "Válasszon az opciók közül",
       "pickInternalPointOr": "Válasszon ki belső pontot, vagy",
       "selectObjectsOrPickInternalPoint": "Jelöljön ki objektumokat, vagy",
       "enterMeshSizeM": "Adja meg a háló méretét M irányban",
@@ -9392,6 +9398,10 @@ export const hu: EngineLocale = {
       }
     },
     "promptKeywordLabels": {
+      "ucsFaceFlip": {
+        "Xflip": "Xfordít",
+        "Yflip": "Yfordít"
+      },
       "selectObjectsOrPickInternalPoint": {
         "Undo": "Vissza"
       },

@@ -3,7 +3,7 @@ title: "Comando UCS no AutoCAD 3D"
 metaTitle: "Comando UCS no AutoCAD 3D: opções e Universal"
 description: "Como o UCS do AutoCAD em português (alias UCSDD) move e gira as coordenadas: origem, 3 pontos, Objeto, Vista, X, Y, Z, Nomeado e Universal. Teste grátis."
 figure: "Uma caixa vista do sudeste: o UCS leva a origem ao topo dela, e um círculo desenhado em 30,20 depois disso fica na face de cima, não no chão."
-sourceHash: "8ac3b844fe16"
+sourceHash: "217908def9dc"
 ---
 
 O UCS, com o mesmo nome no AutoCAD em português, define o sistema de coordenadas do usuário: uma origem e os eixos X e Y em qualquer lugar do espaço, de modo que o plano XY dele pode ficar inclinado. As coordenadas que você digita são lidas nele, e o que você desenha fica no plano XY dele: com a origem levada ao topo de uma caixa, um círculo com centro em `30,20` fica no topo. Primeiro ele diz o nome do UCS atual — `*UNIVERSAL*`, `*SEM NOME*` ou o nome com que foi salvo — e depois pede a nova origem ou uma opção; o Enter ali volta ao Universal. Um ponto é a origem, com o seu Z, e um ponto sem Z fica na elevação atual. Depois, um ponto no lado positivo do eixo X e um ponto no plano XY, lidos no UCS atual: o Enter em qualquer um deles mantém os eixos como estão. Um ponto move o UCS; três o giram de qualquer jeito.
@@ -14,7 +14,7 @@ Os comandos então trabalham no plano XY do UCS: o <Command id="LINE" /> e o <Co
 
 ### Face
 
-Listada como o AutoCAD 2027 a lista, para alinhar o UCS a uma face de um sólido. O MellowCAD pede a face, mas ainda não se alinha a nenhuma: nenhum clique encontra uma.
+Alinha o UCS a uma face de um sólido: a face sob o cursor se acende e o ícone do UCS mostra onde o UCS ficaria, e um clique o pega, com a origem no ponto clicado e o Z para fora do sólido. O X segue a aresta da face mais próxima de onde o cursor entrou nela, ou fica na horizontal onde essa aresta está na vertical. Depois, <Keyword id="Next" /> passa para a próxima face atrás dela ao longo da sua linha de visão (numa aresta, para a outra face dela), <Keyword id="Xflip" /> e <Keyword id="Yflip" /> dão meia-volta no UCS em torno do seu eixo X ou Y, e o Enter o aceita. Um ponto sem face de sólido embaixo dele diz <Message id="noSolidSurfaceOrMesh" />.
 
 ### NAmed
 
@@ -54,7 +54,7 @@ Uma nova origem, o Enter mantendo a atual, e depois um ponto no lado positivo do
 
 ## Missing
 
-<Keyword id="Face" />, que alinha o UCS a uma face de um sólido: pede uma, mas ainda não encontra nenhuma. Aplicar e Seção, previstas no primeiro prompt e recusadas aqui, já que há uma só viewport e não há objetos de seção. A caixa de diálogo UCS (UCSMAN, GERUCS em português), as alças do ícone e o seu menu de atalho, e o ícone mostrando o novo UCS enquanto você o posiciona. A cruz do cursor girando com o UCS: ela fica reta na tela até o <Command id="PLAN" /> alinhar a vista com ele. UCSFOLLOW, UCSVP e o UCS dinâmico. <Keyword id="OBject" /> numa cota, e Grupo na sua seleção. A profundidade que um UCS ortogonal mantém. A pausa, Pressione ENTER para continuar, numa lista longa.
+<Keyword id="Face" /> em superfícies e malhas, que o MellowCAD não tem, e os seus modos janela e cerca num sólido. Aplicar e Seção, previstas no primeiro prompt e recusadas aqui, já que há uma só viewport e não há objetos de seção. A caixa de diálogo UCS (UCSMAN, GERUCS em português), as alças do ícone e o seu menu de atalho, e o ícone mostrando o novo UCS enquanto você o posiciona. A cruz do cursor girando com o UCS: ela fica reta na tela até o <Command id="PLAN" /> alinhar a vista com ele. UCSFOLLOW, UCSVP e o UCS dinâmico. <Keyword id="OBject" /> numa cota, e Grupo na sua seleção. A profundidade que um UCS ortogonal mantém. A pausa, Pressione ENTER para continuar, numa lista longa.
 
 ## Questions
 
@@ -72,4 +72,4 @@ O sistema de coordenadas universal (WCS) nunca se move; o sistema de coordenadas
 
 ### Como desenhar numa face de um sólido 3D?
 
-Leve o UCS até ela. No topo de uma caixa, basta a origem: UCS, depois um canto do topo, depois Enter, como faz a figura. Para um lado, dê três pontos: a origem num canto, um ponto ao longo de uma aresta para o X e mais um na face para o Y. Depois desenhe: o que você desenha fica na face.
+Leve o UCS até ela. UCS, <Keyword id="Face" />, depois clique na face e pressione Enter: o UCS fica nela, com o Z para fora do sólido. No topo de uma caixa, a origem sozinha também basta: UCS, depois um canto do topo, depois Enter, como faz a figura. Depois desenhe: o que você desenha fica na face.

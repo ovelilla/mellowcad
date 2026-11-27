@@ -56,6 +56,13 @@ import {
   ucsFromObject,
 } from "./ucsObjects"
 import { glow, rollover } from "./ghostLook"
+import { FaceUnder, facesUnder, visibleSolids } from "../facePick"
+import {
+  FaceAxes,
+  faceAxesAt,
+  flippedFaceAxes,
+} from "../../domain/solidFaceUcs"
+import { subobjectEdgeEntities } from "../../domain/solidSubobjects"
 import { lockedObjectAt } from "./lockedPick"
 
 type Axis = "x" | "y" | "z"
@@ -111,6 +118,20 @@ type UcsState =
       readonly locked: boolean
     }
   | { readonly phase: "face" }
+  /**
+   * Face's `Enter an option [Next/Xflip/Yflip] <accept>:` over the face
+   * picked (`at` in `faces`), its axes as Xflip and Yflip left them; `given`
+   * the point picked, LASTPOINT's (probes ucs/p500–p523).
+   */
+  | {
+      readonly phase: "faceOption"
+      readonly faces: readonly FaceUnder[]
+      readonly at: number
+      readonly axes: FaceAxes
+      /** The axes the pick gave, which Next coming round to it gives again. */
+      readonly picked: FaceAxes
+      readonly given: Vec3
+    }
 
 /** The prompt a `?` listing asks again once it is written. */
 type ListBack = "origin" | "named" | "restore" | "save"
@@ -219,8 +240,8 @@ const FACE_MODES = ["Crossing", "Fence", "CPolygon"] as const
  * ZAxis (with its Object), OBject, View, World, Previous and the named UCSs,
  * and the words its first prompt takes unlisted — Origin, 3point, Entity,
  * Move, orthoGraphic and its six views, Restore, Save, Delete, `?` and New,
- * each with the prompts AutoCAD 2027's console answers it with. Face asks
- * for a solid's face, which nothing here has: there are no solids. It works
+ * each with the prompts AutoCAD 2027's console answers it with, and Face on
+ * a solid's face (`faceAxesAt`, `facesUnder`). It works
  * in the WCS, since it is what places the UCS the other commands work in.
  */
 export class UcsTool implements Tool {
@@ -306,7 +327,7 @@ export class UcsTool implements Tool {
 
   /**
    * Face's pick, `Select face of solid, surface, or mesh:`: its modes find no
-   * face, for there are no solids; a crossing window says so, a fence or a
+   * face (on a solid, unverified); a crossing window says so, a fence or a
    * crossing polygon ends in silence (probes ucs/p421–p423, p426).
    */
   private readonly faces = new ObjectSelector({
@@ -329,6 +350,18 @@ export class UcsTool implements Tool {
   })
   /** The mode last typed at Face's pick. */
   private faceMode: string | null = null
+  /**
+   * The face under the cursor at Face's pick and the axes it would give,
+   * their X kept from where the cursor came onto it: AutoCAD lays X along the
+   * edge nearest the cursor as it enters the face and keeps it while it
+   * stays there (desktop ucs/d10: a click by the x=0 edge still had X along
+   * the y=10 one it entered by).
+   */
+  private faceHover: {
+    readonly id: EntityId
+    readonly face: number
+    readonly axes: FaceAxes
+  } | null = null
 
   /** The selector asking now: an object's pick's, or Face's. */
   private selector(): ObjectSelector | null {
@@ -367,6 +400,7 @@ export class UcsTool implements Tool {
 
   onDeactivate(ctx: ToolContext): void {
     this.state = { phase: "origin" }
+    this.faceHover = null
     ctx.dynamicInput.close()
   }
 
@@ -378,6 +412,7 @@ export class UcsTool implements Tool {
       return
     }
     const state = this.state
+    if (state.phase === "face") this.hoverFace(input.world, ctx)
     if (state.phase === "object") {
       // A hatch glows too, which OBject then refuses (desktop ucs/d06-3).
       const picked = ctx.pick(input.world)
@@ -465,18 +500,129 @@ export class UcsTool implements Tool {
         this.pickObject(input.world, input.screen, ctx)
         return
       case "face":
-        this.pickFace(input.world, ctx)
+        this.pickFace(input.world, ctx, true)
     }
   }
 
   /**
-   * Face's pick, clicked or typed: there is no solid to take a face of, so
-   * it says so and ends, the UCS kept and LASTPOINT at the pick, which U
-   * takes back to the WCS's origin (probes ucs/p268, p424).
+   * Face's pick, clicked or typed: the face the line of sight through the
+   * point crosses first, its axes there (`faceAxesAt`), then the option
+   * prompt (probes ucs/p500–p553). On no solid's face it says so and ends,
+   * the UCS kept and LASTPOINT at the pick, which U takes back to the WCS's
+   * origin (p268, p424). Only a click keeps the X the cursor came onto the
+   * face with: a typed point is a face entered there (the console's).
    */
-  private pickFace(point: Vec3, ctx: ToolContext): void {
-    ctx.report(ctx.text.message("noSolidSurfaceOrMesh"))
-    this.keep(ctx, point)
+  private pickFace(point: Vec3, ctx: ToolContext, clicked = false): void {
+    const faces = this.facesAt(point, ctx)
+    const first = faces[0]
+    const hover = this.faceHover
+    const kept =
+      clicked &&
+      hover &&
+      first &&
+      hover.id === first.id &&
+      hover.face === first.face
+        ? hover.axes.xAxis
+        : undefined
+    const axes = first && this.axesOf(first, ctx, kept)
+    if (!axes) {
+      ctx.report(ctx.text.message("noSolidSurfaceOrMesh"))
+      this.keep(ctx, point)
+      return
+    }
+    this.faceHover = null
+    this.state = {
+      phase: "faceOption",
+      faces,
+      at: 0,
+      axes,
+      picked: axes,
+      given: point,
+    }
+    ctx.dynamicInput.open({ fields: [], commit: () => {} })
+    this.place(ctx)
+  }
+
+  /** The faces under `point` along the line of sight, nearest the viewer first. */
+  private facesAt(point: Vec3, ctx: ToolContext): readonly FaceUnder[] {
+    return facesUnder(
+      visibleSolids(ctx.document),
+      point,
+      ctx.viewport.direction
+    )
+  }
+
+  private axesOf(
+    hit: FaceUnder,
+    ctx: ToolContext,
+    keptX?: Vec3
+  ): FaceAxes | null {
+    const solid = ctx.document.get(hit.id)
+    if (solid?.type !== "solid3d") return null
+    return faceAxesAt(solid.brep, hit.face, hit.point, keptX)
+  }
+
+  /** The face under the cursor at Face's pick, its X kept while it stays there. */
+  private hoverFace(world: Vec3, ctx: ToolContext): void {
+    const first = this.facesAt(world, ctx)[0]
+    const hover = this.faceHover
+    if (!first) {
+      this.faceHover = null
+      return
+    }
+    const same = hover && hover.id === first.id && hover.face === first.face
+    const axes = this.axesOf(first, ctx, same ? hover.axes.xAxis : undefined)
+    this.faceHover = axes ? { id: first.id, face: first.face, axes } : null
+  }
+
+  /**
+   * Face's option prompt: Next takes the next face along the line of sight,
+   * round (on an edge, its other face: p503, p506, p522, p523), offered
+   * hidden where there is none and doing nothing (a sphere, p516, p554);
+   * Xflip and Yflip turn the axes 180° about X or Y (p504, p505, p518).
+   */
+  private invokeFaceOption(
+    id: string,
+    state: Extract<UcsState, { phase: "faceOption" }>,
+    ctx: ToolContext
+  ): CommandOptionOutcome {
+    if (id === "Next") {
+      if (state.faces.length < 2) return "continue"
+      const at = (state.at + 1) % state.faces.length
+      const axes = at === 0 ? state.picked : this.axesOf(state.faces[at], ctx)
+      if (axes) this.state = { ...state, at, axes }
+      return "continue"
+    }
+    if (id === "Xflip" || id === "Yflip") {
+      const about = id === "Xflip" ? "x" : "y"
+      this.state = { ...state, axes: flippedFaceAxes(state.axes, about) }
+      return "continue"
+    }
+    return "unhandled"
+  }
+
+  /** Enter at Face's option prompt: the UCS on the face, unnamed. */
+  private acceptFace(
+    state: Extract<UcsState, { phase: "faceOption" }>,
+    ctx: ToolContext
+  ): void {
+    const { origin, xAxis, yAxis } = state.axes
+    const ucs = ucsFromAxes(origin, xAxis, yAxis)
+    if (!ucs) return this.keep(ctx, state.given)
+    this.finish(ucs, null, ctx, { lastPoint: state.given })
+  }
+
+  /** UCS Face's axes as a UCS, over the face under the cursor or once picked. */
+  previewUcs(): Ucs | null {
+    const state = this.state
+    const axes =
+      state.phase === "faceOption"
+        ? state.axes
+        : state.phase === "face" && !this.inMode()
+          ? this.faceHover?.axes
+          : null
+    if (!axes) return null
+    return ucsFromAxes(axes.origin, axes.xAxis, axes.yAxis)
   }
 
   /** Ends UCS with the UCS as it was, LASTPOINT at `lastPoint` if given. */
@@ -610,6 +756,12 @@ export class UcsTool implements Tool {
       case "object":
       case "face":
         return this.selectorOf(state.phase).question()
+      // WHY two prompts: with no other face to go to AutoCAD lists no Next
+      // and words its default otherwise (43707 against 25649, p516).
+      case "faceOption":
+        return state.faces.length > 1
+          ? { id: "enterAnOption", enter: "ucsFaceAccept" }
+          : { id: "ucsFaceFlip", enter: "ucsFaceFlipAccept" }
       case "named":
         return "enterAnOption"
       case "restore":
@@ -683,6 +835,14 @@ export class UcsTool implements Tool {
         ]
       case "shift":
         return this.state.move ? [{ id: "Zdepth" }] : []
+      case "faceOption":
+        return [
+          this.state.faces.length > 1
+            ? { id: "Next" }
+            : { id: "Next", hidden: true },
+          { id: "Xflip" },
+          { id: "Yflip" },
+        ]
       case "orthographic":
         return Object.keys(ORTHOGRAPHIC_OPTIONS).map((id) => ({ id }))
       case "zOrigin":
@@ -723,6 +883,9 @@ export class UcsTool implements Tool {
     if (state.phase === "shift" && state.move && id === "Zdepth") {
       this.enterZdepth(ctx)
       return "continue"
+    }
+    if (state.phase === "faceOption") {
+      return this.invokeFaceOption(id, state, ctx)
     }
     if (state.phase === "orthographic" && id in ORTHOGRAPHIC_OPTIONS) {
       this.setOrthographic(ORTHOGRAPHIC_OPTIONS[id], ctx)
@@ -906,6 +1069,10 @@ export class UcsTool implements Tool {
       ctx.requestRender()
       return true
     }
+    if (this.state.phase === "faceOption") {
+      this.acceptFace(this.state, ctx)
+      return true
+    }
     if (this.state.phase === "orthographic") {
       this.setOrthographic(this.state.current, ctx)
       ctx.endCommand()
@@ -940,6 +1107,16 @@ export class UcsTool implements Tool {
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     const state = this.state
     if (this.inMode()) return this.selector()?.buildOverlay(ctx) ?? []
+    if (state.phase === "face") {
+      // The face under the cursor glows by its edges, white (desktop ucs/d10-1).
+      const hover = this.faceHover
+      const solid = hover && ctx.document.get(hover.id)
+      if (!hover || solid?.type !== "solid3d") return []
+      return subobjectEdgeEntities(solid, {
+        kind: "face",
+        index: hover.face,
+      }).flatMap((edge) => rollover(ctx, edge))
+    }
     if (state.phase === "object" || state.phase === "zObject") {
       const hovered = state.hover ? ctx.document.get(state.hover) : undefined
       if (!hovered) return []

@@ -1025,6 +1025,13 @@ export interface Tool {
   cursorBadge?(): CursorBadge | null
 
   /**
+   * A UCS the command shows the icon of, in the WCS, in place of the current
+   * one: UCS Face's over the face under the cursor and once picked (desktop
+   * ucs/d10-1). Defaults to none.
+   */
+  previewUcs?(ctx: ToolContext): Ucs | null
+
+  /**
    * Whether `ctx.pick` takes an object on a locked layer, as `Command:`'s
    * pick does: MATCHPROP's source (desktop properties/d08-3). Defaults to
    * `false`, a command's pick passing over them (`lockedObjectAt`).

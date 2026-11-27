@@ -1347,6 +1347,9 @@
         "Object": "oBiekt"
       },
       "UCS": {
+        "Yflip": "odwróćY",
+        "Xflip": "odwróćX",
+        "Next": "Następna",
         "NAmed": "nAZwana",
         "OBject": "oBiekt",
         "Previous": "Poprzedni",
@@ -1787,6 +1790,9 @@
       }
     },
     "prompts": {
+      "ucsFaceFlipAccept": "Akceptuj",
+      "ucsFaceAccept": "akceptuj",
+      "ucsFaceFlip": "Podaj opcję",
       "pickInternalPointOr": "Wskaż punkt wewnętrzny lub",
       "selectObjectsOrPickInternalPoint": "Wybierz obiekty lub",
       "enterMeshSizeM": "Podaj rozmiar siatki  w kierunku M",
@@ -3586,6 +3592,7 @@
       }
     },
     "promptKeywordLabels": {
+      "ucsFaceFlip": { "Xflip": "odwróćX", "Yflip": "odwróćY" },
       "selectObjectsOrPickInternalPoint": { "Undo": "Cofnij" },
       "pickInternalPointOr": {
         "Select objects": "Wybierz obiekty",

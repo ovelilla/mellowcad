@@ -1380,6 +1380,9 @@ declare const source: {
         "Object": string
       }
       "UCS": {
+        "Yflip": string
+        "Xflip": string
+        "Next": string
         "NAmed": string
         "OBject": string
         "Previous": string
@@ -1827,6 +1830,9 @@ declare const source: {
       }
     }
     "prompts": {
+      "ucsFaceFlipAccept": string
+      "ucsFaceAccept": string
+      "ucsFaceFlip": string
       "pickInternalPointOr": string
       "selectObjectsOrPickInternalPoint": string
       "length": string
@@ -3626,6 +3632,10 @@ declare const source: {
       }
     }
     "promptKeywordLabels": {
+      "ucsFaceFlip": {
+        "Xflip": string
+        "Yflip": string
+      }
       "selectObjectsOrPickInternalPoint": {
         "Undo": string
       }

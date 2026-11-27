@@ -1349,6 +1349,9 @@
         "Object": "Objektum"
       },
       "UCS": {
+        "Yflip": "Yfordít",
+        "Xflip": "Xfordít",
+        "Next": "Következő",
         "NAmed": "NEve",
         "OBject": "OBjektum",
         "Previous": "eLŐző",
@@ -1792,6 +1795,9 @@
       }
     },
     "prompts": {
+      "ucsFaceFlipAccept": "elfogadás",
+      "ucsFaceAccept": "elfogad",
+      "ucsFaceFlip": "Válasszon az opciók közül",
       "pickInternalPointOr": "Válasszon ki belső pontot, vagy",
       "selectObjectsOrPickInternalPoint": "Jelöljön ki objektumokat, vagy",
       "enterMeshSizeM": "Adja meg a háló méretét M irányban",
@@ -3591,6 +3597,7 @@
       }
     },
     "promptKeywordLabels": {
+      "ucsFaceFlip": { "Xflip": "Xfordít", "Yflip": "Yfordít" },
       "selectObjectsOrPickInternalPoint": { "Undo": "Vissza" },
       "pickInternalPointOr": {
         "Select objects": "objektumok Kiválasztása",

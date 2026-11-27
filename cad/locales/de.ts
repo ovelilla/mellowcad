@@ -2093,6 +2093,9 @@ export const de: EngineLocale = {
         "Object": "Objekt"
       },
       "UCS": {
+        "Yflip": "Yumkehren",
+        "Xflip": "Xumkehren",
+        "Next": "Nächstes",
         "NAmed": "bENannt",
         "OBject": "OBjekt",
         "Previous": "VOrher",
@@ -2540,6 +2543,9 @@ export const de: EngineLocale = {
       }
     },
     "prompts": {
+      "ucsFaceFlipAccept": "Akzeptieren",
+      "ucsFaceAccept": "bestätigen",
+      "ucsFaceFlip": "Option eingeben",
       "pickInternalPointOr": "Internen Punkt wählen oder",
       "selectObjectsOrPickInternalPoint": "Objekte wählen oder",
       "enterMeshSizeM": "Größe des Netzes in Richtung M eingeben",
@@ -9410,6 +9416,10 @@ export const de: EngineLocale = {
       }
     },
     "promptKeywordLabels": {
+      "ucsFaceFlip": {
+        "Xflip": "Xumkehren",
+        "Yflip": "Yumkehren"
+      },
       "selectObjectsOrPickInternalPoint": {
         "Undo": "ZUrück"
       },

@@ -2137,6 +2137,9 @@ export const ru: EngineLocale = {
         "Object": "Объект"
       },
       "UCS": {
+        "Yflip": "обратитьY",
+        "Xflip": "обратитьX",
+        "Next": "Сменить",
         "NAmed": "именоваННая",
         "OBject": "ОБъект",
         "Previous": "преДыдущая",
@@ -2584,6 +2587,9 @@ export const ru: EngineLocale = {
       }
     },
     "prompts": {
+      "ucsFaceFlipAccept": "принять",
+      "ucsFaceAccept": "принять",
+      "ucsFaceFlip": "Задайте параметр",
       "pickInternalPointOr": "Укажите внутреннюю точку или",
       "selectObjectsOrPickInternalPoint": "Выберите объекты или",
       "enterMeshSizeM": "Размер сети в направлении M",
@@ -10043,6 +10049,10 @@ export const ru: EngineLocale = {
       }
     },
     "promptKeywordLabels": {
+      "ucsFaceFlip": {
+        "Xflip": "обратитьX",
+        "Yflip": "обратитьY"
+      },
       "selectObjectsOrPickInternalPoint": {
         "Undo": "Отменить"
       },

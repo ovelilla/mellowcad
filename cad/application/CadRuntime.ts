@@ -7430,6 +7430,7 @@ export class CadRuntime extends Observable {
   buildScene(): Scene {
     const settings = this.document.getSettings()
     const { frame } = this
+    const preview = this.activeTool.previewUcs?.(this.toolContext) ?? null
     return buildScene({
       camera: this.viewport,
       lang: this.text.commandTag,
@@ -7458,6 +7459,7 @@ export class CadRuntime extends Observable {
               xLabel: this.text.feedback("ucsIconX"),
               yLabel: this.text.feedback("ucsIconY"),
               zLabel: this.text.feedback("ucsIconZ"),
+              ...(preview ? { preview: frame.ucsToFrame(preview) } : {}),
             }
           : null,
       ltScale: settings.ltScale,

@@ -597,6 +597,9 @@ export const KEYWORD_IDS: Readonly<Record<string, readonly string[]>> = {
     "Object"
   ],
   "UCS": [
+    "Yflip",
+    "Xflip",
+    "Next",
     "NAmed",
     "OBject",
     "Previous",

@@ -1355,6 +1355,9 @@
         "Object": "Oggetto"
       },
       "UCS": {
+        "Yflip": "invertiY",
+        "Xflip": "invertiX",
+        "Next": "Seguente",
         "NAmed": "NOme",
         "OBject": "OGgetto",
         "Previous": "Precedente",
@@ -1796,6 +1799,9 @@
       }
     },
     "prompts": {
+      "ucsFaceFlipAccept": "accetta",
+      "ucsFaceAccept": "Accetta",
+      "ucsFaceFlip": "Digitare un'opzione",
       "pickInternalPointOr": "Selezionare il punto interno o",
       "selectObjectsOrPickInternalPoint": "Selezionare oggetti o",
       "enterMeshSizeM": "Digitare dimensione M della mesh",
@@ -3588,6 +3594,7 @@
       }
     },
     "promptKeywordLabels": {
+      "ucsFaceFlip": { "Xflip": "invertiX", "Yflip": "invertiY" },
       "selectObjectsOrPickInternalPoint": { "Undo": "Annulla" },
       "pickInternalPointOr": {
         "Select objects": "SEleziona oggetti",

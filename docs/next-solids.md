@@ -149,6 +149,47 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación en
    **6c, lo siguiente:** 3DMOVE y 3DROTATE (también de subobjetos, con MOVE,
    ROTATE, SCALE y ERASE sobre ellos y el modo SUbobject de `Select objects:`, que la consola mostró
    en solid-edits/p241–p264: SUB-01 de `docs/plans/solid-edits-review.md`), UCS Face y el SCP dinámico (UCSDETECT).
+   **El plan de la 6c** (27/11/2026), por lo que cada pieza necesita de la anterior; un commit por
+   pieza, cada una cerrada con `finish-feature` y leída por un segundo contexto:
+   1. **UCS Face sobre sólidos** (`docs/coverage/coordinate-systems.md`). La consola (ucs/p500–p553):
+      la cara es la que el rayo de la vista cruza primero por el punto (un punto tecleado también);
+      el origen, el punto de la cara; Z, su normal hacia fuera (en una curva, la del punto); X, a lo
+      largo de la arista recta de la cara más cercana al punto, o en horizontal (Z × normal) si esa
+      arista es vertical o no hay recta; su sentido, hacia abajo, luego +X, luego −Y del SCU (p552:
+      no el SCP). `Enter an option [Next/Xflip/Yflip] <accept>:` (25649; sin Next, 43707, cuando el
+      rayo no cruza otra cara: una esfera, p516); Next, la cara siguiente del rayo, en ciclo, o la
+      otra cara de la arista si el punto cae en una (p503, p506, p521–p523); Xflip y Yflip, 180°
+      sobre X o Y; LASTPOINT, el punto dado; U, `UCS`. Lo que la consola no enseña (la vista previa
+      del icono al pasar, el resaltado de la cara) lo da el escritorio. Da el marco de cara que usan
+      2 y 4.
+   2. **UCSDETECT** (el SCP dinámico): la variable (registro, 1, transparente, p519), F6 y su botón
+      de la barra de estado (oculto por defecto en la de AutoCAD, 20052–20053, 33750); con un comando
+      de dibujo pidiendo un punto, el cursor sobre una cara plana de un sólido alinea el plano de
+      trabajo con ella hasta que el comando acaba (la ayuda, About Aligning the UCS Dynamically).
+      Cuándo se adquiere y se suelta, qué X lleva y cómo se ve: el escritorio.
+   3. **Los subobjetos como conjunto** (SUB-01, SED-08): el modo SUbobject y Ctrl+clic en `Select
+      objects:` de MOVE, ROTATE, SCALE, ERASE y COPY, un subobjeto preseleccionado como preselección;
+      MOVE, ROTATE y SCALE dan forma al sólido por ellos con las vecinas extendidas (el núcleo: cara
+      movida, girada y escalada; arista movida con sus caras planas inclinadas; vértice movido con
+      sus caras partidas en triángulos, solid-edits/p244–p249, p261, p262), COPY copia el sólido
+      entero (p247), ERASE lo deja y le quita la primitiva (p241, p264). Lo necesitan 4 y 5.
+   4. **3DMOVE** (`3M`, es `DESPLAZA3D`): los prompts de MOVE (3dmove/p01–p14; `U` lo nombra, no es
+      transparente, `Regenerating model.` al acabar en una vista 3D en 2D Wireframe, que pasa a 3D
+      Wireframe mientras dura), y en una vista 3D el gizmo de desplazar en el centro del conjunto:
+      ejes y planos que se iluminan, el arrastre restringido y sus prompts (`Specify stretch point or
+      [Base point/Copy/Undo/eXit]:`, 25356, por confirmar en el escritorio). Sin botón en la cinta
+      de Drafting & Annotation (está en la de 3D Modeling): tecleado, con su WHY.
+   5. **3DROTATE** (`3R`, es `ROTACION3D`): en planta, los prompts de ROTATE (3drotate/p06); en una
+      vista 3D, `Specify base point:` (Intro: el centro del gizmo), `Pick a rotation axis:` (solo con
+      el ratón sobre un anillo del gizmo: la consola dice `Invalid 2D point.`, p01–p05), `Specify
+      angle start point or type an angle:` y `Specify angle end point:` (21206, 21735). Reutiliza el
+      gizmo de 4.
+
+   El escritorio (una sesión, con el ratón y la palabra del dueño): la vista previa y el resaltado de
+   UCS Face; cuándo UCSDETECT adquiere una cara, su X y su aspecto; los gizmos de 3DMOVE y 3DROTATE
+   (tamaño, colores, qué se ilumina, el arrastre, los prompts trazados con su `initget`) y el menú
+   contextual del gizmo. Lo que se decida dejar fuera (el menú del gizmo, DEFAULTGIZMO a `Command:`,
+   GTLOCATION, 3DSCALE) va a Missing de cada entrada.
    **Visto el 6/11/2026 (sesión 05 de la visibilidad, en el navegador, sin sonda de AutoCAD):**
    ZOOM Extensión en Isométrica SO no encuadra un sólido: el cilindro de la brida de la landing
    (Ø100 × 14, VSCURRENT Conceptual) se sale por abajo de la vista, también tras repetir ZOOM E.

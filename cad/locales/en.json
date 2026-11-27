@@ -1284,6 +1284,9 @@
         "Object": "Object"
       },
       "UCS": {
+        "Yflip": "Yflip",
+        "Xflip": "Xflip",
+        "Next": "Next",
         "NAmed": "NAmed",
         "OBject": "OBject",
         "Previous": "Previous",
@@ -1659,6 +1662,9 @@
       "leaderFormatOption": { "None": "None" }
     },
     "prompts": {
+      "ucsFaceFlipAccept": "accept",
+      "ucsFaceAccept": "accept",
+      "ucsFaceFlip": "Enter an option",
       "pickInternalPointOr": "Pick internal point or",
       "selectObjectsOrPickInternalPoint": "Select objects or",
       "length": "Length",
@@ -3384,6 +3390,7 @@
       }
     },
     "promptKeywordLabels": {
+      "ucsFaceFlip": { "Xflip": "Xflip", "Yflip": "Yflip" },
       "selectObjectsOrPickInternalPoint": { "Undo": "Undo" },
       "pickInternalPointOr": {
         "Select objects": "Select objects",

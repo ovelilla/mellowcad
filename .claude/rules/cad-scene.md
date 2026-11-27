@@ -40,7 +40,8 @@ axes)`): a circle becomes an ellipse (`affineEllipse`), text gets a matrix; when
   normal and the edges joining them.
 - The grid lies on the UCS (`SceneInput.ucs`, the frame's) and the scene draws the UCS icon
   (`SceneInput.ucsIcon`; `world`, the WCS square, is decided on the drawing's UCS, since a tilted
-  one reads level in its frame). The grid, the icon, tracking, the snap marker and the guides use
+  one reads level in its frame), or a UCS a command is making in its place, at its origin (the
+  tool's `previewUcs`, `UcsIconInput.preview`: UCS Face's). The grid, the icon, tracking, the snap marker and the guides use
   `SceneInput.aidCamera` (the frame's viewport), the objects `camera`. A host with its own chrome
   hides the icon with `setUcsIconShown(false)`, leaving UCSICON alone; `CadDriver` hides it unless
   given `ucsIcon: true`, so a recorded frame holds only what was drawn.

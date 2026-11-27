@@ -168,6 +168,11 @@ export interface UcsIconInput {
   readonly xLabel: string
   readonly yLabel: string
   readonly zLabel: string
+  /**
+   * A UCS a command previews (UCS Face's, the dynamic UCS's), in the aid
+   * camera's frame: drawn at its origin in place of the current one.
+   */
+  readonly preview?: Ucs
 }
 
 /**
@@ -340,8 +345,10 @@ export function buildScene(input: SceneInput): Scene {
     pushUcsIcon(
       primitives,
       aid,
-      input.ucs,
-      input.ucsIcon,
+      input.ucsIcon.preview ?? input.ucs,
+      input.ucsIcon.preview
+        ? { ...input.ucsIcon, atOrigin: true, world: false }
+        : input.ucsIcon,
       (input.visualStyle ?? "2dWireframe") !== "2dWireframe"
     )
   }

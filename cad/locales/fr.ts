@@ -2097,6 +2097,9 @@ export const fr: EngineLocale = {
         "Object": "Objet"
       },
       "UCS": {
+        "Yflip": "inverserY",
+        "Xflip": "inverserX",
+        "Next": "Suivant",
         "NAmed": "NOmmé",
         "OBject": "OBjet",
         "Previous": "Précédent",
@@ -2544,6 +2547,9 @@ export const fr: EngineLocale = {
       }
     },
     "prompts": {
+      "ucsFaceFlipAccept": "accepter",
+      "ucsFaceAccept": "accepter",
+      "ucsFaceFlip": "Entrez une option",
       "pickInternalPointOr": "Choisir un point interne ou",
       "selectObjectsOrPickInternalPoint": "Sélectionnez des objets ou",
       "enterMeshSizeM": "Entrez la taille du maillage dans la direction M",
@@ -9419,6 +9425,10 @@ export const fr: EngineLocale = {
       }
     },
     "promptKeywordLabels": {
+      "ucsFaceFlip": {
+        "Xflip": "InverserX",
+        "Yflip": "InverserY"
+      },
       "selectObjectsOrPickInternalPoint": {
         "Undo": "annUler"
       },

@@ -1,0 +1,15 @@
+(getvar "UCSDETECT")
+_UCSDETECT
+0
+(getvar "UCSDETECT")
+_LINE
+0,0
+'_UCSDETECT
+1
+
+
+_UCSDETECT
+FOO
+2
+
+(getvar "UCSDETECT")

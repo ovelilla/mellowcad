@@ -119,11 +119,30 @@ two points along the current Z, `Requires numeric distance or two points.`; both
 name, orthographic or saved, and a saved one's entry takes the moved UCS in the same undo step, so a
 later Restore gives it; no displacement changes nothing, p227, p265, p266), Face
 (`Select face of solid, surface, or mesh:`, es `Designe la cara del sólido, la superficie o la
-malla:`, also from New, `F` or `FA`: there are no solids, so a pick, clicked or typed, says
-`No 3D solid, surface or mesh detected.` (es `No hay ningún sólido, superficie o malla 3D.`) and
-ends with LASTPOINT at it, p268, p424; its unlisted Crossing, Fence and CPolygon find no face, the
-crossing window saying so, the fence and the polygon ending in silence, p421–p423, p426; `FOO`
-`*Invalid selection*` + `Expects a point or Crossing/Fence/CPolygon`, p420; Enter ends, p221),
+malla:`, also from New, `F` or `FA`: a pick, clicked or typed, takes the face of a solid the line
+of sight through it crosses first (a point on a face turned away is a pick of the one in front,
+p502, p514; in plan the top, p510), and lays the UCS there, unnamed: its origin at the point of the
+face, Z out of the solid (a curved face's normal there, p508, p541), X along the face's straight edge
+nearest the point (p524–p531, p551), level instead (Z × the normal) where that edge is upright
+(p533, p535, p543, p545, p546) or the face has none (a cylinder's or cone's side, p508, p541; a
+cap's the WCS's X, p509, p540), signed downwards first, then towards the WCS's +X, then its −Y, the
+WCS's whatever the UCS (p542, p547, p548, p552), two edges as near taking the first of the face's
+loop, a box's loops started where ACIS's start (p549, p550, p545); a click keeps the X the cursor
+came onto the face with, by the edge nearest it then, while it stays on the face (desktop ucs/d10:
+clicked by the x=0 edge after entering by the y=10 one, X along y=10), the face glowing by its
+edges, white, and the UCS icon showing that UCS at the cursor (d10-1); then `Enter an option
+[Next/Xflip/Yflip] <accept>:` (es `Indique una opción [Siguiente/volverX/volverY] <aceptar>:`,
+tables 25649, 25650), the icon on the face: Next the next face the line of sight crosses, round
+(the box's top, then its back, p503, p506, p521), on an edge or a vertex the faces meeting there,
+the one most turned to the viewer first (p511, p512, p522, p523); Xflip and Yflip turn it 180° about
+X or Y (p504, p505, p518); `FOO` `Invalid option keyword.` (p507); Enter sets it, LASTPOINT at the
+point given (p502), one step U names `UCS` (p517); where the line of sight crosses no other face (a
+sphere) `Enter an option [Xflip/Yflip] <accept>:` (es `[volverX/volverY] <Aceptar>:`, 43707), its
+Next declared and doing nothing (p516, p554); on no solid's face `No 3D solid, surface or mesh
+detected.` (es `No hay ningún sólido, superficie o malla 3D.`), ending with LASTPOINT at it, p268,
+p424; its unlisted Crossing, Fence and CPolygon find no face, the crossing window saying so, the
+fence and the polygon ending in silence, p421–p423, p426; `FOO` `*Invalid selection*` + `Expects
+a point or Crossing/Fence/CPolygon`, p420; Enter ends, p221),
 orthoGraphic
 (`Enter an option [Top/Bottom/Front/BAck/Left/Right]<Top>:`, its default the orthographic UCS the
 current one was set as, else Top) and its six views typed straight (`T`, `B`, `FR`, `BA`, `L`,
@@ -149,8 +168,15 @@ run that changed nothing but moved it (OBject on nothing, Face's pick) the WCS's
 p424). OBject on a 3D polyline says `3D Polyline object does not define a coordinate system` (es `El objeto polilínea 3D no define el sistema de coordenadas`, table 25596) and ends (3dpoly/p22); ZAxis Object refuses one as an object with no ends (**unverified**). Its ribbon buttons, View's and 3D Tools' Coordinates, run `^C^C_ucs` and their option (`_w`, `_x`, `_3`, …), a step U names `UCS GROUP` (`docs/coverage/workspace.md`, Ribbon).
 
 **Missing:** the listing's `Press ENTER to continue:` (the console pauses there; no page is
-long enough here), Group at OBject's picks (p325); Face's UCS on a solid's, surface's or mesh's face (there are none here: its
-pick, modes and refusals are built, every one finding none); Apply
+long enough here), Group at OBject's picks (p325); Face on a surface or a mesh (there are none
+here), its Crossing, Fence and CPolygon on a solid (they find none here; **unverified** what they
+find in AutoCAD), `Selection of isoline from a face of the solid ignored.` (es `Designación ignorada
+de isolínea de una cara del sólido.`, 22459), which the console writes before the option prompt
+when the point falls on an isoline of a curved face (p508, p516), Escape at the option prompt
+(**unverified**: here the UCS is left as it was), and two edges as near on a face whose loop does
+not start where ACIS's does (an old drawing's box, a wedge's, a pyramid's: **unverified** which
+AutoCAD takes there); Next coming round to the face picked gives its axes again, and Next drops an
+Xflip or Yflip (both **unverified**); Apply
 (`Pick viewport to apply current UCS or [All]<current>:`, es
 `Designe ventana en la que aplicar SCP actual o [Todas]<actual>:`, `FOO` `Invalid option keyword.`,
 p222, p269: one viewport here) and SEction (`Select section object to align UCS:`, es

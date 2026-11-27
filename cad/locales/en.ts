@@ -1807,6 +1807,9 @@ export const en: EngineCatalog = {
       }
     },
     "prompts": {
+      "ucsFaceFlipAccept": "accept",
+      "ucsFaceAccept": "accept",
+      "ucsFaceFlip": "Enter an option",
       "pickInternalPointOr": "Pick internal point or",
       "selectObjectsOrPickInternalPoint": "Select objects or",
       "length": "Length",
@@ -8661,6 +8664,10 @@ export const en: EngineCatalog = {
       }
     },
     "promptKeywordLabels": {
+      "ucsFaceFlip": {
+        "Xflip": "Xflip",
+        "Yflip": "Yflip"
+      },
       "selectObjectsOrPickInternalPoint": {
         "Undo": "Undo"
       },

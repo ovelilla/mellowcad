@@ -1347,6 +1347,9 @@
         "Object": "Objet"
       },
       "UCS": {
+        "Yflip": "inverserY",
+        "Xflip": "inverserX",
+        "Next": "Suivant",
         "NAmed": "NOmmé",
         "OBject": "OBjet",
         "Previous": "Précédent",
@@ -1788,6 +1791,9 @@
       }
     },
     "prompts": {
+      "ucsFaceFlipAccept": "accepter",
+      "ucsFaceAccept": "accepter",
+      "ucsFaceFlip": "Entrez une option",
       "pickInternalPointOr": "Choisir un point interne ou",
       "selectObjectsOrPickInternalPoint": "Sélectionnez des objets ou",
       "enterMeshSizeM": "Entrez la taille du maillage dans la direction M",
@@ -3580,6 +3586,7 @@
       }
     },
     "promptKeywordLabels": {
+      "ucsFaceFlip": { "Xflip": "InverserX", "Yflip": "InverserY" },
       "selectObjectsOrPickInternalPoint": { "Undo": "annUler" },
       "pickInternalPointOr": {
         "Select objects": "Sélectionner des objets",

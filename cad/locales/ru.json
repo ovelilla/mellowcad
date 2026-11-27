@@ -1347,6 +1347,9 @@
         "Object": "Объект"
       },
       "UCS": {
+        "Yflip": "обратитьY",
+        "Xflip": "обратитьX",
+        "Next": "Сменить",
         "NAmed": "именоваННая",
         "OBject": "ОБъект",
         "Previous": "преДыдущая",
@@ -1790,6 +1793,9 @@
       }
     },
     "prompts": {
+      "ucsFaceFlipAccept": "принять",
+      "ucsFaceAccept": "принять",
+      "ucsFaceFlip": "Задайте параметр",
       "pickInternalPointOr": "Укажите внутреннюю точку или",
       "selectObjectsOrPickInternalPoint": "Выберите объекты или",
       "enterMeshSizeM": "Размер сети в направлении M",
@@ -3585,6 +3591,7 @@
       }
     },
     "promptKeywordLabels": {
+      "ucsFaceFlip": { "Xflip": "обратитьX", "Yflip": "обратитьY" },
       "selectObjectsOrPickInternalPoint": { "Undo": "Отменить" },
       "pickInternalPointOr": {
         "Select objects": "Выбрать объекты",

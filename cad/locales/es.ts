@@ -2087,6 +2087,9 @@ export const es: EngineLocale = {
         "Object": "Objeto"
       },
       "UCS": {
+        "Yflip": "volverY",
+        "Xflip": "volverX",
+        "Next": "Siguiente",
         "NAmed": "gUArdado",
         "OBject": "oBjeto",
         "Previous": "PRev",
@@ -2534,6 +2537,9 @@ export const es: EngineLocale = {
       }
     },
     "prompts": {
+      "ucsFaceFlipAccept": "Aceptar",
+      "ucsFaceAccept": "aceptar",
+      "ucsFaceFlip": "Indique una opción",
       "pickInternalPointOr": "Designe un punto interno o",
       "selectObjectsOrPickInternalPoint": "Seleccione objetos o",
       "enterMeshSizeM": "Indique tamaño de malla en dirección M",
@@ -9408,6 +9414,10 @@ export const es: EngineLocale = {
       }
     },
     "promptKeywordLabels": {
+      "ucsFaceFlip": {
+        "Xflip": "volverX",
+        "Yflip": "volverY"
+      },
       "selectObjectsOrPickInternalPoint": {
         "Undo": "desHacer"
       },

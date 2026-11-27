@@ -356,10 +356,10 @@ describe("UCS's unlisted words", () => {
   })
 
   // probes ucs/p220, p221, p268, p420, p424: Face asks for a solid's face,
-  // which no object here has (there are no solids, surfaces or meshes): a
+  // which a line has not (a solid's: ucsFace.test.ts): a
   // pick says so and ends, LASTPOINT at it; Enter ends; FOO is refused with
   // the three modes its prompt declares and does not list.
-  it("Face asks for a face, which nothing here has", () => {
+  it("Face asks for a face, which a line has not", () => {
     const cad = createHarness({ entities: [lineOf(p(0, 0), p(10, 5))] })
     answer(cad, "UCS", "F")
     expect(cad.state().commandLine.prompt).toBe(`UCS ${FACE}`)

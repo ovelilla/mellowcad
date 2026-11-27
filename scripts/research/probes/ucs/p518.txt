@@ -1,0 +1,21 @@
+_BOX
+0,0,0
+10,10
+10
+_-VPOINT
+-1.3,-2.2,1.6
+_ZOOM
+_E
+_UCS
+_F
+3,7,10
+_N
+_X
+_Y
+
+(getvar "UCSORG")
+(getvar "UCSXDIR")
+(getvar "UCSYDIR")
+(getvar "UCSNAME")
+_ID
+@
