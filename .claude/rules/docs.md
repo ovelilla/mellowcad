@@ -16,7 +16,7 @@ paths:
 
 # Docs (`/docs`)
 
-> Verified against **fumadocs-core 16.19.4**, **fumadocs-mdx 15.6.3**, **next 16.4.6**.
+> Verified against **fumadocs-core 16.19.7**, **fumadocs-mdx 15.6.4**, **next 16.4.6**.
 
 The docs live in the landing's root layout (its
 header, footer and `marketing.css`, which names `components/docs` in its `@source`); copy and
