@@ -417,9 +417,10 @@ export interface RibbonUi {
    */
   readonly members: Readonly<Record<string, string>>
   /**
-   * The contextual tab the running command shows, after the last tab, or
-   * null: AutoCAD's ribbon contextual tab states, a command's tab while its
-   * variable says so (ARRAYCREATION). It takes the front as it opens; the tab
+   * The contextual tab the running command shows, or at `Command:` the
+   * selection's, after the last tab, or null: AutoCAD's ribbon contextual tab
+   * states, a command's tab while its variable says so (ARRAYCREATION), the
+   * selection's while it holds what the rule asks. It takes the front as it opens; the tab
    * that was in front comes back as it closes, unless another was picked
    * meanwhile.
    */
@@ -432,7 +433,9 @@ export interface ContextualTab {
    * Which tab: Array Creation for ARRAYRECT, ARRAYPOLAR or ARRAYPATH
    * (ARRAYCREATION 1, 2, 3); Hatch Creation for HATCH with the ribbon open
    * (HATCHCREATION 1); Text Editor while MTEXT's or TEXTEDIT's in-place
-   * editor is open on a multiline text (AcTextEditorInProgress).
+   * editor is open on a multiline text (AcTextEditorInProgress); Array at
+   * `Command:` with one array selected (AcRectangularAssociativeArraySelected
+   * and its polar and path twins).
    */
   readonly id: ContextualTabId
   /** Each field's value as its prompt offers it, and whether it is greyed. */
@@ -461,13 +464,18 @@ export type ContextualTabId =
   | "arrayCreationPath"
   | "hatchCreation"
   | "textEditor"
+  | "arraySelectionRectangular"
+  | "arraySelectionPolar"
+  | "arraySelectionPath"
 
 /** A field of a contextual tab, by what it sets. */
 export type ContextualFieldId =
   | "columns"
   | "columnSpacing"
+  | "columnTotal"
   | "rows"
   | "rowSpacing"
+  | "rowTotal"
   | "rowElevation"
   | "levels"
   | "levelSpacing"
@@ -482,7 +490,12 @@ export type ContextualFieldId =
 
 /** A toggle of a contextual tab. */
 export type ContextualToggleId =
-  "associative" | "rotateItems" | "direction" | "alignItems"
+  | "associative"
+  | "rotateItems"
+  | "direction"
+  | "alignItems"
+  /** A path array's count worked out from the path (Measure's Fill entire path). */
+  | "fillPath"
 
 /** A field's value, written at the drawing's precision as its prompt's default is. */
 export interface ContextualFieldUi {
@@ -495,7 +508,8 @@ export interface ContextualFieldUi {
  * would take it: a field's typed text, a toggle flipped, a path array's
  * Method, Hatch Creation's pattern (a name in `HATCH_PATTERNS`), its Type or
  * how its boundaries are given (Pick Points, Select), Text Editor's style or
- * Justification, or the tab's Close.
+ * Justification, or the tab's Close. On the selection's Array tab, the same
+ * edits act on the array selected, as its Properties palette rows do.
  */
 export type ContextualEdit =
   | { readonly field: ContextualFieldId; readonly text: string }

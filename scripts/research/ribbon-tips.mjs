@@ -196,6 +196,8 @@ export const TIP_SOURCES = {
   arrayLevels: "TT_AcArrayLevelCount",
   arrayLevelSpacing: "TT_AcArrayLevelSpacing",
   arrayLevelTotal: "TT_AcArrayLevelSpan",
+  arrayColumnTotal: "TT_AcRectArrayColumnSpan",
+  arrayRowTotal: "TT_AcArrayRowSpan",
   arrayPolarItems: "TT_AcPolarArrayItemCount",
   arrayAngleBetween: "TT_AcPolarArrayItemSpacing",
   arrayFillAngle: "TT_AcPolarArrayItemSpan",
@@ -234,7 +236,10 @@ function zipParts(path) {
     const name = zip.toString("utf8", p + 46, p + 46 + nameLength)
     p += 46 + nameLength + extra + comment
     const start =
-      header + 30 + zip.readUInt16LE(header + 26) + zip.readUInt16LE(header + 28)
+      header +
+      30 +
+      zip.readUInt16LE(header + 26) +
+      zip.readUInt16LE(header + 28)
     const raw = zip.subarray(start, start + size)
     out.set(name, (method === 8 ? inflateRawSync(raw) : raw).toString("utf8"))
   }
@@ -254,7 +259,9 @@ const decode = (text) =>
 export function cuixMacros(file) {
   const xml = zipParts(file).get("MenuGroup.cui") ?? ""
   const out = new Map()
-  for (const m of xml.matchAll(/<MenuMacro UID="([^"]+)">([\s\S]*?)<\/MenuMacro>/g)) {
+  for (const m of xml.matchAll(
+    /<MenuMacro UID="([^"]+)">([\s\S]*?)<\/MenuMacro>/g
+  )) {
     const field = (tag) => {
       const f = new RegExp(`<${tag}\\b[^>]*>([^<]*)</${tag}>`).exec(m[2])
       return f ? decode(f[1]) : undefined
@@ -335,7 +342,11 @@ function properties(bytes, from, to) {
 export function bamlTips(file) {
   const bytes = readFileSync(file)
   const starts = []
-  for (let at = bytes.indexOf(MSBAML); at >= 0; at = bytes.indexOf(MSBAML, at + 1))
+  for (
+    let at = bytes.indexOf(MSBAML);
+    at >= 0;
+    at = bytes.indexOf(MSBAML, at + 1)
+  )
     starts.push(at)
   const out = new Map()
   starts.forEach((start, b) => {
@@ -352,12 +363,19 @@ export function bamlTips(file) {
         strings.set(m[2].charCodeAt(0) | (m[3].charCodeAt(0) << 8), name)
     }
     const keys = []
-    for (const m of latin.matchAll(/\x26\x09([\s\S]{2})[\s\S]{4}[\x00\x01][\x00\x01]/g)) {
+    for (const m of latin.matchAll(
+      /\x26\x09([\s\S]{2})[\s\S]{4}[\x00\x01][\x00\x01]/g
+    )) {
       const id = m[1].charCodeAt(0) | (m[1].charCodeAt(1) << 8)
-      keys.push({ name: strings.get(id), pos: bytes.readUInt32LE(start + m.index + 4) })
+      keys.push({
+        name: strings.get(id),
+        pos: bytes.readUInt32LE(start + m.index + 4),
+      })
     }
     keys.sort((x, y) => x.pos - y.pos)
-    const marks = [...latin.matchAll(/\w+:RibbonToolTip_\w+/g)].map((m) => start + m.index)
+    const marks = [...latin.matchAll(/\w+:RibbonToolTip_\w+/g)].map(
+      (m) => start + m.index
+    )
     // A dictionary that holds other values beside its tooltips cannot be paired this way.
     if (keys.length !== marks.length) return
     keys.forEach((key, i) => {
@@ -395,14 +413,21 @@ export function pressF1(file) {
  * (`For example:`): it is dropped, as is what is then left empty.
  */
 const extendedText = (paras) =>
-  paras.filter((p, i) => !(i === paras.length - 1 && /[:：]$/.test(p))).join("\n\n")
+  paras
+    .filter((p, i) => !(i === paras.length - 1 && /[:：]$/.test(p)))
+    .join("\n\n")
 
 export function cultureTips(culture, pack) {
   const folder = pack ?? join(INSTALL, culture)
   const cuix =
     pack !== undefined
       ? join(pack, "acad.CUIX")
-      : join(INSTALL, "UserDataCache", culture.toLowerCase(), "Support/acad.CUIX")
+      : join(
+          INSTALL,
+          "UserDataCache",
+          culture.toLowerCase(),
+          "Support/acad.CUIX"
+        )
   for (const file of [cuix, join(folder, "AcWindows.resources.dll")])
     if (!existsSync(file)) throw new Error(`${file} is missing`)
   const macros = cuixMacros(cuix)
@@ -412,7 +437,10 @@ export function cultureTips(culture, pack) {
   for (const [key, source] of Object.entries(TIP_SOURCES)) {
     const tip = source.startsWith("TT_")
       ? controls.get(source)
-      : { ...macros.get(source), extended: extended.get(source)?.extended ?? [] }
+      : {
+          ...macros.get(source),
+          extended: extended.get(source)?.extended ?? [],
+        }
     if (!tip) {
       tips[key] = null
       continue

@@ -98,6 +98,7 @@ declare const source: {
       "tools3d": string
       "view": string
       "arrayCreation": string
+      "array": string
       "textEditor": string
     }
     "panels": {
@@ -303,8 +304,10 @@ declare const source: {
       "hatchScale": string
       "columns": string
       "columnSpacing": string
+      "columnTotal": string
       "rows": string
       "rowSpacing": string
+      "rowTotal": string
       "rowElevation": string
       "levels": string
       "levelSpacing": string
@@ -481,6 +484,8 @@ declare const source: {
       "arrayLevels": string
       "arrayLevelSpacing": string
       "arrayLevelTotal": string
+      "arrayRowTotal": string
+      "arrayColumnTotal": string
       "arrayPolarItems": string
       "arrayAngleBetween": string
       "arrayFillAngle": string
@@ -530,6 +535,8 @@ declare const source: {
       "arrayLevels": string
       "arrayLevelSpacing": string
       "arrayLevelTotal": string
+      "arrayRowTotal": string
+      "arrayColumnTotal": string
       "arrayPolarItems": string
       "arrayAngleBetween": string
       "arrayFillAngle": string

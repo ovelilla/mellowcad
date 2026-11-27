@@ -2,7 +2,7 @@
 title: "Comando SERIERETTANG (ARRAYRECT) in AutoCAD"
 description: "Come funziona SERIERETTANG (ARRAYRECT) di AutoCAD in italiano: colonne, righe e livelli, la spaziatura, associativa o no. Provalo."
 figure: "Un quadrato e il suo cerchio in 5 colonne e 3 righe, a 16 e 14 di distanza: il numero dato, poi la spaziatura."
-sourceHash: "c8c8d747d0c9"
+sourceHash: "27ed7142411e"
 ---
 
 SERIERETTANG copia una selezione in colonne e righe, e in livelli se vuoi, come un solo oggetto serie. Chiede gli oggetti, indica il tipo e se la serie è associativa, e la mostra subito: 4 colonne lungo X dell'UCS e 3 righe lungo la sua Y, distanziate di una volta e mezza la dimensione della selezione. Poi una richiesta la modifica in tempo reale finché Invio la crea, con le sue opzioni o con i grip dell'anteprima, come in AutoCAD: fai clic su una delle sue frecce, poi fai clic dove deve andare o digita un numero, per impostare un numero o una spaziatura. Anche Esc lì crea la serie. Gli oggetti selezionati diventano il suo primo elemento.
@@ -39,7 +39,7 @@ Crea la serie e termina il comando, come fa Invio.
 
 ## Missing
 
-Punto base; Totale alle distanze tra colonne e tra righe (Livelli lo ha); Espressione, che lega un valore ai parametri del disegno. ARRAYEDIT e ARRAYCLOSE, che modificano l'origine di una serie o ne sostituiscono gli elementi. I menu dei grip della serie (Numero colonne, Spaziatura totale colonne, Angolo asse…) e Ctrl per scorrerli, quindi una spaziatura totale o un angolo dell'asse non si possono impostare da un grip; né un grip scrive le sue righe alla riga di comando. Base X e Base Y della tavolozza non si possono riscrivere.
+Punto base; Totale alle distanze tra colonne e tra righe (Livelli lo ha); Espressione, che lega un valore ai parametri del disegno. ARRAYEDIT e ARRAYCLOSE, che modificano l'origine di una serie o ne sostituiscono gli elementi. Per questo la scheda Serie che apre una serie selezionata non ha Punto base, Opzioni né Chiudi serie. I menu dei grip della serie (Numero colonne, Spaziatura totale colonne, Angolo asse…) e Ctrl per scorrerli, quindi una spaziatura totale o un angolo dell'asse non si possono impostare da un grip; né un grip scrive le sue righe alla riga di comando. Base X e Base Y della tavolozza non si possono riscrivere.
 
 ## Questions
 

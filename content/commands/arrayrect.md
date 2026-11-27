@@ -4,7 +4,7 @@ metaTitle: "Rectangular array in AutoCAD: ARRAYRECT command"
 description: "How AutoCAD's ARRAYRECT works, prompt by prompt: columns, rows and levels, their spacing, associative or not. Try it free in your browser."
 figure: "A square and its circle in 5 columns and 3 rows, 16 and 14 apart: the count given, then the spacing."
 related: ["ARRAY", "ARRAYPOLAR", "ARRAYPATH", "COPY"]
-coverage: "584d69d3e912"
+coverage: "96559f08953e"
 ---
 
 ARRAYRECT copies a selection in columns and rows, and in levels if you want them, as one array object. It asks for the objects, says the type and whether the array is associative, and shows it at once: 4 columns along the UCS's X and 3 rows along its Y, one and a half times the selection's size apart. Then one prompt edits it live until Enter makes it, through its options or the preview's grips, as in AutoCAD: click one of its arrows, then click where it should go or type a number, to set a count or a spacing. Escape there makes the array too. The objects selected become its first item.
@@ -41,7 +41,7 @@ Makes the array and ends the command, as Enter does.
 
 ## Missing
 
-Base point; Total at the distances between columns and between rows (Levels has it); Expression, which ties a value to the drawing's parameters. ARRAYEDIT and ARRAYCLOSE, which edit an array's source or replace its items. The menus of the array's grips (Column Count, Total Column Spacing, Axis Angle…) and Ctrl to cycle them, so a total spacing or an axis angle cannot be set from a grip; nor does a grip write its lines at the command line. The palette's Base X and Base Y cannot be retyped.
+Base point; Total at the distances between columns and between rows (Levels has it); Expression, which ties a value to the drawing's parameters. ARRAYEDIT and ARRAYCLOSE, which edit an array's source or replace its items. So the Array tab a selected array opens has no Base Point, Options or Close Array. The menus of the array's grips (Column Count, Total Column Spacing, Axis Angle…) and Ctrl to cycle them, so a total spacing or an axis angle cannot be set from a grip; nor does a grip write its lines at the command line. The palette's Base X and Base Y cannot be retyped.
 
 ## Questions
 

@@ -27,6 +27,7 @@ import {
   ChevronsUp,
   CircleDashed,
   Columns3,
+  FoldHorizontal,
   FoldVertical,
   Hash,
   Layers,
@@ -1245,8 +1246,10 @@ function Control({
 const FIELD_ICONS: Readonly<Record<ContextualFieldId, LucideIcon>> = {
   columns: Columns3,
   columnSpacing: MoveHorizontal,
+  columnTotal: FoldHorizontal,
   rows: Rows3,
   rowSpacing: MoveVertical,
+  rowTotal: FoldVertical,
   rowElevation: ArrowUpFromLine,
   levels: Layers,
   levelSpacing: ChevronsUp,
@@ -1267,10 +1270,14 @@ function fieldTip(field: ContextualFieldId, ctx: Context): TipKey {
       return "arrayColumns"
     case "columnSpacing":
       return "arrayColumnSpacing"
+    case "columnTotal":
+      return "arrayColumnTotal"
     case "rows":
       return "arrayRows"
     case "rowSpacing":
       return "arrayRowSpacing"
+    case "rowTotal":
+      return "arrayRowTotal"
     case "rowElevation":
       return "arrayRowElevation"
     case "levels":
@@ -1280,9 +1287,7 @@ function fieldTip(field: ContextualFieldId, ctx: Context): TipKey {
     case "levelTotal":
       return "arrayLevelTotal"
     case "items":
-      return ctx.state.ribbon.contextual?.id === "arrayCreationPath"
-        ? "arrayPathItems"
-        : "arrayPolarItems"
+      return onPath(ctx) ? "arrayPathItems" : "arrayPolarItems"
     case "angleBetween":
       return "arrayAngleBetween"
     case "fillAngle":
@@ -1294,6 +1299,12 @@ function fieldTip(field: ContextualFieldId, ctx: Context): TipKey {
     case "textHeight":
       return field
   }
+}
+
+/** Whether the tab in front is a path array's, created or selected. */
+function onPath(ctx: Context): boolean {
+  const id = ctx.state.ribbon.contextual?.id
+  return id === "arrayCreationPath" || id === "arraySelectionPath"
 }
 
 /**
@@ -1333,16 +1344,50 @@ function Field({ field, ctx }: { field: ContextualFieldId; ctx: Context }) {
   const Icon = FIELD_ICONS[field]
   const label = t(`fields.${field}`)
   const id = `ribbon-field-${field}`
+  // A path's count has its toggle where the glyph is (arraypath-tab).
+  const toggle =
+    field === "items" && ctx.state.ribbon.contextual?.id === "arrayCreationPath"
   return (
     <Tip tip={fieldTip(field, ctx)} title={label} ctx={ctx}>
       <div className="col-span-3 grid h-5.5 grid-cols-subgrid items-center">
-        <Icon aria-hidden className="mx-1 size-4 text-muted-foreground" />
+        {toggle ? (
+          <FillPathToggle ctx={ctx} />
+        ) : (
+          <Icon aria-hidden className="mx-1 size-4 text-muted-foreground" />
+        )}
         <label htmlFor={id} className="pe-1 whitespace-nowrap">
           {label}
         </label>
         <FieldBox field={field} id={id} className="w-24.5" ctx={ctx} />
       </div>
     </Tip>
+  )
+}
+
+/**
+ * ARRAYPATH's count toggle (a BindableToggleButton of 24 × 22 before Items,
+ * desktop arraypath-tab): lit while Measure works the count out from the
+ * path, which greys Items, as the prompt's Fill entire path; Divide gives the
+ * count, so it is greyed then (**unverified**: only Measure was seen). Its
+ * tooltip is the field's (TT_AcPathArrayItemCount), its name that tooltip's.
+ */
+function FillPathToggle({ ctx }: { ctx: Context }) {
+  const t = useEditorText("Ribbon")
+  const contextual = ctx.state.ribbon.contextual
+  const on = contextual?.toggles.fillPath === true
+  return (
+    <button
+      type="button"
+      aria-label={t("tipTitles.arrayPathItems")}
+      aria-pressed={on}
+      disabled={contextual?.method !== "measure"}
+      className={cn(BUTTON, "h-5.5 w-6 justify-center", on && LIT)}
+      onClick={() =>
+        ctx.act(() => ctx.engine.editContextualTab({ toggle: "fillPath" }))
+      }
+    >
+      <Hash aria-hidden className="size-4" />
+    </button>
   )
 }
 
@@ -1441,7 +1486,9 @@ function ArrayType({
 }
 
 /** A contextual tab's toggle's item: its text, glyph and tooltip. */
-const TOGGLE_ITEMS: Readonly<Record<ContextualToggleId, ItemId & TipKey>> = {
+const TOGGLE_ITEMS: Readonly<
+  Record<Exclude<ContextualToggleId, "fillPath">, ItemId & TipKey>
+> = {
   associative: "arrayAssociative",
   rotateItems: "arrayRotateItems",
   direction: "arrayDirection",
@@ -1453,7 +1500,7 @@ function ContextualToggle({
   toggle,
   ctx,
 }: {
-  toggle: ContextualToggleId
+  toggle: Exclude<ContextualToggleId, "fillPath">
   ctx: Context
 }) {
   const item = TOGGLE_ITEMS[toggle]

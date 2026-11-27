@@ -2,7 +2,7 @@
 title: "Commande RESEAURECT (ARRAYRECT) dans AutoCAD"
 description: "Réseau rectangulaire dans AutoCAD en français : RESEAURECT (ARRAYRECT), colonnes, lignes et niveaux, leur espacement, associatif ou non. Essayez-le."
 figure: "Un carré et son cercle en 5 colonnes et 3 lignes, espacées de 16 et de 14 : le nombre donné, puis l'espacement."
-sourceHash: "c8c8d747d0c9"
+sourceHash: "27ed7142411e"
 ---
 
 RESEAURECT (ARRAYRECT en anglais) copie une sélection en colonnes et en lignes, et en niveaux si vous le voulez, en un seul objet réseau. Elle demande les objets, indique le type et si le réseau est associatif, et l'affiche aussitôt : 4 colonnes selon l'axe X du SCU et 3 lignes selon son axe Y, espacées d'une fois et demie la taille de la sélection. Ensuite, une seule invite le modifie en direct jusqu'à ce qu'Entrée le crée, par ses options ou par les poignées de l'aperçu, comme dans AutoCAD : cliquez sur l'une de ses flèches, puis cliquez là où elle doit aller ou tapez un nombre, pour régler un nombre ou un espacement. Echap à cette invite crée aussi le réseau. Les objets sélectionnés deviennent son premier élément.
@@ -39,7 +39,7 @@ Crée le réseau et termine la commande, comme Entrée.
 
 ## Missing
 
-Le point de base ; Total pour les distances entre les colonnes et entre les lignes (Niveaux l'a) ; Expression, qui lie une valeur aux paramètres du dessin. MODIFIERRESEAU (ARRAYEDIT) et FERMERRESEAU (ARRAYCLOSE), qui modifient la source d'un réseau ou remplacent ses éléments. Les menus des poignées du réseau (Nombre de colonnes, Espacement total des colonnes, Angle d'axe…) et Ctrl pour les parcourir, si bien qu'un espacement total ou un angle d'axe ne peut pas être réglé depuis une poignée ; une poignée n'écrit pas non plus ses lignes à la ligne de commande. Les coordonnées X et Y du point de base, dans la palette, ne peuvent pas être retapées.
+Le point de base ; Total pour les distances entre les colonnes et entre les lignes (Niveaux l'a) ; Expression, qui lie une valeur aux paramètres du dessin. MODIFIERRESEAU (ARRAYEDIT) et FERMERRESEAU (ARRAYCLOSE), qui modifient la source d'un réseau ou remplacent ses éléments. L'onglet Réseau qu'ouvre un réseau sélectionné n'a donc ni Point de base, ni Options, ni Fermer le réseau. Les menus des poignées du réseau (Nombre de colonnes, Espacement total des colonnes, Angle d'axe…) et Ctrl pour les parcourir, si bien qu'un espacement total ou un angle d'axe ne peut pas être réglé depuis une poignée ; une poignée n'écrit pas non plus ses lignes à la ligne de commande. Les coordonnées X et Y du point de base, dans la palette, ne peuvent pas être retapées.
 
 ## Questions
 

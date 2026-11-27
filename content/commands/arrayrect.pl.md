@@ -3,7 +3,7 @@ title: "Szyk prostokątny w AutoCADzie: polecenie SZYKPROST (ARRAYRECT)"
 metaTitle: "Szyk prostokątny w AutoCADzie: SZYKPROST"
 description: "Jak zrobić szyk prostokątny w AutoCADzie poleceniem SZYKPROST (ARRAYRECT): kolumny, wiersze i poziomy, odstępy między nimi, szyk skojarzony lub nie."
 figure: "Kwadrat i jego okrąg w 5 kolumnach i 3 wierszach, w odstępach 16 i 14: najpierw liczba, potem odstęp."
-sourceHash: "c8c8d747d0c9"
+sourceHash: "27ed7142411e"
 ---
 
 Polecenie SZYKPROST (ARRAYRECT) kopiuje zaznaczenie w kolumnach i wierszach, a jeśli chcesz, także w poziomach, jako jeden obiekt szyku. Pyta o obiekty, podaje typ i to, czy szyk jest skojarzony, i od razu go pokazuje: 4 kolumny wzdłuż osi X układu LUW i 3 wiersze wzdłuż jego osi Y, w odstępach półtora raza większych od rozmiaru zaznaczenia. Potem jeden monit edytuje go na żywo, aż Enter go utworzy, opcjami lub uchwytami podglądu, jak w AutoCADzie: kliknij jedną z jego strzałek, a potem kliknij, gdzie ma się znaleźć, lub wpisz liczbę, aby ustawić liczbę lub odstęp. Esc w tym miejscu również tworzy szyk. Zaznaczone obiekty stają się jego pierwszym elementem.
@@ -40,7 +40,7 @@ Tworzy szyk i kończy polecenie, tak jak Enter.
 
 ## Missing
 
-Punkt bazowy; Całkowity przy odległościach między kolumnami i między wierszami (Poziomy go mają); Wyrażenie, które wiąże wartość z parametrami rysunku. EDYTUJSZYK i ZAMKNIJSZYK, które edytują źródło szyku lub zastępują jego elementy. Menu uchwytów szyku (liczba kolumn, całkowity odstęp kolumn, kąt osi…) i Ctrl do przełączania między nimi, więc całkowitego odstępu ani kąta osi nie można ustawić uchwytem; uchwyt nie wypisuje też swoich wierszy w wierszu polecenia. Wartości Bazowy X i Bazowy Y w palecie nie można wpisać ponownie.
+Punkt bazowy; Całkowity przy odległościach między kolumnami i między wierszami (Poziomy go mają); Wyrażenie, które wiąże wartość z parametrami rysunku. EDYTUJSZYK i ZAMKNIJSZYK, które edytują źródło szyku lub zastępują jego elementy. Dlatego karta Szyk otwierana przez wybrany szyk nie ma przycisków Punkt bazowy, Opcje ani Zamknij szyk. Menu uchwytów szyku (liczba kolumn, całkowity odstęp kolumn, kąt osi…) i Ctrl do przełączania między nimi, więc całkowitego odstępu ani kąta osi nie można ustawić uchwytem; uchwyt nie wypisuje też swoich wierszy w wierszu polecenia. Wartości Bazowy X i Bazowy Y w palecie nie można wpisać ponownie.
 
 ## Questions
 

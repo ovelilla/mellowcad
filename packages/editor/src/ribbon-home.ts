@@ -94,7 +94,10 @@ export type RibbonControl =
       readonly type: "arrayRectangular" | "arrayPolar" | "arrayPath"
     }
   /** A contextual tab's toggle, large, lit while on. */
-  | { readonly kind: "contextualToggle"; readonly toggle: ContextualToggleId }
+  | {
+      readonly kind: "contextualToggle"
+      readonly toggle: Exclude<ContextualToggleId, "fillPath">
+    }
   /** ARRAYPATH's Method (AcPathArrayMethodSplitDropDown): Divide, Measure. */
   | { readonly kind: "pathMethod" }
   /** A contextual tab's Close, ending its command (AcArrayCreationCloseButton). */

@@ -3,7 +3,7 @@ title: "Comando ARRAYRECT (MATRIZRETANG) no AutoCAD"
 metaTitle: "Array retangular no AutoCAD: comando ARRAYRECT"
 description: "Como funciona o ARRAYRECT do AutoCAD em português, MATRIZRETANG, prompt a prompt: colunas, linhas e níveis, espaçamento, associativa ou não. Experimente grátis."
 figure: "Um quadrado e seu círculo em 5 colunas e 3 linhas, a 16 e 14: primeiro a quantidade, depois o espaçamento."
-sourceHash: "c8c8d747d0c9"
+sourceHash: "27ed7142411e"
 ---
 
 O ARRAYRECT, MATRIZRETANG no AutoCAD em português, copia uma seleção em colunas e linhas, e em níveis se você quiser, como um só objeto de matriz. Ele pede os objetos, diz o tipo e se a matriz é associativa, e a mostra na hora: 4 colunas ao longo do eixo X do UCS e 3 linhas ao longo do Y, afastadas uma vez e meia o tamanho da seleção. Depois, um só prompt a edita ao vivo até o Enter criá-la, com as opções ou com as alças da visualização, como no AutoCAD: clique numa das setas e depois onde ela deve ficar, ou digite um número, para definir uma quantidade ou um espaçamento. O Esc também cria a matriz. Os objetos selecionados passam a ser o primeiro item.
@@ -40,7 +40,7 @@ Cria a matriz e encerra o comando, como o Enter.
 
 ## Missing
 
-O ponto base; <Keyword id="Total" /> nas distâncias entre colunas e entre linhas (<Keyword id="Levels" /> tem); Expressão, que liga um valor aos parâmetros do desenho. ARRAYEDIT e ARRAYCLOSE, que editam a origem de uma matriz ou substituem os itens. Os menus das alças da matriz (quantidade de colunas, espaçamento total, ângulo do eixo…) e o Ctrl para percorrê-los, então um espaçamento total ou um ângulo do eixo não podem ser definidos por uma alça; uma alça também não escreve as suas linhas na linha de comando. Na paleta, as coordenadas X e Y do ponto base não podem ser digitadas de novo.
+O ponto base; <Keyword id="Total" /> nas distâncias entre colunas e entre linhas (<Keyword id="Levels" /> tem); Expressão, que liga um valor aos parâmetros do desenho. ARRAYEDIT e ARRAYCLOSE, que editam a origem de uma matriz ou substituem os itens. Por isso a guia Matriz que uma matriz selecionada abre não tem Ponto base, Opções nem Fechar matriz. Os menus das alças da matriz (quantidade de colunas, espaçamento total, ângulo do eixo…) e o Ctrl para percorrê-los, então um espaçamento total ou um ângulo do eixo não podem ser definidos por uma alça; uma alça também não escreve as suas linhas na linha de comando. Na paleta, as coordenadas X e Y do ponto base não podem ser digitadas de novo.
 
 ## Questions
 

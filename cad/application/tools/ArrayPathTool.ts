@@ -83,6 +83,12 @@ type ArrayPathState =
       readonly pathId: EntityId
       /** What the prompts edit: kept together, as AutoCAD keeps the count across methods. */
       readonly layout: PathLayout
+      /**
+       * Measure's count is worked out from the path, as many as fit: Fill
+       * entire path, on at first, off once a count is given (the tab's
+       * Items greyed and its toggle lit while on: arraypath-tab).
+       */
+      readonly fill: boolean
       readonly step: Step
     }
 
@@ -133,7 +139,13 @@ export class ArrayPathTool implements Tool {
     take: (array) => {
       if (this.state.phase !== "edit" || array.kind !== "path") return
       const { method, items, spacing, align } = array
-      this.setLayout({ method, items, spacing, align })
+      const { layout, path, fill } = this.state
+      // A grip's spacing fills the path again while it fills, as Between
+      // does; a grip's count fills it only as the most that fit.
+      const most = maxItems(path, spacing)
+      const refills = fill && method === "measure" && spacing !== layout.spacing
+      this.setLayout({ method, items: refills ? most : items, spacing, align })
+      this.setFill(refills || items === most)
     },
     main: (ctx) => this.ask("main", ctx),
   })
@@ -318,6 +330,7 @@ export class ArrayPathTool implements Tool {
         this.state = {
           ...state,
           layout: { ...layout, items: maxItems(path, layout.spacing) },
+          fill: true,
         }
         this.ask("main", ctx)
         return "continue"
@@ -602,6 +615,7 @@ export class ArrayPathTool implements Tool {
         spacing,
         align: true,
       },
+      fill: true,
       step: "main",
     }
     this.ask("main", ctx)
@@ -668,11 +682,22 @@ export class ArrayPathTool implements Tool {
     }
     switch (step) {
       case "count":
-        if (value !== null) this.setLayout({ ...layout, items: value })
+        // A count given, Divide's too: Measure keeps it (probe arrays/p334).
+        if (value !== null) {
+          this.setLayout({ ...layout, items: value })
+          this.setFill(false)
+        }
         this.ask("main", ctx)
         return
       case "spacing":
-        if (value !== null) this.setLayout({ ...layout, spacing: value })
+        // While the path fills, the count offered next is all that fit.
+        if (value !== null) {
+          this.setLayout({
+            ...layout,
+            spacing: value,
+            items: state.fill ? maxItems(path, value) : layout.items,
+          })
+        }
         this.ask("measureCount", ctx)
         return
       case "measureCount": {
@@ -682,6 +707,7 @@ export class ArrayPathTool implements Tool {
           maxItems(path, layout.spacing)
         )
         this.setLayout({ ...layout, items })
+        if (value !== null) this.setFill(false)
         this.ask("main", ctx)
         return
       }
@@ -692,7 +718,11 @@ export class ArrayPathTool implements Tool {
    * Array Creation (ARRAYCREATION 3 once the path is picked, as ARRAYRECT's
    * and ARRAYPOLAR's from their main prompt: **unverified**, p452 stopped at
    * the path): Items with its count and its spacing, which Divide greys (its
-   * share of the path shown), Associative, Method and Align Items. Total,
+   * share of the path shown, as the BAML binds it), the count greyed while
+   * Measure fills the path, its toggle lit (desktop arraypath-tab, the
+   * toggle's tooltip TT_AcPathArrayItemCount: "Allows the number of items to
+   * be automatically calculated from the length of the path curve and the
+   * distance between items"), Associative, Method and Align Items. Total,
    * Rows, Levels, Base Point, Tangent Direction and Z Direction are not
    * offered here, so not shown.
    */
@@ -701,10 +731,11 @@ export class ArrayPathTool implements Tool {
     if (state.phase !== "edit") return null
     const { layout, path } = state
     const divide = layout.method === "divide"
+    const fills = !divide && state.fill
     return {
       id: "arrayCreationPath",
       fields: [
-        { id: "items", value: layout.items, kind: "count" },
+        { id: "items", value: layout.items, kind: "count", disabled: fills },
         {
           id: "itemSpacing",
           value: divide ? pathDivideStep(path, layout.items) : layout.spacing,
@@ -715,6 +746,7 @@ export class ArrayPathTool implements Tool {
       toggles: {
         associative: this.mode.associative,
         alignItems: layout.align,
+        fillPath: fills,
       },
       method: layout.method,
     }
@@ -722,8 +754,10 @@ export class ArrayPathTool implements Tool {
 
   /**
    * Items is Divide's count, or Measure's at its prompt after the spacing,
-   * no more than fit (probe arrays/p373); the spacing is Measure's, the
-   * count kept as Enter keeps it there. Method and Align Items as their
+   * no more than fit (probe arrays/p373), taken only while the path is not
+   * filled; the spacing is Measure's, the count all that fit while it fills,
+   * else kept as Enter keeps it there. The count's toggle is Fill entire
+   * path, on and off (Measure only). Method and Align Items as their
    * prompts' answers; Close Array is eXit.
    */
   editContextual(edit: ContextualEdit, ctx: ToolContext): CommandOptionOutcome {
@@ -742,13 +776,22 @@ export class ArrayPathTool implements Tool {
         this.mode.associative = !this.mode.associative
       } else if (edit.toggle === "alignItems") {
         this.setLayout({ ...layout, align: !layout.align })
+      } else if (edit.toggle === "fillPath" && layout.method === "measure") {
+        if (!state.fill) {
+          this.setLayout({ ...layout, items: maxItems(path, layout.spacing) })
+        }
+        this.setFill(!state.fill)
       } else return "unhandled"
     } else if ("field" in edit) {
       if (edit.field !== "items" && edit.field !== "itemSpacing") {
         return "unhandled"
       }
-      // Divide greys Between: nothing typed there is taken, a word neither.
+      // Divide greys Between, and a filled path the count: nothing typed
+      // there is taken, a word neither.
       if (edit.field === "itemSpacing" && layout.method !== "measure") {
+        return "unhandled"
+      }
+      if (edit.field === "items" && layout.method === "measure" && state.fill) {
         return "unhandled"
       }
       const value = parseNumber(edit.text.trim())
@@ -761,12 +804,14 @@ export class ArrayPathTool implements Tool {
               ? value
               : Math.min(value, maxItems(path, layout.spacing))
           this.setLayout({ ...layout, items })
+          this.setFill(false)
         }
       } else if (edit.field === "itemSpacing" && layout.method === "measure") {
         if (value <= 0) {
           ctx.report(ctx.text.message("positiveNonzero"), "error")
         } else {
-          const items = Math.min(layout.items, maxItems(path, value))
+          const most = maxItems(path, value)
+          const items = state.fill ? most : Math.min(layout.items, most)
           this.setLayout({ ...layout, spacing: value, items })
         }
       } else return "unhandled"
@@ -777,6 +822,10 @@ export class ArrayPathTool implements Tool {
 
   private setLayout(layout: PathLayout): void {
     if (this.state.phase === "edit") this.state = { ...this.state, layout }
+  }
+
+  private setFill(fill: boolean): void {
+    if (this.state.phase === "edit") this.state = { ...this.state, fill }
   }
 
   /** The layout the preview shows: the value being typed already applied. */

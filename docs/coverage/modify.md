@@ -254,6 +254,18 @@ layer, colour, lineweight and Z (p164, p166), a copy on each level (p440), the s
 `*Cancelado*`; desktop d08, d08b), at a value's prompt with the values given before it
 (**unverified**: the desktop showed the main prompt only), before the main prompt nothing.
 
+**The Array tab**, the selection's (RBN_01740317, RBN_01740329, RBN_01740323; AcContextualTabSelectorRules.xaml's
+AcRectangularAssociativeArraySelected and its twins: one array selected at `Command:`), in front
+as it opens and the tab before it back as the selection goes: Type, and the array's Properties rows
+— a grid's Columns, Rows and Levels, each with Between and Total (the span its count and spacing
+give, the spacing itself with one, sel-arr-rect: Levels 1, Between 1, Total 1; a Total typed sets
+the spacing), Increment in Rows' slide-out; a ring's Items, Between and Fill, Rotate Items and
+Direction (lit counter-clockwise, sel-arr-polar); a path's Items and Between (greyed by Divide),
+Method ▾ and Align Items. A field's edit applies to the array with no line written and U names
+nothing (`Command: _U` alone, sel-arr-rect-col5); what its row refuses is put back in silence;
+a locked array is left out as the palette leaves it, dropped from the set with its dialog (what
+AutoCAD's tab does there **unverified**).
+
 **The Array Creation tab** (`docs/coverage/workspace.md`, Ribbon): from the main prompt on
 (ARRAYCREATION 1 there, 0 at `Select objects:`, p450), Columns (Columns, Between), Rows (Rows,
 Between; Increment in its slide-out), Levels (Levels, Between, Total), Associative and Close Array;
@@ -362,7 +374,14 @@ spacing, Start offset, Fill entire path (d13); ARRAYPOLAR's and ARRAYPATH's base
 source with a rise (**unverified**: no probe); a level grip in a 3D view (`** LEVEL COUNT **`, `** LEVEL SPACING **`,
 `** TOTAL LEVEL SPACING **`, AcArrayRes 5729–5731: whether one shows, **unverified**, no desktop
 pass); ARRAYEDIT (p419–p421) and
-ARRAYCLOSE; no cap on the items but 32767 each way, a large array costing what as many loose
+ARRAYCLOSE, and so the selection's Array tab's Base Point (`^C^C_arrayedit _b \_x`), Options (Edit
+Source, Replace Item, Reset Array: `_s`, `_rep`, `_res _x`) and Close Array (`^P_ARRAYEDIT
+_caNcel`: with the array selected ARRAYEDIT skips `Select array:`, CAncel ends it writing nothing
+more, the selection dropped, U naming `ARRAYEDIT`; console 2026-11-27), as well as that tab's Rows
+and Levels of a ring or a path, a path's Total and Z Direction, and a path's count toggle (Fill
+entire path, which the array does not keep here: sel-arr-path shows Items and Total greyed under
+Measure), and the selection's maximum for contextual tabs (OPTIONS › Selection › Contextual Tab
+States); no cap on the items but 32767 each way, a large array costing what as many loose
 copies cost to draw and pick; Unit cell's rubber band dashed, as the trace's UseDashedLine 1 says (p123;
 solid here: **unverified** on the desktop); Base point (`Specify base point or [Key point] <centroid>:`, es
 `Especifique un punto base o [punto Clave] <centro de gravedad>:`, p140); Total at COLumns' and
@@ -496,7 +515,14 @@ it leaves the array (p416); Escape as ARRAYRECT's once the path is picked (deskt
 kept), before it nothing. **The Array Creation tab** (ARRAYRECT's), once the path is picked
 (ARRAYCREATION 3, **unverified**: p452 never reached the main prompt): Items (Items, and Between,
 Measure's spacing, the count kept within the path as Enter keeps it at the count's prompt, greyed
-by Divide, which shows its share), Associative, Method ▾ (Divide, Measure) and Align Items
+by Divide, which shows its share), Associative, Method ▾ (Divide, Measure) and Align Items; the
+count's toggle before Items (desktop arraypath-tab; its tooltip TT_AcPathArrayItemCount's, "Allows
+the number of items to be automatically calculated from the length of the path curve"), Fill
+entire path: lit at first, Items greyed and all that fit, a new Between filling again, until the
+toggle is turned off or a count is typed at the count's prompt, its Fill entire path lighting it
+again (a spacing typed at Items while it is lit offers all that fit there, **unverified**; a
+grip's spacing fills again too; a count given under Divide turns it off as well, Measure then
+keeping that count, p334); under Divide it is unlit and greyed (**unverified**: only Measure was seen)
 
 **Missing:** the array's grips' menus, as ARRAYRECT's; the array following its path
 (p407: STRETCH of the path's end from 100 to 50 leaves 9 items; WHY not built: the array keeps the

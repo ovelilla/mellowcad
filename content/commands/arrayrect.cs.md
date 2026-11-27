@@ -3,7 +3,7 @@ title: "Obdélníkové pole v AutoCADu: příkaz OBDPOLE (ARRAYRECT)"
 metaTitle: "Obdélníkové pole v AutoCADu: OBDPOLE"
 description: "Jak vytvořit obdélníkové pole v AutoCADu příkazem OBDPOLE (ARRAYRECT): sloupce, řádky a úrovně, rozteč mezi nimi, asociativita. Zdarma online."
 figure: "Čtverec a jeho kružnice v 5 sloupcích a 3 řádcích, s roztečí 16 a 14: nejprve počet, potom rozteč."
-sourceHash: "c8c8d747d0c9"
+sourceHash: "27ed7142411e"
 ---
 
 Příkaz OBDPOLE (ARRAYRECT) kopíruje výběr do sloupců a řádků, a pokud chcete, i do úrovní, jako jeden objekt pole. Zeptá se na objekty, oznámí typ a to, zda je pole asociativní, a hned ho ukáže: 4 sloupce podél osy X USS a 3 řádky podél její osy Y, ve vzdálenosti jedenapůlnásobku velikosti výběru. Potom jedna výzva upravuje pole živě, dokud ho Enter nevytvoří, a to možnostmi nebo uzly náhledu, jako v AutoCADu: klikněte na jednu z jeho šipek a potom klikněte tam, kam má jít, nebo zadejte číslo, a nastavíte tak počet nebo rozteč. Esc na této výzvě pole také vytvoří. Vybrané objekty se stanou jeho první položkou.
@@ -40,7 +40,7 @@ Vytvoří pole a ukončí příkaz, stejně jako Enter.
 
 ## Missing
 
-Základní bod; Celkem u vzdáleností mezi sloupci a mezi řádky (Úrovně ji mají); Výraz, který váže hodnotu na parametry výkresu. Příkazy EDITPOLE a ZAVŘIPOLE (ARRAYEDIT, ARRAYCLOSE), které upravují zdroj pole nebo nahrazují jeho položky. Nabídky uzlů pole (počet sloupců, celková rozteč sloupců, úhel osy…) a Ctrl k přepínání mezi nimi, takže celkovou rozteč ani úhel osy nelze uzlem nastavit; uzel také nevypisuje své řádky na příkazový řádek. Hodnoty Základní X a Základní Y v paletě nelze znovu zadat.
+Základní bod; Celkem u vzdáleností mezi sloupci a mezi řádky (Úrovně ji mají); Výraz, který váže hodnotu na parametry výkresu. Příkazy EDITPOLE a ZAVŘIPOLE (ARRAYEDIT, ARRAYCLOSE), které upravují zdroj pole nebo nahrazují jeho položky. Karta Pole, kterou otevře vybrané pole, proto nemá Základní bod, Možnosti ani Zavřít pole. Nabídky uzlů pole (počet sloupců, celková rozteč sloupců, úhel osy…) a Ctrl k přepínání mezi nimi, takže celkovou rozteč ani úhel osy nelze uzlem nastavit; uzel také nevypisuje své řádky na příkazový řádek. Hodnoty Základní X a Základní Y v paletě nelze znovu zadat.
 
 ## Questions
 

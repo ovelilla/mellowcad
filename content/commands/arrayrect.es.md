@@ -3,7 +3,7 @@ title: "Matriz rectangular en AutoCAD: MATRIZRECTANG (ARRAYRECT)"
 metaTitle: "Matriz rectangular en AutoCAD: MATRIZRECTANG"
 description: "Cómo funciona MATRIZRECTANG (ARRAYRECT) de AutoCAD en español, solicitud a solicitud: columnas, filas, niveles y separación, asociativa o no. Pruébalo gratis."
 figure: "Un cuadrado y su círculo en 5 columnas y 3 filas, a 16 y 14: primero el número, después la separación."
-sourceHash: "c8c8d747d0c9"
+sourceHash: "27ed7142411e"
 ---
 
 MATRIZRECTANG (ARRAYRECT en inglés) copia una selección en columnas y filas, y en niveles si los quieres, como un solo objeto de matriz. Pide los objetos, dice el tipo y si la matriz es asociativa, y la muestra al momento: 4 columnas a lo largo del eje X del SCP y 3 filas a lo largo de su Y, separadas una vez y media el tamaño de la selección. Después, una sola solicitud la edita en vivo hasta que Intro la crea, con sus opciones o con los pinzamientos de la vista previa, como en AutoCAD: haz clic en una de sus flechas y después donde debe quedar, o escribe un número, para fijar una cantidad o una separación. Esc también crea la matriz. Los objetos designados pasan a ser su primer elemento.
@@ -40,7 +40,7 @@ Crea la matriz y termina el comando, como Intro.
 
 ## Missing
 
-El punto base; <Keyword id="Total" /> en las distancias entre columnas y entre filas (<Keyword id="Levels" /> sí lo tiene); Expresión, que vincula un valor con los parámetros del dibujo. ARRAYEDIT y ARRAYCLOSE, que editan el origen de una matriz o sustituyen sus elementos. Los menús de los pinzamientos de la matriz (Conteo de columnas, Espaciado total de columnas, Ángulo de eje…) y Ctrl para recorrerlos, así que una separación total o un ángulo de eje no se pueden fijar desde un pinzamiento; tampoco escribe un pinzamiento sus líneas en la línea de comandos. En la paleta, las coordenadas X e Y del punto base no se pueden escribir de nuevo.
+El punto base; <Keyword id="Total" /> en las distancias entre columnas y entre filas (<Keyword id="Levels" /> sí lo tiene); Expresión, que vincula un valor con los parámetros del dibujo. ARRAYEDIT y ARRAYCLOSE, que editan el origen de una matriz o sustituyen sus elementos. Por eso la ficha Matriz que abre una matriz designada no tiene Punto base, Opciones ni Cerrar matriz. Los menús de los pinzamientos de la matriz (Conteo de columnas, Espaciado total de columnas, Ángulo de eje…) y Ctrl para recorrerlos, así que una separación total o un ángulo de eje no se pueden fijar desde un pinzamiento; tampoco escribe un pinzamiento sus líneas en la línea de comandos. En la paleta, las coordenadas X e Y del punto base no se pueden escribir de nuevo.
 
 ## Questions
 

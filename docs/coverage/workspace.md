@@ -447,9 +447,16 @@ its `TT_Ac…Array…` entries (title and description, `scripts/research/ribbon-
 on its box or glyph, a toggle's with no command row (desktop 2026-11-26, arr-tip-between,
 arr-tip-assoc), Arabic's ours. Show Tabs does not list it (arr-showtabs). Minimized it shows as any
 tab does: a button per panel, a title per panel, or its panels dropped from it (arr-min1 to
-arr-min3). **Unverified**: whether Direction is lit counter-clockwise, ARRAYPATH's
-`ARRAYCREATION 3` once its path is picked (p452 never reached it), and whether Show Panels lists
-a contextual tab's panels. **Hatch
+arr-min3). Show Panels lists the tab's own panels, each checked, as AutoCAD's
+(arraypath-showpanels), and hides them as on any tab. Direction is lit counter-clockwise
+(sel-arr-polar); ARRAYPATH's shows once its path is picked (arraypath-tab), its count's toggle
+before Items (`docs/coverage/modify.md`, ARRAYPATH). **Array**, the selection's (`--source
+RBN_01740317`, `RBN_01740329`, `RBN_01740323`; AcRectangularAssociativeArraySelected and its
+twins, which take no `Activate`, yet the desktop brings it to the front, sel-arr-rect), at
+`Command:` with one array selected, drawn as Array Creation: the array's Properties rows, each
+edit applied with no line and a step U names nothing (`docs/coverage/modify.md`, ARRAY), Columns'
+and Rows' Total too; its Base Point, Options and Close Array are ARRAYEDIT's, not built, so not
+drawn. **Hatch
 Creation** (`--source RBN_01738148`), while HATCH runs with the ribbon open (HATCHCREATION 1, its
 rule `Activate="True"`; desktop hatch/d01-2; its prompts, `docs/coverage/draw.md`): Boundaries'
 Pick Points, large on one line as acad.CUIX writes it, and Select, small; Pattern's gallery, the
@@ -479,14 +486,15 @@ buttons, the gallery's name), AcWindows' `TT_AcIPEFontSizeCombo`, acmtedRes 1024
 attachments) and AcTaskDialogs' TaskDialog_7 (Text Style Change), Arabic's ours
 
 **Missing:** the Parametric, Visualize, Manage, Output, Add-ins, Collaborate, Express Tools and
-Featured Apps tabs, nothing of theirs built; the selection's Array and Hatch Editor (phase 6,
-block 4), Hatch Creation's controls HATCH does not have
+Featured Apps tabs, nothing of theirs built; Hatch Editor, the selection's (it runs
+-HATCHEDIT, not built: `docs/plans/autocad-ui.md`, §6, phase 6, block 5), the selection's Array
+tab's ARRAYEDIT controls (`docs/coverage/modify.md`, ARRAY), Hatch Creation's controls HATCH does not have
 (`docs/coverage/draw.md`, HATCH's Missing), the other contextual
 tabs, whose features are not built (Block Editor, Edit Reference, Table Cell, External Reference,
 the underlays, Image, Mesh, Section Plane, Point Cloud, Geolocation); Array Creation's Base Point,
 Columns' and Rows' Total, ARRAYPOLAR's Rows and Levels and ARRAYPATH's Total, Rows, Levels, Tangent
 Direction and Z Direction (their commands do not ask them: `docs/coverage/modify.md`), its fields'
-Expression and the Fill Entire Path button beside a path array's Items under Measure; the extended tooltip's illustration (WHY: Autodesk's art, and none is
+Expression; the extended tooltip's illustration (WHY: Autodesk's art, and none is
 drawn here; `autocad-mouse/tip-long.png`), the right-click menu's Show Related Tool Palette Group,
 Tool Palette Group and Undock (no tool palettes, no docking); Groups
 and View, with nothing built; what each panel lacks: Draw's Tan, Tan, Radius and Tan, Tan, Tan, Arc's

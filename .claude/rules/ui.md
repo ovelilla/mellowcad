@@ -286,7 +286,7 @@ Each bar's AutoCAD order is in its component's header comment; touch and phones 
   (`openDrawingUnits`, `navigate`). A tool's button is `engine.setActiveTool(id)`, echoing `_line`,
   repeated by Enter, a menu group U names `LINE GROUP` (`cad-runtime.md`); a menu's own path is an
   engine method of its own (`openDrawingUnitsFromMenu`, `choosePolarAngle`).
-- **The ribbon** draws `RIBBON_TABS`, then the running command's `CONTEXTUAL_TABS`
+- **The ribbon** draws `RIBBON_TABS`, then the command's or selection's `CONTEXTUAL_TABS`
   (`state.ribbon.contextual`): acad.cuix's panels, rows and drop-downs (`ribbon.mjs`),
   only what the engine has, its words each culture's acad.CUIX's or AcWindows'. A tool with no button is in `TYPED` with its WHY (`ribbon.test.ts`). What
   a control shows is the engine's (`setRibbonTab`, `setRibbonMember`, `visualStyle`), its layout

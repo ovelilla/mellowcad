@@ -2,7 +2,7 @@
 title: "Befehl REIHERECHTECK (ARRAYRECT) in AutoCAD"
 description: "So arbeitet AutoCADs REIHERECHTECK (ARRAYRECT): Spalten, Zeilen und Ebenen, ihre Abstände, assoziativ oder nicht. Gratis im Browser testen."
 figure: "Ein Quadrat und sein Kreis in 5 Spalten und 3 Zeilen, 16 und 14 auseinander: zuerst die Anzahl, dann der Abstand."
-sourceHash: "c8c8d747d0c9"
+sourceHash: "27ed7142411e"
 ---
 
 REIHERECHTECK (ARRAYRECT) kopiert eine Auswahl in Spalten und Zeilen, auf Wunsch auch in Ebenen, als ein Anordnungsobjekt. Er fragt nach den Objekten, meldet den Typ und ob die Anordnung assoziativ ist, und zeigt sie sofort: 4 Spalten entlang der X-Achse des BKS und 3 Zeilen entlang seiner Y-Achse, anderthalbmal so weit auseinander, wie die Auswahl groß ist. Dann bearbeiten Sie sie über eine Eingabeaufforderung live, bis die Eingabetaste sie erzeugt, über ihre Optionen oder die Griffe der Vorschau, wie in AutoCAD: Klicken Sie einen ihrer Pfeile an und dann dorthin, wohin er soll, oder geben Sie eine Zahl ein, um eine Anzahl oder einen Abstand festzulegen. Auch Esc erzeugt dort die Anordnung. Die gewählten Objekte werden ihr erstes Element.
@@ -39,7 +39,7 @@ Erzeugt die Anordnung und beendet den Befehl, wie es die Eingabetaste tut.
 
 ## Missing
 
-Basispunkt; Gesamt bei den Abständen zwischen Spalten und zwischen Zeilen (bei Ebenen ist es vorhanden); Ausdruck, der einen Wert an die Parameter der Zeichnung bindet. ARRAYEDIT und ARRAYCLOSE, die die Quelle einer Anordnung bearbeiten oder ihre Elemente ersetzen. Die Menüs der Griffe der Anordnung (Spaltenanzahl, Gesamter Spaltenabstand, Achsenwinkel…) und Strg, um sie durchzuschalten, sodass sich ein Gesamtabstand oder ein Achsenwinkel nicht über einen Griff festlegen lässt; ein Griff schreibt auch keine Zeilen in die Befehlszeile. Die Werte Basis X und Basis Y der Eigenschaftenpalette lassen sich nicht neu eingeben.
+Basispunkt; Gesamt bei den Abständen zwischen Spalten und zwischen Zeilen (bei Ebenen ist es vorhanden); Ausdruck, der einen Wert an die Parameter der Zeichnung bindet. ARRAYEDIT und ARRAYCLOSE, die die Quelle einer Anordnung bearbeiten oder ihre Elemente ersetzen. Daher fehlen auf der Registerkarte Anordnung, die eine gewählte Anordnung öffnet, Basispunkt, Optionen und Anordnung schließen. Die Menüs der Griffe der Anordnung (Spaltenanzahl, Gesamter Spaltenabstand, Achsenwinkel…) und Strg, um sie durchzuschalten, sodass sich ein Gesamtabstand oder ein Achsenwinkel nicht über einen Griff festlegen lässt; ein Griff schreibt auch keine Zeilen in die Befehlszeile. Die Werte Basis X und Basis Y der Eigenschaftenpalette lassen sich nicht neu eingeben.
 
 ## Questions
 

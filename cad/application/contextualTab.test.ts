@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 import type { HatchEntity, InsertEntity, MTextEntity } from "../domain/entities"
-import { createHarness } from "../../test/harness"
+import { type CadHarness, createHarness } from "../../test/harness"
 import { circleOf, lineOf, p, rectOf } from "../../test/builders"
 
 /**
@@ -159,6 +159,7 @@ describe("Array Creation", () => {
     expect(tab?.id).toBe("arrayCreationPath")
     expect(tab?.method).toBe("measure")
     expect(tab?.fields.itemSpacing).toEqual({ text: "3", disabled: false })
+    cad.runtime.editContextualTab({ toggle: "fillPath" })
     cad.runtime.editContextualTab({ field: "itemSpacing", text: "25" })
     expect(cad.state().ribbon.contextual?.fields.items?.text).toBe("5")
     cad.runtime.editContextualTab({ field: "items", text: "9" })
@@ -174,6 +175,252 @@ describe("Array Creation", () => {
     expect((cad.latest() as InsertEntity).array).toMatchObject({
       method: "divide",
       items: 11,
+      align: false,
+    })
+  })
+})
+
+describe("ARRAYPATH's count toggle", () => {
+  const pathRun = () => {
+    const cad = createHarness({
+      entities: [
+        circleOf(p(0, 0), 1, { id: "C1" }),
+        lineOf(p(0, 0), p(100, 0), { id: "P" }),
+      ],
+    })
+    cad.select("C1").command("ARRAYPATH").click({ x: 50, y: 0 })
+    return cad
+  }
+  const tab = (cad: ReturnType<typeof pathRun>) => cad.state().ribbon.contextual
+
+  // desktop arraypath-tab: under Measure the count's toggle lit and Items
+  // greyed (17), Between not; the toggle's tooltip TT_AcPathArrayItemCount.
+  it("greys Measure's count while it fills the path, the toggle lit", () => {
+    const cad = pathRun()
+    expect(tab(cad)?.toggles.fillPath).toBe(true)
+    expect(tab(cad)?.fields.items).toEqual({ text: "34", disabled: true })
+    cad.runtime.editContextualTab({ field: "items", text: "5" })
+    expect(tab(cad)?.fields.items?.text).toBe("34")
+    // Filling, a new spacing takes all that fit.
+    cad.runtime.editContextualTab({ field: "itemSpacing", text: "10" })
+    expect(tab(cad)?.fields.items?.text).toBe("11")
+    cad.runtime.editContextualTab({ field: "itemSpacing", text: "5" })
+    expect(tab(cad)?.fields.items?.text).toBe("21")
+  })
+
+  it("takes a count once the toggle is off, and fills again as it lights", () => {
+    const cad = pathRun()
+    const from = cad.commandLog().length
+    cad.runtime.editContextualTab({ toggle: "fillPath" })
+    expect(tab(cad)?.toggles.fillPath).toBe(false)
+    expect(tab(cad)?.fields.items?.disabled).toBe(false)
+    cad.runtime.editContextualTab({ field: "items", text: "4" })
+    cad.runtime.editContextualTab({ field: "itemSpacing", text: "10" })
+    expect(tab(cad)?.fields.items?.text).toBe("4")
+    cad.runtime.editContextualTab({ toggle: "fillPath" })
+    expect(tab(cad)?.fields.items).toEqual({ text: "11", disabled: true })
+    expect(cad.commandLog().slice(from)).toEqual([])
+    cad.enter()
+    expect((cad.latest() as InsertEntity).array).toMatchObject({
+      method: "measure",
+      items: 11,
+      spacing: 10,
+    })
+  })
+
+  it("leaves Divide's count to the user, the toggle unlit there", () => {
+    const cad = pathRun()
+    cad.runtime.editContextualTab({ method: "divide" })
+    expect(tab(cad)?.toggles.fillPath).toBe(false)
+    expect(tab(cad)?.fields.items?.disabled).toBe(false)
+    cad.runtime.editContextualTab({ toggle: "fillPath" })
+    cad.runtime.editContextualTab({ field: "items", text: "6" })
+    expect(tab(cad)?.fields.items?.text).toBe("6")
+  })
+
+  it("is turned off by a count typed at the prompt and on by Fill entire path", () => {
+    const cad = pathRun()
+    cad.option("Items").type("10").enter().type("3").enter()
+    expect(tab(cad)?.fields.items).toEqual({ text: "3", disabled: false })
+    cad.option("Items").enter().option("Fill entire path")
+    expect(tab(cad)?.fields.items).toEqual({ text: "11", disabled: true })
+  })
+
+  it("offers all that fit after a spacing typed at the prompt while it fills", () => {
+    const cad = pathRun()
+    cad.option("Items").type("1").enter().enter()
+    expect(tab(cad)?.fields.items).toEqual({ text: "101", disabled: true })
+  })
+
+  // p334: Divide's count typed, Measure at a new spacing still offers it.
+  it("keeps the toggle across Method, a count given under Divide turning it off", () => {
+    const cad = pathRun()
+    cad.runtime.editContextualTab({ method: "divide" })
+    cad.runtime.editContextualTab({ method: "measure" })
+    expect(tab(cad)?.toggles.fillPath).toBe(true)
+    cad.runtime.editContextualTab({ method: "divide" })
+    cad.runtime.editContextualTab({ field: "items", text: "6" })
+    cad.runtime.editContextualTab({ method: "measure" })
+    expect(tab(cad)?.toggles.fillPath).toBe(false)
+    expect(tab(cad)?.fields.items).toEqual({ text: "6", disabled: false })
+  })
+})
+
+/**
+ * Array, the selection's (RBN_01740317, RBN_01740329, RBN_01740323): at
+ * `Command:` with one array selected (AcRectangularAssociativeArraySelected
+ * and its twins), its fields the array's Properties rows.
+ */
+describe("Array, the selection's tab", () => {
+  const withArray = (
+    command: string,
+    ...then: Array<(cad: CadHarness) => void>
+  ) => {
+    const cad = createHarness({
+      entities: [
+        circleOf(p(0, 0), 1, { id: "C1" }),
+        lineOf(p(0, 50), p(100, 50), { id: "P" }),
+      ],
+    })
+    cad.select("C1").command(command)
+    for (const step of then) step(cad)
+    cad.enter()
+    return cad
+  }
+  const rect = () => withArray("ARRAYRECT")
+  const arrayId = (cad: CadHarness) => cad.latest().id
+  const typed = (cad: CadHarness, text: string) => {
+    const from = cad.commandLog().length
+    cad.runtime.setCommandLineText(text)
+    cad.runtime.submitCommandLine()
+    return cad.commandLog().slice(from)
+  }
+
+  it("opens in front with one array selected and gives the front back as it is dropped", () => {
+    const cad = rect()
+    cad.runtime.setRibbonTab("insert")
+    cad.select(arrayId(cad))
+    const tab = cad.state().ribbon.contextual
+    expect(tab?.id).toBe("arraySelectionRectangular")
+    expect(cad.state().ribbon.tab).toBe("arraySelectionRectangular")
+    // sel-arr-rect: Columns 4, Between 9, Total 27; Levels 1, Between 1, Total 1.
+    expect(tab?.fields.columns?.text).toBe("4")
+    expect(tab?.fields.columnSpacing?.text).toBe("3")
+    expect(tab?.fields.columnTotal?.text).toBe("9")
+    expect(tab?.fields.rows?.text).toBe("3")
+    expect(tab?.fields.rowTotal?.text).toBe("6")
+    expect(tab?.fields.levels?.text).toBe("1")
+    expect(tab?.fields.levelTotal?.text).toBe("1")
+    cad.escape()
+    expect(cad.state().ribbon.contextual).toBeNull()
+    expect(cad.state().ribbon.tab).toBe("insert")
+  })
+
+  it("is not shown for two objects, another object or inside a command", () => {
+    const cad = rect()
+    cad.select(arrayId(cad), "P")
+    expect(cad.state().ribbon.contextual).toBeNull()
+    cad.escape().select("P")
+    expect(cad.state().ribbon.contextual).toBeNull()
+    cad.escape().select(arrayId(cad)).command("MOVE")
+    expect(cad.state().ribbon.contextual).toBeNull()
+  })
+
+  // desktop sel-arr-rect-col5: Columns 4 to 5 writes no line, U then
+  // `Command: _U` alone.
+  it("applies a field to the array with no line, a step U names nothing", () => {
+    const cad = rect()
+    const id = arrayId(cad)
+    cad.select(id)
+    const from = cad.commandLog().length
+    cad.runtime.editContextualTab({ field: "columns", text: "5" })
+    expect(cad.commandLog().slice(from)).toEqual([])
+    expect(cad.byId<InsertEntity>(id).array).toMatchObject({ columns: 5 })
+    expect(cad.state().ribbon.contextual?.fields.columnTotal?.text).toBe("12")
+    expect(cad.state().ribbon.contextual?.id).toBe("arraySelectionRectangular")
+    cad.escape()
+    expect(typed(cad, "_U")).toEqual(["U"])
+    expect(cad.byId<InsertEntity>(id).array).toMatchObject({ columns: 4 })
+  })
+
+  it("leaves a locked array as the Properties palette leaves it", () => {
+    const cad = rect()
+    const id = arrayId(cad)
+    const locked = cad.runtime.createLayer("Locked")
+    cad.runtime.setCurrentLayer(cad.byId<InsertEntity>(id).layerId)
+    cad.runtime.document.update({
+      ...cad.byId<InsertEntity>(id),
+      layerId: locked,
+    })
+    cad.runtime.updateLayer(locked, { locked: true })
+    cad.select(id)
+    expect(cad.state().ribbon.contextual?.id).toBe("arraySelectionRectangular")
+    cad.runtime.editContextualTab({ field: "columns", text: "7" })
+    expect(cad.byId<InsertEntity>(id).array).toMatchObject({ columns: 4 })
+    expect(cad.state().lockedObjectsDialog).toEqual({ removed: 1 })
+    expect(cad.state().ribbon.contextual).toBeNull()
+  })
+
+  it("sets the spacing from a Total, and refuses in silence what the row refuses", () => {
+    const cad = rect()
+    const id = arrayId(cad)
+    cad.select(id)
+    cad.runtime.editContextualTab({ field: "columnTotal", text: "30" })
+    expect(cad.byId<InsertEntity>(id).array).toMatchObject({ colSpacing: 10 })
+    cad.runtime.editContextualTab({ field: "levelTotal", text: "7" })
+    expect(cad.byId<InsertEntity>(id).array).toMatchObject({ levelSpacing: 7 })
+    const from = cad.commandLog().length
+    cad.runtime.editContextualTab({ field: "columns", text: "0" })
+    cad.runtime.editContextualTab({ field: "rows", text: "abc" })
+    cad.runtime.editContextualTab({ field: "rowSpacing", text: "0" })
+    expect(cad.commandLog().slice(from)).toEqual([])
+    expect(cad.state().ribbon.contextual?.fields.columns?.text).toBe("4")
+    expect(cad.state().ribbon.contextual?.fields.rowSpacing?.text).toBe("3")
+  })
+
+  it("shows a ring's Items and lights Rotate Items and Direction (sel-arr-polar)", () => {
+    const cad = withArray("ARRAYPOLAR", (c) => c.click({ x: -20, y: 0 }))
+    const id = arrayId(cad)
+    cad.select(id)
+    const tab = cad.state().ribbon.contextual
+    expect(tab?.id).toBe("arraySelectionPolar")
+    expect(tab?.fields.items?.text).toBe("6")
+    expect(tab?.fields.angleBetween?.text).toBe("60")
+    expect(tab?.fields.fillAngle?.text).toBe("360")
+    expect(tab?.toggles).toEqual({ rotateItems: true, direction: true })
+    cad.runtime.editContextualTab({ toggle: "direction" })
+    cad.runtime.editContextualTab({ toggle: "rotateItems" })
+    cad.runtime.editContextualTab({ field: "items", text: "8" })
+    expect(cad.byId<InsertEntity>(id).array).toMatchObject({
+      clockwise: true,
+      rotate: false,
+      items: 8,
+    })
+    expect(cad.state().ribbon.contextual?.toggles).toEqual({
+      rotateItems: false,
+      direction: false,
+    })
+  })
+
+  it("shows a path's Items, its Method and Align Items, Divide greying Between", () => {
+    const cad = withArray("ARRAYPATH", (c) => c.click({ x: 50, y: 50 }))
+    const id = arrayId(cad)
+    cad.select(id)
+    const tab = cad.state().ribbon.contextual
+    expect(tab?.id).toBe("arraySelectionPath")
+    expect(tab?.method).toBe("measure")
+    expect(tab?.fields.itemSpacing).toEqual({ text: "3", disabled: false })
+    cad.runtime.editContextualTab({ method: "divide" })
+    cad.runtime.editContextualTab({ field: "items", text: "5" })
+    cad.runtime.editContextualTab({ toggle: "alignItems" })
+    expect(cad.state().ribbon.contextual?.fields.itemSpacing).toEqual({
+      text: "25",
+      disabled: true,
+    })
+    cad.runtime.editContextualTab({ field: "itemSpacing", text: "7" })
+    expect(cad.byId<InsertEntity>(id).array).toMatchObject({
+      method: "divide",
+      items: 5,
       align: false,
     })
   })

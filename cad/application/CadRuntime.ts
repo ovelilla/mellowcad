@@ -147,6 +147,7 @@ import { AddDimStyleCommand } from "./commands/dimStyleCommands"
 import { AddTextStyleCommand } from "./commands/textStyleCommands"
 import { NewDrawingCommand } from "./commands/entityCommands"
 import {
+  type ContextualTabSource,
   type HeldVariables,
   type Inquiry,
   MACRO_PAUSE,
@@ -322,6 +323,10 @@ import {
   setSelectionLineweight,
   setSelectionProperty,
 } from "./runtimeProperties"
+import {
+  editSelectionTab,
+  selectionContextualTab,
+} from "./runtimeSelectionTabs"
 import {
   newDimStyle,
   newTextStyle,
@@ -3359,8 +3364,7 @@ export class CadRuntime extends Observable {
    * the tab it took it from, unless another was picked meanwhile.
    */
   private followContextualTab(): void {
-    const id =
-      this.contextualTool().contextualTab?.(this.toolContext)?.id ?? null
+    const id = this.contextualSource()?.id ?? null
     if (id === this.ribbonContextual) return
     const was = this.ribbonContextual
     this.ribbonContextual = id
@@ -3371,10 +3375,21 @@ export class CadRuntime extends Observable {
     }
   }
 
+  /**
+   * What the contextual tab shows: the running command's, or at `Command:`
+   * the selection's (`selectionContextualTab`).
+   */
+  private contextualSource(): ContextualTabSource | null {
+    const tool = this.contextualTool()
+    if (tool.contextualTab) return tool.contextualTab(this.toolContext)
+    return this.activeTool.id === "select" && this.suspendedStack.length === 0
+      ? selectionContextualTab(this.document, this.selection.toArray())
+      : null
+  }
+
   /** The contextual tab's values, worded as the command's prompts write them. */
   private contextualTabUi(): ContextualTab | null {
-    const source =
-      this.contextualTool().contextualTab?.(this.toolContext) ?? null
+    const source = this.contextualSource()
     if (!source) return null
     const settings = this.document.getSettings()
     const fields: Partial<Record<ContextualFieldId, ContextualFieldUi>> = {}
@@ -3411,10 +3426,31 @@ export class CadRuntime extends Observable {
    * prompt refuses changes nothing and says nothing, the box showing the
    * value again (desktop 2026-11-26, arr-zero, arr-abc: Columns 0 and `abc`
    * back to 5, no line written). Close ends the command as its prompt's eXit
-   * or Enter does. Nothing while a transparent command runs inside it.
+   * or Enter does. Nothing while a transparent command runs inside it. At
+   * `Command:`, the selection's tab (`editSelectionTab`).
    */
   editContextualTab(edit: ContextualEdit): void {
     if (this.suspendedStack.length > 0) return
+    if (!this.activeTool.contextualTab) {
+      if (this.activeTool.id !== "select") return
+      if (!selectionContextualTab(this.document, this.selection.toArray())) {
+        return
+      }
+      // A locked array is left out as the Properties palette leaves it, its
+      // rows being the tab's (what AutoCAD's tab does there is unverified).
+      if (
+        editSelectionTab(
+          this.document,
+          this.editableIds("selection"),
+          this.history,
+          edit
+        )
+      ) {
+        this.invalidateState()
+        this.host.requestRender()
+      }
+      return
+    }
     // A style picked with text in the editor is asked about first, as
     // AutoCAD's task dialog does; with the editor empty it applies at once
     // (desktop, 2026-11-26).

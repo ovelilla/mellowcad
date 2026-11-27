@@ -28,6 +28,12 @@ const CLOSE: RibbonPanel = {
  * gallery and height, Paragraph's Justification and Close; Annotative, Mask,
  * Formatting, Bullets and Numbering, Line Spacing, the paragraph alignments,
  * Insert, Spell Check, Tools and Options are not built (MTEXT's Missing).
+ * Array, the selection's (RBN_01740317, RBN_01740329, RBN_01740323), has
+ * Type, the counts, spacings and Totals, a ring's Rotate Items and Direction
+ * and a path's Method and Align Items: the array's Properties rows. Not drawn:
+ * Base Point, Options and Close Array, ARRAYEDIT's, which does not exist
+ * here; a ring's and a path's Rows and Levels, a path's Total and Z Direction
+ * (docs/coverage/modify.md, ARRAY).
  */
 export const CONTEXTUAL_TABS: Readonly<Record<ContextualTabId, RibbonTab>> = {
   arrayCreationRectangular: {
@@ -122,6 +128,93 @@ export const CONTEXTUAL_TABS: Readonly<Record<ContextualTabId, RibbonTab>> = {
         ],
       },
       CLOSE,
+    ],
+  },
+  arraySelectionRectangular: {
+    id: "arraySelectionRectangular",
+    text: "array",
+    panels: [
+      {
+        id: "arrayType",
+        icon: "array",
+        slots: [{ kind: "arrayType", type: "arrayRectangular" }],
+      },
+      {
+        id: "arrayColumns",
+        icon: "arrayColumns",
+        slots: [
+          {
+            kind: "fields",
+            fields: ["columns", "columnSpacing", "columnTotal"],
+          },
+        ],
+      },
+      {
+        id: "arrayRows",
+        icon: "arrayRows",
+        slots: [{ kind: "fields", fields: ["rows", "rowSpacing", "rowTotal"] }],
+        slideOut: [[{ kind: "field", field: "rowElevation" }]],
+      },
+      {
+        id: "arrayLevels",
+        icon: "arrayLevels",
+        slots: [
+          {
+            kind: "fields",
+            fields: ["levels", "levelSpacing", "levelTotal"],
+          },
+        ],
+      },
+    ],
+  },
+  arraySelectionPolar: {
+    id: "arraySelectionPolar",
+    text: "array",
+    panels: [
+      {
+        id: "arrayType",
+        icon: "arraypolar",
+        slots: [{ kind: "arrayType", type: "arrayPolar" }],
+      },
+      {
+        id: "arrayItems",
+        icon: "arrayItems",
+        slots: [
+          { kind: "fields", fields: ["items", "angleBetween", "fillAngle"] },
+        ],
+      },
+      {
+        id: "arrayProperties",
+        icon: "arrayRotateItems",
+        slots: [
+          { kind: "contextualToggle", toggle: "rotateItems" },
+          { kind: "contextualToggle", toggle: "direction" },
+        ],
+      },
+    ],
+  },
+  arraySelectionPath: {
+    id: "arraySelectionPath",
+    text: "array",
+    panels: [
+      {
+        id: "arrayType",
+        icon: "arraypath",
+        slots: [{ kind: "arrayType", type: "arrayPath" }],
+      },
+      {
+        id: "arrayItems",
+        icon: "arrayItems",
+        slots: [{ kind: "fields", fields: ["items", "itemSpacing"] }],
+      },
+      {
+        id: "arrayProperties",
+        icon: "arrayAlignItems",
+        slots: [
+          { kind: "pathMethod" },
+          { kind: "contextualToggle", toggle: "alignItems" },
+        ],
+      },
     ],
   },
   hatchCreation: {

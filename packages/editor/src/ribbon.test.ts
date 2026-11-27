@@ -221,7 +221,7 @@ describe("the ribbon's tooltips", () => {
     const commandless = Object.keys(words.tips).filter(
       (tip) => !(tip in words.tipCommands)
     )
-    expect(commandless).toHaveLength(29)
+    expect(commandless).toHaveLength(31)
     for (const tip of commandless)
       expect(tip).toMatch(/^(array|hatch|text)[A-Z]/)
     const commands = new Set(commandCatalog().map((command) => command.id))
@@ -273,6 +273,27 @@ describe("the contextual tab", () => {
     })
     expect(html).not.toContain("Array Creation")
     expect(html).toMatch(/aria-selected="true"[^>]*>Home</)
+  })
+
+  it("shows ARRAYPATH's count toggle lit and Items greyed while Measure fills the path", () => {
+    const html = renderRibbon((cad) => {
+      cad.command("LINE").type("0,5").enter().type("20,5").enter().enter()
+      cad.command("CIRCLE").type("0,0").enter().type("1").enter()
+      cad.select(cad.latest().id).command("ARRAYPATH").click({ x: 10, y: 5 })
+    })
+    expect(html).toMatch(/aria-label="Item Count" aria-pressed="true"/)
+    expect(html).toMatch(/id="ribbon-field-items"[^>]*disabled=""/)
+  })
+
+  it("shows the selection's Array tab with its Totals, and no Close Array", () => {
+    const html = renderRibbon((cad) => {
+      arrayRect(cad)
+      cad.enter()
+      cad.select(cad.latest().id)
+    })
+    expect(html).toMatch(/aria-selected="true"[^>]*>Array</)
+    expect(html.match(/>Total:</g)).toHaveLength(3)
+    expect(html).not.toContain(">Close<")
   })
 })
 

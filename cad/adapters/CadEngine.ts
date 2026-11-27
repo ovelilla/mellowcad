@@ -741,7 +741,8 @@ export class CadEngine {
    * (`state.ribbon.contextual`) acting on it as its prompt would take the
    * value — a field's typed text, a toggle, a path array's Method — or the
    * tab's Close, which ends the command as its eXit does. A value its prompt
-   * refuses is refused in the prompt's words.
+   * refuses is put back, nothing said. At `Command:`, the selection's tab
+   * (Array) acts on the object selected as its Properties row would.
    */
   editContextualTab(edit: ContextualEdit): void {
     this.runtime.editContextualTab(edit)
