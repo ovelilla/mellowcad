@@ -245,6 +245,20 @@ describe("a table, as AutoCAD 2027 draws it from its cells", () => {
     expect(lineas).toContain("Estilo de tabla:        Standard")
   })
 
+  // list/p219 (en-US): in UCS Z 30 its position is the UCS's, its normal and
+  // direction the WCS's.
+  it("lists its position in the UCS, its directions in the WCS", () => {
+    const cad = withEz()
+    typed(cad, "_UCS", "_Z", "30")
+    cad.select("t1")
+    const lines = typed(cad, "_LIST").flatMap((l) => l.split("\n"))
+    expect(lines.slice(4, 7)).toEqual([
+      "Position:        X= 716.244757, Y= -252.384763, Z= 0.000000",
+      "Normal:          X= 0.000000, Y= 0.000000, Z= 1.000000",
+      "Horizontal Dir:  X= 1.000000, Y= 0.000000, Z= 0.000000",
+    ])
+  })
+
   // t04, t04b, t04c: what the edit commands say of it.
   it("is refused by OFFSET, AREA, BREAK, DIVIDE, TRIM, FILLET and CHAMFER", () => {
     const refused = (command: string, ...rest: string[]) => {

@@ -18,7 +18,7 @@
 | ----- | ----------------------------------------- | -------- | ---- | ------ | --- |
 | CHP   | CHPROP                                    | 0        | 0    | 1      | 4   |
 | LST   | LIST, the command                         | 0        | 0    | 0      | 0   |
-| LSR   | LIST's report, en and es                  | 0        | 2    | 7      | 6   |
+| LSR   | LIST's report, en and es                  | 0        | 2    | 8      | 6   |
 | LSK   | LIST's report in the other 7 languages    | 0        | 0    | 1      | 2   |
 
 The worst:
@@ -60,7 +60,7 @@ Inputs in `scripts/research/probes/<command>/`, transcripts in `research/probes/
 | chprop/p102–p110 | `_.CHPROP` and repeat; other prompts' keywords and `_BYLAYER`; transparency; U after a linetype load (`.plain`); a command typed mid-prompt; LASTPOINT after two points; `<varies>`; what is left selected; Escape at a value prompt | console, es and en |
 | chprop/d01 | the set while CHPROP asks: highlighted and unchanged until Enter | desktop en-US, COM and one click |
 | chprop/d02 | dynamic input: the property prompt lists its nine keywords at once; Color's box holds `1 (red)` selected; ltScale's `1.0000`; `[Truecolor/COlorbook]` listed, as in the console | desktop en-US, keys |
-| list/p100–p123 | the linetype scale line, POINT, LUNITS and AUNITS, a fitted polyline's thickness and its END SEQUENCE, a closed spline-fit polyline, a 3D polyline's Spline and its area, a closed spline in no plane, ATTDEF tilted, every curve in Z30 and X90, a fitted polyline in Z30 and X90 (p103 en, p104 es only; p105 `.plain`) | console, es and en |
+| list/p100–p126 (p124 unused) | the linetype scale line, POINT, LUNITS and AUNITS, a fitted polyline's thickness and its END SEQUENCE, a closed spline-fit polyline, a 3D polyline's Spline and its area, a closed spline in no plane, ATTDEF tilted, every curve in Z30 and X90, a fitted polyline in Z30 and X90, an LWPOLYLINE's arc drawn in UCS Y 90 and X 180 (p103 en, p104 es only; p105 `.plain`) | console, es and en |
 | list/p200–p228 | each dimension kind in Z30 and X90, a hatch off the plane, CW polar and Divide path arrays, the arrays' rows, the header of every type, the primitives and sweeps in Z30 and X90, 2D SOLID, 3DFACE, XLINE, RAY, LEADER, WIPEOUT, INSERT, MINSERT, mesh, regions off the plane, a hatch's angle and origin, a table, an image, a multileader and a gradient in Z30 (p218–p220 and p228 by `runacc.sh -t -i` on the DXF fixtures, p219, p220, p228 en only) | console, es and en |
 | inquiry/p400–p446 | LIST's own probes, replayed through the harness in each language they ran in (row K) | console, 10 languages |
 
@@ -248,6 +248,20 @@ fr matches but the known gaps; the others differ in LSK-01 to LSK-03.
   1282.435565, Y= -578.756443`, the WCS's 1400,140 in the UCS; normal and horizontal direction
   stay WCS · **Fix:** the position through `ucsPoint` (LIST-D22) · **Coverage:** "its position …
   in the WCS" is false (table/t08 was in the WCS)
+
+#### LSR-47 — An object drawn in a UCS turned upside down is stored with +Z, mirrored
+
+- **Severity:** medium · **Row:** H, the UCS's area (UCS review) · **Status:** verified
+- **Where:** `cad/application/ucsFrame.ts` (any UCS with a vertical Z made the frame the WCS)
+- **AutoCAD:** list/p126: a PLINE with an arc drawn in `_UCS _X 180` keeps normal `0,0,-1` and
+  lists its arc at 90 to 180 in that OCS; list/p125 (UCS Y 90): the angles in the OCS whether listed
+  there or in the WCS
+- **mellowcad:** +Z, its points mirrored, angles 0 to 90, no extrusion line
+- **Fix:** only a Z up makes the frame the WCS; found by the second reading of LSR's diff, which
+  asked for p125 and p126. Its own second reading found a -Z 2D solid or wide polyline outlined in
+  plan and a -Z solid picked only by its edges (already so for one read from a DXF): both now
+  filled and picked where the line of sight runs along the normal, either way (`seenSquareOn`)
+- **Regression test:** `list.test.ts`, p125 and p126
 
 #### LSK-02 — pt-BR: a text's start point line is garbled
 

@@ -6951,6 +6951,7 @@ export const ru: EngineLocale = {
           1,
           {
             "line": "ОТРЕЗОК",
+            "point": "ТОЧКА",
             "circle": "КРУГ",
             "arc": "ДУГА",
             "ellipse": "ELLIPSE",
@@ -7704,6 +7705,33 @@ export const ru: EngineLocale = {
         "  Z=",
         [
           "z"
+        ]
+      ],
+      "listPointAt": [
+        "                 в точке. X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listLinetypeScale": [
+        "Масштаб типа линий = ",
+        [
+          "scale"
+        ]
+      ],
+      "listNotCoplanar": "  Точки не компланарны. Площадь не вычислена.",
+      "listVertexTotalAngle": [
+        "       полный угол ",
+        [
+          "angle"
         ]
       ],
       "listVertexSpace": "      Пространство",

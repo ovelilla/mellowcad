@@ -85,6 +85,23 @@ function largestStretch(a: number, b: number, c: number, d: number): number {
   )
 }
 
+/**
+ * Whether the plane is seen square on: its map a similarity, mirrored or not
+ * (a -Z plane seen from above), as in plan. A wide polyline or a 2D solid is
+ * filled only so, "parallel to the current viewing direction".
+ */
+export function seenSquareOn(camera: CameraTransform): boolean {
+  if (!isPlaneCamera(camera)) return camera.isPlan
+  const [a, b, c, d] = camera.linear
+  const x = a * a + b * b
+  const tolerance = 1e-9 * x
+  return (
+    x > 0 &&
+    Math.abs(x - (c * c + d * d)) <= tolerance &&
+    Math.abs(a * c + b * d) <= tolerance
+  )
+}
+
 /** How far the plane's map shrinks a unit vector at most: 0 when it is seen edge-on. */
 export function smallestStretch(camera: PlaneCamera): number {
   const [a, b, c, d] = camera.linear

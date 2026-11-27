@@ -127,6 +127,7 @@ import {
   affineEllipse,
   isPlaneCamera,
   planeCamera,
+  seenSquareOn,
   smallestStretch,
 } from "./planeCamera"
 import { SnapResult } from "./snapping/types"
@@ -1376,7 +1377,7 @@ function planarShapes(
       // Filled only with FILLMODE on and seen square on; else its outline,
       // corners 1, 2, 4, 3 (solid2d/d02).
       const points = solid2dOutline(entity).map((p) => camera.worldToScreen(p))
-      return camera.isPlan && (options.fill ?? true)
+      return seenSquareOn(camera) && (options.fill ?? true)
         ? [
             {
               kind: "path",
@@ -1397,7 +1398,7 @@ function planarShapes(
           camera,
           entity,
           stroke,
-          camera.isPlan && (options.fill ?? true)
+          seenSquareOn(camera) && (options.fill ?? true)
         )
       }
       if (options.linetype && stroke.dash && stroke.dash.length > 0) {

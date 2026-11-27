@@ -178,6 +178,8 @@ describe("an image AutoCAD cannot find", () => {
     expect(lines.slice(2)).toEqual([
       '                  IMAGE     Layer: "0"',
       "                            Space: Model space",
+      // AutoCAD: `                    Material: ByLayer` for an image it read
+      // from a DXF, i07; no materials here (list/p220, LSR-45).
       "Image:                   pic",
       "Insertion:               X=  10.0000,  Y=  20.0000,  Z=   0.0000",
       "Scale:                   3.0000",

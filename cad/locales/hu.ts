@@ -6443,6 +6443,7 @@ export const hu: EngineLocale = {
           1,
           {
             "line": "VONAL",
+            "point": "PONT",
             "circle": "KÖR",
             "arc": "ÍV",
             "ellipse": "ELLIPSE",
@@ -7196,6 +7197,33 @@ export const hu: EngineLocale = {
         "  Z=",
         [
           "z"
+        ]
+      ],
+      "listPointAt": [
+        "                   pont, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listLinetypeScale": [
+        "Vonaltípus lépték = ",
+        [
+          "scale"
+        ]
+      ],
+      "listNotCoplanar": "  A pontok nem esnek egy síkba. Terület nincs kiszámítva.",
+      "listVertexTotalAngle": [
+        "       teljes szög ",
+        [
+          "angle"
         ]
       ],
       "listVertexSpace": "               Tér",

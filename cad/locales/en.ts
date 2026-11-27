@@ -5661,6 +5661,7 @@ export const en: EngineCatalog = {
           1,
           {
             "line": "LINE",
+            "point": "POINT",
             "circle": "CIRCLE",
             "arc": "ARC",
             "ellipse": "ELLIPSE",
@@ -6465,6 +6466,33 @@ export const en: EngineCatalog = {
         "  Z=",
         [
           "z"
+        ]
+      ],
+      "listPointAt": [
+        "                at point, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listLinetypeScale": [
+        "Linetype scaling = ",
+        [
+          "scale"
+        ]
+      ],
+      "listNotCoplanar": "  Points not coplanar.  No area calculated.",
+      "listVertexTotalAngle": [
+        "       total angle ",
+        [
+          "angle"
         ]
       ],
       "listVertexSpace": "             Space",

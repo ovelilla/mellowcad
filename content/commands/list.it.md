@@ -2,7 +2,7 @@
 title: "Comando LISTA (LIST) in AutoCAD"
 description: "Come funziona LISTA (LIST, alias LI, LS) di AutoCAD in italiano: seleziona oggetti e leggi tipo, layer, colore, punti, lunghezza e area nella riga di comando."
 figure: "LISTA del foro di una piastra: il layer, il centro, il raggio, la circonferenza e l'area del cerchio."
-sourceHash: "d0ebcf466ff5"
+sourceHash: "d0b3730b0833"
 ---
 
 LISTA (LIST in inglese) scrive nella riga di comando un rapporto su ogni oggetto che selezioni, nelle colonne e con le parole di AutoCAD 2027. Ogni rapporto inizia con il tipo, il layer e lo spazio, poi il colore, il tipo di linea, lo spessore di linea e l'altezza quando non sono DaLayer o zero, poi i dati propri del tipo: di una linea, le estremità, la lunghezza, l'angolo e i delta; di un cerchio, il centro, il raggio, la circonferenza e l'area; di un arco, gli angoli e la lunghezza; di una polilinea, i vertici, le larghezze, l'area e la lunghezza; di una spline, i punti di controllo e di adattamento; di un testo, lo stile, l'altezza e la giustificazione; di una quota, il tipo, i punti e lo stile; di un tratteggio, il modello, la scala e l'area; di un riferimento di blocco, il nome, il punto di inserimento, le scale e gli attributi; di una serie, le righe e gli elementi; di una regione, l'area, il perimetro e il riquadro di contorno.
@@ -11,7 +11,7 @@ I punti sono nell'UCS corrente, le lunghezze alla precisione del disegno e gli a
 
 ## Missing
 
-L'area di una polilinea aperta con adattamento a curva: qui è l'area della curva chiusa dalla sua corda, e quella di AutoCAD è maggiore. La lunghezza di una spline qui è esatta, dove quella di AutoCAD è un'approssimazione ravvicinata. Una DIMANGULAR creata da due linee viene elencata dai suoi tre punti, e nessuna quota è mai `associative: yes`. La pausa e la finestra di testo di AutoCAD. Ciò che qui gli oggetti non hanno: DaBlocco, uno spessore di linea Default, una scala del tipo di linea propria, la trasparenza e i gruppi.
+L'area di una polilinea aperta con adattamento a curva: qui è l'area della curva chiusa dalla sua corda, e quella di AutoCAD è maggiore. La lunghezza di una spline qui è esatta, dove quella di AutoCAD è un'approssimazione ravvicinata. Una DIMANGULAR creata da due linee viene elencata dai suoi tre punti, e nessuna quota è mai `associative: yes`. Un tratteggio creato in un UCS ruotato viene elencato con l'angolo e l'origine che ha nel WCS, non con quelli che gli sono stati dati in quell'UCS. La pausa e la finestra di testo di AutoCAD. Ciò che qui gli oggetti non hanno: DaBlocco, uno spessore di linea Default, la trasparenza, i gruppi, gli stili di stampa, i materiali e la direzione del testo di una linea direttrice.
 
 ## Questions
 

@@ -6584,6 +6584,7 @@ export const cs: EngineLocale = {
           1,
           {
             "line": "úsečka",
+            "point": "BOD",
             "circle": "kružnice",
             "arc": "oblouk",
             "ellipse": "ELLIPSE",
@@ -7337,6 +7338,33 @@ export const cs: EngineLocale = {
         "  Z=",
         [
           "z"
+        ]
+      ],
+      "listPointAt": [
+        "                 v bod, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listLinetypeScale": [
+        "Měřítko typu čáry = ",
+        [
+          "scale"
+        ]
+      ],
+      "listNotCoplanar": "  Body nejsou koplanární. Plocha nevypočtena.",
+      "listVertexTotalAngle": [
+        "      celkový úhel ",
+        [
+          "angle"
         ]
       ],
       "listVertexSpace": "           Prostor",

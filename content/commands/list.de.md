@@ -2,7 +2,7 @@
 title: "Befehl LISTE (LIST) in AutoCAD"
 description: "Wie LISTE (LIST, Alias LS) in AutoCAD die Daten eines Objekts ausgibt: Typ, Layer, Länge, Fläche und Koordinaten der Punkte. Zum Testen im Browser."
 figure: "LISTE für die Bohrung einer Platte: Layer, Mittelpunkt, Radius, Umfang und Fläche des Kreises."
-sourceHash: "d0ebcf466ff5"
+sourceHash: "d0b3730b0833"
 ---
 
 LISTE (LIST) schreibt einen Bericht über jedes Objekt, das Sie an der Eingabeaufforderung wählen, in den Spalten und Worten von AutoCAD 2027. Jeder beginnt mit seinem Typ, seinem Layer und seinem Bereich, dann seiner Farbe, seinem Linientyp, seiner Linienstärke und seiner Objekthöhe, wo sie nicht VonLayer oder null sind, dann dem, was der Typ hat: die Enden, die Länge, der Winkel und die Deltas einer Linie; Mittelpunkt, Radius, Umfang und Fläche eines Kreises; die Winkel und die Länge eines Bogens; die Scheitelpunkte, Breiten, Fläche und Länge einer Polylinie; die Kontroll- und Anpassungspunkte eines Splines; Stil, Höhe und Ausrichtung eines Textes; Typ, Punkte und Stil einer Bemaßung; Muster, Maßstab und Fläche einer Schraffur; Name, Einfügepunkt, Maßstäbe und Attribute eines Blockreferenz; Zeilen und Elemente einer Anordnung; Fläche, Umfang und Umgrenzungsrahmen einer Region.
@@ -11,7 +11,7 @@ Punkte stehen im aktuellen BKS, Längen in der Genauigkeit der Zeichnung und Win
 
 ## Missing
 
-Die Fläche einer offenen Polylinie mit Kurvenanpassung: Hier ist es die Fläche der Kurve, durch ihre Sehne geschlossen, und die von AutoCAD ist größer. Die Länge eines Splines ist hier exakt, wo die von AutoCAD eine enge Näherung ist. Eine aus zwei Linien erzeugte DIMANGULAR wird durch ihre drei Punkte aufgelistet, und keine Bemaßung ist jemals `associative: yes`. Die Pause und das Textfenster von AutoCAD. Was Objekte hier nicht haben: VonBlock, eine Linienstärke Standard, einen eigenen Linientypfaktor, Transparenz und Gruppen.
+Die Fläche einer offenen Polylinie mit Kurvenanpassung: Hier ist es die Fläche der Kurve, durch ihre Sehne geschlossen, und die von AutoCAD ist größer. Die Länge eines Splines ist hier exakt, wo die von AutoCAD eine enge Näherung ist. Eine aus zwei Linien erzeugte DIMANGULAR wird durch ihre drei Punkte aufgelistet, und keine Bemaßung ist jemals `associative: yes`. Eine in einem gedrehten BKS erzeugte Schraffur wird mit dem Winkel und Ursprung aufgelistet, die sie im WKS hat, nicht mit denen, die ihr in diesem BKS gegeben wurden. Die Pause und das Textfenster von AutoCAD. Was Objekte hier nicht haben: VonBlock, eine Linienstärke Standard, Transparenz, Gruppen, Plotstile, Materialien und die Textrichtung einer Führungslinie.
 
 ## Questions
 

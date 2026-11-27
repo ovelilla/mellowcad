@@ -2,7 +2,7 @@
 title: "Příkaz VÝPIS (LIST) v AutoCADu"
 description: "Jak zjistit vlastnosti objektu v AutoCADu příkazem VÝPIS (LIST, zkratka VY): typ, hladina, barva, body, délka a plocha každého objektu. Vyzkoušejte online."
 figure: "VÝPIS otvoru v desce: hladina kružnice, střed, poloměr, obvod a plocha."
-sourceHash: "d0ebcf466ff5"
+sourceHash: "d0b3730b0833"
 ---
 
 Příkaz VÝPIS (LIST) vypíše na příkazovém řádku zprávu o každém vybraném objektu, ve sloupcích a slovech AutoCADu 2027. Každá začíná typem, hladinou a prostorem, pak barvou, typem čáry, tloušťkou čáry a tloušťkou, pokud nejsou DleHlad nebo nulové, a pak tím, co má daný typ: koncové body úsečky, délka, úhel a přírůstky; střed kružnice, poloměr, obvod a plocha; úhly a délka oblouku; vrcholy křivky, šířky, plocha a délka; řídicí body a body proložení spline; styl, výška a zarovnání textu; typ, body a styl kóty; vzor, měřítko a plocha šraf; název, bod vložení, měřítka a atributy reference bloku; řádky a položky pole; plocha, obvod a ohraničující obdélník oblasti.
@@ -11,7 +11,7 @@ Body jsou v aktuálním USS, délky s přesností výkresu a úhly s přesností
 
 ## Missing
 
-Plocha otevřené křivky proložené oblouky: zde je to plocha křivky uzavřené tětivou, v AutoCADu je větší. Délka spline je zde přesná, v AutoCADu je to blízká aproximace. Kóta <Command id="DIMANGULAR" /> vytvořená ze dvou úseček se vypíše svými třemi body a žádná kóta není nikdy uvedena jako asociativní. Pauza a textové okno AutoCADu. To, co objekty zde nemají: DleBlok, tloušťka čáry Výchozí, vlastní měřítko typu čáry, průhlednost a skupiny.
+Plocha otevřené křivky proložené oblouky: zde je to plocha křivky uzavřené tětivou, v AutoCADu je větší. Délka spline je zde přesná, v AutoCADu je to blízká aproximace. Kóta <Command id="DIMANGULAR" /> vytvořená ze dvou úseček se vypíše svými třemi body a žádná kóta není nikdy uvedena jako asociativní. Šrafa vytvořená v otočeném USS se vypíše s úhlem a počátkem, které má v GSS, ne s těmi, které dostala v tom USS. Pauza a textové okno AutoCADu. To, co objekty zde nemají: DleBlok, tloušťka čáry Výchozí, průhlednost, skupiny, styly vykreslování, materiály a směr textu odkazu.
 
 ## Questions
 

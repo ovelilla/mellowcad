@@ -5405,9 +5405,15 @@ export class CadRuntime extends Observable {
     // A 2D solid is found by its edges alone where it is drawn as its
     // outline: with FILLMODE off (solid2d/p10), off the plan, or tilted; a
     // wipeout off the plan or tilted, where it masks nothing.
+    // Filled where the line of sight runs along its normal, either way: a
+    // -Z one in plan too, or any in the frame of a UCS turned upside down.
+    const squareOn = (entity: Entity) => {
+      const n = entity.normal ?? { x: 0, y: 0, z: 1 }
+      const v = viewport.direction
+      return Math.abs(Math.abs(n.x * v.x + n.y * v.y + n.z * v.z) - 1) < 1e-9
+    }
     const seen = (entity: Entity): Entity =>
-      entity.type === "solid2d" &&
-      (!fillMode || !viewport.isPlan || entity.normal)
+      entity.type === "solid2d" && (!fillMode || !squareOn(entity))
         ? solid2dOutlinePolyline(entity)
         : entity.type === "wipeout" && (!viewport.isPlan || entity.normal)
           ? wipeoutOutlinePolyline(entity)

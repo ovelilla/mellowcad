@@ -2,7 +2,8 @@
 
 The UCS is an origin and X and Y axes in space, so its XY plane can tilt. Every object keeps a
 normal (DXF 210) and, a line aside, its points in the OCS of that normal, as DXF stores them; what
-is drawn in a tilted UCS takes its Z as the normal. The commands work in the UCS's XY plane.
+is drawn in a tilted UCS takes its Z as the normal, one turned upside down (`_UCS _X 180`) its
+-Z too (list/p126). The commands work in the UCS's XY plane.
 
 ### `UCS` · es `SCP` · pt-BR `UCS` / `UCSDD` · fr `SCU` / `DDUCS` · it `UCS` / `DDUCS` · de `BKS` / `DDUCS` · ru `ПСК` / `ДИАЛПСК` · pl `LUW` · cs `USS` · hu `FKR` / `DPFKR`
 

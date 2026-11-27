@@ -555,10 +555,14 @@ export function primitiveInUcs(
   const along = worldDirectionToUcs(ucs, primitive.xAxis)
   const level =
     Math.abs(normal.x) <= TILT && Math.abs(normal.y) <= TILT && normal.z > 0
+  // An X axis along the UCS's Z leaves two components of rounding noise,
+  // whose angle is no rotation: AutoCAD writes 0 (list/p213).
+  const ax = Math.abs(along.x) <= TILT ? 0 : along.x
+  const ay = Math.abs(along.y) <= TILT ? 0 : along.y
   return {
     position: worldPointToUcs(ucs, primitive.position),
     normal: level ? null : normal,
-    rotation: normalizeDegrees((Math.atan2(along.y, along.x) * 180) / Math.PI),
+    rotation: normalizeDegrees((Math.atan2(ay, ax) * 180) / Math.PI),
   }
 }
 

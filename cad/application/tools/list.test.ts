@@ -11,7 +11,15 @@ import { createSpline } from "../../domain/splines"
 import { es } from "../../locales/es"
 import { fr } from "../../locales/fr"
 import { createHarness, type CadHarness } from "../../../test/harness"
-import { circleOf, layerOf, lineOf, p } from "../../../test/builders"
+import {
+  circleOf,
+  hatchOf,
+  layerOf,
+  lineOf,
+  loopOf,
+  p,
+} from "../../../test/builders"
+import { withNormal } from "../../domain/elevation"
 
 /**
  * LIST against the transcripts of AutoCAD 2027's console (probes
@@ -2311,6 +2319,721 @@ describe("LIST against AutoCAD 2027's console in French", () => {
       "    angle de départ    270.00",
       "        angle final      0.00",
       "          au niveau du point  X=    20.00  Y=    10.00  Z=     0.00",
+    ])
+  })
+})
+
+/**
+ * Review 32 (docs/plans/list-review.md): what LIST wrote otherwise than
+ * AutoCAD 2027's console, each against its transcript (list/p100–p223).
+ */
+describe("LIST against the review's probes", () => {
+  it("lists an object's own linetype scale under its lineweight (list/p100)", () => {
+    const answers = "_LINE|0,0|10,0||_CHPROP|_L||_S|2||_LIST|_L|"
+    expect(listed(run(en, answers))).toEqual([
+      '                  LINE      Layer: "0"',
+      "                            Space: Model space",
+      "Linetype scaling =    2.0000",
+      "              from point, X=   0.0000  Y=   0.0000  Z=   0.0000",
+      "                to point, X=  10.0000  Y=   0.0000  Z=   0.0000",
+      "          Length =  10.0000,  Angle in XY Plane =      0",
+      "                  Delta X =  10.0000, Delta Y =    0.0000, Delta Z =   0.0000",
+    ])
+    expect(listed(run(es, answers)).slice(0, 3)).toEqual([
+      '                  LINEA     Capa: "0"',
+      "                            Espacio: Espacio modelo",
+      "Escala para tipo de línea =    2.0000",
+    ])
+  })
+
+  it("writes the scale on each VERTEX and END SEQUENCE, no END SEQUENCE the thickness (list/p123)", () => {
+    const cad = run(
+      en,
+      "CECOLOR|1|CELWEIGHT|30|CELTSCALE|2|THICKNESS|2|_PLINE|0,0|10,0|20,10||_PEDIT|_L|_F||_LIST|_L|"
+    )
+    const lines = listed(cad)
+    expect(lines.slice(-14)).toEqual([
+      '                  VERTEX    Layer: "0"',
+      "                            Space: Model space",
+      '                   Color: 1 (red)    Linetype: "BYLAYER"',
+      "                   LineWeight: 0.30 mm",
+      "Linetype scaling =    2.0000",
+      "                   Thickness =    2.0000",
+      "                at point, X=  20.0000  Y=  10.0000  Z=   0.0000",
+      "    starting width    0.0000",
+      "      ending width    0.0000",
+      '                  END SEQUENCE  Layer: "0"',
+      "                            Space: Model space",
+      '                   Color: 1 (red)    Linetype: "BYLAYER"',
+      "                   LineWeight: 0.30 mm",
+      // AutoCAD: "                    PlotStyleName: Color_1", no plot styles here
+      "Linetype scaling =    2.0000",
+    ])
+    expect(
+      lines.filter((line) => line === "Linetype scaling =    2.0000")
+    ).toHaveLength(lines.filter((line) => /^ {18}\S/.test(line)).length)
+  })
+
+  it("writes no thickness on a fitted polyline's END SEQUENCE (list/p109)", () => {
+    const cad = run(
+      en,
+      "THICKNESS|2|_PLINE|0,0|10,0|20,10|30,0||THICKNESS|0|_PEDIT|_L|_F||_LIST|_L|"
+    )
+    expect(listed(cad).slice(-6)).toEqual([
+      "                   Thickness =    2.0000",
+      "                at point, X=  30.0000  Y=   0.0000  Z=   0.0000",
+      "    starting width    0.0000",
+      "      ending width    0.0000",
+      '                  END SEQUENCE  Layer: "0"',
+      "                            Space: Model space",
+    ])
+  })
+
+  it("gives a fitted polyline's arcs off the UCS's plane their sweep (list/p121)", () => {
+    const cad = run(
+      en,
+      "_PLINE|0,0|10,0|20,10|30,0||_PEDIT|_L|_F||_UCS|_X|90|_LIST|_L|"
+    )
+    const lines = listed(cad)
+    expect(lines.filter((line) => line.includes(" angle "))).toEqual([
+      "       total angle     18",
+      "       total angle     18",
+      "       total angle     57",
+      "       total angle     66",
+      "       total angle     55",
+      "       total angle     45",
+    ])
+  })
+
+  // list/p223: a hatch at ELEVATION 5 lists its origin at Z 0, and one made
+  // in UCS X 90 with HPORIGIN 210,20 (normal 0,-1,0), listed in the WCS, its
+  // origin through its OCS (HPORIGIN is not typed here: the hatch is built).
+  it("lists a hatch's origin through its OCS, without elevation (list/p223)", () => {
+    const raised = {
+      ...hatchOf([loopOf(p(0, 0), p(100, 50))], { id: "h0" }),
+      elevation: 5,
+    }
+    const vertical = withNormal(
+      hatchOf([loopOf(p(200, 0), p(300, 50))], {
+        id: "h1",
+        origin: p(210, 20),
+      }),
+      { x: 0, y: -1, z: 0 }
+    )
+    const cad = createHarness({ entities: [raised, vertical] })
+    answer(cad, "_LUPREC", "4", "_LIST", "_ALL", "")
+    expect(listed(cad).filter((line) => line.includes("Origin"))).toEqual([
+      "                 Origin    X= 210.0000  Y=   0.0000  Z=  20.0000",
+      "                 Origin    X=   0.0000  Y=   0.0000  Z=   0.0000",
+    ])
+  })
+
+  // list/p125: an arc's angles in the polyline's OCS, drawn in UCS Y 90,
+  // whether listed there or in the WCS.
+  it("lists an LWPOLYLINE drawn in UCS Y 90 by its OCS (list/p125)", () => {
+    const cad = run(
+      en,
+      "_UCS|_Y|90|_PLINE|0,0|10,0|_A|20,10||_LIST|_L||_UCS|_W|_LIST|_L|"
+    )
+    expect(listed(cad)).toEqual([
+      '                  LWPOLYLINE  Layer: "0"',
+      "                            Space: Model space",
+      "              Open",
+      "    Constant width    0.0000",
+      "              area   78.5398",
+      "            length   25.7080",
+      "          at point  X=   0.0000  Y=   0.0000  Z=   0.0000",
+      "          at point  X=  10.0000  Y=   0.0000  Z=   0.0000",
+      "             bulge    0.4142",
+      "            center  X=  10.0000  Y=  10.0000  Z=   0.0000",
+      "            radius   10.0000",
+      "       start angle       180",
+      "         end angle       270",
+      "          at point  X=  20.0000  Y=  10.0000  Z=   0.0000",
+      '                  LWPOLYLINE  Layer: "0"',
+      "                            Space: Model space",
+      "              Open",
+      "    Constant width    0.0000",
+      "Extrusion direction relative to UCS:",
+      "                   X=   1.0000  Y=   0.0000  Z=   0.0000",
+      "              area   78.5398",
+      "            length   25.7080",
+      "          at point  X=   0.0000  Y=   0.0000  Z=   0.0000",
+      "          at point  X=   0.0000  Y=   0.0000  Z= -10.0000",
+      "             bulge    0.4142",
+      "            center  X=   0.0000  Y=  10.0000  Z= -10.0000",
+      "            radius   10.0000",
+      "       start angle       180",
+      "         end angle       270",
+      "          at point  X=   0.0000  Y=  10.0000  Z= -20.0000",
+    ])
+  })
+
+  // list/p126: drawn in a UCS turned upside down, it keeps -Z as its normal
+  // (LSR-47: the frame took that UCS for the WCS and stored +Z, mirrored).
+  it("lists an LWPOLYLINE drawn in UCS X 180 with its -Z (list/p126)", () => {
+    const cad = run(
+      en,
+      "_UCS|_X|180|_PLINE|0,0|10,0|_A|20,10||_UCS|_W|_LIST|_L|"
+    )
+    expect(listed(cad)).toEqual([
+      '                  LWPOLYLINE  Layer: "0"',
+      "                            Space: Model space",
+      "              Open",
+      "    Constant width    0.0000",
+      "Extrusion direction relative to UCS:",
+      "                   X=   0.0000  Y=   0.0000  Z=  -1.0000",
+      "              area   78.5398",
+      "            length   25.7080",
+      "          at point  X=   0.0000  Y=   0.0000  Z=   0.0000",
+      "          at point  X=  10.0000  Y=   0.0000  Z=   0.0000",
+      "             bulge    0.4142",
+      "            center  X=  10.0000  Y= -10.0000  Z=   0.0000",
+      "            radius   10.0000",
+      "       start angle        90",
+      "         end angle       180",
+      "          at point  X=  20.0000  Y= -10.0000  Z=   0.0000",
+    ])
+  })
+
+  it("lists a point, thick, in a turned UCS and off its plane (list/p101)", () => {
+    const cad = run(
+      en,
+      "_POINT|3,4|_LIST|_L||THICKNESS|2|_POINT|1,2,5|_LIST|_L||THICKNESS|0|_UCS|_Z|30|_LIST|_L||_UCS|_W|_UCS|_X|90|_POINT|1,2|_UCS|_W|_LIST|_L|"
+    )
+    expect(listed(cad)).toEqual([
+      '                  POINT     Layer: "0"',
+      "                            Space: Model space",
+      "                at point, X=   3.0000  Y=   4.0000  Z=   0.0000",
+      '                  POINT     Layer: "0"',
+      "                            Space: Model space",
+      "                   Thickness =    2.0000",
+      "                at point, X=   1.0000  Y=   2.0000  Z=   5.0000",
+      '                  POINT     Layer: "0"',
+      "                            Space: Model space",
+      "                   Thickness =    2.0000",
+      "                at point, X=   1.8660  Y=   1.2321  Z=   5.0000",
+      '                  POINT     Layer: "0"',
+      "                            Space: Model space",
+      "                at point, X=   1.0000  Y=   0.0000  Z=   2.0000",
+      "Extrusion direction relative to UCS:",
+      "                   X=   0.0000  Y=  -1.0000  Z=   0.0000",
+    ])
+  })
+
+  it("lists a point in Spanish (list/p101)", () => {
+    const cad = run(
+      es,
+      "_POINT|3,4|_LIST|_L||THICKNESS|2|_POINT|1,2,5|_LIST|_L||THICKNESS|0|_UCS|_Z|30|_LIST|_L||_UCS|_W|_UCS|_X|90|_POINT|1,2|_UCS|_W|_LIST|_L|"
+    )
+    expect(listed(cad)).toEqual([
+      '                  PUNTO     Capa: "0"',
+      "                            Espacio: Espacio modelo",
+      "                en punto, X=   3.0000  Y=   4.0000  Z=   0.0000",
+      '                  PUNTO     Capa: "0"',
+      "                            Espacio: Espacio modelo",
+      "                   Alt-objeto =    2.0000",
+      "                en punto, X=   1.0000  Y=   2.0000  Z=   5.0000",
+      '                  PUNTO     Capa: "0"',
+      "                            Espacio: Espacio modelo",
+      "                   Alt-objeto =    2.0000",
+      "                en punto, X=   1.8660  Y=   1.2321  Z=   5.0000",
+      '                  PUNTO     Capa: "0"',
+      "                            Espacio: Espacio modelo",
+      "                en punto, X=   1.0000  Y=   0.0000  Z=   2.0000",
+      "Dirección de extrusión relativa al SCP:",
+      "                   X=   0.0000  Y=  -1.0000  Z=   0.0000",
+    ])
+  })
+
+  it("lists a point drawn and listed in one tilted UCS without its normal (list/p122)", () => {
+    const cad = run(en, "_UCS|_X|90|_POINT|1,2|_LIST|_L|")
+    expect(listed(cad)).toEqual([
+      '                  POINT     Layer: "0"',
+      "                            Space: Model space",
+      "                at point, X=   1.0000  Y=   2.0000  Z=   0.0000",
+    ])
+  })
+
+  it("lists a 3D polyline whose points are in no plane without an area (list/p117)", () => {
+    const cad = run(
+      en,
+      "_3DPOLY|0,0,0|10,0,5|10,10,-3|20,10,0||_LIST|_L||_PEDIT|_L|_C||_LIST|_L|"
+    )
+    expect(listed(cad)).toEqual([
+      '                  POLYLINE  Layer: "0"',
+      "                            Space: Model space",
+      "              Open space",
+      "  Points not coplanar.  No area calculated.",
+      "            length   34.4269",
+      '                  VERTEX    Layer: "0"',
+      "                            Space: Model space",
+      "             Space",
+      "                at point, X=   0.0000  Y=   0.0000  Z=   0.0000",
+      '                  VERTEX    Layer: "0"',
+      "                            Space: Model space",
+      "             Space",
+      "                at point, X=  10.0000  Y=   0.0000  Z=   5.0000",
+      '                  VERTEX    Layer: "0"',
+      "                            Space: Model space",
+      "             Space",
+      "                at point, X=  10.0000  Y=  10.0000  Z=  -3.0000",
+      '                  VERTEX    Layer: "0"',
+      "                            Space: Model space",
+      "             Space",
+      "                at point, X=  20.0000  Y=  10.0000  Z=   0.0000",
+      '                  END SEQUENCE  Layer: "0"',
+      "                            Space: Model space",
+      '                  POLYLINE  Layer: "0"',
+      "                            Space: Model space",
+      "            Closed space",
+      "  Points not coplanar.  No area calculated.",
+      "            length   56.7876",
+      '                  VERTEX    Layer: "0"',
+      "                            Space: Model space",
+      "             Space",
+      "                at point, X=   0.0000  Y=   0.0000  Z=   0.0000",
+      '                  VERTEX    Layer: "0"',
+      "                            Space: Model space",
+      "             Space",
+      "                at point, X=  10.0000  Y=   0.0000  Z=   5.0000",
+      '                  VERTEX    Layer: "0"',
+      "                            Space: Model space",
+      "             Space",
+      "                at point, X=  10.0000  Y=  10.0000  Z=  -3.0000",
+      '                  VERTEX    Layer: "0"',
+      "                            Space: Model space",
+      "             Space",
+      "                at point, X=  20.0000  Y=  10.0000  Z=   0.0000",
+      '                  END SEQUENCE  Layer: "0"',
+      "                            Space: Model space",
+    ])
+  })
+
+  it("says a 3D polyline's points are in no plane in Spanish (list/p117)", () => {
+    const cad = run(
+      es,
+      "_3DPOLY|0,0,0|10,0,5|10,10,-3|20,10,0||_LIST|_L||_PEDIT|_L|_C||_LIST|_L|"
+    )
+    expect(listed(cad)).toEqual([
+      '                  POLILINEA  Capa: "0"',
+      "                            Espacio: Espacio modelo",
+      "           Abierta espacio",
+      "  Puntos no coplanares.  No se calcula el área.",
+      "            longitud   34.4269",
+      '                  VERTICE   Capa: "0"',
+      "                            Espacio: Espacio modelo",
+      "           Espacio",
+      "                en punto, X=   0.0000  Y=   0.0000  Z=   0.0000",
+      '                  VERTICE   Capa: "0"',
+      "                            Espacio: Espacio modelo",
+      "           Espacio",
+      "                en punto, X=  10.0000  Y=   0.0000  Z=   5.0000",
+      '                  VERTICE   Capa: "0"',
+      "                            Espacio: Espacio modelo",
+      "           Espacio",
+      "                en punto, X=  10.0000  Y=  10.0000  Z=  -3.0000",
+      '                  VERTICE   Capa: "0"',
+      "                            Espacio: Espacio modelo",
+      "           Espacio",
+      "                en punto, X=  20.0000  Y=  10.0000  Z=   0.0000",
+      '                  FIN SECUENCIA  Capa: "0"',
+      "                            Espacio: Espacio modelo",
+      '                  POLILINEA  Capa: "0"',
+      "                            Espacio: Espacio modelo",
+      "           Cerrada espacio",
+      "  Puntos no coplanares.  No se calcula el área.",
+      "            longitud   56.7876",
+      '                  VERTICE   Capa: "0"',
+      "                            Espacio: Espacio modelo",
+      "           Espacio",
+      "                en punto, X=   0.0000  Y=   0.0000  Z=   0.0000",
+      '                  VERTICE   Capa: "0"',
+      "                            Espacio: Espacio modelo",
+      "           Espacio",
+      "                en punto, X=  10.0000  Y=   0.0000  Z=   5.0000",
+      '                  VERTICE   Capa: "0"',
+      "                            Espacio: Espacio modelo",
+      "           Espacio",
+      "                en punto, X=  10.0000  Y=  10.0000  Z=  -3.0000",
+      '                  VERTICE   Capa: "0"',
+      "                            Espacio: Espacio modelo",
+      "           Espacio",
+      "                en punto, X=  20.0000  Y=  10.0000  Z=   0.0000",
+      '                  FIN SECUENCIA  Capa: "0"',
+      "                            Espacio: Espacio modelo",
+    ])
+  })
+
+  it("lists a lightweight polyline's arc in its OCS in a turned UCS (list/p116)", () => {
+    const cad = run(
+      en,
+      "_LINE|1,2|11,7||_CIRCLE|5,5|2|_ARC|_C|0,0|3,0|0,3|_ELLIPSE|_C|0,0|10,0|4|_PLINE|0,0|10,0|_A|20,10||_-TEXT|5,5|2.5|0|Hello|_-MTEXT|0,0|40,-20|M||_-ATTDEF||TAG1|P|D|0,0|2.5|0|_UCS|_Z|30|_LIST|_ALL|"
+    )
+    expect(listed(cad)).toEqual([
+      '                  ATTRIBUTE DEFINITION  Layer: "0"',
+      "                            Space: Model space",
+      '             Style = "Standard"',
+      "        Annotative: No",
+      "             Typeface = Arial",
+      "             start point, X=   0.0000  Y=   0.0000  Z=   0.0000",
+      "            height    2.5000",
+      "           default D",
+      "            prompt P",
+      "               tag TAG1",
+      "          rotation angle    330",
+      "             width scale factor    1.0000",
+      "         obliquing angle      0",
+      "             flags normal",
+      "        generation normal",
+      '                  MTEXT     Layer: "0"',
+      "                            Space: Model space",
+      '             Style = "Standard"',
+      "        Annotative: No",
+      "Location:        X=   0.0000  Y=   0.0000  Z=   0.0000",
+      "Width:             40.0000",
+      "Normal:          X=   0.0000  Y=   0.0000  Z=   1.0000",
+      "Rotation:              330",
+      "Text height:        2.5000",
+      "Line spacing:    Multiple (1x =    4.1667)",
+      "Attachment:      TopLeft",
+      "Flow direction:  ByStyle",
+      "Contents:        M",
+      '                  TEXT      Layer: "0"',
+      "                            Space: Model space",
+      '             Style = "Standard"',
+      "        Annotative: No",
+      "             Typeface = Arial",
+      "             start point, X=   6.8301  Y=   1.8301  Z=   0.0000",
+      "            height    2.5000",
+      "              text Hello",
+      "          rotation angle    330",
+      "             width scale factor    1.0000",
+      "         obliquing angle      0",
+      "        generation normal",
+      '                  LWPOLYLINE  Layer: "0"',
+      "                            Space: Model space",
+      "              Open",
+      "    Constant width    0.0000",
+      "              area   78.5398",
+      "            length   25.7080",
+      "          at point  X=   0.0000  Y=   0.0000  Z=   0.0000",
+      "          at point  X=   8.6603  Y=  -5.0000  Z=   0.0000",
+      "             bulge    0.4142",
+      "            center  X=  13.6603  Y=   3.6603  Z=   0.0000",
+      "            radius   10.0000",
+      "       start angle       270",
+      "         end angle         0",
+      "          at point  X=  22.3205  Y=  -1.3397  Z=   0.0000",
+      '                  ELLIPSE   Layer: "0"',
+      "                            Space: Model space",
+      "                             Area: 125.6637",
+      "                    Circumference: 46.0262",
+      "                           Center: X = 0.0000   , Y = 0.0000   , Z = 0.0000",
+      "                       Major Axis: X = 8.6603   , Y = -5.0000  , Z = 0.0000",
+      "                       Minor Axis: X = 2.0000   , Y = 3.4641   , Z = 0.0000",
+      "                     Radius Ratio: 0.4000",
+      '                  ARC       Layer: "0"',
+      "                            Space: Model space",
+      "            center point, X=   0.0000  Y=   0.0000  Z=   0.0000",
+      "            radius    3.0000",
+      "             start angle    330",
+      "               end angle     60",
+      "            length    4.7124",
+      '                  CIRCLE    Layer: "0"',
+      "                            Space: Model space",
+      "            center point, X=   6.8301  Y=   1.8301  Z=   0.0000",
+      "            radius    2.0000",
+      "     circumference   12.5664",
+      "              area   12.5664",
+      '                  LINE      Layer: "0"',
+      "                            Space: Model space",
+      "              from point, X=   1.8660  Y=   1.2321  Z=   0.0000",
+      "                to point, X=  13.0263  Y=   0.5622  Z=   0.0000",
+      "          Length =  11.1803,  Angle in XY Plane =    357",
+      "                  Delta X =  11.1603, Delta Y =   -0.6699, Delta Z =   0.0000",
+    ])
+  })
+
+  it("lists a lightweight polyline's arc in its OCS and its normal in the WCS in a tilted UCS (list/p115)", () => {
+    const cad = run(
+      en,
+      "_LINE|1,2|11,7||_CIRCLE|5,5|2|_ARC|_C|0,0|3,0|0,3|_ELLIPSE|_C|0,0|10,0|4|_PLINE|0,0|10,0|_A|20,10||_-TEXT|5,5|2.5|0|Hello|_SPLINE|_M|_F|0,0|10,10|20,0||_UCS|_X|90|_LIST|_ALL|"
+    )
+    expect(listed(cad)).toEqual([
+      '                  SPLINE    Layer: "0"',
+      "                            Space: Model space",
+      "                           Length: 29.1448",
+      "                            Order: 4",
+      "                       Properties: Planar, Non-Rational, Non-Periodic",
+      "                 Parametric Range: Start   0.0000",
+      "                                     End  28.2843",
+      "         Number of control points: 5",
+      "                   Control Points: X = 0.0000   , Y = 0.0000   , Z = 0.0000",
+      "                                   X = 3.3333   , Y = 0.0000   , Z = -5.0000",
+      "                                   X = 10.0000  , Y = 0.0000   , Z = -15.0000",
+      "                                   X = 16.6667  , Y = 0.0000   , Z = -5.0000",
+      "                                   X = 20.0000  , Y = 0.0000   , Z = 0.0000",
+      "             Number of fit points: 3",
+      "                        User Data: Fit Points",
+      "                                   X = 0.0000   , Y = 0.0000   , Z = 0.0000",
+      "                                   X = 10.0000  , Y = 0.0000   , Z = -10.0000",
+      "                                   X = 20.0000  , Y = 0.0000   , Z = 0.0000",
+      "              Fit point tolerance: 1.0000E-10",
+      '                  TEXT      Layer: "0"',
+      "                            Space: Model space",
+      '             Style = "Standard"',
+      "        Annotative: No",
+      "             Typeface = Arial",
+      "             start point, X=   5.0000  Y=   0.0000  Z=  -5.0000",
+      "            height    2.5000",
+      "              text Hello",
+      "             width scale factor    1.0000",
+      "         obliquing angle      0",
+      "Extrusion direction relative to UCS:",
+      "                   X=   0.0000  Y=   1.0000  Z=   0.0000",
+      "        generation normal",
+      '                  LWPOLYLINE  Layer: "0"',
+      "                            Space: Model space",
+      "              Open",
+      "    Constant width    0.0000",
+      "Extrusion direction relative to UCS:",
+      "                   X=   0.0000  Y=   0.0000  Z=   1.0000",
+      "              area   78.5398",
+      "            length   25.7080",
+      "          at point  X=   0.0000  Y=   0.0000  Z=   0.0000",
+      "          at point  X=  10.0000  Y=   0.0000  Z=   0.0000",
+      "             bulge    0.4142",
+      "            center  X=  10.0000  Y=   0.0000  Z= -10.0000",
+      "            radius   10.0000",
+      "       start angle       270",
+      "         end angle         0",
+      "          at point  X=  20.0000  Y=   0.0000  Z= -10.0000",
+      '                  ELLIPSE   Layer: "0"',
+      "                            Space: Model space",
+      "                             Area: 125.6637",
+      "                    Circumference: 46.0262",
+      "                           Center: X = 0.0000   , Y = 0.0000   , Z = 0.0000",
+      "                       Major Axis: X = 10.0000  , Y = 0.0000   , Z = 0.0000",
+      "                       Minor Axis: X = 0.0000   , Y = 0.0000   , Z = -4.0000",
+      "                     Radius Ratio: 0.4000",
+      '                  ARC       Layer: "0"',
+      "                            Space: Model space",
+      "            center point, X=   0.0000  Y=   0.0000  Z=   0.0000",
+      "            radius    3.0000",
+      "Extrusion direction relative to UCS:",
+      "                   X=   0.0000  Y=   1.0000  Z=   0.0000",
+      "            length    4.7124",
+      "             total angle     90",
+      '                  CIRCLE    Layer: "0"',
+      "                            Space: Model space",
+      "            center point, X=   5.0000  Y=   0.0000  Z=  -5.0000",
+      "            radius    2.0000",
+      "Extrusion direction relative to UCS:",
+      "                   X=   0.0000  Y=   1.0000  Z=   0.0000",
+      "     circumference   12.5664",
+      "              area   12.5664",
+      '                  LINE      Layer: "0"',
+      "                            Space: Model space",
+      "              from point, X=   1.0000  Y=   0.0000  Z=  -2.0000",
+      "                to point, X=  11.0000  Y=   0.0000  Z=  -7.0000",
+      "Extrusion direction relative to UCS:",
+      "                   X=   0.0000  Y=   1.0000  Z=   0.0000",
+      "          In Current UCS, Length =  10.0000,  Angle in XY Plane =      0",
+      "                  3D Length  =  11.1803,  Angle from XY Plane =    333",
+      "                  Delta X =  10.0000, Delta Y =    0.0000, Delta Z =  -5.0000",
+    ])
+  })
+
+  it("lists a hatch's angle as stored, off the UCS's plane (list/p201)", () => {
+    const cad = run(
+      en,
+      "HPASSOC|0|_ZOOM|_W|-200,-200|300,300|_RECTANG|0,0|100,50|_-HATCH|_P|ANSI31|2|45|10,10||_-HATCH|_P|SOLID|10,10||_UCS|_X|90|_LIST|_ALL|"
+    )
+    expect(listed(cad)).toEqual([
+      '                  HATCH     Layer: "0"',
+      "                            Space: Model space",
+      "                 Hatch pattern SOLID",
+      "                 Not associative",
+      "                 Area      5000.0000",
+      "                 Origin    X=   0.0000  Y=   0.0000  Z=   0.0000",
+      '                  HATCH     Layer: "0"',
+      "                            Space: Model space",
+      "                 Hatch pattern ANSI31",
+      "                 Annotative: No",
+      "                 Hatch scale    2.0000",
+      "                 Hatch angle     45",
+      "                 Not associative",
+      "                 Area      5000.0000",
+      "                 Origin    X=   0.0000  Y=   0.0000  Z=   0.0000",
+      '                  LWPOLYLINE  Layer: "0"',
+      "                            Space: Model space",
+      "            Closed",
+      "    Constant width    0.0000",
+      "Extrusion direction relative to UCS:",
+      "                   X=   0.0000  Y=   0.0000  Z=   1.0000",
+      "              area   5000.0000",
+      "         perimeter   300.0000",
+      "          at point  X=   0.0000  Y=   0.0000  Z=   0.0000",
+      "          at point  X= 100.0000  Y=   0.0000  Z=   0.0000",
+      "          at point  X= 100.0000  Y=   0.0000  Z= -50.0000",
+      "          at point  X=   0.0000  Y=   0.0000  Z= -50.0000",
+    ])
+  })
+
+  it("writes a lightweight polyline's normal in the WCS (list/p208)", () => {
+    const cad = run(
+      en,
+      "_ZOOM|_W|-200,-200|300,300|_RECTANG|0,0|100,50|_UCS|_Y|90|_LIST|_L||_UCS|_W|_UCS|_X|45|_LIST|_L||_UCS|_W|_UCS|_X|90|_RECTANG|0,0|10,10|_UCS|_W|_UCS|_Z|90|_LIST|_L|"
+    )
+    expect(listed(cad)).toEqual([
+      '                  LWPOLYLINE  Layer: "0"',
+      "                            Space: Model space",
+      "            Closed",
+      "    Constant width    0.0000",
+      "Extrusion direction relative to UCS:",
+      "                   X=   0.0000  Y=   0.0000  Z=   1.0000",
+      "              area   5000.0000",
+      "         perimeter   300.0000",
+      "          at point  X=   0.0000  Y=   0.0000  Z=   0.0000",
+      "          at point  X=   0.0000  Y=   0.0000  Z= 100.0000",
+      "          at point  X=   0.0000  Y=  50.0000  Z= 100.0000",
+      "          at point  X=   0.0000  Y=  50.0000  Z=   0.0000",
+      '                  LWPOLYLINE  Layer: "0"',
+      "                            Space: Model space",
+      "            Closed",
+      "    Constant width    0.0000",
+      "Extrusion direction relative to UCS:",
+      "                   X=   0.0000  Y=   0.0000  Z=   1.0000",
+      "              area   5000.0000",
+      "         perimeter   300.0000",
+      "          at point  X=   0.0000  Y=   0.0000  Z=   0.0000",
+      "          at point  X= 100.0000  Y=   0.0000  Z=   0.0000",
+      "          at point  X= 100.0000  Y=  35.3553  Z= -35.3553",
+      "          at point  X=   0.0000  Y=  35.3553  Z= -35.3553",
+      '                  LWPOLYLINE  Layer: "0"',
+      "                            Space: Model space",
+      "            Closed",
+      "    Constant width    0.0000",
+      "Extrusion direction relative to UCS:",
+      "                   X=   0.0000  Y=  -1.0000  Z=   0.0000",
+      "              area   100.0000",
+      "         perimeter   40.0000",
+      "          at point  X=   0.0000  Y=   0.0000  Z=   0.0000",
+      "          at point  X=   0.0000  Y= -10.0000  Z=   0.0000",
+      "          at point  X=   0.0000  Y= -10.0000  Z=  10.0000",
+      "          at point  X=   0.0000  Y=   0.0000  Z=  10.0000",
+    ])
+  })
+
+  it("lists a primitive whose X axis is the UCS's Z with no rotation (list/p213)", () => {
+    const cad = run(
+      en,
+      "_ZOOM|_W|-200,-200|300,300|_PYRAMID|0,0,0|0,5|10|_LIST|_L||_UCS|_Z|30|_LIST|_L||_UCS|_W|_UCS|_X|90|_LIST|_L||_UCS|_W|_UCS|_Y|90|_LIST|_L|"
+    )
+    expect(listed(cad)).toEqual([
+      '                  3DSOLID   Layer: "0"',
+      "                            Space: Model space",
+      "         History = None",
+      "    Show History = No",
+      "      Solid type = Pyramid",
+      "         Position, X = 0.0000    Y = 0.0000    Z = 0.0000",
+      "    Inscribed base radius: 7.0711",
+      "Circumscribed base radius: 5.0000",
+      "     Inscribed top radius: 0.0000",
+      " Circumscribed top radius: 0.0000",
+      "           Height: 10.0000",
+      "         Rotation: 90",
+      "  Number of sides: 4",
+      '                  3DSOLID   Layer: "0"',
+      "                            Space: Model space",
+      "         History = None",
+      "    Show History = No",
+      "      Solid type = Pyramid",
+      "         Position, X = 0.0000    Y = 0.0000    Z = 0.0000",
+      "    Inscribed base radius: 7.0711",
+      "Circumscribed base radius: 5.0000",
+      "     Inscribed top radius: 0.0000",
+      " Circumscribed top radius: 0.0000",
+      "           Height: 10.0000",
+      "         Rotation: 60",
+      "  Number of sides: 4",
+      '                  3DSOLID   Layer: "0"',
+      "                            Space: Model space",
+      "         History = None",
+      "    Show History = No",
+      "      Solid type = Pyramid",
+      "         Position, X = 0.0000    Y = 0.0000    Z = 0.0000",
+      "           Normal: X = 0.0000    Y = 1.0000    Z = 0.0000",
+      "    Inscribed base radius: 7.0711",
+      "Circumscribed base radius: 5.0000",
+      "     Inscribed top radius: 0.0000",
+      " Circumscribed top radius: 0.0000",
+      "           Height: 10.0000",
+      "         Rotation: 0",
+      "  Number of sides: 4",
+      '                  3DSOLID   Layer: "0"',
+      "                            Space: Model space",
+      "         History = None",
+      "    Show History = No",
+      "      Solid type = Pyramid",
+      "         Position, X = 0.0000    Y = 0.0000    Z = 0.0000",
+      "           Normal: X = -1.0000   Y = 0.0000    Z = 0.0000",
+      "    Inscribed base radius: 7.0711",
+      "Circumscribed base radius: 5.0000",
+      "     Inscribed top radius: 0.0000",
+      " Circumscribed top radius: 0.0000",
+      "           Height: 10.0000",
+      "         Rotation: 90",
+      "  Number of sides: 4",
+    ])
+  })
+
+  it("lists a region's box off the UCS's plane as its projection (list/p216)", () => {
+    const cad = run(
+      en,
+      "_ZOOM|_W|-200,-200|600,600|_CIRCLE|300,0|10|_REGION|_L||_UCS|_X|45|_LIST|_L||_UCS|_W|_ELEVATION|5|_CIRCLE|0,0|10|_REGION|_L||_LIST|_L||_ELEVATION|0|_UCS|_X|90|_CIRCLE|100,0|10|_REGION|_L||_UCS|_W|_LIST|_L||_UCS|_O|0,0,7|_LIST|_L|"
+    )
+    expect(listed(cad)).toEqual([
+      '                  REGION    Layer: "0"',
+      "                            Space: Model space",
+      "                             Area: 314.1593",
+      "                        Perimeter: 62.8319",
+      "   Bounding Box: Lower Bound X = 290.0000 , Y = -7.0711  , Z = 0.0000",
+      "                 Upper Bound X = 310.0000 , Y = 7.0711   , Z = 0.0000",
+      '                  REGION    Layer: "0"',
+      "                            Space: Model space",
+      "                             Area: 314.1593",
+      "                        Perimeter: 62.8319",
+      "   Bounding Box: Lower Bound X = -10.0000 , Y = -10.0000 , Z = 5.0000",
+      "                 Upper Bound X = 10.0000  , Y = 10.0000  , Z = 5.0000",
+      '                  REGION    Layer: "0"',
+      "                            Space: Model space",
+      "                             Area: 314.1593",
+      "                        Perimeter: 62.8319",
+      "   Bounding Box: Lower Bound X = 90.0000  , Y = 0.0000   , Z = 0.0000",
+      "                 Upper Bound X = 110.0000 , Y = 0.0000   , Z = 0.0000",
+      '                  REGION    Layer: "0"',
+      "                            Space: Model space",
+      "                             Area: 314.1593",
+      "                        Perimeter: 62.8319",
+      "   Bounding Box: Lower Bound X = 90.0000  , Y = 0.0000   , Z = -7.0000",
+      "                 Upper Bound X = 110.0000 , Y = 0.0000   , Z = -7.0000",
+    ])
+  })
+
+  it("lists a region's box at its middle Z (list/p217)", () => {
+    const cad = run(
+      en,
+      "_ZOOM|_W|-200,-200|600,600|_UCS|_O|0,0,10|_UCS|_X|45|_CIRCLE|0,50|10|_REGION|_L||_UCS|_W|_LIST|_L|"
+    )
+    expect(listed(cad)).toEqual([
+      '                  REGION    Layer: "0"',
+      "                            Space: Model space",
+      "                             Area: 314.1593",
+      "                        Perimeter: 62.8319",
+      "   Bounding Box: Lower Bound X = -10.0000 , Y = 28.2843  , Z = 45.3553",
+      "                 Upper Bound X = 10.0000  , Y = 42.4264  , Z = 45.3553",
     ])
   })
 })

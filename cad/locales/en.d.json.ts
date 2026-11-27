@@ -3125,6 +3125,10 @@ declare const source: {
       "listPolylinePerimeter": string
       "listVertexPoint": string
       "listVertex3dPoint": string
+      "listPointAt": string
+      "listLinetypeScale": string
+      "listNotCoplanar": string
+      "listVertexTotalAngle": string
       "listVertexSpace": string
       "listVertexCurveFit": string
       "listVertexSplineFit": string

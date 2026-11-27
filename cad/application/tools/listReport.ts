@@ -5,7 +5,7 @@ import { brepBox, brepMapped } from "../../geometry/solids"
 import { curveBox, curveTessellation } from "../../geometry/planarCurves"
 import { Vec2, V } from "../../geometry/Vec2"
 import { Vec3, add3, cross3, length3, sub3 } from "../../geometry/Vec3"
-import { axesToWorld } from "../../geometry/ocs"
+import { arbitraryAxis, axesToWorld } from "../../geometry/ocs"
 import { bulgeToArc, normalizeDegrees } from "../../geometry/primitives"
 import { periodicLoop } from "../../geometry/nurbs"
 import type {
@@ -26,6 +26,7 @@ import type {
   Solid2dEntity,
   Face3dEntity,
   PolygonMeshEntity,
+  PointEntity,
   WipeoutEntity,
   ImageEntity,
   TableEntity,
@@ -82,7 +83,11 @@ import {
   polarAngleBetween,
 } from "../../domain/arrays"
 import { formatAngle, formatLength } from "../../domain/units"
-import { worldDirectionToUcs, worldPointToUcs } from "../../domain/ucs"
+import {
+  WORLD_UCS,
+  worldDirectionToUcs,
+  worldPointToUcs,
+} from "../../domain/ucs"
 import type { MessageId } from "../EngineText"
 import type { MessageValues } from "../../i18n/types"
 import { colorWord } from "./ColorTool"
@@ -113,6 +118,7 @@ export function newestFirst(
 
 type ObjectName =
   | "line"
+  | "point"
   | "xline"
   | "ray"
   | "circle"
@@ -147,6 +153,7 @@ interface Wearing {
   readonly color?: string
   readonly linetype?: string
   readonly lineweight?: number
+  readonly linetypeScale?: number
   readonly thickness?: number
 }
 
@@ -182,6 +189,9 @@ class Report {
     switch (entity.type) {
       case "line":
         this.line(entity)
+        break
+      case "point":
+        this.point(entity)
         break
       case "circle":
         this.circle(entity)
@@ -348,8 +358,10 @@ class Report {
 
   /**
    * The lines every object opens with: its type and layer, the space, the
-   * colour and linetype when either is not ByLayer, the lineweight and the
-   * thickness when set.
+   * colour and linetype when either is not ByLayer, the lineweight, its own
+   * linetype scale and the thickness when set. The scale at column 0, as each
+   * console writes it, on every VERTEX and END SEQUENCE too (list/p100,
+   * p123); no END SEQUENCE writes the thickness (p109, p123).
    *
    * WHY no `Handle = 2d7` line: the model has no handles (an object's id is
    * no hex number, nor one a VERTEX or an ATTRIBUTE has), and a made-up one
@@ -382,7 +394,11 @@ class Report {
         lineweight: wearing.lineweight.toFixed(2),
       })
     }
-    if (wearing.thickness) {
+    const scale = wearing.linetypeScale
+    if (scale !== undefined && scale !== 1) {
+      this.say("listLinetypeScale", { scale: this.n9(scale) })
+    }
+    if (wearing.thickness && name !== "endSequence") {
       this.say("listThickness", { thickness: this.n9(wearing.thickness) })
     }
   }
@@ -409,6 +425,17 @@ class Report {
         ),
       })
     }
+  }
+
+  /**
+   * Its point in the UCS, and its normal off the UCS's plane (list/p101,
+   * p122). Its own line, not a VERTEX's: French, Russian and Polish word
+   * them apart (`au point`, `в точке.`, `od punktu`).
+   */
+  private point(point: PointEntity): void {
+    this.header("point", point)
+    this.say("listPointAt", this.xyz(this.at(point, point.position)))
+    this.sayExtrusion(point)
   }
 
   /** Its corners in the order picked, the console's words (solid2d/p07, p21). */
@@ -460,9 +487,9 @@ class Report {
   }
 
   /**
-   * As each console lists it (table/t08): its corner, normal and direction
-   * in the WCS, each number `%f`, whatever LUPREC, its columns, rows and
-   * style.
+   * As each console lists it (table/t08): its corner in the UCS, normal and
+   * direction in the WCS, each number `%f`, whatever LUPREC, its columns,
+   * rows and style.
    */
   private table(table: TableEntity): void {
     this.header("table", table)
@@ -472,11 +499,19 @@ class Report {
       z: point.z.toFixed(6),
     })
     const along = { ...table.direction, z: 0 }
-    this.say("listTablePosition", f(entityPointToWorld(table, table.position)))
-    this.say("listTableNormal", f(table.normal ?? UP))
+    // Its position in the UCS, its normal and direction in the WCS
+    // (list/p219).
+    this.say(
+      "listTablePosition",
+      f(this.ucsPoint(entityPointToWorld(table, table.position)))
+    )
+    // The frame's normal and direction back in the WCS, whatever the UCS.
+    this.say("listTableNormal", f(this.storedNormal(table)))
     this.say(
       "listTableDirection",
-      f(table.normal ? axesToWorld(entityAxes(table), along) : along)
+      f(
+        this.toWcs(table.normal ? axesToWorld(entityAxes(table), along) : along)
+      )
     )
     this.say("listTableColumns", { count: table.columnWidths.length })
     this.say("listTableRows", { count: table.rowHeights.length })
@@ -793,6 +828,34 @@ class Report {
     return entity.normal ? axesToWorld(entityAxes(entity), v) : v
   }
 
+  /**
+   * A direction of the tool's frame in the WCS. LIST reads its objects in
+   * the frame of the UCS's XY plane (`UcsFrame`), a rotation of the WCS whose
+   * own axes `ucs.wcs` gives.
+   */
+  private toWcs(v: Vec3): Vec3 {
+    return worldDirectionToUcs(this.settings.ucs.wcs ?? WORLD_UCS, v)
+  }
+
+  /** The object's normal as it stores it, in the WCS. */
+  private storedNormal(entity: Entity): Vec3 {
+    return this.toWcs(entity.normal ?? UP)
+  }
+
+  /**
+   * An angle of the object's plane as it stores it: from the X axis of the
+   * OCS of its normal in the WCS, whatever the UCS.
+   */
+  private storedAngle(entity: Entity, radians: number): number {
+    const d = this.toWcs(
+      this.toPlane(entity, { x: Math.cos(radians), y: Math.sin(radians), z: 0 })
+    )
+    const axes = arbitraryAxis(this.storedNormal(entity))
+    if (!axes) return (radians * 180) / Math.PI
+    const dot = (a: Vec3, b: Vec3) => a.x * b.x + a.y * b.y + a.z * b.z
+    return (Math.atan2(dot(d, axes.y), dot(d, axes.x)) * 180) / Math.PI
+  }
+
   private lwpolyline(poly: PolylineEntity): void {
     this.header("lwpolyline", poly)
     this.say("listLwState", { closed: poly.closed ? "yes" : "no" })
@@ -803,7 +866,12 @@ class Report {
     if (constant !== null) {
       this.say("listLwConstantWidth", { width: this.n9(constant) })
     }
-    this.sayExtrusion(poly)
+    // WHY its normal as stored, in the WCS, under a line that says "relative
+    // to UCS": each console writes it so, where a CIRCLE's and a POLYLINE's
+    // are the UCS's (list/p115, p201, p208; p205, p121).
+    if (this.extrusion(poly)) {
+      this.say("listExtrusion", this.xyz(this.storedNormal(poly)))
+    }
     const measured = objectArea(poly)
     // LWPOLYLINE's area, length and perimeter are written unpadded, three
     // spaces after the word (p438: `area   50.00`).
@@ -837,10 +905,12 @@ class Report {
     kind: "lw" | "vertex"
   ): void {
     const arc = bulgeToArc(from, to, bulge)
-    const angle = (radians: number) => {
-      const degrees = this.ucsAngle(poly, radians)
-      return kind === "lw" ? this.a9(degrees) : this.a6(degrees)
-    }
+    // WHY an LWPOLYLINE's angles in its OCS, a VERTEX's in the UCS: each
+    // console does so in a turned or tilted UCS (list/p115, p116; p120).
+    const angle = (radians: number) =>
+      kind === "lw"
+        ? this.a9(this.storedAngle(poly, radians))
+        : this.a6(this.ucsAngle(poly, radians))
     // WHY two sets of ids for English's one: French writes a VERTEX's
     // labels a column short of an LWPOLYLINE's, and its radius as a
     // circle's (inquiry/p430, p438).
@@ -852,6 +922,13 @@ class Report {
     this.say(lw ? "listLwRadius" : "listRadius", {
       radius: this.n9(arc.radius),
     })
+    // A VERTEX off the UCS's plane gives its sweep, as an ARC there (p121).
+    if (!lw && this.extrusion(poly)) {
+      this.say("listVertexTotalAngle", {
+        angle: this.a6((4 * Math.atan(Math.abs(bulge)) * 180) / Math.PI),
+      })
+      return
+    }
     this.say(lw ? "listPolylineStartAngle" : "listVertexStartAngle", {
       angle: angle(arc.startAngle),
     })
@@ -888,8 +965,8 @@ class Report {
       const segments = shape.closed
         ? shape.vertices.length
         : shape.vertices.length - 1
-      // WHY an open one's last vertex holds the last segment's ending width:
-      // unverified, the probes' widths being the same throughout (p430).
+      // An open one's last vertex holds the last segment's ending width
+      // (list/p111).
       return i < segments
         ? polylineWidth(shape, i)
         : ([
@@ -961,10 +1038,18 @@ class Report {
     for (let i = 0; i < v.length; i++) {
       area = add3(area, cross3(v[i], v[(i + 1) % v.length]))
     }
-    this.say("listArea", { area: this.n9(length3(area) / 2) })
-    this.say(poly.closed ? "listPolylinePerimeter" : "listLength", {
-      length: this.n9(polyline3dLength(curve)),
-    })
+    const length = this.n9(polyline3dLength(curve))
+    // Points in no one plane have no area, and their length is `length`
+    // even closed (list/p112, p117); coplanar ones an area (p118).
+    if (!coplanarPoints(v, area)) {
+      this.say("listNotCoplanar")
+      this.say("listLength", { length })
+    } else {
+      this.say("listArea", { area: this.n9(length3(area) / 2) })
+      this.say(poly.closed ? "listPolylinePerimeter" : "listLength", {
+        length,
+      })
+    }
     const vertex = (point: Vec3, mark: MessageId | null) => {
       this.header("vertex", poly)
       this.say("listVertexSpace")
@@ -1219,13 +1304,16 @@ class Report {
     const high = (axis: "x" | "y" | "z") =>
       Math.max(...placed.map((p) => p[axis]))
     const left = (value: number) => this.length(value).padEnd(9)
+    // Off the UCS's plane, the extent of its projection on the UCS's XY
+    // plane, both bounds at the box's middle Z (list/p215–p217).
+    const z = left((low("z") + high("z")) / 2)
     this.say("listRegionBounds", {
       minX: left(low("x")),
       minY: left(low("y")),
-      minZ: left(low("z")),
+      minZ: z,
       maxX: left(high("x")),
       maxY: left(high("y")),
-      maxZ: left(high("z")),
+      maxZ: z,
     })
   }
 
@@ -1399,7 +1487,7 @@ class Report {
       })
       this.say("listHatchAnnotative")
       this.say("listHatchGradientAngle", {
-        angle: this.a6(this.ucsAngle(hatch, hatch.gradient.angle)),
+        angle: this.a6(this.storedAngle(hatch, hatch.gradient.angle)),
       })
       this.say(
         hatch.gradient.centered
@@ -1414,7 +1502,7 @@ class Report {
       if (user) this.say("listHatchUserSpacing", { scale })
       else this.say("listHatchScale", { scale })
       this.say("listHatchAngle", {
-        angle: this.a6(this.ucsAngle(hatch, hatch.patternAngle)),
+        angle: this.a6(this.storedAngle(hatch, hatch.patternAngle)),
       })
     }
     this.say("listHatchNotAssociative")
@@ -1422,7 +1510,13 @@ class Report {
     this.say("listHatchArea", {
       area: this.length(objectArea(hatch)?.area ?? 0),
     })
-    this.say("listHatchOrigin", this.xyz(this.at(hatch, hatch.origin)))
+    // WHY its origin through its OCS to the WCS, no elevation, no UCS, and
+    // its angles as stored: each console writes them so whatever the current
+    // UCS (list/p201, p206, p222, p223, p228).
+    this.say(
+      "listHatchOrigin",
+      this.xyz(this.toWcs(this.toPlane(hatch, { ...hatch.origin, z: 0 })))
+    )
   }
 
   /** A point of `insert`'s block, where the reference puts it, in the UCS. */
@@ -1682,4 +1776,24 @@ function crossesItself(spline: SplineEntity): boolean {
     }
   }
   return false
+}
+
+/**
+ * Whether `points` lie in one plane: the plane of their vector area (twice
+ * its size, `area`), each point within a ten-millionth of their extent of
+ * it. Points with no area (on one line) are in one.
+ */
+function coplanarPoints(points: readonly Vec3[], area: Vec3): boolean {
+  const size = length3(area)
+  if (size === 0 || points.length < 4) return true
+  const normal = { x: area.x / size, y: area.y / size, z: area.z / size }
+  const [first] = points
+  const extent = Math.max(...points.map((p) => length3(sub3(p, first))))
+  return points.every((p) => {
+    const d = sub3(p, first)
+    return (
+      Math.abs(d.x * normal.x + d.y * normal.y + d.z * normal.z) <=
+      extent * 1e-7
+    )
+  })
 }

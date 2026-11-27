@@ -262,6 +262,8 @@ describe("a multileader, as AutoCAD 2027 draws it from its context", () => {
     expect(lines.slice(2)).toEqual([
       '                  MULTILEADER  Layer: "0"',
       "                            Space: Model space",
+      // AutoCAD: `                    Material: ByLayer` for a multileader it
+      // read from a DXF; no materials here (list/p218, LSR-45).
       "Leader Type:        StraightLeader",
       "Content Type:       MTextContent",
       "Landing:            ON",

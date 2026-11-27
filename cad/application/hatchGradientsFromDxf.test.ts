@@ -253,6 +253,18 @@ describe("LIST and the palette of a gradient", () => {
     ])
   })
 
+  // list/p228 (en-US): in UCS Z 30 the angle is the one it stores. AutoCAD
+  // also writes `Material: ByLayer` under Space for an object it read from
+  // a DXF: no materials here (LSR-45), and `listed` skips its column.
+  it("lists its angle as stored in a turned UCS", async () => {
+    const cad = await opened()
+    typed(cad, "_UCS", "_Z", "30")
+    cad.select(nth(cad, 9).id)
+    expect(listed(typed(cad, "_LIST"))[2]).toBe(
+      "                 Gradient Angle     30"
+    )
+  })
+
   it("shows its name, colours, angle and centring in the palette", async () => {
     const cad = await opened()
     cad.select(nth(cad, 10).id)

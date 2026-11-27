@@ -2,7 +2,7 @@
 title: "Commande LISTE (LIST) dans AutoCAD"
 description: "Comment fonctionne LISTE (LIST, alias LS) d'AutoCAD en français : sélectionnez des objets, lisez type, calque, couleur, points, longueur et aire. Essayez-le."
 figure: "LISTE du trou d'une plaque : le calque, le centre, le rayon, la circonférence et l'aire du cercle."
-sourceHash: "d0ebcf466ff5"
+sourceHash: "d0b3730b0833"
 ---
 
 LISTE (LIST) écrit sur la ligne de commande un rapport sur chaque objet que vous sélectionnez, avec les colonnes et les mots d'AutoCAD 2027. Chacun commence par son type, son calque et son espace, puis sa couleur, son type de ligne, son épaisseur de ligne et son épaisseur quand elles ne sont pas DuCalque ou nulles, puis ce qui est propre au type : les extrémités, la longueur, l'angle et les deltas d'une ligne ; le centre, le rayon, la circonférence et l'aire d'un cercle ; les angles et la longueur d'un arc ; les sommets, les largeurs, l'aire et la longueur d'une polyligne ; les points de contrôle et d'ajustement d'une spline ; le style, la hauteur et la justification d'un texte ; le type, les points et le style d'une cote ; le motif, l'échelle et l'aire de hachures ; le nom, le point d'insertion, les échelles et les attributs d'une référence de bloc ; les rangées et les éléments d'un réseau ; l'aire, le périmètre et la zone de contour d'une région.
@@ -11,7 +11,7 @@ Les points sont dans le SCU courant, les longueurs à la précision du dessin et
 
 ## Missing
 
-L'aire d'une polyligne ouverte lissée par <Keyword command="PEDIT" id="Fit" /> : ici, c'est l'aire de la courbe fermée par sa corde, et celle d'AutoCAD est plus grande. La longueur d'une spline est exacte ici, là où celle d'AutoCAD est une approximation proche. Une COTANG (DIMANGULAR) faite à partir de deux lignes est listée par ses trois points, et aucune cote n'est jamais listée comme associative. La pause et la fenêtre de texte d'AutoCAD. Ce que les objets n'ont pas ici : DuBloc, une épaisseur de ligne Par défaut, une échelle de type de ligne propre, la transparence et les groupes.
+L'aire d'une polyligne ouverte lissée par <Keyword command="PEDIT" id="Fit" /> : ici, c'est l'aire de la courbe fermée par sa corde, et celle d'AutoCAD est plus grande. La longueur d'une spline est exacte ici, là où celle d'AutoCAD est une approximation proche. Une COTANG (DIMANGULAR) faite à partir de deux lignes est listée par ses trois points, et aucune cote n'est jamais listée comme associative. Une hachure faite dans un SCU tourné est listée avec l'angle et l'origine qu'elle a dans le SCG, pas ceux qu'on lui a donnés dans ce SCU. La pause et la fenêtre de texte d'AutoCAD. Ce que les objets n'ont pas ici : DuBloc, une épaisseur de ligne Par défaut, la transparence, les groupes, les styles de tracé, les matériaux et le sens du texte d'une ligne de repère.
 
 ## Questions
 

@@ -6454,6 +6454,7 @@ export const it: EngineLocale = {
           1,
           {
             "line": "LINEA",
+            "point": "PUNTO",
             "circle": "CERCHIO",
             "arc": "ARCO",
             "ellipse": "ELLIPSE",
@@ -7207,6 +7208,33 @@ export const it: EngineLocale = {
         "  Z=",
         [
           "z"
+        ]
+      ],
+      "listPointAt": [
+        "                al punto, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listLinetypeScale": [
+        "Scala del tipo di linea = ",
+        [
+          "scale"
+        ]
+      ],
+      "listNotCoplanar": "  I punti non sono complanari. Nessuna area è stata calcolata.",
+      "listVertexTotalAngle": [
+        "     angolo totale ",
+        [
+          "angle"
         ]
       ],
       "listVertexSpace": "            Spazio",

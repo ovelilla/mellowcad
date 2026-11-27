@@ -3,7 +3,7 @@ title: "Comando LIST en AutoCAD: propiedades de un objeto"
 metaTitle: "Comando LIST en AutoCAD: propiedades y alias LS"
 description: "Cómo funciona LIST (alias LS, LT) de AutoCAD en español: designa objetos y lee el tipo, la capa, el color, los puntos, la longitud y el área de cada uno."
 figure: "LIST del agujero de una placa: la capa, el centro, el radio, la circunferencia y el área del círculo."
-sourceHash: "d0ebcf466ff5"
+sourceHash: "d0b3730b0833"
 ---
 
 LIST, con el mismo nombre en español, escribe en la solicitud de comando un informe de cada objeto que designas, con las columnas y las palabras de AutoCAD 2027. Cada uno empieza por su tipo, su capa y su espacio; después, su color, su tipo de línea, su grosor de línea y su altura de objeto donde no son PorCapa o cero, y después lo propio de su tipo: los extremos, la longitud, el ángulo y los incrementos de una línea; el centro, el radio, la circunferencia y el área de un círculo; los ángulos y la longitud de un arco; los vértices, los grosores, el área y la longitud de una polilínea; los puntos de control y de ajuste de una spline; el estilo, la altura y la justificación de un texto; el tipo, los puntos y el estilo de una cota; el patrón, la escala y el área de un sombreado; el nombre, el punto de inserción, las escalas y los atributos de una referencia a bloque; las filas y los elementos de una matriz; el área, el perímetro y el cuadro delimitador de una región.
@@ -12,7 +12,7 @@ Los puntos están en el SCP actual, las longitudes a la precisión del dibujo y 
 
 ## Missing
 
-El área de una polilínea abierta ajustada con curVar: aquí es la de la curva cerrada por su cuerda, y la de AutoCAD es mayor. La longitud de una spline es exacta aquí, donde la de AutoCAD es una aproximación cercana. Una ACOANGULAR hecha a partir de dos líneas se enumera por sus tres puntos, y ninguna cota es nunca `asociativo: sí`. La pausa y la ventana de texto de AutoCAD. Lo que aquí no tienen los objetos: PorBloque, un grosor de línea Por defecto, una escala de tipo de línea propia, transparencia y grupos.
+El área de una polilínea abierta ajustada con curVar: aquí es la de la curva cerrada por su cuerda, y la de AutoCAD es mayor. La longitud de una spline es exacta aquí, donde la de AutoCAD es una aproximación cercana. Una ACOANGULAR hecha a partir de dos líneas se enumera por sus tres puntos, y ninguna cota es nunca `asociativo: sí`. Un sombreado hecho en un SCP girado se enumera con el ángulo y el origen que tiene en el SCU, no con los que se le dieron en ese SCP. La pausa y la ventana de texto de AutoCAD. Lo que aquí no tienen los objetos: PorBloque, un grosor de línea Por defecto, transparencia, grupos, estilos de trazado, materiales y la dirección del texto de una directriz.
 
 ## Questions
 

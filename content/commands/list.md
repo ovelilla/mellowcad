@@ -4,7 +4,7 @@ metaTitle: "LIST in AutoCAD: object properties, alias LI"
 description: "How AutoCAD's LIST (LI, LS) works: select objects and read each one's type, layer, colour, points, length and area at the command line. Try it free online."
 figure: "LIST of a plate's hole: the circle's layer, centre, radius, circumference and area."
 related: ["PROPERTIES", "ID", "DIST", "AREA", "MASSPROP"]
-coverage: "851e8fc0ebef"
+coverage: "73684ad228de"
 ---
 
 LIST writes a report of each object you select at the command prompt, in AutoCAD 2027's columns and words. Each starts with its type, its layer and its space, then its colour, linetype, lineweight and thickness where they are not ByLayer or zero, then what the type has: a line's ends, length, angle and deltas; a circle's centre, radius, circumference and area; an arc's angles and length; a polyline's vertices, widths, area and length; a spline's control and fit points; a text's style, height and justification; a dimension's type, points and style; a hatch's pattern, scale and area; a block reference's name, insertion point, scales and attributes; an array's rows and items; a region's area, perimeter and bounding box.
@@ -13,7 +13,7 @@ Points are in the current UCS, lengths at the drawing's precision and angles at 
 
 ## Missing
 
-The area of an open curve-fit polyline: here it is the area of the curve closed by its chord, and AutoCAD's is larger. A spline's length is exact here, where AutoCAD's is a close approximation. A DIMANGULAR made from two lines is listed by its three points, and no dimension is ever `associative: yes`. AutoCAD's pause and text window. What objects here do not have: ByBlock, a lineweight of Default, a linetype scale of their own, transparency and groups.
+The area of an open curve-fit polyline: here it is the area of the curve closed by its chord, and AutoCAD's is larger. A spline's length is exact here, where AutoCAD's is a close approximation. A DIMANGULAR made from two lines is listed by its three points, and no dimension is ever `associative: yes`. A hatch made in a turned UCS is listed with the angle and origin it has in the WCS, not those it was given in that UCS. AutoCAD's pause and text window. What objects here do not have: ByBlock, a lineweight of Default, transparency, groups, plot styles, materials and a leader text's flow direction.
 
 ## Questions
 

@@ -52,8 +52,12 @@ export class UcsFrame {
     document: DocumentReader
   ) {
     const z = ucsZAxis(source)
+    // WHY only a Z up makes the frame the WCS: a UCS turned upside down
+    // (`_UCS _X 180`) is level too, but what is drawn there keeps its -Z as
+    // its normal (list/p126), its OCS's X the WCS's -X.
     const axes =
-      isUpright(source) || (Math.abs(z.x) < 1e-12 && Math.abs(z.y) < 1e-12)
+      isUpright(source) ||
+      (Math.abs(z.x) < 1e-12 && Math.abs(z.y) < 1e-12 && z.z > 0)
         ? null
         : arbitraryAxis(z)
     this.axes = axes

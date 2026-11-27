@@ -2,7 +2,7 @@
 title: "Polecenie LISTA (LIST) w AutoCADzie"
 description: "Jak sprawdzić właściwości obiektu w AutoCADzie poleceniem LISTA (LIST, skrót LI): typ, warstwa, kolor, punkty, długość i pole każdego obiektu. Wypróbuj online."
 figure: "LISTA dla otworu w płytce: warstwa okręgu, środek, promień, obwód i pole."
-sourceHash: "d0ebcf466ff5"
+sourceHash: "d0b3730b0833"
 ---
 
 Polecenie LISTA (LIST) wypisuje w wierszu polecenia raport o każdym wybranym obiekcie, w kolumnach i słowach AutoCADa 2027. Każdy zaczyna się od typu, warstwy i obszaru, potem kolor, rodzaj linii, szerokość linii i grubość, o ile nie są JakWarstwa lub zerowe, a potem to, co ma dany typ: końce linii, długość, kąt i przyrosty; środek okręgu, promień, obwód i pole; kąty i długość łuku; wierzchołki polilinii, szerokości, pole i długość; punkty kontrolne i punkty dopasowania splajnu; styl, wysokość i wyrównanie tekstu; typ, punkty i styl wymiaru; wzór, skala i pole kreskowania; nazwa, punkt wstawienia, skale i atrybuty odnośnika bloku; wiersze i elementy szyku; pole, obwód i prostokąt ograniczający regionu.
@@ -11,7 +11,7 @@ Punkty są podawane w bieżącym LUW, długości z dokładnością rysunku, a k�
 
 ## Missing
 
-Pole otwartej polilinii wygładzonej łukami: tutaj jest to pole krzywej domkniętej cięciwą, a w AutoCADzie jest większe. Długość splajnu jest tutaj dokładna, a w AutoCADzie to bliskie przybliżenie. Wymiar <Command id="DIMANGULAR" /> utworzony z dwóch linii jest opisywany trzema punktami, a żaden wymiar nie jest nigdy opisany jako skojarzony. Pauza i okno tekstowe AutoCADa. To, czego obiekty tutaj nie mają: JakBlok, szerokość linii Domyślna, własna skala rodzaju linii, przezroczystość i grupy.
+Pole otwartej polilinii wygładzonej łukami: tutaj jest to pole krzywej domkniętej cięciwą, a w AutoCADzie jest większe. Długość splajnu jest tutaj dokładna, a w AutoCADzie to bliskie przybliżenie. Wymiar <Command id="DIMANGULAR" /> utworzony z dwóch linii jest opisywany trzema punktami, a żaden wymiar nie jest nigdy opisany jako skojarzony. Kreskowanie utworzone w obróconym LUW jest opisywane kątem i początkiem, jakie ma w GUW, a nie tymi, które nadano mu w tym LUW. Pauza i okno tekstowe AutoCADa. To, czego obiekty tutaj nie mają: JakBlok, szerokość linii Domyślna, przezroczystość, grupy, style wydruku, materiały i kierunek tekstu odnośnika.
 
 ## Questions
 

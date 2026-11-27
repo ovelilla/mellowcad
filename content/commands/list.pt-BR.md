@@ -3,7 +3,7 @@ title: "Comando LIST (LISTA) no AutoCAD"
 metaTitle: "LIST (LISTA) no AutoCAD: propriedades de objetos"
 description: "Como funciona o LIST do AutoCAD em português, LISTA (LI, LS): selecione objetos e leia o tipo, a camada, a cor, os pontos, o comprimento e a área. Experimente."
 figure: "O LISTA do furo de uma placa: a camada do círculo, o centro, o raio, a circunferência e a área."
-sourceHash: "d0ebcf466ff5"
+sourceHash: "d0b3730b0833"
 ---
 
 O LIST, LISTA no AutoCAD em português, escreve no prompt de comando um relatório de cada objeto que você seleciona, nas colunas e nas palavras do AutoCAD 2027. Cada um começa pelo tipo, a camada e o espaço, depois a cor, o tipo de linha, a espessura de linha e a espessura onde não são PorCamada ou zero, e então o que o tipo tem: as extremidades, o comprimento, o ângulo e os deltas de uma linha; o centro, o raio, a circunferência e a área de um círculo; os ângulos e o comprimento de um arco; os vértices, as larguras, a área e o comprimento de uma polilinha; os pontos de controle e de ajuste de uma spline; o estilo, a altura e a justificação de um texto; o tipo, os pontos e o estilo de uma cota; o padrão, a escala e a área de uma hachura; o nome, o ponto de inserção, as escalas e os atributos de uma referência de bloco; as linhas e os itens de uma matriz; a área, o perímetro e a caixa delimitadora de uma região.
@@ -12,7 +12,7 @@ Os pontos estão no UCS atual, os comprimentos na precisão do desenho e os âng
 
 ## Missing
 
-A área de uma polilinha aberta ajustada em curva: aqui é a da curva fechada pela sua corda, e a do AutoCAD é maior. O comprimento de uma spline aqui é exato, onde o do AutoCAD é uma aproximação próxima. Uma cota angular (COTAANG) feita a partir de duas linhas é listada pelos seus três pontos, e nenhuma cota é `associativa: sim`. A pausa e a janela de texto do AutoCAD. O que os objetos aqui não têm: PorBloco, uma espessura de linha Padrão, uma escala de tipo de linha própria, transparência e grupos.
+A área de uma polilinha aberta ajustada em curva: aqui é a da curva fechada pela sua corda, e a do AutoCAD é maior. O comprimento de uma spline aqui é exato, onde o do AutoCAD é uma aproximação próxima. Uma cota angular (COTAANG) feita a partir de duas linhas é listada pelos seus três pontos, e nenhuma cota é `associativa: sim`. Uma hachura feita em um SCU girado é listada com o ângulo e a origem que tem no SCU Universal, não com os que recebeu nesse SCU. A pausa e a janela de texto do AutoCAD. O que os objetos aqui não têm: PorBloco, uma espessura de linha Padrão, transparência, grupos, estilos de plotagem, materiais e a direção do texto de uma linha de chamada.
 
 ## Questions
 

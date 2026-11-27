@@ -6455,6 +6455,7 @@ export const ptBR: EngineLocale = {
           1,
           {
             "line": "LINHA",
+            "point": "PONTO",
             "circle": "CÍRCULO",
             "arc": "ARCO",
             "ellipse": "ELLIPSE",
@@ -7208,6 +7209,33 @@ export const ptBR: EngineLocale = {
         "  Z=",
         [
           "z"
+        ]
+      ],
+      "listPointAt": [
+        "                em ponto, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listLinetypeScale": [
+        "Escala do tipo de linha = ",
+        [
+          "scale"
+        ]
+      ],
+      "listNotCoplanar": "  Pontos não coplanares. Nenhuma área calculada.",
+      "listVertexTotalAngle": [
+        "      ângulo total ",
+        [
+          "angle"
         ]
       ],
       "listVertexSpace": "            Espaço",

@@ -129,8 +129,13 @@ QAFLAGS 2, p400–p446): its type and `Layer: "0"` (es `Capa`), `Space: Model sp
 `Espacio: Espacio modelo`), `Color: 1 (red)    Linetype: "DASHED"` when either is not ByLayer (an
 index colour 1–7 by number and name, any other index colour by number, `30`, a true colour
 `255,128,0`, even one whose RGB is an index colour's, colors/c01; a linetype as acadiso.lin names it,
-`BYLAYER` / es `PORCAPA` for the other, p401, p427), `LineWeight: 0.30 mm` and `Thickness =`
-(es `GrosorLínea`, `Alt-objeto`) when set; every point and direction in the current UCS (p424),
+`BYLAYER` / es `PORCAPA` for the other, p401, p427), `LineWeight: 0.30 mm`, the object's own linetype
+scale `Linetype scaling =    2.0000` at column 0 when it is not 1 (es `Escala para tipo de línea =`;
+on each VERTEX and END SEQUENCE too; list/p100 and p123 in each console, p102) and `Thickness =`
+(es `GrosorLínea`, `Alt-objeto`) when set, which no END SEQUENCE writes (list/p109, p123); every point and direction in the current UCS (p424) but a
+LWPOLYLINE's arc angles, in its OCS, and its normal, in the WCS under `Extrusion direction relative
+to UCS:` (list/p115, p116, p125, p126, p201, p208; one drawn in a UCS upside down keeps its -Z, p126), a hatch's and a gradient's angle, as stored, and a hatch's
+origin, through its OCS to the WCS without its elevation (list/p201, p206, p222, p223, p228),
 `Extrusion direction relative to UCS:` and the normal when it is not the UCS's Z (p424, p436,
 p437, each type's line where the console puts it); lengths at LUPREC and angles at AUPREC,
 padded as the console's printf widths pad them (`%9`, `%6`, `%-9`: p423, p438), the areas of an
@@ -150,7 +155,9 @@ angles, p407, p408). A fitted polyline is AutoCAD's POLYLINE, its VERTEX entries
 SEQUENCE: a Fit's joints `(Inserted by curve fitting)`, a Spline's frame `(Spline control point)`
 round its curve's points `(Inserted by spline fitting)` (p409, p430, pedit/p177); Decurve makes
 it an LWPOLYLINE again (p409). A 3D polyline: `Open space` / `Closed space`, its vertices' vector
-area, its length, each VERTEX `Space` (p410, 3dpoly/p08). TEXT and ATTDEF: style, `Annotative: No`,
+area or, its points in no one plane, `  Points not coplanar.  No area calculated.` (es `  Puntos no
+coplanares.  No se calcula el área.`) and its `length` closed or not (list/p112, p117, in each
+console; how far from a plane a point may lie is **unverified**: here a ten-millionth of the polyline's extent), its length, each VERTEX `Space` (p410, 3dpoly/p08). TEXT and ATTDEF: style, `Annotative: No`,
 `Typeface = Arial`, the point its justification names (`start`, `mid`, `top/left`…, p431),
 height, text or default, prompt and tag, the rotation (none off the UCS's plane, p436), width
 factor, obliquing, an ATTDEF's flags, generation (p411, p413). MTEXT: location, width, normal,
@@ -177,7 +184,7 @@ Transparency`, `Clipping`, `Clip boundary type` and its whole frame's four corne
 clip, as an image AutoCAD cannot find lists them (image/i07, i12, lr1, lr2, c1, c2, in each
 console: de `bei Punkt,` and cs `X =   10.0000,  Y =` against the wipeout's); Russian's `Масштаб`
 gives the scale where its console gives the frame's width (DXFIN's deviations); ACAD_TABLE:
-its position, normal and horizontal direction in the WCS, each `%f` whatever LUPREC, its number
+its position in the UCS, its normal and horizontal direction in the WCS (list/p219), each `%f` whatever LUPREC, its number
 of columns and rows and its table style (table/t08, in each console); MULTILEADER: its
 leader type, content type and landing (its dogleg), each leader line numbered with its vertices
 and its branch's landing, its style and `Annotative: NO` (mleader/m10, m12, m14, in each
@@ -190,7 +197,7 @@ p437), `InsUnits:` the drawing's unit, `Unit conversion: 1.0000`, `Scale uniform
 `Allow exploding: Yes`, a MINSERT's `# columns` and `column spacing`, then `# rows` and `row
 spacing`, each pair only when there are several (minsert/m07, m08, in each console's words), then each ATTRIBUTE as the reference shows it (its Y scale the height,
 X over Y the width factor: 7.5000 and 0.6667 at 2 by 3, p418) and END SEQUENCE. ARRAY:
-rectangular, polar and path, each row of the console's report (arrays/p401–p406, p419, p434). REGION: `Area:`, `Perimeter:` and its `Bounding Box:` lower and upper bounds in the UCS, padded `%-9` (es `Cuadro delimitador: Límite inferior`, pt-BR `Caixa delimitadora: Limite inferior`; region/p01, p07, p13).
+rectangular, polar and path, each row of the console's report (arrays/p401–p406, p419, p434). REGION: `Area:`, `Perimeter:` and its `Bounding Box:` lower and upper bounds in the UCS, padded `%-9` (es `Cuadro delimitador: Límite inferior`, pt-BR `Caixa delimitadora: Limite inferior`; region/p01, p07, p13), off the UCS's plane the extent of its projection on the UCS's XY plane, both bounds at the box's middle Z (list/p215–p217). POINT: its type (es `PUNTO`), the header, `at point, X=` in the UCS (es `en punto`; its own words where a VERTEX's differ: fr `au point`, ru `в точке.`, pl `od punktu`) and off the UCS's plane its normal (list/p101, p122, in each console). A fitted polyline off the UCS's plane: each arc VERTEX's `total angle` for its start and end (list/p121, in each console), as an ARC's there. A primitive whose X axis is the UCS's Z: `Rotation: 0` (list/p213). Probed and holding: an ATTDEF in a tilted UCS (list/p114), a fitted polyline's thickness and a closed spline-fit one (p109, p110), an open fitted one's last widths (p111), a 3D polyline's Spline, `Open spline space` (p112), a closed spline in no plane (p113, its length as the known gap), a hatch off the UCS's plane, with no extrusion line (p201), a clockwise ring's `CW` (p202), a path array's Divide spacing (p203), every curve, text, dimension, primitive, sweep and the other types in a turned and a tilted UCS (p115, p116, p200, p210–p215, p224–p227).
 WHY no `Handle = 2d7` line: the model has no handles, and an id made up as one would read as
 AutoCAD's. WHY every line at once, with no `Press ENTER to continue:` (es
 `Pulse INTRO para continuar:`) each screenful: the pause pages AutoCAD's text window, whose height
@@ -202,19 +209,25 @@ its block's name (es `Referencia externa`, it `Xrif`; xref/p14, from each consol
 **Missing:** the area of an open curve-fit polyline, which AutoCAD's LIST and AREA give larger
 than the curve closed by its chord (p409, p445: 138.8091 where it closes 127.9336; no bulge on
 its last vertex explains it, p446); a spline's length as AutoCAD's console approximates it
-(32.6835 for the exact 32.6829, p406, p428, p444; here exact); a dimension's default text position
+(32.6835 for the exact 32.6829, p406, p428, p444; 33.4024 for 33.3951, a rational one, p429; here
+exact); a dimension's default text position
 as the console's font sets it (11.9014 over a line at 10, where the desktop's palette reads 11.875,
 dimensions/d04-2, as here; with a text angle the console's lies on the line, p433); DIMANGULAR's
 two-line form, `type: angular` with each line's points (p415: the model keeps the three-point
 one); `associative: yes` for a dimension picked on its object (p416, p439: none is associative
 here); the MTEXT `Text height:` line p432's two leave out, for no reason p442 and p443 found; the
-desktop's pause and its text window; **unverified**, unprobed: a hatch off the UCS's plane, an
-ATTDEF's extrusion line, a fitted polyline's thickness, a closed spline-fit one's order, a 3D
-polyline's Spline (`Open spline space`), a closed spline in no plane, an open heavy polyline's
-last widths, a clockwise ring (`CW`, es `Horaria` from table 27647), a path array's Divide
-spacing, the ring's and the path's rows (one and a half times the source, as ARRAYRECT's
-defaults), what no model here holds (ByBlock, `LineWeight: Default`, per-object linetype scale,
-transparency, groups, a block's units other than the drawing's)
+desktop's pause and its text window; a fitted polyline's END SEQUENCE's `PlotStyleName: Color_1` for an object of its
+own colour (list/p123: no plot styles here); a hatch made in a turned UCS, which AutoCAD lists
+with the angle and origin it was given there (list/p206, p207, p222: the UCS it was made in is
+not kept); LEADER's MTEXT `Flow direction:  LtoR` (es `IZaD`; list/p209, p214, p215: no MTEXT
+here keeps its flow direction, ByStyle); `Material: ByLayer` under Space for a multileader, an
+image, a hatch or a gradient AutoCAD read from a DXF (list/p218, p220, p228: no materials here); a
+3D polyline Spline's points at an exact half rounded one unit low in the last place (`12.9687`
+for `12.9688`, list/p112); a polar or path array's rows, `Row spacing 6.0000` for a circle of
+radius 2 (list/p204: none made here, arrays' Missing); **unverified**: whether a region's box
+off the UCS's plane takes its Z from the box's middle or its centroid (a circle tells them not
+apart, p217); unprobed, what no model here holds (ByBlock, `LineWeight: Default`, transparency,
+groups, a block's units other than the drawing's)
 
 ### `MASSPROP` · es `PROPFIS` · pt-BR `PROPMASS` · fr `PROPMECA` · it `PROPMASS` · de `MASSEIG` · ru `МАСС-ХАР` · pl `PARAMFIZ` · cs `HMOTV` · hu `FIZJELL`
 
