@@ -22,6 +22,12 @@ table's `lang-differs` and `lang-several`, per command. A `differs` on a message
 (one solid missed, or one among several) may pair the two: read the probe's set first
 (`sliceMissed`, solid-edits/p140).
 
+`console-pair.mjs` pools a language's console lines by their English, so keys that share it (LIST's
+`at point` of a vertex, a mesh and a wipeout) and values padded by the code read as noise. A report
+written in columns is settled otherwise: replay each probe a language ran (its `--select` set)
+through the harness in that language and compare line for line with its transcript; LIST's found
+pt-BR, de, pl and it padding twice and a garbled pt-BR line no sweep had shown (LSK, LIST review).
+
 `--from` takes the files that name the command's ids (its tool and the helpers it asks through).
 The tables must be current (skill `autocad-research`, "The string tables"); the ones from before
 the update stay in `research/strings/previous/`, which is what tells a 2027 rewording from a plain

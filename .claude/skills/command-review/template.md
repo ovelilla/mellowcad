@@ -392,10 +392,7 @@ review's close (the owner waived the wait for approval on 2026-10-21), each with
 
 Applied (the detail: `git log -- .claude/skills/command-review`): 2026-10-21 LINE to ERASE, the
 matrix's P, Q and snaps (owner); 10-22 MOVE to Arrays; 10-23 Properties, Text; 10-26, 10-27 HATCH
-to View; 10-28 UCS, Workspace; 10-29 Clipboard; 11-03 3D primitives, Regions; 11-04 Sweeps (a
-traced BasePoint, a pick from the cursor, a jig prompt twice, pixels in two views, a POINT under
-Node: annex-probes.md §2, §4; the ribbon's answers, a run after options, the desktop drawing's
-variables: §4.1, §4.8, §5.3), Solid edits (the others' suspects, a new variable's OPEN test, a
+to View; 10-28 UCS, Workspace; 10-29 Clipboard; 11-03 3D primitives, Regions; 11-04 Sweeps (annex-probes.md §2, §4; §4.1, §4.8, §5.3), Solid edits (the others' suspects, a new variable's OPEN test, a
 shared default, a sibling's pairing: §4.1, §4.8, matrix.md B, annex-catalogs.md §1), its desktop
 (matrix.md C, G, I; annex-probes.md §4; §4.8); 11-05 Solid inquiry and its desktop (annex-probes.md
-§2, §4; §4.8), PEDIT, SPLINEDIT (matrix.md A, C, M).
+§2, §4; §4.8), PEDIT, SPLINEDIT (matrix.md A, C, M); 11-27 LIST, CHPROP (annex-probes.md §5, annex-catalogs.md §1).

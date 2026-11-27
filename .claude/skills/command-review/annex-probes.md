@@ -310,9 +310,9 @@ A probe that only reads the raw `initget` (flags, `control`) loads MellowProbe w
 
 ## 5. The harness side
 
-Scratch tests live in `research/review/<command>/*.test.ts`, gitignored, so no other session's
-hook runs them. They need a config there, created once per machine as
-`research/review/vitest.config.mts`:
+Scratch tests live in a gitignored folder, so no other session's hook runs them: from a worktree,
+`out/review/<command>/` (`research/` links to the main tree: a test there runs its code; LIST
+review), with this config as its `vitest.config.mts` (`include` its folder):
 
 ```ts
 import base from "../../vitest.config.ts"
@@ -329,8 +329,8 @@ export default defineConfig({
 })
 ```
 
-Run with `npx vitest run --config research/review/vitest.config.mts research/review/<command>`.
-Their `console.log` is swallowed: write what to read to a scratchpad file (Node's appendFileSync).
+Run with `--config <folder>/vitest.config.mts`. `console.log` is swallowed: write to a scratchpad
+file (appendFileSync).
 `commandLog()` is capped: a `written()` sliced by the log's old length returns `[]` once it is
 full, and a long scratch run reads "not found" (3D primitives): a fresh harness per case.
 A harness option the config does not know is dropped in silence (`layers` locked nothing, and a

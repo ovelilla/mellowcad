@@ -1,8 +1,8 @@
 # Visibilidad y tráfico orgánico — plan maestro
 
-> **Estado:** la cola de visibilidad está agotada desde el 24/11/2026 y el trabajo en curso es
-> `docs/next-autocad-ui.md` (la interfaz de AutoCAD, por su plan `docs/plans/autocad-ui.md`: la
-> fase 0 hecha el 24/11, sigue la 1); de este brief sigue vivo lo que queda de §7. Lo hecho hasta
+> **Estado:** la cola de visibilidad está agotada desde el 24/11/2026; de este brief sigue vivo lo
+> que queda de §7. Después vinieron la interfaz de AutoCAD (`docs/next-autocad-ui.md`, sus fases 1 a
+> 6 hechas y publicadas el 27/11) y la revisión 32 del roadmap (27/11). Lo hecho hasta
 > agotarla: auditoría, plan y sesiones 01 y 02 hechos y publicados (5/11/2026), la 03 (la serie
 > de comandos, completa) publicada el 6/11 y el 7/11, la 04 (la landing) publicada el 6/11, la 05
 > (lanzamiento) preparada el 6/11, que publica el dueño según el calendario de L5, y la 06 (12

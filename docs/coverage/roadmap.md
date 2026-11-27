@@ -45,8 +45,9 @@ us to walk again, whereas a command costs the same before or after it.
    vertices selected with Ctrl+click (command-line.md), PRESSPULL on its faces, SLICE and SECTION
    (the kernel's cut, section and face offset in `geometry/solidEdits.ts`); 6b is done:
    FILLETEDGE, CHAMFEREDGE and SOLIDEDIT's faces (modify.md; the kernel's blends in
-   `geometry/solidBlends.ts`). 6c (3DMOVE, 3DROTATE, UCS Face and UCSDETECT) waits for the
-   reviews of what is built under "Command reviews": 26 to 31 are done (2026-11-05), 32 remains.
+   `geometry/solidBlends.ts`). 6c (3DMOVE, 3DROTATE, UCS Face and UCSDETECT) is next: the
+   reviews of what is built under "Command reviews" are done (26 to 31 on 2026-11-05, 32 on
+   2026-11-27).
    The rest of the visual styles are wanted by the owner (2026-11-08), a delivery of their own
    after phase 6, not yet scheduled: VSCURRENT's Wireframe, Shaded, Shaded with edges, Shades of
    Gray, Sketchy and X-ray, and the viewport controls' visual style menu to switch them as
@@ -156,7 +157,7 @@ with the area. The order puts first the commands whose review settles what the l
 | 29  | Solid edits      | SLICE, SECTION, FILLETEDGE, CHAMFEREDGE, SOLIDEDIT                                                                       | sub-objects (Ctrl+click, Ctrl+Space, their highlight, grips and selection), a command's own grip as a nested command                                                                                                          | done  |
 | 30  | Solid inquiry    | MASSPROP; VSCURRENT's Hidden and Conceptual                                                                              | the visual styles                                                                                                                                                                                                                  | done  |
 | 31  | PEDIT, SPLINEDIT | 3DPOLY, PEDIT, SPLINEDIT                                                                                                 | the 3D polyline object                                                                                                                                                                                                             | done  |
-| 32  | LIST, CHPROP     | LIST, CHPROP                                                                                                             | LIST's report of every object                                                                                                                                                                                                      |       |
+| 32  | LIST, CHPROP     | LIST, CHPROP                                                                                                             | LIST's report of every object                                                                                                                                                                                                      | | done  |
 
 Reviews 26 to 32 take what was built after the order was set (3 November 2026), the solids first:
 phase 6c builds on them, and their mouse had never been compared with the desktop's (BOX's height
@@ -221,4 +222,7 @@ edit in Missing (`workspace.md`, `command-line.md`, `drafting-aids.md`). The Cli
 (`docs/plans/clipboard-review.md`), the last, found the console's PASTECLIP to be its text paste:
 what an object paste takes, lands on and leaves selected is the desktop's (CFD); it leaves
 PASTECLIP's INSERT keywords, foreign text pasted as MTEXT and PASTEBLOCK / CUTBASE in
-`clipboard-and-files.md`'s Missing.
+`clipboard-and-files.md`'s Missing. The LIST and CHPROP review (`docs/plans/list-review.md`) owns LIST's report
+of every object, in every command language; it fixed on its way what is drawn in a UCS turned
+upside down (LSR-47: -Z kept, a -Z 2D solid filled and picked seen square on), and leaves a hatch
+made in a turned UCS, plot styles, materials and LEADER's MTEXT flow direction in LIST's Missing.
