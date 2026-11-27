@@ -2,8 +2,11 @@ import { Vec3 } from "../../geometry/Vec3"
 import {
   Entity,
   copyEntity,
+  translateEntity,
   withCopiedAssociations,
 } from "../../domain/entities"
+import { SubobjectRef } from "../../domain/solidSubobjects"
+import { subobjectOwners } from "./subobjectSet"
 import { AddEntitiesCommand } from "../commands/entityCommands"
 import { ToolContext, ToolQuestion } from "./Tool"
 import { PlacementTool } from "./PlacementTool"
@@ -46,16 +49,34 @@ export class CopyTool extends PlacementTool {
     ctx.report(ctx.text.message("copyModeMultiple"))
   }
 
+  /** A solid's face, edge or vertex copies the whole solid (solid-edits/p247). */
+  protected subobjectGhosts(
+    refs: readonly SubobjectRef[],
+    delta: Vec3,
+    ctx: ToolContext
+  ): Map<string, Entity> {
+    return new Map(
+      subobjectOwners(ctx, refs).map((solid) => [
+        solid.id,
+        translateEntity(solid, delta),
+      ])
+    )
+  }
+
   protected place(
     originals: readonly Entity[],
     delta: Vec3,
     ctx: ToolContext
   ): void {
+    const set = [
+      ...originals,
+      ...subobjectOwners(ctx, this.subobjectsOf(originals, ctx)),
+    ]
     ctx.execute(
       new AddEntitiesCommand(
         withCopiedAssociations(
-          originals,
-          originals.map((entity) => copyEntity(entity, delta))
+          set,
+          set.map((entity) => copyEntity(entity, delta))
         )
       )
     )

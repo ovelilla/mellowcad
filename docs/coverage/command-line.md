@@ -278,9 +278,19 @@ Object's, EXPLODE's, COPYCLIP's, the arrays', BLOCK's, LIST's, whose refusals li
 `SUbobject/Object` (erase/p02, p138, p223, p251, p259, p260; solid-edits/p248; CUTCLIP's does) —
 `S` is taken and does nothing, `SI`
 being SIngle (p153, p154, p158; MIRROR's probed), and `SU` is refused —: in
-SUbobject a pick, a window, a fence or a polygon finds `0 found` (erase/p132), on a solid too, whose
-faces, edges and vertices are phase 6c's (Missing; a crossing inside a face finds none in AutoCAD
-either, solid-edits/p258, and a pick on nothing starts a window, p263), Last and ALL are refused
+SUbobject a pick, clicked or typed, takes a solid's vertex, edge or face under it, as Ctrl+click at
+`Command:` does (`1 found`, solid-edits/p241–p243; again `1 found (1 duplicate), 1 total`, Remove
+`1 found, 1 removed, 0 total`, p260; a locked solid's `1 found` / `1 was on a locked layer.`, left
+out, p254), a window its edges and vertices it holds whole (a box's `20 found`, p257), while a
+crossing, a fence or a polygon finds `0 found` (a crossing inside a face finds none in AutoCAD
+either, p258; erase/p132), and a pick on nothing starts a window (p263); Ctrl+click takes them at
+any `Select objects:` that offers SUbobject (MOVE's, COPY's, ROTATE's, SCALE's, ERASE's: About
+Selecting Subobjects), and one selected before the command is its set, counted (desktop
+solid-edits/d01-f: MOVE's `1 found`); MOVE, ROTATE and SCALE reshape the solid by them, the faces
+round them carried on to meet them (the top face raised, p244; an edge moved, its two faces tilting,
+p245, p262; the top face scaled to a frustum, p261), COPY copies the whole solid (p247), ERASE
+leaves its geometry, its primitive dropped as MOVE's, ROTATE's and SCALE's are (p241, p264), a solid
+held whole taking no part apart, each one step; Last and ALL are refused
 with its own list (`Window/Crossing/BOX/Fence/…/SIngle/SUbobject/Object`), Previous takes its set
 (`No previous selection set.` with none, solid-edits/p256), and Object goes back. Each says what
 it found on the line AutoCAD says it — after a pick on the prompt's line, after
@@ -317,15 +327,16 @@ so `S` is Subobjeto there; after a global `_S` the question names the global wor
 `SIngle o SUbobject?`, p130, p131)
 
 **Missing:** Group (`Enter group name:`, `Invalid group name.`, p134) and Multiple (its picks
-counted at Enter, `2 selected, 2 found`, p135); SUbobject's faces, edges and vertices (AutoCAD
-2027's console: a pick on a face, an edge or a vertex `1 found`, solid-edits/p241–p243; a window
-round a box `20 found`, p257; one again `1 found (1 duplicate), 1 total`, Remove `1 found, 1
-removed, 0 total`, p260; a locked solid's `1 found` / `1 was on a locked layer.`, p254; `_O` then a
-pick `1 found, 1 total`, p259), MOVE, ROTATE and SCALE reshaping the solid by them (p244–p246,
-p249, p261, p262), COPY copying the whole solid (p247), ERASE leaving it, its primitive dropped
-(p241, p264), and the Ctrl+pick that takes them at MOVE's, ROTATE's, SCALE's and ERASE's `Select
-objects:`, each counted (desktop: MOVE's `1 found`, `1 found, 2 total`; phase 6c), where here Ctrl
-picks as a plain click, as LIST's and COPY's do there; a pick or a typed point on an object on a
+counted at Enter, `2 selected, 2 found`, p135); a vertex moved and a face turned in its plane,
+whose faces round them AutoCAD splits into triangles or tilts as no plane through their corners
+could (p246, p249: here `Modeling Operation Error:` and the solid left as it was), parts of curved
+faces or edges but a planar face moved along its normal, which SOLIDEDIT's offset carries; `_O`
+then a pick on a part's solid, `1 found, 1 total` (p259: here the part stays besides the whole);
+what a crossing, a fence or a polygon finds in SUbobject (**unverified**), and what the other
+commands offering SUbobject do with a part (EXTRUDE extrudes a face, the help says: here their
+SUbobject and Ctrl+click find no part, **unverified** for each), a face whose outline the move
+would make cross itself (here refused as a vertex moved is); LIST of a part selected before it (AutoCAD lists the solid: here LIST's set
+takes none); a pick or a typed point on an object on a
 locked
 layer (here it finds nothing and starts a window; AutoCAD says `1 found` / `1 was on a locked
 layer.`, erase/p211, p257; at `Command:` it is selected, properties/d02-1); **unverified** whether
@@ -358,13 +369,11 @@ it at once (d01-a). Ctrl+Space walks to the next under the cursor (the top, then
 them with the rest. Held over, a face's edges and an edge glow as a rollover, a vertex a light disc
 (d01-b); selected, they glow blue and wear a red grip, a disc lying in the face at its centre, a
 bar along the edge at its middle, a dot on the vertex (d01-c). A locked solid's shows the padlock
-and no glow under Ctrl, and Ctrl+click takes it, blue, with no grip (d01-h). Here the subobjects
-are no set a command takes: with only them selected LIST, MOVE and ERASE ask `Select objects:`.
+and no glow under Ctrl, and Ctrl+click takes it, blue, with no grip (d01-h). Selected, they are
+the set MOVE, COPY, ROTATE, SCALE and ERASE take, `1 found` (d01-f; `Select objects:` above).
 
-**Missing:** dragging their grips and the gizmo, and MOVE, ROTATE, SCALE and ERASE acting on them
-(3DMOVE's and 3DROTATE's, phase 6c); a selected face, edge or vertex as the preselection LIST, MOVE
-and ERASE take, `1 found`: LIST lists the solid, ERASE leaves its geometry and drops `Box` from its
-LIST (as solid-edits/p241), MOVE asks the base point (d01-f; phase 6c, EDITS-D133); the Properties
+**Missing:** dragging their grips; LIST of a part selected before it (AutoCAD lists the solid,
+solid-edits/p241: here LIST asks `Select objects:`); the Properties
 palette's titles and rows: `Solid face` (es `Cara de sólido`), General's Color editable, the rest
 grey, 3D Visualization's Material; `Solid edge` (`Arista de sólido`), Color editable; `Solid
 vertex` (`Vértice de sólido`), all grey (d01-g); the grips' hover menus, a face's `Extend adjacent

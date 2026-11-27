@@ -2,7 +2,7 @@
 title: "Comando PARALLELEPIPEDO (BOX) in AutoCAD"
 description: "Come AutoCAD disegna un parallelepipedo solido 3D con PARALLELEPIPEDO (BOX): due angoli e un'altezza, Centro, Cubo, Lunghezza. Provalo."
 figure: "Un parallelepipedo 60 per 40 per 25, da due angoli e un'altezza, visto da sud-est nello stile visivo Nascosto."
-sourceHash: "46936b3da48e"
+sourceHash: "9a0b32afd4c2"
 ---
 
 PARALLELEPIPEDO disegna un parallelepipedo solido 3D con i lati lungo gli assi dell'UCS: indica il primo angolo, l'altro angolo, poi l'altezza. L'altezza sale lungo Z dell'UCS, una negativa scende, e un punto la dà con la sua distanza dall'angolo; un angolo dato a una Z diversa dal primo imposta l'altezza senza chiederla. L'ultima altezza, e l'ultima lunghezza e larghezza di un cubo o di Lunghezza, sono proposte come predefiniti che Invio accetta, condivisi con le altre primitive e con <Command id="EXTRUDE" />. Il parallelepipedo sta sul layer corrente, e Annulla lo annulla in un solo passo.
@@ -29,7 +29,7 @@ All'altezza: chiede due punti, e l'altezza è la distanza tra essi.
 
 ## Missing
 
-Sposta, Ruota, Scala e Specchio da un grip attivo, che AutoCAD scorre con Invio. I comandi 3D propri, 3DMOVE, 3DROTATE, 3DSCALE, MIRROR3D, ROTATE3D, ALIGN, 3DALIGN, con i loro gizmo, e lo spostamento di facce, spigoli e vertici uno a uno. L'UCS dinamico. Le quote tratteggiate che AutoCAD disegna mentre dai l'angolo, la lunghezza e la larghezza. <Command id="FILLET" /> e <Command id="CHAMFER" /> dei suoi spigoli, che fanno <Command id="FILLETEDGE" /> e <Command id="CHAMFEREDGE" />. Registra cronologia e Mostra cronologia della cronologia del solido, e la riga Materiale. Gli stili visivi che <Command id="VSCURRENT" /> non ha oltre a Wireframe 2D, Nascosto e Concettuale.
+Sposta, Ruota, Scala e Specchio da un grip attivo, che AutoCAD scorre con Invio. I comandi 3D propri, 3DMOVE, 3DROTATE, 3DSCALE, MIRROR3D, ROTATE3D, ALIGN, 3DALIGN, con i loro gizmo. Le quote tratteggiate che AutoCAD disegna mentre dai l'angolo, la lunghezza e la larghezza. <Command id="FILLET" /> e <Command id="CHAMFER" /> dei suoi spigoli, che fanno <Command id="FILLETEDGE" /> e <Command id="CHAMFEREDGE" />. Registra cronologia e Mostra cronologia della cronologia del solido, e la riga Materiale. Gli stili visivi che <Command id="VSCURRENT" /> non ha oltre a Wireframe 2D, Nascosto e Concettuale.
 
 ## Questions
 

@@ -30,6 +30,12 @@ import {
 } from "./Tool"
 import { ObjectSelector } from "./objectSelection"
 import { selectedInDrawingOrder } from "./drawingOrder"
+import {
+  PartGhosts,
+  partsOf,
+  reshapedOwners,
+  sayUnreshaped,
+} from "./subobjectSet"
 import { transformDrag } from "./transformDrag"
 import type { PromptId } from "../../locales/types"
 
@@ -101,7 +107,10 @@ export class ScaleTool implements Tool {
   readonly id = "scale"
 
   private state: ScaleState = { phase: "selecting" }
+  /** The drag's reshaped solids, reused a moment when slow to work out. */
+  private readonly partGhosts = new PartGhosts()
   private readonly selector = new ObjectSelector({
+    takesParts: true,
     done: (ctx) => this.confirmSelection(ctx),
   })
   private lastScreen: Vec2 | null = null
@@ -181,6 +190,7 @@ export class ScaleTool implements Tool {
   }
 
   onDeactivate(ctx: ToolContext): void {
+    this.partGhosts.reset()
     this.state = { phase: "selecting" }
     this.selector.start()
     ctx.dynamicInput.close()
@@ -334,11 +344,25 @@ export class ScaleTool implements Tool {
    * The originals fade where they were while the set drags scaled, but not
    * under Copy, as ROTATE's (desktop transforms/d06, d08-3; d03).
    */
-  fadedEntityIds(): readonly EntityId[] {
+  fadedEntityIds(ctx: ToolContext): readonly EntityId[] {
     const state = this.dragged()
-    return state && !state.copy
-      ? state.originals.map((entity) => entity.id)
-      : []
+    if (!state || state.copy) return []
+    const { owners } = this.parts(state.originals, ctx)
+    return [...state.originals, ...owners].map((entity) => entity.id)
+  }
+
+  /** The set's faces, edges and vertices of solids, and their solids (solid-edits/p261). */
+  private parts(originals: readonly Entity[], ctx: ToolContext) {
+    return partsOf(ctx, this.selector.takesSubobjects(), originals)
+  }
+
+  /** `p` scaled `factor` about `base`. */
+  private static scaled(base: Vec3, factor: number) {
+    return (p: Vec3): Vec3 => ({
+      x: base.x + (p.x - base.x) * factor,
+      y: base.y + (p.y - base.y) * factor,
+      z: base.z + (p.z - base.z) * factor,
+    })
   }
 
   /** The base point given, the set no longer glows (desktop transforms/d08-1). */
@@ -356,10 +380,14 @@ export class ScaleTool implements Tool {
         ? this.resolveDirectFactor(state, current, ctx)
         : this.resolveNewLength(base, current, ctx) / state.reference
     const safe = Number.isFinite(factor) && factor > 0 ? factor : 1
+    const { refs, owners } = this.parts(originals, ctx)
+    const ghosts = state.copy
+      ? new Map<string, Entity>()
+      : this.partGhosts.of(ctx, refs, ScaleTool.scaled(base, safe))
     return transformDrag(
       ctx,
-      originals,
-      (entity) => scaleEntity(entity, base, safe),
+      [...originals, ...owners],
+      (entity) => ghosts.get(entity.id) ?? scaleEntity(entity, base, safe),
       base,
       current
     )
@@ -410,7 +438,10 @@ export class ScaleTool implements Tool {
 
   private enterFactor(base: Vec3, ctx: ToolContext): void {
     const originals = selectedInDrawingOrder(ctx)
-    if (originals.length === 0) {
+    if (
+      originals.length === 0 &&
+      this.parts(originals, ctx).refs.length === 0
+    ) {
       // The selection vanished (e.g. undo elsewhere): fall back to picking.
       this.state = { phase: "selecting" }
       this.selector.start()
@@ -577,20 +608,30 @@ export class ScaleTool implements Tool {
     ctx: ToolContext
   ): void {
     this.lastFactor = factor
+    const { refs, owners } = this.parts(state.originals, ctx)
     if (state.copy) {
+      // A part copies its whole solid, as COPY's (solid-edits/p247).
+      const set = [...state.originals, ...owners]
       ctx.execute(
         new AddEntitiesCommand(
           withCopiedAssociations(
-            state.originals,
-            state.originals.map((e) => scaleEntityCopy(e, state.base, factor))
+            set,
+            set.map((e) => scaleEntityCopy(e, state.base, factor))
           )
         )
       )
     } else if (Math.abs(factor - 1) > 1e-9) {
+      const { changed, failed } = reshapedOwners(
+        ctx,
+        refs,
+        ScaleTool.scaled(state.base, factor)
+      )
+      sayUnreshaped(failed, ctx)
       ctx.execute(
-        new UpdateEntitiesCommand(
-          state.originals.map((e) => scaleEntity(e, state.base, factor))
-        )
+        new UpdateEntitiesCommand([
+          ...state.originals.map((e) => scaleEntity(e, state.base, factor)),
+          ...changed,
+        ])
       )
     }
     ctx.dynamicInput.close()

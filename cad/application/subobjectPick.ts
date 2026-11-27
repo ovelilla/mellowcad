@@ -141,3 +141,41 @@ function underBox(
     screen.y <= y1 + PICK_BOX_PX
   )
 }
+
+/**
+ * The vertices and edges of `solids` a window from `a` to `b` on the screen
+ * holds whole, edges before vertices as each solid lists them: what
+ * SUbobject's window takes (AutoCAD 2027's round a box: `20 found`, its 12
+ * edges and 8 vertices, solid-edits/p257). Faces are left out.
+ */
+export function subobjectsInWindow(
+  solids: readonly Solid3dEntity[],
+  viewport: Viewport,
+  a: Vec2,
+  b: Vec2
+): SubobjectRef[] {
+  const x0 = Math.min(a.x, b.x)
+  const x1 = Math.max(a.x, b.x)
+  const y0 = Math.min(a.y, b.y)
+  const y1 = Math.max(a.y, b.y)
+  const inside = (p: Vec3) => {
+    const at = viewport.worldToScreen(p)
+    return at.x >= x0 && at.x <= x1 && at.y >= y0 && at.y <= y1
+  }
+  const out: SubobjectRef[] = []
+  for (const { brep, id } of solids) {
+    brep.edges.forEach((edge, index) => {
+      if (edge.curve.kind === "point") return
+      const trace = edgeTrace(brep, edge)
+      for (let i = 0; i <= EDGE_SAMPLES; i++) {
+        const t = trace.t0 + ((trace.t1 - trace.t0) * i) / EDGE_SAMPLES
+        if (!inside(trace.point(t))) return
+      }
+      out.push({ id, kind: "edge", index })
+    })
+    brep.vertices.forEach((p, index) => {
+      if (inside(p)) out.push({ id, kind: "vertex", index })
+    })
+  }
+  return out
+}

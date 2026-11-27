@@ -3,7 +3,7 @@ title: "Kvádr v AutoCADu: příkaz KVÁDR (BOX)"
 metaTitle: "Kvádr v AutoCADu 3D: příkaz KVÁDR (BOX)"
 description: "Jak nakreslit 3D kvádr v AutoCADu příkazem KVÁDR (BOX): dva rohy a výška, Střed, Krychle, Délka a 2Body. Vyzkoušejte zdarma online."
 figure: "Kvádr 60 × 40 × 25, ze dvou rohů a výšky, při pohledu od jihovýchodu ve vizuálním stylu Skrytý."
-sourceHash: "46936b3da48e"
+sourceHash: "9a0b32afd4c2"
 ---
 
 Příkaz KVÁDR (BOX) nakreslí kvádr jako 3D těleso se stranami podél os USS: zadejte první roh, druhý roh a potom výšku. Výška roste podél osy Z USS, záporná jde dolů a bod ji určí svou vzdáleností od rohu; roh zadaný v jiné výšce Z než první nastaví výšku bez otázky. Poslední výška a poslední délka a šířka krychle nebo možnosti Délka se nabízejí jako výchozí hodnoty, které přijme Enter, společné s ostatními základními tělesy a příkazem <Command id="EXTRUDE" />. Kvádr leží v aktuální hladině a jedním krokem zpět ho odstraníte.
@@ -30,7 +30,7 @@ Na výzvu k výšce: zeptá se na dva body a výška je vzdálenost mezi nimi.
 
 ## Missing
 
-Režimy POSUN, OTOČ, MĚŘÍTKO a ZRCADLI z aktivního uzlu, mezi kterými AutoCAD přepíná klávesou Enter. Vlastní 3D příkazy – 3DPOSUN, 3DOTOČ, 3DMĚŘÍTKO, ZRCADLI3D, OTOČ3D, SROVNEJ, 3DSROVNEJ – s jejich gizmy a posouvání jeho ploch, hran a vrcholů jednotlivě. Dynamický USS. Tečkované kóty, které AutoCAD kreslí, když zadáváte roh, délku a šířku. Příkazy <Command id="FILLET" /> a <Command id="CHAMFER" /> na jeho hranách, což dělají <Command id="FILLETEDGE" /> a <Command id="CHAMFEREDGE" />. Záznam a zobrazení historie tělesa a řádek Materiál. Vizuální styly, které <Command id="VSCURRENT" /> nemá kromě 2D drátového modelu, Skrytého a Koncepčního.
+Režimy POSUN, OTOČ, MĚŘÍTKO a ZRCADLI z aktivního uzlu, mezi kterými AutoCAD přepíná klávesou Enter. Vlastní 3D příkazy – 3DPOSUN, 3DOTOČ, 3DMĚŘÍTKO, ZRCADLI3D, OTOČ3D, SROVNEJ, 3DSROVNEJ – s jejich gizmy. Tečkované kóty, které AutoCAD kreslí, když zadáváte roh, délku a šířku. Příkazy <Command id="FILLET" /> a <Command id="CHAMFER" /> na jeho hranách, což dělají <Command id="FILLETEDGE" /> a <Command id="CHAMFEREDGE" />. Záznam a zobrazení historie tělesa a řádek Materiál. Vizuální styly, které <Command id="VSCURRENT" /> nemá kromě 2D drátového modelu, Skrytého a Koncepčního.
 
 ## Questions
 

@@ -128,20 +128,17 @@ describe("a solid's subobjects, Ctrl+clicked", () => {
     expect(subobjects(hidden).map((s) => s.kind)).toEqual(["face"])
   })
 
-  // WHY no `1 found`: AutoCAD's LIST, MOVE and ERASE take a selected face
-  // as their preselection (solid-edits/d01-f), phase 6c's here (EDITS-D133).
-  it("is no set a command takes here: ERASE asks for objects", () => {
+  // AutoCAD's MOVE and ERASE take a selected face as their preselection,
+  // `1 found` (solid-edits/d01-f): ERASE leaves the solid, no box any more
+  // (p241, p264).
+  it("is the set ERASE takes, `1 found`", () => {
     const cad = box()
     cad.click({ x: 3, y: 7, z: 10 }, CTRL)
     const from = cad.commandLog().length
     answer(cad, "ERASE")
-    expect(cad.commandLog().slice(from)).toEqual(["ERASE"])
-    expect(
-      cad
-        .state()
-        .commandLine.question?.map((s) => s.text)
-        .join("")
-    ).toBe("Select objects:")
+    expect(cad.commandLog().slice(from)).toEqual(["ERASE", "1 found"])
+    const solid = cad.runtime.document.getEntities()[0]
+    expect(solid.type === "solid3d" && solid.primitive).toBeFalsy()
   })
 
   it("picks as any click does where Ctrl finds none", () => {

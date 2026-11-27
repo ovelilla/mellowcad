@@ -23,6 +23,8 @@ import { AddedBy, ObjectSelector } from "./objectSelection"
 import { pointAlongCursor, showRise } from "./directDistance"
 import { selectedInDrawingOrder } from "./drawingOrder"
 import { transformDrag } from "./transformDrag"
+import { SubobjectRef } from "../../domain/solidSubobjects"
+import { PartGhosts, subobjectOwners, takenSubobjects } from "./subobjectSet"
 
 /**
  * Shared machinery for AutoCAD's displacement-modify commands (MOVE, COPY,
@@ -71,6 +73,7 @@ export abstract class PlacementTool implements Tool {
   private state: PlacementState = { phase: "selecting" }
   private readonly selector = new ObjectSelector({
     takes: () => this.selectionInput(),
+    takesParts: true,
     done: (ctx) => this.confirmSelection(ctx),
     onAdded: (ids, added) => this.onSelectionAdded(ids, added),
   })
@@ -115,6 +118,41 @@ export abstract class PlacementTool implements Tool {
   protected transformEntity(entity: Entity, delta: Vec3): Entity {
     return translateEntity(entity, delta)
   }
+
+  /**
+   * The faces, edges and vertices of solids the set holds and the solids
+   * they are parts of, apart from `originals`, the whole objects (Ctrl+click
+   * or SUbobject where `Select objects:` takes them).
+   */
+  protected subobjectsOf(
+    originals: readonly Entity[],
+    ctx: ToolContext
+  ): readonly SubobjectRef[] {
+    return takenSubobjects(
+      ctx,
+      this.selector.takesSubobjects(),
+      new Set(originals.map((entity) => entity.id))
+    )
+  }
+
+  /**
+   * The solids whose parts drag, as each drags: MOVE's reshaped by its
+   * parts carried with them (solid-edits/p244), COPY's whole (p247).
+   */
+  protected subobjectGhosts(
+    refs: readonly SubobjectRef[],
+    delta: Vec3,
+    ctx: ToolContext
+  ): Map<string, Entity> {
+    return this.partGhosts.of(ctx, refs, (p) => ({
+      x: p.x + delta.x,
+      y: p.y + delta.y,
+      z: p.z + delta.z,
+    }))
+  }
+
+  /** The drag's reshaped solids, reused a moment when slow to work out. */
+  protected readonly partGhosts: PartGhosts = new PartGhosts()
 
   /**
    * Called as objects join the set, with how they were found: STRETCH keeps
@@ -306,6 +344,7 @@ export abstract class PlacementTool implements Tool {
   }
 
   onDeactivate(ctx: ToolContext): void {
+    this.partGhosts.reset()
     this.state = { phase: "selecting" }
     this.selector.start()
     ctx.dynamicInput.close()
@@ -409,11 +448,17 @@ export abstract class PlacementTool implements Tool {
    * MOVE's (and STRETCH's) originals fade where they were while the set
    * drags; COPY's keep the selection's glow (desktop move/d01, d11).
    */
-  fadedEntityIds(): readonly EntityId[] {
+  fadedEntityIds(ctx: ToolContext): readonly EntityId[] {
     if (this.state.phase !== "secondPoint" || this.continuesAfterPlace()) {
       return []
     }
-    return this.state.originals.map((entity) => entity.id)
+    const { originals } = this.state
+    return [
+      ...originals.map((entity) => entity.id),
+      ...subobjectOwners(ctx, this.subobjectsOf(originals, ctx)).map(
+        (solid) => solid.id
+      ),
+    ]
   }
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
@@ -422,10 +467,12 @@ export abstract class PlacementTool implements Tool {
     const { base, originals, current } = this.state
     const dest = this.resolveSecond(base, current, ctx)
     const delta = sub3(dest, base)
+    const refs = this.subobjectsOf(originals, ctx)
+    const ghosts = this.subobjectGhosts(refs, delta, ctx)
     return transformDrag(
       ctx,
-      originals,
-      (entity) => this.transformEntity(entity, delta),
+      [...originals, ...subobjectOwners(ctx, refs)],
+      (entity) => ghosts.get(entity.id) ?? this.transformEntity(entity, delta),
       base,
       dest
     )
@@ -474,7 +521,10 @@ export abstract class PlacementTool implements Tool {
 
   private enterSecondPoint(base: Vec3, ctx: ToolContext, screen?: Vec2): void {
     const originals = selectedInDrawingOrder(ctx)
-    if (originals.length === 0) {
+    if (
+      originals.length === 0 &&
+      this.subobjectsOf(originals, ctx).length === 0
+    ) {
       // The selection vanished (e.g. undo elsewhere): fall back to picking.
       this.state = { phase: "selecting" }
       this.selector.start()

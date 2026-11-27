@@ -1,4 +1,5 @@
 import { Vec2, V } from "../../geometry/Vec2"
+import { Vec3 } from "../../geometry/Vec3"
 import { headingInUcs } from "./ucsHeading"
 import {
   Entity,
@@ -30,6 +31,12 @@ import {
 } from "./Tool"
 import { ObjectSelector } from "./objectSelection"
 import { selectedInDrawingOrder } from "./drawingOrder"
+import {
+  PartGhosts,
+  partsOf,
+  reshapedOwners,
+  sayUnreshaped,
+} from "./subobjectSet"
 import { transformDrag } from "./transformDrag"
 
 /**
@@ -96,7 +103,10 @@ export class RotateTool implements Tool {
   readonly shortcut = "r"
 
   private state: RotateState = { phase: "selecting" }
+  /** The drag's reshaped solids, reused a moment when slow to work out. */
+  private readonly partGhosts = new PartGhosts()
   private readonly selector = new ObjectSelector({
+    takesParts: true,
     done: (ctx) => this.confirmSelection(ctx),
   })
   private lastScreen: Vec2 | null = null
@@ -177,6 +187,7 @@ export class RotateTool implements Tool {
   }
 
   onDeactivate(ctx: ToolContext): void {
+    this.partGhosts.reset()
     this.state = { phase: "selecting" }
     this.selector.start()
     ctx.dynamicInput.close()
@@ -327,11 +338,27 @@ export class RotateTool implements Tool {
    * The originals fade where they were while the set drags turned, but not
    * under Copy (desktop transforms/d01, d03).
    */
-  fadedEntityIds(): readonly EntityId[] {
+  fadedEntityIds(ctx: ToolContext): readonly EntityId[] {
     const state = this.dragged()
-    return state && !state.copy
-      ? state.originals.map((entity) => entity.id)
-      : []
+    if (!state || state.copy) return []
+    const { owners } = this.parts(state.originals, ctx)
+    return [...state.originals, ...owners].map((entity) => entity.id)
+  }
+
+  /** The set's faces, edges and vertices of solids, and their solids (solid-edits/p249). */
+  private parts(originals: readonly Entity[], ctx: ToolContext) {
+    return partsOf(ctx, this.selector.takesSubobjects(), originals)
+  }
+
+  /** `p` turned `rad` about the frame's Z through `base`. */
+  private static turned(base: Vec2, rad: number) {
+    const c = Math.cos(rad)
+    const s = Math.sin(rad)
+    return (p: Vec3): Vec3 => ({
+      x: base.x + (p.x - base.x) * c - (p.y - base.y) * s,
+      y: base.y + (p.x - base.x) * s + (p.y - base.y) * c,
+      z: p.z,
+    })
   }
 
   /** The base point given, the set no longer glows (desktop transforms/d03, d04-1). */
@@ -349,10 +376,14 @@ export class RotateTool implements Tool {
         ? this.resolveDirectRotation(base, current, ctx)
         : this.resolveNewAngle(state, current, ctx) - state.reference
     const rad = (rotation * Math.PI) / 180
+    const { refs, owners } = this.parts(originals, ctx)
+    const ghosts = state.copy
+      ? new Map<string, Entity>()
+      : this.partGhosts.of(ctx, refs, RotateTool.turned(base, rad))
     return transformDrag(
       ctx,
-      originals,
-      (entity) => rotateEntity(entity, base, rad),
+      [...originals, ...owners],
+      (entity) => ghosts.get(entity.id) ?? rotateEntity(entity, base, rad),
       base,
       current
     )
@@ -403,7 +434,10 @@ export class RotateTool implements Tool {
 
   private enterAngle(base: Vec2, ctx: ToolContext): void {
     const originals = selectedInDrawingOrder(ctx)
-    if (originals.length === 0) {
+    if (
+      originals.length === 0 &&
+      this.parts(originals, ctx).refs.length === 0
+    ) {
       // The selection vanished (e.g. undo elsewhere): fall back to picking.
       this.state = { phase: "selecting" }
       this.selector.start()
@@ -522,20 +556,30 @@ export class RotateTool implements Tool {
   ): void {
     this.lastAngle = rotationDeg
     const rad = (rotationDeg * Math.PI) / 180
+    const { refs, owners } = this.parts(state.originals, ctx)
     if (state.copy) {
+      // A part copies its whole solid, as COPY's (solid-edits/p247).
+      const set = [...state.originals, ...owners]
       ctx.execute(
         new AddEntitiesCommand(
           withCopiedAssociations(
-            state.originals,
-            state.originals.map((e) => rotateEntityCopy(e, state.base, rad))
+            set,
+            set.map((e) => rotateEntityCopy(e, state.base, rad))
           )
         )
       )
     } else if (Math.abs(normalizeSigned(rotationDeg)) > 1e-9) {
+      const { changed, failed } = reshapedOwners(
+        ctx,
+        refs,
+        RotateTool.turned(state.base, rad)
+      )
+      sayUnreshaped(failed, ctx)
       ctx.execute(
-        new UpdateEntitiesCommand(
-          state.originals.map((e) => rotateEntity(e, state.base, rad))
-        )
+        new UpdateEntitiesCommand([
+          ...state.originals.map((e) => rotateEntity(e, state.base, rad)),
+          ...changed,
+        ])
       )
     }
     ctx.dynamicInput.close()

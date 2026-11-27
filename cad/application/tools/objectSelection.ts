@@ -30,6 +30,8 @@ import { drawnSolidLines } from "./ghostLook"
 import { CommandOption, PointerInput, QuestionInput, ToolContext } from "./Tool"
 import { typedPick } from "./typedPick"
 import { lockedObjectAt } from "./lockedPick"
+import { SubobjectRef, sameSubobject } from "../../domain/solidSubobjects"
+import { subobjectsAt, subobjectsInWindow } from "../subobjectPick"
 
 /** Screen-pixel movement past which a press-drag becomes a lasso. */
 const DRAG_THRESHOLD_PX = 4
@@ -178,6 +180,8 @@ interface Sifted {
 interface Operation {
   readonly added: readonly EntityId[]
   readonly removed: readonly EntityId[]
+  readonly addedSubs?: readonly SubobjectRef[]
+  readonly removedSubs?: readonly SubobjectRef[]
 }
 
 export interface ObjectSelectorOptions {
@@ -186,6 +190,12 @@ export interface ObjectSelectorOptions {
    * find, a fence or polygon ended short — for the command to go on.
    */
   readonly done: (ctx: ToolContext) => void
+  /**
+   * Whether the command acts on the faces, edges and vertices of solids its
+   * set holds: MOVE, COPY, ROTATE, SCALE and ERASE (solid-edits/p241–p264).
+   * Another set offering SUbobject finds none there (Missing).
+   */
+  readonly takesParts?: boolean
   /**
    * What `Select objects:` takes, which its refusal lists the modes of: a
    * selection set with sub-objects (`"objects"`) by default.
@@ -380,14 +390,27 @@ export class ObjectSelector {
    */
   preselect(ctx: ToolContext): boolean {
     const all = ctx.selection.toArray()
-    if (all.length === 0) return false
+    // A face, an edge or a vertex Ctrl+clicked at `Command:` is a set the
+    // commands that take subobjects take, `1 found` (desktop solid-edits/
+    // d01-f: MOVE asks its base point); a solid on a locked layer's left out.
+    const subs = this.takesSubobjects() ? ctx.selection.subobjects() : []
+    const keptSubs = subs.filter((ref) => {
+      const solid = ctx.document.get(ref.id)
+      return solid && !ctx.document.getLayer(solid.layerId)?.locked
+    })
+    if (subs.length !== keptSubs.length) {
+      for (const ref of subs) {
+        if (!keptSubs.includes(ref)) ctx.selection.removeSubobject(ref)
+      }
+    }
+    if (all.length === 0 && subs.length === 0) return false
     const ids = this.options.accept?.(all, ctx) ?? all
     const sifted = this.sift(ids, ctx)
     ctx.selection.set(sifted.kept)
     this.sayLockedFirst(sifted, ctx)
     ctx.answer(
       ctx.text.message("objectsFound", {
-        found: ids.length,
+        found: ids.length + subs.length,
         duplicate: 0,
         removed: 0,
         total: 0,
@@ -396,8 +419,12 @@ export class ObjectSelector {
       })
     )
     this.sayRefused(sifted, ctx)
+    const lockedSubs = subs.length - keptSubs.length
+    if (lockedSubs > 0) {
+      ctx.report(ctx.text.message("onLockedLayer", { count: lockedSubs }))
+    }
     this.counted = true
-    if (sifted.kept.length === 0) {
+    if (sifted.kept.length === 0 && keptSubs.length === 0) {
       this.closesOnAdd = true
       return false
     }
@@ -569,6 +596,14 @@ export class ObjectSelector {
       ctx.requestRender()
       return true
     }
+    if (this.subobject && this.takesSubobjects()) {
+      const sub = this.subobjectAt(ctx.viewport.worldToScreen(point), ctx)
+      if (sub) {
+        this.selectSubobjects([sub], false, ctx)
+        ctx.requestRender()
+        return true
+      }
+    }
     const under = ctx.pick(at)
     if (under) {
       this.select(
@@ -687,6 +722,16 @@ export class ObjectSelector {
     if (input.button !== 0) return
     const step = this.step
     if (step.kind === "pressed") {
+      if ((this.subobject || input.ctrlKey) && this.takesSubobjects()) {
+        const sub = this.subobjectAt(input.screen, ctx)
+        if (sub) {
+          ctx.setLastPoint(input.point)
+          this.step = { kind: "objects", hover: null }
+          this.selectSubobjects([sub], step.subtract, ctx)
+          ctx.requestRender()
+          return
+        }
+      }
       const under = ctx.pick(input.world)
       if (under) {
         // A click that picks an object is LASTPOINT, the cursor's point on
@@ -964,6 +1009,19 @@ export class ObjectSelector {
       rule === "box"
         ? isCrossingBox(ctx.viewport, start, end)
         : rule === "crossing"
+    // WHY only a window's vertices and edges: AutoCAD 2027's window round a
+    // box finds 20 (solid-edits/p257), its crossing inside a face none
+    // (p258); what else a crossing finds is unverified.
+    if (this.subobject && !crossing && this.takesSubobjects()) {
+      const refs = subobjectsInWindow(
+        this.solidsOf(ctx),
+        ctx.viewport,
+        ctx.viewport.worldToScreen(start),
+        ctx.viewport.worldToScreen(end)
+      )
+      this.selectSubobjects(refs, subtract, ctx)
+      return
+    }
     const found = this.found(ctx, (include) =>
       objectsInWindow(ctx.document, start, end, ctx.viewport, crossing, include)
     )
@@ -1068,10 +1126,10 @@ export class ObjectSelector {
     ctx: ToolContext,
     find: (include: (entity: Entity) => boolean) => EntityId[]
   ): EntityId[] {
-    // WHY nothing in SUbobject: AutoCAD takes a solid's faces, edges and
-    // vertices there (`1 found`, solid-edits/p241–p243) for commands that
-    // reshape them (p244–p261), which are phase 6c's; on a line it finds
-    // `0 found` too (erase/p132).
+    // WHY no whole object in SUbobject: a pick and a window there find a
+    // solid's faces, edges and vertices (`selectSubobjects`); what a
+    // crossing, a fence or a polygon finds of them is unverified, and on a
+    // line it finds `0 found` (erase/p132).
     if (this.subobject) return []
     return find((entity) => ctx.document.isEntityVisible(entity))
   }
@@ -1131,7 +1189,9 @@ export class ObjectSelector {
         found: ids.length,
         duplicate,
         removed: removed.length,
-        total: ctx.selection.size,
+        total:
+          ctx.selection.size +
+          (this.takesSubobjects() ? ctx.selection.subobjects().length : 0),
         hasTotal: hasTotal ? "yes" : "no",
         box: "no",
       })
@@ -1293,6 +1353,8 @@ export class ObjectSelector {
     }
     for (const id of last.added) ctx.selection.remove(id)
     for (const id of last.removed) ctx.selection.add(id)
+    for (const ref of last.addedSubs ?? []) ctx.selection.removeSubobject(ref)
+    for (const ref of last.removedSubs ?? []) ctx.selection.addSubobject(ref)
     ctx.requestRender()
   }
 
@@ -1303,7 +1365,7 @@ export class ObjectSelector {
    */
   private close(ctx: ToolContext): boolean {
     this.backToObjects(ctx)
-    if (ctx.selection.isEmpty()) {
+    if (ctx.selection.isEmpty() && !this.holdsSubobjects(ctx)) {
       if (this.options.noneFound) {
         ctx.report(ctx.text.message(this.options.noneFound))
       }
@@ -1420,6 +1482,108 @@ export class ObjectSelector {
   /** What the prompt takes, as {@link ObjectSelectorOptions.takes}. */
   private set(): QuestionInput {
     return this.options.takes?.() ?? "objects"
+  }
+
+  /**
+   * Whether the set takes a solid's faces, edges and vertices: every set
+   * whose refusal lists SUbobject (MOVE's, ROTATE's, SCALE's, ERASE's,
+   * COPY's; solid-edits/p241–p264), never a single object's pick.
+   */
+  takesSubobjects(): boolean {
+    return (
+      this.options.takesParts === true &&
+      !this.options.one &&
+      !this.options.modes &&
+      this.set() === "objects"
+    )
+  }
+
+  /** Whether the set holds subobjects the command takes. */
+  private holdsSubobjects(ctx: ToolContext): boolean {
+    return this.takesSubobjects() && ctx.selection.subobjects().length > 0
+  }
+
+  private solidsOf(ctx: ToolContext) {
+    return ctx.document
+      .getEntities()
+      .filter(
+        (e): e is Extract<Entity, { type: "solid3d" }> =>
+          e.type === "solid3d" && ctx.document.isEntityVisible(e)
+      )
+  }
+
+  /** The subobject a pick at `screen` takes: the first under it, as Ctrl+click's at `Command:`. */
+  private subobjectAt(screen: Vec2, ctx: ToolContext): SubobjectRef | null {
+    const shaded = ctx.document.getSettings().visualStyle !== "2dWireframe"
+    return (
+      subobjectsAt(this.solidsOf(ctx), ctx.viewport, screen, shaded)[0] ?? null
+    )
+  }
+
+  /**
+   * Adds subobjects found to the set — or takes them out, removing or with
+   * Shift — and says so as for whole objects: `1 found`, `1 found (1
+   * duplicate), 1 total`, `1 found, 1 removed, 0 total`; one of a solid on a
+   * locked layer counted, said and left out (solid-edits/p241, p254, p257,
+   * p260).
+   */
+  private selectSubobjects(
+    refs: readonly SubobjectRef[],
+    subtract: boolean,
+    ctx: ToolContext
+  ): void {
+    const removing = this.removing || subtract
+    const added: SubobjectRef[] = []
+    const removed: SubobjectRef[] = []
+    let duplicate = 0
+    let locked = 0
+    const unique = refs.filter(
+      (ref, i) => refs.findIndex((other) => sameSubobject(other, ref)) === i
+    )
+    for (const ref of unique) {
+      const solid = ctx.document.get(ref.id)
+      if (!solid) continue
+      if (removing) {
+        if (!ctx.selection.hasSubobject(ref)) continue
+        ctx.selection.removeSubobject(ref)
+        removed.push(ref)
+      } else if (ctx.document.getLayer(solid.layerId)?.locked) {
+        locked++
+      } else if (ctx.selection.hasSubobject(ref)) {
+        duplicate++
+      } else {
+        ctx.selection.addSubobject(ref)
+        added.push(ref)
+      }
+    }
+    const hasTotal = this.counted && unique.length > 0
+    if (unique.length > 0) {
+      this.operations.push({
+        added: [],
+        removed: [],
+        addedSubs: added,
+        removedSubs: removed,
+      })
+      this.counted = true
+    }
+    ctx.answer(
+      ctx.text.message("objectsFound", {
+        found: unique.length,
+        duplicate,
+        removed: removed.length,
+        total: ctx.selection.size + ctx.selection.subobjects().length,
+        hasTotal: hasTotal ? "yes" : "no",
+        box: "no",
+      })
+    )
+    if (locked > 0) {
+      ctx.report(ctx.text.message("onLockedLayer", { count: locked }))
+    }
+    if (
+      (this.single && unique.length > 0) ||
+      (this.closesOnAdd && added.length > 0)
+    )
+      this.close(ctx)
   }
 
   /** The modes typed at `Select objects:`, as its refusal lists them. */

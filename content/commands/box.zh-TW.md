@@ -3,7 +3,7 @@ title: "AutoCAD BOX（方塊）指令"
 metaTitle: "CAD 3D 方塊指令（BOX）用法與選項"
 description: "AutoCAD 方塊（BOX）依提示逐步說明如何繪製 3D 實體方塊：兩個角點與高度、中心點、立方塊、長度與兩點。可在瀏覽器中免費試用。"
 figure: "一個 60 x 40 x 25 的方塊，以兩個角點與高度建立，以「隱藏」視覺型式從東南方檢視。"
-sourceHash: "46936b3da48e"
+sourceHash: "9a0b32afd4c2"
 ---
 
 BOX（方塊）指令繪製各邊沿 UCS 軸向的 3D 實體方塊：指定第一個角點、另一個角點，再指定高度。高度沿 UCS 的 Z 軸向上，負值則向下，也可以點選一點，以其與角點的距離作為高度；另一個角點若與第一個角點的 Z 不同，會直接決定高度而不再詢問。上一次的高度，以及立方塊或「長度」上一次的長度與寬度，會作為預設值提供，按 Enter 即採用，並與其他基本元素及 <Command id="EXTRUDE" /> 共用。方塊位於目前的圖層上，一個步驟即可「退回」。
@@ -30,7 +30,7 @@ BOX（方塊）指令繪製各邊沿 UCS 軸向的 3D 實體方塊：指定第�
 
 ## Missing
 
-從作用中的掣點執行移動、旋轉、比例與鏡射，AutoCAD 以按 Enter 循環切換。專屬的 3D 指令（3DMOVE、3DROTATE、3DSCALE、MIRROR3D、ROTATE3D、ALIGN、3DALIGN）及其小控件，以及逐一移動其面、邊與頂點。動態 UCS。指定角點、長度與寬度時，AutoCAD 所繪製的點線標註。以 <Command id="FILLET" /> 與 <Command id="CHAMFER" /> 處理其邊，此功能由 <Command id="FILLETEDGE" /> 與 <Command id="CHAMFEREDGE" /> 提供。「實體歷程」的「歷程」（記錄）與「展示歷程」，以及「材料」列。<Command id="VSCURRENT" /> 除「2D 線架構」、「隱藏」與「概念」以外所缺少的視覺型式。
+從作用中的掣點執行移動、旋轉、比例與鏡射，AutoCAD 以按 Enter 循環切換。專屬的 3D 指令（3DMOVE、3DROTATE、3DSCALE、MIRROR3D、ROTATE3D、ALIGN、3DALIGN）及其小控件。指定角點、長度與寬度時，AutoCAD 所繪製的點線標註。以 <Command id="FILLET" /> 與 <Command id="CHAMFER" /> 處理其邊，此功能由 <Command id="FILLETEDGE" /> 與 <Command id="CHAMFEREDGE" /> 提供。「實體歷程」的「歷程」（記錄）與「展示歷程」，以及「材料」列。<Command id="VSCURRENT" /> 除「2D 線架構」、「隱藏」與「概念」以外所缺少的視覺型式。
 
 ## Questions
 

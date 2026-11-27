@@ -1,3 +1,5 @@
+import { SubobjectRef } from "../../domain/solidSubobjects"
+import { partsOf } from "./subobjectSet"
 import { Entity, EntityId } from "../../domain/entities"
 import { ScenePrimitive } from "../../scene/types"
 import {
@@ -40,6 +42,7 @@ export abstract class SelectionActionTool implements Tool {
   // WHY methods, not fields: this runs before a subclass's fields are set.
   private readonly selector = new ObjectSelector({
     takes: () => this.selectionInput(),
+    takesParts: this.takesParts(),
     done: (ctx) => this.execute(ctx),
     question: () =>
       this.selectionQuestion(!(this.selection?.isEmpty() ?? true)),
@@ -63,7 +66,8 @@ export abstract class SelectionActionTool implements Tool {
    */
   protected abstract run(
     entities: readonly Entity[],
-    ctx: ToolContext
+    ctx: ToolContext,
+    parts?: readonly SubobjectRef[]
   ): boolean | void
 
   onActivate(ctx: ToolContext): void {
@@ -202,7 +206,24 @@ export abstract class SelectionActionTool implements Tool {
       .toArray()
       .map((id) => ctx.document.get(id))
       .filter((entity): entity is Entity => entity !== undefined)
-    if (entities.length > 0 && this.run(entities, ctx) === true) return
+    const { refs } = partsOf(
+      ctx,
+      this.takesParts() && this.selector.takesSubobjects(),
+      entities
+    )
+    if (
+      (entities.length > 0 || refs.length > 0) &&
+      this.run(entities, ctx, refs) === true
+    )
+      return
     ctx.endCommand()
+  }
+
+  /**
+   * Whether the command acts on the faces, edges and vertices of solids its
+   * set holds (`run`'s `parts`): ERASE's (solid-edits/p241).
+   */
+  protected takesParts(): boolean {
+    return false
   }
 }
