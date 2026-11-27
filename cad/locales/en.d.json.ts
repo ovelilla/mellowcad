@@ -2,6 +2,7 @@
 declare const source: {
   "interface": {
     "tool": {
+      "move3d": string
       "select": string
       "line": string
       "polyline": string
@@ -616,6 +617,7 @@ declare const source: {
   }
   "commands": {
     "names": {
+      "3DMOVE": string[]
       "LINE": string[]
       "XLINE": string[]
       "RAY": string[]
@@ -783,6 +785,13 @@ declare const source: {
       "WIPEOUT": string[]
     }
     "keywords": {
+      "3DMOVE": {
+        "Displacement": string
+        "Base point": string
+        "Copy": string
+        "Undo": string
+        "eXit": string
+      }
       "XLINE": {
         "Hor": string
         "Ver": string
@@ -1830,6 +1839,7 @@ declare const source: {
       }
     }
     "prompts": {
+      "specifyMovePointOr": string
       "ucsFaceFlipAccept": string
       "ucsFaceAccept": string
       "ucsFaceFlip": string
@@ -2617,6 +2627,7 @@ declare const source: {
       "polar": string
     }
     "messages": {
+      "moveGripMode": string
       "dynamicUcsMode": string
       "unknownCommand": string
       "cancel": string
@@ -3633,6 +3644,10 @@ declare const source: {
       }
     }
     "promptKeywordLabels": {
+      "specifyMovePointOr": {
+        "Base point": string
+        "eXit": string
+      }
       "ucsFaceFlip": {
         "Xflip": string
         "Yflip": string

@@ -3,7 +3,7 @@ title: "أمر ⁨BOX⁩ في الأوتوكاد: الصندوق ثلاثي ال
 metaTitle: "أمر الصندوق المجسم ⁨BOX⁩ في الأوتوكاد"
 description: "كيف يرسم أمر ⁨BOX⁩ في أوتوكاد صندوقًا مجسمًا ثلاثي الأبعاد، مطالبةً بعد مطالبة: ركنان وارتفاع، و⁨Center⁩ و⁨Cube⁩ و⁨Length⁩ و⁨2Point⁩. جرّبه مجانًا."
 figure: "صندوق 60 في 40 في 25، من ركنين وارتفاع، يُرى من الجنوب الشرقي بالنمط المرئي ⁨Hidden⁩."
-sourceHash: "9a0b32afd4c2"
+sourceHash: "1bc1379d58bc"
 ---
 
 يرسم ⁨BOX⁩ صندوقًا مجسمًا ثلاثي الأبعاد جوانبه موازية لمحاور نظام الإحداثيات: أعطِ الركن الأول، ثم الركن الآخر، ثم الارتفاع. يرتفع الصندوق على امتداد المحور ⁨Z⁩ لنظام الإحداثيات، وينزل مع الارتفاع السالب، والنقطة تعطي الارتفاع ببعدها عن الركن؛ والركن المعطى عند ⁨Z⁩ غير ⁨Z⁩ الركن الأول يحدد الارتفاع دون أن يسأل عنه. ويُعرض آخر ارتفاع، وآخر طول وعرض لمكعب أو لـ<Keyword id="Length" />، قيمًا افتراضية يأخذها ⁨Enter⁩، مشتركة مع سائر المجسمات الأولية ومع <Command id="EXTRUDE" />. ويقع الصندوق في الطبقة الحالية، ويتراجع عنه ⁨Undo⁩ في خطوة واحدة.
@@ -30,7 +30,7 @@ sourceHash: "9a0b32afd4c2"
 
 ## Missing
 
-النقل والتدوير والتحجيم والانعكاس من مقبض نشط، التي يتنقل أوتوكاد بينها بـ⁨Enter⁩. وأوامر الأبعاد الثلاثة الخاصة به — ⁨3DMOVE⁩ و⁨3DROTATE⁩ و⁨3DSCALE⁩ و⁨MIRROR3D⁩ و⁨ROTATE3D⁩ و⁨ALIGN⁩ و⁨3DALIGN⁩ — بأدواتها التفاعلية. والأبعاد المنقطة التي يرسمها أوتوكاد أثناء إعطاء الركن والطول والعرض. و<Command id="FILLET" /> و<Command id="CHAMFER" /> لحوافه، اللذان يقوم بعملهما <Command id="FILLETEDGE" /> و<Command id="CHAMFEREDGE" />. وتسجيل السجل وإظهار السجل في سجل المجسم، وصف المادة. والأنماط المرئية التي تنقص <Command id="VSCURRENT" /> عدا <Keyword command="VSCURRENT" id="2dwireframe" /> و<Keyword command="VSCURRENT" id="Hidden" /> و<Keyword command="VSCURRENT" id="Conceptual" />.
+النقل والتدوير والتحجيم والانعكاس من مقبض نشط، التي يتنقل أوتوكاد بينها بـ⁨Enter⁩. وأوامر الأبعاد الثلاثة الخاصة به — ⁨3DROTATE⁩ و⁨3DSCALE⁩ و⁨MIRROR3D⁩ و⁨ROTATE3D⁩ و⁨ALIGN⁩ و⁨3DALIGN⁩ — بأدواتها التفاعلية: <Command id="3DMOVE" /> ينقله بأداته التفاعلية. والأبعاد المنقطة التي يرسمها أوتوكاد أثناء إعطاء الركن والطول والعرض. و<Command id="FILLET" /> و<Command id="CHAMFER" /> لحوافه، اللذان يقوم بعملهما <Command id="FILLETEDGE" /> و<Command id="CHAMFEREDGE" />. وتسجيل السجل وإظهار السجل في سجل المجسم، وصف المادة. والأنماط المرئية التي تنقص <Command id="VSCURRENT" /> عدا <Keyword command="VSCURRENT" id="2dwireframe" /> و<Keyword command="VSCURRENT" id="Hidden" /> و<Keyword command="VSCURRENT" id="Conceptual" />.
 
 ## Questions
 

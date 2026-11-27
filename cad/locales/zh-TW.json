@@ -1,6 +1,7 @@
 {
   "interface": {
     "tool": {
+      "move3d": "3D 移動",
       "mesh3d": "3D 網面",
       "select": "選取",
       "line": "線",

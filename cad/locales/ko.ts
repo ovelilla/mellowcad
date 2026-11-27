@@ -5,6 +5,7 @@ export const ko: EngineLocale = {
   "tag": "ko",
   "interface": {
     "tool": {
+      "move3d": "3D 이동",
       "mesh3d": "3D 메쉬",
       "select": "선택",
       "line": "선",

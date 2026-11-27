@@ -28,6 +28,7 @@ import { DimSpaceTool } from "./tools/DimSpaceTool"
 import { DimStyleTool } from "./tools/DimStyleTool"
 import { OffsetTool } from "./tools/OffsetTool"
 import { MoveTool } from "./tools/MoveTool"
+import { Move3dTool } from "./tools/Move3dTool"
 import { CopyTool } from "./tools/CopyTool"
 import { StretchTool } from "./tools/StretchTool"
 import { RotateTool } from "./tools/RotateTool"
@@ -187,6 +188,7 @@ export function defaultTools(
     new DimStyleTool(),
     new OffsetTool(),
     new MoveTool(),
+    new Move3dTool(),
     new CopyTool(),
     new StretchTool(),
     new RotateTool(),

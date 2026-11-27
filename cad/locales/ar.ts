@@ -5,6 +5,7 @@ export const ar: EngineLocale = {
   "tag": "ar",
   "interface": {
     "tool": {
+      "move3d": "نقل ثلاثي الأبعاد",
       "mesh3d": "شبكة ثلاثية الأبعاد",
       "select": "تحديد",
       "line": "خط",

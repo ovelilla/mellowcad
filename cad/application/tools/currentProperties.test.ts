@@ -1055,6 +1055,7 @@ const PINNED_ELSEWHERE: Readonly<Record<string, string>> = {
 }
 // Creates or rebuilds objects; what they wear is not pinned yet.
 const UNPINNED = [
+  "3DMOVE",
   "FILLET",
   "CHAMFER",
   "SCALE",

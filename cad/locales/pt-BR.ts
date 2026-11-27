@@ -5,6 +5,7 @@ export const ptBR: EngineLocale = {
   "tag": "pt-BR",
   "interface": {
     "tool": {
+      "move3d": "Mover 3D",
       "mesh3d": "Malha 3D",
       "select": "Selecionar",
       "line": "Linha",
@@ -862,6 +863,10 @@ export const ptBR: EngineLocale = {
   },
   "commands": {
     "names": {
+      "3DMOVE": [
+        "MOVER3D",
+        "3M"
+      ],
       "3DMESH": [
         "MALHA3D"
       ],
@@ -1501,6 +1506,13 @@ export const ptBR: EngineLocale = {
       ]
     },
     "keywords": {
+      "3DMOVE": {
+        "Displacement": "Deslocamento",
+        "Base point": "Ponto",
+        "Copy": "Copiar",
+        "Undo": "Desfazer",
+        "eXit": "saIr"
+      },
       "XLINE": {
         "Hor": "Hor",
         "Ver": "Ver",
@@ -2548,6 +2560,7 @@ export const ptBR: EngineLocale = {
       }
     },
     "prompts": {
+      "specifyMovePointOr": "Especificar ponto de movimentação ou",
       "ucsFaceFlipAccept": "aceitar",
       "ucsFaceAccept": "aceitar",
       "ucsFaceFlip": "Inserir uma opção",
@@ -3653,6 +3666,7 @@ export const ptBR: EngineLocale = {
       "polar": "Dist<Ang"
     },
     "messages": {
+      "moveGripMode": "** MOVER **",
       "dynamicUcsMode": [
         " <UCS dinâmico ",
         [
@@ -9444,6 +9458,10 @@ export const ptBR: EngineLocale = {
       }
     },
     "promptKeywordLabels": {
+      "specifyMovePointOr": {
+        "Base point": "Ponto base",
+        "eXit": "Sair"
+      },
       "ucsFaceFlip": {
         "Xflip": "inverterX",
         "Yflip": "inverterY"

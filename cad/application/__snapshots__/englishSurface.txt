@@ -51,6 +51,7 @@ DIMCONTINUE ["DCO"] "Continue"
 DIMSPACE [] "Adjust space"
 OFFSET ["O"] "Offset"
 MOVE ["M"] "Move"
+3DMOVE ["3M"] "3D Move"
 COPY ["CO","CP"] "Copy"
 STRETCH ["S"] "Stretch"
 ROTATE ["RO"] "Rotate"
@@ -220,6 +221,7 @@ dimspace "Adjust space" DIMSPACE
 dashdimstyle "Dimension style (command line)" -DIMSTYLE
 offset "Offset" O
 move "Move" M
+move3d "3D Move" 3M
 copy "Copy" CO
 stretch "Stretch" S
 rotate "Rotate" RO
@@ -4169,6 +4171,59 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   prompt| Specify second point or <use first point as displacement>:
 > escape
   command| *Cancel*
+
+## 3DMOVE
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+  command| BOX
+  prompt| Specify first corner or [Center]: 0,0,0
+  prompt| Specify other corner or [Cube/Length]: 10,10
+  prompt| Specify height or [2Point]: 10
+  command| -VPOINT
+  info| Current view direction:  VIEWDIR=0.00,0.00,1.00
+  prompt| Specify a view point or [Rotate]: -1.3,-2.2,1.6
+  info| Regenerating model.
+> 3DMOVE
+  prompt: 3DMOVE Specify base point or [Displacement] <Displacement>:
+  asks: "Base point"
+  tip: Specify base point or
+  dyn: "X,Y"=""||*
+  options: [D] Displacement
+  properties: 3D Solid (1) {Linetype scale=1.00~} [Geometry: Solid type=Box, Position X=5.00~, Position Y=5.00~, Position Z=0.00~, Length=10.00 mm~, Width=10.00 mm~, Height=10.00 mm~, Rotation=0°] [Solid History: History=None, Show History=No]
+  command| 3DMOVE
+  prompt| Select objects: L
+  info| 1 found
+  prompt| Select objects:
+> hover
+> arrow
+  prompt: 3DMOVE Specify move point or [Base point/Copy/Undo/eXit]:
+  asks: "Distance"
+  tip: Specify move point or
+  dyn: "Distance"=""||mm*
+  options: [B] Base point, [C] Copy, [U] Undo, [X] eXit
+  prompt| Specify base point or [Displacement] <Displacement>:
+  info| ** MOVE **
+> C
+  prompt| Specify move point or [Base point/Copy/Undo/eXit]: C
+> distance
+  dyn: "Distance"=""|0.00|mm*
+  prompt| Specify move point or [Base point/Copy/Undo/eXit]: 20
+> X
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  properties: -
+  prompt| Specify move point or [Base point/Copy/Undo/eXit]: X
+  info| Regenerating model.
 
 ## ROTATE
 > start

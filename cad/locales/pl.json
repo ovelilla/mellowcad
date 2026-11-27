@@ -1,6 +1,7 @@
 {
   "interface": {
     "tool": {
+      "move3d": "Przesunięcie 3D",
       "mesh3d": "Siatka 3D",
       "select": "Wybierz",
       "line": "Linia",
@@ -589,6 +590,7 @@
   },
   "commands": {
     "names": {
+      "3DMOVE": ["3DPRZESUŃ"],
       "3DMESH": ["SIATKA3W"],
       "LINE": ["LINIA", "L"],
       "XLINE": ["PROSTA", "PRT"],
@@ -756,6 +758,13 @@
       "WIPEOUT": ["PRZYKRYJ"]
     },
     "keywords": {
+      "3DMOVE": {
+        "Displacement": "Przesunięcie",
+        "Base point": "Baza",
+        "Copy": "Kopiuj",
+        "Undo": "Cofaj",
+        "eXit": "Zakończ"
+      },
       "XLINE": {
         "Hor": "Poziom",
         "Ver": "pIon",
@@ -1790,6 +1799,7 @@
       }
     },
     "prompts": {
+      "specifyMovePointOr": "Określ punkt przesunięcia lub",
       "ucsFaceFlipAccept": "Akceptuj",
       "ucsFaceAccept": "akceptuj",
       "ucsFaceFlip": "Podaj opcję",
@@ -2577,6 +2587,7 @@
       "polar": "Odl'<'Kąt"
     },
     "messages": {
+      "moveGripMode": "** PRZESUŃ **",
       "dynamicUcsMode": " '<'Dynamiczny LUW {state, select, on {włączony} other {wyłączony}}>",
       "cannotTrimPolygonMesh": "Siatka wielokątna\nNie można PRZYCIĄĆ tego obiektu.",
       "cannotExtendPolygonMesh": "Siatka wielokątna\nNie można wydłużyć tego obiektu.",
@@ -3593,6 +3604,7 @@
       }
     },
     "promptKeywordLabels": {
+      "specifyMovePointOr": { "Base point": "Baza", "eXit": "Zakończ" },
       "ucsFaceFlip": { "Xflip": "odwróćX", "Yflip": "odwróćY" },
       "selectObjectsOrPickInternalPoint": { "Undo": "Cofnij" },
       "pickInternalPointOr": {

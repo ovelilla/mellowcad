@@ -1,6 +1,7 @@
 {
   "interface": {
     "tool": {
+      "move3d": "3D-перенос",
       "mesh3d": "3D-сеть",
       "select": "Выбрать",
       "line": "Отрезок",
@@ -589,6 +590,7 @@
   },
   "commands": {
     "names": {
+      "3DMOVE": ["3DПЕРЕНЕСТИ"],
       "3DMESH": ["3DСЕТЬ"],
       "LINE": ["ОТРЕЗОК", "ОТ"],
       "XLINE": ["ПРЯМАЯ", "ПР"],
@@ -756,6 +758,13 @@
       "WIPEOUT": ["МАСКИРОВКА"]
     },
     "keywords": {
+      "3DMOVE": {
+        "Displacement": "Смещение",
+        "Base point": "Базовая",
+        "Copy": "Копировать",
+        "Undo": "ОТменить",
+        "eXit": "выХод"
+      },
       "XLINE": {
         "Hor": "Гор",
         "Ver": "Вер",
@@ -1793,6 +1802,7 @@
       }
     },
     "prompts": {
+      "specifyMovePointOr": "Точка переноса или",
       "ucsFaceFlipAccept": "принять",
       "ucsFaceAccept": "принять",
       "ucsFaceFlip": "Задайте параметр",
@@ -2578,6 +2588,7 @@
       "polar": "Расстояние'<'Угол"
     },
     "messages": {
+      "moveGripMode": "** ПЕРЕНЕСТИ **",
       "dynamicUcsMode": " '<'Динамическая ПСК {state, select, on {вкл.} other {откл.}}>",
       "cannotTrimPolygonMesh": "Полигональные сети\nНевозможно применить команду ОБРЕЗАТЬ к этому объекту.",
       "cannotExtendPolygonMesh": "Полигональные сети\nЭтот объект невозможно УДЛИНИТЬ.",
@@ -3592,6 +3603,7 @@
       }
     },
     "promptKeywordLabels": {
+      "specifyMovePointOr": { "Base point": "Базовая точка", "eXit": "выХод" },
       "ucsFaceFlip": { "Xflip": "обратитьX", "Yflip": "обратитьY" },
       "selectObjectsOrPickInternalPoint": { "Undo": "Отменить" },
       "pickInternalPointOr": {

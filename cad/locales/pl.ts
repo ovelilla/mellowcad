@@ -5,6 +5,7 @@ export const pl: EngineLocale = {
   "tag": "pl",
   "interface": {
     "tool": {
+      "move3d": "Przesunięcie 3D",
       "mesh3d": "Siatka 3D",
       "select": "Wybierz",
       "line": "Linia",
@@ -922,6 +923,9 @@ export const pl: EngineLocale = {
   },
   "commands": {
     "names": {
+      "3DMOVE": [
+        "3DPRZESUŃ"
+      ],
       "3DMESH": [
         "SIATKA3W"
       ],
@@ -1548,6 +1552,13 @@ export const pl: EngineLocale = {
       ]
     },
     "keywords": {
+      "3DMOVE": {
+        "Displacement": "Przesunięcie",
+        "Base point": "Baza",
+        "Copy": "Kopiuj",
+        "Undo": "Cofaj",
+        "eXit": "Zakończ"
+      },
       "XLINE": {
         "Hor": "Poziom",
         "Ver": "pIon",
@@ -2595,6 +2606,7 @@ export const pl: EngineLocale = {
       }
     },
     "prompts": {
+      "specifyMovePointOr": "Określ punkt przesunięcia lub",
       "ucsFaceFlipAccept": "Akceptuj",
       "ucsFaceAccept": "akceptuj",
       "ucsFaceFlip": "Podaj opcję",
@@ -3699,6 +3711,7 @@ export const pl: EngineLocale = {
       "polar": "Odl<Kąt"
     },
     "messages": {
+      "moveGripMode": "** PRZESUŃ **",
       "dynamicUcsMode": [
         " <Dynamiczny LUW ",
         [
@@ -9551,6 +9564,10 @@ export const pl: EngineLocale = {
       }
     },
     "promptKeywordLabels": {
+      "specifyMovePointOr": {
+        "Base point": "Baza",
+        "eXit": "Zakończ"
+      },
       "ucsFaceFlip": {
         "Xflip": "odwróćX",
         "Yflip": "odwróćY"

@@ -1,6 +1,7 @@
 {
   "interface": {
     "tool": {
+      "move3d": "Desplazamiento 3D",
       "mesh3d": "Malla 3D",
       "select": "Seleccionar",
       "line": "Línea",
@@ -584,6 +585,7 @@
   },
   "commands": {
     "names": {
+      "3DMOVE": ["DESPLAZA3D"],
       "3DMESH": ["3DMALLA"],
       "LINE": ["LINEA", "L"],
       "XLINE": ["LINEAX", "XL"],
@@ -751,6 +753,13 @@
       "WIPEOUT": ["COBERTURA"]
     },
     "keywords": {
+      "3DMOVE": {
+        "Displacement": "Desplazamiento",
+        "Base point": "Punto",
+        "Copy": "Copiar",
+        "Undo": "desHacer",
+        "eXit": "Salir"
+      },
       "XLINE": {
         "Hor": "Hor",
         "Ver": "Ver",
@@ -1696,6 +1705,7 @@
       "leaderFormatOption": { "None": "Ninguna" }
     },
     "prompts": {
+      "specifyMovePointOr": "Precise un punto de desplazamiento o",
       "ucsFaceFlipAccept": "Aceptar",
       "ucsFaceAccept": "aceptar",
       "ucsFaceFlip": "Indique una opción",
@@ -2481,6 +2491,7 @@
       "polar": "Dist'<'Ang"
     },
     "messages": {
+      "moveGripMode": "** DESPLAZAR**",
       "dynamicUcsMode": " '<'SCP dinámico {state, select, on {activado} other {desactivado}}>",
       "cannotTrimPolygonMesh": "Malla poligonal\nObjeto no procesado por RECORTA.",
       "cannotExtendPolygonMesh": "Malla poligonal\nObjeto no procesado por ALARGA.",
@@ -3425,6 +3436,7 @@
       }
     },
     "promptKeywordLabels": {
+      "specifyMovePointOr": { "Base point": "punto Base", "eXit": "Salir" },
       "ucsFaceFlip": { "Xflip": "volverX", "Yflip": "volverY" },
       "selectObjectsOrPickInternalPoint": { "Undo": "desHacer" },
       "pickInternalPointOr": {

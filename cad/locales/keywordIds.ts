@@ -1,5 +1,12 @@
 // Generated from en.json by `npm run locales`. Do not edit.
 export const KEYWORD_IDS: Readonly<Record<string, readonly string[]>> = {
+  "3DMOVE": [
+    "Displacement",
+    "Base point",
+    "Copy",
+    "Undo",
+    "eXit"
+  ],
   "XLINE": [
     "Hor",
     "Ver",

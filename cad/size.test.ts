@@ -46,9 +46,10 @@ const ISLAND_MAX_BYTES = 1 * KB
  * Editor tab (2026-11-27), to 512 KB for the cursor frozen off the drawing
  * (2026-11-27), to 514 KB for UCS Face on a solid's faces (2026-11-27), to 515 KB
  * for the dynamic UCS (2026-11-27), to 516 KB for MOVE, ROTATE, SCALE and ERASE of a
- * solid's faces, edges and vertices (2026-11-27).
+ * solid's faces, edges and vertices (2026-11-27), to 519 KB for 3DMOVE and the 3D
+ * gizmos (2026-11-27).
  */
-const ENGINE_MAX_GZIP_BYTES = 516 * KB
+const ENGINE_MAX_GZIP_BYTES = 519 * KB
 
 /**
  * A language's catalog, gzipped, against English's, which the engine carries:

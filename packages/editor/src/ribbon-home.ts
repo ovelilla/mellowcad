@@ -590,6 +590,10 @@ export const TYPED: ReadonlySet<string> = new Set([
   // MASSPROP is typed: no ribbon panel offers it, only the Inquiry toolbar
   // and the Tools menu (acad.cuix's ID_Massprop).
   "massprop",
+  // 3DMOVE and 3DROTATE are typed: their buttons are on the 3D Modeling
+  // workspace's Home tab (acad.cuix's ID_3DMove, ID_3DROTATE), in no tab of
+  // Drafting & Annotation, the ribbon here.
+  "move3d",
   // CHPROP is typed: no ribbon panel offers it.
   "chprop",
   // TEXTEDIT is typed, or a double-click on a text (DBLCLKEDIT): its

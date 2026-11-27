@@ -5,6 +5,7 @@ export const es: EngineLocale = {
   "tag": "es",
   "interface": {
     "tool": {
+      "move3d": "Desplazamiento 3D",
       "mesh3d": "Malla 3D",
       "select": "Seleccionar",
       "line": "Línea",
@@ -862,6 +863,9 @@ export const es: EngineLocale = {
   },
   "commands": {
     "names": {
+      "3DMOVE": [
+        "DESPLAZA3D"
+      ],
       "3DMESH": [
         "3DMALLA"
       ],
@@ -1490,6 +1494,13 @@ export const es: EngineLocale = {
       ]
     },
     "keywords": {
+      "3DMOVE": {
+        "Displacement": "Desplazamiento",
+        "Base point": "Punto",
+        "Copy": "Copiar",
+        "Undo": "desHacer",
+        "eXit": "Salir"
+      },
       "XLINE": {
         "Hor": "Hor",
         "Ver": "Ver",
@@ -2537,6 +2548,7 @@ export const es: EngineLocale = {
       }
     },
     "prompts": {
+      "specifyMovePointOr": "Precise un punto de desplazamiento o",
       "ucsFaceFlipAccept": "Aceptar",
       "ucsFaceAccept": "aceptar",
       "ucsFaceFlip": "Indique una opción",
@@ -3641,6 +3653,7 @@ export const es: EngineLocale = {
       "polar": "Dist<Ang"
     },
     "messages": {
+      "moveGripMode": "** DESPLAZAR**",
       "dynamicUcsMode": [
         " <SCP dinámico ",
         [
@@ -9426,6 +9439,10 @@ export const es: EngineLocale = {
       }
     },
     "promptKeywordLabels": {
+      "specifyMovePointOr": {
+        "Base point": "punto Base",
+        "eXit": "Salir"
+      },
       "ucsFaceFlip": {
         "Xflip": "volverX",
         "Yflip": "volverY"

@@ -5,6 +5,7 @@ export const en: EngineCatalog = {
   "tag": "en",
   "interface": {
     "tool": {
+      "move3d": "3D Move",
       "select": "Select",
       "line": "Line",
       "polyline": "Polyline",
@@ -865,6 +866,10 @@ export const en: EngineCatalog = {
   },
   "commands": {
     "names": {
+      "3DMOVE": [
+        "3DMOVE",
+        "3M"
+      ],
       "LINE": [
         "LINE",
         "L"
@@ -1502,6 +1507,9 @@ export const en: EngineCatalog = {
       ]
     },
     "keywords": {
+      "3DMOVE": {
+        "Base point": "Base"
+      },
       "-OSNAP": {
         "APParent": "APPint"
       },
@@ -1807,6 +1815,7 @@ export const en: EngineCatalog = {
       }
     },
     "prompts": {
+      "specifyMovePointOr": "Specify move point or",
       "ucsFaceFlipAccept": "accept",
       "ucsFaceAccept": "accept",
       "ucsFaceFlip": "Enter an option",
@@ -2911,6 +2920,7 @@ export const en: EngineCatalog = {
       "polar": "Dist<Ang"
     },
     "messages": {
+      "moveGripMode": "** MOVE **",
       "dynamicUcsMode": [
         " <Dynamic UCS ",
         [
@@ -8676,6 +8686,10 @@ export const en: EngineCatalog = {
       }
     },
     "promptKeywordLabels": {
+      "specifyMovePointOr": {
+        "Base point": "Base point",
+        "eXit": "eXit"
+      },
       "ucsFaceFlip": {
         "Xflip": "Xflip",
         "Yflip": "Yflip"

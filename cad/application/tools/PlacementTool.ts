@@ -191,6 +191,11 @@ export abstract class PlacementTool implements Tool {
     void ctx
   }
 
+  /** The prompt the base flow is at, for a command that adds to it (3DMOVE's gizmo). */
+  protected placementPhase(): string {
+    return this.state.phase
+  }
+
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
     // Pre-selected objects (the common path) skip straight to the base point,

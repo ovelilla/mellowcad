@@ -21,6 +21,19 @@ export const THEME = {
   ucsIconX: "#a94b4c",
   ucsIconY: "#65d264",
   ucsIconZ: "#609fff",
+  /**
+   * The 3D gizmos' axes, X red, Y green, Z blue, and the one under the
+   * cursor or taken, as AutoCAD 2027 draws them (desktop 3dmove/d01,
+   * 3drotate/d01; sampled from the captures, their shading left out).
+   */
+  gizmoX: "#a03c3c",
+  gizmoY: "#2f8a2c",
+  gizmoZ: "#3034b8",
+  gizmoHot: "#e0a21a",
+  gizmoHotFill: "rgba(224, 162, 26, 0.35)",
+  /** The small box at a gizmo's centre. */
+  gizmoBase: "#1f5fa8",
+  gizmoBaseEdge: "#6b7280",
   entity: "#e2e8f0",
   entityHover: "#cbd5e1",
   /**

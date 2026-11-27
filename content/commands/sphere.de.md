@@ -2,7 +2,7 @@
 title: "Befehl KUGEL (SPHERE) in AutoCAD"
 description: "So zeichnet AutoCADs KUGEL (SPHERE) eine 3D-Kugel als Volumenkörper: Mittelpunkt und Radius, Durchmesser, 3P, 2P und Ttr, und warum sie als Linien erscheint."
 figure: "Eine Kugel mit Radius 25 von ihrem Mittelpunkt aus, von Südosten im visuellen Stil Konzeptuell gesehen."
-sourceHash: "a35a57352d16"
+sourceHash: "b0a92ceaf418"
 ---
 
 KUGEL (SPHERE) zeichnet eine 3D-Kugel als Volumenkörper: Geben Sie den Mittelpunkt an, dann den Radius. Ein mit der Maus gewählter Radius wird auf der Ebene durch den Mittelpunkt gelesen, und der letzte Radius wird als Vorgabe angeboten, die die Eingabetaste übernimmt, geteilt mit <Command id="CYLINDER" />, <Command id="CONE" /> und den anderen Grundkörpern. Die Kugel liegt auf dem aktuellen Layer, und Rückgängig nimmt sie in einem Schritt zurück.
@@ -29,7 +29,7 @@ Beim Radius: fragt stattdessen nach dem Durchmesser und bietet das Doppelte des 
 
 ## Missing
 
-<Command id="EXPLODE" /> einer Kugel, die AutoCAD in eine Fläche zerlegt: MellowCAD hat keine Flächen und meldet, dass es sie nicht zerlegen konnte. Verschieben, Drehen, Skalieren und Spiegeln über einen heißen Griff, und die eigenen 3D-Befehle (3DMOVE, 3DROTATE, 3DSCALE). Die Silhouette, die AutoCADs `DISPSILH` zeichnet. Die visuellen Stile, die <Command id="VSCURRENT" /> über 2D-Drahtkörper, Verdeckt und Konzeptuell hinaus fehlen.
+<Command id="EXPLODE" /> einer Kugel, die AutoCAD in eine Fläche zerlegt: MellowCAD hat keine Flächen und meldet, dass es sie nicht zerlegen konnte. Verschieben, Drehen, Skalieren und Spiegeln über einen heißen Griff, und die eigenen 3D-Befehle (3DROTATE, 3DSCALE): <Command id="3DMOVE" /> verschiebt sie. Die Silhouette, die AutoCADs `DISPSILH` zeichnet. Die visuellen Stile, die <Command id="VSCURRENT" /> über 2D-Drahtkörper, Verdeckt und Konzeptuell hinaus fehlen.
 
 ## Questions
 

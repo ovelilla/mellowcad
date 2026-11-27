@@ -1,6 +1,7 @@
 {
   "interface": {
     "tool": {
+      "move3d": "Déplacer 3D",
       "mesh3d": "Maillage 3D",
       "select": "Sélectionner",
       "line": "Ligne",
@@ -589,6 +590,7 @@
   },
   "commands": {
     "names": {
+      "3DMOVE": ["DEPLACER3D"],
       "3DMESH": ["3DMAILLE"],
       "LINE": ["LIGNE", "L"],
       "XLINE": ["DROITE", "DO"],
@@ -756,6 +758,13 @@
       "WIPEOUT": ["NETTOYER"]
     },
     "keywords": {
+      "3DMOVE": {
+        "Displacement": "Déplacement",
+        "Base point": "Base",
+        "Copy": "Copier",
+        "Undo": "annUler",
+        "eXit": "Quitter"
+      },
       "XLINE": {
         "Hor": "Hor",
         "Ver": "Ver",
@@ -1791,6 +1800,7 @@
       }
     },
     "prompts": {
+      "specifyMovePointOr": "Spécifiez le point de déplacement ou",
       "ucsFaceFlipAccept": "accepter",
       "ucsFaceAccept": "accepter",
       "ucsFaceFlip": "Entrez une option",
@@ -2576,6 +2586,7 @@
       "polar": "Dist'<'Ang"
     },
     "messages": {
+      "moveGripMode": "** DEPLACER **",
       "dynamicUcsMode": " '<'SCU dynamique {state, select, on {activé} other {désactivé}}>",
       "cannotTrimPolygonMesh": "Surface maillée\nImpossible d'AJUSTER cet objet.",
       "cannotExtendPolygonMesh": "Surface maillée\nImpossible de prolonger cet objet.",
@@ -3587,6 +3598,10 @@
       }
     },
     "promptKeywordLabels": {
+      "specifyMovePointOr": {
+        "Base point": "point de Base",
+        "eXit": "Quitter"
+      },
       "ucsFaceFlip": { "Xflip": "InverserX", "Yflip": "InverserY" },
       "selectObjectsOrPickInternalPoint": { "Undo": "annUler" },
       "pickInternalPointOr": {

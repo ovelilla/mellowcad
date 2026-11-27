@@ -5,6 +5,7 @@ export const cs: EngineLocale = {
   "tag": "cs",
   "interface": {
     "tool": {
+      "move3d": "3D posun",
       "mesh3d": "3D síť",
       "select": "Vybrat",
       "line": "Úsečka",
@@ -922,6 +923,9 @@ export const cs: EngineLocale = {
   },
   "commands": {
     "names": {
+      "3DMOVE": [
+        "3DPOSUN"
+      ],
       "3DMESH": [
         "3DSÍŤ"
       ],
@@ -1559,6 +1563,13 @@ export const cs: EngineLocale = {
       ]
     },
     "keywords": {
+      "3DMOVE": {
+        "Displacement": "Přemístění",
+        "Base point": "Základní",
+        "Copy": "Kopie",
+        "Undo": "ZPět",
+        "eXit": "kOnec"
+      },
       "XLINE": {
         "Hor": "Hor",
         "Ver": "Ver",
@@ -2606,6 +2617,7 @@ export const cs: EngineLocale = {
       }
     },
     "prompts": {
+      "specifyMovePointOr": "Určete bod posunu. nebo",
       "ucsFaceFlipAccept": "akceptovat",
       "ucsFaceAccept": "použít",
       "ucsFaceFlip": "Zadejte možnost",
@@ -3710,6 +3722,7 @@ export const cs: EngineLocale = {
       "polar": "Vzd<Úhel"
     },
     "messages": {
+      "moveGripMode": "** POSUN **",
       "dynamicUcsMode": [
         " <Dynamický USS ",
         [
@@ -9676,6 +9689,10 @@ export const cs: EngineLocale = {
       }
     },
     "promptKeywordLabels": {
+      "specifyMovePointOr": {
+        "Base point": "Základní bod",
+        "eXit": "kOnec"
+      },
       "ucsFaceFlip": {
         "Xflip": "Xotočit",
         "Yflip": "Yotoč"

@@ -1,4 +1,5 @@
 {
+  "interface.tool.move3d": "3D Move",
   "interface.tool.mesh3d": "3D Mesh",
   "interface.tool.select": "Select",
   "interface.tool.line": "Line",

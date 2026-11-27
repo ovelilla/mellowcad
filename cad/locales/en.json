@@ -1,6 +1,7 @@
 {
   "interface": {
     "tool": {
+      "move3d": "3D Move",
       "select": "Select",
       "line": "Line",
       "polyline": "Polyline",
@@ -610,6 +611,7 @@
   },
   "commands": {
     "names": {
+      "3DMOVE": ["3DMOVE", "3M"],
       "LINE": ["LINE", "L"],
       "XLINE": ["XLINE", "XL"],
       "RAY": ["RAY"],
@@ -777,6 +779,13 @@
       "WIPEOUT": ["WIPEOUT"]
     },
     "keywords": {
+      "3DMOVE": {
+        "Displacement": "Displacement",
+        "Base point": "Base",
+        "Copy": "Copy",
+        "Undo": "Undo",
+        "eXit": "eXit"
+      },
       "XLINE": {
         "Hor": "Hor",
         "Ver": "Ver",
@@ -1662,6 +1671,7 @@
       "leaderFormatOption": { "None": "None" }
     },
     "prompts": {
+      "specifyMovePointOr": "Specify move point or",
       "ucsFaceFlipAccept": "accept",
       "ucsFaceAccept": "accept",
       "ucsFaceFlip": "Enter an option",
@@ -2447,6 +2457,7 @@
       "polar": "Dist'<'Ang"
     },
     "messages": {
+      "moveGripMode": "** MOVE **",
       "dynamicUcsMode": " '<'Dynamic UCS {state, select, on {on} other {off}}>",
       "unknownCommand": "Unknown command \"{name}\".  Press F1 for help.",
       "cancel": "*Cancel*",
@@ -3391,6 +3402,7 @@
       }
     },
     "promptKeywordLabels": {
+      "specifyMovePointOr": { "Base point": "Base point", "eXit": "eXit" },
       "ucsFaceFlip": { "Xflip": "Xflip", "Yflip": "Yflip" },
       "selectObjectsOrPickInternalPoint": { "Undo": "Undo" },
       "pickInternalPointOr": {

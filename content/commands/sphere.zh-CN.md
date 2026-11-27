@@ -3,7 +3,7 @@ title: "AutoCAD SPHERE（球体）命令"
 metaTitle: "CAD 三维球体怎么画：SPHERE（球体）命令与选项"
 description: "AutoCAD SPHERE（球体）怎么画三维实体球体：按提示顺序说明中心点和半径、直径、三点、两点、切点、切点、半径，以及为什么显示为线条。在线免费试用。"
 figure: "以中心点和半径 25 创建的球体，以“概念”视觉样式从东南方向观察。"
-sourceHash: "a35a57352d16"
+sourceHash: "b0a92ceaf418"
 ---
 
 SPHERE（球体）命令创建三维实体球体：指定中心点，再指定半径。用鼠标拾取的半径在通过中心点的平面上读取；上次的半径作为默认值提供，按 Enter 键即采用，它与 <Command id="CYLINDER" />、<Command id="CONE" /> 和其他基本体共用。球体位于当前图层上，可以一次放弃。
@@ -30,7 +30,7 @@ SPHERE（球体）命令创建三维实体球体：指定中心点，再指定�
 
 ## Missing
 
-不能对球体执行 <Command id="EXPLODE" />（AutoCAD 会将其分解为曲面）：MellowCAD 没有曲面，因此会提示无法分解。热夹点没有移动、旋转、比例缩放和镜像，也没有相应的三维命令（3DMOVE、3DROTATE、3DSCALE）。没有 AutoCAD 的 `DISPSILH` 绘制的轮廓线。<Command id="VSCURRENT" /> 除“二维线框”“隐藏”和“概念”外，没有其他视觉样式。
+不能对球体执行 <Command id="EXPLODE" />（AutoCAD 会将其分解为曲面）：MellowCAD 没有曲面，因此会提示无法分解。热夹点没有移动、旋转、比例缩放和镜像，也没有相应的三维命令（3DROTATE、3DSCALE）：<Command id="3DMOVE" /> 可以移动球体。没有 AutoCAD 的 `DISPSILH` 绘制的轮廓线。<Command id="VSCURRENT" /> 除“二维线框”“隐藏”和“概念”外，没有其他视觉样式。
 
 ## Questions
 

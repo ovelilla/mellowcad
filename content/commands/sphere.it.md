@@ -2,7 +2,7 @@
 title: "Comando SFERA (SPHERE) in AutoCAD"
 description: "Come SFERA (SPHERE) di AutoCAD disegna una sfera solida 3D: centro e raggio, Diametro, 3P, 2P e Ttr, e perché appare come linee. Provalo."
 figure: "Una sfera di raggio 25 dal suo centro, vista da sud-est nello stile visivo Concettuale."
-sourceHash: "a35a57352d16"
+sourceHash: "b0a92ceaf418"
 ---
 
 SFERA (SPHERE) disegna una sfera solida 3D: indica il centro, poi il raggio. Un raggio indicato con il mouse viene letto sul piano passante per il centro, e l'ultimo raggio viene proposto come valore predefinito che Invio accetta, condiviso con <Command id="CYLINDER" />, <Command id="CONE" /> e le altre primitive. La sfera sta sul layer corrente e si annulla in un solo passaggio.
@@ -29,7 +29,7 @@ Al raggio: chiede invece il diametro, proponendo il doppio dell'ultimo raggio.
 
 ## Missing
 
-<Command id="EXPLODE" /> di una sfera, che AutoCAD trasforma in una superficie: MellowCAD non ha superfici, quindi segnala che non ha potuto esploderla. Sposta, Ruota, Scala e Specchio da un grip attivo, e i comandi 3D propri (3DMOVE, 3DROTATE, 3DSCALE). La silhouette che disegna `DISPSILH` di AutoCAD. Gli stili visivi che <Command id="VSCURRENT" /> non offre oltre a Wireframe 2D, Nascosto e Concettuale.
+<Command id="EXPLODE" /> di una sfera, che AutoCAD trasforma in una superficie: MellowCAD non ha superfici, quindi segnala che non ha potuto esploderla. Sposta, Ruota, Scala e Specchio da un grip attivo, e i comandi 3D propri (3DROTATE, 3DSCALE): <Command id="3DMOVE" /> la sposta. La silhouette che disegna `DISPSILH` di AutoCAD. Gli stili visivi che <Command id="VSCURRENT" /> non offre oltre a Wireframe 2D, Nascosto e Concettuale.
 
 ## Questions
 

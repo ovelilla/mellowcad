@@ -5,6 +5,7 @@ export const zhCN: EngineLocale = {
   "tag": "zh-CN",
   "interface": {
     "tool": {
+      "move3d": "三维移动",
       "mesh3d": "三维网格",
       "select": "选择",
       "line": "直线",

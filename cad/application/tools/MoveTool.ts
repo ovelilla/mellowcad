@@ -12,8 +12,8 @@ import { reshapedOwners, sayUnreshaped } from "./subobjectSet"
  * the shared select → base → destination flow.
  */
 export class MoveTool extends PlacementTool {
-  readonly id = "move"
-  readonly shortcut = "m"
+  readonly id: string = "move"
+  readonly shortcut: string = "m"
 
   protected continuesAfterPlace(): boolean {
     return false

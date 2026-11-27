@@ -57,6 +57,39 @@ Array (so the second point's `[Array]` is not offered; the first form still refu
 with Array's keyword's `Point or option keyword required.`, es `Se requiere un punto o una
 opción.`, where MOVE's says `Invalid point.`, p154–p158)
 
+### `3DMOVE` / `3M` · es `DESPLAZA3D` · pt-BR `MOVER3D` / `3M` · fr `DEPLACER3D` · it `SPOSTA3D` · de `3DSCHIEBEN` · ru `3DПЕРЕНЕСТИ` · pl `3DPRZESUŃ` · cs `3DPOSUN` · hu `3DMOZGAT` / `3M`
+
+**Implemented:** MOVE's prompts, AutoCAD 2027's console's (3dmove/p01–p14): `Select objects:`, its
+SUbobject and Ctrl+click taking a solid's faces, edges and vertices as MOVE's do, `Specify base
+point or [Displacement] <Displacement>:`, `Specify second point or <use first point as
+displacement>:`, `Specify displacement <0.0000, 0.0000, 0.0000>:`, their refusals; not transparent
+(p09); one step U names `3DMOVE` (p08); `Regenerating model.` as it ends, cancelled or not, in a view
+that is not a plan in 2D Wireframe (p01, p13, desktop d01: AutoCAD shows the command in 3D
+Wireframe), none in plan or in a 3D visual style (p05, p11, p12). Off the plan the 3D Move gizmo
+stands at the centre of the set's box at the base point prompt, along the WCS's axes (desktop
+3dmove/d01: its menu's Align Gizmo With ▸ World checked): three arrows, X red, Y green, Z blue, a
+cone at each tip, some 90 px long, the squares between them, a small box at the centre (d01-1); the
+arrow or square under the cursor turns yellow, an arrow with its axis drawn through the centre
+(d01-2); a click on it answers the base point, unechoed, with the point of the axis or plane under
+the cursor, says `** MOVE **` (es `** DESPLAZAR**`, table 19908) and asks `Specify move point or
+[Base point/Copy/Undo/eXit]:` (es `Precise un punto de desplazamiento o [punto Base/Copiar/desHacer/
+Salir]:`, 25358, 32872, keywords 25353), the set dragged along that axis or in that plane with the
+gizmo, an amber dashed band from the base (d01-3); a click places it, a number typed runs that far
+along the axis the way the cursor went (d01: `3` moved the box 3 along X), a point typed is the
+point; Base point asks the base again, Copy places a copy at each point until eXit, Undo takes the
+last copy back, eXit and Enter end; Escape `*Cancel*` and `Regenerating model.` (d01).
+
+**Missing:** the gizmo shown at `Command:` when a solid is selected in a 3D visual style
+(DEFAULTGIZMO, GTAUTO, the status bar's Gizmo), and its right-click menu (desktop d01-4: Move ✓,
+Rotate, Scale · Set Constraint ▸ X, Y, Z · XY, YZ, ZX · XYZ greyed · Relocate Gizmo, Align Gizmo
+With ▸ World (WCS), Current UCS, Object · Custom Gizmo · Respect Dynamic UCS; es Establecer
+restricción, Reubicar gizmo, Alinear gizmo con, Universal (SCO), Personalizar gizmo, Respetar SCP
+dinámico, tables 35075, 59842, 16351, 16855, 15529, 29349), Space cycling to the rotate and scale
+gizmos, GTLOCATION; the 3D Wireframe visual style the command switches to; the Ctrl cycling of a
+face's move (Move face, Allow triangulation); **unverified**: the square's look and hit area (the
+desktop pass took the Z arrow there, d01), what Enter at the move point does (here it ends), the
+gizmo in plan (here none, as the help's "In a 3D view"), the colours sampled from the captures
+
 ### `ROTATE` / `RO` · es `GIRA` / `GI` · pt-BR `ROTAC` / `RO` · fr `ROTATION` / `RI` · it `RUOTA` / `RU` · de `DREHEN` / `DH` · ru `ПОВЕРНУТЬ` / `ПОВ` · pl `OBRÓĆ` / `OB` · cs `OTOČ` / `OT` · hu `FORGAT` / `FOR`
 
 **Implemented:** `Current positive angle in UCS:  ANGDIR=counterclockwise  ANGBASE=0` (es

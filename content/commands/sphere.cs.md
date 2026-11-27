@@ -2,7 +2,7 @@
 title: "Příkaz KOULE (SPHERE) v AutoCADu"
 description: "Jak v AutoCADu nakreslit 3D kouli příkazem KOULE (SPHERE): střed a poloměr, Průměr, 3B, 2B a Ttr, a proč se koule zobrazí čarami. Vyzkoušejte zdarma."
 figure: "Koule o poloměru 25 nakreslená ze středu, viděná od jihovýchodu ve vizuálním stylu Koncepční."
-sourceHash: "a35a57352d16"
+sourceHash: "b0a92ceaf418"
 ---
 
 Příkaz KOULE (SPHERE) nakreslí 3D těleso ve tvaru koule: zadejte střed a pak poloměr. Poloměr určený myší se odečte v rovině procházející středem a poslední poloměr, společný s příkazy <Command id="CYLINDER" />, <Command id="CONE" /> a dalšími základními tělesy, se nabídne jako výchozí hodnota, kterou převezme Enter. Koule leží v aktuální hladině a Zpět ji odstraní v jednom kroku.
@@ -29,7 +29,7 @@ U poloměru: zeptá se místo toho na průměr a nabídne dvojnásobek poslední
 
 ## Missing
 
-<Command id="EXPLODE" /> koule, kterou AutoCAD změní v povrch: MellowCAD nemá povrchy, takže oznámí, že ji nemůže rozložit. Posun, otočení, změna měřítka a zrcadlení z aktivního uzlu a vlastní 3D příkazy (3DPOSUN, 3DOTOČ, 3DMĚŘÍTKO). Obrys, který v AutoCADu kreslí `DISPSILH`. Vizuální styly, které příkazu <Command id="VSCURRENT" /> chybějí kromě stylů 2D drátový model, Skrytý a Koncepční.
+<Command id="EXPLODE" /> koule, kterou AutoCAD změní v povrch: MellowCAD nemá povrchy, takže oznámí, že ji nemůže rozložit. Posun, otočení, změna měřítka a zrcadlení z aktivního uzlu a vlastní 3D příkazy (3DOTOČ, 3DMĚŘÍTKO): <Command id="3DMOVE" /> ji posouvá. Obrys, který v AutoCADu kreslí `DISPSILH`. Vizuální styly, které příkazu <Command id="VSCURRENT" /> chybějí kromě stylů 2D drátový model, Skrytý a Koncepční.
 
 ## Questions
 

@@ -312,6 +312,7 @@ export const TOOL_COMMANDS: Readonly<Record<string, string>> = {
   dimspace: "DIMSPACE",
   offset: "OFFSET",
   move: "MOVE",
+  move3d: "3DMOVE",
   copy: "COPY",
   stretch: "STRETCH",
   rotate: "ROTATE",

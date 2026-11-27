@@ -1,6 +1,7 @@
 {
   "interface": {
     "tool": {
+      "move3d": "Mover 3D",
       "mesh3d": "Malha 3D",
       "select": "Selecionar",
       "line": "Linha",
@@ -589,6 +590,7 @@
   },
   "commands": {
     "names": {
+      "3DMOVE": ["MOVER3D", "3M"],
       "3DMESH": ["MALHA3D"],
       "LINE": ["LINHA", "L"],
       "XLINE": ["LINHAINF", "LINF"],
@@ -756,6 +758,13 @@
       "WIPEOUT": ["COBERTURA"]
     },
     "keywords": {
+      "3DMOVE": {
+        "Displacement": "Deslocamento",
+        "Base point": "Ponto",
+        "Copy": "Copiar",
+        "Undo": "Desfazer",
+        "eXit": "saIr"
+      },
       "XLINE": {
         "Hor": "Hor",
         "Ver": "Ver",
@@ -1786,6 +1795,7 @@
       }
     },
     "prompts": {
+      "specifyMovePointOr": "Especificar ponto de movimentação ou",
       "ucsFaceFlipAccept": "aceitar",
       "ucsFaceAccept": "aceitar",
       "ucsFaceFlip": "Inserir uma opção",
@@ -2571,6 +2581,7 @@
       "polar": "Dist'<'Ang"
     },
     "messages": {
+      "moveGripMode": "** MOVER **",
       "dynamicUcsMode": " '<'UCS dinâmico {state, select, on {ativado} other {desativado}}>",
       "cannotTrimPolygonMesh": "Malha poligonal\nNão é possível APARAR este objeto.",
       "cannotExtendPolygonMesh": "Malha poligonal\nNão é possível ESTENDER este objeto.",
@@ -3563,6 +3574,7 @@
       }
     },
     "promptKeywordLabels": {
+      "specifyMovePointOr": { "Base point": "Ponto base", "eXit": "Sair" },
       "ucsFaceFlip": { "Xflip": "inverterX", "Yflip": "inverterY" },
       "selectObjectsOrPickInternalPoint": { "Undo": "Desfazer" },
       "pickInternalPointOr": {

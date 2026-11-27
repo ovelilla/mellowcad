@@ -3,7 +3,7 @@ title: "Esfera en AutoCAD: comando ESFERA (SPHERE)"
 metaTitle: "Esfera en AutoCAD 3D: comando ESFERA (SPHERE)"
 description: "Cómo funciona ESFERA (SPHERE) de AutoCAD en español, solicitud a solicitud: centro y radio, Diámetro, 3P, 2P y Ttr, y por qué se ve con líneas. Pruébalo gratis."
 figure: "Una esfera de radio 25 desde su centro, vista desde el sureste con el estilo visual Conceptual."
-sourceHash: "a35a57352d16"
+sourceHash: "b0a92ceaf418"
 ---
 
 ESFERA (SPHERE en inglés) dibuja una esfera, un sólido 3D: precisa el centro y después el radio. Un radio señalado con el ratón se lee en el plano que pasa por el centro, y el último radio se ofrece como valor por defecto que Intro acepta, compartido con <Command id="CYLINDER" />, <Command id="CONE" /> y las demás primitivas. La esfera va a la capa actual, y Deshacer la revierte en un paso.
@@ -30,7 +30,7 @@ En el radio: pide en su lugar el diámetro, y ofrece el doble del último radio.
 
 ## Missing
 
-<Command id="EXPLODE" /> de una esfera, que AutoCAD convierte en una superficie: MellowCAD no tiene superficies, así que dice que no ha podido descomponerla. Desplazar, Girar, Escalar y Simetría desde un pinzamiento activo, y los comandos 3D propios (desplazar, girar y escalar en 3D). La silueta que dibuja `DISPSILH` en AutoCAD. Los estilos visuales que le faltan a <Command id="VSCURRENT" /> además de Estructura alámbrica 2D, Oculto y Conceptual.
+<Command id="EXPLODE" /> de una esfera, que AutoCAD convierte en una superficie: MellowCAD no tiene superficies, así que dice que no ha podido descomponerla. Desplazar, Girar, Escalar y Simetría desde un pinzamiento activo, y los comandos 3D propios (girar y escalar en 3D): <Command id="3DMOVE" /> la desplaza. La silueta que dibuja `DISPSILH` en AutoCAD. Los estilos visuales que le faltan a <Command id="VSCURRENT" /> además de Estructura alámbrica 2D, Oculto y Conceptual.
 
 ## Questions
 

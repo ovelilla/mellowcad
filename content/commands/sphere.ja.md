@@ -3,7 +3,7 @@ title: "AutoCAD の SPHERE[球]コマンド"
 metaTitle: "AutoCAD 球(SPHERE)で 3D の球を作る方法"
 description: "AutoCAD の SPHERE[球]で 3D ソリッドの球を作成する手順を解説。中心と半径、直径、3 点、2 点、接、接、半、線で表示される理由。オンラインで無料で試せます。"
 figure: "中心から作成した半径 25 の球。南東から、コンセプト表示スタイルで見たところ。"
-sourceHash: "a35a57352d16"
+sourceHash: "b0a92ceaf418"
 ---
 
 SPHERE[球]コマンドは、3D ソリッドの球を作成します。中心を指定してから半径を指定します。マウスで指定した半径は中心を通る平面上で読み取られます。前回の半径が既定値として表示され、[Enter]で使われます。この値は <Command id="CYLINDER" />、<Command id="CONE" /> などのプリミティブと共通です。球は現在の画層に作成され、1 回の操作で元に戻せます。
@@ -30,7 +30,7 @@ SPHERE[球]コマンドは、3D ソリッドの球を作成します。中心を
 
 ## Missing
 
-AutoCAD では球の <Command id="EXPLODE" /> でサーフェスになりますが、MellowCAD にはサーフェスがないため、分解できないと表示されます。ホット グリップからの移動、回転、尺度変更、鏡像と、専用の 3D コマンド(3DMOVE、3DROTATE、3DSCALE)はありません。AutoCAD の `DISPSILH` が描く輪郭線もありません。<Command id="VSCURRENT" /> の表示スタイルは 2D ワイヤフレーム、隠線処理、コンセプト以外はありません。
+AutoCAD では球の <Command id="EXPLODE" /> でサーフェスになりますが、MellowCAD にはサーフェスがないため、分解できないと表示されます。ホット グリップからの移動、回転、尺度変更、鏡像と、専用の 3D コマンド(3DROTATE、3DSCALE)はありません。移動は <Command id="3DMOVE" /> で行えます。AutoCAD の `DISPSILH` が描く輪郭線もありません。<Command id="VSCURRENT" /> の表示スタイルは 2D ワイヤフレーム、隠線処理、コンセプト以外はありません。
 
 ## Questions
 

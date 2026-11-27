@@ -1,6 +1,7 @@
 {
   "interface": {
     "tool": {
+      "move3d": "3D mozgatás",
       "mesh3d": "3D háló",
       "select": "Kijelölés",
       "line": "Vonal",
@@ -589,6 +590,7 @@
   },
   "commands": {
     "names": {
+      "3DMOVE": ["3DMOZGAT", "3M"],
       "3DMESH": ["3DHÁLÓ"],
       "LINE": ["VONAL", "VO"],
       "XLINE": ["SZVONAL", "SV"],
@@ -756,6 +758,13 @@
       "WIPEOUT": ["KITAKAR"]
     },
     "keywords": {
+      "3DMOVE": {
+        "Displacement": "Elmozdulás",
+        "Base point": "Bázispont",
+        "Copy": "Másol",
+        "Undo": "Vissza",
+        "eXit": "Kilépés"
+      },
       "XLINE": {
         "Hor": "Vízsz",
         "Ver": "Függ",
@@ -1795,6 +1804,7 @@
       }
     },
     "prompts": {
+      "specifyMovePointOr": "Mozgatási pont megadása vagy",
       "ucsFaceFlipAccept": "elfogadás",
       "ucsFaceAccept": "elfogad",
       "ucsFaceFlip": "Válasszon az opciók közül",
@@ -2582,6 +2592,7 @@
       "polar": "Táv'<'Szög"
     },
     "messages": {
+      "moveGripMode": "** MOZGAT **",
       "dynamicUcsMode": " '<'Dinamikus FKR {state, select, on {bekapcsolva} other {ki}}>",
       "cannotTrimPolygonMesh": "poligonháló\nAz objektum nem METSZhető el.",
       "cannotExtendPolygonMesh": "poligonháló\nAz objektumra nem alkalmazható az ELÉR parancs.",
@@ -3598,6 +3609,7 @@
       }
     },
     "promptKeywordLabels": {
+      "specifyMovePointOr": { "Base point": "Bázispont", "eXit": "Kilépés" },
       "ucsFaceFlip": { "Xflip": "Xfordít", "Yflip": "Yfordít" },
       "selectObjectsOrPickInternalPoint": { "Undo": "Vissza" },
       "pickInternalPointOr": {

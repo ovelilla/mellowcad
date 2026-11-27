@@ -3,7 +3,7 @@ title: "AutoCAD SPHERE(구) 명령"
 metaTitle: "오토캐드 구(SPHERE)로 3D 구 그리기"
 description: "AutoCAD SPHERE(구, 캐드 스피어)로 3D 솔리드 구를 그리는 방법을 프롬프트 순서대로 설명합니다: 중심과 반지름, 지름, 3P, 2P, Ttr, 그리고 선으로 보이는 이유. 브라우저에서 무료로 해 볼 수 있습니다."
 figure: "중심에서 반지름 25로 그린 구를 개념 비주얼 스타일로 남동쪽에서 봅니다."
-sourceHash: "a35a57352d16"
+sourceHash: "b0a92ceaf418"
 ---
 
 SPHERE(구) 명령은 3D 솔리드 구를 그립니다. 중심을 지정한 다음 반지름을 지정합니다. 마우스로 지정한 반지름은 중심을 지나는 평면에서 읽으며, 마지막 반지름이 기본값으로 제시되어 Enter 키로 받습니다. 이 기본값은 <Command id="CYLINDER" />, <Command id="CONE" />과 다른 기본체가 함께 씁니다. 구는 현재 도면층에 작성되며, 명령 취소 한 번으로 되돌릴 수 있습니다.
@@ -30,7 +30,7 @@ SPHERE(구) 명령은 3D 솔리드 구를 그립니다. 중심을 지정한 다�
 
 ## Missing
 
-AutoCAD가 표면으로 바꾸는 구의 <Command id="EXPLODE" />: MellowCAD에는 표면이 없으므로 분해할 수 없다고 알려 줍니다. 핫 그립에서의 이동, 회전, 축척, 대칭, 그리고 3D 전용 명령(3DMOVE, 3DROTATE, 3DSCALE). AutoCAD의 `DISPSILH`가 그리는 윤곽선. 2D 와이어프레임, 숨김, 개념 외에 <Command id="VSCURRENT" />에 없는 비주얼 스타일.
+AutoCAD가 표면으로 바꾸는 구의 <Command id="EXPLODE" />: MellowCAD에는 표면이 없으므로 분해할 수 없다고 알려 줍니다. 핫 그립에서의 이동, 회전, 축척, 대칭, 그리고 3D 전용 명령(3DROTATE, 3DSCALE). <Command id="3DMOVE" /> 명령은 구를 이동합니다. AutoCAD의 `DISPSILH`가 그리는 윤곽선. 2D 와이어프레임, 숨김, 개념 외에 <Command id="VSCURRENT" />에 없는 비주얼 스타일.
 
 ## Questions
 

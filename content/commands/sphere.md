@@ -31,7 +31,7 @@ At the radius: asks for the diameter instead, offering twice the last radius.
 
 ## Missing
 
-<Command id="EXPLODE" /> of a sphere, which AutoCAD turns into a surface: MellowCAD has no surfaces, so it says it could not explode it. Move, Rotate, Scale and Mirror from a hot grip, and the 3D commands of its own (3DMOVE, 3DROTATE, 3DSCALE). The silhouette AutoCAD's `DISPSILH` draws. The visual styles <Command id="VSCURRENT" /> lacks beyond 2D Wireframe, Hidden and Conceptual.
+<Command id="EXPLODE" /> of a sphere, which AutoCAD turns into a surface: MellowCAD has no surfaces, so it says it could not explode it. Move, Rotate, Scale and Mirror from a hot grip, and the 3D commands of its own (3DROTATE, 3DSCALE): <Command id="3DMOVE" /> moves it. The silhouette AutoCAD's `DISPSILH` draws. The visual styles <Command id="VSCURRENT" /> lacks beyond 2D Wireframe, Hidden and Conceptual.
 
 ## Questions
 

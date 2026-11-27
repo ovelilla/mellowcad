@@ -2,7 +2,7 @@
 title: "Commande BOITE (BOX) dans AutoCAD"
 description: "Dessiner une boîte 3D dans AutoCAD en français : BOITE (BOX), deux coins et une hauteur, Centre, Cube, Longueur et 2Point. Essayez-le gratuitement en ligne."
 figure: "Une boîte de 60 sur 40 sur 25, par deux coins et une hauteur, vue du sud-est dans le style visuel Masqué."
-sourceHash: "9a0b32afd4c2"
+sourceHash: "1bc1379d58bc"
 ---
 
 BOITE (BOX en anglais) dessine une boîte, un solide 3D dont les faces suivent les axes du SCU : donnez le premier coin, l'autre coin, puis la hauteur. La hauteur monte selon l'axe Z du SCU, une hauteur négative descend, et un point la donne par sa distance au coin ; un coin donné à un autre Z que le premier fixe la hauteur sans la demander. La dernière hauteur, et les dernières longueur et largeur d'un cube ou de Longueur, sont proposées comme valeurs par défaut qu'Entrée accepte, partagées avec les autres primitives et <Command id="EXTRUDE" />. La boîte est créée sur le calque courant, et Annuler la supprime en une seule étape.
@@ -29,7 +29,7 @@ La boîte garde ses dimensions : <Command id="LIST" /> affiche sa position, sa 
 
 ## Missing
 
-Déplacer, Rotation, Echelle et Miroir depuis une poignée active, qu'AutoCAD fait défiler avec Entrée. Les commandes 3D qui lui sont propres — déplacer, faire pivoter, mettre à l'échelle, refléter et aligner en 3D — avec leurs gizmos. Les cotes en pointillés qu'AutoCAD dessine pendant que vous donnez le coin, la longueur et la largeur. <Command id="FILLET" /> et <Command id="CHAMFER" /> de ses arêtes, que font <Command id="FILLETEDGE" /> et <Command id="CHAMFEREDGE" />. Enregistrer l'historique et Afficher l'historique, de l'historique du solide, et la ligne Matériau. Les styles visuels qui manquent à <Command id="VSCURRENT" /> au-delà de Filaire 2D, Masqué et Conceptuel.
+Déplacer, Rotation, Echelle et Miroir depuis une poignée active, qu'AutoCAD fait défiler avec Entrée. Les commandes 3D qui lui sont propres — faire pivoter, mettre à l'échelle, refléter et aligner en 3D — avec leurs gizmos : <Command id="3DMOVE" /> la déplace avec son gizmo. Les cotes en pointillés qu'AutoCAD dessine pendant que vous donnez le coin, la longueur et la largeur. <Command id="FILLET" /> et <Command id="CHAMFER" /> de ses arêtes, que font <Command id="FILLETEDGE" /> et <Command id="CHAMFEREDGE" />. Enregistrer l'historique et Afficher l'historique, de l'historique du solide, et la ligne Matériau. Les styles visuels qui manquent à <Command id="VSCURRENT" /> au-delà de Filaire 2D, Masqué et Conceptuel.
 
 ## Questions
 

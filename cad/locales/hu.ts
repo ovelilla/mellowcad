@@ -5,6 +5,7 @@ export const hu: EngineLocale = {
   "tag": "hu",
   "interface": {
     "tool": {
+      "move3d": "3D mozgatás",
       "mesh3d": "3D háló",
       "select": "Kijelölés",
       "line": "Vonal",
@@ -862,6 +863,10 @@ export const hu: EngineLocale = {
   },
   "commands": {
     "names": {
+      "3DMOVE": [
+        "3DMOZGAT",
+        "3M"
+      ],
       "3DMESH": [
         "3DHÁLÓ"
       ],
@@ -1498,6 +1503,13 @@ export const hu: EngineLocale = {
       ]
     },
     "keywords": {
+      "3DMOVE": {
+        "Displacement": "Elmozdulás",
+        "Base point": "Bázispont",
+        "Copy": "Másol",
+        "Undo": "Vissza",
+        "eXit": "Kilépés"
+      },
       "XLINE": {
         "Hor": "Vízsz",
         "Ver": "Függ",
@@ -2545,6 +2557,7 @@ export const hu: EngineLocale = {
       }
     },
     "prompts": {
+      "specifyMovePointOr": "Mozgatási pont megadása vagy",
       "ucsFaceFlipAccept": "elfogadás",
       "ucsFaceAccept": "elfogad",
       "ucsFaceFlip": "Válasszon az opciók közül",
@@ -3650,6 +3663,7 @@ export const hu: EngineLocale = {
       "polar": "Táv<Szög"
     },
     "messages": {
+      "moveGripMode": "** MOZGAT **",
       "dynamicUcsMode": [
         " <Dinamikus FKR ",
         [
@@ -9410,6 +9424,10 @@ export const hu: EngineLocale = {
       }
     },
     "promptKeywordLabels": {
+      "specifyMovePointOr": {
+        "Base point": "Bázispont",
+        "eXit": "Kilépés"
+      },
       "ucsFaceFlip": {
         "Xflip": "Xfordít",
         "Yflip": "Yfordít"

@@ -1189,6 +1189,26 @@ describe("the engine's English surface", () => {
           .do("escape", (c) => c.escape())
       )
     }
+    // 3dmove/p01, desktop d01: MOVE's prompts, then the gizmo's off the plan.
+    {
+      const cad = createHarness()
+      submit(cad, "BOX", "0,0,0", "10,10", "10", "-VPOINT", "-1.3,-2.2,1.6")
+      const c = { x: 5, y: 5, z: 5 }
+      const a = cad.toScreen(c)
+      const b = cad.toScreen({ x: 6, y: 5, z: 5 })
+      const along = -1.3 / Math.hypot(1.3, 2.2, 1.6)
+      const scale = Math.hypot(b.x - a.x, b.y - a.y) / Math.sqrt(1 - along ** 2)
+      const arrow = { x: 5 + 48 / scale, y: 5, z: 5 }
+      walk("3DMOVE", cad, (s) =>
+        s
+          .do("3DMOVE", (c) => submit(c, "3DMOVE", "L", ""))
+          .do("hover", (c) => c.moveTo(arrow))
+          .do("arrow", (c) => c.click(arrow))
+          .do("C", (c) => answer(c, "C"))
+          .do("distance", (c) => submit(c, "20"))
+          .do("X", (c) => answer(c, "X"))
+      )
+    }
     walk("ROTATE", createHarness({ entities: [line()] }), (s) =>
       s
         .do("ROTATE", (c) => c.select("L1").command("RO"))

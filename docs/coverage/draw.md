@@ -1675,7 +1675,7 @@ any grip. One undo step, `Grip Edit`.
 **Missing:** the hot grip's other modes (Enter's Move, Rotate, Scale, Mirror, as at every grip
 here); a height dragged past the opposite face, which AutoCAD answers with no rule (g01: down 6
 leaves the box upright 1 high, down 7 turns it over 2 high), refused here; the 3D commands of its
-own (3DMOVE, 3DROTATE, 3DSCALE, MIRROR3D, ROTATE3D, ALIGN, 3DALIGN) and the gizmos, later phases
+own (3DROTATE, 3DSCALE, MIRROR3D, ROTATE3D, ALIGN, 3DALIGN), later phases (3DMOVE: modify.md)
 (MOVE, ROTATE and SCALE of its faces, edges and vertices: command-line.md); the dotted dimensions
 AutoCAD draws at the other corner, Length and the width, and the value box beside them (here the
 box's fields at the cursor, as RECTANG's; d11); FILLET and CHAMFER of its edges, which

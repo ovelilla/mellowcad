@@ -1,6 +1,7 @@
 {
   "interface": {
     "tool": {
+      "move3d": "Sposta 3D",
       "mesh3d": "Mesh 3D",
       "select": "Seleziona",
       "line": "Linea",
@@ -589,6 +590,7 @@
   },
   "commands": {
     "names": {
+      "3DMOVE": ["SPOSTA3D"],
       "3DMESH": ["3DMESH"],
       "LINE": ["LINEA", "L"],
       "XLINE": ["XLINEA", "XL"],
@@ -764,6 +766,13 @@
       "WIPEOUT": ["ENTCOPR"]
     },
     "keywords": {
+      "3DMOVE": {
+        "Displacement": "Spostamento",
+        "Base point": "Punto",
+        "Copy": "Copia",
+        "Undo": "Annulla",
+        "eXit": "Esci"
+      },
       "XLINE": {
         "Hor": "ORizz",
         "Ver": "Vert",
@@ -1799,6 +1808,7 @@
       }
     },
     "prompts": {
+      "specifyMovePointOr": "Specificare il punto di spostamento o",
       "ucsFaceFlipAccept": "accetta",
       "ucsFaceAccept": "Accetta",
       "ucsFaceFlip": "Digitare un'opzione",
@@ -2584,6 +2594,7 @@
       "polar": "Dist'<'Ang"
     },
     "messages": {
+      "moveGripMode": "** SPOSTA **",
       "dynamicUcsMode": " '<'UCS dinamico {state, select, on {attivato} other {disattivato}}>",
       "cannotTrimPolygonMesh": "Mesh poligonale\nImpossibile tagliare questo oggetto.",
       "cannotExtendPolygonMesh": "Mesh poligonale\nImpossibile estendere questo oggetto.",
@@ -3595,6 +3606,7 @@
       }
     },
     "promptKeywordLabels": {
+      "specifyMovePointOr": { "Base point": "Punto base", "eXit": "ESci" },
       "ucsFaceFlip": { "Xflip": "invertiX", "Yflip": "invertiY" },
       "selectObjectsOrPickInternalPoint": { "Undo": "Annulla" },
       "pickInternalPointOr": {

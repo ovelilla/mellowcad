@@ -1,0 +1,19 @@
+_BOX
+0,0,0
+10,10
+10
+_-VPOINT
+-1.3,-2.2,1.6
+_ZOOM
+_E
+_3DMOVE
+_L
+
+FOO
+_D
+FOO
+5,0,0
+(vl-load-com)
+(vlax-get (vlax-ename->vla-object (entlast)) 'Centroid)
+_ID
+@

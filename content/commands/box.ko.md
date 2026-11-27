@@ -3,7 +3,7 @@ title: "AutoCAD BOX(상자) 명령"
 metaTitle: "오토캐드 3D 상자(BOX) 그리기와 옵션"
 description: "AutoCAD 상자(BOX)로 3D 솔리드 상자를 그리는 방법을 프롬프트 순서대로 설명합니다: 두 구석과 높이, 중심, 정육면체, 길이, 2점. 브라우저에서 무료로 해 볼 수 있습니다."
 figure: "두 구석과 높이로 그린 60 x 40 x 25 상자를 숨김 비주얼 스타일로 남동쪽에서 본 모습입니다."
-sourceHash: "9a0b32afd4c2"
+sourceHash: "1bc1379d58bc"
 ---
 
 BOX(상자) 명령은 변이 UCS의 축을 따르는 3D 솔리드 상자를 그립니다. 첫 번째 구석, 반대 구석, 높이를 차례로 지정합니다. 높이는 UCS의 Z 방향으로 올라가고 음수는 아래로 내려가며, 점으로 지정하면 구석에서의 거리가 높이가 됩니다. 반대 구석을 첫 번째와 다른 Z로 지정하면 묻지 않고 높이가 정해집니다. 마지막 높이와 정육면체나 길이의 마지막 길이와 폭은 Enter 키로 받아들이는 기본값으로 제시되며, 다른 기본체와 <Command id="EXTRUDE" /> 명령과 공유됩니다. 상자는 현재 도면층에 놓이고, 명령 취소 한 단계로 되돌립니다.
@@ -30,7 +30,7 @@ BOX(상자) 명령은 변이 UCS의 축을 따르는 3D 솔리드 상자를 그�
 
 ## Missing
 
-AutoCAD가 Enter 키로 순환하는 활성 그립의 이동, 회전, 축척, 대칭이 없습니다. 3DMOVE, 3DROTATE, 3DSCALE, MIRROR3D, ROTATE3D, ALIGN, 3DALIGN 같은 고유한 3D 명령과 그 기즈모가 없습니다. 구석, 길이, 폭을 지정하는 동안 AutoCAD가 그리는 점선 치수가 없습니다. 모서리의 <Command id="FILLET" />과 <Command id="CHAMFER" /> 명령은 지원되지 않으며, <Command id="FILLETEDGE" />와 <Command id="CHAMFEREDGE" /> 명령이 그 일을 합니다. 솔리드 사용 내역의 사용 내역 기록과 사용 내역 표시, 재료 행이 없습니다. <Command id="VSCURRENT" /> 명령에는 2D 와이어프레임, 숨김, 개념 이외의 비주얼 스타일이 없습니다.
+AutoCAD가 Enter 키로 순환하는 활성 그립의 이동, 회전, 축척, 대칭이 없습니다. 3DROTATE, 3DSCALE, MIRROR3D, ROTATE3D, ALIGN, 3DALIGN 같은 고유한 3D 명령과 그 기즈모가 없습니다. <Command id="3DMOVE" /> 명령은 기즈모로 상자를 이동합니다. 구석, 길이, 폭을 지정하는 동안 AutoCAD가 그리는 점선 치수가 없습니다. 모서리의 <Command id="FILLET" />과 <Command id="CHAMFER" /> 명령은 지원되지 않으며, <Command id="FILLETEDGE" />와 <Command id="CHAMFEREDGE" /> 명령이 그 일을 합니다. 솔리드 사용 내역의 사용 내역 기록과 사용 내역 표시, 재료 행이 없습니다. <Command id="VSCURRENT" /> 명령에는 2D 와이어프레임, 숨김, 개념 이외의 비주얼 스타일이 없습니다.
 
 ## Questions
 

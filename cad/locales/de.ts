@@ -5,6 +5,7 @@ export const de: EngineLocale = {
   "tag": "de",
   "interface": {
     "tool": {
+      "move3d": "3D-Schieben",
       "mesh3d": "3D-Netz",
       "select": "Auswählen",
       "line": "Linie",
@@ -862,6 +863,9 @@ export const de: EngineLocale = {
   },
   "commands": {
     "names": {
+      "3DMOVE": [
+        "3DSCHIEBEN"
+      ],
       "3DMESH": [
         "3DNETZ"
       ],
@@ -1496,6 +1500,13 @@ export const de: EngineLocale = {
       ]
     },
     "keywords": {
+      "3DMOVE": {
+        "Displacement": "Verschiebung",
+        "Base point": "BAsispunkt",
+        "Copy": "Kopieren",
+        "Undo": "Zurück",
+        "eXit": "Exit"
+      },
       "XLINE": {
         "Hor": "HOr",
         "Ver": "Ver",
@@ -2543,6 +2554,7 @@ export const de: EngineLocale = {
       }
     },
     "prompts": {
+      "specifyMovePointOr": "Punkt für Verschieben angeben oder",
       "ucsFaceFlipAccept": "Akzeptieren",
       "ucsFaceAccept": "bestätigen",
       "ucsFaceFlip": "Option eingeben",
@@ -3670,6 +3682,7 @@ export const de: EngineLocale = {
       "polar": "Abst<Winkel"
     },
     "messages": {
+      "moveGripMode": "** SCHIEBEN **",
       "dynamicUcsMode": [
         " <Dynamisches BKS ",
         [
@@ -9428,6 +9441,10 @@ export const de: EngineLocale = {
       }
     },
     "promptKeywordLabels": {
+      "specifyMovePointOr": {
+        "Base point": "BAsispunkt",
+        "eXit": "Exit"
+      },
       "ucsFaceFlip": {
         "Xflip": "Xumkehren",
         "Yflip": "Yumkehren"

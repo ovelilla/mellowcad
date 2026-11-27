@@ -39,6 +39,7 @@ export const SOLID_COMMANDS = [
   "FILLETEDGE",
   "CHAMFEREDGE",
   "SOLIDEDIT",
+  "3DMOVE",
   "MASSPROP",
   "3DORBIT",
   "VSCURRENT",
@@ -90,6 +91,7 @@ export const COMMAND_FILING: Readonly<Record<string, Filing>> = {
   MEASURE: { group: "draw" },
 
   MOVE: { group: "modify" },
+  "3DMOVE": { group: "modify" },
   COPY: { group: "modify" },
   STRETCH: { group: "modify" },
   ROTATE: { group: "modify" },

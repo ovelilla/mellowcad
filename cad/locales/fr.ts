@@ -5,6 +5,7 @@ export const fr: EngineLocale = {
   "tag": "fr",
   "interface": {
     "tool": {
+      "move3d": "Déplacer 3D",
       "mesh3d": "Maillage 3D",
       "select": "Sélectionner",
       "line": "Ligne",
@@ -862,6 +863,9 @@ export const fr: EngineLocale = {
   },
   "commands": {
     "names": {
+      "3DMOVE": [
+        "DEPLACER3D"
+      ],
       "3DMESH": [
         "3DMAILLE"
       ],
@@ -1500,6 +1504,13 @@ export const fr: EngineLocale = {
       ]
     },
     "keywords": {
+      "3DMOVE": {
+        "Displacement": "Déplacement",
+        "Base point": "Base",
+        "Copy": "Copier",
+        "Undo": "annUler",
+        "eXit": "Quitter"
+      },
       "XLINE": {
         "Hor": "Hor",
         "Ver": "Ver",
@@ -2547,6 +2558,7 @@ export const fr: EngineLocale = {
       }
     },
     "prompts": {
+      "specifyMovePointOr": "Spécifiez le point de déplacement ou",
       "ucsFaceFlipAccept": "accepter",
       "ucsFaceAccept": "accepter",
       "ucsFaceFlip": "Entrez une option",
@@ -3651,6 +3663,7 @@ export const fr: EngineLocale = {
       "polar": "Dist<Ang"
     },
     "messages": {
+      "moveGripMode": "** DEPLACER **",
       "dynamicUcsMode": [
         " <SCU dynamique ",
         [
@@ -9437,6 +9450,10 @@ export const fr: EngineLocale = {
       }
     },
     "promptKeywordLabels": {
+      "specifyMovePointOr": {
+        "Base point": "point de Base",
+        "eXit": "Quitter"
+      },
       "ucsFaceFlip": {
         "Xflip": "InverserX",
         "Yflip": "InverserY"

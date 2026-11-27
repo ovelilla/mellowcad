@@ -5,6 +5,7 @@ export const ru: EngineLocale = {
   "tag": "ru",
   "interface": {
     "tool": {
+      "move3d": "3D-перенос",
       "mesh3d": "3D-сеть",
       "select": "Выбрать",
       "line": "Отрезок",
@@ -922,6 +923,9 @@ export const ru: EngineLocale = {
   },
   "commands": {
     "names": {
+      "3DMOVE": [
+        "3DПЕРЕНЕСТИ"
+      ],
       "3DMESH": [
         "3DСЕТЬ"
       ],
@@ -1540,6 +1544,13 @@ export const ru: EngineLocale = {
       ]
     },
     "keywords": {
+      "3DMOVE": {
+        "Displacement": "Смещение",
+        "Base point": "Базовая",
+        "Copy": "Копировать",
+        "Undo": "ОТменить",
+        "eXit": "выХод"
+      },
       "XLINE": {
         "Hor": "Гор",
         "Ver": "Вер",
@@ -2587,6 +2598,7 @@ export const ru: EngineLocale = {
       }
     },
     "prompts": {
+      "specifyMovePointOr": "Точка переноса или",
       "ucsFaceFlipAccept": "принять",
       "ucsFaceAccept": "принять",
       "ucsFaceFlip": "Задайте параметр",
@@ -3691,6 +3703,7 @@ export const ru: EngineLocale = {
       "polar": "Расстояние<Угол"
     },
     "messages": {
+      "moveGripMode": "** ПЕРЕНЕСТИ **",
       "dynamicUcsMode": [
         " <Динамическая ПСК ",
         [
@@ -10061,6 +10074,10 @@ export const ru: EngineLocale = {
       }
     },
     "promptKeywordLabels": {
+      "specifyMovePointOr": {
+        "Base point": "Базовая точка",
+        "eXit": "выХод"
+      },
       "ucsFaceFlip": {
         "Xflip": "обратитьX",
         "Yflip": "обратитьY"
