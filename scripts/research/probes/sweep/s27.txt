@@ -1,0 +1,17 @@
+_QAFLAGS
+2
+_RECTANG
+0,0
+4,2
+_LINE
+20,20,0
+20,20,-50
+
+_ZOOM
+_E
+_SWEEP
+2,0
+
+_L
+MPDUMP
+-

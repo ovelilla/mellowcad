@@ -221,9 +221,12 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación en
    alinear: `Path curve is coplanar with or tangent to the plane of the profile curve.` y `Unable to
    sweep 1 selected objects.` (s02, s09); el perfil mismo como recorrido, `Profile curve may not be
    selected as path curve.` (s15). Alineado, el perfil lleva su base (la de EXTRUDE, o Base point)
-   al principio del recorrido, su normal a la tangente y su Y a tangente × X; adónde va su X
-   depende de la dirección del recorrido (a X por ±Y, a Y por +X: s13, s16–s21), **por fijar** antes
-   de construir. LIST: `Solid type = Sweep`, `Sweep length`, `Profile
+   al principio del recorrido, el extremo más cercano al punto con que se designó (s36–s38; con
+   Last, el principio dibujado: s23, s24, s39, salvo s28, que empezó por el otro, **por fijar**);
+   ya a escuadra con el recorrido, no gira (s25, s27, s29, s30); si no, su normal va a la tangente T,
+   su X a Z × T normalizado si T.y ≤ 0 o a T × Z si T.y > 0 (a X si T va por Z) y su Y a T × X, sea
+   cual sea su giro de partida (s13, s16–s26, s31–s35, s38: un perfil vertical y uno horizontal
+   acaban igual). LIST: `Solid type = Sweep`, `Sweep length`, `Profile
    rotation`, `Scale along path`, `Twist along path`, `Bank`. LOFT: `Select cross sections in
    lofting order or [POint/Join multiple edges/MOde]:` (33616), ` 2 cross sections selected`,
    `Enter an option [Guides/Path/Cross sections only/Settings] <Cross sections only>:` (34735); dos
