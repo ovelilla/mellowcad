@@ -43,6 +43,10 @@ AutoCAD's global Ctrl shortcuts, which work wherever focus is, as in AutoCAD. An
 their arrows and Enter never reach the prompt. The editor at
 [mellowcad.com/draw](https://mellowcad.com/draw) uses `"document"`.
 
+With `"document"` the mouse leaving the canvas leaves the crosshair, the rubber band and the snap
+marker frozen where it was, as AutoCAD does when the mouse goes to a palette or the command line;
+with any other scope they go with it, so no crosshair is left in a page being scrolled.
+
 `engine.focusSurface()` gives focus back to the drawing, for example after a dialog closes.
 
 ## The command line

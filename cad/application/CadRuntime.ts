@@ -655,6 +655,11 @@ export class CadRuntime extends Observable {
   // number typed for a point is measured towards, as AutoCAD keeps it while
   // the mouse is over the command line.
   private heldCursorScreen: Vec2 | null = null
+  // The pointer left the drawing with its cursor frozen (`pointerLeave`)
+  // until it moves over it again. `updateSnap` still runs at the frozen
+  // cursor on a refresh, so whatever there counts as the user resting (the
+  // tracking and Parallel dwells, the rollover) must check this.
+  private pointerFrozen = false
 
   /** While the aids are being set from the drawing, which they then already match. */
   private applyingDraftingModes = false
@@ -7453,7 +7458,7 @@ export class CadRuntime extends Observable {
       cursor: this.crosshairScreen
         ? { screen: this.crosshairScreen, pickbox: !this.wantsPoint() }
         : null,
-      polar: this.buildPolarGuide(),
+      polar: this.polarGuideShown(),
       fromBase: this.fromBase,
       cyclingBadge: this.cycling.hasStack() ? this.crosshairScreen : null,
       removeBadge:
@@ -7634,6 +7639,7 @@ export class CadRuntime extends Observable {
    * reaches a tool), and only then the left button.
    */
   pointerDown(e: PointerEventData): void {
+    this.pointerFrozen = false
     // A press on the drawing collapses the expanded command history.
     if (this.commandHistoryOpen) this.setCommandHistoryOpen(false)
 
@@ -7727,6 +7733,7 @@ export class CadRuntime extends Observable {
   }
 
   pointerMove(e: PointerEventData): void {
+    this.pointerFrozen = false
     if (this.orbiting) {
       orbitView(
         this.viewport,
@@ -7774,7 +7781,7 @@ export class CadRuntime extends Observable {
    */
   private observeRollover(): void {
     const id =
-      this.suspended === null
+      this.suspended === null && !this.pointerFrozen
         ? (this.activeTool.rolloverEntityId?.() ?? null)
         : null
     if (id === (this.rollover?.id ?? null)) return
@@ -7973,13 +7980,26 @@ export class CadRuntime extends Observable {
     return true
   }
 
-  pointerLeave(): void {
+  /**
+   * The pointer leaves the drawing area. `frozen` is AutoCAD's, for a host
+   * that owns the page: the crosshair, the rubber band, the snap marker and
+   * the object hovered stay as the pointer left them, only the marker's tip
+   * and the rollover tooltip going (desktop 2026-11-27: over the status bar,
+   * a palette, the ribbon and the floating command line alike). Otherwise
+   * everything that follows the cursor goes, as for an engine embedded in a
+   * page, where a frozen crosshair would sit in a figure the reader scrolled
+   * past.
+   */
+  pointerLeave(frozen = false): void {
     this.rollover = null
-    this.currentSnap = null
-    this.snapMarker = null
-    this.cursorWorld = null
-    this.crosshairScreen = null
-    this.lastPointerScreen = null
+    this.pointerFrozen = frozen
+    if (!frozen) {
+      this.currentSnap = null
+      this.snapMarker = null
+      this.cursorWorld = null
+      this.crosshairScreen = null
+      this.lastPointerScreen = null
+    }
     this.tracking.observeHover(null, 0)
     // Opening the Selection list box takes the pointer off the canvas (its
     // backdrop covers it): those candidates are exactly what the user is about
@@ -8698,8 +8718,15 @@ export class CadRuntime extends Observable {
     }
   }
 
+  /** The polar path, its tip gone with the frozen cursor's (desktop 2026-11-27, polar-out). */
+  private polarGuideShown(): PolarGuideInput | null {
+    const guide = this.buildPolarGuide()
+    return guide && this.pointerFrozen ? { ...guide, label: "" } : guide
+  }
+
   /** The tooltip beside the snap marker: AutoCAD's `Deferred Tangent` for a deferred one (table 85). */
   private snapLabel(): string {
+    if (this.pointerFrozen) return ""
     if (this.currentSnap) return this.text.snapFeedback(this.currentSnap.type)
     if (!this.snapMarker) return ""
     const { snap, deferred } = this.snapMarker
@@ -8729,7 +8756,8 @@ export class CadRuntime extends Observable {
       const construction = this.alignmentPaths(cursor, anchor)
       // Parallel osnap: acquire the line under the cursor (by dwell) so only
       // lines the user points at are offered as parallels — AutoCAD's workflow.
-      this.updateParallelAcquisition(anchor)
+      // A refresh with the cursor frozen off the drawing is no dwell.
+      if (!this.pointerFrozen) this.updateParallelAcquisition(anchor)
       const typed = this.snapping.getOverride()
       const implied =
         typed === null ? (this.activeTool.impliedSnap?.() ?? null) : null
@@ -8782,7 +8810,7 @@ export class CadRuntime extends Observable {
             )
           : this.currentSnap
       this.tracking.observeHover(
-        acquiredFrom,
+        this.pointerFrozen ? null : acquiredFrom,
         epsilon,
         this.snapping.releaseTolerance
       )

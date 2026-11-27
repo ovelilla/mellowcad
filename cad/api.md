@@ -537,8 +537,9 @@ export interface CadEngineOptions {
      * controls sit beside the canvas passes the element holding both.
      *
      * `"document"` gives the engine the whole page, as the editor needs: every
-     * key reaches it wherever focus sits, the wheel always zooms and the native
-     * context menu never opens.
+     * key reaches it wherever focus sits, the wheel always zooms, the native
+     * context menu never opens and the cursor stays frozen where the mouse
+     * left the canvas, as AutoCAD's does.
      */
     readonly scope?: HTMLElement | "document";
     /**

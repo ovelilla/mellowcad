@@ -1145,6 +1145,34 @@ describe("frame composition", () => {
     expect(strokes(cad.scene().primitives, THEME.crosshair)).toHaveLength(0)
   })
 
+  // Desktop 2026-11-27 (line-statusbar, line-palette, line-ribbon, cl-onbar,
+  // polar-out): off the drawing AutoCAD keeps the crosshair, the rubber band,
+  // the snap marker and Polar's path where they were; only their tips go.
+  it("freezes the cursor's aids as the pointer leaves, their tips gone", () => {
+    const cad = createHarness({
+      entities: [lineOf(p(0, 0), p(100, 0))],
+      snap: true,
+    })
+    const tips = () =>
+      cad
+        .scene()
+        .primitives.filter((primitive) => primitive.kind === "label")
+        .map((primitive) => primitive.kind === "label" && primitive.text)
+    cad.command("LINE").click(p(50, 50)).moveTo(p(98, 3))
+    expect(tips()).toContain("Endpoint")
+    const before = cad.scene().primitives
+    const aids = (primitives: typeof before) =>
+      [THEME.crosshair, THEME.snap].map((color) => strokes(primitives, color))
+
+    cad.runtime.pointerLeave(true)
+    expect(tips()).not.toContain("Endpoint")
+    expect(aids(cad.scene().primitives)).toEqual(aids(before))
+    expect(strokes(cad.scene().primitives, THEME.crosshair)).not.toHaveLength(0)
+
+    cad.moveTo(p(98, 3))
+    expect(tips()).toContain("Endpoint")
+  })
+
   // desktop d03, d05, d20: CURSORSIZE 5's short crosshair; the pick box at
   // `Command:`, none at a point prompt.
   it("draws the pick box at Command: and none at a point prompt", () => {

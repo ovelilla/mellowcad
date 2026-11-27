@@ -24,6 +24,15 @@ describe("the tracking dwell", () => {
     expect(runtime.tracking.hasAcquired()).toBe(true)
   })
 
+  // A refresh at the frozen cursor (F9 here) is no rest over the point.
+  it("acquires nothing while the cursor is frozen off the drawing", () => {
+    const cad = hovered()
+    cad.runtime.pointerLeave(true)
+    cad.press("F9")
+    vi.advanceTimersByTime(cad.runtime.tracking.dwellMs * 2)
+    expect(cad.runtime.tracking.hasAcquired()).toBe(false)
+  })
+
   it("elapses at once when asked, and leaves no timer behind", () => {
     const { runtime } = hovered()
     runtime.tracking.elapseDwell()

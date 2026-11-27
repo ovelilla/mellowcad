@@ -1726,6 +1726,26 @@ describe("host interaction", () => {
     expect(cad.state().coordinates).toBeNull()
   })
 
+  // Desktop 2026-11-27 (roll-on, roll-statusbar, roll-palette): over the
+  // status bar or a palette AutoCAD keeps the crosshair and the object lit,
+  // and drops the rollover tooltip.
+  it("keeps the cursor where it was, the rollover tooltip gone, as a frozen leave", () => {
+    const cad = createHarness({
+      entities: [lineOf(p(0, 0), p(100, 0), { id: "L1" })],
+    })
+
+    cad.moveTo(p(40, 1))
+    const cursor = cad.state().cursorUcs
+    expect(cad.state().rollover).not.toBeNull()
+    cad.runtime.pointerLeave(true)
+
+    expect(cad.state().rollover).toBeNull()
+    expect(cad.state().cursorUcs).toEqual(cursor)
+    expect(cad.host.cursors.at(-1)).toBe("default")
+    cad.release("Shift")
+    expect(cad.state().rollover).toBeNull()
+  })
+
   it("stops scheduling work once disposed", () => {
     const cad = createHarness()
 

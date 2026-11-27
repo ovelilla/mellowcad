@@ -72,8 +72,9 @@ export interface CadEngineOptions {
    * controls sit beside the canvas passes the element holding both.
    *
    * `"document"` gives the engine the whole page, as the editor needs: every
-   * key reaches it wherever focus sits, the wheel always zooms and the native
-   * context menu never opens.
+   * key reaches it wherever focus sits, the wheel always zooms, the native
+   * context menu never opens and the cursor stays frozen where the mouse
+   * left the canvas, as AutoCAD's does.
    */
   readonly scope?: HTMLElement | "document"
   /**
@@ -1321,8 +1322,11 @@ export class CadEngine {
     this.releasePointer(e.pointerId)
   }
 
-  private onPointerLeave = (): void => {
-    this.runtime.pointerLeave()
+  // AutoCAD's frozen cursor only where the engine owns the page: embedded in
+  // one, its crosshair would stay in a figure the reader has moved past. And
+  // only for a mouse: a finger or a pen lifted leaves too, after every tap.
+  private onPointerLeave = (e: PointerEvent): void => {
+    this.runtime.pointerLeave(this.scope === null && e.pointerType === "mouse")
   }
 
   private onDoubleClick = (e: MouseEvent): void => {

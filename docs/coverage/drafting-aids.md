@@ -335,12 +335,20 @@ one shown by its brighter chips and the marked one by the selected row's colour.
 (and the rollover tooltip) is drawn over the command line, the bottom row and the floating palettes, under the popups and a slid-out palette: near the drawing's foot its
 prompt and boxes stay under the cursor, over the floating command line and the bottom row, as
 AutoCAD's do (desktop 2026-11-27, en, `Specify first point:` at the foot and past it; at the
-screen's edge AutoCAD moves it left, here the page's edge **unverified**)
+screen's edge AutoCAD moves it left, here the page's edge **unverified**). As the pointer leaves
+the drawing area — for the bottom row, a palette, the ribbon or the floating command line alike —
+the crosshair, the rubber band, the tooltip and its boxes, the snap marker, Polar's path and the
+object hovered stay where they were, frozen, and only the tips beside the cursor (the snap's name,
+Polar's reading) and the rollover tooltip go (desktop 2026-11-27, en: roll-\*, line-\*, cl-onbar,
+polar-out in `research/ui/2026-11-27`); a length typed then runs towards the frozen cursor
+(ddist-frozen: 50 at its 30°); a refresh then (F9, a command typed) acquires no tracking point.
+WHY only in the editor and for a mouse: an engine embedded in a page clears them all, as its
+crosshair would otherwise stay in a figure the reader has scrolled past (`CadEngine`'s `scope`),
+and a finger or a pen leaves after every tap. **Unverified**: the status bar's coordinates then
 
-**Missing:** the crosshair, with the tooltip, kept where it was as the pointer leaves the drawing
-area (AutoCAD freezes both there, over its bottom row and its floating command line: desktop
-2026-11-27; here the crosshair goes, the tooltip stays, over a floating palette too; the snap
-marker, the rubber band, the rollover and the tooltip over a palette then **unverified**); a numeric `<default>` shows only as the box's placeholder (where the box is not reading
+**Missing:** after an input with the pointer off the drawing, AutoCAD reads the real pointer
+again, held to the drawing's edge (ddist-after: the next segment's rubber band runs to the foot
+under the status bar); here the cursor stays frozen until the pointer comes back; a numeric `<default>` shows only as the box's placeholder (where the box is not reading
 the cursor), not in the prompt; turning dynamic input off — F12 and DYNMODE (F12 writes no echo in
 AutoCAD, desktop d10, d27; here the key is left to the browser); the Up arrow's recent input (help:
 "Press the Up Arrow key to display recent input"); **unverified**: Enter with the list open and

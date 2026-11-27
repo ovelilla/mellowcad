@@ -43,9 +43,10 @@ const ISLAND_MAX_BYTES = 1 * KB
  * 509 KB for Text Editor's tab, MTEXT's and TEXTEDIT's answers to it and its Text Style Change
  * dialog (2026-11-26), to 510 KB for the selection's Array tab and ARRAYPATH's count toggle
  * (2026-11-27), to 511 KB for -HATCHEDIT in every command language and the selection's Hatch
- * Editor tab (2026-11-27).
+ * Editor tab (2026-11-27), to 512 KB for the cursor frozen off the drawing
+ * (2026-11-27).
  */
-const ENGINE_MAX_GZIP_BYTES = 511 * KB
+const ENGINE_MAX_GZIP_BYTES = 512 * KB
 
 /**
  * A language's catalog, gzipped, against English's, which the engine carries:

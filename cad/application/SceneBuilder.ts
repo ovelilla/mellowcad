@@ -3483,7 +3483,8 @@ function pushCursorTooltips(
   labels: readonly string[]
 ): void {
   const { x, y } = pixelCentre(at)
-  labels.forEach((label, row) => {
+  // An empty label is a tip hidden while the cursor is frozen off the drawing.
+  labels.filter(Boolean).forEach((label, row) => {
     pushTooltip(
       out,
       x + TOOLTIP_OFFSET.x,

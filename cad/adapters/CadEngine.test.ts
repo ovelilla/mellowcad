@@ -439,6 +439,26 @@ describe("CadEngine owning the document (the editor)", () => {
     ])
   })
 
+  it("freezes the cursor as the mouse leaves the editor, not an embed or a finger", () => {
+    const leaving = (engine: CadEngine, pointerType = "mouse") => {
+      dispatch(page.canvas, "pointermove", page.canvas, {
+        button: 0,
+        pointerId: 1,
+        clientX: 200,
+        clientY: 110,
+        shiftKey: false,
+        ctrlKey: false,
+        altKey: false,
+      })
+      dispatch(page.canvas, "pointerleave", page.canvas, { pointerType })
+      return engine.getState().cursorUcs
+    }
+
+    expect(leaving(editor())).not.toBeNull()
+    expect(leaving(editor(), "touch")).toBeNull()
+    expect(leaving(embedded())).toBeNull()
+  })
+
   it("zooms on every wheel turn over the canvas", () => {
     const engine = editor()
     const wheel = dispatch(page.canvas, "wheel", page.canvas, {
