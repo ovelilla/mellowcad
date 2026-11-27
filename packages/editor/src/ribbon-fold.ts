@@ -59,8 +59,8 @@ export function reductionsOf(panel: RibbonPanel): readonly RibbonReduction[] {
  * shows — every panel sheds its width first, the last panel first, then the
  * panels fold from the right, the first last (as Home's Draw, the owner's
  * capture of 2026-11-27). WHY a rule: Insert, Annotate, 3D Tools and View
- * hold so little here that they fit at 1280; their order on the desktop is
- * unverified.
+ * hold so little here that they fit at 1280, and the desktop's fold the same
+ * way, the first panel last (2026-11-27, research/ui/2026-11-27/fold-*.txt).
  */
 export function foldSteps(tab: RibbonTab): readonly RibbonFoldStep[] {
   if (tab.fold) return tab.fold

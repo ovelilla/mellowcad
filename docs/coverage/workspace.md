@@ -420,9 +420,12 @@ Block's Edit Attributes text and the property combos (33 narrower), then Block's
 Annotation's small text, Modify's columns from the right; then Clipboard, Utilities, Properties,
 Block, Layers, Annotation and Modify fold, and Draw last, below 800 (the owner's capture of
 2026-11-27, a window about 750 wide; the order of the steps the desktop showed at one width is
-**unverified**). The other tabs fit at 800 here; their order is the rule the
-desktop's Insert, Annotate and View show (block5: every panel sheds width first, then they fold
-from the right, the first last), never seen on what is built here, so **unverified**. The panels' row never
+**unverified**). The other tabs fit at 800 here and fold by the rule the desktop's Insert,
+Annotate, 3D Tools and View follow narrowed to 450 (2026-11-27, `research/ui/2026-11-27/fold-*.txt`:
+every panel sheds width first, then they fold from the right, the first last — Block under 600,
+Text under 750, Modeling under 700, Viewport Tools under 600, with Named Views); a panel narrower
+whole than a folded one (View's Review, 60, and History, 52) never folds there, which none built
+here is. The panels' row never
 scrolls; each level's width is measured in the page's language and rounded where the browser has
 no `calc-size` (Firefox and Safari **unverified**) — WHY TEXTEDIT has no button: its
 `^C^C_textedit` is on the Text toolbar, on no ribbon panel of 2027; it is typed, or a double-click

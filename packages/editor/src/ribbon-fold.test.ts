@@ -66,8 +66,8 @@ describe("Home's fold", () => {
 })
 
 describe("another tab's fold", () => {
-  // Their order on the desktop is unverified here (they fit at 1280): every
-  // panel sheds first, the last first, then they fold from the right.
+  // The desktop's Insert, Annotate, 3D Tools and View (2026-11-27, fold-*.txt):
+  // every panel sheds first, the last first, then they fold from the right.
   it("sheds from the right, then folds from the right, the first last", () => {
     for (const tab of RIBBON_TABS.slice(1)) {
       const steps = foldSteps(tab)
