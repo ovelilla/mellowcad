@@ -18,7 +18,10 @@ import { polarAngleBetween } from "../domain/arrays"
 import { isSolidHatchPattern } from "../domain/hatchPatterns"
 import { parseAngleDegrees, parseNumber } from "../domain/units"
 import { CommandHistory } from "./commands/Command"
-import { UpdateEntityCommand } from "./commands/entityCommands"
+import {
+  UpdateEntitiesCommand,
+  UpdateEntityCommand,
+} from "./commands/entityCommands"
 import type { ContextualEdit, ContextualFieldId } from "./EngineState"
 import type { ContextualTabSource } from "./tools/Tool"
 
@@ -40,11 +43,15 @@ export function selectionContextualTab(
   document: CadDocument,
   ids: readonly EntityId[]
 ): ContextualTabSource | null {
-  const hatch = selectedHatches(document, ids)[0]
+  const hatches = selectedHatches(document, ids)
+  const hatch = hatches[0]
   if (hatch) {
-    const solid = isSolidHatchPattern(hatch.patternId)
-    // The first hatch's values where several differ (**unverified**: what
-    // AutoCAD's boxes show then).
+    const solid = hatches.every((each) => isSolidHatchPattern(each.patternId))
+    // Where the hatches differ a value is none of theirs: Angle reads
+    // *VARIES*, Scale nothing, and Type and the gallery show nothing for
+    // patterns that differ (desktop 2026-11-27, he-two, he-two-same).
+    const differ = (read: (each: HatchEntity) => number | string) =>
+      hatches.some((each) => read(each) !== read(hatch))
     return {
       id: "hatchEditor",
       fields: [
@@ -53,15 +60,17 @@ export function selectionContextualTab(
           value: (hatch.patternAngle * 180) / Math.PI,
           kind: "angle",
           disabled: solid,
+          varies: differ((each) => each.patternAngle),
         },
         {
           id: "hatchScale",
           value: hatch.patternScale,
           kind: "factor",
           disabled: solid,
+          varies: differ((each) => each.patternScale),
         },
       ],
-      pattern: hatch.patternId,
+      ...(!differ((each) => each.patternId) && { pattern: hatch.patternId }),
     }
   }
   const insert = selectedArray(document, ids)
@@ -154,12 +163,11 @@ export function editSelectionTab(
  * selected hatches, as AcWindows.dll's macros do (`'^R_-hatchedit\n_p\n…`,
  * read from its strings): a pattern `_p`, its name and Enter at the scale
  * and the angle (desktop sel-hatch-ansi32 writes them so); Type › Solid
- * `_p SOLID`, Type › Pattern HPLASTPATTERN as a pattern; Angle `_p`, Enter,
- * Enter and the angle; Scale `_p`, Enter, the scale and Enter, a last Enter
- * of its macro left out (**unverified** where it goes: it would repeat the
- * command at `Command:`). A value its box refuses (`abc`, a scale of 0) types
- * nothing, the box showing the value again. Null where the control applies
- * to none.
+ * `_p SOLID` (desktop 2026-11-27), Type › Pattern HPLASTPATTERN as a
+ * pattern; Angle `_p`, Enter, Enter and the angle (desktop 2026-11-27). Not
+ * Scale, which types nothing (`editHatchScale`). A value its box refuses
+ * (`abc`) types nothing, the box showing the value again. Null where the
+ * control applies to none.
  */
 export function hatchEditorAnswers(
   document: CadDocument,
@@ -171,21 +179,45 @@ export function hatchEditorAnswers(
   if (hatches.length === 0) return null
   if ("pattern" in edit) return ["_p", edit.pattern, "", ""]
   if ("hatchType" in edit) {
-    // The type the tab shows, the first hatch's.
-    const solid = isSolidHatchPattern(hatches[0].patternId)
-    if (edit.hatchType === "solid") return solid ? null : ["_p", "SOLID"]
-    return solid ? ["_p", lastPattern, "", ""] : null
+    const solid = hatches.map((hatch) => isSolidHatchPattern(hatch.patternId))
+    if (edit.hatchType === "solid")
+      return solid.every(Boolean) ? null : ["_p", "SOLID"]
+    return solid.some(Boolean) ? ["_p", lastPattern, "", ""] : null
   }
   if (!("field" in edit)) return null
   const text = edit.text.trim()
   if (edit.field === "hatchAngle") {
     return parseAngleDegrees(text) === null ? null : ["_p", "", "", text]
   }
-  if (edit.field === "hatchScale") {
-    const scale = parseNumber(text)
-    return scale === null || !(scale > 0) ? null : ["_p", "", text, ""]
-  }
   return null
+}
+
+/**
+ * Hatch Editor's Scale, typed or stepped: the hatches' scale set as their
+ * Properties row sets it, one step U names nothing and nothing written
+ * (desktop 2026-11-27: 3 typed, then the up arrow's 1.1, no line, `Command:
+ * _U` alone), though AcWindows.dll holds a macro for it. A scale of 0 or
+ * below, or no number, put back in silence. Whether it applied.
+ */
+export function editHatchScale(
+  document: CadDocument,
+  ids: readonly EntityId[],
+  history: CommandHistory,
+  text: string
+): boolean {
+  const scale = parseNumber(text.trim())
+  if (scale === null || !(scale > 0)) return false
+  // A solid fill has no scale to set (its box greyed alone), and the scale
+  // retyped as it was is no step.
+  const updated = selectedHatches(document, ids).flatMap((hatch) => {
+    if (isSolidHatchPattern(hatch.patternId)) return []
+    if (hatch.patternScale === scale) return []
+    const next = applyEntityProperty(hatch, "patternScale", scale)
+    return next ? [next] : []
+  })
+  if (updated.length === 0) return false
+  history.execute(new UpdateEntitiesCommand(updated))
+  return true
 }
 
 /**

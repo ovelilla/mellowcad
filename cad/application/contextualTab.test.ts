@@ -803,11 +803,14 @@ describe("Hatch Editor, the selection's tab", () => {
   // AcHatchSelected: `Selection.Count >= 1 && Selection.ContainsOnly("Hatch")`.
   it("opens with hatches only selected, their pattern, angle and scale shown", () => {
     const cad = hatches()
+    cad.select("H1")
+    expect(cad.state().ribbon.contextual?.pattern).toBe("ANSI31")
     cad.select("H1", "H2")
     const tab = cad.state().ribbon.contextual
     expect(tab?.id).toBe("hatchEditor")
     expect(cad.state().ribbon.tab).toBe("hatchEditor")
-    expect(tab?.pattern).toBe("ANSI31")
+    // Patterns that differ show none (desktop 2026-11-27, he-two).
+    expect(tab?.pattern).toBeNull()
     expect(tab?.fields.hatchAngle).toEqual({ text: "0", disabled: false })
     expect(tab?.fields.hatchScale).toEqual({ text: "1", disabled: false })
     cad.select("L")
@@ -836,9 +839,34 @@ describe("Hatch Editor, the selection's tab", () => {
     expect(cad.byId<HatchEntity>("H1").patternId).toBe("ANSI31")
   })
 
-  // AcWindows.dll: `'^R_-hatchedit\n_p\n\n\n{0}\n`, `…\n_p\n\n{0}\n\n\n`,
-  // `…\n_p\nSOLID\n`, and the pattern's macro with HPLASTPATTERN.
-  it("types the angle, the scale and Type as their macros do", () => {
+  // Desktop 2026-11-27, he-two-same: the same pattern, angles and scales
+  // that differ; Angle's box reads *VARIES*, Scale's nothing.
+  it("shows no angle or scale where the hatches' differ", () => {
+    const cad = hatches()
+    cad.select("H1")
+    edited(cad, { field: "hatchAngle", text: "45" })
+    edited(cad, { field: "hatchScale", text: "2" })
+    cad.escape().select("H2")
+    edited(cad, { pattern: "ANSI31" })
+    cad.escape().select("H1", "H2")
+    const tab = cad.state().ribbon.contextual
+    expect(tab?.pattern).toBe("ANSI31")
+    expect(tab?.fields.hatchAngle).toEqual({
+      text: "",
+      disabled: false,
+      varies: true,
+    })
+    expect(tab?.fields.hatchScale).toEqual({
+      text: "",
+      disabled: false,
+      varies: true,
+    })
+  })
+
+  // AcWindows.dll: `'^R_-hatchedit\n_p\n\n\n{0}\n`, `…\n_p\nSOLID\n`, and
+  // the pattern's macro with HPLASTPATTERN; Scale, though it has a macro,
+  // writes nothing and U names nothing (desktop 2026-11-27: 3 typed).
+  it("types the angle and Type as their macros do, and sets the scale", () => {
     const cad = hatches()
     cad.select("H1")
     expect(edited(cad, { field: "hatchAngle", text: "30" }).slice(-3)).toEqual([
@@ -846,11 +874,16 @@ describe("Hatch Editor, the selection's tab", () => {
       "Specify a scale for the pattern <1.0000>:",
       "Specify an angle for the pattern <0>: 30",
     ])
-    expect(edited(cad, { field: "hatchScale", text: "2" }).slice(-2)).toEqual([
-      "Specify a scale for the pattern <1.0000>: 2",
-      "Specify an angle for the pattern <30>:",
-    ])
+    expect(edited(cad, { field: "hatchScale", text: "2" })).toEqual([])
+    expect(cad.byId<HatchEntity>("H1").patternScale).toBe(2)
     expect(cad.state().ribbon.contextual?.fields.hatchScale?.text).toBe("2")
+    expect(cad.selectedIds()).toEqual(["H1"])
+    // The scale retyped as it is makes no step: U takes back the 2.
+    expect(edited(cad, { field: "hatchScale", text: "2" })).toEqual([])
+    expect(typed(cad, "_U")).toEqual(["U"])
+    expect(cad.byId<HatchEntity>("H1").patternScale).toBe(1)
+    cad.select("H1")
+    edited(cad, { field: "hatchScale", text: "2" })
     expect(edited(cad, { hatchType: "solid" }).slice(-1)).toEqual([
       "Enter a pattern name or [?/Solid] <ANSI31>: SOLID",
     ])
@@ -862,6 +895,21 @@ describe("Hatch Editor, the selection's tab", () => {
       "Enter a pattern name or [?/Solid] <SOLID>: ANSI31",
     ])
     expect(cad.byId<HatchEntity>("H1").patternId).toBe("ANSI31")
+  })
+
+  // Type reads every hatch: a solid among patterns is no type of the set.
+  it("turns a set with a solid fill among patterns to either type", () => {
+    const cad = hatches()
+    cad.select("H2")
+    edited(cad, { hatchType: "solid" })
+    cad.escape().select("H1", "H2")
+    expect(cad.state().ribbon.contextual?.pattern).toBeNull()
+    expect(
+      edited(cad, { hatchType: "pattern" }).filter((line) =>
+        line.startsWith("Enter a pattern name")
+      )
+    ).toEqual(["Enter a pattern name or [?/Solid] <varies> ANSI31"])
+    expect(cad.byId<HatchEntity>("H2").patternId).toBe("ANSI31")
   })
 
   it("leaves hatches on a locked layer, as the palette leaves them", () => {
@@ -881,8 +929,34 @@ describe("Hatch Editor, the selection's tab", () => {
     const cad = hatches()
     cad.select("H1")
     expect(edited(cad, { field: "hatchScale", text: "0" })).toEqual([])
+    expect(edited(cad, { field: "hatchScale", text: "abc" })).toEqual([])
     expect(edited(cad, { field: "hatchAngle", text: "abc" })).toEqual([])
+    expect(cad.byId<HatchEntity>("H1").patternScale).toBe(1)
     expect(cad.state().commandLine.command).toBeNull()
+  })
+
+  // Desktop 2026-11-27: Close with every hatch on a locked layer, its `_CA`
+  // refused where the set is asked again, the command left asking.
+  it("closes into Select hatch objects: when every hatch is locked", () => {
+    const cad = hatches()
+    const locked = cad.runtime.createLayer("Locked")
+    cad.runtime.document.update({
+      ...cad.byId<HatchEntity>("H1"),
+      layerId: locked,
+    })
+    cad.runtime.updateLayer(locked, { locked: true })
+    cad.select("H1")
+    expect(edited(cad, { close: true })).toEqual([
+      "_-HATCHEDIT 1 found",
+      "1 was on a locked layer.",
+      "Select hatch objects: _CA",
+      "*Invalid selection*",
+      "Expects a point or Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Group/Add/Remove/Multiple/Previous/Undo/AUto/SIngle/SUbobject/Object",
+    ])
+    expect(cad.state().commandLine.question).toEqual([
+      { keywords: false, text: "Select hatch objects:" },
+    ])
+    cad.escape()
   })
 
   // MM_1932: `^R^C^C_-HATCHEDIT _CA`.

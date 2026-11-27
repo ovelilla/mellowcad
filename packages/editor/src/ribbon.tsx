@@ -1396,6 +1396,7 @@ function FieldBox({
   field,
   id,
   label,
+  varies = "",
   className,
   ctx,
 }: {
@@ -1403,6 +1404,8 @@ function FieldBox({
   id?: string
   /** Its name, where no `label` element names it. */
   label?: string
+  /** What it reads where the objects differ (Hatch Editor's Angle: *VARIES*). */
+  varies?: string
   className: string
   ctx: Context
 }) {
@@ -1426,7 +1429,7 @@ function FieldBox({
       autoComplete="off"
       spellCheck={false}
       disabled={value.disabled}
-      value={draft ?? value.text}
+      value={draft ?? (value.varies ? varies : value.text)}
       onChange={(event) => set(event.target.value)}
       onBlur={() => {
         const text = typed.current
@@ -3027,7 +3030,7 @@ function HatchProperties({ ctx }: { ctx: Context }) {
  */
 function HatchType({ ctx }: { ctx: Context }) {
   const t = useEditorText("Ribbon")
-  const solid = ctx.state.ribbon.contextual?.pattern === "SOLID"
+  const pattern = ctx.state.ribbon.contextual?.pattern ?? null
   const items = {
     solid: ctx.text("hatchSolid"),
     pattern: ctx.text("hatchPattern"),
@@ -3035,7 +3038,10 @@ function HatchType({ ctx }: { ctx: Context }) {
   return (
     <Select
       items={items}
-      value={solid ? "solid" : "pattern"}
+      // None where the hatches' patterns differ (desktop 2026-11-27, he-two).
+      value={
+        pattern === null ? null : pattern === "SOLID" ? "solid" : "pattern"
+      }
       onValueChange={(type) => {
         if (type !== "solid" && type !== "pattern") return
         ctx.engine.editContextualTab({ hatchType: type })
@@ -3091,6 +3097,7 @@ const ANGLE_MAX = 360
  */
 function HatchAngle({ ctx }: { ctx: Context }) {
   const t = useEditorText("Ribbon")
+  const properties = useEditorText("Properties")
   const value = ctx.state.ribbon.contextual?.fields.hatchAngle
   // The degree dragged to: the thumb stays there while the pointer drags it,
   // 360 too, which HPANG keeps as 0 (what AutoCAD's box then reads is
@@ -3153,6 +3160,7 @@ function HatchAngle({ ctx }: { ctx: Context }) {
         <FieldBox
           field="hatchAngle"
           label={label}
+          varies={properties("varies")}
           className="w-12.5"
           ctx={ctx}
         />
@@ -3163,8 +3171,8 @@ function HatchAngle({ ctx }: { ctx: Context }) {
 
 /**
  * Scale (AcHatchScaleSpinner): its 16 px glyph and a box of 177 with the
- * value, which takes what Properties' scale prompt takes. Its spin arrows
- * are not drawn: how far one steps is **unverified**.
+ * value, which sets the scale as Properties does (`editHatchScale`). Its spin
+ * arrows are not drawn (the desktop's up arrow stepped 1 to 1.1).
  */
 function HatchScale({ ctx }: { ctx: Context }) {
   const t = useEditorText("Ribbon")

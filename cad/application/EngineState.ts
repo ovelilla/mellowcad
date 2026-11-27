@@ -501,8 +501,14 @@ export type ContextualToggleId =
 
 /** A field's value, written at the drawing's precision as its prompt's default is. */
 export interface ContextualFieldUi {
+  /** Empty where it varies. */
   readonly text: string
   readonly disabled: boolean
+  /**
+   * The objects it reads differ (Hatch Editor's hatches): AutoCAD's Angle
+   * box reads `*VARIES*` then, its Scale box nothing.
+   */
+  readonly varies?: true
 }
 
 /**

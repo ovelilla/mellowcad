@@ -326,6 +326,7 @@ import {
 } from "./runtimeProperties"
 import {
   editSelectionTab,
+  editHatchScale,
   hatchEditorAnswers,
   selectionContextualTab,
 } from "./runtimeSelectionTabs"
@@ -3412,19 +3413,21 @@ export class CadRuntime extends Observable {
     const settings = this.document.getSettings()
     const fields: Partial<Record<ContextualFieldId, ContextualFieldUi>> = {}
     for (const field of source.fields) {
-      fields[field.id] = {
-        text:
-          field.kind === "count"
-            ? String(field.value)
-            : withoutTrailingZeros(
-                field.kind === "angle"
-                  ? formatAngle(field.value, settings)
-                  : field.kind === "factor"
-                    ? field.value.toFixed(4)
-                    : formatLength(field.value, settings)
-              ),
-        disabled: field.disabled === true,
-      }
+      fields[field.id] = field.varies
+        ? { text: "", disabled: field.disabled === true, varies: true }
+        : {
+            text:
+              field.kind === "count"
+                ? String(field.value)
+                : withoutTrailingZeros(
+                    field.kind === "angle"
+                      ? formatAngle(field.value, settings)
+                      : field.kind === "factor"
+                        ? field.value.toFixed(4)
+                        : formatLength(field.value, settings)
+                  ),
+            disabled: field.disabled === true,
+          }
     }
     return {
       id: source.id,
@@ -3495,7 +3498,8 @@ export class CadRuntime extends Observable {
   /**
    * A Hatch Editor control: `'_-hatchedit` run on the selected hatches as a
    * menu macro, its answers typed in turn (`hatchEditorAnswers`), a step U
-   * names `'-HATCHEDIT GROUP` (desktop sel-hatch-ansi32); Close Hatch Editor
+   * names `'-HATCHEDIT GROUP` (desktop sel-hatch-ansi32); Scale sets the
+   * scale with nothing written (`editHatchScale`); Close Hatch Editor
    * is its `^R^C^C_-HATCHEDIT _CA` (MM_1932), which drops them. After any
    * other the hatches stay selected and the tab open, as the desktop's did
    * after a pattern (sel-hatch-ansi32), where a command run here drops the
@@ -3518,6 +3522,20 @@ export class CadRuntime extends Observable {
       edit,
       tool instanceof HatchEditTool ? tool.lastPatternUsed() : "ANSI31"
     )
+    if ("field" in edit && edit.field === "hatchScale") {
+      if (
+        editHatchScale(
+          this.document,
+          this.editableIds("selection"),
+          this.history,
+          edit.text
+        )
+      ) {
+        this.invalidateState()
+        this.host.requestRender()
+      }
+      return
+    }
     if (!answers) return
     this.runTransparentMacro("-HATCHEDIT")
     for (const answer of answers) {

@@ -1451,7 +1451,9 @@ pattern name.`, `Value must be positive and nonzero.`, `Requires a distance (or 
 each hatch's pattern read again as the palette's Scale and Angle read it (`docs/coverage/draw.md`,
 HATCH: a User-defined one made again, acad.pat's inch lines given way to acadiso.pat's, one this
 build lacks keeping its lines), a new pattern dropping the lines, type and gradient the hatch
-carried; HPNAME, HPSCALE and HPANG are left (p01); HPLASTPATTERN, the last pattern -HATCHEDIT gave
+carried; Escape at the angle leaves the hatch as it was (desktop 2026-11-27, after a pattern and
+a scale); the angle offered and taken is the world's in a turned UCS (UCS Z 30: `<45>` for a hatch
+at 45, 0 stored as 0, desktop 2026-11-27), as the palette's; HPNAME, HPSCALE and HPANG are left (p01); HPLASTPATTERN, the last pattern -HATCHEDIT gave
 (ANSI31 at first, a solid fill not among them, p16), kept for the session. **DIsassociate** ends
 the command: a hatch here is never associative, and AutoCAD's on a non-associative hatch does
 nothing more (p13). **CAncel**, unlisted (25502's initget), ends it leaving the set (p05, p07;
@@ -1467,10 +1469,8 @@ hidden boundarY, SPace and MAtch (none built here: an option typed is `Invalid o
 Properties' User defined and Gradient (`[?/Solid/User defined/Gradient]` lists them, as -HATCH's);
 `?`'s `Enter pattern(s) to list <*>:` and its pages (here the list at once, then the name asked
 again: where AutoCAD's pages lead is **unverified**, p08); a set's name shown `<_SOLID>` as the
-object keeps what was typed (p02: here the registry's `SOLID`); the hatch changed only as the run
-ends, so Escape before the angle leaves it (AutoCAD's at Escape there **unverified**: the console
-cannot press it); HPLASTPATTERN as -HATCH leaves it (p16: the HPNAME before Properties') and
-typed as a variable, and shared with HATCH's Type › Pattern (here each command keeps its own); the angle in a turned UCS (here the world's, as the palette's: AutoCAD's **unverified**); HATCHEDIT and HE, its dialog (the Hatch Edit dialog box, not built)
+object keeps what was typed (p02: here the registry's `SOLID`); HPLASTPATTERN as -HATCH leaves it (p16: the HPNAME before Properties') and
+typed as a variable, and shared with HATCH's Type › Pattern (here each command keeps its own); HATCHEDIT and HE, its dialog (the Hatch Edit dialog box, not built)
 
 ### `REGION` / `REG` · es `REGION` / `REG` · pt-BR `REGIAO` / `REG` · fr `REGION` / `REG` · it `REGIONE` / `REG` · de `REGION` / `RIO` · ru `ОБЛАСТЬ` / `ОБЛ` · pl `REGION` / `REG` · cs `OBLAST` / `OBL` · hu `LEMEZ` / `LEM`
 

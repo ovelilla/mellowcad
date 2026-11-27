@@ -481,11 +481,15 @@ button and Boundaries' small buttons to icons (es1280-hatch): the fold here foll
 shedding only what does not fit, and what is built fits. **Hatch Editor**, the selection's
 (`--source RBN_01738281`; AcHatchSelected: hatches only selected, HATCHCREATION 0), at `Command:`:
 Pattern's gallery, Properties' Type, Angle and Scale, drawn as Hatch Creation's and showing the
-first hatch's pattern, angle and scale, and Close Hatch Editor (`Close&#xD;Hatch Editor`). Each
-control runs -HATCHEDIT on the selection as AcWindows.dll's macros type it (`'^R_-hatchedit\n_p\n…`,
-read from its strings): a pattern `_p`, its name, Enter and Enter; Type › Solid `_p SOLID`,
-Type › Pattern the same with HPLASTPATTERN; Angle `_p`, Enter, Enter and the angle; Scale `_p`,
-Enter, the scale and Enter. Its prompts are written, `'_-hatchedit 1 found` first, a step U
+hatches' pattern, angle and scale — where they differ, Angle `*VARIES*`, Scale nothing, and for
+patterns that differ Type blank and no pattern marked (desktop 2026-11-27, he-two,
+he-two-same) — and Close Hatch Editor (`Close&#xD;Hatch Editor`). The gallery, Type and Angle run
+-HATCHEDIT on the selection as AcWindows.dll's macros type it (`'^R_-hatchedit\n_p\n…`, read
+from its strings and seen on the desktop 2026-11-27): a pattern `_p`, its name, Enter and Enter;
+Type › Solid `_p SOLID`, Type › Pattern the same with HPLASTPATTERN; Angle `_p`, Enter, Enter and
+the angle. Scale, though AcWindows holds a macro for it, writes nothing: the hatches' scale set as
+their Properties row sets it (a solid fill's left, the scale retyped as it was no step), one step U names nothing (`Command: _U` alone), typed or by its up
+arrow, which stepped 1 to 1.1 (not drawn here). Their prompts are written, `'_-hatchedit 1 found` first, a step U
 names `'-HATCHEDIT GROUP`, and the hatches stay selected, the tab open (desktop
 sel-hatch-ansi32); a value its box refuses types nothing. Close Hatch Editor is `^R^C^C_-HATCHEDIT
 _CA` (MM_1932), which drops the selection. Its words each culture's acad.CUIX (the tab, Close's
@@ -507,10 +511,12 @@ attachments) and AcTaskDialogs' TaskDialog_7 (Text Style Change), Arabic's ours
 Featured Apps tabs, nothing of theirs built; Hatch Editor's Boundaries (Pick Points, Select,
 Remove, Recreate: -HATCHEDIT's ADd and Remove boundaries and recreate Boundary, not built), the
 colours, Transparency, its slide-outs, Origin and Options (`docs/coverage/draw.md`, -HATCHEDIT's
-Missing), Scale's macro's last Enter (its place **unverified**), what its boxes and Type show for hatches
-that differ (here the first's, **unverified**), Close Hatch Editor with every hatch selected on a
-locked layer (its macro's `_CA` then refused at `Select hatch objects:`, as here, **unverified**;
-its other controls do nothing then), a double-click on a hatch opening it (DBLCLKEDIT's
+Missing), Scale's spin arrows, the line AutoCAD writes before a macro's run with the macro run
+together (`'_-hatchedit_pSOLID`, also as a hatch is selected: stray on the desktop 2026-11-26 and
+27), the angle as the desktop writes it (`29.999999999999996` for 30: here as typed), Close Hatch
+Editor with every hatch selected on a locked layer writing as AutoCAD's (`_-HATCHEDIT 2 found`,
+`2 were on a locked layer.`, its `_CA` refused at `Select hatch objects:`, which stays: desktop
+2026-11-27, as here) but its other controls doing nothing then (**unverified**), a double-click on a hatch opening it (DBLCLKEDIT's
 HATCHEDIT: its dialog not built); the selection's Array
 tab's ARRAYEDIT controls (`docs/coverage/modify.md`, ARRAY), Hatch Creation's controls HATCH does not have
 (`docs/coverage/draw.md`, HATCH's Missing), the other contextual

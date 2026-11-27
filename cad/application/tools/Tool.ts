@@ -614,6 +614,8 @@ export interface ContextualFieldSource {
    */
   readonly kind: "count" | "distance" | "angle" | "factor"
   readonly disabled?: boolean
+  /** The objects it reads differ: no value of theirs is shown. */
+  readonly varies?: boolean
 }
 
 /**
