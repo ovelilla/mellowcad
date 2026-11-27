@@ -1,6 +1,7 @@
 {
   "interface": {
     "tool": {
+      "rotate3d": "3D-поворот",
       "move3d": "3D-перенос",
       "mesh3d": "3D-сеть",
       "select": "Выбрать",
@@ -590,7 +591,8 @@
   },
   "commands": {
     "names": {
-      "3DMOVE": ["3DПЕРЕНЕСТИ"],
+      "3DROTATE": ["3DПОВЕРНУТЬ", "3ПО", "3-ПОВЕРНУТЬ"],
+      "3DMOVE": ["3DПЕРЕНЕСТИ", "3ПЕ"],
       "3DMESH": ["3DСЕТЬ"],
       "LINE": ["ОТРЕЗОК", "ОТ"],
       "XLINE": ["ПРЯМАЯ", "ПР"],
@@ -758,6 +760,11 @@
       "WIPEOUT": ["МАСКИРОВКА"]
     },
     "keywords": {
+      "3DROTATE": {
+        "Copy": "Копия",
+        "Reference": "Опорный",
+        "Points": "Точки"
+      },
       "3DMOVE": {
         "Displacement": "Смещение",
         "Base point": "Базовая",
@@ -1802,6 +1809,8 @@
       }
     },
     "prompts": {
+      "specifyAngleStartPointOrAngle": "Точка на первом луче угла или угол",
+      "pickRotationAxis": "Ось вращения",
       "specifyMovePointOr": "Точка переноса или",
       "ucsFaceFlipAccept": "принять",
       "ucsFaceAccept": "принять",

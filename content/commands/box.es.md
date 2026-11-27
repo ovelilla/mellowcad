@@ -3,7 +3,7 @@ title: "Prisma rectangular en AutoCAD: PRISMARECT (BOX)"
 metaTitle: "Prisma en AutoCAD 3D: comando PRISMARECT (BOX)"
 description: "Cómo funciona PRISMARECT (BOX) de AutoCAD en español, solicitud a solicitud: dos esquinas y una altura, Centro, Cubo, Longitud y 2Puntos. Pruébalo gratis."
 figure: "Un prisma de 60 por 40 por 25, con dos esquinas y una altura, visto desde el sureste con el estilo visual Oculto."
-sourceHash: "1bc1379d58bc"
+sourceHash: "f272a5f0c236"
 ---
 
 PRISMARECT (BOX en inglés) dibuja un prisma rectangular, un sólido 3D con sus caras alineadas con los ejes del SCP: precisa la primera esquina, la otra esquina y después la altura. La altura sube por el eje Z del SCP, una negativa baja, y un punto la da por su distancia a la esquina; una esquina precisada a otra Z que la primera fija la altura sin preguntarla. La última altura, y la última longitud y anchura de un cubo o de <Keyword id="Length" />, se ofrecen como valores por defecto que Intro acepta, compartidos con las demás primitivas y con <Command id="EXTRUDE" />. El prisma va a la capa actual, y Deshacer lo revierte en un paso.
@@ -30,7 +30,7 @@ En la altura: pide dos puntos, y la altura es la distancia entre ellos.
 
 ## Missing
 
-Desplazar, Girar, Escalar y Simetría desde un pinzamiento activo, que AutoCAD recorre con Intro. Los comandos 3D propios —girar, escalar, simetría y alinear en 3D— con sus gizmos: <Command id="3DMOVE" /> lo desplaza con su gizmo. Las cotas punteadas que AutoCAD dibuja mientras precisas la esquina, la longitud y la anchura. <Command id="FILLET" /> y <Command id="CHAMFER" /> de sus aristas, que hacen <Command id="FILLETEDGE" /> y <Command id="CHAMFEREDGE" />. Registrar historial y Mostrar historial, del Historial de sólido, y la fila Material. Los estilos visuales que le faltan a <Command id="VSCURRENT" /> además de Estructura alámbrica 2D, Oculto y Conceptual.
+Desplazar, Girar, Escalar y Simetría desde un pinzamiento activo, que AutoCAD recorre con Intro. Los comandos 3D propios —escalar, simetría y alinear en 3D— con sus gizmos: <Command id="3DMOVE" /> y <Command id="3DROTATE" /> lo desplazan y lo giran con los suyos. Las cotas punteadas que AutoCAD dibuja mientras precisas la esquina, la longitud y la anchura. <Command id="FILLET" /> y <Command id="CHAMFER" /> de sus aristas, que hacen <Command id="FILLETEDGE" /> y <Command id="CHAMFEREDGE" />. Registrar historial y Mostrar historial, del Historial de sólido, y la fila Material. Los estilos visuales que le faltan a <Command id="VSCURRENT" /> además de Estructura alámbrica 2D, Oculto y Conceptual.
 
 ## Questions
 

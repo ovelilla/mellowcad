@@ -2,7 +2,7 @@
 title: "Comando BOX (CAIXA) no AutoCAD 3D"
 description: "Como funciona o BOX do AutoCAD em português, CAIXA, prompt a prompt: dois cantos e uma altura, Centro, CUbo, COmprimento e 2Pontos. Experimente grátis online."
 figure: "Uma caixa de 60 por 40 por 25, com dois cantos e uma altura, vista do sudeste no estilo visual Oculto."
-sourceHash: "1bc1379d58bc"
+sourceHash: "f272a5f0c236"
 ---
 
 O BOX, CAIXA no AutoCAD em português, desenha uma caixa, um sólido 3D com as faces alinhadas aos eixos do UCS: especifique o primeiro canto, o outro canto e depois a altura. A altura sobe pelo eixo Z do UCS, uma negativa desce, e um ponto a dá pela distância até o canto; um canto dado num Z diferente do primeiro define a altura sem perguntá-la. A última altura, e o último comprimento e a última largura de um cubo ou de <Keyword id="Length" />, são oferecidos como padrões que o Enter aceita, compartilhados com as outras primitivas e com o <Command id="EXTRUDE" />. A caixa fica na camada atual, e o Desfazer a reverte num passo.
@@ -29,7 +29,7 @@ Na altura: pede dois pontos, e a altura é a distância entre eles.
 
 ## Missing
 
-Mover, Rotacionar, Escala e Espelhar a partir de uma alça ativa, que o AutoCAD percorre com Enter. Os comandos 3D próprios — rotacionar, escalar, espelhar e alinhar em 3D — com os seus gizmos: o <Command id="3DMOVE" /> a move com o seu gizmo. As cotas pontilhadas que o AutoCAD desenha enquanto você dá o canto, o comprimento e a largura. O <Command id="FILLET" /> e o <Command id="CHAMFER" /> das suas arestas, que o <Command id="FILLETEDGE" /> e o <Command id="CHAMFEREDGE" /> fazem. Registrar histórico e Mostrar histórico, do Histórico do sólido, e a linha Material. Os estilos visuais que faltam ao <Command id="VSCURRENT" /> além de Estrutura de arame 2D, Oculto e Conceitual.
+Mover, Rotacionar, Escala e Espelhar a partir de uma alça ativa, que o AutoCAD percorre com Enter. Os comandos 3D próprios — escalar, espelhar e alinhar em 3D — com os seus gizmos: o <Command id="3DMOVE" /> e o <Command id="3DROTATE" /> a movem e a rotacionam com os seus. As cotas pontilhadas que o AutoCAD desenha enquanto você dá o canto, o comprimento e a largura. O <Command id="FILLET" /> e o <Command id="CHAMFER" /> das suas arestas, que o <Command id="FILLETEDGE" /> e o <Command id="CHAMFEREDGE" /> fazem. Registrar histórico e Mostrar histórico, do Histórico do sólido, e a linha Material. Os estilos visuais que faltam ao <Command id="VSCURRENT" /> além de Estrutura de arame 2D, Oculto e Conceitual.
 
 ## Questions
 

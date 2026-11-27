@@ -2,7 +2,7 @@
 title: "AutoCAD GÖMB (SPHERE) parancs"
 description: "Így rajzol 3D gömb szilárdtestet az AutoCAD GÖMB (SPHERE) parancsa: középpont és sugár, Átmérő, 3P, 2P és Éés, és miért látszik vonalakként. Próbálja ki ingyen."
 figure: "25 sugarú gömb a középpontjából rajzolva, délkeletről nézve, Látványtervi látványstílusban."
-sourceHash: "b0a92ceaf418"
+sourceHash: "c7bc67d1d847"
 ---
 
 A GÖMB (SPHERE) parancs 3D gömb szilárdtestet rajzol: adja meg a középpontot, majd a sugarat. Az egérrel megadott sugarat a középponton átmenő síkon méri, az utolsó sugarat pedig alapértelmezésként ajánlja fel, amelyet az Enter elfogad; ezt az értéket a <Command id="CYLINDER" />, a <Command id="CONE" /> és a többi alaptest parancsa is használja. A gömb az aktuális fóliára kerül, és a visszavonás egy lépésben eltávolítja.
@@ -29,7 +29,7 @@ A sugárnál: helyette az átmérőt kéri, és az utolsó sugár kétszeresét 
 
 ## Missing
 
-A gömb <Command id="EXPLODE" /> paranccsal történő szétvetése, amelyből az AutoCAD felületet készít: a MellowCAD-ben nincsenek felületek, ezért azt írja ki, hogy nem tudta szétvetni. Mozgatás, Forgatás, Lépték és Tükrözés aktív fogóról, valamint a saját 3D parancsaik (3DFORGAT, 3DLÉPTÉK): a <Command id="3DMOVE" /> mozgatja. A körvonal, amelyet az AutoCAD `DISPSILH` változója rajzol. Azok a látványstílusok, amelyek a 2D drótváz, a Takartvonalas és a Látványtervi mellett az <Command id="VSCURRENT" /> parancsból még hiányoznak.
+A gömb <Command id="EXPLODE" /> paranccsal történő szétvetése, amelyből az AutoCAD felületet készít: a MellowCAD-ben nincsenek felületek, ezért azt írja ki, hogy nem tudta szétvetni. Mozgatás, Forgatás, Lépték és Tükrözés aktív fogóról, valamint a saját 3D parancsaik (3DLÉPTÉK): a <Command id="3DMOVE" /> és a <Command id="3DROTATE" /> mozgatja és forgatja. A körvonal, amelyet az AutoCAD `DISPSILH` változója rajzol. Azok a látványstílusok, amelyek a 2D drótváz, a Takartvonalas és a Látványtervi mellett az <Command id="VSCURRENT" /> parancsból még hiányoznak.
 
 ## Questions
 

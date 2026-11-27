@@ -5,6 +5,7 @@ export const ja: EngineLocale = {
   "tag": "ja",
   "interface": {
     "tool": {
+      "rotate3d": "3D 回転",
       "move3d": "3D 移動",
       "mesh3d": "3D メッシュ",
       "select": "選択",

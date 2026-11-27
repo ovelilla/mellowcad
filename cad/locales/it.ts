@@ -5,6 +5,7 @@ export const it: EngineLocale = {
   "tag": "it",
   "interface": {
     "tool": {
+      "rotate3d": "Ruota 3D",
       "move3d": "Sposta 3D",
       "mesh3d": "Mesh 3D",
       "select": "Seleziona",
@@ -863,8 +864,12 @@ export const it: EngineLocale = {
   },
   "commands": {
     "names": {
+      "3DROTATE": [
+        "ROTAZIONE3D"
+      ],
       "3DMOVE": [
-        "SPOSTA3D"
+        "SPOSTA3D",
+        "S3"
       ],
       "3DMESH": [
         "3DMESH"
@@ -1502,6 +1507,11 @@ export const it: EngineLocale = {
       ]
     },
     "keywords": {
+      "3DROTATE": {
+        "Copy": "Copia",
+        "Reference": "Riferimento",
+        "Points": "Punti"
+      },
       "3DMOVE": {
         "Displacement": "Spostamento",
         "Base point": "Punto",
@@ -2556,6 +2566,8 @@ export const it: EngineLocale = {
       }
     },
     "prompts": {
+      "specifyAngleStartPointOrAngle": "Specificare il punto iniziale dell'angolo o immettere un angolo",
+      "pickRotationAxis": "Selezionare un asse di rotazione",
       "specifyMovePointOr": "Specificare il punto di spostamento o",
       "ucsFaceFlipAccept": "accetta",
       "ucsFaceAccept": "Accetta",

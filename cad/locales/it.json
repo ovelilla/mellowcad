@@ -1,6 +1,7 @@
 {
   "interface": {
     "tool": {
+      "rotate3d": "Ruota 3D",
       "move3d": "Sposta 3D",
       "mesh3d": "Mesh 3D",
       "select": "Seleziona",
@@ -590,7 +591,8 @@
   },
   "commands": {
     "names": {
-      "3DMOVE": ["SPOSTA3D"],
+      "3DROTATE": ["ROTAZIONE3D"],
+      "3DMOVE": ["SPOSTA3D", "S3"],
       "3DMESH": ["3DMESH"],
       "LINE": ["LINEA", "L"],
       "XLINE": ["XLINEA", "XL"],
@@ -766,6 +768,11 @@
       "WIPEOUT": ["ENTCOPR"]
     },
     "keywords": {
+      "3DROTATE": {
+        "Copy": "Copia",
+        "Reference": "Riferimento",
+        "Points": "Punti"
+      },
       "3DMOVE": {
         "Displacement": "Spostamento",
         "Base point": "Punto",
@@ -1808,6 +1815,8 @@
       }
     },
     "prompts": {
+      "specifyAngleStartPointOrAngle": "Specificare il punto iniziale dell'angolo o immettere un angolo",
+      "pickRotationAxis": "Selezionare un asse di rotazione",
       "specifyMovePointOr": "Specificare il punto di spostamento o",
       "ucsFaceFlipAccept": "accetta",
       "ucsFaceAccept": "Accetta",

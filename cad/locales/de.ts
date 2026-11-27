@@ -5,6 +5,7 @@ export const de: EngineLocale = {
   "tag": "de",
   "interface": {
     "tool": {
+      "rotate3d": "3D-Drehen",
       "move3d": "3D-Schieben",
       "mesh3d": "3D-Netz",
       "select": "Auswählen",
@@ -863,8 +864,12 @@ export const de: EngineLocale = {
   },
   "commands": {
     "names": {
+      "3DROTATE": [
+        "DREHEN3D"
+      ],
       "3DMOVE": [
-        "3DSCHIEBEN"
+        "3DSCHIEBEN",
+        "3DS"
       ],
       "3DMESH": [
         "3DNETZ"
@@ -1500,6 +1505,11 @@ export const de: EngineLocale = {
       ]
     },
     "keywords": {
+      "3DROTATE": {
+        "Copy": "Kopie",
+        "Reference": "Bezug",
+        "Points": "Punkte"
+      },
       "3DMOVE": {
         "Displacement": "Verschiebung",
         "Base point": "BAsispunkt",
@@ -2554,6 +2564,8 @@ export const de: EngineLocale = {
       }
     },
     "prompts": {
+      "specifyAngleStartPointOrAngle": "Winkel-Startpunkt angeben oder Winkel eingeben",
+      "pickRotationAxis": "Rotationsachse auswählen",
       "specifyMovePointOr": "Punkt für Verschieben angeben oder",
       "ucsFaceFlipAccept": "Akzeptieren",
       "ucsFaceAccept": "bestätigen",

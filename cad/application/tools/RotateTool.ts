@@ -99,8 +99,8 @@ type RotateState =
     }
 
 export class RotateTool implements Tool {
-  readonly id = "rotate"
-  readonly shortcut = "r"
+  readonly id: string = "rotate"
+  readonly shortcut: string = "r"
 
   private state: RotateState = { phase: "selecting" }
   /** The drag's reshaped solids, reused a moment when slow to work out. */
@@ -222,6 +222,7 @@ export class RotateTool implements Tool {
         this.selector.onPointerDown(input, ctx)
         return
       case "pivot": {
+        if (this.tookPivot(input.point, ctx)) return
         const base = this.resolvePivot(input.point, ctx)
         this.enterAngle(base, ctx)
         return
@@ -420,6 +421,7 @@ export class RotateTool implements Tool {
   private commitPivotCoordinate(ctx: ToolContext): boolean {
     if (this.state.phase !== "pivot") return false
     const text = ctx.dynamicInput.getText("base").trim()
+    if (text === "") return this.tookPivot(null, ctx)
     if (!isCoordinateExpression(text)) return false
     const base = parseCoordinate(text, {
       lastPoint: ctx.lastPoint,
@@ -428,8 +430,20 @@ export class RotateTool implements Tool {
       elevation: ctx.elevation,
     })
     if (!base) return false
+    if (this.tookPivot(base, ctx)) return true
     this.enterAngle(base, ctx)
     return true
+  }
+
+  /**
+   * The base point given (`null`: Enter), before ROTATE asks its angle:
+   * 3DROTATE's own prompts take it from there off the plan. False keeps
+   * ROTATE's.
+   */
+  protected tookPivot(base: Vec3 | null, ctx: ToolContext): boolean {
+    void base
+    void ctx
+    return false
   }
 
   private enterAngle(base: Vec2, ctx: ToolContext): void {

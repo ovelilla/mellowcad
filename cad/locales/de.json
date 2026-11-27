@@ -1,6 +1,7 @@
 {
   "interface": {
     "tool": {
+      "rotate3d": "3D-Drehen",
       "move3d": "3D-Schieben",
       "mesh3d": "3D-Netz",
       "select": "Auswählen",
@@ -590,7 +591,8 @@
   },
   "commands": {
     "names": {
-      "3DMOVE": ["3DSCHIEBEN"],
+      "3DROTATE": ["DREHEN3D"],
+      "3DMOVE": ["3DSCHIEBEN", "3DS"],
       "3DMESH": ["3DNETZ"],
       "LINE": ["LINIE", "L"],
       "XLINE": ["KLINIE", "KL"],
@@ -765,6 +767,7 @@
       "WIPEOUT": ["ABDECKEN"]
     },
     "keywords": {
+      "3DROTATE": { "Copy": "Kopie", "Reference": "Bezug", "Points": "Punkte" },
       "3DMOVE": {
         "Displacement": "Verschiebung",
         "Base point": "BAsispunkt",
@@ -1804,6 +1807,8 @@
       }
     },
     "prompts": {
+      "specifyAngleStartPointOrAngle": "Winkel-Startpunkt angeben oder Winkel eingeben",
+      "pickRotationAxis": "Rotationsachse auswählen",
       "specifyMovePointOr": "Punkt für Verschieben angeben oder",
       "ucsFaceFlipAccept": "Akzeptieren",
       "ucsFaceAccept": "bestätigen",

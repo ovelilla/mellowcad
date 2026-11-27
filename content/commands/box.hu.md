@@ -3,7 +3,7 @@ title: "Téglatest az AutoCAD-ben: TTEST (BOX) parancs"
 metaTitle: "3D téglatest az AutoCAD-ben: TTEST (BOX)"
 description: "3D téglatest rajzolása az AutoCAD-ben a TTEST (BOX) paranccsal, promptról promptra: két sarok és egy magasság, Középpont, Kocka, Hossz és 2Pont. Ingyen, online."
 figure: "Egy 60 × 40 × 25-ös téglatest két sarokból és egy magasságból, délkelet felől nézve, Takartvonalas látványstílusban."
-sourceHash: "1bc1379d58bc"
+sourceHash: "f272a5f0c236"
 ---
 
 A TTEST (BOX) parancs 3D szilárdtest téglatestet rajzol, amelynek oldalai az FKR tengelyeivel párhuzamosak: adja meg az első sarkot, a másik sarkot, majd a magasságot. A magasság az FKR Z tengelye mentén emelkedik, a negatív lefelé mutat, egy pont pedig a saroktól mért távolságával adja meg; ha a másik sarkot az elsőétől eltérő Z-n adja meg, az kérdés nélkül beállítja a magasságot. Az utolsó magasságot, valamint egy kocka vagy a Hossz opció utolsó hosszát és szélességét alapértelmezésként kínálja fel, amelyet az Enter elfogad; ezeken a többi alaptesttel és a <Command id="EXTRUDE" /> paranccsal osztozik. A téglatest az aktuális fólián jön létre, és a Vissza egyetlen lépésben visszavonja.
@@ -30,7 +30,7 @@ A magasságnál: két pontot kér be, és a magasság a köztük lévő távols�
 
 ## Missing
 
-A Mozgatás, a Forgatás, a Lépték és a Tükrözés aktív fogóból, amelyek között az AutoCAD az Enter billentyűvel vált. A saját 3D parancsai – 3DFORGAT, 3DLÉPTÉK, TÜKRÖZ3D, FORGAT3D, ILLESZT, 3DILLESZT – a manipulátoraikkal: a <Command id="3DMOVE" /> a manipulátorával mozgatja. A pontozott méretek, amelyeket az AutoCAD a sarok, a hossz és a szélesség megadása közben rajzol. Élei lekerekítése és letörése a <Command id="FILLET" /> és a <Command id="CHAMFER" /> paranccsal; ezt az <Command id="FILLETEDGE" /> és az <Command id="CHAMFEREDGE" /> parancs végzi el. A szilárdtest-előzmények rögzítése és megjelenítése, és az Anyag sor. Azok a látványstílusok, amelyek az <Command id="VSCURRENT" /> parancsból a 2D drótváz, a Takartvonalas és a Látványtervi mellett hiányoznak.
+A Mozgatás, a Forgatás, a Lépték és a Tükrözés aktív fogóból, amelyek között az AutoCAD az Enter billentyűvel vált. A saját 3D parancsai – 3DLÉPTÉK, TÜKRÖZ3D, FORGAT3D, ILLESZT, 3DILLESZT – a manipulátoraikkal: a <Command id="3DMOVE" /> és a <Command id="3DROTATE" /> a manipulátoraival mozgatja és forgatja. A pontozott méretek, amelyeket az AutoCAD a sarok, a hossz és a szélesség megadása közben rajzol. Élei lekerekítése és letörése a <Command id="FILLET" /> és a <Command id="CHAMFER" /> paranccsal; ezt az <Command id="FILLETEDGE" /> és az <Command id="CHAMFEREDGE" /> parancs végzi el. A szilárdtest-előzmények rögzítése és megjelenítése, és az Anyag sor. Azok a látványstílusok, amelyek az <Command id="VSCURRENT" /> parancsból a 2D drótváz, a Takartvonalas és a Látványtervi mellett hiányoznak.
 
 ## Questions
 

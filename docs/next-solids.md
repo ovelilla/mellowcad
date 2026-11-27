@@ -1,9 +1,9 @@
 # Sólidos 3D con núcleo propio — brief
 
-> **Estado:** la entrega 6c (3DMOVE, 3DROTATE, UCS Face y UCSDETECT) es la siguiente: la cola de
-> la visibilidad está agotada desde el 24/11/2026 y la revisión 32 del roadmap se cerró el
-> 27/11/2026 (de la 26 a la 31, el 5/11). Las fases 1 a 5 y las entregas 6a y 6b están hechas
-> (1/11/2026). Se borra cuando la fase 7 esté hecha; hasta entonces cada fase cerrada se marca aquí.
+> **Estado:** la fase 6 está hecha: su entrega 6c (UCS Face, UCSDETECT, los subobjetos como
+> conjunto, 3DMOVE y 3DROTATE) el 27/11/2026, en cinco commits, sin push; las fases 1 a 5 y las
+> entregas 6a y 6b, el 1/11/2026. Lo siguiente es la fase 7 (SWEEP, LOFT). Se borra cuando la fase 7
+> esté hecha; hasta entonces cada fase cerrada se marca aquí.
 
 ## 1. Objetivo
 
@@ -149,8 +149,14 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación en
    **6c, lo siguiente:** 3DMOVE y 3DROTATE (también de subobjetos, con MOVE,
    ROTATE, SCALE y ERASE sobre ellos y el modo SUbobject de `Select objects:`, que la consola mostró
    en solid-edits/p241–p264: SUB-01 de `docs/plans/solid-edits-review.md`), UCS Face y el SCP dinámico (UCSDETECT).
-   **El plan de la 6c** (27/11/2026), por lo que cada pieza necesita de la anterior; un commit por
-   pieza, cada una cerrada con `finish-feature` y leída por un segundo contexto:
+   **6c hecha** (27/11/2026): UCS Face sobre sólidos (`08909487`), el SCP dinámico (`a5b113db`),
+   los subobjetos como conjunto de MOVE, COPY, ROTATE, SCALE y ERASE (SUB-01, SED-08: `3db85422`),
+   3DMOVE con su gizmo (`4ff7d096`) y 3DROTATE con el suyo; lo que falta, en sus entradas de
+   `coordinate-systems.md`, `drafting-aids.md`, `command-line.md` y `modify.md` (el menú del gizmo,
+   DEFAULTGIZMO, 3DSCALE, el estilo 3D Wireframe, un vértice movido y una cara girada en su plano,
+   que AutoCAD triangula). **El plan de la 6c** (27/11/2026), por lo que cada pieza necesita de la
+   anterior; un commit por pieza, cada una cerrada con `finish-feature` y leída por un segundo
+   contexto:
    1. **UCS Face sobre sólidos** (`docs/coverage/coordinate-systems.md`). La consola (ucs/p500–p553):
       la cara es la que el rayo de la vista cruza primero por el punto (un punto tecleado también);
       el origen, el punto de la cara; Z, su normal hacia fuera (en una curva, la del punto); X, a lo

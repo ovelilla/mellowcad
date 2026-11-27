@@ -73,7 +73,7 @@ The worst:
 | FED-07 | four refusals were silent                                                             | cea754ae           |
 | FED-08 | the rail echoed `_filletedge`; the ribbon's macro is `^C^C_FILLETEDGE`                | cea754ae           |
 | FED-09 | tests and citations                                                                   | cea754ae           |
-| SUB-01 | SUbobject mode finds nothing on a solid (phase 6c, Missing)                           | cea754ae           |
+| SUB-01 | SUbobject mode finds nothing on a solid (phase 6c, Missing)                           | cea754ae, 3db85422 |
 | SUB-02 | a stale WHY and a false coverage line                                                 | cea754ae           |
 | SOE-01 | Enter at a point or value prompt ended SOLIDEDIT                                      | d7911c5a           |
 | SOE-02 | the extrusion's taper always offered `<0>`; AutoCAD EXTRUDE's last                    | a5603063           |
@@ -103,7 +103,7 @@ The worst:
 | SED-05 | no rubber band at SOLIDEDIT's and SLICE's second points (d02, d05)                    | a7c84dba           |
 | SED-06 | a click at an object's pick left LASTPOINT (d06)                                      | 69049b7d, a7c84dba |
 | SED-07 | Ctrl+Space walked FILLETEDGE's edges, and through the box ended it (d04-e)            | 69049b7d           |
-| SED-08 | a selected sub-object is the preselection of AutoCAD's LIST, MOVE, ERASE (Missing)    | a7c84dba           |
+| SED-08 | a selected sub-object is the preselection of AutoCAD's LIST, MOVE, ERASE (Missing)    | a7c84dba, 3db85422 |
 | SED-09 | SOLIDEDIT's face pick lit faces; AutoCAD the solid over an edge (d02-b)               | a7c84dba           |
 | SED-10 | FILLETEDGE's and CHAMFEREDGE's look at the pick and accept (d04)                      | 69049b7d           |
 | SED-11 | Surface's pick lit nothing (d05-d)                                                    | a7c84dba           |

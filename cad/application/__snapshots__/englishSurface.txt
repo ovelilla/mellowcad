@@ -55,6 +55,7 @@ MOVE ["M"] "Move"
 COPY ["CO","CP"] "Copy"
 STRETCH ["S"] "Stretch"
 ROTATE ["RO"] "Rotate"
+3DROTATE ["3R"] "3D Rotate"
 SCALE ["SC"] "Scale"
 MIRROR ["MI"] "Mirror"
 ARRAY ["AR"] "Array"
@@ -225,6 +226,7 @@ move3d "3D Move" 3M
 copy "Copy" CO
 stretch "Stretch" S
 rotate "Rotate" RO
+rotate3d "3D Rotate" 3R
 scale "Scale" SC
 mirror "Mirror" MI
 arraycommand "Array" AR
@@ -4223,6 +4225,55 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   options: -
   properties: -
   prompt| Specify move point or [Base point/Copy/Undo/eXit]: X
+  info| Regenerating model.
+
+## 3DROTATE
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+  command| BOX
+  prompt| Specify first corner or [Center]: 0,0,0
+  prompt| Specify other corner or [Cube/Length]: 10,10
+  prompt| Specify height or [2Point]: 10
+  command| -VPOINT
+  info| Current view direction:  VIEWDIR=0.00,0.00,1.00
+  prompt| Specify a view point or [Rotate]: -1.3,-2.2,1.6
+  info| Regenerating model.
+> 3DROTATE
+  prompt: 3DROTATE Pick a rotation axis:
+  asks: 
+  tip: Pick a rotation axis:
+  dyn: 
+  properties: 3D Solid (1) {Linetype scale=1.00~} [Geometry: Solid type=Box, Position X=5.00~, Position Y=5.00~, Position Z=0.00~, Length=10.00 mm~, Width=10.00 mm~, Height=10.00 mm~, Rotation=0°] [Solid History: History=None, Show History=No]
+  command| 3DROTATE
+  info| Current positive angle in UCS:  ANGDIR=counterclockwise  ANGBASE=0
+  prompt| Select objects: L
+  info| 1 found
+  prompt| Select objects:
+  prompt| Specify base point: 0,0,0
+> typed
+  prompt| Pick a rotation axis: 10,0,0
+  error| Invalid 2D point.
+> hover
+> ring
+  prompt: 3DROTATE Specify angle start point or type an angle:
+  asks: "Angle"
+  tip: Specify angle start point or type an angle:
+  dyn: "Angle"=""||°*
+  prompt| Pick a rotation axis:
+> angle
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  properties: -
+  prompt| Specify angle start point or type an angle: 30
   info| Regenerating model.
 
 ## ROTATE

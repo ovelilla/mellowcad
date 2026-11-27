@@ -57,7 +57,7 @@ Array (so the second point's `[Array]` is not offered; the first form still refu
 with Array's keyword's `Point or option keyword required.`, es `Se requiere un punto o una
 opción.`, where MOVE's says `Invalid point.`, p154–p158)
 
-### `3DMOVE` / `3M` · es `DESPLAZA3D` · pt-BR `MOVER3D` / `3M` · fr `DEPLACER3D` · it `SPOSTA3D` · de `3DSCHIEBEN` · ru `3DПЕРЕНЕСТИ` · pl `3DPRZESUŃ` · cs `3DPOSUN` · hu `3DMOZGAT` / `3M`
+### `3DMOVE` / `3M` · es `DESPLAZA3D` / `D3` · pt-BR `MOVER3D` / `3M` · fr `DEPLACER3D` / `D3` · it `SPOSTA3D` / `S3` · de `3DSCHIEBEN` / `3DS` · ru `3DПЕРЕНЕСТИ` / `3ПЕ` · pl `3DPRZESUŃ` / `3PRZ` · cs `3DPOSUN` / `3DP` · hu `3DMOZGAT` / `3M`
 
 **Implemented:** MOVE's prompts, AutoCAD 2027's console's (3dmove/p01–p14): `Select objects:`, its
 SUbobject and Ctrl+click taking a solid's faces, edges and vertices as MOVE's do, `Specify base
@@ -124,6 +124,35 @@ Spanish `acad.pgp` (p101)
 
 **Missing:** Enter at Points' points ends ROTATE unturned, **unverified** (SCALE's console reads
 its cursor there); the drag's ghost as MOVE's (each object's colour only)
+
+### `3DROTATE` / `3R` · es `ROTACION3D` · pt-BR `ROTACIONAR3D` · fr `ROTATION3D` / `R3` · it `ROTAZIONE3D` · de `DREHEN3D` · ru `3DПОВЕРНУТЬ` / `3ПО`, `3-ПОВЕРНУТЬ` · pl `3DOBRÓĆ` / `3OB` · cs `3DOTOČ` / `3DD` · hu `3DFORGAT` / `3F`
+
+**Implemented:** in plan ROTATE's prompts, AutoCAD 2027's console's (3drotate/p06). In a view that is
+not a plan, after `Current positive angle in UCS:  ANGDIR=counterclockwise  ANGBASE=0` and
+`Select objects:` (its SUbobject and Ctrl+click taking a solid's faces, edges and vertices as
+ROTATE's do), `Specify base point:` with the 3D Rotate gizmo — a ring about each of the WCS's axes,
+X red, Y green, Z blue, some 64 px across, its half towards the viewer broad (desktop 3drotate/d01-1)
+— following the cursor, Enter leaving it where the cursor left it or at the set's centre (d01; the
+console's Enter goes on, p03); `Pick a rotation axis:` (es `Precise un eje de rotación:`, 21208),
+which takes only a click on a ring, the ring under the cursor yellow with its axis drawn through the
+centre (d01-2), anything typed and Enter refused `Invalid 2D point.` (p01–p05); `Specify angle start
+point or type an angle:` (21206), an angle typed turning the set that far about the axis,
+right-handed, and ending (d01: 30 about X), a point taken asking `Specify angle end point:` (21735),
+the turn from the one to the other about the axis, the set dragged turned meanwhile, each point
+clicked read where the line of sight meets the ring's plane (a snap's as it is), the start point
+LASTPOINT; one step U names `3DROTATE`; `Regenerating model.` as it ends in 2D Wireframe off the plan, as 3DMOVE's. The
+pt-BR acad.pgp's 3R is ROTATE3D's (ROTAC3D, whose console says `Ângulo positivo atual:`), as es's
+G3, it's R3 and de's 3DD: 3DROTATE has no alias there. pl's name is the acad.pgp's target and the
+PLK help's, `3DOBRÓĆ` (the string table's 52543 says `3DOBRÓT`).
+
+**Missing:** the gizmo's right-click menu (as 3DMOVE's, desktop 3drotate/d01: Set Constraint ▸ X,
+Y, Z; Relocate Gizmo, Align Gizmo With, Custom Gizmo, Respect Dynamic UCS), DEFAULTGIZMO's rotate
+gizmo at `Command:`, Space cycling the gizmos; a rotation dragged freely off the rings; the angle
+shown on the gizmo while it turns; the 3D Wireframe visual style the command switches to;
+**unverified**: the gizmo following the cursor with a snap (here the cursor's point on the work
+plane), the turn's sign from points when the axis faces away, U and a transparent command inside
+it, Enter at the angle's prompts (ignored here, the prompt kept), a click off the rings (refused
+`Invalid 2D point.` here, as what is typed)
 
 ### `SCALE` / `SC` · es `ESCALA` / `ES` · pt-BR `ESCALA` / `ES` · fr `ECHELLE` / `EH` · it `SCALA` / `SS` · de `VARIA` / `V` · ru `МАСШТАБ` / `МШ` · pl `SKALA` / `S` · cs `MĚŘÍTKO` / `ME` · hu `LÉPTÉK` / `LE`
 

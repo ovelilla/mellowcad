@@ -1209,6 +1209,29 @@ describe("the engine's English surface", () => {
           .do("X", (c) => answer(c, "X"))
       )
     }
+    // 3drotate/p01, desktop d01: the axis asked, a ring taken, an angle typed.
+    {
+      const cad = createHarness()
+      submit(cad, "BOX", "0,0,0", "10,10", "10", "-VPOINT", "-1.3,-2.2,1.6")
+      const o = cad.toScreen({ x: 0, y: 0, z: 0 })
+      const e = cad.toScreen({ x: 1, y: 0, z: 0 })
+      const along = -1.3 / Math.hypot(1.3, 2.2, 1.6)
+      const scale = Math.hypot(e.x - o.x, e.y - o.y) / Math.sqrt(1 - along ** 2)
+      const r = 64 / scale
+      const ring = {
+        x: 0,
+        y: r * Math.cos(Math.PI / 3),
+        z: r * Math.sin(Math.PI / 3),
+      }
+      walk("3DROTATE", cad, (s) =>
+        s
+          .do("3DROTATE", (c) => submit(c, "3DROTATE", "L", "", "0,0,0"))
+          .do("typed", (c) => submit(c, "10,0,0"))
+          .do("hover", (c) => c.moveTo(ring))
+          .do("ring", (c) => c.click(ring))
+          .do("angle", (c) => submit(c, "30"))
+      )
+    }
     walk("ROTATE", createHarness({ entities: [line()] }), (s) =>
       s
         .do("ROTATE", (c) => c.select("L1").command("RO"))

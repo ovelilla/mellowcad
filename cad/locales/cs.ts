@@ -5,6 +5,7 @@ export const cs: EngineLocale = {
   "tag": "cs",
   "interface": {
     "tool": {
+      "rotate3d": "3D otočení",
       "move3d": "3D posun",
       "mesh3d": "3D síť",
       "select": "Vybrat",
@@ -923,8 +924,13 @@ export const cs: EngineLocale = {
   },
   "commands": {
     "names": {
+      "3DROTATE": [
+        "3DOTOČ",
+        "3DD"
+      ],
       "3DMOVE": [
-        "3DPOSUN"
+        "3DPOSUN",
+        "3DP"
       ],
       "3DMESH": [
         "3DSÍŤ"
@@ -1563,6 +1569,11 @@ export const cs: EngineLocale = {
       ]
     },
     "keywords": {
+      "3DROTATE": {
+        "Copy": "Kopie",
+        "Reference": "Reference",
+        "Points": "Body"
+      },
       "3DMOVE": {
         "Displacement": "Přemístění",
         "Base point": "Základní",
@@ -2617,6 +2628,8 @@ export const cs: EngineLocale = {
       }
     },
     "prompts": {
+      "specifyAngleStartPointOrAngle": "Určete počátek úhlu nebo zadejte úhel",
+      "pickRotationAxis": "Vyberte osu rotace",
       "specifyMovePointOr": "Určete bod posunu. nebo",
       "ucsFaceFlipAccept": "akceptovat",
       "ucsFaceAccept": "použít",

@@ -3,7 +3,7 @@ title: "AutoCAD BOX（长方体）命令"
 metaTitle: "CAD 长方体命令（BOX）怎么画：三维长方体与选项"
 description: "CAD 三维长方体怎么画？BOX 按提示顺序讲解：两个角点和高度，以及中心、立方体、长度和两点选项。在浏览器中免费试用。"
 figure: "长 60、宽 40、高 25 的长方体，由两个角点和高度绘制，在隐藏视觉样式下从东南方向观察。"
-sourceHash: "1bc1379d58bc"
+sourceHash: "f272a5f0c236"
 ---
 
 BOX（长方体）命令绘制各边沿 UCS 轴方向的三维实体长方体：指定第一个角点、其他角点，然后指定高度。高度沿 UCS 的 Z 轴向上，负值向下；指定一个点时，高度为该点到角点的距离；其他角点的 Z 值与第一个角点不同时，由它确定高度，不再询问。上次的高度，以及立方体或长度选项上次的长度和宽度，作为默认值提供，按 Enter 键即可采用，与其他基本实体和 <Command id="EXTRUDE" /> 命令共用。长方体位于当前图层上，可以一次放弃。
@@ -30,7 +30,7 @@ BOX（长方体）命令绘制各边沿 UCS 轴方向的三维实体长方体：
 
 ## Missing
 
-热夹点的移动、旋转、比例缩放和镜像，AutoCAD 中按 Enter 键循环切换。三维专用命令（3DROTATE、3DSCALE、MIRROR3D、ROTATE3D、ALIGN、3DALIGN）及其小控件：<Command id="3DMOVE" /> 可用其小控件移动长方体。指定角点、长度和宽度时 AutoCAD 绘制的虚线尺寸。用 <Command id="FILLET" /> 和 <Command id="CHAMFER" /> 处理其边，这里由 <Command id="FILLETEDGE" /> 和 <Command id="CHAMFEREDGE" /> 完成。实体历史记录的“记录历史”和“显示历史”，以及“材质”行。<Command id="VSCURRENT" /> 在二维线框、隐藏和概念之外缺少的视觉样式。
+热夹点的移动、旋转、比例缩放和镜像，AutoCAD 中按 Enter 键循环切换。三维专用命令（3DSCALE、MIRROR3D、ROTATE3D、ALIGN、3DALIGN）及其小控件：<Command id="3DMOVE" /> 和 <Command id="3DROTATE" /> 可用各自的小控件移动和旋转长方体。指定角点、长度和宽度时 AutoCAD 绘制的虚线尺寸。用 <Command id="FILLET" /> 和 <Command id="CHAMFER" /> 处理其边，这里由 <Command id="FILLETEDGE" /> 和 <Command id="CHAMFEREDGE" /> 完成。实体历史记录的“记录历史”和“显示历史”，以及“材质”行。<Command id="VSCURRENT" /> 在二维线框、隐藏和概念之外缺少的视觉样式。
 
 ## Questions
 

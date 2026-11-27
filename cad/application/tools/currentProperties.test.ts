@@ -1078,7 +1078,7 @@ const MAKES_NOTHING = [
   ...["VSCURRENT", "REGEN", "REGENALL", "FILL", "UNITS", "CLEANSCREENON"],
   ...["CLEANSCREENOFF", "NEW", "QNEW", "QSAVE", "SAVE", "SAVEAS", "OPEN"],
   ...["DXFIN", "DXFOUT", "COPYCLIP", "CUTCLIP", "COPYBASE"],
-  ...["LIST", "PTYPE", "RIBBON", "RIBBONCLOSE", "-HATCHEDIT"],
+  ...["LIST", "PTYPE", "RIBBON", "RIBBONCLOSE", "-HATCHEDIT", "3DROTATE"],
 ]
 
 describe("the creating commands", () => {

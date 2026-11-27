@@ -2,7 +2,7 @@
 title: "Comando SPHERE (ESFERA) no AutoCAD 3D"
 description: "Como funciona o SPHERE do AutoCAD em português, ESFERA, prompt a prompt: centro e raio, Diâmetro, 3P, 2P e Ttr, e por que aparece em linhas. Experimente grátis."
 figure: "Uma esfera de raio 25 a partir do centro, vista do sudeste no estilo visual Conceitual."
-sourceHash: "b0a92ceaf418"
+sourceHash: "c7bc67d1d847"
 ---
 
 O SPHERE, ESFERA no AutoCAD em português, desenha uma esfera, um sólido 3D: especifique o centro e depois o raio. Um raio indicado com o mouse é lido no plano que passa pelo centro, e o último raio é oferecido como padrão que o Enter aceita, compartilhado com o <Command id="CYLINDER" />, o <Command id="CONE" /> e as outras primitivas. A esfera fica na camada atual, e o Desfazer a reverte num passo.
@@ -29,7 +29,7 @@ No raio: pede o diâmetro no lugar dele, oferecendo o dobro do último raio.
 
 ## Missing
 
-O <Command id="EXPLODE" /> de uma esfera, que o AutoCAD transforma numa superfície: o MellowCAD não tem superfícies, então diz que não conseguiu explodi-la. Mover, Rotacionar, Escala e Espelhar a partir de uma alça ativa, e os comandos 3D próprios (rotacionar e escalar em 3D): o <Command id="3DMOVE" /> a move. A silhueta que o `DISPSILH` do AutoCAD desenha. Os estilos visuais que faltam ao <Command id="VSCURRENT" /> além de Estrutura de arame 2D, Oculto e Conceitual.
+O <Command id="EXPLODE" /> de uma esfera, que o AutoCAD transforma numa superfície: o MellowCAD não tem superfícies, então diz que não conseguiu explodi-la. Mover, Rotacionar, Escala e Espelhar a partir de uma alça ativa, e os comandos 3D próprios (escalar em 3D): o <Command id="3DMOVE" /> e o <Command id="3DROTATE" /> a movem e a rotacionam. A silhueta que o `DISPSILH` do AutoCAD desenha. Os estilos visuais que faltam ao <Command id="VSCURRENT" /> além de Estrutura de arame 2D, Oculto e Conceitual.
 
 ## Questions
 

@@ -5,6 +5,7 @@ export const pl: EngineLocale = {
   "tag": "pl",
   "interface": {
     "tool": {
+      "rotate3d": "Obrót 3D",
       "move3d": "Przesunięcie 3D",
       "mesh3d": "Siatka 3D",
       "select": "Wybierz",
@@ -923,8 +924,13 @@ export const pl: EngineLocale = {
   },
   "commands": {
     "names": {
+      "3DROTATE": [
+        "3DOBRÓĆ",
+        "3OB"
+      ],
       "3DMOVE": [
-        "3DPRZESUŃ"
+        "3DPRZESUŃ",
+        "3PRZ"
       ],
       "3DMESH": [
         "SIATKA3W"
@@ -1552,6 +1558,11 @@ export const pl: EngineLocale = {
       ]
     },
     "keywords": {
+      "3DROTATE": {
+        "Copy": "Kopiuj",
+        "Reference": "Odniesienie",
+        "Points": "Punkty"
+      },
       "3DMOVE": {
         "Displacement": "Przesunięcie",
         "Base point": "Baza",
@@ -2606,6 +2617,8 @@ export const pl: EngineLocale = {
       }
     },
     "prompts": {
+      "specifyAngleStartPointOrAngle": "Określ pierwsze ramię kąta lub wpisz kąt",
+      "pickRotationAxis": "Wybierz oś obrotu",
       "specifyMovePointOr": "Określ punkt przesunięcia lub",
       "ucsFaceFlipAccept": "Akceptuj",
       "ucsFaceAccept": "akceptuj",

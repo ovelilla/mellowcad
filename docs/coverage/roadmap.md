@@ -45,9 +45,11 @@ us to walk again, whereas a command costs the same before or after it.
    vertices selected with Ctrl+click (command-line.md), PRESSPULL on its faces, SLICE and SECTION
    (the kernel's cut, section and face offset in `geometry/solidEdits.ts`); 6b is done:
    FILLETEDGE, CHAMFEREDGE and SOLIDEDIT's faces (modify.md; the kernel's blends in
-   `geometry/solidBlends.ts`). 6c (3DMOVE, 3DROTATE, UCS Face and UCSDETECT) is next: the
-   reviews of what is built under "Command reviews" are done (26 to 31 on 2026-11-05, 32 on
-   2026-11-27).
+   `geometry/solidBlends.ts`); 6c is done (2026-11-27): UCS Face on a solid's faces and the
+   dynamic UCS (coordinate-systems.md, drafting-aids.md; `domain/solidFaceUcs.ts`), a solid's
+   faces, edges and vertices as MOVE's, COPY's, ROTATE's, SCALE's and ERASE's set (command-line.md;
+   the kernel's `geometry/subobjectEdits.ts`), 3DMOVE and 3DROTATE with their gizmos (modify.md;
+   `application/gizmos.ts`). Phase 7 (SWEEP, LOFT) is next.
    The rest of the visual styles are wanted by the owner (2026-11-08), a delivery of their own
    after phase 6, not yet scheduled: VSCURRENT's Wireframe, Shaded, Shaded with edges, Shades of
    Gray, Sketchy and X-ray, and the viewport controls' visual style menu to switch them as
@@ -165,7 +167,7 @@ followed the cursor on the work plane, bf6d9928). The 3D primitives review fixed
 (PLP, `docs/plans/primitives-review.md`): ArrayPolarTool also refuses at a point prompt with
 no `setsLastPoint()` (SplineEditTool's, LPT-01: `docs/plans/pedit-review.md`; the Sweeps review fixed
 ExtrudeTool's and RevolveTool's, SLP-01, SLP-02; the Solid edits review PlaneCutTool's and
-SolideditTool's, ELP-01, ELP-03), and ARRAYPOLAR's for the Arrays area (done) when it is next touched. The Solid edits review leaves SUbobject mode on solids, and moving sub-objects, to phase 6c (SUB-01, SED-08, `docs/plans/solid-edits-review.md`); a click at an object's pick sets LASTPOINT to the cursor's point on the work plane (SED-06, solid-edits/d06), and so does a click that picks at `Select objects:` (VSD-04, solid-inquiry/d10): the single-object picks of other commands are suspects off the plan; and DELOBJ's place in SETVAR's `?` listing (workspace/p127) to the Workspace area. The Sweeps review closed RGD-02 (a partial turn's isolines, SWD-01: `docs/plans/sweeps-review.md`); the dynamic input's boxes at its point prompts stay unprobed (d09), for the dynamic input's next pass. A review's state is `plan` while its plan runs, and `done` once executed, its plan reduced to an
+SolideditTool's, ELP-01, ELP-03), and ARRAYPOLAR's for the Arrays area (done) when it is next touched. The Solid edits review left SUbobject mode on solids, and moving sub-objects, to phase 6c, which did them (SUB-01, SED-08, `docs/plans/solid-edits-review.md`); a click at an object's pick sets LASTPOINT to the cursor's point on the work plane (SED-06, solid-edits/d06), and so does a click that picks at `Select objects:` (VSD-04, solid-inquiry/d10): the single-object picks of other commands are suspects off the plan; and DELOBJ's place in SETVAR's `?` listing (workspace/p127) to the Workspace area. The Sweeps review closed RGD-02 (a partial turn's isolines, SWD-01: `docs/plans/sweeps-review.md`); the dynamic input's boxes at its point prompts stay unprobed (d09), for the dynamic input's next pass. A review's state is `plan` while its plan runs, and `done` once executed, its plan reduced to an
 index (LINE's: `docs/plans/line-review.md`); a command added later takes the place its area gives
 it. Transforms found STRETCH's look and zero displacement MOVE's (MOVE-D3, D6 hold) and the
 LASTPOINT of its Displacement its own (STR-05: `docs/plans/transforms-review.md`). The Blocks review takes PURGE's report words from ERASE's

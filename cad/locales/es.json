@@ -1,6 +1,7 @@
 {
   "interface": {
     "tool": {
+      "rotate3d": "Rotación 3D",
       "move3d": "Desplazamiento 3D",
       "mesh3d": "Malla 3D",
       "select": "Seleccionar",
@@ -585,7 +586,8 @@
   },
   "commands": {
     "names": {
-      "3DMOVE": ["DESPLAZA3D"],
+      "3DROTATE": ["ROTACION3D"],
+      "3DMOVE": ["DESPLAZA3D", "D3"],
       "3DMESH": ["3DMALLA"],
       "LINE": ["LINEA", "L"],
       "XLINE": ["LINEAX", "XL"],
@@ -753,6 +755,11 @@
       "WIPEOUT": ["COBERTURA"]
     },
     "keywords": {
+      "3DROTATE": {
+        "Copy": "Copiar",
+        "Reference": "Referencia",
+        "Points": "Puntos"
+      },
       "3DMOVE": {
         "Displacement": "Desplazamiento",
         "Base point": "Punto",
@@ -1705,6 +1712,8 @@
       "leaderFormatOption": { "None": "Ninguna" }
     },
     "prompts": {
+      "specifyAngleStartPointOrAngle": "Precise punto inicial de ángulo o escriba un ángulo",
+      "pickRotationAxis": "Precise un eje de rotación",
       "specifyMovePointOr": "Precise un punto de desplazamiento o",
       "ucsFaceFlipAccept": "Aceptar",
       "ucsFaceAccept": "aceptar",

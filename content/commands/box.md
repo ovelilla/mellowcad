@@ -4,7 +4,7 @@ metaTitle: "BOX in AutoCAD: 3D box command and options"
 description: "How AutoCAD's BOX draws a 3D solid box, prompt by prompt: two corners and a height, Center, Cube, Length and 2Point. Try it free in your browser."
 figure: "A box 60 by 40 by 25, from two corners and a height, seen from the south-east in the Hidden visual style."
 related: ["WEDGE", "CYLINDER", "EXTRUDE", "UNION"]
-coverage: "6b9fb0bab34e"
+coverage: "a53b29fe069a"
 ---
 
 BOX draws a 3D solid box with its sides along the UCS's axes: give the first corner, the other corner, then the height. The height rises along the UCS's Z, a negative one goes down, and a point gives it by how far it is from the corner; a corner given at another Z than the first sets the height without asking. The last height, and the last length and width of a cube or Length, are offered as defaults that Enter takes, shared with the other primitives and <Command id="EXTRUDE" />. The box lies on the current layer, and Undo takes it back in one step.
@@ -31,7 +31,7 @@ At the height: asks for two points, and the height is the distance between them.
 
 ## Missing
 
-Move, Rotate, Scale and Mirror from a hot grip, which AutoCAD cycles with Enter. The 3D commands of its own — 3DROTATE, 3DSCALE, MIRROR3D, ROTATE3D, ALIGN, 3DALIGN — with their gizmos: <Command id="3DMOVE" /> moves it with its gizmo. The dotted dimensions AutoCAD draws while you give the corner, the length and the width. <Command id="FILLET" /> and <Command id="CHAMFER" /> of its edges, which <Command id="FILLETEDGE" /> and <Command id="CHAMFEREDGE" /> do. Solid History's Record History and Show History, and the Material row. The visual styles <Command id="VSCURRENT" /> lacks beyond 2D Wireframe, Hidden and Conceptual.
+Move, Rotate, Scale and Mirror from a hot grip, which AutoCAD cycles with Enter. The 3D commands of its own — 3DSCALE, MIRROR3D, ROTATE3D, ALIGN, 3DALIGN — with their gizmos: <Command id="3DMOVE" /> and <Command id="3DROTATE" /> move and turn it with theirs. The dotted dimensions AutoCAD draws while you give the corner, the length and the width. <Command id="FILLET" /> and <Command id="CHAMFER" /> of its edges, which <Command id="FILLETEDGE" /> and <Command id="CHAMFEREDGE" /> do. Solid History's Record History and Show History, and the Material row. The visual styles <Command id="VSCURRENT" /> lacks beyond 2D Wireframe, Hidden and Conceptual.
 
 ## Questions
 

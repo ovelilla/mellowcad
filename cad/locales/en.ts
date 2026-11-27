@@ -5,6 +5,7 @@ export const en: EngineCatalog = {
   "tag": "en",
   "interface": {
     "tool": {
+      "rotate3d": "3D Rotate",
       "move3d": "3D Move",
       "select": "Select",
       "line": "Line",
@@ -866,6 +867,10 @@ export const en: EngineCatalog = {
   },
   "commands": {
     "names": {
+      "3DROTATE": [
+        "3DROTATE",
+        "3R"
+      ],
       "3DMOVE": [
         "3DMOVE",
         "3M"
@@ -1815,6 +1820,8 @@ export const en: EngineCatalog = {
       }
     },
     "prompts": {
+      "specifyAngleStartPointOrAngle": "Specify angle start point or type an angle",
+      "pickRotationAxis": "Pick a rotation axis",
       "specifyMovePointOr": "Specify move point or",
       "ucsFaceFlipAccept": "accept",
       "ucsFaceAccept": "accept",

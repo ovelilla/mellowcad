@@ -5,6 +5,7 @@ export const ru: EngineLocale = {
   "tag": "ru",
   "interface": {
     "tool": {
+      "rotate3d": "3D-поворот",
       "move3d": "3D-перенос",
       "mesh3d": "3D-сеть",
       "select": "Выбрать",
@@ -923,8 +924,14 @@ export const ru: EngineLocale = {
   },
   "commands": {
     "names": {
+      "3DROTATE": [
+        "3DПОВЕРНУТЬ",
+        "3ПО",
+        "3-ПОВЕРНУТЬ"
+      ],
       "3DMOVE": [
-        "3DПЕРЕНЕСТИ"
+        "3DПЕРЕНЕСТИ",
+        "3ПЕ"
       ],
       "3DMESH": [
         "3DСЕТЬ"
@@ -1544,6 +1551,11 @@ export const ru: EngineLocale = {
       ]
     },
     "keywords": {
+      "3DROTATE": {
+        "Copy": "Копия",
+        "Reference": "Опорный",
+        "Points": "Точки"
+      },
       "3DMOVE": {
         "Displacement": "Смещение",
         "Base point": "Базовая",
@@ -2598,6 +2610,8 @@ export const ru: EngineLocale = {
       }
     },
     "prompts": {
+      "specifyAngleStartPointOrAngle": "Точка на первом луче угла или угол",
+      "pickRotationAxis": "Ось вращения",
       "specifyMovePointOr": "Точка переноса или",
       "ucsFaceFlipAccept": "принять",
       "ucsFaceAccept": "принять",

@@ -5,6 +5,7 @@ export const fr: EngineLocale = {
   "tag": "fr",
   "interface": {
     "tool": {
+      "rotate3d": "Rotation 3D",
       "move3d": "Déplacer 3D",
       "mesh3d": "Maillage 3D",
       "select": "Sélectionner",
@@ -863,8 +864,13 @@ export const fr: EngineLocale = {
   },
   "commands": {
     "names": {
+      "3DROTATE": [
+        "ROTATION3D",
+        "R3"
+      ],
       "3DMOVE": [
-        "DEPLACER3D"
+        "DEPLACER3D",
+        "D3"
       ],
       "3DMESH": [
         "3DMAILLE"
@@ -1504,6 +1510,11 @@ export const fr: EngineLocale = {
       ]
     },
     "keywords": {
+      "3DROTATE": {
+        "Copy": "Copier",
+        "Reference": "Référence",
+        "Points": "Points"
+      },
       "3DMOVE": {
         "Displacement": "Déplacement",
         "Base point": "Base",
@@ -2558,6 +2569,8 @@ export const fr: EngineLocale = {
       }
     },
     "prompts": {
+      "specifyAngleStartPointOrAngle": "Spécifiez un angle point de départ ou tapez un angle",
+      "pickRotationAxis": "Choisissez un axe de rotation",
       "specifyMovePointOr": "Spécifiez le point de déplacement ou",
       "ucsFaceFlipAccept": "accepter",
       "ucsFaceAccept": "accepter",

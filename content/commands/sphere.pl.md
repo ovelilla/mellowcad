@@ -2,7 +2,7 @@
 title: "Polecenie SFERA (SPHERE) w AutoCADzie"
 description: "Jak narysować kulę 3D w AutoCADzie poleceniem SFERA (SPHERE): środek i promień, Średnica, 3P, 2P i Ssr, oraz dlaczego sfera jest pokazana liniami."
 figure: "Sfera o promieniu 25 narysowana od środka, widziana z południowego wschodu w stylu wizualnym Koncepcyjny."
-sourceHash: "b0a92ceaf418"
+sourceHash: "c7bc67d1d847"
 ---
 
 Polecenie SFERA (SPHERE) rysuje bryłę 3D w kształcie kuli: podaj środek, a potem promień. Promień wskazany myszą jest odczytywany na płaszczyźnie przechodzącej przez środek, a ostatni promień, wspólny z poleceniami <Command id="CYLINDER" />, <Command id="CONE" /> i innymi bryłami podstawowymi, jest proponowany jako wartość domyślna, którą przyjmuje Enter. Sfera leży na bieżącej warstwie, a cofnięcie usuwa ją w jednym kroku.
@@ -29,7 +29,7 @@ Przy promieniu: pyta zamiast tego o średnicę, proponując dwukrotność ostatn
 
 ## Missing
 
-<Command id="EXPLODE" /> sfery, którą AutoCAD zamienia w powierzchnię: MellowCAD nie ma powierzchni, więc informuje, że nie może jej rozbić. Przesuwanie, obracanie, skalowanie i odbicie lustrzane z aktywnego uchwytu oraz własne polecenia 3D (3DOBRÓĆ, 3DSKALA): <Command id="3DMOVE" /> przesuwa ją. Sylwetka, którą w AutoCADzie rysuje `DISPSILH`. Style wizualne, których brakuje w <Command id="VSCURRENT" /> poza Modelem szkieletowym 2D, Ukrytym i Koncepcyjnym.
+<Command id="EXPLODE" /> sfery, którą AutoCAD zamienia w powierzchnię: MellowCAD nie ma powierzchni, więc informuje, że nie może jej rozbić. Przesuwanie, obracanie, skalowanie i odbicie lustrzane z aktywnego uchwytu oraz własne polecenia 3D (3DSKALA): <Command id="3DMOVE" /> i <Command id="3DROTATE" /> przesuwają ją i obracają. Sylwetka, którą w AutoCADzie rysuje `DISPSILH`. Style wizualne, których brakuje w <Command id="VSCURRENT" /> poza Modelem szkieletowym 2D, Ukrytym i Koncepcyjnym.
 
 ## Questions
 

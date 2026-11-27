@@ -594,6 +594,7 @@ export const TYPED: ReadonlySet<string> = new Set([
   // workspace's Home tab (acad.cuix's ID_3DMove, ID_3DROTATE), in no tab of
   // Drafting & Annotation, the ribbon here.
   "move3d",
+  "rotate3d",
   // CHPROP is typed: no ribbon panel offers it.
   "chprop",
   // TEXTEDIT is typed, or a double-click on a text (DBLCLKEDIT): its

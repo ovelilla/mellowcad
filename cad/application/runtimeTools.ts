@@ -32,6 +32,7 @@ import { Move3dTool } from "./tools/Move3dTool"
 import { CopyTool } from "./tools/CopyTool"
 import { StretchTool } from "./tools/StretchTool"
 import { RotateTool } from "./tools/RotateTool"
+import { Rotate3dTool } from "./tools/Rotate3dTool"
 import { ScaleTool } from "./tools/ScaleTool"
 import { MirrorTool } from "./tools/MirrorTool"
 import { ArrayTool } from "./tools/ArrayTool"
@@ -192,6 +193,7 @@ export function defaultTools(
     new CopyTool(),
     new StretchTool(),
     new RotateTool(),
+    new Rotate3dTool(),
     new ScaleTool(),
     new MirrorTool(),
     new ArrayCommandTool(arrays),

@@ -2,7 +2,7 @@
 title: "Commande SPHERE dans AutoCAD"
 description: "Comment SPHERE d'AutoCAD dessine une sphère 3D, invite par invite : centre et rayon, Diamètre, 3P, 2P et Ttr, et pourquoi elle s'affiche en lignes. Essayez-le."
 figure: "Une sphère de rayon 25 donnée par son centre, vue du sud-est dans le style visuel Conceptuel."
-sourceHash: "b0a92ceaf418"
+sourceHash: "c7bc67d1d847"
 ---
 
 SPHERE dessine une sphère, un solide 3D : indiquez le centre, puis le rayon. Un rayon désigné à la souris est lu dans le plan qui passe par le centre, et le dernier rayon est proposé comme valeur par défaut, qu'Entrée accepte, commune à <Command id="CYLINDER" />, <Command id="CONE" /> et aux autres primitives. La sphère est créée sur le calque courant, et Annuler la retire en une seule étape.
@@ -29,7 +29,7 @@ En Filaire 2D et en Masqué, elle est dessinée en lignes : des méridiens et d
 
 ## Missing
 
-<Command id="EXPLODE" /> d'une sphère, qu'AutoCAD transforme en surface : MellowCAD n'a pas de surfaces, et dit donc qu'il n'a pas pu la décomposer. Déplacer, Rotation, Echelle et Miroir depuis une poignée sélectionnée, et les commandes 3D qui lui sont propres (ROTATION3D, ECHELLE3D) : <Command id="3DMOVE" /> la déplace. La silhouette que dessine `DISPSILH` dans AutoCAD. Les styles visuels qui manquent à <Command id="VSCURRENT" /> au-delà de Filaire 2D, Masqué et Conceptuel.
+<Command id="EXPLODE" /> d'une sphère, qu'AutoCAD transforme en surface : MellowCAD n'a pas de surfaces, et dit donc qu'il n'a pas pu la décomposer. Déplacer, Rotation, Echelle et Miroir depuis une poignée sélectionnée, et les commandes 3D qui lui sont propres (ECHELLE3D) : <Command id="3DMOVE" /> et <Command id="3DROTATE" /> la déplacent et la font pivoter. La silhouette que dessine `DISPSILH` dans AutoCAD. Les styles visuels qui manquent à <Command id="VSCURRENT" /> au-delà de Filaire 2D, Masqué et Conceptuel.
 
 ## Questions
 

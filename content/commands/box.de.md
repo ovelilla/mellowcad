@@ -2,7 +2,7 @@
 title: "Befehl QUADER (BOX) in AutoCAD"
 description: "Wie QUADER (BOX) in AutoCAD einen 3D-Quader zeichnet, Schritt für Schritt: zwei Ecken und eine Höhe, Mitte, Würfel und Länge. Zum Testen im Browser."
 figure: "Ein Quader 60 mal 40 mal 25, aus zwei Ecken und einer Höhe, von Südosten gesehen im Visuellen Stil Verdeckt."
-sourceHash: "1bc1379d58bc"
+sourceHash: "f272a5f0c236"
 ---
 
 QUADER (BOX) zeichnet einen 3D-Volumenkörper-Quader mit seinen Seiten entlang der Achsen des BKS: Geben Sie die erste Ecke an, die andere Ecke, dann die Höhe. Die Höhe steigt entlang der Z-Achse des BKS, eine negative geht nach unten, und ein angegebener Punkt legt sie durch seinen Abstand von der Ecke fest; eine Ecke mit einem anderen Z als die erste legt die Höhe fest, ohne zu fragen. Die letzte Höhe sowie die letzte Länge und Breite eines Würfels oder von Length werden als Vorgaben angeboten, die die Eingabetaste übernimmt und die sich die anderen Grundkörper und <Command id="EXTRUDE" /> teilen. Der Quader liegt auf dem aktuellen Layer, und <Command id="U" /> nimmt ihn in einem Schritt zurück.
@@ -29,7 +29,7 @@ Bei der Höhe: fragt nach zwei Punkten, und die Höhe ist der Abstand zwischen i
 
 ## Missing
 
-Verschieben, Drehen, Skalieren und Spiegeln von einem heißen Griff aus, die AutoCAD mit der Eingabetaste durchschaltet. Die eigenen 3D-Befehle, 3DROTATE, 3DSCALE, MIRROR3D, ROTATE3D, ALIGN, 3DALIGN, mit ihren Gizmos: <Command id="3DMOVE" /> verschiebt ihn mit seinem Gizmo. Die gepunkteten Bemaßungen, die AutoCAD zeichnet, während Sie die Ecke, die Länge und die Breite angeben. <Command id="FILLET" /> und <Command id="CHAMFER" /> an seinen Kanten; das übernehmen hier <Command id="FILLETEDGE" /> und <Command id="CHAMFEREDGE" />. Aufzeichnen und Anzeigen des Verlaufs von Volumenkörpern und die Zeile Material. Die Visuellen Stile, die <Command id="VSCURRENT" /> über 2D-Drahtkörper, Verdeckt und Konzeptuell hinaus nicht hat.
+Verschieben, Drehen, Skalieren und Spiegeln von einem heißen Griff aus, die AutoCAD mit der Eingabetaste durchschaltet. Die eigenen 3D-Befehle, 3DSCALE, MIRROR3D, ROTATE3D, ALIGN, 3DALIGN, mit ihren Gizmos: <Command id="3DMOVE" /> und <Command id="3DROTATE" /> verschieben und drehen ihn mit ihren Gizmos. Die gepunkteten Bemaßungen, die AutoCAD zeichnet, während Sie die Ecke, die Länge und die Breite angeben. <Command id="FILLET" /> und <Command id="CHAMFER" /> an seinen Kanten; das übernehmen hier <Command id="FILLETEDGE" /> und <Command id="CHAMFEREDGE" />. Aufzeichnen und Anzeigen des Verlaufs von Volumenkörpern und die Zeile Material. Die Visuellen Stile, die <Command id="VSCURRENT" /> über 2D-Drahtkörper, Verdeckt und Konzeptuell hinaus nicht hat.
 
 ## Questions
 

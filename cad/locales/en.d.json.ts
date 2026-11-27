@@ -2,6 +2,7 @@
 declare const source: {
   "interface": {
     "tool": {
+      "rotate3d": string
       "move3d": string
       "select": string
       "line": string
@@ -617,6 +618,7 @@ declare const source: {
   }
   "commands": {
     "names": {
+      "3DROTATE": string[]
       "3DMOVE": string[]
       "LINE": string[]
       "XLINE": string[]
@@ -785,6 +787,11 @@ declare const source: {
       "WIPEOUT": string[]
     }
     "keywords": {
+      "3DROTATE": {
+        "Copy": string
+        "Reference": string
+        "Points": string
+      }
       "3DMOVE": {
         "Displacement": string
         "Base point": string
@@ -1839,6 +1846,8 @@ declare const source: {
       }
     }
     "prompts": {
+      "specifyAngleStartPointOrAngle": string
+      "pickRotationAxis": string
       "specifyMovePointOr": string
       "ucsFaceFlipAccept": string
       "ucsFaceAccept": string

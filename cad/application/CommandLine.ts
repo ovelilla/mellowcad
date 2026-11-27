@@ -316,6 +316,7 @@ export const TOOL_COMMANDS: Readonly<Record<string, string>> = {
   copy: "COPY",
   stretch: "STRETCH",
   rotate: "ROTATE",
+  rotate3d: "3DROTATE",
   scale: "SCALE",
   mirror: "MIRROR",
   arraycommand: "ARRAY",

@@ -170,7 +170,6 @@ describe("the dynamic UCS (UCSDETECT)", () => {
     answer(cad, "BOX", "0,0,0", "10,10", "10", "-VPOINT", "-1.3,-2.2,1.6")
     answer(cad, "LINE")
     cad.moveTo({ x: 40, y: 40, z: 0 })
-    const plain = cad.scene().primitives.length
     cad.moveTo({ x: 4, y: 0, z: 6 })
     const at = cad.toScreen({ x: 4, y: 0, z: 6 })
     const arms = cad

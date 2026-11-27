@@ -1,6 +1,7 @@
 {
   "interface": {
     "tool": {
+      "rotate3d": "3D Rotate",
       "move3d": "3D Move",
       "select": "Select",
       "line": "Line",
@@ -611,6 +612,7 @@
   },
   "commands": {
     "names": {
+      "3DROTATE": ["3DROTATE", "3R"],
       "3DMOVE": ["3DMOVE", "3M"],
       "LINE": ["LINE", "L"],
       "XLINE": ["XLINE", "XL"],
@@ -779,6 +781,11 @@
       "WIPEOUT": ["WIPEOUT"]
     },
     "keywords": {
+      "3DROTATE": {
+        "Copy": "Copy",
+        "Reference": "Reference",
+        "Points": "Points"
+      },
       "3DMOVE": {
         "Displacement": "Displacement",
         "Base point": "Base",
@@ -1671,6 +1678,8 @@
       "leaderFormatOption": { "None": "None" }
     },
     "prompts": {
+      "specifyAngleStartPointOrAngle": "Specify angle start point or type an angle",
+      "pickRotationAxis": "Pick a rotation axis",
       "specifyMovePointOr": "Specify move point or",
       "ucsFaceFlipAccept": "accept",
       "ucsFaceAccept": "accept",

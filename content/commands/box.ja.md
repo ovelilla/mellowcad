@@ -3,7 +3,7 @@ title: "AutoCAD の BOX[直方体]コマンド"
 metaTitle: "AutoCAD 直方体(BOX)の使い方とオプション"
 description: "AutoCAD で 3D ソリッドの直方体を作成する BOX の使い方をプロンプト順に解説します。2 つのコーナーと高さ、Center、Cube、Length、2Point。ブラウザで無料で試せます。"
 figure: "2 つのコーナーと高さで作成した 60 × 40 × 25 の直方体を、南東から隠線処理の表示スタイルで見たところ。"
-sourceHash: "1bc1379d58bc"
+sourceHash: "f272a5f0c236"
 ---
 
 BOX[直方体]コマンドは、各辺が UCS の軸に沿った 3D ソリッドの直方体を作成します。1 つ目のコーナー、もう一方のコーナー、高さの順に指定します。高さは UCS の Z 方向に上がり、負の値では下に向かいます。点で指定すると、コーナーからの距離が高さになります。もう一方のコーナーを 1 つ目と異なる Z で指定すると、高さは尋ねられずに決まります。前回の高さと、立方体または Length の前回の長さと幅は既定値として提示され、[Enter]で使えます。これらはほかのプリミティブや <Command id="EXTRUDE" /> と共通です。直方体は現在の画層に作成され、元に戻す 1 回で取り消せます。
@@ -30,7 +30,7 @@ BOX[直方体]コマンドは、各辺が UCS の軸に沿った 3D ソリッド
 
 ## Missing
 
-ホット グリップからの移動、回転、尺度変更、鏡像(AutoCAD では[Enter]で切り替えます)。3DROTATE、3DSCALE、MIRROR3D、ROTATE3D、ALIGN、3DALIGN といった 3D 専用のコマンドとそのギズモ(<Command id="3DMOVE" /> ではギズモで移動できます)。コーナー、長さ、幅を指定している間に AutoCAD が表示する点線の寸法。エッジの <Command id="FILLET" /> と <Command id="CHAMFER" />(<Command id="FILLETEDGE" /> と <Command id="CHAMFEREDGE" /> で行えます)。ソリッドの履歴の[履歴を記録]と[履歴を表示]、および[マテリアル]の行。<Command id="VSCURRENT" /> にない、2D ワイヤフレーム、隠線処理、コンセプト以外の表示スタイル。
+ホット グリップからの移動、回転、尺度変更、鏡像(AutoCAD では[Enter]で切り替えます)。3DSCALE、MIRROR3D、ROTATE3D、ALIGN、3DALIGN といった 3D 専用のコマンドとそのギズモ(<Command id="3DMOVE" /> と <Command id="3DROTATE" /> ではそれぞれのギズモで移動と回転ができます)。コーナー、長さ、幅を指定している間に AutoCAD が表示する点線の寸法。エッジの <Command id="FILLET" /> と <Command id="CHAMFER" />(<Command id="FILLETEDGE" /> と <Command id="CHAMFEREDGE" /> で行えます)。ソリッドの履歴の[履歴を記録]と[履歴を表示]、および[マテリアル]の行。<Command id="VSCURRENT" /> にない、2D ワイヤフレーム、隠線処理、コンセプト以外の表示スタイル。
 
 ## Questions
 

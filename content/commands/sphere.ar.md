@@ -3,7 +3,7 @@ title: "أمر ⁨SPHERE⁩ في الأوتوكاد: الكرة ثلاثية ا�
 metaTitle: "أمر الكرة المجسمة ⁨SPHERE⁩ في الأوتوكاد"
 description: "كيف يرسم أمر ⁨SPHERE⁩ في أوتوكاد كرة مجسمة، مطالبةً بعد مطالبة: المركز ونصف القطر، و⁨Diameter⁩ و⁨3P⁩ و⁨2P⁩ و⁨Ttr⁩، ولماذا تظهر خطوطًا. جرّبه مجانًا."
 figure: "كرة نصف قطرها 25 من مركزها، تُرى من الجنوب الشرقي بالنمط المرئي ⁨Conceptual⁩."
-sourceHash: "b0a92ceaf418"
+sourceHash: "c7bc67d1d847"
 ---
 
 يرسم ⁨SPHERE⁩ كرة مجسمة ثلاثية الأبعاد: أعطِ المركز، ثم نصف القطر. ونصف القطر المحدد بالفأرة يُقرأ في المستوى المار بالمركز، ويُعرض آخر نصف قطر قيمةً افتراضية يأخذها ⁨Enter⁩، مشتركة مع <Command id="CYLINDER" /> و<Command id="CONE" /> وسائر المجسمات الأولية. وتقع الكرة في الطبقة الحالية، ويتراجع عنها ⁨Undo⁩ في خطوة واحدة.
@@ -30,7 +30,7 @@ sourceHash: "b0a92ceaf418"
 
 ## Missing
 
-<Command id="EXPLODE" /> على الكرة، فأوتوكاد يحوّلها إلى سطح: ولا أسطح في ⁨MellowCAD⁩، فيقول إنه تعذّر تفكيكها. والنقل والتدوير والتحجيم والانعكاس من مقبض نشط، وأوامر الأبعاد الثلاثة الخاصة به (⁨3DROTATE⁩ و⁨3DSCALE⁩): <Command id="3DMOVE" /> ينقلها. وخط الكفاف الذي يرسمه `DISPSILH` في أوتوكاد. والأنماط المرئية التي تنقص <Command id="VSCURRENT" /> عدا <Keyword command="VSCURRENT" id="2dwireframe" /> و<Keyword command="VSCURRENT" id="Hidden" /> و<Keyword command="VSCURRENT" id="Conceptual" />.
+<Command id="EXPLODE" /> على الكرة، فأوتوكاد يحوّلها إلى سطح: ولا أسطح في ⁨MellowCAD⁩، فيقول إنه تعذّر تفكيكها. والنقل والتدوير والتحجيم والانعكاس من مقبض نشط، وأوامر الأبعاد الثلاثة الخاصة به (⁨3DSCALE⁩): <Command id="3DMOVE" /> و<Command id="3DROTATE" /> ينقلانها ويديرانها. وخط الكفاف الذي يرسمه `DISPSILH` في أوتوكاد. والأنماط المرئية التي تنقص <Command id="VSCURRENT" /> عدا <Keyword command="VSCURRENT" id="2dwireframe" /> و<Keyword command="VSCURRENT" id="Hidden" /> و<Keyword command="VSCURRENT" id="Conceptual" />.
 
 ## Questions
 

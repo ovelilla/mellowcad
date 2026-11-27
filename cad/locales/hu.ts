@@ -5,6 +5,7 @@ export const hu: EngineLocale = {
   "tag": "hu",
   "interface": {
     "tool": {
+      "rotate3d": "3D elforgatás",
       "move3d": "3D mozgatás",
       "mesh3d": "3D háló",
       "select": "Kijelölés",
@@ -863,6 +864,10 @@ export const hu: EngineLocale = {
   },
   "commands": {
     "names": {
+      "3DROTATE": [
+        "3DFORGAT",
+        "3F"
+      ],
       "3DMOVE": [
         "3DMOZGAT",
         "3M"
@@ -1503,6 +1508,11 @@ export const hu: EngineLocale = {
       ]
     },
     "keywords": {
+      "3DROTATE": {
+        "Copy": "Másol",
+        "Reference": "Referencia",
+        "Points": "Pontok"
+      },
       "3DMOVE": {
         "Displacement": "Elmozdulás",
         "Base point": "Bázispont",
@@ -2557,6 +2567,8 @@ export const hu: EngineLocale = {
       }
     },
     "prompts": {
+      "specifyAngleStartPointOrAngle": "Adja meg a szög kezdőpontját, vagy írja be a szög értékét",
+      "pickRotationAxis": "Adjon meg egy elforgatási tengelyt",
       "specifyMovePointOr": "Mozgatási pont megadása vagy",
       "ucsFaceFlipAccept": "elfogadás",
       "ucsFaceAccept": "elfogad",

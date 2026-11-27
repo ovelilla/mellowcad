@@ -5,6 +5,7 @@ export const ptBR: EngineLocale = {
   "tag": "pt-BR",
   "interface": {
     "tool": {
+      "rotate3d": "Rotação 3D",
       "move3d": "Mover 3D",
       "mesh3d": "Malha 3D",
       "select": "Selecionar",
@@ -863,6 +864,9 @@ export const ptBR: EngineLocale = {
   },
   "commands": {
     "names": {
+      "3DROTATE": [
+        "ROTACIONAR3D"
+      ],
       "3DMOVE": [
         "MOVER3D",
         "3M"
@@ -1506,6 +1510,11 @@ export const ptBR: EngineLocale = {
       ]
     },
     "keywords": {
+      "3DROTATE": {
+        "Copy": "Cópia",
+        "Reference": "Referência",
+        "Points": "Pontos"
+      },
       "3DMOVE": {
         "Displacement": "Deslocamento",
         "Base point": "Ponto",
@@ -2560,6 +2569,8 @@ export const ptBR: EngineLocale = {
       }
     },
     "prompts": {
+      "specifyAngleStartPointOrAngle": "Especificar ponto inicial do ângulo ou digitar um ângulo",
+      "pickRotationAxis": "Escolher um eixo de rotação",
       "specifyMovePointOr": "Especificar ponto de movimentação ou",
       "ucsFaceFlipAccept": "aceitar",
       "ucsFaceAccept": "aceitar",

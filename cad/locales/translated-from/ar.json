@@ -1,4 +1,5 @@
 {
+  "interface.tool.rotate3d": "3D Rotate",
   "interface.tool.move3d": "3D Move",
   "interface.tool.mesh3d": "3D Mesh",
   "interface.tool.select": "Select",
